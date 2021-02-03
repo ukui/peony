@@ -449,12 +449,13 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
             QRect rect = (tab->rect).adjusted(4, 0, 1, -12);
-//            QPalette palette = tab->palette;
+
+            const QPalette &palette = widget->palette();
 
             if (tab->state & QStyle::State_Selected) {
                 painter->save();
-                painter->setPen(0x3D6BE5);
-                painter->setBrush(QBrush(0x3D6BE5));
+                painter->setPen(palette.color(QPalette::Highlight));
+                painter->setBrush(palette.brush(QPalette::Highlight));
 
                 painter->drawRect(rect);
                 //FIX:圆角矩形绘制问题
@@ -462,12 +463,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->restore();
             }
 
-            if (tab->state & QStyle::State_Selected) {
-                painter->setPen(0xffffff);
-            } else {
-                QColor color(0, 0, 0);
-                painter->setPen(color);
-            }
+            painter->setPen(palette.color(QPalette::ButtonText));
 
             QTextOption alignCenter;
             alignCenter.setAlignment(Qt::AlignCenter);
