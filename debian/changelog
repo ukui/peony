@@ -1,3 +1,12 @@
+peony (3.0.3-2+0203) v101; urgency=medium
+
+  * Fix: link file can not be opened ＃32657
+  * Fix: modify name of personal folder in desktop ＃34761
+  * Fix: adjust the order of music and download in side bar #34510
+  * Fix: icons in desktop is stacked #32870
+
+ -- weinan1 <wangweinan@kylinos.cn>  Wed, 27 Feb 2021 09:29:31 +0800
+
 peony (3.0.3-2+0127) v101; urgency=medium
 
   * Fix: 光标从图标移走，不经过说明内容，图标的说明内容还存在一段时间
