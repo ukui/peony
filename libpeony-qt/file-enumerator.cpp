@@ -361,16 +361,22 @@ void FileEnumerator::enumerateAsync()
 {
     m_idle->start(1000);
 
-    //auto uri = g_file_get_uri(m_root_file);
-    //auto path = g_file_get_path(m_root_file);
-    g_file_enumerate_children_async(m_root_file,
-                                    m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                    G_FILE_QUERY_INFO_NONE,
-                                    G_PRIORITY_DEFAULT,
-                                    m_cancellable,
-                                    GAsyncReadyCallback(find_children_async_ready_callback),
-                                    this);
+    // query directory info first
+    auto infoJob = new FileInfoJob(m_uri);
+    infoJob->setAutoDelete(true);
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        //auto uri = g_file_get_uri(m_root_file);
+        //auto path = g_file_get_path(m_root_file);
+        g_file_enumerate_children_async(m_root_file,
+                                        m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                        G_FILE_QUERY_INFO_NONE,
+                                        G_PRIORITY_DEFAULT,
+                                        m_cancellable,
+                                        GAsyncReadyCallback(find_children_async_ready_callback),
+                                        this);
 
+    });
+    infoJob->queryAsync();
 }
 
 void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)
