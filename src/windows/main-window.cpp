@@ -63,6 +63,7 @@
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
 #include "main-window-factory.h"
+#include "thumbnail-manager.h"
 
 #include "peony-application.h"
 
@@ -152,6 +153,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
         hints.decorations = MWM_DECOR_BORDER;
         XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
     }
+
+    startMonitorThumbnailForbidStatus();
 
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
@@ -953,6 +956,8 @@ void MainWindow::beginSwitchView(const QString &viewId)
     m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
 
+
+
 void MainWindow::refresh()
 {
     locationChangeStart();
@@ -1492,6 +1497,31 @@ QRect MainWindow::sideBarRect()
 {
     auto pos = m_transparent_area_widget->mapTo(this, QPoint());
     return QRect(pos, m_transparent_area_widget->size());
+}
+
+void MainWindow::startMonitorThumbnailForbidStatus()
+{
+    m_do_not_thumbnail = Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
+
+    m_thumbnail_watcher = new QFileSystemWatcher(this);
+    QString peonySettingFile = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+                        + "/.config/org.ukui/peony-qt-preferences.conf";
+    m_thumbnail_watcher->addPath(peonySettingFile);
+
+    connect(m_thumbnail_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+        auto settings = Peony::GlobalSettings::getInstance();
+        if (m_do_not_thumbnail != settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool()) {
+            m_do_not_thumbnail = settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
+            if (true == m_do_not_thumbnail) {
+                Peony::ThumbnailManager::getInstance()->clearThumbnail();
+            }
+            refresh();
+        }
+
+        //qDebug()<<"peonySettingFile:"<<peonySettingFile;
+        m_thumbnail_watcher->addPath(uri);
+    });
+
 }
 
 void MainWindow::addFocusWidgetToFocusList(QWidget *widget)
