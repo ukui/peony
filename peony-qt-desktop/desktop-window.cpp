@@ -265,10 +265,11 @@ void DesktopWindow::initGSettings() {
                     return;
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
-                if (getAccountBackground() != m_current_bg_path)
-                {
+                //comment to fix name not change but file changed issue
+//                if (getAccountBackground() != m_current_bg_path)
+//                {
                     setAccountBackground();
-                }
+//                }
                 return;
             }
 
