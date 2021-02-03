@@ -54,6 +54,7 @@ public Q_SLOTS:
     void finishEdit();
     void switchEditMode(bool bSearchMode);
     void clearSearchBox();
+    QString processSpecialChar(QString key);
 
 private:
     QStackedLayout *m_layout;
@@ -65,6 +66,8 @@ private:
     QString m_text;
     QString m_last_non_search_path;
     QString m_last_key = "";
+
+    const QStringList SPECIAL_CHARS = {"\$", "\|", "\^", "\*"};
 };
 
 }

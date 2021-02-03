@@ -78,6 +78,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
         auto key = m_search_bar->text();
+        key = processSpecialChar(key);
         qDebug() << "search key:" <<key <<m_last_key;
         if (key != m_last_key)
         {
@@ -98,6 +99,25 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
     setFixedHeight(m_edit->height());
+}
+
+QString AdvancedLocationBar::processSpecialChar(QString key)
+{
+    if (key.length() == 0)
+        return key;
+    //qDebug() << "enter processSpecialChar:" <<key;
+    for(auto mchar : SPECIAL_CHARS)
+    {
+        if (key.contains(mchar))
+        {
+            QString tmp = mchar;
+            tmp.replace("\\", "");
+            key = key.replace(tmp, "\\" + mchar);
+        }
+    }
+
+    //qDebug() << "ret processSpecialChar:" <<key;
+    return key;
 }
 
 void AdvancedLocationBar::updateLocation(const QString &uri)
