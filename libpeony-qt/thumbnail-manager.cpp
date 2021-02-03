@@ -337,7 +337,18 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
 void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
-    qDebug() <<"createThumbnail:" <<force<<uri;
+    qDebug() <<"createThumbnail:" <<force << uri;
+
+    auto settings = GlobalSettings::getInstance();
+    if (settings->isExist(FORBID_THUMBNAIL_IN_VIEW)) {
+        bool do_not_thumbnail = settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
+        if (do_not_thumbnail) {
+            releaseThumbnail(uri);
+            qDebug()<<"thumbnail is disabled";
+            return;
+        }
+    }
+
     auto thumbnail = tryGetThumbnail(uri);
     if (!thumbnail.isNull()) {
         if (!force) {
