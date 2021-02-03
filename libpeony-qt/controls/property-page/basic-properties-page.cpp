@@ -405,12 +405,7 @@ BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringLi
         return BP_MultipleFIle;
     } else {
         if (m_info->displayName().isNull() || m_info->displayName().isEmpty()) {
-            std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uris.first());
-            FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
-            fileInfoJob->setAutoDelete();
-            fileInfoJob->querySync();
-
-            m_info = fileInfo;
+            this->getFIleInfo(uris.first());
         }
 
         if(m_info.get()->isDir())
@@ -424,6 +419,15 @@ BasicPropertiesPage::FileType BasicPropertiesPage::checkFileType(const QStringLi
 //异步获取数据
 void BasicPropertiesPage::getFIleInfo(QString uri)
 {
+    //将在收藏夹的文件路径替换为真实路径 - Replace the file path in the favorites with the real path
+    //FIX:如果是远程文件夹或者其它非本地文件夹添加到收藏夹呢？ - What if remote folders or other non-local folders are added to favorites?
+    if (uri.startsWith("favorite://")) {
+        QUrl url(uri);
+        uri = "file://" + url.path();
+        m_uris.clear();
+        m_uris.append(uri);
+    }
+
     std::shared_ptr<FileInfo> fileInfo = FileInfo::fromUri(uri);
     FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
     fileInfoJob->setAutoDelete();
@@ -513,6 +517,10 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
         m_countOp = nullptr;
         m_folderContainFiles = file_count - m_folderContainFolders;
         m_fileSizeCount = total_size;
+        //不统计文件夹本身 - Do not count the folder itself
+        if (m_folderContainFolders != 0) {
+            m_folderContainFolders--;
+        }
         this->updateCountInfo(true);
     });
 

@@ -60,14 +60,20 @@ using namespace Peony;
 PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uris.first();
-    QUrl url = m_uri;
+    QUrl url(m_uri);
+
+    //note:请查看：BasicPropertiesPage::getFIleInfo(QString uri) - Look BasicPropertiesPage::getFIleInfo(QString uri)
+    if (m_uri.startsWith("favorite://")) {
+        m_uri = "file://" + url.path();
+        url = QUrl(m_uri);
+    }
+
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0,0,0,0);
     this->setLayout(m_layout);
 
     m_label = new QLabel(this);
 
-    quint64 width = TARGET_LABEL_WIDTH - m_label->fontMetrics().width("Target: ");
     m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.path()), Qt::ElideMiddle,TARGET_LABEL_WIDTH));
 
     m_label->setMinimumHeight(60);

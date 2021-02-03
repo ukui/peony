@@ -331,7 +331,8 @@ LaunchHashList::~LaunchHashList()
 
         delete m_actionHash;
     }
-    m_actionList->deleteLater();
+    if (m_actionHash)
+        m_actionList->deleteLater();
 }
 
 AllFileLaunchDialog::AllFileLaunchDialog(const QString &uri, QWidget *parent) : QDialog(parent)

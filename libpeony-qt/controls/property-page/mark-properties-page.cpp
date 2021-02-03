@@ -28,12 +28,18 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QUrl>
 
 using namespace Peony;
 
 MarkPropertiesPage::MarkPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     this->m_uri = uri;
+    //note:请查看：BasicPropertiesPage::getFIleInfo(QString uri) - Look BasicPropertiesPage::getFIleInfo(QString uri)
+    if (uri.startsWith("favorite://")) {
+        QUrl url(uri);
+        m_uri = "file://" + url.path();
+    }
 
     this->m_layout = new QVBoxLayout(this);
     //表格自带一部分高度，所以手动删减一部分
