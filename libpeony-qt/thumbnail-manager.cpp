@@ -407,6 +407,15 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
     }
 }
 
+void ThumbnailManager::clearThumbnail()
+{
+    m_semaphore->acquire();
+    if (!m_hash.isEmpty()) {
+        m_hash.clear();
+    }
+    m_semaphore->release();
+}
+
 void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
     m_semaphore->acquire();

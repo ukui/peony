@@ -26,6 +26,7 @@
 #include <QMainWindow>
 #include "FMWindowIface.h"
 #include "file-label-box.h"
+#include <QFileSystemWatcher>
 
 class MainWindowPrivate;
 class BorderShadowEffect;
@@ -168,6 +169,8 @@ protected:
 
     QRect sideBarRect();
 
+    void startMonitorThumbnailForbidStatus();
+
 private:
     BorderShadowEffect *m_effect;
 
@@ -199,6 +202,10 @@ private:
     QWidgetList m_focus_list;
 
     bool m_shortcuts_set = false;
+
+
+    QFileSystemWatcher *m_thumbnail_watcher;
+    bool m_do_not_thumbnail = false;
 
     const int WINDOW_MINIMUM_WIDTH = 596;
 };

@@ -52,6 +52,7 @@ public:
     }
 
     void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
+    void clearThumbnail();
     void releaseThumbnail(const QString &uri);
     void updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     const QIcon tryGetThumbnail(const QString &uri);
