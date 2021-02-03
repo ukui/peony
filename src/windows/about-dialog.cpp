@@ -60,7 +60,7 @@ void AboutDialog::initUI()
 
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
-	setAttribute(Qt::WA_TranslucentBackground, true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);//modal、borderless window
 
     ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
@@ -169,7 +169,7 @@ void AboutDialog::paintEvent(QPaintEvent *event)
     }
 
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QBrush(Qt::white));
+    painter.setBrush(palette().color(QPalette::Active, QPalette::Base));
     painter.setPen(Qt::transparent);
     QRect rect = this->rect();
     rect.setX(5);
