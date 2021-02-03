@@ -401,12 +401,33 @@ void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *inf
         if (!watcher->supportMonitor()) {
             auto srcDir = info->m_src_dir_uri;
             auto destDir = info->m_dest_dir_uri;
+            auto firstUri = info->m_src_uris.first();
             if (info->operationType() == FileOperationInfo::Link || info->operationType() == FileOperationInfo::Rename) {
-                srcDir = FileUtils::getParentUri(info->m_src_uris.first());
+                srcDir = FileUtils::getParentUri(firstUri);
             }
+
+            if ("" == srcDir) {
+                if (firstUri.endsWith("/")) {
+                    firstUri.chop(1);
+                }
+
+                QStringList fileSplit = firstUri.split("/");
+                fileSplit.pop_back();
+
+                srcDir = fileSplit.join("/");
+            }
+
             // check watcher directory
+            // srcDir is null in samba filesystem, so that it not work
+            // currentUri maybe is 'file:///run/user/1000/gvfs/smb-share:server=xxx,share=xxx/' or 'smb://xxx'
             if (watcher->currentUri() == srcDir || watcher->currentUri() == destDir) {
                 // tell the view/model the directory should be updated
+                watcher->requestUpdateDirectory();
+            }
+
+            if (srcDir.startsWith("smb://") && (info->operationType() == FileOperationInfo::Delete
+                    || info->operationType() == FileOperationInfo::Move
+                    || info->operationType() == FileOperationInfo::Trash)) {
                 watcher->requestUpdateDirectory();
             }
         }
