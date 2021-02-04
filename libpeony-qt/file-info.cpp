@@ -269,6 +269,7 @@ const QString FileInfo::displayName()
         return deviceName;
 
     //@deviceName transcoding
+    deviceName = m_display_name;
     FileUtils::handleVolumeLabelForFat32(deviceName,unixDevice);
     return deviceName;
 }
