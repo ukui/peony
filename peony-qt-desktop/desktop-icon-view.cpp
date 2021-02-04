@@ -74,10 +74,12 @@
 
 #include <QDebug>
 #include <QToolTip>
+#include <QGSettings>
 
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
+#define PANEL_SETTINGS "org.ukui.panel.settings"
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
@@ -183,6 +185,22 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         resolutionChange();
 //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
     });
+
+    //fix task bar overlap with desktop icon and can drag move issue
+    //bug #27811,33188
+    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
+    {
+        //font monitor
+        QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+        connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "panelSetting changed:" << key;
+            if (key == "panelposition")
+            {
+               auto zoomLevel = this->zoomLevel();
+               this->setDefaultZoomLevel(zoomLevel);
+            }
+        });
+    }
 
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
