@@ -203,7 +203,7 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     m_float_button->raise();
 
     bool floaltButtonVisible = false;
-    if (lastTabRect.right() + m_float_button->width() < this->width()) {
+    if (lastTabRect.right() + m_float_button->width() * 2 < this->width()) {
         floaltButtonVisible = true;
     }
     m_float_button->setVisible(floaltButtonVisible);
