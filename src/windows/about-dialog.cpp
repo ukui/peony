@@ -107,6 +107,9 @@ void AboutDialog::initUI()
 
 QString AboutDialog::getCurrentVersion()
 {
+    //use self define main version
+    return VERSION;
+
     FILE *pp = NULL;
     char *line = NULL;
     size_t len = 0;
