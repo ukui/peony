@@ -713,8 +713,13 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
-    //return Qt::MoveAction|Qt::CopyAction;
+    return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+Qt::DropActions DesktopItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }
 
 void DesktopItemModel::refresh()

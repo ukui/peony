@@ -271,6 +271,10 @@ void IconView::dropEvent(QDropEvent *e)
             auto uri = m_sort_filter_proxy_model->itemFromIndex(proxy_index)->uri();
             if(!e->mimeData()->urls().contains(uri))
                 m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        } else {
+            if (m_ctrl_key_pressed) {
+                m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+            }
         }
         return;
     }
