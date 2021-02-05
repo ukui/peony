@@ -318,7 +318,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
             auto dirInfo = FileInfo::fromUri(m_current_uri);
             if (dirInfo.get()->isEmptyInfo()) {
                 goBack();
-                m_forward_list.takeFirst();
+                if (!m_forward_list.isEmpty())
+                    m_forward_list.takeFirst();
             } else {
                 Q_EMIT this->directoryChanged();
             }
