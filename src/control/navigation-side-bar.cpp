@@ -281,6 +281,12 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         }
     }
 
+    if (e->keyboardModifiers() == Qt::ControlModifier) {
+        m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+        e->accept();
+        return;
+    }
+
     QTreeView::dropEvent(e);
 }
 

@@ -76,6 +76,11 @@
 #include <QToolTip>
 #include <QGSettings>
 
+#include <QDrag>
+#include <QMimeData>
+#include <QPixmap>
+#include <QPainter>
+
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
@@ -1355,8 +1360,14 @@ void DesktopIconView::setEditFlag(bool edit)
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    m_press_pos = e->pos();
     // bug extend selection bug
     m_real_do_edit = false;
+
+    if (e->modifiers() && Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
 
     if (!m_ctrl_or_shift_pressed) {
         if (!indexAt(e->pos()).isValid()) {
@@ -1423,16 +1434,13 @@ void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_real_do_edit = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
-        m_ctrl_key_pressed = true;
-    else
-        m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug()<<"drag enter event" <<action;
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(action);
-        e->acceptProposedAction();
+        e->accept();
+        //e->acceptProposedAction();
     }
 
     if (e->source() == this) {
@@ -1645,6 +1653,52 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     }
     m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position
+}
+
+void DesktopIconView::startDrag(Qt::DropActions supportedActions)
+{
+    auto indexes = selectedIndexes();
+    if (indexes.count() > 0) {
+        auto pos = mapFromGlobal(QCursor::pos());
+        qreal scale = 1.0;
+        QWidget *window = this->window();
+        if (window) {
+            auto windowHandle = window->windowHandle();
+            if (windowHandle) {
+                scale = windowHandle->devicePixelRatio();
+            }
+        }
+
+        auto drag = new QDrag(this);
+        drag->setMimeData(model()->mimeData(indexes));
+
+        QRegion rect;
+        QHash<QModelIndex, QRect> indexRectHash;
+        for (auto index : indexes) {
+            rect += (visualRect(index));
+            indexRectHash.insert(index, visualRect(index));
+        }
+
+        QRect realRect = rect.boundingRect();
+        QPixmap pixmap(realRect.size() * scale);
+        pixmap.fill(Qt::transparent);
+        pixmap.setDevicePixelRatio(scale);
+        QPainter painter(&pixmap);
+        for (auto index : indexes) {
+            painter.save();
+            painter.translate(indexRectHash.value(index).topLeft() - rect.boundingRect().topLeft());
+            itemDelegate()->paint(&painter, viewOptions(), index);
+            painter.restore();
+        }
+
+        drag->setPixmap(pixmap);
+        drag->setHotSpot(pos - rect.boundingRect().topLeft());
+        drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+
+    } else {
+        return QListView::startDrag(Qt::MoveAction|Qt::CopyAction);
+    }
 }
 
 const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
