@@ -57,7 +57,8 @@
 
 // control center
 #define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
-#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // date format key, value is '12' or '24'
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // time format key, value is '12' or '24'
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE       "org.ukui.control-center.panel.plugins.date"            // date format key, value is cn or en
 
 class QGSettings;
 
@@ -88,6 +89,9 @@ public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
     void reset(const QString &key);
     void resetAll();
+    void setTimeFormat(const QString &value);
+    void setDateFormat(const QString &value);
+    QString getSystemTimeFormat();
 
     /*!
      * \brief forceSync
@@ -109,6 +113,10 @@ private:
     QGSettings*                 m_control_center_plugin = nullptr;
 
     QMutex                      m_mutex;
+
+    QString                     m_date_format = "";
+    QString                     m_time_format = "";
+    QString                     m_system_time_format  = "";
 };
 
 }

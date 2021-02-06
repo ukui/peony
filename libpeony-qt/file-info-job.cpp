@@ -29,6 +29,7 @@
 #include "file-label-model.h"
 
 #include <gio/gdesktopappinfo.h>
+#include <global-settings.h>
 
 #include <QDebug>
 #include <QDateTime>
@@ -260,11 +261,12 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_file_size = size_full;
     g_free(size_full);
 
+    auto systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
-    info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
+    info->m_modified_date = date.toString(systemTimeFormat);
 
     date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
-    info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
+    info->m_access_date = date.toString(systemTimeFormat);
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
     // update peony qt color list after meta info updated.

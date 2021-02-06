@@ -195,7 +195,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     //bug #27811,33188
     if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
     {
-        //font monitor
+        //panel monitor
         QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
         connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
             qDebug() << "panelSetting changed:" << key;
