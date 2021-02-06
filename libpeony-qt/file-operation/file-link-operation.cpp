@@ -42,6 +42,8 @@ FileLinkOperation::FileLinkOperation(QString srcUri, QString destDirUri, QObject
         m_dest_uri = destDirUri + "/" + tr("Symbolic Link") + " - " + url.fileName();
     }
 
+    m_dest_uri = QUrl::fromEncoded(m_dest_uri.toUtf8()).toDisplayString();
+
     QStringList fake_uris;
     fake_uris<<srcUri;
     m_info = std::make_shared<FileOperationInfo>(fake_uris, destDirUri, FileOperationInfo::Link);
