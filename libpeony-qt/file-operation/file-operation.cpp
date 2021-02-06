@@ -21,6 +21,7 @@
  */
 
 #include <QApplication>
+#include <QProcess>
 
 #include "file-operation.h"
 #include "file-operation-manager.h"
@@ -47,6 +48,67 @@ void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());
     m_is_cancelled = true;
+}
+
+void FileOperation::fileSync(QString srcFile, QString destDir)
+{
+    if (srcFile.endsWith("/")) {
+        srcFile.chop(1);
+    }
+
+    QString destFile = "";
+    if (destDir.split("/").back() == srcFile.split("/").back()) {
+        destFile = destDir;
+    } else {
+        destFile = destDir + "/" + srcFile.split("/").back();
+    }
+
+    if (!FileUtils::isFileExsit(destFile)) {
+        qDebug() << "file:" << destFile << " is not existed!";
+        return;
+    }
+
+    bool needSync = false;
+    GFile* srcGfile = g_file_new_for_uri(srcFile.toUtf8().constData());
+    GFile* destGfile = g_file_new_for_uri(destFile.toUtf8().constData());
+    GMount* srcMount = g_file_find_enclosing_mount(srcGfile, nullptr, nullptr);
+    GMount* destMount = g_file_find_enclosing_mount(destGfile, nullptr, nullptr);
+
+    // xxxMount is null in root filesystem
+    if ((srcMount != destMount) && (NULL != destMount)) {
+        needSync = true;
+    }
+
+    if (needSync) {
+        auto path = g_file_get_path(destGfile);
+        qDebug() << "sync -- src: " << srcFile << "  ===  " << destDir << "  ===  " << destFile << "  path:" << path;
+        if (path) {
+            QProcess p;
+            auto shellPath = g_shell_quote(path);
+            qDebug() << "start execute: " << QString("sync -f %1").arg(shellPath);
+            p.start(QString("sync -f %1").arg(shellPath));
+            g_free(path);
+            g_free(shellPath);
+            p.waitForFinished(-1);
+            qDebug() << "execute: " << QString("sync -f %1  ok!!!").arg(shellPath);
+        }
+    }
+
+    if (nullptr != srcMount) {
+        g_object_unref(srcMount);
+    }
+
+    if (nullptr != destMount) {
+        g_object_unref(destMount);
+    }
+
+    if (nullptr != srcGfile) {
+        g_object_unref(srcGfile);
+    }
+
+    if (nullptr != destGfile) {
+        g_object_unref(destGfile);
+    }
 }
 
 void FileOperation::notifyFileWatcherOperationFinished()

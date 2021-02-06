@@ -353,6 +353,7 @@ retry:
         }
         //FIXME: ignore the total size when using native move.
         operationProgressedOne(file->uri(), file->destUri(), 0);
+        fileSync(file->uri(), file->destUri());
     }
     //native move has not clear operation.
     operationProgressed();
@@ -868,6 +869,7 @@ fallback_retry:
         } else {
             //node->setState(FileNode::Handled);
         }
+        fileSync(node->uri(), realDestUri);
         m_current_offset += node->size();
         auto fileIconName = FileUtils::getFileIconName(m_current_src_uri, false);
         auto destFileName = FileUtils::isFileDirectory(node->destUri()) ? nullptr : node->destUri();
@@ -1032,14 +1034,14 @@ start:
         auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
         auto path = g_file_get_path(dest_file);
         g_object_unref(dest_file);
-        if (path) {
-            QProcess p;
-            auto shell_path = g_shell_quote(path);
-            g_free(path);
-            p.start(QString("sync -d %1").arg(shell_path));
-            g_free(shell_path);
-            p.waitForFinished(-1);
-        }
+//        if (path) {
+//            QProcess p;
+//            auto shell_path = g_shell_quote(path);
+//            g_free(path);
+//            p.start(QString("sync -d %1").arg(shell_path));
+//            g_free(shell_path);
+//            p.waitForFinished(-1);
+//        }
     }
     qDebug()<<"finished";
 end:

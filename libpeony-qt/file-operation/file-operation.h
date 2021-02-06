@@ -298,6 +298,8 @@ public Q_SLOTS:
     virtual void cancel();
 
 protected:
+    void fileSync (QString srcFile, QString destFile);
+
     GCancellableWrapperPtr getCancellable() {
         return m_cancellable_wrapper;
     }
