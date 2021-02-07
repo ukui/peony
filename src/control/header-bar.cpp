@@ -617,6 +617,14 @@ bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
                 //m_max_or_restore->setToolTip(tr("Maximize"));
             }
         }
+        //fix double click space window has no change issue, bug#38499
+        else if (e->type() == QEvent::MouseButtonDblClick)
+        {
+            if (window->isMaximized())
+                window->showNormal();
+            else
+                window->showMaximized();
+        }
         return false;
     } else {
         if (e->type() == QEvent::MouseMove) {
