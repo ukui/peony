@@ -419,7 +419,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto current_dir = g_get_current_dir();
             QDir currentDir = QDir(current_dir);
             g_free(current_dir);
-            currentDir.cd(path);
+            //currentDir.cd(path);
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
