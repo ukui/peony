@@ -325,7 +325,7 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
         if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
             auto dirInfo = FileInfo::fromUri(m_current_uri);
-            if (dirInfo.get()->isEmptyInfo()) {
+            if (dirInfo.get()->isEmptyInfo() && !dirInfo.get()->uri().startsWith("search://")) {
                 goBack();
                 if (!m_forward_list.isEmpty())
                     m_forward_list.takeFirst();
