@@ -52,7 +52,7 @@ p, li { white-space: pre-wrap; }
         <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="118"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -142,12 +142,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="666"/>
+        <location filename="../../src/control/header-bar.cpp" line="674"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="678"/>
+        <location filename="../../src/control/header-bar.cpp" line="686"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="699"/>
+        <location filename="../../src/control/header-bar.cpp" line="707"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -172,22 +172,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="315"/>
+        <location filename="../../src/windows/main-window.cpp" line="318"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="322"/>
+        <location filename="../../src/windows/main-window.cpp" line="325"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1468"/>
+        <location filename="../../src/windows/main-window.cpp" line="1473"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1469"/>
+        <location filename="../../src/windows/main-window.cpp" line="1474"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -196,12 +196,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1458"/>
+        <location filename="../../src/windows/main-window.cpp" line="1463"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1459"/>
+        <location filename="../../src/windows/main-window.cpp" line="1464"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="699"/>
+        <location filename="../../src/windows/main-window.cpp" line="702"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -222,9 +222,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">所有标记...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
         <source>Open In &amp;New Window</source>
-        <translation>在新窗口中打开(&amp;N)</translation>
+        <translation type="vanished">在新窗口中打开(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
+        <source>Open In New Window test</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>
@@ -235,7 +239,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="355"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="364"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -530,37 +534,37 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="191"/>
+        <location filename="../../src/control/tab-widget.cpp" line="192"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="195"/>
+        <location filename="../../src/control/tab-widget.cpp" line="196"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="199"/>
+        <location filename="../../src/control/tab-widget.cpp" line="200"/>
         <source>Recover</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="284"/>
+        <location filename="../../src/control/tab-widget.cpp" line="285"/>
         <source>Close advance search.</source>
         <translation>关闭高级搜索。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="292"/>
+        <location filename="../../src/control/tab-widget.cpp" line="293"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="301"/>
+        <location filename="../../src/control/tab-widget.cpp" line="302"/>
         <source>Choose other path to search.</source>
         <translation>选择其他搜索路径。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="310"/>
+        <location filename="../../src/control/tab-widget.cpp" line="311"/>
         <source>Search recursively</source>
         <translation>递归搜索</translation>
     </message>
@@ -573,18 +577,18 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="383"/>
+        <location filename="../../src/control/tab-widget.cpp" line="384"/>
         <source>Select path</source>
         <translation>选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="418"/>
-        <location filename="../../src/control/tab-widget.cpp" line="507"/>
+        <location filename="../../src/control/tab-widget.cpp" line="419"/>
+        <location filename="../../src/control/tab-widget.cpp" line="508"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="436"/>
+        <location filename="../../src/control/tab-widget.cpp" line="437"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -593,8 +597,8 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="473"/>
-        <location filename="../../src/control/tab-widget.cpp" line="494"/>
+        <location filename="../../src/control/tab-widget.cpp" line="474"/>
+        <location filename="../../src/control/tab-widget.cpp" line="495"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>
