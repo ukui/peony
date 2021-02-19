@@ -44,6 +44,8 @@
 #include "file-watcher.h"
 #include "audio-play-manager.h"
 
+#include "properties-window.h"
+
 #include <QVector4D>
 
 #include <QDebug>
@@ -111,6 +113,37 @@ bool FileOperationManager::isAllowParallel()
 
 void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
 {
+    auto operationInfo = operation->getOperationInfo();
+
+    if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
+        auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
+        if (value.isValid()) {
+            if (value.toBool() == false) {
+                goto start;
+            }
+        }
+        // check dialog
+        QMessageBox questionBox;
+        questionBox.addButton(QMessageBox::Yes);
+        questionBox.addButton(QMessageBox::No);
+        questionBox.addButton(tr("No, go to settings"), QMessageBox::ActionRole);
+        questionBox.setText(tr("Do you want to put selected %1 item(s) into trash?").arg(operationInfo.get()->sources().count()));
+        auto result = questionBox.exec();
+
+        if (result != QMessageBox::Yes) {
+            if (result != QMessageBox::No) {
+                // settings
+                QStringList uris;
+                uris<<"trash:///";
+                auto propertyWindow = new PropertiesWindow(uris);
+                propertyWindow->show();
+            }
+            return;
+        }
+    }
+
+start:
+
     QApplication::setQuitOnLastWindowClosed(false);
 
     connect(operation, &FileOperation::operationFinished, this, [=]() {
@@ -131,7 +164,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         });
     }, Qt::BlockingQueuedConnection);
 
-    auto operationInfo = operation->getOperationInfo();
+
 
     bool allowParallel = m_allow_parallel;
 

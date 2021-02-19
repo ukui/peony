@@ -25,11 +25,14 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-utils.h"
+#include "global-settings.h"
 #include <QFormLayout>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
 #include <QUrl>
+
+#include <QCheckBox>
 
 using namespace Peony;
 //460 - 16 - 16 = 428
@@ -87,7 +90,17 @@ void RecentAndTrashPropertiesPage::init()
 
     if (startWithTrash) {
         if (m_uri == "trash:///") {
-
+            auto checkbox = new QCheckBox(tr("Show confirm dialog while trashing: "));
+            m_layout->addWidget(checkbox);
+            connect(checkbox, &QCheckBox::toggled, this, [=](bool checked){
+                this->setProperty("check", checked);
+            });
+            auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
+            if (value.isValid()) {
+                checkbox->setChecked(value.toBool());
+            } else {
+                checkbox->setChecked(true);
+            }
         } else {
             QLabel *label =new QLabel(this);
             QFuture<void> future = QtConcurrent::run([=]() {
@@ -157,5 +170,6 @@ void RecentAndTrashPropertiesPage::addSeparator()
 
 void RecentAndTrashPropertiesPage::saveAllChange()
 {
-
+    bool check = this->property("check").toBool();
+    GlobalSettings::getInstance()->setValue("showTrashDialog", check);
 }
