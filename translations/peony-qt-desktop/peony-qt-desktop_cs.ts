@@ -185,6 +185,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="503"/>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="509"/>
         <source>Refresh</source>
         <translation type="unfinished"></translation>
@@ -239,11 +244,6 @@
     <message>
         <source>&amp;Rename</source>
         <translation type="vanished">Yeniden Adlandır</translation>
-    </message>
-    <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="503"/>
-        <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Properties</source>

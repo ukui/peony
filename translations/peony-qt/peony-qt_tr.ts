@@ -210,13 +210,9 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <source>Open In &amp;New Window</source>
-        <translation type="obsolete">Yeni Pencerede Aç</translation>
-    </message>
-    <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
-        <source>Open In New Window test</source>
-        <translation type="unfinished"></translation>
+        <source>Open In &amp;New Window</source>
+        <translation type="unfinished">Yeni Pencerede Aç</translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>

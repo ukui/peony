@@ -261,6 +261,11 @@
         <translation>重命名</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="503"/>
+        <source>Paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="509"/>
         <source>Refresh</source>
         <translation>刷新</translation>
@@ -329,9 +334,8 @@
         <translation type="vanished">重命名(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="503"/>
         <source>&amp;Paste</source>
-        <translation>粘贴(&amp;P)</translation>
+        <translation type="vanished">粘贴(&amp;P)</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
