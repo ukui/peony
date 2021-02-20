@@ -278,7 +278,7 @@ void TabWidget::initAdvanceSearch()
     m_search_bar_layout = search;
     QToolBar *searchButtons = new QToolBar(this);
     m_search_bar = searchButtons;
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "", searchButtons);
+    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("window-close-symbolic"), "", searchButtons);
     m_search_close = closeButton;
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
