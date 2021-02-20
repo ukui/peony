@@ -1,5 +1,6 @@
 #include "primary-manager.h"
 #include <QDebug>
+#include <QTimer>
 
 #define DBUS_NAME       "org.ukui.SettingsDaemon"
 #define DBUS_PATH       "/org/ukui/SettingsDaemon/xrandr"
@@ -78,5 +79,9 @@ QString PrimaryManager::getScreenName(QString methodName)
 void PrimaryManager::priScreenChanged(int x, int y, int width, int height)
 {
     Q_EMIT this->priScreenChangedSignal(x, y, width, height);
+    // re-check
+    QTimer::singleShot(500, this, [=](){
+        Q_EMIT this->priScreenChangedSignal(x, y, width, height);
+    });
     qDebug("primary screen  changed, geometry is  x=%d, y=%d, windth=%d, height=%d", x, y, width, height);
 }
