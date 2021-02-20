@@ -30,6 +30,8 @@
 
 #include "desktop-icon-view.h"
 
+#include "primary-manager.h"
+
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QTimer>
@@ -172,6 +174,27 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
+
+    // check ukui wayland session, monitor ukui settings daemon dbus
+    if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
+        auto screensMonitor = new PrimaryManager;
+        connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+            for (auto screen : this->screens()) {
+                if (screen->geometry() == QRect(x, y, width, height))
+                    Q_EMIT this->primaryScreenChanged(screen);
+            }
+        });
+        screensMonitor->start();
+        // init
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        for (auto screen : this->screens()) {
+            if (screen->geometry() == QRect(x, y, width, height))
+                Q_EMIT this->primaryScreenChanged(screen);
+        }
+    }
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
