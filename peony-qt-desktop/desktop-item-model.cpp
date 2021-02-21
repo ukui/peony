@@ -119,11 +119,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher->setMonitorChildrenChange(true);
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
-        if (uri.endsWith(".desktop")) {
-            QTime dieTime = QTime::currentTime().addMSecs(7);
-            while( QTime::currentTime() < dieTime)
-                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-        }
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri, true);
