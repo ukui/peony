@@ -159,7 +159,8 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             //QMessageBox::warning(nullptr, "filter", item->m_info->displayName());
             //qDebug()<<item->m_info->displayName();
             if (item->m_info->displayName() != nullptr) {
-                if (item->m_info->displayName().at(0) == '.')
+                if (item->m_info->displayName().at(0) == '.'
+                        || "folder-templates" == item->m_info->iconName())
                     //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
                     return false;
             }
