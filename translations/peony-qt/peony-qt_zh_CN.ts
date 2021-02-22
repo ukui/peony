@@ -222,13 +222,9 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">所有标记...</translation>
     </message>
     <message>
-        <source>Open In &amp;New Window</source>
-        <translation type="vanished">在新窗口中打开(&amp;N)</translation>
-    </message>
-    <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
-        <source>Open In New Window test</source>
-        <translation type="unfinished"></translation>
+        <source>Open In &amp;New Window</source>
+        <translation>在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>

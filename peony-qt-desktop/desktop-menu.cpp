@@ -500,7 +500,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             }
         }
     } else {
-        auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
+        auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
         l<<pasteAction;
         pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
         connect(l.last(), &QAction::triggered, [=]() {

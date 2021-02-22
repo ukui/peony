@@ -195,7 +195,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
-        <source>Open In New Window test</source>
+        <source>Open In &amp;New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
