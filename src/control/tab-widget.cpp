@@ -52,6 +52,7 @@
 #include "directory-view-factory-manager.h"
 #include "global-settings.h"
 #include "main-window.h"
+#include "volume-manager.h"
 
 #include "file-info-job.h"
 
@@ -275,7 +276,7 @@ void TabWidget::initAdvanceSearch()
     m_search_bar_layout = search;
     QToolBar *searchButtons = new QToolBar(this);
     m_search_bar = searchButtons;
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "", searchButtons);
+    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("window-close-symbolic"), "", searchButtons);
     m_search_close = closeButton;
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
@@ -943,6 +944,17 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 void TabWidget::updateTabPageTitle()
 {
     qDebug() << "updateTabPageTitle:" <<getCurrentUri();
+    //fix error for glib2 signal: G_FILE_MONITOR_EVENT_DELETED
+    if("trash:///" == getCurrentUri()){
+        Peony::VolumeManager* vm = Peony::VolumeManager::getInstance();
+        connect(vm,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+            refresh();
+        });
+        connect(vm,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+            refresh();
+        });
+    }
+
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
     updateTrashBarVisible(getCurrentUri());
 }

@@ -92,6 +92,7 @@ public:
                       int row, int column, const QModelIndex &parent) override;
 
     Qt::DropActions supportedDropActions() const override;
+    Qt::DropActions supportedDragActions() const override;
 
 Q_SIGNALS:
     void indexUpdated(const QModelIndex &index);

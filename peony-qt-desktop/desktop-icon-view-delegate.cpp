@@ -406,14 +406,13 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
         return;
     auto newName = edit->toPlainText();
     auto oldName = index.data(Qt::DisplayRole).toString();
-    QFileInfo info(index.data().toUrl().path());
-    auto suffix = "." + info.suffix();
     if (newName.isNull())
         return;
     //process special name . or .. or only space
     if (newName == "." || newName == ".." || newName.trimmed() == "" || newName.contains("\\"))
         newName = "";
-    if (newName.length() >0 && newName != oldName && newName != suffix) {
+    //comment new name != suffix check to fix feedback issue
+    if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
         getView()->setRenaming(true);

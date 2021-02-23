@@ -115,34 +115,14 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     return info.get()->isDir();
-    if (!info.get()->isEmptyInfo()) {
-        return info.get()->isDir();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    GFileType type = g_file_query_file_type(file.get()->get(),
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            nullptr);
-    return type == G_FILE_TYPE_DIRECTORY;
 }
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     return info.get()->isSymbolLink();
-    if (!info.get()->isEmptyInfo()) {
-        return info.get()->isSymbolLink();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    GFileType type = g_file_query_file_type(file.get()->get(),
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            nullptr);
-    return type == G_FILE_TYPE_SYMBOLIC_LINK;
 }
 
 QStringList FileUtils::getChildrenUris(const QString &directoryUri)
@@ -217,22 +197,8 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->displayName();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->displayName();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
-                              G_FILE_QUERY_INFO_NONE,
-                              nullptr,
-                              nullptr));
-    if (!info.get()->get())
-        return nullptr;
-    return g_file_info_get_display_name(info.get()->get());
 }
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
@@ -303,21 +269,8 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->targetUri();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->targetUri();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                              G_FILE_QUERY_INFO_NONE,
-                              nullptr,
-                              nullptr));
-    return g_file_info_get_attribute_string(info.get()->get(),
-                                            G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
 
 
@@ -332,26 +285,8 @@ QString FileUtils::getEncodedUri(const QString &uri)
 
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->symlinkTarget();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->symlinkTarget();
-    }
-
-    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
-    GFileInfo *info = g_file_query_info(file,
-                                        G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        nullptr,
-                                        nullptr);
-    g_object_unref(file);
-    if (info) {
-        return g_file_info_get_symlink_target(info);
-        g_object_unref(info);
-    }
-
-    return uri;
 }
 
 bool FileUtils::isMountPoint(const QString &uri)
@@ -484,7 +419,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto current_dir = g_get_current_dir();
             QDir currentDir = QDir(current_dir);
             g_free(current_dir);
-            currentDir.cd(path);
+            //currentDir.cd(path);
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);

@@ -699,6 +699,11 @@ bool FileItem::shouldShow()
     if("computer:///root.link" == uri)
         return true;
 
+    //non computer path, no need check
+    //to fix sftp IO stuck issue
+    if (! uri.startsWith("computer:///"))
+        return true;
+
     unixDevice = FileUtils::getUnixDevice(uri);
     displayName = FileUtils::getFileDisplayName(uri);
 

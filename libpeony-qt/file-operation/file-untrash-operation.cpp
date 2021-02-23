@@ -234,11 +234,10 @@ int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
     return ret;
 }
 
-int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &parentPath)
+int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &destPath)
 {
     int ret = 0;
     QString srcFile = fileNode->uri();
-    QString destPath = parentPath + '/' + fileNode->baseName();
 
     if (fileNode->isFolder()) {
         if (!FileUtils::isFileExsit(destPath)){
@@ -314,13 +313,24 @@ int FileUntrashOperation::untrashFileOverWrite(QString &uri)
 
     //1、通过树形结构，构建目录下的节点（文件和目录）
     FileNode *node = new FileNode(uri, nullptr, nullptr);
-    node->findChildrenRecursively();
 
-    QString originParentPath = m_restore_hash.value(uri);
+    if (node->isFolder()) {
+        node->findChildrenRecursively();
 
-    //2、对node的树形结构进行递归遍历处理
-    for (auto child : *(node->children())) {
-        ret = moveRecursively(child, originParentPath);
+        QString originParentPath = m_restore_hash.value(uri) ;
+
+        //2、对node的树形结构进行递归遍历处理
+        for (auto child : *(node->children())) {
+            QString destPath = originParentPath + '/' + child->baseName();
+            ret = moveRecursively(child, destPath);
+            if (ret < 0)
+            {
+                goto l_free;
+            }
+        }
+    } else {
+        QString originParentPath = m_restore_hash.value(uri);
+        ret = moveRecursively(node, originParentPath);
         if (ret < 0)
         {
             goto l_free;
@@ -371,11 +381,9 @@ retry:
         }
 
         if (err) {
-
             FileOperationError except;
             ExceptionResponse type = prehandle(err);
-            if (Other == type)
-            {
+            if (Other == type) {
                 untrashFileErrDlg(except, uri, originUri, err);
                 type = except.respCode;
             }

@@ -44,7 +44,10 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
             else
             {
                 if(--m_times==0)
+                {
                     timer->stop();
+                    qWarning()<<"stop finding user-dirs.dirs";
+                }
             }
         });
         timer->start(1000);
@@ -66,7 +69,8 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         if(uri == path0)
         {
             getUserdir();
-            moveFile();
+            Q_EMIT desktopDirChanged();
+//                moveFile();
         }
         //peony-qt-preferences  only thumbnail setting for now.
         else if(uri == path1)

@@ -289,10 +289,11 @@ void DesktopWindow::initGSettings() {
                 }
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
-                if (getAccountBackground() != m_current_bg_path)
-                {
+                //comment to fix name not change but file changed issue
+//                if (getAccountBackground() != m_current_bg_path)
+//                {
                     setAccountBackground();
-                }
+//                }
                 return;
             }
 
@@ -627,9 +628,13 @@ void DesktopWindow::setBg(const QColor &color) {
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {
-    if (m_bg_settings) {
-        m_bg_settings->set(PICTRUE, bgPath);
-    } else {
+    if (m_bg_settings)
+    {
+        //add same path check to break endless call
+        if (m_bg_settings->get(PICTRUE).isNull() || m_bg_settings->get(PICTRUE) != bgPath)
+            m_bg_settings->set(PICTRUE, bgPath);
+    }
+    else{
         m_backup_setttings->setValue("pictrue", bgPath);
         m_backup_setttings->sync();
         Q_EMIT this->changeBg(bgPath);

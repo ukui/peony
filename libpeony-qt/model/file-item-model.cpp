@@ -443,6 +443,11 @@ Qt::DropActions FileItemModel::supportedDropActions() const
     return Qt::MoveAction|Qt::CopyAction;
 }
 
+Qt::DropActions FileItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
+}
+
 bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     qDebug()<<"drop mime data";

@@ -195,6 +195,8 @@ protected:
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
 
+    void startDrag(Qt::DropActions supportedActions);
+
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *e);
@@ -247,6 +249,8 @@ private:
     QMap<QScreen*, bool> m_screens;
     PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
+
+    QPoint m_press_pos;
 };
 
 }

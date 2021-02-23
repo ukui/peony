@@ -29,11 +29,15 @@
 #include <QtConcurrent>
 #include <QHeaderView>
 #include <QHBoxLayout>
-#include <QImage>
 #include <QImageReader>
 #include <QtNetwork/QHostInfo>
+#include "global-settings.h"
 
 using namespace Peony;
+
+#define FIXED_LABEL_WIDTH 150
+//460 - 150 - 22 - 22 =
+#define FIXED_CONTENT_WIDTH 266
 
 DetailsPropertiesPage::DetailsPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
@@ -82,7 +86,7 @@ QWidget *DetailsPropertiesPage::createTableRow(QString labelText, QLabel *conten
     boxLayout->setMargin(0);
     row->setLayout(boxLayout);
 
-    QLabel *label1 = this->createFixedLabel(150,0,labelText,row);
+    QLabel *label1 = this->createFixedLabel(FIXED_LABEL_WIDTH,0,labelText,row);
     label1->setContentsMargins(22,0,0,0);
 
     boxLayout->addWidget(label1);
@@ -99,7 +103,7 @@ QWidget *DetailsPropertiesPage::createTableRow(QString labelText, QString conten
     boxLayout->setMargin(0);
 
     row->setLayout(boxLayout);
-    QLabel *label1 = this->createFixedLabel(150,0,labelText,row);
+    QLabel *label1 = this->createFixedLabel(FIXED_LABEL_WIDTH,0,labelText,row);
     label1->setContentsMargins(22,0,0,0);
 
     boxLayout->addWidget(label1);
@@ -154,7 +158,8 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
         return;
 
     //name
-    this->addRow(tr("Name:"),m_fileInfo->displayName());
+    QString fileName =  m_tableWidget->fontMetrics().elidedText(m_fileInfo->displayName(), Qt::ElideMiddle,FIXED_CONTENT_WIDTH);
+    this->addRow(tr("Name:"),fileName);
 
     //type
     this->addRow(tr("File type:"),m_fileInfo->fileType());
@@ -164,21 +169,9 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     QString location = url.toDisplayString();
     if (location.startsWith("file://"))
         location = location.split("file://").last();
-    this->addRow(tr("Location:"),location);
+    location =  m_tableWidget->fontMetrics().elidedText(location, Qt::ElideMiddle,FIXED_CONTENT_WIDTH);
 
-    //default format
-    this->setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
-    // set time
-//    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, [=] (QString key) {
-//        if ("12" == key) {
-//            // 12 小时制时间
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
-//        } else if ("24" == key) {
-//            // 24 小时制时间hh:mm:ss
-//            this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
-//        }
-//        this->updateFileInfo(m_fileInfo.get()->uri());
-//    });
+    this->addRow(tr("Location:"),location);
 
     //createTime
     m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
@@ -187,6 +180,20 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     //modifiedTime
     m_modifyDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
     this->addRow(tr("Modify time:"),m_modifyDateLabel);
+
+    //default format
+    this->setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+    // set time
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME == key) {
+            if ("12" == GlobalSettings::getInstance()->getValue(key)) {
+                setSystemTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
+            } else if ("24" == GlobalSettings::getInstance()->getValue(key)) {
+                setSystemTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+            }
+            updateFileInfo(m_fileInfo.get()->uri());
+        }
+    });
 
     //size
     this->addRow(tr("File size:"),m_fileInfo->fileSize());
@@ -205,7 +212,6 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
 //        this->addRow(tr("Depth:"),m_imageDepthLabel);
     }
 
-    m_fileInfo;
     m_ownerLabel = this->createFixedLabel(0,0,tr("Owner"),m_tableWidget);
     this->addRow(tr("Owner:"), m_ownerLabel);
 

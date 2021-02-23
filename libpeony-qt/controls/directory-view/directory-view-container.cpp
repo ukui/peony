@@ -70,6 +70,15 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
         refresh();
     });
+
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+           qDebug() << "panel settings changed:" <<key;
+           if (getView()->viewId() == "List View" && (key == "date" || key == "hoursystem"))
+              refresh();
+        });
+    }
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -315,9 +324,10 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
         if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
             auto dirInfo = FileInfo::fromUri(m_current_uri);
-            if (dirInfo.get()->isEmptyInfo()) {
+            if (dirInfo.get()->isEmptyInfo() && !dirInfo.get()->uri().startsWith("search://")) {
                 goBack();
-                m_forward_list.takeFirst();
+                if (!m_forward_list.isEmpty())
+                    m_forward_list.takeFirst();
             } else {
                 Q_EMIT this->directoryChanged();
             }
@@ -372,7 +382,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
-        if (selections.count() == 1) {
+        bool hasStandardPath = FileUtils::containsStandardPath(selections);
+        if (selections.count() == 1 && !hasStandardPath) {
             m_view->editUri(selections.first());
         }
     });

@@ -24,7 +24,7 @@
 #include "file-utils.h"
 #include "file-info.h"
 #include "file-info-job.h"
-
+#include <QStandardPaths>
 #include "file-launch-action.h"
 
 #include <gio/gdesktopappinfo.h>
@@ -59,9 +59,35 @@ FileLaunchAction *FileLaunchManager::getDefaultAction(const QString &uri)
         g_object_unref(info);
         return action;
     } else {
-        GAppInfo *info = g_app_info_get_default_for_type(mimeType.toUtf8().constData(), false);
+        GError *error = NULL;
+        GAppInfo *info  = NULL;
+        /*
+        * g_app_info_get_default_for_type function get wrong default app, so we get the
+        * default app info from mimeapps.list, and chose the right default app for mimeType file
+        */
+        QString mimeAppsListPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+           + "/.config/mimeapps.list";
+        GKeyFile *keyfile = g_key_file_new ();
+        gboolean ret = g_key_file_load_from_file (keyfile, mimeAppsListPath.toUtf8(), G_KEY_FILE_NONE, &error);
+        if (false == ret) {
+            qWarning()<<"load mimeapps list error msg"<<error->message;
+            info = g_app_info_get_default_for_type(mimeType.toUtf8().constData(), false);
+            g_error_free(error);
+        } else {
+            gchar *desktopApp = g_key_file_get_string (keyfile, "Default Applications", mimeType.toUtf8(), &error);
+            if (NULL != desktopApp) {
+                info = (GAppInfo*)g_desktop_app_info_new(desktopApp);
+                g_free (desktopApp);
+            } else {
+                info = g_app_info_get_default_for_type(mimeType.toUtf8().constData(), false);
+            }
+        }
+
+        g_key_file_free (keyfile);
+
         FileLaunchAction *action = new FileLaunchAction(uri, info);
         g_object_unref(info);
+
         return action;
     }
 }
@@ -198,7 +224,13 @@ void FileLaunchManager::setDefaultLauchAction(const QString &uri, FileLaunchActi
         FileInfoJob job(info);
         job.querySync();
     }
-    g_app_info_set_as_default_for_type(action->gAppInfo(),
+
+    GError *err = nullptr;
+    bool ret = g_app_info_set_as_default_for_type(action->gAppInfo(),
                                        info->mimeType().toUtf8(),
-                                       nullptr);
+                                       &err);
+    if (false == ret) {
+        qDebug()<<"set default app failed, err code" <<err->code <<"err msg"<< err->message;
+        g_error_free(err);
+    }
 }

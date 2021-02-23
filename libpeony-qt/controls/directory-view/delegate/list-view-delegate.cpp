@@ -39,6 +39,7 @@
 #include <QPainter>
 #include <QItemDelegate>
 #include <QHeaderView>
+#include <file-label-model.h>
 
 #include <QApplication>
 
@@ -69,17 +70,26 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
-            int offset = 0;
-            for (auto color : colors) {
+            int xoffset = 0;
+            int yoffset = 3;
+            int index = 0;
+            int startIndex = (colors.count() > 6 ? colors.count() - 6 : 0);
+
+            for (int i = startIndex; i < colors.count(); ++i, ++index) {
+                auto color = colors.at(i);
+                if (index == 3) {
+                    xoffset += 11;
+                    yoffset = 3;
+                }
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
                 painter->translate(2, 2);
                 painter->setPen(opt.palette.highlightedText().color());
                 painter->setBrush(color);
-                painter->drawEllipse(QRectF(offset, 0, 10, 10));
+                painter->drawEllipse(QRectF(xoffset, yoffset, 10, 10));
                 painter->restore();
-                offset += 10;
+                yoffset += 10;
             }
         }
     }
@@ -238,10 +248,11 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QMod
 {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-    auto colors = info->getColors();
+//    auto colors = info->getColors();
     //fix color labels over 2 will overlap with item issue
-    if (colors.count() >2)
-        size.setHeight( size.height() + 20);
+
+//    if (FileLabelModel::getGlobalModel()->getFileColors(index.data(Qt::UserRole).toString()).count() >2)
+//    size.setHeight( size.height() + 20);
     return size;
 }
 

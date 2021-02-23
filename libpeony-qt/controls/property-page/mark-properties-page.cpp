@@ -28,12 +28,18 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QUrl>
 
 using namespace Peony;
 
 MarkPropertiesPage::MarkPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     this->m_uri = uri;
+    //note:请查看：BasicPropertiesPage::getFIleInfo(QString uri) - Look BasicPropertiesPage::getFIleInfo(QString uri)
+    if (uri.startsWith("favorite://")) {
+        QUrl url(uri);
+        m_uri = "file://" + url.path();
+    }
 
     this->m_layout = new QVBoxLayout(this);
     //表格自带一部分高度，所以手动删减一部分
@@ -96,13 +102,24 @@ void MarkPropertiesPage::initTableData()
 
     int rowCount = (allLabels.count()%2 == 0 ? allLabels.count()/2 : allLabels.count()/2 + 1);
     m_tableWidget->setRowCount(rowCount);
+    int totalLabel = allLabels.count()%2 ? allLabels.count()+1 : allLabels.count();
 
-    for (int i = 0; i < allLabels.count(); i++) {
-        auto item = allLabels.at(i);
+    for (int i = 0; i < totalLabel; i++) {
         QWidget *widget = new QWidget(m_tableWidget);
         QHBoxLayout *boxLayout = new QHBoxLayout(m_tableWidget);
         boxLayout->setAlignment(Qt::AlignLeft);
         widget->setLayout(boxLayout);
+        //fix last single box can input letters issue, bug#38757
+        if (i >= allLabels.count())
+        {
+            QLabel *label = new QLabel(widget);
+            label->setText("");
+            boxLayout->addWidget(label);
+            m_tableWidget->setCellWidget(i/2,i%2,widget);
+            continue;
+        }
+
+        auto item = allLabels.at(i);
 
         QCheckBox *checkBox = new QCheckBox(widget);
         checkBox->setChecked(m_thisFileLabelIds.contains(item->id()));

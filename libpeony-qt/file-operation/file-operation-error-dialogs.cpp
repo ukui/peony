@@ -70,7 +70,7 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
     // Then do the same thing
     m_sm_ck = new QCheckBox(this);
     m_sm_ck->setText(tr("Do the same"));
-    m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width, m_sm_btn_height);
+    m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width / 2, m_sm_btn_height);
 
     connect(m_sm_ck, &QCheckBox::stateChanged, this, [=](int chose) {
         switch (chose) {

@@ -404,5 +404,11 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
 Qt::DropActions SideBarModel::supportedDropActions() const
 {
+    return Qt::MoveAction|Qt::CopyAction;
     return Qt::MoveAction|Qt::CopyAction|Qt::LinkAction;
+}
+
+Qt::DropActions SideBarModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }
