@@ -299,6 +299,7 @@ public Q_SLOTS:
 
 protected:
     void fileSync (QString srcFile, QString destFile);
+    bool makeFileNameValidForDestFS (QString& srcPath, QString& destPath, QString* newFileName);
 
     GCancellableWrapperPtr getCancellable() {
         return m_cancellable_wrapper;
@@ -311,10 +312,10 @@ protected:
     void notifyFileWatcherOperationFinished();
 
 private:
-    GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
-    bool m_is_cancelled = false;
-    bool m_reversible = false;
-    bool m_has_error = false;
+    bool                        m_has_error = false;
+    bool                        m_reversible = false;
+    bool                        m_is_cancelled = false;
+    GCancellableWrapperPtr      m_cancellable_wrapper = nullptr;
 };
 
 }

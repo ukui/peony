@@ -173,6 +173,7 @@ void FileCopyOperation::copyRecursively(FileNode *node)
         return;
 
     node->setState(FileNode::Handling);
+    QString destName = "";
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
@@ -309,17 +310,30 @@ fallback_retry:
                     &err);
 
         if (err) {
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
-                return;
+            switch (err->code) {
+            case G_IO_ERROR_INVALID_FILENAME: {
+                QString newDestUri;
+                if (makeFileNameValidForDestFS(m_current_src_uri, m_dest_dir_uri, &newDestUri)) {
+                    if (newDestUri != destName) {
+                        destName = newDestUri;
+                        node->setDestFileName(newDestUri);
+                        goto fallback_retry;
+                    }
+                }
+                break;
             }
-            if (err->code == G_IO_ERROR_EXISTS) {
+            case G_IO_ERROR_CANCELLED:
+                return;
+            case G_IO_ERROR_EXISTS:
                 char* destFileName = g_file_get_uri(destFile.get()->get());
                 if (NULL != destFileName) {
                     m_conflict_files << destFileName;
                     g_free(destFileName);
                 }
+                break;
             }
+
+            FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
