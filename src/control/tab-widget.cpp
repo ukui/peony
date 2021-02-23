@@ -679,6 +679,22 @@ void TabWidget::updateButtons()
         m_remove_button_list[0]->setDisabled(true);
     else
         m_remove_button_list[0]->setDisabled(false);
+
+    //limit total number to 10
+    if (m_search_bar_count >= 10)
+    {
+        for(int i=0;i<m_search_bar_count;i++)
+        {
+            m_add_button_list[i]->setDisabled(true);
+        }
+    }
+    else
+    {
+        for(int i=0;i<m_search_bar_count;i++)
+        {
+            m_add_button_list[i]->setDisabled(false);
+        }
+    }
 }
 
 void TabWidget::updateSearchPathButton(const QString &uri)
