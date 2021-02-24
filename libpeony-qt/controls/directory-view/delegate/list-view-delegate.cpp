@@ -65,16 +65,17 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto colors = info->getColors();
             int xoffset = 0;
-            int yoffset = 3;
+            int yoffset = 0;
             int index = 0;
-            int startIndex = (colors.count() > 6 ? colors.count() - 6 : 0);
+            const int MAX_LABEL_NUM = 3;
+            int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
 
             for (int i = startIndex; i < colors.count(); ++i, ++index) {
                 auto color = colors.at(i);
-                if (index == 3) {
-                    xoffset += 11;
-                    yoffset = 3;
-                }
+//                if (index == 3) {
+//                    xoffset += 10/2;
+//                    yoffset = 3;
+//                }
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
@@ -83,7 +84,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 painter->setBrush(color);
                 painter->drawEllipse(QRectF(xoffset, yoffset, 10, 10));
                 painter->restore();
-                yoffset += 10;
+                yoffset += 10/2;
             }
         }
     }

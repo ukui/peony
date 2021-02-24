@@ -187,7 +187,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (!isDragging || !view->selectedIndexes().contains(index)) {
         auto colors = info->getColors();
         int offset = 0;
-        for (auto color : colors) {
+        const int MAX_LABEL_NUM = 3;
+        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+        for (int i = startIndex; i < colors.count(); ++i) {
+            auto color = colors.at(i);
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->translate(option.rect.topLeft());
@@ -196,7 +199,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             painter->setBrush(color);
             painter->drawEllipse(QRectF(offset, 0, 10, 10));
             painter->restore();
-            offset += 10;
+            offset += 10/2;
         }
     }
 
