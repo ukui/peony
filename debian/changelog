@@ -1,3 +1,12 @@
+peony (3.0.3-2+0224) v101; urgency=medium
+
+  * Fix: desktop file show with .desktop format #3719
+  * Fix: When the permissions are modified, they cannot take effect immediately. #33247
+  * Fix: hide the templete dir,so it can not be operated. #33221
+  * Fix: desktop file show with .desktop format. #37179
+
+ -- weinan1 <wangweinan@kylinos.cn>  Wed, 24 Feb 2021 09:29:31 +0800
+
 peony (3.0.3-2+0203) v101; urgency=medium
 
   * Fix: link file can not be opened ＃32657
@@ -5,7 +14,7 @@ peony (3.0.3-2+0203) v101; urgency=medium
   * Fix: adjust the order of music and download in side bar #34510
   * Fix: icons in desktop is stacked #32870
 
- -- weinan1 <wangweinan@kylinos.cn>  Wed, 27 Feb 2021 09:29:31 +0800
+ -- weinan1 <wangweinan@kylinos.cn>  Wed, 03 Feb 2021 09:29:31 +0800
 
 peony (3.0.3-2+0127) v101; urgency=medium
 
