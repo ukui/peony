@@ -53,9 +53,13 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
-        m_bar->setRootUri(uri);
+        //qDebug() << "uriChangeRequest:" <<uri;
+        QString targetUri = uri;
+        if (targetUri.endsWith("/") && targetUri != "file:///")
+            targetUri = targetUri.left(targetUri.lastIndexOf("/"));
+        m_bar->setRootUri(targetUri);
         layout->setCurrentWidget(m_bar);
-        Q_EMIT this->updateWindowLocationRequest(uri);
+        Q_EMIT this->updateWindowLocationRequest(targetUri);
         m_text = m_edit->text();
         if (! m_text.startsWith("search://"))
             m_last_non_search_path = m_text;
