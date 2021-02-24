@@ -211,7 +211,9 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
              <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
-DesktopWindow::~DesktopWindow() {}
+DesktopWindow::~DesktopWindow() {
+    setCentralWidget(nullptr);
+}
 
 void DesktopWindow::initGSettings() {
     qDebug() <<"DesktopWindow initGSettings";

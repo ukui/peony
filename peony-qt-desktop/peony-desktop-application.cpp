@@ -64,6 +64,7 @@
 static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
+static PrimaryManager *screensMonitor = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
@@ -177,7 +178,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
     // check ukui wayland session, monitor ukui settings daemon dbus
     if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
-        auto screensMonitor = new PrimaryManager;
+        screensMonitor = new PrimaryManager;
         connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
             for (auto screen : this->screens()) {
                 if (screen->geometry() == QRect(x, y, width, height))
@@ -469,7 +470,32 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
         {
             qDebug()<<"remove window";
             m_window_list.removeOne(win);
+            win->setCentralWidget(nullptr);
             win->deleteLater();
+        }
+
+        // check if there is primary screen
+        bool hasPrimaryScreen = false;
+        if (!getIconView()->parentWidget()) {
+            // init
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            screensMonitor->deleteLater();
+            for (auto screen : this->screens()) {
+                if (screen->geometry() == QRect(x, y, width, height)) {
+                    hasPrimaryScreen = true;
+                    Q_EMIT this->primaryScreenChanged(screen);
+                }
+            }
+        }
+
+        // check again
+        if (!hasPrimaryScreen) {
+            if (!m_window_list.isEmpty()) {
+                Q_EMIT this->primaryScreenChanged(m_window_list.first()->getScreen());
+            }
         }
     }
 }
