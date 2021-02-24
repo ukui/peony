@@ -90,7 +90,7 @@ void RecentAndTrashPropertiesPage::init()
 
     if (startWithTrash) {
         if (m_uri == "trash:///") {
-            auto checkbox = new QCheckBox(tr("Show confirm dialog while trashing: "));
+            auto checkbox = new QCheckBox(tr("Show confirm dialog while trashing."));
             m_layout->addWidget(checkbox);
             connect(checkbox, &QCheckBox::toggled, this, [=](bool checked){
                 this->setProperty("check", checked);

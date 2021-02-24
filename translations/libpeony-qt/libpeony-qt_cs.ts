@@ -444,7 +444,7 @@
 <context>
     <name>Peony::AdvancedLocationBar</name>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="162"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/advanced-location-bar.cpp" line="166"/>
         <source>Search Content...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1380,8 +1380,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Dosya kopyalama</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="207"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="327"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="208"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="341"/>
         <source>File copy error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1656,22 +1656,22 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="215"/>
         <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="335"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="633"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="634"/>
         <source>Move file error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="765"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="779"/>
         <source>Create file error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="987"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1001"/>
         <source>Invalid Operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1002"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1016"/>
         <source>File delete error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1680,7 +1680,7 @@ Do you want to delete the link file?</source>
         <translation type="obsolete">Dosya silme</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1004"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1018"/>
         <source>Invalid Operation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2407,7 +2407,7 @@ Do you want to delete the link file?</source>
     <name>Peony::RecentAndTrashPropertiesPage</name>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="93"/>
-        <source>Show confirm dialog while trashing: </source>
+        <source>Show confirm dialog while trashing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2994,6 +2994,12 @@ Do you want to unmount forcely?</source>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="631"/>
         <source>Unable to eject %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="649"/>
+        <location filename="../../libpeony-qt/sync-thread.cpp" line="29"/>
+        <source>PeonyNotify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

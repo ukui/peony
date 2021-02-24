@@ -274,7 +274,7 @@
         <translation type="vanished">Masaüstünü kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="125"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="127"/>
         <source>peony-qt-desktop</source>
         <translation>Masaüstü</translation>
     </message>
@@ -287,17 +287,17 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="250"/>
         <source>Close the peony desktop window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="230"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="253"/>
         <source>Take over the dbus service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="233"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="256"/>
         <source>Take over the desktop displaying</source>
         <translation type="unfinished"></translation>
     </message>

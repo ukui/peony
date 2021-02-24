@@ -646,7 +646,7 @@ void notifyUser(QString notifyContent)
 {
     NotifyNotification* notify;
 
-    notify_init("PeonyNotify");
+    notify_init(QObject::tr("PeonyNotify").toUtf8().constData());
     notify  = notify_notification_new(QObject::tr("File Manager").toUtf8().constData(),
                                       notifyContent.toUtf8().constData(),
                                       "system-file-manager");
