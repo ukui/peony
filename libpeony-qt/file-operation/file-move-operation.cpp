@@ -609,6 +609,7 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     m_current_dest_dir_uri = dest_dir_uri;
     g_free(dest_dir_uri);
     g_object_unref(dest_parent);
+    QString destName = "";
 
 fallback_retry:
     if (node->isFolder()) {
@@ -751,10 +752,23 @@ fallback_retry:
 
         if (err) {
             setHasError(true);
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
+            switch (err->code) {
+            case G_IO_ERROR_CANCELLED:
                 return;
+            case G_IO_ERROR_INVALID_FILENAME: {
+                QString newDestUri;
+                if (makeFileNameValidForDestFS(m_current_src_uri, m_dest_dir_uri, &newDestUri)) {
+                    if (newDestUri != destName) {
+                        destName = newDestUri;
+                        node->setDestFileName(newDestUri);
+                        goto fallback_retry;
+                    }
+                }
+                break;
             }
+            }
+
+            FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.isCritical = true;

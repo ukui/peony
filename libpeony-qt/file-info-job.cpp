@@ -45,6 +45,7 @@ FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObj
     //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 
     m_cancellable = g_cancellable_new();
+    m_fs_cancellable = g_cancellable_new();
 }
 
 FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
@@ -54,11 +55,13 @@ FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
     //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 
     m_cancellable = g_cancellable_new();
+    m_fs_cancellable = g_cancellable_new();
 }
 
 FileInfoJob::~FileInfoJob()
 {
     g_object_unref(m_cancellable);
+    g_object_unref(m_fs_cancellable);
 }
 
 void FileInfoJob::cancel()
@@ -67,6 +70,10 @@ void FileInfoJob::cancel()
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
+
+    g_cancellable_cancel(m_fs_cancellable);
+    g_object_unref(m_fs_cancellable);
+    m_fs_cancellable = g_cancellable_new();
 }
 
 bool FileInfoJob::querySync()
@@ -95,7 +102,18 @@ bool FileInfoJob::querySync()
         return false;
     }
 
+    auto _fs_info = g_file_query_filesystem_info(info->m_file, "filesystem::*,", m_fs_cancellable, &err);
+
+    if (err) {
+        qDebug()<<err->code<<err->message;
+        g_error_free(err);
+        if (m_auto_delete)
+            deleteLater();
+        return false;
+    }
+
     refreshInfoContents(_info);
+    refreshFileSystemInfo(_fs_info);
     g_object_unref(_info);
     if (m_auto_delete)
         deleteLater();
@@ -131,6 +149,21 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
     }
 
     return nullptr;
+}
+
+void FileInfoJob::refreshFileSystemInfo(GFileInfo *new_info)
+{
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    // fs type
+    m_info->m_fs_type = g_file_info_get_attribute_string (new_info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
+    Q_EMIT info->updated();
 }
 
 void FileInfoJob::queryAsync()

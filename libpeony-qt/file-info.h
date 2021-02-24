@@ -201,6 +201,11 @@ public:
     QString type() {
         return m_content_type;
     }
+
+    QString fileSystemType() {
+        return m_fs_type;
+    }
+
     quint64 size() {
         return m_size;
     }
@@ -372,6 +377,9 @@ private:
 
     QString m_target_uri;
     QString m_symlink_target;
+
+    // filesystem
+    QString m_fs_type;
 
     /*!
      * \brief m_cancellable

@@ -22,11 +22,16 @@
 
 #include <QApplication>
 #include <QProcess>
+#include <file-info-job.h>
+#include <file-info.h>
 
 #include "file-operation.h"
 #include "file-operation-manager.h"
 
 using namespace Peony;
+
+
+#define FAT_FORBIDDEN_CHARACTERS "/:*?\"<>\\|"
 
 FileOperation::FileOperation(QObject *parent) : QObject (parent)
 {
@@ -48,6 +53,24 @@ void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());
     m_is_cancelled = true;
+}
+
+bool FileOperation::makeFileNameValidForDestFS(QString &srcPath, QString &destPath, QString *newFileName)
+{
+    FileInfoJob fileInfoJob(destPath);
+    fileInfoJob.querySync();
+
+    QString srcFileName = srcPath.split("/").back();
+    *newFileName = srcFileName;
+    QString fsType = fileInfoJob.getInfo()->fileSystemType();
+
+    if ("fat" == fsType || "vfat" == fsType || "fuse" == fsType || "ntfs" == fsType || "msdos" == fsType || "msdosfs" == fsType) {
+        for (size_t i = 0; i < strlen(FAT_FORBIDDEN_CHARACTERS); ++i) {
+            *newFileName = newFileName->replace(FAT_FORBIDDEN_CHARACTERS[i], "_");
+        }
+    }
+
+    return *newFileName != srcFileName;
 }
 
 void FileOperation::fileSync(QString srcFile, QString destDir)
