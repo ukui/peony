@@ -466,27 +466,27 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="343"/>
         <source>Choose new application</source>
-        <translation type="unfinished">选择一个新的应用</translation>
+        <translation>选择一个新的应用</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="345"/>
         <source>Choose an Application to open this file</source>
-        <translation type="unfinished">选择一个应用打开这个文件</translation>
+        <translation>选择一个应用打开这个文件</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="352"/>
         <source>apply now</source>
-        <translation type="unfinished">立即应用</translation>
+        <translation>立即应用</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="358"/>
         <source>OK</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="359"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -543,7 +543,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="281"/>
         <source>symbolLink</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷方式</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="288"/>
@@ -960,7 +960,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="190"/>
         <source>yyyy-MM-dd, hh:mm:ss AP</source>
-        <translation type="unfinished">yyyy年MM月dd日, hh:mm:ss AP</translation>
+        <translation>yyyy年MM月dd日, hh:mm:ss AP</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="199"/>
@@ -2044,12 +2044,12 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="129"/>
         <source>No, go to settings</source>
-        <translation type="unfinished"></translation>
+        <translation>否，跳转到设置</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="130"/>
         <source>Do you want to put selected %1 item(s) into trash?</source>
-        <translation type="unfinished"></translation>
+        <translation>你想把选中的 %1项删除到回收站吗？</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="188"/>
@@ -2323,23 +2323,23 @@ Do you want to delete the link file?</source>
         <location filename="../../libpeony-qt/global-settings.cpp" line="58"/>
         <location filename="../../libpeony-qt/global-settings.cpp" line="211"/>
         <source>yyyy/MM/dd</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="59"/>
         <location filename="../../libpeony-qt/global-settings.cpp" line="204"/>
         <source>HH:mm:ss</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="201"/>
         <source>hh:mm:ss AP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="214"/>
         <source>yyyy-MM-dd</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2529,17 +2529,17 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="124"/>
         <source>Read</source>
-        <translation type="unfinished"></translation>
+        <translation>可读</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="124"/>
         <source>Write</source>
-        <translation type="unfinished"></translation>
+        <translation>可写</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="124"/>
         <source>Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>可执行</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="157"/>
@@ -2639,7 +2639,7 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="93"/>
         <source>Show confirm dialog while trashing: </source>
-        <translation type="unfinished"></translation>
+        <translation>删除到回收站时弹出确认框:</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="117"/>
