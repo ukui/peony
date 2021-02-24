@@ -104,7 +104,11 @@ retry:
             } else {
                 if (err->code == G_IO_ERROR_NOT_SUPPORTED) {
                     except.dlgType = ED_NOT_SUPPORTED;
-                    except.errorStr = tr("Can not trash %1, would you like to delete this file permanently?");
+                    auto fileName = g_file_get_basename(srcFile.get()->get());
+                    except.errorStr = tr("Can not trash %1, would you like to delete this file permanently?").arg(fileName);
+                    if (fileName) {
+                        g_free(fileName);
+                    }
                 } else {
                     except.dlgType = ED_WARNING;
                 }
