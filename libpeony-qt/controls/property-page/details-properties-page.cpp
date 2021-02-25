@@ -169,9 +169,17 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     QString location = url.toDisplayString();
     if (location.startsWith("file://"))
         location = location.split("file://").last();
-    location =  m_tableWidget->fontMetrics().elidedText(location, Qt::ElideMiddle,FIXED_CONTENT_WIDTH);
 
-    this->addRow(tr("Location:"),location);
+    m_localLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
+    QFontMetrics fm = this->fontMetrics();
+    if (fm.width(location) > FIXED_CONTENT_WIDTH)
+    {
+        m_localLabel->setToolTip(location);
+        location =  m_tableWidget->fontMetrics().elidedText(location, Qt::ElideMiddle,FIXED_CONTENT_WIDTH);
+    }
+    m_localLabel->setText(location);
+
+    this->addRow(tr("Location:"),m_localLabel);
 
     //createTime
     m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
