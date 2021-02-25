@@ -23,6 +23,9 @@
 #include "desktop-window.h"
 #include "peony-desktop-application.h"
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <QTime>
@@ -86,6 +89,16 @@ int main(int argc, char *argv[])
     PeonyDesktopApplication a(argc, argv);
     if (a.isSecondary())
         return 0;
+
+    QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
+                                                          "/org/gnome/SessionManager",
+                                                          "org.gnome.SessionManager",
+                                                          "startupfinished");
+    QList<QVariant> args;
+    args.append("peony-qt-desktop");
+    args.append("startupfinished");
+    message.setArguments(args);
+    QDBusConnection::sessionBus().send(message);
 
     return a.exec();
 }
