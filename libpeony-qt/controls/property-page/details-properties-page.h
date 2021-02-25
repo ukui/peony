@@ -78,6 +78,8 @@ private:
     QLabel *m_ownerLabel = nullptr;
     QLabel *m_computerLabel = nullptr;
 
+    QLabel *m_localLabel = nullptr;
+
     QWidget *createTableRow(QString labelText, QString content);
     QWidget *createTableRow(QString labelText, QLabel *contentLabel);
 
