@@ -399,7 +399,7 @@ void ListView::resizeEvent(QResizeEvent *e)
 
 }
 
-void ListView::updateGeometries()
+/*void ListView::updateGeometries()
 {
     QTreeView::updateGeometries();
     if (!model())
@@ -415,7 +415,7 @@ void ListView::updateGeometries()
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
     //setViewportMargins(0, header()->height(), 0, height);
 }
-
+*/
 void ListView::wheelEvent(QWheelEvent *e)
 {
     if (e->modifiers() & Qt::ControlModifier) {
@@ -481,6 +481,8 @@ void ListView::reportViewDirectoryChanged()
 
 void ListView::adjustColumnsSize()
 {
+    int columnSize = 0;
+
     if (!model())
         return;
 
@@ -491,13 +493,15 @@ void ListView::adjustColumnsSize()
 
     int rightPartsSize = 0;
     for (int column = 1; column < model()->columnCount(); column++) {
-        int columnSize = header()->sectionSize(column);
+        columnSize = header()->sectionSize(column);
         rightPartsSize += columnSize;
     }
 
+    rightPartsSize += columnSize;
+
     //set column 0 minimum width, fix header icon overlap with name issue
-//    if(columnWidth(0) < columnWidth(1))
-//        setColumnWidth(0, columnWidth(1));
+    if(columnWidth(0) < columnWidth(1))
+        setColumnWidth(0, columnWidth(1));
 
     if (this->width() - rightPartsSize < BOTTOM_STATUS_MARGIN) {
         int size = width() - BOTTOM_STATUS_MARGIN;
@@ -509,7 +513,8 @@ void ListView::adjustColumnsSize()
         return;
     }
 
-//    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
+    header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
+    header()->resizeSection(model()->columnCount() - 1, columnSize * 2);
 }
 
 void ListView::multiSelect()

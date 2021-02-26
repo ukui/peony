@@ -530,13 +530,22 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     float iconWidth = 0;
     float iconHeigth = 0;
 
+    bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+    if (tabletMode) {
+        qDebug()<<"the mode is panel, so no change";
+        return;
+    }
+
     // icon size
     QSize icon = gridSize();
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
     // not get current size
-    if (0 == screenSize.width() || 0 == screenSize.height() || 0 == iconWidth|| 0 == iconHeigth) {
+    if (screenSize.width() < 3 * iconWidth
+            || screenSize.height() < 3 * iconHeigth
+            || 0 == iconWidth|| 0 == iconHeigth)
+    {
         qWarning()<<"desktop icon width"<<iconWidth << "icon height" << iconHeigth;
         qWarning()<<"desktop width" << screenSize.width() << "height" << screenSize.height();
         return;
