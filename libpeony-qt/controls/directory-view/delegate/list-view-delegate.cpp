@@ -53,6 +53,11 @@ ListViewDelegate::~ListViewDelegate()
     m_styled_button->deleteLater();
 }
 
+void ListViewDelegate::initIndexOption(QStyleOptionViewItem *option, const QModelIndex &index) const
+{
+    return initStyleOption(option, index);
+}
+
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;

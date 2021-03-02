@@ -1402,7 +1402,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
     // bug extend selection bug
     m_real_do_edit = false;
 
-    if (e->modifiers() && Qt::ControlModifier)
+    if (e->modifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -1489,7 +1489,7 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
     m_real_do_edit = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;

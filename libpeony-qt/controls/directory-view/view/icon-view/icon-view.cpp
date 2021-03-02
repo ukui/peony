@@ -201,7 +201,7 @@ void IconView::closeView()
 void IconView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_editValid = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -216,7 +216,7 @@ void IconView::dragEnterEvent(QDragEnterEvent *e)
 
 void IconView::dragMoveEvent(QDragMoveEvent *e)
 {
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -253,7 +253,7 @@ void IconView::dropEvent(QDropEvent *e)
 {
     m_last_index = QModelIndex();
     //m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;

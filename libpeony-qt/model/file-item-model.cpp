@@ -425,9 +425,10 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
         QUrl url = item->m_info->uri();
-        if (!urls.contains(url))
+        if (!urls.contains(url)) {
             urls<<url;
-        uris<<item->uri();
+            uris<<item->uri();
+        }
     }
     data->setUrls(urls);
     auto string = uris.join(" ");

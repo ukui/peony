@@ -132,6 +132,8 @@ protected:
 
     void focusInEvent(QFocusEvent *e) override;
 
+    void startDrag(Qt::DropActions flags) override;
+
 private Q_SLOTS:
     void slotRename();
 private:

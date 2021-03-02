@@ -45,12 +45,17 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDragMoveEvent>
+#include <QDrag>
+#include <QPainter>
+#include <QWindow>
 
 #include <QApplication>
 #include <QStyleHints>
 
 #include <QDebug>
 #include <QToolTip>
+
+#include <QStyleOptionViewItem>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -323,7 +328,7 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
     m_editValid = false;
     qDebug()<<"dragEnterEvent()";
     //QTreeView::dragEnterEvent(e);
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -338,7 +343,7 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
 
 void ListView::dragMoveEvent(QDragMoveEvent *e)
 {
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -369,6 +374,13 @@ void ListView::dropEvent(QDropEvent *e)
         case QAbstractItemView::DropIndicatorPosition::OnItem: {
             break;
         }
+        case QAbstractItemView::DropIndicatorPosition::OnViewport: {
+            if (e->keyboardModifiers() & Qt::ControlModifier) {
+                break;
+            } else {
+                return;
+            }
+        }
         default:
             return;
         }
@@ -377,7 +389,7 @@ void ListView::dropEvent(QDropEvent *e)
 
     m_last_index = QModelIndex();
     //m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -457,6 +469,58 @@ void ListView::focusInEvent(QFocusEvent *e)
                 }
             });
         }
+    }
+}
+
+void ListView::startDrag(Qt::DropActions flags)
+{
+    auto indexes = selectedIndexes();
+    if (indexes.count() > 0) {
+        auto pos = mapFromGlobal(QCursor::pos());
+        qreal scale = 1.0;
+        QWidget *window = this->window();
+        if (window) {
+            auto windowHandle = window->windowHandle();
+            if (windowHandle) {
+                scale = windowHandle->devicePixelRatio();
+            }
+        }
+
+        auto drag = new QDrag(this);
+        drag->setMimeData(model()->mimeData(indexes));
+
+        QRegion rect;
+        QHash<QModelIndex, QRect> indexRectHash;
+        for (auto index : indexes) {
+            rect += (visualRect(index));
+            indexRectHash.insert(index, visualRect(index));
+        }
+
+        QRect realRect = rect.boundingRect();
+        QPixmap pixmap(realRect.size() * scale);
+        pixmap.fill(Qt::transparent);
+        pixmap.setDevicePixelRatio(scale);
+        QPainter painter(&pixmap);
+        for (auto index : indexes) {
+            painter.save();
+            painter.translate(indexRectHash.value(index).topLeft() - rect.boundingRect().topLeft());
+            //painter.translate(-rect.boundingRect().topLeft());
+            QStyleOptionViewItem opt = viewOptions();
+            auto viewItemDelegate = static_cast<ListViewDelegate *>(itemDelegate());
+            viewItemDelegate->initIndexOption(&opt, index);
+            opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
+            opt.rect.setSize(indexRectHash.value(index).size());
+            opt.rect.moveTo(0, 0);
+            opt.state |= QStyle::State_Selected;
+            painter.setOpacity(0.8);
+            QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &painter);
+            painter.restore();
+        }
+
+        drag->setPixmap(pixmap);
+        drag->setHotSpot(pos - rect.boundingRect().topLeft() - QPoint(0, header()->height()));
+        drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
     }
 }
 

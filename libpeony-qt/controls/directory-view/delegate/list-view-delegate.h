@@ -35,10 +35,14 @@ class TextEdit;
 
 class ListViewDelegate : public QStyledItemDelegate
 {
+    friend class ListView;
     Q_OBJECT
 public:
     explicit ListViewDelegate(QObject *parent = nullptr);
     ~ListViewDelegate() override;
+
+    void initIndexOption(QStyleOptionViewItem *option,
+                         const QModelIndex &index) const;
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     //QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
