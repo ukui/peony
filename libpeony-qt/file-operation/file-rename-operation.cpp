@@ -91,7 +91,6 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
     m_new_name = newName;
-    m_auto_overwrite = false;
     QStringList srcUris;
     srcUris<<uri;
     QString destUri = FileUtils::getParentUri(uri);
@@ -180,7 +179,6 @@ void FileRenameOperation::run()
         m_new_name = m_new_name+".desktop";
     }
 
-    //move the file. normally means 'rename'.
     auto parent = FileUtils::getFileParent(file);
     auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
 
@@ -241,43 +239,35 @@ retry:
         except.errorType = ET_GIO;
         except.op = FileOpRename;
         except.title = tr("Rename file error");
-        GError *err = nullptr;
-        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))&&!m_auto_overwrite) {
-            except.dlgType = ED_CONFLICT;
-            except.errorCode = G_IO_ERROR_EXISTS;
-            Q_EMIT errored(except);
-            switch (except.respCode) {
-            case BackupOne: {
-                // use custom name
-                QString srcName = FileUtils::getFileBaseName(newFile);
-                QString name = "";
-                QString endStr = "";
-                QStringList extendStr = srcName.split(".");
-                if (extendStr.length() > 0) {
-                    extendStr.removeAt(0);
-                }
-                endStr = extendStr.join(".");
+        GError* err = nullptr;
+        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+            err = g_error_new(0, G_IO_ERROR_EXISTS, "");
+            ExceptionResponse resp = prehandle(err);
+            if (Other == resp) {
+                except.dlgType = ED_CONFLICT;
+                except.errorCode = G_IO_ERROR_EXISTS;
+                Q_EMIT errored(except);
+                resp = except.respCode;
+            }
 
-                if (except.respValue.contains("name")) {
-                    name = except.respValue["name"].toString();
-                    if (endStr != "" && name.endsWith(endStr)) {
-                        newFile = FileUtils::resolveRelativePath(parent, name);
-                    } else if ("" != endStr && "" != name) {
-                        newFile = FileUtils::resolveRelativePath(parent, name + "." + endStr);
-                    } else if ("" == endStr) {
-                        newFile = FileUtils::resolveRelativePath(parent, name);
-                    }
+            switch (resp) {
+            case BackupAll:
+                setAutoBackup();
+            case BackupOne:{
+                while (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+                    QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
+                    newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
                 }
-            }
-                break;
-            case BackupAll: {
-                QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
-                newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
                 break;
             }
-            case OverWriteOne:
             case OverWriteAll:
+                setAutoOverwrite();
+            case OverWriteOne:
                 g_file_delete(newFile.get()->get(), nullptr, nullptr);
+                break;
+            case IgnoreAll:
+                setAutoIgnore();
+            case IgnoreOne:
                 break;
             case Cancel:
                 cancel();
@@ -285,25 +275,13 @@ retry:
             default:
                 break;
             }
-        } else {
-           g_file_delete(newFile.get()->get(), nullptr, nullptr);
         }
 
         char* newName = g_file_get_basename(newFile.get()->get());
         g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
 
-        if (nullptr != newName) {
-            g_free(newName);
-        }
-/*
-        g_file_move(file.get()->get(),
-                    newFile.get()->get(),
-                    m_default_copy_flag,
-                    getCancellable().get()->get(),
-                    nullptr,
-                    nullptr,
-                    &err);
-*/
+        if (nullptr != newName) g_free(newName);
+
         if (err) {
             except.errorType = ET_GIO;
             except.errorCode = err->code;
@@ -337,51 +315,18 @@ cancel:
     }
 
     fileSync(m_uri, destUri);
-//    // judge if the operation should sync.
-//    bool needSync = false;
-//    GFile *src_first_file = g_file_new_for_uri(m_uri.toUtf8().constData());
-//    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
-//    if (src_first_mount) {
-//        needSync = g_mount_can_unmount(src_first_mount);
-//        g_object_unref(src_first_mount);
-//    } /*else {
-//        // maybe a vfs file.
-//        // root filesystem
-//        needSync = true;
-//    }*/
-//    g_object_unref(src_first_file);
-
-//    GError* err = NULL;
-//    GFile *dest_dir_file = g_file_new_for_uri(destUri.toUtf8().constData());
-//    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, &err);
-//    if (dest_dir_mount) {
-//        needSync = g_mount_can_unmount(dest_dir_mount);
-//        g_object_unref(dest_dir_mount);
-//    } /*else {
-//        needSync = true;
-//    }*/
-//    g_object_unref(dest_dir_file);
-
-//    if (needSync) {
-//        char *path = g_file_get_path(dest_dir_file);
-//        if (path) {
-//            operationStartSnyc();
-//            QProcess p;
-//            auto shell_path = g_shell_quote(path);
-//            p.start(QString("sync -d %1").arg(shell_path));
-//            g_free(shell_path);
-//            g_free(path);
-//            p.waitForFinished(-1);
-//        } else {
-//            operationStartSnyc();
-//            QProcess p;
-//            p.start("sync");
-//            p.waitForFinished(-1);
-//        }
-//    }
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+
+ExceptionResponse FileRenameOperation::prehandle(GError *err)
+{
+    if (err && G_IO_ERROR_EXISTS == err->code) {
+        return m_apply_all;
+    }
+
+    return Other;
 }
 
 
