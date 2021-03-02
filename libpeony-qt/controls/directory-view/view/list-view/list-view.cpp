@@ -292,7 +292,7 @@ void ListView::mouseMoveEvent(QMouseEvent *e)
 
     QTreeView::mouseMoveEvent(e);
 
-    if (m_isLeftButtonPressed) {
+    if (e->buttons() & Qt::LeftButton) {
         auto pos = e->pos();
         auto offset = QPoint(horizontalOffset(), verticalOffset());
         auto logicPos = pos + offset;
