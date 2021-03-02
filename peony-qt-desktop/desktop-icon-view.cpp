@@ -588,6 +588,8 @@ void DesktopIconView::resolutionChange()
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
+    QRect screenRect = QRect(0, 0, screenSize.width(), screenSize.height());
+
     if (!m_item_rect_hash.isEmpty()) {
         QList<QPair<QRect, QString>> newPosition;
 
@@ -610,38 +612,74 @@ void DesktopIconView::resolutionChange()
 
         std::stable_sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
 
-        m_item_rect_hash.clear();
+        //m_item_rect_hash.clear();
 
-        for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
+        // only reset items over viewport.
+        QRegion notEmptyRegion;
+        QList<QPair<QRect, QString>> needChanged;
+        for (auto pair : newPosition) {
+            if (!screenRect.contains(pair.first)) {
+                needChanged.append(pair);
+                m_item_rect_hash.remove(pair.second);
+            } else {
+                notEmptyRegion += pair.first;
+            }
+        }
+
+        if (!needChanged.isEmpty()) {
             int posX = 0;
             int posY = 0;
-
-            Q_FOREVER {
-                // icon pos x, y
-                posX = column * iconWidth;
-                posY = row * iconHeigth;
-                // Check to see if the screen size is exceeded
-                if (posY + iconHeigth <= screenSize.height()
-                        && posX + iconWidth <= screenSize.width()) {
-                    ++row;
-                    break;
-                } else if (posY + iconHeigth > screenSize.height()
-                           && posX + iconWidth < screenSize.width()) {
-                    row = 0;
-                    ++column;
-                    continue;
-                } else {
-                    // The desktop is full of ICONS
-                    posX = 0;
-                    posY = 0;
-                    break;
+            for (int i = 0; i < needChanged.count(); i++) {
+                while (!notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+                    if (posY + iconHeigth > screenSize.height()) {
+                        posY = 0;
+                        posX += iconWidth;
+                    } else {
+                        posY += iconHeigth;
+                    }
+                }
+                QRect newRect = QRect(QPoint(posX, posY), gridSize());
+                if (posX + iconWidth > screenSize.width()) {
+                    newRect.moveTo(0, 0);
+                }
+                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+            }
+        } else {
+            // re-layout overlayed items
+            for (auto pair : newPosition) {
+                if (pair.first.topLeft() == QPoint(0, 0)) {
+                    needChanged.append(pair);
                 }
             }
+//            // first item doesn't need re-layout
+//            if (!needChanged.isEmpty())
+//                needChanged.removeFirst();
 
-            updateItemPosByUri(i->second, QPoint(posX, posY));
-            setFileMetaInfoPos(i->second, QPoint(posX, posY));
-    //        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+            int posX = 0;
+            int posY = 0;
+            for (int i = 0; i < needChanged.count(); i++) {
+                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+                    if (posY + iconHeigth * 2 > screenSize.height()) {
+                        posY = 0;
+                        posX += iconWidth;
+                    } else {
+                        posY += iconHeigth;
+                    }
+                }
+                QRect newRect = QRect(QPoint(posX, posY), gridSize());
+                if (posX + iconWidth > screenSize.width()) {
+                    newRect.moveTo(0, 0);
+                }
+                notEmptyRegion += newRect;
+                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+            }
         }
+    }
+
+    for (auto uri : m_item_rect_hash.keys()) {
+        auto rect = m_item_rect_hash.value(uri);
+        updateItemPosByUri(uri, rect.topLeft());
+        setFileMetaInfoPos(uri, rect.topLeft());
     }
 
     this->saveAllItemPosistionInfos();
