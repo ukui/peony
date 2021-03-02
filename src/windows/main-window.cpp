@@ -163,7 +163,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
 MainWindow::~MainWindow()
 {
-    if (last_resize_window == this) {
+    //fix bug 40913, when window is maximazed, not update size
+    if (last_resize_window == this && !isMaximized()) {
         auto settings = Peony::GlobalSettings::getInstance();
         settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
         last_resize_window = nullptr;
