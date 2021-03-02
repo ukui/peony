@@ -416,7 +416,19 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimayWindow->updateView();
         currentPrimayWindow->hide();
         currentPrimayWindow->show();
+    } else {
+        currentPrimayWindow = qobject_cast<DesktopWindow *>(getIconView()->topLevelWidget());
+        currentPrimayWindow->setCentralWidget(getIconView());
+        //desktop_icon_view->show();
+        currentPrimayWindow->updateView();
+        currentPrimayWindow->hide();
+        currentPrimayWindow->show();
     }
+    if (currentPrimayWindow) {
+        currentPrimayWindow->activateWindow();
+        currentPrimayWindow->raise();
+    }
+
     return;
 
     //do not check window need exchange

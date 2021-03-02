@@ -626,14 +626,14 @@ void DesktopWindow::updateWinGeometry() {
             this->show();
         }
     } else {
-        qDebug() << "non primaryScreen:" <<m_screen->geometry() <<qApp->primaryScreen()->geometry();
-        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
-        {
-            this->hide();
-            qWarning() << "error: non primaryScreen geometry same with primaryScreen ! " <<m_screen->geometry();
-        }
-        else
-            this->show();
+//        qDebug() << "non primaryScreen:" <<m_screen->geometry() <<qApp->primaryScreen()->geometry();
+//        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
+//        {
+//            this->hide();
+//            qWarning() << "error: non primaryScreen geometry same with primaryScreen ! " <<m_screen->geometry();
+//        }
+//        else
+//            this->show();
     }
 
     //updateView();
