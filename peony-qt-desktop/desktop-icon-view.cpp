@@ -55,6 +55,7 @@
 
 #include "global-settings.h"
 #include "audio-play-manager.h"
+#include "peony-log.h"
 
 #include <QAction>
 #include <QMouseEvent>
@@ -85,7 +86,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
     //m_refresh_timer.setInterval(500);
     //m_refresh_timer.setSingleShot(true);
-
+    PEONY_DESKTOP_LOG_WARN("create desktop icon view begin");
     installEventFilter(this);
 
     initShoutCut();
@@ -255,6 +256,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setMouseTracking(true);
 
     this->refresh();
+
+    PEONY_DESKTOP_LOG_WARN("create desktop icon view end");
 }
 
 DesktopIconView::~DesktopIconView()
@@ -530,6 +533,8 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     float iconWidth = 0;
     float iconHeigth = 0;
 
+    PEONY_DESKTOP_LOG_WARN("screen available size change, so begin change the icon position.");
+
     bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
     if (tabletMode) {
         qDebug()<<"the mode is panel, so no change";
@@ -602,6 +607,7 @@ void DesktopIconView::resolutionChange(const QRect &screenSize)
     qDebug()<<"file"<<__FILE__<<"fun"<<__FUNCTION__ <<"line"<< __LINE__
             <<"begin save all item position";
     this->saveAllItemPosistionInfos();
+    PEONY_DESKTOP_LOG_WARN("change the icon position end.");
 }
 
 void DesktopIconView::openFileByUri(QString uri)

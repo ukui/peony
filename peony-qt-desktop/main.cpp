@@ -23,6 +23,7 @@
 #include "desktop-window.h"
 #include "peony-desktop-application.h"
 #include "desktop-screen.h"
+#include "peony-log.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,8 +80,10 @@ int main(int argc, char *argv[])
 {
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
     qInstallMessageHandler(messageOutput);
+
     qDebug() << "desktop start time in main:" <<PeonyDesktopApplication::peony_desktop_start_time;
-    //PeonyDesktopApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    PEONY_DESKTOP_LOG_WARN("peony desktop start#######################");
+
     DesktopScreen *screen = new DesktopScreen();
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

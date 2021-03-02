@@ -22,6 +22,7 @@ include(windows/windows.pri)
 include(thumbnail/thumbnail.pri)
 
 HEADERS += \
+    $$PWD/peony-log.h \
     $$PWD/plugin-manager.h \
     $$PWD/complementary-style.h \
     $$PWD/global-settings.h

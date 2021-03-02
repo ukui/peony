@@ -29,6 +29,7 @@
 #include "volume-manager.h"
 
 #include "desktop-icon-view.h"
+#include "peony-log.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -312,8 +313,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 w->update();
             }
         });
-    }
-    else {
+    } else {
         auto helpOption = parser.addHelpOption();
         auto versionOption = parser.addVersionOption();
 
@@ -390,6 +390,7 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimayWindow->setCentralWidget(getIconView());
         //desktop_icon_view->show();
         currentPrimayWindow->updateView();
+        PEONY_DESKTOP_LOG_WARN("current primay win hide and show");
         currentPrimayWindow->hide();
         currentPrimayWindow->show();
     }
@@ -430,6 +431,7 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
         return;
     }
 
+    PEONY_DESKTOP_LOG_WARN("screen add process");
     addWindow(screen, false);
 }
 
@@ -445,6 +447,7 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
         if (win->getScreen() == screen)
         {
             qDebug()<<"remove window";
+            PEONY_DESKTOP_LOG_WARN("screen remove process");
             m_window_list.removeOne(win);
             win->deleteLater();
         }
@@ -479,10 +482,12 @@ void PeonyDesktopApplication::checkWindowProcess()
         {
             if (win->getScreen()->geometry() == this->primaryScreen()->geometry())
             {
+                PEONY_DESKTOP_LOG_WARN("win set visible false");
                 win->setVisible(false);
             }
             else {
                 win->setVisible(true);
+                PEONY_DESKTOP_LOG_WARN("win set visible true");
             }
         }
     }
