@@ -171,6 +171,8 @@ void MarkPropertiesPage::changeLabel(int labelId, bool checked)
 
 QString MarkPropertiesPage::convertRGB16HexStr(const QColor color)
 {
+    if (color == Qt::transparent)
+        return "transparent";
     QString redStr = QString("%1").arg(color.red(),2,16,QChar('0'));
     QString greenStr = QString("%1").arg(color.green(),2,16,QChar('0'));
     QString blueStr = QString("%1").arg(color.blue(),2,16,QChar('0'));
