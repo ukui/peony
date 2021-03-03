@@ -91,6 +91,7 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/thumbnail-manager.h
   libpeony-qt/volume-manager.cpp
   libpeony-qt/volume-manager.h
+  libpeony-qt/peony-log.h
 Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
