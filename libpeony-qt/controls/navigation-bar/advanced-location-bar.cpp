@@ -55,8 +55,11 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
         //qDebug() << "uriChangeRequest:" <<uri;
         QString targetUri = uri;
-        if (targetUri.endsWith("/") && targetUri != "file:///")
+        //fix bug 38942
+        while (targetUri.endsWith("/") && targetUri != "file:///")
+        {
             targetUri = targetUri.left(targetUri.lastIndexOf("/"));
+        }
         m_bar->setRootUri(targetUri);
         layout->setCurrentWidget(m_bar);
         Q_EMIT this->updateWindowLocationRequest(targetUri);
