@@ -429,9 +429,9 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                             if(!tmpIcon.isNull())
                                 isOnlyUnref = true;
                         }
-                        g_object_unref(app_infos);
                         l = l->next;
                     }
+                    g_list_free_full(app_infos, g_object_unref);
 
                     QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                     connect(action, &QAction::triggered, [=]() {
