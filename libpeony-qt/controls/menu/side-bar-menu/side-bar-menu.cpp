@@ -170,6 +170,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     auto mount = VolumeManager::getMountFromUri(targetUri);
     //fix erasable optical disk can be format issue, bug#32415
     if(! m_uri.startsWith("burn:///") && !m_uri.endsWith(".mount")
+       && !(m_uri.startsWith("file:///media") && m_uri.endsWith("CDROM"))
        && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
