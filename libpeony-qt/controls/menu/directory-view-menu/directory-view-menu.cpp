@@ -789,7 +789,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                 }
             });
         } else {
-            l<<addAction(tr("&Restore"));
+            l<<addAction(tr("Restore"));
             connect(l.last(), &QAction::triggered, [=]() {
                 if (m_selections.count() == 1) {
                     FileOperationUtils::restore(m_selections.first());
@@ -797,7 +797,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                     FileOperationUtils::restore(m_selections);
                 }
             });
-            l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete"));
+            l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
                 AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
