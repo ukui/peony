@@ -35,6 +35,8 @@
 #include <QFrame>
 
 #include <QProgressBar>
+#include <QPushButton>
+#include <QProcess>
 
 #include <glib.h>
 
@@ -188,24 +190,39 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
             if (bMobileDevice)
                 m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
-            else
+            else if (total != 0) {
                 m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
-
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            }
+            if (used != 0) {
+                m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
+            }
+            if (aviliable != 0) {
+                m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            }
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
-            g_free(total_format);
-            g_free(used_format);
-            g_free(aviliable_format);
-            g_free(fs_type);
-            g_object_unref(info);
-            g_object_unref(file);
 
             auto progressBar = new QProgressBar(this);
             auto value = double(used*1.0/total)*100;
             progressBar->setValue(int(value));
             m_layout->addRow(progressBar);
             m_layout->setAlignment(progressBar, Qt::AlignBottom);
+
+            if (QString(fs_type) == "isofs" && QFile::exists("/usr/bin/kylin-burner")) {
+                auto pushbutton = new QPushButton(tr("Kylin Burner"));
+                connect(pushbutton, &QPushButton::clicked, pushbutton, [=](){
+                    QProcess p;
+                    p.startDetached("kylin-burner");
+                    p.waitForStarted();
+                });
+                m_layout->addRow(new QLabel(tr("Open with: \t")), pushbutton);
+            }
+
+            g_free(total_format);
+            g_free(used_format);
+            g_free(aviliable_format);
+            g_free(fs_type);
+            g_object_unref(info);
+            g_object_unref(file);
         } else {
             m_layout->addRow(new QLabel(tr("Unknown"), nullptr));
         }
