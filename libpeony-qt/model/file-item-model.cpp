@@ -72,7 +72,7 @@ void FileItemModel::setRootUri(const QString &uri)
         return;
     }
     auto info = FileInfo::fromUri(uri);
-    auto item = new FileItem(info, nullptr, this);
+    auto item = new FileItem(info, nullptr, this, this);
     setRootItem(item);
 }
 

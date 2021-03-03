@@ -541,7 +541,7 @@ void ListView::slotRename()
 
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
-    QTimer::singleShot(300, m_renameTimer, [&]() {
+    QTimer::singleShot(300, this, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
         if(m_editValid) {
             m_renameTimer->stop();
@@ -667,6 +667,7 @@ void ListView::open(const QStringList &uris, bool newWindow)
 void ListView::beginLocationChange()
 {
     m_editValid = false;
+    m_last_index = QModelIndex();
     //setModel(nullptr);
     m_model->setRootUri(m_current_uri);
 }

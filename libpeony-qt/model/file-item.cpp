@@ -382,7 +382,7 @@ void FileItem::findChildrenAsync()
 
                     m_ending_uris.removeOne(uri);
                     if (isEnding && m_ending_uris.isEmpty()) {
-                        qApp->processEvents();
+                        //qApp->processEvents();
                         Q_EMIT m_model->findChildrenFinished();
                         Q_EMIT m_model->updated();
                     }

@@ -149,15 +149,15 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
 
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, parent, [=]() {
         this->updateEditorGeometry(edit, option, index);
     });
 
-    connect(edit, &TextEdit::textChanged, [=]() {
+    connect(edit, &TextEdit::textChanged, this, [=]() {
         updateEditorGeometry(edit, option, index);
     });
 
-    connect(edit, &TextEdit::finishEditRequest, [=]() {
+    connect(edit, &TextEdit::finishEditRequest, this, [=]() {
         setModelData(edit, nullptr, index);
         edit->deleteLater();
     });
