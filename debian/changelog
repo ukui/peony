@@ -1,3 +1,13 @@
+peony (3.0.3-2+0303) v101; urgency=medium
+
+  * Modify:add log for trace black screen
+  * fix:modify the column width of list view, when the size of window is changed.
+  * fix: the icon in the destop will stack,when pc and panel mode change.
+  * fix:hide the templete dir,so it can not be operated.
+  * fix:desktop file show with .desktop format
+
+ -- weinan1 <wangweinan@kylinos.cn>  Wed, 03 Mar 2021 09:29:31 +0800
+
 peony (3.0.3-2+0226) v101; urgency=medium
 
   * Update changelog
