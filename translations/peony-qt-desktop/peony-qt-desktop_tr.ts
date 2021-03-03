@@ -23,22 +23,22 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="661"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="699"/>
         <source>Open Link failed</source>
         <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="662"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="700"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="677"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="715"/>
         <source>Open failed</source>
         <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="678"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="716"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>

@@ -160,22 +160,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="318"/>
+        <location filename="../../src/windows/main-window.cpp" line="319"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="325"/>
+        <location filename="../../src/windows/main-window.cpp" line="326"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1473"/>
+        <location filename="../../src/windows/main-window.cpp" line="1474"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1474"/>
+        <location filename="../../src/windows/main-window.cpp" line="1475"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -184,12 +184,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1463"/>
+        <location filename="../../src/windows/main-window.cpp" line="1464"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1464"/>
+        <location filename="../../src/windows/main-window.cpp" line="1465"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -198,7 +198,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="702"/>
+        <location filename="../../src/windows/main-window.cpp" line="703"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
