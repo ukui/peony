@@ -29,6 +29,7 @@
 #include <memory>
 
 class QToolButton;
+class QDrag;
 namespace Peony {
 class FileInfo;
 }
@@ -72,6 +73,9 @@ private:
 
     QTimer m_drag_timer;
     bool m_start_drag = false;
+    QPoint m_press_pos;
+    QDrag *m_drag = nullptr;
+    bool m_should_trigger_drop = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 

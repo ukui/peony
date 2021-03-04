@@ -230,7 +230,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/control/navigation-side-bar.cpp" line="184"/>
         <location filename="../../src/control/navigation-side-bar.cpp" line="218"/>
         <source>Can not open %1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开%1, %2</translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
