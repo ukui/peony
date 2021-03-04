@@ -892,15 +892,19 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
     auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
     bool hasCurrentPage = currentPage();
+    bool hasView = false;
+    if (hasCurrentPage)
+        hasView = currentPage()->getView();
     int zoomLevel = -1;
 
     if (hasCurrentPage) {
         // perfer to use current page view type
         auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
-        if (internalViews.contains(currentPage()->getView()->viewId()))
+        //fix continuously click add button quickly crash issue, bug #41425
+        if (hasView && internalViews.contains(currentPage()->getView()->viewId()))
             viewContainer->switchViewType(currentPage()->getView()->viewId());
 
-        if (currentPage()) {
+        if (hasView && hasCurrentPage) {
             hasCurrentPage = true;
             zoomLevel = currentPage()->getView()->currentZoomLevel();
         }
