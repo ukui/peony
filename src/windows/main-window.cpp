@@ -96,8 +96,6 @@
 // fixed by replaced `QGSettings/QGSettings' with `QGSettings'
 #include <QGSettings>
 
-#define FONT_SETTINGS "org.ukui.style"
-
 static MainWindow *last_resize_window = nullptr;
 
 MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent)

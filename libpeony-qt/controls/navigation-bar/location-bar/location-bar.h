@@ -56,6 +56,7 @@ public Q_SLOTS:
 protected:
     void clearButtons();
     void addButton(const QString &uri, bool setIcon = false, bool setMenu = true);
+    void updateButtons();
 
     void mousePressEvent(QMouseEvent *e) override;
     void paintEvent(QPaintEvent *e) override;

@@ -49,6 +49,8 @@
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
+#define FONT_SETTINGS                "org.ukui.style"
+
 //difference between Community version and Commercial version
 #define COMMERCIAL_VERSION          false
 //TEMPLATES standard path

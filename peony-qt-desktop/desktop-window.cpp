@@ -86,7 +86,6 @@
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
 #define FALLBACK_COLOR "primary-color"
-#define FONT_SETTINGS "org.ukui.style"
 
 using namespace Peony;
 
