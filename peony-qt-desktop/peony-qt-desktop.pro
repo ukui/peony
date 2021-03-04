@@ -47,6 +47,7 @@ SOURCES += \
     peony-json-operation.cpp \
     bw-list-info.cpp \
     peony-dbus-service.cpp \
+    primary-manager.cpp \
     user-dir-manager.cpp
 
 HEADERS += \
@@ -63,6 +64,7 @@ HEADERS += \
     peony-json-operation.h \
     bw-list-info.h \
     peony-dbus-service.h \
+    primary-manager.h \
     user-dir-manager.h
 
 target.path = /usr/bin

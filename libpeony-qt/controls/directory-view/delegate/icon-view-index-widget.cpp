@@ -198,7 +198,10 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     // draw color symbols
     auto colors = info->getColors();
     int offset = 0;
-    for (auto color : colors) {
+    const int MAX_LABEL_NUM = 3;
+    int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+    for (int i = startIndex; i < colors.count(); ++i) {
+        auto color = colors.at(i);
         p.save();
         p.setRenderHint(QPainter::Antialiasing);
         p.translate(2, 2);
@@ -206,7 +209,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         p.setBrush(color);
         p.drawEllipse(QRectF(offset, 0, 10, 10));
         p.restore();
-        offset += 10;
+        offset += 10/2;
     }
 
     //paint symbolic link emblems

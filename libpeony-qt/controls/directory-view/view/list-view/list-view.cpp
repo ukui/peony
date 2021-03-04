@@ -45,11 +45,17 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QDragMoveEvent>
+#include <QDrag>
+#include <QPainter>
+#include <QWindow>
 
 #include <QApplication>
 #include <QStyleHints>
 
 #include <QDebug>
+#include <QToolTip>
+
+#include <QStyleOptionViewItem>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -86,7 +92,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer->setInterval(3000);
     m_editValid = false;
 
+    setUniformRowHeights(true);
     setIconSize(QSize(40, 40));
+    setMouseTracking(true);//追踪鼠标
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
 }
@@ -99,8 +107,8 @@ void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint 
     // the fast keyboard locating of default tree view will be disabled
     // due to the function is overrided, too.
 
-    //QTreeView::scrollTo(index, hint);
-    //updateGeometries();
+    QTreeView::scrollTo(index, hint);
+//    updateGeometries();
 }
 
 bool ListView::isDragging()
@@ -276,9 +284,20 @@ void ListView::mouseReleaseEvent(QMouseEvent *e)
 
 void ListView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+             QToolTip::hideText();
+         }
+    } else {
+        if (0 != itemIndex.column() && QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     QTreeView::mouseMoveEvent(e);
 
-    if (m_isLeftButtonPressed) {
+    if (e->buttons() & Qt::LeftButton) {
         auto pos = e->pos();
         auto offset = QPoint(horizontalOffset(), verticalOffset());
         auto logicPos = pos + offset;
@@ -309,7 +328,7 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
     m_editValid = false;
     qDebug()<<"dragEnterEvent()";
     //QTreeView::dragEnterEvent(e);
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -324,7 +343,7 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
 
 void ListView::dragMoveEvent(QDragMoveEvent *e)
 {
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -355,6 +374,13 @@ void ListView::dropEvent(QDropEvent *e)
         case QAbstractItemView::DropIndicatorPosition::OnItem: {
             break;
         }
+        case QAbstractItemView::DropIndicatorPosition::OnViewport: {
+            if (e->keyboardModifiers() & Qt::ControlModifier) {
+                break;
+            } else {
+                return;
+            }
+        }
         default:
             return;
         }
@@ -363,7 +389,7 @@ void ListView::dropEvent(QDropEvent *e)
 
     m_last_index = QModelIndex();
     //m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -381,6 +407,10 @@ void ListView::dropEvent(QDropEvent *e)
             auto uri = m_proxy_model->itemFromIndex(proxy_index)->uri();
             if(!e->mimeData()->urls().contains(uri))
                 m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        } else {
+            if (m_ctrl_key_pressed) {
+                m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+            }
         }
         return;
     }
@@ -397,22 +427,22 @@ void ListView::resizeEvent(QResizeEvent *e)
     }
 }
 
-void ListView::updateGeometries()
-{
-    QTreeView::updateGeometries();
-    if (!model())
-        return;
+//void ListView::updateGeometries()
+//{
+//    QTreeView::updateGeometries();
+//    if (!model())
+//        return;
 
-    if (model()->columnCount() == 0 || model()->rowCount() == 0)
-        return;
+//    if (model()->columnCount() == 0 || model()->rowCount() == 0)
+//        return;
 
-    header()->setFixedWidth(this->width());
+//    header()->setFixedWidth(this->width());
 
-    QStyleOptionViewItem opt = viewOptions();
-    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
-    //setViewportMargins(0, header()->height(), 0, height);
-}
+//    QStyleOptionViewItem opt = viewOptions();
+//    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
+//    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
+//    //setViewportMargins(0, header()->height(), 0, height);
+//}
 
 void ListView::wheelEvent(QWheelEvent *e)
 {
@@ -442,6 +472,58 @@ void ListView::focusInEvent(QFocusEvent *e)
     }
 }
 
+void ListView::startDrag(Qt::DropActions flags)
+{
+    auto indexes = selectedIndexes();
+    if (indexes.count() > 0) {
+        auto pos = mapFromGlobal(QCursor::pos());
+        qreal scale = 1.0;
+        QWidget *window = this->window();
+        if (window) {
+            auto windowHandle = window->windowHandle();
+            if (windowHandle) {
+                scale = windowHandle->devicePixelRatio();
+            }
+        }
+
+        auto drag = new QDrag(this);
+        drag->setMimeData(model()->mimeData(indexes));
+
+        QRegion rect;
+        QHash<QModelIndex, QRect> indexRectHash;
+        for (auto index : indexes) {
+            rect += (visualRect(index));
+            indexRectHash.insert(index, visualRect(index));
+        }
+
+        QRect realRect = rect.boundingRect();
+        QPixmap pixmap(realRect.size() * scale);
+        pixmap.fill(Qt::transparent);
+        pixmap.setDevicePixelRatio(scale);
+        QPainter painter(&pixmap);
+        for (auto index : indexes) {
+            painter.save();
+            painter.translate(indexRectHash.value(index).topLeft() - rect.boundingRect().topLeft());
+            //painter.translate(-rect.boundingRect().topLeft());
+            QStyleOptionViewItem opt = viewOptions();
+            auto viewItemDelegate = static_cast<ListViewDelegate *>(itemDelegate());
+            viewItemDelegate->initIndexOption(&opt, index);
+            opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
+            opt.rect.setSize(indexRectHash.value(index).size());
+            opt.rect.moveTo(0, 0);
+            opt.state |= QStyle::State_Selected;
+            painter.setOpacity(0.8);
+            QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &painter);
+            painter.restore();
+        }
+
+        drag->setPixmap(pixmap);
+        drag->setHotSpot(pos - rect.boundingRect().topLeft() - QPoint(0, header()->height()));
+        drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+    }
+}
+
 void ListView::slotRename()
 {
     //special path like trash path not allow rename
@@ -459,7 +541,7 @@ void ListView::slotRename()
 
     //delay edit action to avoid doubleClick or dragEvent
     qDebug()<<"slotRename"<<m_editValid;
-    QTimer::singleShot(300, m_renameTimer, [&]() {
+    QTimer::singleShot(300, this, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
         if(m_editValid) {
             m_renameTimer->stop();
@@ -573,6 +655,7 @@ QRect ListView::visualRect(const QModelIndex &index) const
 //    if (index.column() == 0) {
 //        rect.setX(0);
 //    }
+
     return rect;
 }
 
@@ -584,6 +667,7 @@ void ListView::open(const QStringList &uris, bool newWindow)
 void ListView::beginLocationChange()
 {
     m_editValid = false;
+    m_last_index = QModelIndex();
     //setModel(nullptr);
     m_model->setRootUri(m_current_uri);
 }
@@ -697,7 +781,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 
@@ -754,6 +838,7 @@ void ListView2::setCurrentZoomLevel(int zoomLevel)
 {
     int base = 16;
     int adjusted = base + zoomLevel;
+
     m_view->setIconSize(QSize(adjusted, adjusted));
     m_zoom_level = zoomLevel;
 }

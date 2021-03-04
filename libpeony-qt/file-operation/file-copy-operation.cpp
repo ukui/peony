@@ -173,11 +173,13 @@ void FileCopyOperation::copyRecursively(FileNode *node)
         return;
 
     node->setState(FileNode::Handling);
+    QString destName = "";
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
     QUrl destFileUrl = destFileUri;
     node->setDestUri(destFileUri);
+    QString srcUri = node->uri();
     qDebug()<<"dest file uri:"<<destFileUri;
 
     GFileWrapperPtr destFile = wrapGFile(g_file_new_for_uri(destFileUri.toUtf8().constData()));
@@ -308,17 +310,30 @@ fallback_retry:
                     &err);
 
         if (err) {
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
-                return;
+            switch (err->code) {
+            case G_IO_ERROR_INVALID_FILENAME: {
+                QString newDestUri;
+                if (makeFileNameValidForDestFS(m_current_src_uri, m_dest_dir_uri, &newDestUri)) {
+                    if (newDestUri != destName) {
+                        destName = newDestUri;
+                        node->setDestFileName(newDestUri);
+                        goto fallback_retry;
+                    }
+                }
+                break;
             }
-            if (err->code == G_IO_ERROR_EXISTS) {
+            case G_IO_ERROR_CANCELLED:
+                return;
+            case G_IO_ERROR_EXISTS:
                 char* destFileName = g_file_get_uri(destFile.get()->get());
                 if (NULL != destFileName) {
                     m_conflict_files << destFileName;
                     g_free(destFileName);
                 }
+                break;
             }
+
+            FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
@@ -429,7 +444,7 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
-
+        fileSync(srcUri, destFileUri);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
@@ -539,46 +554,46 @@ void FileCopyOperation::run()
     nodes.clear();
 
     // judge if the operation should sync.
-    bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(m_source_uris.first().toUtf8().constData());
-    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
-    if (src_first_mount) {
-        needSync = g_mount_can_unmount(src_first_mount);
-        g_object_unref(src_first_mount);
-    } else {
-        // maybe a vfs file.
-        needSync = true;
-    }
-    g_object_unref(src_first_file);
+//    bool needSync = false;
+//    GFile *src_first_file = g_file_new_for_uri(m_source_uris.first().toUtf8().constData());
+//    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+//    if (src_first_mount) {
+//        needSync = g_mount_can_unmount(src_first_mount);
+//        g_object_unref(src_first_mount);
+//    } else {
+//        // maybe a vfs file.
+//        needSync = true;
+//    }
+//    g_object_unref(src_first_file);
 
-    GFile *dest_dir_file = g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData());
-    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
-    if (src_first_mount) {
-        needSync = g_mount_can_unmount(dest_dir_mount);
-        g_object_unref(dest_dir_mount);
-    } else {
-        needSync = true;
-    }
-    g_object_unref(dest_dir_file);
+//    GFile *dest_dir_file = g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData());
+//    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
+//    if (src_first_mount) {
+//        needSync = g_mount_can_unmount(dest_dir_mount);
+//        g_object_unref(dest_dir_mount);
+//    } else {
+//        needSync = true;
+//    }
+//    g_object_unref(dest_dir_file);
 
-    //needSync = true;
+//    //needSync = true;
 
-    if (needSync) {
-        operationStartSnyc();
-        auto info = getOperationInfo();
-        auto destDirUri = info.get()->m_dest_dir_uri;
-        auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
-        auto path = g_file_get_path(dest_file);
-        g_object_unref(dest_file);
-        if (path) {
-            QProcess p;
-            auto shell_path = g_shell_quote(path);
-            g_free(path);
-            p.start(QString("sync -d %1").arg(shell_path));
-            g_free(shell_path);
-            p.waitForFinished(-1);
-        }
-    }
+//    if (needSync) {
+//        operationStartSnyc();
+//        auto info = getOperationInfo();
+//        auto destDirUri = info.get()->m_dest_dir_uri;
+//        auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
+//        auto path = g_file_get_path(dest_file);
+//        g_object_unref(dest_file);
+//        if (path) {
+//            QProcess p;
+//            auto shell_path = g_shell_quote(path);
+//            g_free(path);
+//            p.start(QString("sync -d %1").arg(shell_path));
+//            g_free(shell_path);
+//            p.waitForFinished(-1);
+//        }
+//    }
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();

@@ -73,12 +73,20 @@
 #include <QDir>
 
 #include <QDebug>
+#include <QToolTip>
+#include <QGSettings>
+
+#include <QDrag>
+#include <QMimeData>
+#include <QPixmap>
+#include <QPainter>
 
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
+#define PANEL_SETTINGS "org.ukui.panel.settings"
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2);
+static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
@@ -183,6 +191,22 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
     });
 
+    //fix task bar overlap with desktop icon and can drag move issue
+    //bug #27811,33188
+    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
+    {
+        //panel monitor
+        QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+        connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "panelSetting changed:" << key;
+            if (key == "panelposition")
+            {
+               auto zoomLevel = this->zoomLevel();
+               this->setDefaultZoomLevel(zoomLevel);
+            }
+        });
+    }
+
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
     }
@@ -276,6 +300,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_peonyDbusSer = new PeonyDbusService(this);
     m_peonyDbusSer->DbusServerRegister();
 
+    setMouseTracking(true);//追踪鼠标
+
     this->refresh();
 }
 
@@ -289,7 +315,7 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
 {
     //fixme:
     //comment to fix change night style refresh desktop issue
-    if (e->type() == QEvent::StyleChange) {
+    if (e->type() == QEvent::StyleChange || e->type() == QEvent::ApplicationFontChange) {
         if (m_model) {
             for (auto uri : getAllFileUris()) {
                 auto pos = getFileMetaInfoPos(uri);
@@ -511,15 +537,6 @@ void DesktopIconView::initMenu()
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
                     DesktopWindow::gotoSetBackground();
-//                    QFileDialog dlg;
-//                    dlg.setNameFilters(QStringList() << "*.jpg"
-//                                       << "*.png");
-//                    if (dlg.exec()) {
-//                        auto url = dlg.selectedUrls().first();
-//                        this->setBg(url.path());
-//                        // qDebug()<<url;
-//                        Q_EMIT this->changeBg(url.path());
-//                    }
                 });
             }
             menu.exec(QCursor::pos());
@@ -549,6 +566,18 @@ void DesktopIconView::setShowHidden()
 void DesktopIconView::resolutionChange()
 {
     QSize screenSize = qApp->primaryScreen()->availableSize();
+    // note: sometimes primary screen avaliable size will be invalid.
+    // for example, hot plug in a screen, then put the primary screen
+    // below the sencondary screnn.
+    // to avoid this problem, check if avaliable size is valid.
+    if (screenSize == QSize(0, 0)) {
+        screenSize = qApp->primaryScreen()->size();
+        // if the primary screen size is invalid, do not re-layout items
+        if (screenSize == QSize(0, 0)) {
+            return;
+        }
+    }
+
     int row = 0;
     int column = 0;
     float iconWidth = 0;
@@ -558,6 +587,8 @@ void DesktopIconView::resolutionChange()
     QSize icon = gridSize();
     iconWidth = icon.width();
     iconHeigth = icon.height();
+
+    QRect screenRect = QRect(0, 0, screenSize.width(), screenSize.height());
 
     if (!m_item_rect_hash.isEmpty()) {
         QList<QPair<QRect, QString>> newPosition;
@@ -579,40 +610,76 @@ void DesktopIconView::resolutionChange()
     //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
     //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
 
-        std::sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+        std::stable_sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
 
-        m_item_rect_hash.clear();
+        //m_item_rect_hash.clear();
 
-        for (auto i = newPosition.constBegin(); i != newPosition.constEnd(); ++i) {
+        // only reset items over viewport.
+        QRegion notEmptyRegion;
+        QList<QPair<QRect, QString>> needChanged;
+        for (auto pair : newPosition) {
+            if (!screenRect.contains(pair.first)) {
+                needChanged.append(pair);
+                m_item_rect_hash.remove(pair.second);
+            } else {
+                notEmptyRegion += pair.first;
+            }
+        }
+
+        if (!needChanged.isEmpty()) {
             int posX = 0;
             int posY = 0;
-
-            Q_FOREVER {
-                // icon pos x, y
-                posX = column * iconWidth;
-                posY = row * iconHeigth;
-                // Check to see if the screen size is exceeded
-                if (posY + iconHeigth <= screenSize.height()
-                        && posX + iconWidth <= screenSize.width()) {
-                    ++row;
-                    break;
-                } else if (posY + iconHeigth > screenSize.height()
-                           && posX + iconWidth < screenSize.width()) {
-                    row = 0;
-                    ++column;
-                    continue;
-                } else {
-                    // The desktop is full of ICONS
-                    posX = 0;
-                    posY = 0;
-                    break;
+            for (int i = 0; i < needChanged.count(); i++) {
+                while (!notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+                    if (posY + iconHeigth > screenSize.height()) {
+                        posY = 0;
+                        posX += iconWidth;
+                    } else {
+                        posY += iconHeigth;
+                    }
+                }
+                QRect newRect = QRect(QPoint(posX, posY), gridSize());
+                if (posX + iconWidth > screenSize.width()) {
+                    newRect.moveTo(0, 0);
+                }
+                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+            }
+        } else {
+            // re-layout overlayed items
+            for (auto pair : newPosition) {
+                if (pair.first.topLeft() == QPoint(0, 0)) {
+                    needChanged.append(pair);
                 }
             }
+//            // first item doesn't need re-layout
+//            if (!needChanged.isEmpty())
+//                needChanged.removeFirst();
 
-            updateItemPosByUri(i->second, QPoint(posX, posY));
-            setFileMetaInfoPos(i->second, QPoint(posX, posY));
-    //        qDebug() << "uri: " << i->second << " --- pos: " << QPoint(posX, posY);
+            int posX = 0;
+            int posY = 0;
+            for (int i = 0; i < needChanged.count(); i++) {
+                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+                    if (posY + iconHeigth * 2 > screenSize.height()) {
+                        posY = 0;
+                        posX += iconWidth;
+                    } else {
+                        posY += iconHeigth;
+                    }
+                }
+                QRect newRect = QRect(QPoint(posX, posY), gridSize());
+                if (posX + iconWidth > screenSize.width()) {
+                    newRect.moveTo(0, 0);
+                }
+                notEmptyRegion += newRect;
+                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+            }
         }
+    }
+
+    for (auto uri : m_item_rect_hash.keys()) {
+        auto rect = m_item_rect_hash.value(uri);
+        updateItemPosByUri(uri, rect.topLeft());
+        setFileMetaInfoPos(uri, rect.topLeft());
     }
 
     this->saveAllItemPosistionInfos();
@@ -649,6 +716,7 @@ void DesktopIconView::openFileByUri(QString uri)
                                       tr("Open directory failed, you have no permission!"));
                 return;
             }
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
             QProcess p;
             QUrl url = uri;
@@ -681,10 +749,6 @@ void DesktopIconView::initDoubleClick()
     connect(this, &QListView::activated, this, [=](const QModelIndex &index) {
         qDebug() << "double click" << index.data(FileItemModel::UriRole);
         auto uri = index.data(FileItemModel::UriRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
         openFileByUri(uri);
     }, Qt::UniqueConnection);
 }
@@ -1334,8 +1398,14 @@ void DesktopIconView::setEditFlag(bool edit)
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    m_press_pos = e->pos();
     // bug extend selection bug
     m_real_do_edit = false;
+
+    if (e->modifiers() & Qt::ControlModifier)
+        m_ctrl_key_pressed = true;
+    else
+        m_ctrl_key_pressed = false;
 
     if (!m_ctrl_or_shift_pressed) {
         if (!indexAt(e->pos()).isValid()) {
@@ -1381,6 +1451,18 @@ void DesktopIconView::mouseReleaseEvent(QMouseEvent *e)
     this->viewport()->update(viewport()->rect());
 }
 
+void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
+{
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
+    QListView::mouseMoveEvent(e);
+}
+
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     QListView::mouseDoubleClickEvent(event);
@@ -1390,16 +1472,13 @@ void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_real_do_edit = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
-        m_ctrl_key_pressed = true;
-    else
-        m_ctrl_key_pressed = false;
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug()<<"drag enter event" <<action;
     if (e->mimeData()->hasUrls()) {
         e->setDropAction(action);
-        e->acceptProposedAction();
+        e->accept();
+        //e->acceptProposedAction();
     }
 
     if (e->source() == this) {
@@ -1410,7 +1489,7 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
 void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 {
     m_real_do_edit = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -1614,6 +1693,52 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     //FIXME: save item position
 }
 
+void DesktopIconView::startDrag(Qt::DropActions supportedActions)
+{
+    auto indexes = selectedIndexes();
+    if (indexes.count() > 0) {
+        auto pos = mapFromGlobal(QCursor::pos());
+        qreal scale = 1.0;
+        QWidget *window = this->window();
+        if (window) {
+            auto windowHandle = window->windowHandle();
+            if (windowHandle) {
+                scale = windowHandle->devicePixelRatio();
+            }
+        }
+
+        auto drag = new QDrag(this);
+        drag->setMimeData(model()->mimeData(indexes));
+
+        QRegion rect;
+        QHash<QModelIndex, QRect> indexRectHash;
+        for (auto index : indexes) {
+            rect += (visualRect(index));
+            indexRectHash.insert(index, visualRect(index));
+        }
+
+        QRect realRect = rect.boundingRect();
+        QPixmap pixmap(realRect.size() * scale);
+        pixmap.fill(Qt::transparent);
+        pixmap.setDevicePixelRatio(scale);
+        QPainter painter(&pixmap);
+        for (auto index : indexes) {
+            painter.save();
+            painter.translate(indexRectHash.value(index).topLeft() - rect.boundingRect().topLeft());
+            itemDelegate()->paint(&painter, viewOptions(), index);
+            painter.restore();
+        }
+
+        drag->setPixmap(pixmap);
+        drag->setHotSpot(pos - rect.boundingRect().topLeft());
+        drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+
+    } else {
+        return QListView::startDrag(Qt::MoveAction|Qt::CopyAction);
+    }
+}
+
 const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
 {
     return item->font;
@@ -1701,7 +1826,7 @@ int DesktopIconView::updateBWList()
     return 0;
 }
 
-static bool iconSizeLessThan (QPair<QRect, QString>& p1, QPair<QRect, QString>& p2)
+static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)
 {
     if (p1.first.x() > p2.first.x())
         return false;

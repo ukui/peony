@@ -189,11 +189,14 @@ public Q_SLOTS:
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
+
+    void startDrag(Qt::DropActions supportedActions);
 
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
@@ -247,6 +250,8 @@ private:
     QMap<QScreen*, bool> m_screens;
     PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
+
+    QPoint m_press_pos;
 };
 
 }

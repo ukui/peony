@@ -271,8 +271,7 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     m_reg_usr_name_editor->setFixedHeight(36);
     m_reg_usr_passwd_editor->setFixedHeight(36);
     m_reg_usr_combox->setFixedHeight(36);
-    // FIXME://
-    m_reg_usr_combox->hide();
+
     m_reg_usr_passwd_editor->setEchoMode(QLineEdit::Password);
     m_reg_usr_layout->addWidget(m_reg_usr_name_label,       0, 0);
     m_reg_usr_layout->addWidget(m_reg_usr_name_editor,      0, 1);

@@ -47,8 +47,17 @@ public:
      */
     explicit FileRenameOperation(QString uri, QString newName);
 
-    void setAutoOverwrite(){
-        m_auto_overwrite = true;
+    void setAutoOverwrite () {
+//        m_auto_overwrite = true;
+        m_apply_all = OverWriteAll;
+    }
+
+    void setAutoBackup () {
+        m_apply_all = BackupAll;
+    }
+
+    void setAutoIgnore () {
+        m_apply_all = IgnoreAll;
     }
 
     void run() override;
@@ -57,12 +66,14 @@ public:
     }
 
 private:
+    ExceptionResponse prehandle(GError *err);
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
     QString m_uri = nullptr;
     QString m_new_name = nullptr;
 
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
-    bool m_auto_overwrite;
+
+    ExceptionResponse m_apply_all = Other;
 };
 
 }

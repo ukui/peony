@@ -80,12 +80,12 @@
 #include <KWindowSystem>
 
 #include <QDateTime>
+#include <QDBusInterface>
 #include <QDebug>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
 #define FALLBACK_COLOR "primary-color"
-#define FONT_SETTINGS "org.ukui.style"
 
 using namespace Peony;
 
@@ -190,7 +190,16 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             &DesktopWindow::virtualGeometryChangedProcess);
 
     if (!m_is_primary || true) {
-        setBg(getCurrentBgPath());
+        //use account background first
+        auto accountBack = getAccountBackground();
+        if (accountBack != "" && QFile::exists(accountBack))
+            setBg(accountBack);
+        else
+        {
+            setBg(getCurrentBgPath());
+            //update user background
+            setAccountBackground();
+        }
         // do not animate while window first create.
         m_opacity->setCurrentTime(m_opacity->totalDuration());
         return;
@@ -201,7 +210,9 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
              <<"ms"<<QDateTime::currentMSecsSinceEpoch();
 }
 
-DesktopWindow::~DesktopWindow() {}
+DesktopWindow::~DesktopWindow() {
+    setCentralWidget(nullptr);
+}
 
 void DesktopWindow::initGSettings() {
     qDebug() <<"DesktopWindow initGSettings";
@@ -251,10 +262,13 @@ void DesktopWindow::initGSettings() {
             if (QFile::exists(bg_path))
             {
                 qDebug() << "bg_path:" <<bg_path << m_current_bg_path;
-                if (m_current_bg_path == bg_path)
-                    return;
+                //comment to fix name not change but file changed issue
+//                if (m_current_bg_path == bg_path)
+//                    return;
                 qDebug() << "set a new bg picture:" <<bg_path;
                 this->setBg(bg_path);
+                //fix name not change but file changed issue
+                setAccountBackground();
                 return;
             }
 
@@ -340,9 +354,67 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
     QMainWindow::paintEvent(e);
 }
 
-const QString DesktopWindow::getCurrentBgPath() {
+QString DesktopWindow::getAccountBackground()
+{
+    uid_t uid = getuid();
+    QDBusInterface iface("org.freedesktop.Accounts", "/org/freedesktop/Accounts",
+                         "org.freedesktop.Accounts",QDBusConnection::systemBus());
+
+    QDBusReply<QDBusObjectPath> userPath = iface.call("FindUserById", (qint64)uid);
+    if(!userPath.isValid())
+        qWarning() << "Get UserPath error:" << userPath.error();
+    else {
+        QDBusInterface userIface("org.freedesktop.Accounts", userPath.value().path(),
+                                 "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
+        QDBusReply<QDBusVariant> backgroundReply = userIface.call("Get", "org.freedesktop.Accounts.User", "BackgroundFile");
+        if(backgroundReply.isValid())
+            return  backgroundReply.value().variant().toString();
+    }
+    return "";
+}
+
+void DesktopWindow::setAccountBackground()
+{
+    QDBusInterface * interface = new QDBusInterface("org.freedesktop.Accounts",
+                                     "/org/freedesktop/Accounts",
+                                     "org.freedesktop.Accounts",
+                                     QDBusConnection::systemBus());
+
+    if (!interface->isValid()){
+        qCritical() << "Create /org/freedesktop/Accounts Client Interface Failed " << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusReply<QDBusObjectPath> reply =  interface->call("FindUserByName", g_get_user_name());
+    QString userPath;
+    if (reply.isValid()){
+        userPath = reply.value().path();
+    }
+    else {
+        qCritical() << "Call 'GetComputerInfo' Failed!" << reply.error().message();
+        return;
+    }
+
+    QDBusInterface * useriFace = new QDBusInterface("org.freedesktop.Accounts",
+                                                    userPath,
+                                                    "org.freedesktop.Accounts.User",
+                                                    QDBusConnection::systemBus());
+
+    if (!useriFace->isValid()){
+        qCritical() << QString("Create %1 Client Interface Failed").arg(userPath) << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusMessage msg = useriFace->call("SetBackgroundFile", m_current_bg_path);
+    qDebug() << "setAccountBackground path:" <<m_current_bg_path;
+    if (!msg.errorMessage().isEmpty())
+        qDebug() << "update user background file error: " << msg.errorMessage();
+}
+
+const QString DesktopWindow::getCurrentBgPath()
+{
     // FIXME: implement custom bg settings storage
-    if (m_current_bg_path.isEmpty()) {
+    if (m_current_bg_path.isEmpty() || m_current_bg_path == "") {
         if (m_bg_settings)
             m_current_bg_path = m_bg_settings->get("pictureFilename").toString();
         else
@@ -364,7 +436,7 @@ const QColor DesktopWindow::getCurrentColor()
 
 void DesktopWindow::setBg(const QString &path) {
     qDebug() << "DesktopWindow::setBg:"<<path;
-    if (path.isNull()) {
+    if (path.isNull() || path == "") {
         setBg(getCurrentColor());
         return;
     }
@@ -405,9 +477,13 @@ void DesktopWindow::setBg(const QColor &color) {
 }
 
 void DesktopWindow::setBgPath(const QString &bgPath) {
-    if (m_bg_settings) {
-        m_bg_settings->set(PICTRUE, bgPath);
-    } else {
+    if (m_bg_settings)
+    {
+        //add same path check to break endless call
+        if (m_bg_settings->get(PICTRUE).isNull() || m_bg_settings->get(PICTRUE) != bgPath)
+            m_bg_settings->set(PICTRUE, bgPath);
+    }
+    else{
         m_backup_setttings->setValue("pictrue", bgPath);
         m_backup_setttings->sync();
         Q_EMIT this->changeBg(bgPath);
@@ -494,10 +570,12 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
     updateWinGeometry();
+    qDebug() << "geometryChangedProcess:" <<geometry <<topLevelWidget()->winId();
     KWindowSystem::setState(topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepBelow));
     QTimer::singleShot(500, this, [=](){
         auto view = PeonyDesktopApplication::getIconView();
         if (view->topLevelWidget()->isVisible()) {
+            qDebug() << "geometryChangedProcess visible view:" <<view->topLevelWidget()->winId();
             KWindowSystem::raiseWindow(view->topLevelWidget()->winId());
             KWindowSystem::setState(view->topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepAbove));
         }
@@ -507,6 +585,7 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::updateView() {
     auto avaliableGeometry = m_screen->availableGeometry();
     auto geomerty = m_screen->geometry();
+    qDebug() << "updateView:" <<avaliableGeometry<<geomerty;
     int top = qAbs(avaliableGeometry.top() - geomerty.top());
     int left = qAbs(avaliableGeometry.left() - geomerty.left());
     int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
@@ -526,6 +605,8 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
+    qDebug() << "updateWinGeometry: args:" <<screenName <<screenSize<<g<<vg<<ag<<this->geometry();
+
 //    this->move(m_screen->geometry().topLeft());
 //    this->setFixedSize(m_screen->geometry().size());
 //    /*!
@@ -544,10 +625,14 @@ void DesktopWindow::updateWinGeometry() {
             this->show();
         }
     } else {
-        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
-            this->hide();
-        else
-            this->show();
+//        qDebug() << "non primaryScreen:" <<m_screen->geometry() <<qApp->primaryScreen()->geometry();
+//        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
+//        {
+//            this->hide();
+//            qWarning() << "error: non primaryScreen geometry same with primaryScreen ! " <<m_screen->geometry();
+//        }
+//        else
+//            this->show();
     }
 
     //updateView();

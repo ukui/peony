@@ -126,11 +126,13 @@ protected:
 
     void resizeEvent(QResizeEvent *e) override;
 
-    void updateGeometries() override;
+//    void updateGeometries() override;
 
     void wheelEvent (QWheelEvent *e) override;
 
     void focusInEvent(QFocusEvent *e) override;
+
+    void startDrag(Qt::DropActions flags) override;
 
 private Q_SLOTS:
     void slotRename();
@@ -267,7 +269,7 @@ private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 0;
+    int m_zoom_level = 20;
     bool m_need_resize_header;
 };
 

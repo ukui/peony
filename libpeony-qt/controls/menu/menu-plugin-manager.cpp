@@ -108,6 +108,7 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
                 || selectionUris.first().startsWith("trash:///")
                 || selectionUris.first().startsWith("recent:///")
+                || selectionUris.first().startsWith("mtp://")
                 || originPath.startsWith(desktopPath))
                 return l;
 
@@ -168,6 +169,11 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
                 bool checked = ids.contains(item->id());
                 auto a = menu->addAction(item->name(), [=]() {
                     if (!checked) {
+                        // note: while add label to file at first time (usually new user created),
+                        // it might fail to add a label correctly, but second time will work.
+                        // it might be a bug of gvfsd-metadata. anyway we should to avoid this
+                        // situation.
+                        FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
                         FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
                     } else {
                         FileLabelModel::getGlobalModel()->removeFileLabel(uri, item->id());

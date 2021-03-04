@@ -154,6 +154,8 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
     auto childIndex = model->index(sourceRow, 0, sourceParent);
     if (childIndex.isValid()) {
         auto item = static_cast<FileItem*>(childIndex.internalPointer());
+        if(!item->shouldShow())
+            return false;
         if (!m_show_hidden) {
             //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
             //QMessageBox::warning(nullptr, "filter", item->m_info->displayName());

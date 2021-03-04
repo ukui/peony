@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QPainter>
+#include <QPainterPath>
 #include <QtMath>
 
 AboutDialog::AboutDialog(QWidget *parent) :
@@ -59,7 +60,7 @@ void AboutDialog::initUI()
 
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
-	setAttribute(Qt::WA_TranslucentBackground, true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);//modal、borderless window
 
     ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
@@ -71,7 +72,7 @@ void AboutDialog::initUI()
 	ui->closeBtn->setPalette(palette);
     ui->closeBtn->setIconSize(QSize(24,24));
     ui->closeBtn->setProperty("isWindowButton",0x2);
-    ui->closeBtn->setProperty("useIconHighlightEffect",0x8);
+    ui->closeBtn->setProperty("useIconHighlightEffect",0x2);
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
 	
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
@@ -106,6 +107,9 @@ void AboutDialog::initUI()
 
 QString AboutDialog::getCurrentVersion()
 {
+    //use self define main version
+    return VERSION;
+
     FILE *pp = NULL;
     char *line = NULL;
     size_t len = 0;
@@ -168,7 +172,7 @@ void AboutDialog::paintEvent(QPaintEvent *event)
     }
 
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QBrush(Qt::white));
+    painter.setBrush(palette().color(QPalette::Active, QPalette::Base));
     painter.setPen(Qt::transparent);
     QRect rect = this->rect();
     rect.setX(5);

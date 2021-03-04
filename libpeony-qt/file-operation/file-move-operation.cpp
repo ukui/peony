@@ -251,7 +251,6 @@ retry:
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                           G_FILE_COPY_ALL_METADATA|
                                            G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
@@ -265,7 +264,6 @@ retry:
                 g_file_move(srcFile.get()->get(),
                             destFile.get()->get(),
                             GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                           G_FILE_COPY_ALL_METADATA|
                                            G_FILE_COPY_OVERWRITE),
                             getCancellable().get()->get(),
                             GFileProgressCallback(progress_callback),
@@ -355,6 +353,7 @@ retry:
         }
         //FIXME: ignore the total size when using native move.
         operationProgressedOne(file->uri(), file->destUri(), 0);
+        fileSync(file->uri(), file->destUri());
     }
     //native move has not clear operation.
     operationProgressed();
@@ -461,7 +460,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             break;
         }
         case FileNode::Handling: {
-            if (node->responseType() == OverWriteOne || node->responseType() == OverWriteAll) {
+            if (node->responseType() == OverWriteOne || node->responseType() == OverWriteAll || node->responseType() == Cancel) {
                 break;
             }
             auto destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
@@ -610,6 +609,7 @@ void FileMoveOperation::copyRecursively(FileNode *node)
     m_current_dest_dir_uri = dest_dir_uri;
     g_free(dest_dir_uri);
     g_object_unref(dest_parent);
+    QString destName = "";
 
 fallback_retry:
     if (node->isFolder()) {
@@ -752,10 +752,23 @@ fallback_retry:
 
         if (err) {
             setHasError(true);
-            FileOperationError except;
-            if (err->code == G_IO_ERROR_CANCELLED) {
+            switch (err->code) {
+            case G_IO_ERROR_CANCELLED:
                 return;
+            case G_IO_ERROR_INVALID_FILENAME: {
+                QString newDestUri;
+                if (makeFileNameValidForDestFS(m_current_src_uri, m_dest_dir_uri, &newDestUri)) {
+                    if (newDestUri != destName) {
+                        destName = newDestUri;
+                        node->setDestFileName(newDestUri);
+                        goto fallback_retry;
+                    }
+                }
+                break;
             }
+            }
+
+            FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
             int handle_type = prehandle(err);
             except.isCritical = true;
@@ -860,7 +873,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
-                //node->setState(FileNode::Unhandled);
+                node->setErrorResponse(Cancel);
                 cancel();
                 break;
             }
@@ -870,6 +883,7 @@ fallback_retry:
         } else {
             //node->setState(FileNode::Handled);
         }
+        fileSync(node->uri(), realDestUri);
         m_current_offset += node->size();
         auto fileIconName = FileUtils::getFileIconName(m_current_src_uri, false);
         auto destFileName = FileUtils::isFileDirectory(node->destUri()) ? nullptr : node->destUri();
@@ -901,7 +915,6 @@ void FileMoveOperation::deleteRecursively(FileNode *node)
         }
     }
     g_object_unref(file);
-    qDebug()<<"deleted";
     operationAfterProgressedOne(node->uri());
 }
 
@@ -1035,14 +1048,14 @@ start:
         auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
         auto path = g_file_get_path(dest_file);
         g_object_unref(dest_file);
-        if (path) {
-            QProcess p;
-            auto shell_path = g_shell_quote(path);
-            g_free(path);
-            p.start(QString("sync -d %1").arg(shell_path));
-            g_free(shell_path);
-            p.waitForFinished(-1);
-        }
+//        if (path) {
+//            QProcess p;
+//            auto shell_path = g_shell_quote(path);
+//            g_free(path);
+//            p.start(QString("sync -d %1").arg(shell_path));
+//            g_free(shell_path);
+//            p.waitForFinished(-1);
+//        }
     }
     qDebug()<<"finished";
 end:

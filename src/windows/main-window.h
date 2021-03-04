@@ -25,6 +25,8 @@
 
 #include <QMainWindow>
 #include "FMWindowIface.h"
+#include "file-label-box.h"
+#include <QFileSystemWatcher>
 
 class MainWindowPrivate;
 class BorderShadowEffect;
@@ -167,6 +169,8 @@ protected:
 
     QRect sideBarRect();
 
+    void startMonitorThumbnailForbidStatus();
+
 private:
     BorderShadowEffect *m_effect;
 
@@ -178,6 +182,7 @@ private:
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
     Peony::StatusBar *m_status_bar;
+    FileLabelBox *m_label_box;
 
     QString m_last_search_path = "";
     QString m_last_key = "";
@@ -197,6 +202,10 @@ private:
     QWidgetList m_focus_list;
 
     bool m_shortcuts_set = false;
+
+
+    QFileSystemWatcher *m_thumbnail_watcher;
+    bool m_do_not_thumbnail = false;
 
     const int WINDOW_MINIMUM_WIDTH = 596;
 };

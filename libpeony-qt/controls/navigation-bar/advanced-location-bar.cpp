@@ -44,7 +44,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_search_bar = new Peony::SearchBarContainer(this);
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
         auto curUri = m_bar->getCurentUri();
-        if (! curUri.startsWith("trash:///"))
+        if (! curUri.startsWith("trash:///") && ! curUri.startsWith("recent:///"))
         {
             layout->setCurrentWidget(m_edit);
             m_edit->setFocus();
@@ -53,9 +53,16 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     });
 
     m_edit->connect(m_edit, &Peony::PathEdit::uriChangeRequest, [=](const QString uri) {
-        m_bar->setRootUri(uri);
+        //qDebug() << "uriChangeRequest:" <<uri;
+        QString targetUri = uri;
+        //fix bug 38942
+        while (targetUri.endsWith("/") && targetUri != "file:///")
+        {
+            targetUri = targetUri.left(targetUri.lastIndexOf("/"));
+        }
+        m_bar->setRootUri(targetUri);
         layout->setCurrentWidget(m_bar);
-        Q_EMIT this->updateWindowLocationRequest(uri);
+        Q_EMIT this->updateWindowLocationRequest(targetUri);
         m_text = m_edit->text();
         if (! m_text.startsWith("search://"))
             m_last_non_search_path = m_text;
@@ -78,6 +85,7 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
     m_search_bar->connect(m_search_bar, &Peony::SearchBarContainer::returnPressed, [=]() {
         auto key = m_search_bar->text();
+        key = processSpecialChar(key);
         qDebug() << "search key:" <<key <<m_last_key;
         if (key != m_last_key)
         {
@@ -98,6 +106,25 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
 
     setLayout(layout);
     setFixedHeight(m_edit->height());
+}
+
+QString AdvancedLocationBar::processSpecialChar(QString key)
+{
+    if (key.length() == 0)
+        return key;
+    //qDebug() << "enter processSpecialChar:" <<key;
+    for(auto mchar : SPECIAL_CHARS)
+    {
+        if (key.contains(mchar))
+        {
+            QString tmp = mchar;
+            tmp.replace("\\", "");
+            key = key.replace(tmp, "\\" + mchar);
+        }
+    }
+
+    //qDebug() << "ret processSpecialChar:" <<key;
+    return key;
 }
 
 void AdvancedLocationBar::updateLocation(const QString &uri)

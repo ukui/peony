@@ -31,6 +31,8 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QIcon>
+#include <sys/stat.h>
+#include <udisks/udisks.h>
 
 using namespace Peony;
 
@@ -113,34 +115,14 @@ bool FileUtils::getFileIsFolder(const GFileWrapperPtr &file)
 
 bool FileUtils::getFileIsFolder(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     return info.get()->isDir();
-    if (!info.get()->isEmptyInfo()) {
-        return info.get()->isDir();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    GFileType type = g_file_query_file_type(file.get()->get(),
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            nullptr);
-    return type == G_FILE_TYPE_DIRECTORY;
 }
 
 bool FileUtils::getFileIsSymbolicLink(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     return info.get()->isSymbolLink();
-    if (!info.get()->isEmptyInfo()) {
-        return info.get()->isSymbolLink();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    GFileType type = g_file_query_file_type(file.get()->get(),
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            nullptr);
-    return type == G_FILE_TYPE_SYMBOLIC_LINK;
 }
 
 QStringList FileUtils::getChildrenUris(const QString &directoryUri)
@@ -215,22 +197,8 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->displayName();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->displayName();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
-                              G_FILE_QUERY_INFO_NONE,
-                              nullptr,
-                              nullptr));
-    if (!info.get()->get())
-        return nullptr;
-    return g_file_info_get_display_name(info.get()->get());
 }
 
 QString FileUtils::getFileIconName(const QString &uri, bool checkValid)
@@ -301,21 +269,8 @@ GErrorWrapperPtr FileUtils::getEnumerateError(const QString &uri)
 
 QString FileUtils::getTargetUri(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->targetUri();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->targetUri();
-    }
-
-    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
-                              G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                              G_FILE_QUERY_INFO_NONE,
-                              nullptr,
-                              nullptr));
-    return g_file_info_get_attribute_string(info.get()->get(),
-                                            G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
 }
 
 
@@ -330,26 +285,8 @@ QString FileUtils::getEncodedUri(const QString &uri)
 
 QString FileUtils::getSymbolicTarget(const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(uri);
     return fileInfo.get()->symlinkTarget();
-    if (!fileInfo.get()->isEmptyInfo()) {
-        return fileInfo.get()->symlinkTarget();
-    }
-
-    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
-    GFileInfo *info = g_file_query_info(file,
-                                        G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        nullptr,
-                                        nullptr);
-    g_object_unref(file);
-    if (info) {
-        return g_file_info_get_symlink_target(info);
-        g_object_unref(info);
-    }
-
-    return uri;
 }
 
 bool FileUtils::isMountPoint(const QString &uri)
@@ -482,7 +419,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             auto current_dir = g_get_current_dir();
             QDir currentDir = QDir(current_dir);
             g_free(current_dir);
-            currentDir.cd(path);
+            //currentDir.cd(path);
             auto absPath = currentDir.absoluteFilePath(path);
             path = absPath;
             url = QUrl::fromLocalFile(absPath);
@@ -575,7 +512,6 @@ bool FileUtils::isReadonly(const QString& uri)
         bool read = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
         bool write = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
         bool execute = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
-
         if (read && !write && !execute) {
             return true;
         }
@@ -710,4 +646,99 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
                 volumeName = finalName;
         }
     }
+}
+
+
+/* @Func: return abstract device path
+ * @uri : such as "computer:///xxx.drive"
+ * @return: nullptr or such as "/dev/sdb1"
+ */
+QString FileUtils::getUnixDevice(const QString &uri)
+{
+    GFile* file;
+    GFileInfo* fileInfo;
+    GCancellable* cancel;
+    QString devicePath,targetUri;
+    const char *tmpPath;
+    char *mountPoint;
+
+    if(uri.isEmpty())
+        return nullptr;
+
+    cancel = g_cancellable_new();
+    file = g_file_new_for_uri(uri.toUtf8().data());
+    if(!file ||!cancel)
+        return nullptr;
+
+    //query device path by "mountable::unix-device-file"
+    fileInfo = g_file_query_info(file,"*",G_FILE_QUERY_INFO_NONE,cancel,NULL);
+    tmpPath = g_file_info_get_attribute_as_string(fileInfo,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
+    devicePath = tmpPath;
+    if(!devicePath.isEmpty()){
+        g_object_unref(fileInfo);
+        g_cancellable_cancel(cancel);
+        g_object_unref(cancel);
+        g_object_unref(file);
+        return devicePath;
+    }
+
+    //query device path by "standard::target-uri"
+    targetUri = getTargetUri(uri);
+    if(targetUri.isEmpty())
+        return nullptr;
+
+    mountPoint = g_filename_from_uri(targetUri.toUtf8().data(),NULL,NULL);
+    if(mountPoint)
+        tmpPath = Peony::VolumeManager::getUnixDeviceFileFromMountPoint(mountPoint);
+    devicePath = tmpPath;
+
+    g_free(mountPoint);
+    g_object_unref(fileInfo);
+    g_cancellable_cancel(cancel);
+    g_object_unref(cancel);
+    g_object_unref(file);
+
+    return devicePath;
+}
+
+double FileUtils::getDeviceSize(const gchar * device_name)
+{
+    struct stat statbuf;
+    const gchar *crypto_backing_device;
+    UDisksObject *object, *crypto_backing_object;
+    UDisksBlock *block;
+    UDisksClient *client =udisks_client_new_sync (NULL,NULL);
+
+    object = NULL;
+    if (stat (device_name, &statbuf) != 0)
+    {
+        return -1;
+    }
+
+    block = udisks_client_get_block_for_dev (client, statbuf.st_rdev);
+    if (block == NULL)
+    {
+        return -1;
+    }
+
+    object = UDISKS_OBJECT (g_dbus_interface_dup_object (G_DBUS_INTERFACE (block)));
+    g_object_unref (block);
+
+    crypto_backing_device = udisks_block_get_crypto_backing_device ((udisks_object_peek_block (object)));
+    crypto_backing_object = udisks_client_get_object (client, crypto_backing_device);
+    if (crypto_backing_object != NULL)
+    {
+        g_object_unref (object);
+        object = crypto_backing_object;
+    }
+
+    block = udisks_object_get_block (object);
+    guint64 size = udisks_block_get_size(block);
+    double volume_size =(double)size/1024/1024/1024;
+
+    g_clear_object(&client);
+    g_object_unref(object);
+    g_object_unref(block);
+
+    return volume_size;
 }

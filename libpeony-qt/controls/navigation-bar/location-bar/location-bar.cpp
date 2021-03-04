@@ -32,7 +32,9 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-enumerator.h"
+#include "global-settings.h"
 
+#include <QGSettings>
 #include <QUrl>
 #include <QMenu>
 
@@ -111,6 +113,18 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     connect(m_indicator_menu, &QMenu::aboutToHide, this, [=](){
         m_indicator->setArrowType(Qt::RightArrow);
     });
+
+    //fix bug 40503, button text not show completely issue when fontsize is very big
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "systemFontSize") {
+                updateButtons();
+            }
+        });
+    }
 }
 
 LocationBar::~LocationBar()
@@ -189,6 +203,60 @@ void LocationBar::clearButtons()
     m_buttons.clear();
 }
 
+void LocationBar::updateButtons()
+{
+    //clear buttons
+    clearButtons();
+
+    if (m_current_uri.startsWith("search://")) {
+        m_indicator->setArrowType(Qt::NoArrow);
+        addButton(m_current_uri, false, false);
+        return;
+    }
+
+    auto uri = m_current_uri;
+    m_current_info = FileInfo::fromUri(uri);
+    m_buttons_info.clear();
+    while (!uri.isEmpty() && uri != "") {
+        m_buttons_info.prepend(FileInfo::fromUri(uri));
+        uri = FileUtils::getParentUri(uri);
+    }
+
+    m_querying_buttons_info = m_buttons_info;
+
+    for (auto info : m_buttons_info) {
+        auto infoJob = new FileInfoJob(info);
+        infoJob->setAutoDelete();
+        connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            // enumerate buttons info directory
+            auto enumerator = new FileEnumerator;
+            enumerator->setEnumerateDirectory(info.get()->uri());
+            enumerator->setEnumerateWithInfoJob();
+
+            connect(enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
+                if (successed) {
+                    auto infos = enumerator->getChildren();
+                    m_infos_hash.insert(info.get()->uri(), infos);
+                    m_querying_buttons_info.removeOne(info);
+                    if (m_querying_buttons_info.isEmpty()) {
+                        // add buttons
+                        clearButtons();
+                        for (auto info : m_buttons_info) {
+                            addButton(info.get()->uri(), true, true);
+                        }
+                        doLayout();
+                    }
+                }
+
+                enumerator->deleteLater();
+            });
+
+            enumerator->enumerateAsync();
+        });
+        infoJob->queryAsync();
+    }
+}
+
 void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 {
     setIcon = true;
@@ -226,7 +294,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
         }
-        button->setText(url.fileName());
+        button->setText(displayName);
+        m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
         if (uri == "file:///") {
             auto text = FileUtils::getFileDisplayName("computer:///root.link");

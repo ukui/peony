@@ -47,17 +47,37 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
        quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
-       //get the rom size
-       //char *total_format = g_format_size(total);
-
-       //Calculated by 1024 bytes
-       char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-
        //add the rom size value into  rom_size combox
-       ui->comboBox_rom_size->addItem(total_format);
+       //fix system Udisk calculate size wrong issue
+       QString m_volume_name, m_unix_device, m_display_name;
+       FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
+       bool hasSetRomSize = false;
+       //U disk or other mobile device
+       if (! m_unix_device.isEmpty() && ! m_uris.startsWith("computer:///WDC"))
+       {
+          char dev_name[256] ={0};
+          strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+          auto size = FileUtils::getDeviceSize(dev_name);
+          if (size > 0)
+          {
+              QString sizeInfo = QString::number(size, 'f', 1);
+              qDebug() << "size:" <<size;
+              sizeInfo += "G";
+              ui->comboBox_rom_size->addItem(sizeInfo);
+              hasSetRomSize = true;
+          }
+       }
 
+       if (! hasSetRomSize)
+       {
+           //Calculated by 1024 bytes
+           char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+           ui->comboBox_rom_size->addItem(total_format);
+       }
 
        auto mount = VolumeManager::getMountFromUri(targetUri);
+       //fix name not show complete in bottom issue, bug#36887
+       ui->lineEdit_device_name->setFixedHeight(40);
        ui->lineEdit_device_name->setText(mount->name());
 
        ui->progressBar_process->setValue(0);
@@ -93,6 +113,10 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
     if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
         flags = 1;
+        char *uri = g_file_get_uri(file);
+        VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
     }
 
     //add QMessageBox error ,let user know the error messages
@@ -243,7 +267,6 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
     return 0;
 }
 
-
 void Format_Dialog::formatloop(){
 
     if (b_finished)
@@ -273,7 +296,9 @@ void Format_Dialog::formatloop(){
         cost = 100;
 
     if (m_simulate_progress >= pre){
-        m_simulate_progress += (cost - pre)/100;
+        //fix waiting in 100% issue
+        if (m_simulate_progress < 99)
+           m_simulate_progress += (cost - pre)/100;
     }
     else{
         m_simulate_progress = pre;
@@ -582,10 +607,6 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
                         data);
 
 }
-
-
-
-
 
 UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,const gchar *block_device)
 {

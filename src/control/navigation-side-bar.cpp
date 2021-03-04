@@ -58,6 +58,7 @@
 #include <QMimeData>
 
 #include <QTimer>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -90,13 +91,14 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
     header()->setSectionResizeMode(QHeaderView::Custom);
+    header()->setStretchLastSection(false);
     header()->hide();
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     setExpandsOnDoubleClick(false);
 
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     m_model = new Peony::SideBarModel(this);
     m_proxy_model = new Peony::SideBarProxyFilterSortModel(this);
@@ -171,8 +173,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            auto newWindow = window->create(targetUri);
-                            dynamic_cast<QWidget *>(newWindow)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    auto newWindow = window->create(targetUri);
+                                    dynamic_cast<QWidget *>(newWindow)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             auto newWindow = window->create(item->uri());
                             dynamic_cast<QWidget *>(newWindow)->show();
@@ -194,8 +207,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            window->addNewTabs(QStringList()<<targetUri);
-                            dynamic_cast<QWidget *>(window)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    window->addNewTabs(QStringList()<<targetUri);
+                                    dynamic_cast<QWidget *>(window)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             window->addNewTabs(QStringList()<<item->uri());
                             dynamic_cast<QWidget *>(window)->show();
@@ -249,13 +273,17 @@ void NavigationSideBar::paintEvent(QPaintEvent *event)
 void NavigationSideBar::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
-    if (header()->count() > 0)
-        header()->resizeSection(0, this->viewport()->width() - 30);
+    if (header()->count() > 0) {
+        this->setColumnWidth(1, 20);
+        header()->resizeSection(0, this->viewport()->width() - this->columnWidth(1));
+    }
 }
 
 void NavigationSideBar::dropEvent(QDropEvent *e)
 {
-    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem) {
+    QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
+
+    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
         // add to bookmark
         e->setAccepted(true);
 
@@ -275,6 +303,13 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
             }
         }
     }
+
+    if (e->keyboardModifiers() == Qt::ControlModifier) {
+        m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+        e->accept();
+        return;
+    }
+
     QTreeView::dropEvent(e);
 }
 

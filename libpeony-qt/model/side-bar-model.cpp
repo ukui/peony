@@ -306,8 +306,28 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
 
 bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if (data->urls().isEmpty())
+    auto urls = data->urls();
+
+    QStringList srcUris;
+    if (data->hasFormat("peony-qt/encoded-uris")) {
+        srcUris = data->text().split(" ");
+        for (QString uri : srcUris) {
+            if (uri.startsWith("recent://"))
+                srcUris.removeOne(uri);
+        }
+    } else {
+        for (auto url : urls) {
+            //can not drag file from recent
+            if (url.url().startsWith("recent://"))
+                return false;
+            srcUris<<url.url();
+        }
+    }
+    srcUris.removeDuplicates();
+
+    if (srcUris.isEmpty()) {
         return false;
+    }
 
     auto item = this->itemFromIndex(parent);
     qDebug()<<"SideBarModel::dropMimeData:" <<action<<row<<column<<parent.data();
@@ -315,15 +335,15 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
-            for (auto url : data->urls()) {
+            for (auto url : srcUris) {
                 //FIXME: replace BLOCKING api in ui thread.
-                auto info = FileInfo::fromUri(url.toDisplayString());
+                auto info = FileInfo::fromUri(url);
                 if (info->displayName().isNull()) {
                     FileInfoJob j(info);
                     j.querySync();
                 }
                 if (info->isDir()) {
-                    bookmark->addBookMark(url.url());
+                    bookmark->addBookMark(url);
                 }
             }
         }
@@ -352,10 +372,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 //    }
     case SideBarAbstractItem::PersonalItem:
     case SideBarAbstractItem::FileSystemItem: {
-        QStringList uris;
-        for (auto url : data->urls()) {
-            uris<<url.url();
-        }
+        QStringList uris = srcUris;
 
         //can not drag file to recent
         if (item->uri().startsWith("recent://"))
@@ -387,5 +404,11 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
 Qt::DropActions SideBarModel::supportedDropActions() const
 {
+    return Qt::MoveAction|Qt::CopyAction;
     return Qt::MoveAction|Qt::CopyAction|Qt::LinkAction;
+}
+
+Qt::DropActions SideBarModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }

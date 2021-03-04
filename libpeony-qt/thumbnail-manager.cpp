@@ -31,6 +31,7 @@
 #include "thumbnail/pdf-thumbnail.h"
 #include "thumbnail/video-thumbnail.h"
 #include "thumbnail/office-thumbnail.h"
+#include "thumbnail/image-pdf-thumbnail.h"
 #include "generic-thumbnailer.h"
 #include "thumbnail-job.h"
 
@@ -48,6 +49,7 @@
 using namespace Peony;
 
 static ThumbnailManager *global_instance = nullptr;
+static bool m_tril_exist = false;
 
 /*!
  * \brief ThumbnailManager::ThumbnailManager
@@ -68,6 +70,8 @@ ThumbnailManager::ThumbnailManager(QObject *parent) : QObject(parent)
     m_thumbnail_thread_pool->setMaxThreadCount(1);
 
     m_semaphore = new QSemaphore(1);
+
+    findAtril();
 }
 
 ThumbnailManager::~ThumbnailManager()
@@ -115,6 +119,23 @@ void ThumbnailManager::createVideFileThumbnail(const QString &uri, std::shared_p
 
     return;
 }
+
+void ThumbnailManager::createImagePdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
+{
+    QIcon thumbnail;
+
+    ImagePdfThumbnail officeThumbnail(uri);
+    thumbnail = officeThumbnail.generateThumbnail();;
+    if (!thumbnail.isNull()) {
+        insertOrUpdateThumbnail(uri, thumbnail);
+        if (watcher) {
+            watcher->fileChanged(uri);
+        }
+    }
+
+    return;
+}
+
 void ThumbnailManager::createPdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
 {
     QIcon thumbnail;
@@ -182,7 +203,6 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
-        //qDebug()<<url;
     }
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
@@ -240,6 +260,24 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
     return;
 }
 
+//is system has atril software
+void ThumbnailManager::findAtril()
+{
+    QtConcurrent::run([](){
+        GList *infos = g_app_info_get_all();
+        GList *l = infos;
+        while (l && ! m_tril_exist) {
+            const char *cmd = g_app_info_get_executable(static_cast<GAppInfo*>(l->data));
+            QString tmp = cmd;
+            if (tmp.contains("atril")) {
+                m_tril_exist = true;
+            }
+            l = l->next;
+        }
+        g_list_free_full(infos, g_object_unref);
+    });
+}
+
 void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
     auto settings = GlobalSettings::getInstance();
@@ -266,6 +304,14 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
                     watcher->fileChanged(uri);
                 }
             }
+        }
+        else if (info->isImagePdfFile())
+        {
+             qDebug() <<"isImagePdfFile m_tril_exist:" <<m_tril_exist;
+             if (m_tril_exist)
+             {
+                 createImagePdfFileThumbnail(uri, watcher);
+             }
         }
         else if (info->isImageFile()) {
             createImageFileThumbnail(uri, watcher);
@@ -323,7 +369,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
         else if (info->isOfficeFile()) {
             needThumbnail = true;
         }
-        else if (info->isDesktopFile()) {
+        else if (info->uri().endsWith(".desktop")) {
             if (thumbnail.isNull())
             {
                 needThumbnail = false;
@@ -345,7 +391,7 @@ void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileW
 void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher)
 {
     auto info = FileInfo::fromUri(uri);
-    if (info->isDesktopFile() && info->canExecute()) {
+    if (info->uri().endsWith(".desktop")) {
         //qDebug()<<"is desktop file"<<uri;
         //get desktop file icon.
         //async
@@ -359,6 +405,15 @@ void ThumbnailManager::updateDesktopFileThumbnail(const QString &uri, std::share
             watcher->thumbnailUpdated(uri);
         }
     }
+}
+
+void ThumbnailManager::clearThumbnail()
+{
+    m_semaphore->acquire();
+    if (!m_hash.isEmpty()) {
+        m_hash.clear();
+    }
+    m_semaphore->release();
 }
 
 void ThumbnailManager::releaseThumbnail(const QString &uri)

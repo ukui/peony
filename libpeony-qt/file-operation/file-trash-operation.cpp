@@ -24,6 +24,8 @@
 #include "file-operation-manager.h"
 
 #include <QProcess>
+#include <file-info-job.h>
+#include <file-info.h>
 
 using namespace Peony;
 
@@ -36,20 +38,43 @@ FileTrashOperation::FileTrashOperation(QStringList srcUris, QObject *parent) : F
 void FileTrashOperation::run()
 {
     Q_EMIT operationStarted();
-
     Peony::ExceptionResponse response = Invalid;
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
 retry:
-        auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
         GError *err = nullptr;
+        auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
+        //
+        FileInfoJob fileInfoJob (src);
+        if (fileInfoJob.querySync()) {
+            FileInfo* fileInfo = fileInfoJob.getInfo().get();
+            if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
+                FileOperationError except;
+                except.srcUri = src;
+                except.destDirUri = tr("trash:///");
+                except.isCritical = true;
+                except.op = FileOpTrash;
+                except.title = tr("Trash file error");
+                except.errorCode = G_IO_ERROR_FAILED;
+                except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
+                except.errorType = ET_GIO;
+                except.dlgType = ED_WARNING;
+                Q_EMIT errored(except);
+                if (Cancel == except.respCode) {
+                    cancel();
+                }
+                continue;
+            }
+        }
+
         g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
             if (response == IgnoreAll) {
                 g_error_free(err);
                 continue;
             }
+            setErrorMessage (&err);
             FileOperationError except;
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
@@ -77,18 +102,45 @@ retry:
                     break;
                 }
             } else {
-                except.dlgType = ED_WARNING;
-                Q_EMIT errored(except);
+                if (err->code == G_IO_ERROR_NOT_SUPPORTED) {
+                    except.dlgType = ED_NOT_SUPPORTED;
+                    auto fileName = g_file_get_basename(srcFile.get()->get());
+                    except.errorStr = tr("Can not trash %1, would you like to delete this file permanently?").arg(fileName);
+                    if (fileName) {
+                        g_free(fileName);
+                    }
+                } else {
+                    except.dlgType = ED_WARNING;
+                }
+                if (response == Invalid)
+                    Q_EMIT errored(except);
                 auto responseType = except.respCode;
                 auto responseData = responseType;
+                if (response != Invalid)
+                    responseData = response;
                 switch (responseData) {
                 case Retry:
                     goto retry;
+                case OverWriteOne: {
+                    GError *err1 = nullptr;
+                    g_file_delete(srcFile.get()->get(), getCancellable().get()->get(), &err1);
+                    if (err1) {
+                        g_error_free(err1);
+                    }
+                    break;
+                }
+                case OverWriteAll: {
+                    response = OverWriteOne;
+                    goto retry;
+                }
                 case Cancel:
                     cancel();
                     break;
                 case IgnoreAll:
                     response = IgnoreAll;
+                    break;
+                case Force:
+                    forceDelete(src);
                     break;
                 default:
                     break;
@@ -119,4 +171,29 @@ retry:
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+
+void FileTrashOperation::forceDelete(QString uri)
+{
+    auto deleteFile = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    g_file_delete(deleteFile.get()->get(), nullptr, nullptr);
+}
+
+void FileTrashOperation::setErrorMessage(GError** err)
+{
+    if (nullptr == *err) {
+        return;
+    }
+
+    GError* peonyError = nullptr;
+
+    switch ((*err)->code) {
+    case G_IO_ERROR_FILENAME_TOO_LONG:
+        g_set_error(&peonyError, (*err)->domain, (*err)->code, "%s%s", (*err)->message, tr(". Are you sure you want to permanently delete the file").toUtf8().constData());
+        g_error_free(*err);
+        *err = peonyError;
+        break;
+    default:
+        break;
+    }
 }

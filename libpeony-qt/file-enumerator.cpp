@@ -113,7 +113,6 @@ FileEnumerator::~FileEnumerator()
 void FileEnumerator::setEnumerateDirectory(QString uri)
 {
     m_uri = uri;
-
     if (m_cancellable) {
         g_cancellable_cancel(m_cancellable);
         g_object_unref(m_cancellable);
@@ -133,6 +132,19 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
     auto vfsMgr = VFSPluginManager::getInstance();
     m_root_file = vfsMgr->newVFSFile(uri);
 #endif
+
+    // Special characters may cause a GFile creation to fail
+    if (!g_file_query_exists(m_root_file, nullptr)) {
+        char* name = g_uri_escape_string (uri.toUtf8().data(), G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
+        if (m_root_file) g_object_unref (m_root_file);
+#if GLIB_CHECK_VERSION(2, 50, 0)
+        m_root_file = g_file_new_for_uri(name);
+#else
+        auto vfsMgr = VFSPluginManager::getInstance();
+        m_root_file = vfsMgr->newVFSFile(name);
+#endif
+        if (name) g_free (name);
+    }
 }
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)
@@ -209,10 +221,8 @@ GFile *FileEnumerator::enumerateTargetFile()
                                         nullptr,
                                         nullptr);
     char *uri = nullptr;
-    uri = g_file_info_get_attribute_as_string(info,
-            G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+    uri = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     g_object_unref(info);
-
     GFile *target = nullptr;
     if (uri) {
         //qDebug()<<"enumerateTargetFile"<<uri;
@@ -288,16 +298,16 @@ void FileEnumerator::handleError(GError *err)
     qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {
-        auto uri = g_file_get_uri(m_root_file);
-        //FIXME: replace BLOCKING api in ui thread.
-        auto targetUri = FileUtils::getTargetUri(uri);
-        if (uri) {
-            g_free(uri);
-        }
-        if (!targetUri.isEmpty()) {
-            prepared(nullptr, targetUri);
-            return;
-        }
+//        auto uri = g_file_get_uri(m_root_file);
+//        //FIXME: replace BLOCKING api in ui thread.
+//        auto targetUri = FileUtils::getTargetUri(uri);
+//        if (uri) {
+//            g_free(uri);
+//        }
+//        if (!targetUri.isEmpty()) {
+//            prepared(nullptr, targetUri);
+//            return;
+//        }
 
         bool isMountable = false;
         //FIXME: replace BLOCKING api in ui thread. Done
@@ -339,14 +349,15 @@ void FileEnumerator::handleError(GError *err)
         break;
     case G_IO_ERROR_NOT_SUPPORTED:
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
-        QMessageBox::critical(nullptr, tr("Error"), err->message);
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
+        //QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
     case G_IO_ERROR_PERMISSION_DENIED:
         //emit error message to upper levels to process
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")));
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "permission denied")), nullptr, true);
         break;
     case G_IO_ERROR_NOT_FOUND:
-        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")));
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "file not found")), nullptr, true);
         //processed in file-item, comment to fix duplicated prompt
         //QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;
@@ -360,16 +371,22 @@ void FileEnumerator::enumerateAsync()
 {
     m_idle->start(1000);
 
-    //auto uri = g_file_get_uri(m_root_file);
-    //auto path = g_file_get_path(m_root_file);
-    g_file_enumerate_children_async(m_root_file,
-                                    m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                    G_FILE_QUERY_INFO_NONE,
-                                    G_PRIORITY_DEFAULT,
-                                    m_cancellable,
-                                    GAsyncReadyCallback(find_children_async_ready_callback),
-                                    this);
+    // query directory info first
+    auto infoJob = new FileInfoJob(m_uri);
+    infoJob->setAutoDelete(true);
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        //auto uri = g_file_get_uri(m_root_file);
+        //auto path = g_file_get_path(m_root_file);
+        g_file_enumerate_children_async(m_root_file,
+                                        m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                        G_FILE_QUERY_INFO_NONE,
+                                        G_PRIORITY_DEFAULT,
+                                        m_cancellable,
+                                        GAsyncReadyCallback(find_children_async_ready_callback),
+                                        this);
 
+    });
+    infoJob->queryAsync();
 }
 
 void FileEnumerator::enumerateChildren(GFileEnumerator *enumerator)

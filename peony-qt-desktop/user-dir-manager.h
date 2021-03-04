@@ -23,6 +23,7 @@ Q_SIGNALS:
 
 private:
     QString m_user_name;
+    QString m_user_path;
     QMap<QString,QString> m_last_user_dir;
     QMap<QString,QString> m_current_user_dir;
     QFileSystemWatcher *m_user_dir_watcher;

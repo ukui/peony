@@ -114,12 +114,7 @@ void TabPage::rebindContainer()
             return;
         }
         if (info->isDir() || info->isVolume() || info->isVirtual()) {
-            //process open symbolic link
-            QString targetUri = uri;
-            auto info = FileInfo::fromUri(uri);
-            if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-                targetUri = "file://" + FileUtils::getSymbolicTarget(uri);
-            Q_EMIT this->updateWindowLocationRequest(targetUri);
+            Q_EMIT this->updateWindowLocationRequest(uri);
         } else {
             FileLaunchManager::openAsync(uri, false, false);
         }

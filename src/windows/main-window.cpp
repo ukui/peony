@@ -52,7 +52,6 @@
 
 #include "peony-main-window-style.h"
 
-#include "file-label-box.h"
 #include "file-operation-manager.h"
 #include "file-operation-utils.h"
 #include "file-utils.h"
@@ -64,6 +63,7 @@
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
 #include "main-window-factory.h"
+#include "thumbnail-manager.h"
 
 #include "peony-application.h"
 
@@ -95,8 +95,6 @@
 // NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
 // fixed by replaced `QGSettings/QGSettings' with `QGSettings'
 #include <QGSettings>
-
-#define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
 
@@ -154,6 +152,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
         XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
     }
 
+    startMonitorThumbnailForbidStatus();
+
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
              <<"ms"<<QDateTime::currentMSecsSinceEpoch();
@@ -161,7 +161,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
 MainWindow::~MainWindow()
 {
-    if (last_resize_window == this) {
+    //fix bug 40913, when window is maximazed, not update size
+    if (last_resize_window == this && !isMaximized()) {
         auto settings = Peony::GlobalSettings::getInstance();
         settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
         last_resize_window = nullptr;
@@ -577,7 +578,11 @@ void MainWindow::setShortCuts()
         shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
         connect(shrinkViewAction, &QAction::triggered, this, [=]() {
             int defaultZoomLevel = this->currentViewZoomLevel();
-            if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
+            if (defaultZoomLevel >= 5) {
+                defaultZoomLevel-=5;
+            } else {
+                defaultZoomLevel = 0;
+            }
             this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
         });
         addAction(shrinkViewAction);
@@ -848,6 +853,12 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
     QUrl url(uri);
     auto realUri = uri;
+    //process open symbolic link
+    auto info = Peony::FileInfo::fromUri(uri);
+    if (info->isSymbolLink() && info->symlinkTarget().length() >0 &&
+    (uri.startsWith("file://") || uri.startsWith("favorite://")))
+        realUri = "file://" + info->symlinkTarget();
+
     if (url.scheme().isEmpty()) {
         if (uri.startsWith("/")) {
             realUri = "file://" + uri;
@@ -943,6 +954,8 @@ void MainWindow::beginSwitchView(const QString &viewId)
     //fix slider value not update issue
     m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
+
+
 
 void MainWindow::refresh()
 {
@@ -1230,8 +1243,12 @@ void MainWindow::validBorder()
 
 void MainWindow::initUI(const QString &uri)
 {
+    auto size = sizeHint();
+    resize(size);
+
     connect(this, &MainWindow::locationChangeStart, this, [=]() {
-        m_side_bar->blockSignals(true);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(true);
         m_header_bar->blockSignals(true);
         QCursor c;
         c.setShape(Qt::WaitCursor);
@@ -1242,7 +1259,8 @@ void MainWindow::initUI(const QString &uri)
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=]() {
-        m_side_bar->blockSignals(false);
+        //comment to fix bug 33527
+        //m_side_bar->blockSignals(false);
         m_header_bar->blockSignals(false);
         QCursor c;
         c.setShape(Qt::ArrowCursor);
@@ -1304,6 +1322,7 @@ void MainWindow::initUI(const QString &uri)
 
     auto labelDialog = new FileLabelBox(this);
     labelDialog->hide();
+    m_label_box = labelDialog;
 
     auto splitter = new QSplitter(this);
     splitter->setChildrenCollapsible(false);
@@ -1327,7 +1346,17 @@ void MainWindow::initUI(const QString &uri)
         setLabelNameFilter("");
     });
 
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
+    connect(sidebar, &NavigationSideBar::labelButtonClicked, this, [=]()
+    {
+        bool visible = m_label_box->isVisible();
+        //quit label filter, clear conditions
+        if (visible)
+        {
+           setLabelNameFilter("");
+           m_label_box->clearSelection();
+        }
+        m_label_box->setVisible(! visible);
+    });
 
     sidebarContainer->setWidget(splitter);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
@@ -1467,6 +1496,31 @@ QRect MainWindow::sideBarRect()
 {
     auto pos = m_transparent_area_widget->mapTo(this, QPoint());
     return QRect(pos, m_transparent_area_widget->size());
+}
+
+void MainWindow::startMonitorThumbnailForbidStatus()
+{
+    m_do_not_thumbnail = Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
+
+    m_thumbnail_watcher = new QFileSystemWatcher(this);
+    QString peonySettingFile = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+                        + "/.config/org.ukui/peony-qt-preferences.conf";
+    m_thumbnail_watcher->addPath(peonySettingFile);
+
+    connect(m_thumbnail_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
+        auto settings = Peony::GlobalSettings::getInstance();
+        if (m_do_not_thumbnail != settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool()) {
+            m_do_not_thumbnail = settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
+            if (true == m_do_not_thumbnail) {
+                Peony::ThumbnailManager::getInstance()->clearThumbnail();
+            }
+            refresh();
+        }
+
+        //qDebug()<<"peonySettingFile:"<<peonySettingFile;
+        m_thumbnail_watcher->addPath(uri);
+    });
+
 }
 
 void MainWindow::addFocusWidgetToFocusList(QWidget *widget)

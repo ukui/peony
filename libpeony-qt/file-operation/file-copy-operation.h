@@ -99,8 +99,7 @@ private:
     goffset m_current_offset = 0;
     goffset m_total_szie = 0;
 
-    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                         G_FILE_COPY_ALL_METADATA);
+    GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS);
 
     FileNodeReporter *m_reporter = nullptr;
 

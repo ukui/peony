@@ -44,8 +44,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     //set default allow parallel
-    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL))
-    {
+    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL)) {
         qDebug() << "default ALLOW_FILE_OP_PARALLEL:true";
         setValue(ALLOW_FILE_OP_PARALLEL, true);
     }
@@ -54,6 +53,35 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         setValue(SORT_CHINESE_FIRST, true);
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
+    }
+
+    m_date_format = tr("yyyy/MM/dd");
+    m_time_format = tr("HH:mm:ss");
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+            QString value = m_control_center_plugin->get(key).toString();
+            if ("hoursystem" == key) {
+                m_cache.remove(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+                m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, value);
+                Q_EMIT this->valueChanged(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+                setTimeFormat(value);
+            }
+            else if (key == "date")
+            {
+                m_cache.remove(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE);
+                m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, value);
+                Q_EMIT this->valueChanged(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE);
+                setDateFormat(value);
+            }
+        });
+
+        QString timeValue = m_control_center_plugin->get("time").toString();
+        QString dateValue = m_control_center_plugin->get("date").toString();
+        m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, timeValue);
+        m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, dateValue);
+        setTimeFormat(timeValue);
+        setDateFormat(dateValue);
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
@@ -78,6 +106,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
         setValue(DEFAULT_VIEW_ID, "Icon View");
+    }
+
+    if (m_cache.value(SORT_ORDER).isNull()){
+        setValue(SORT_ORDER, Qt::AscendingOrder);
+    }
+
+    if (m_cache.value(SORT_COLUMN).isNull()){
+        setValue(SORT_COLUMN, 0);
     }
 
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
@@ -157,4 +193,30 @@ void GlobalSettings::forceSync(const QString &key)
         m_cache.remove(key);
         m_cache.insert(key, m_settings->value(key));
     }
+}
+
+void GlobalSettings::setTimeFormat(const QString &value)
+{
+    if (value == "12"){
+        m_time_format = tr("hh:mm:ss AP");
+    }
+    else{
+        m_time_format = tr("HH:mm:ss");
+    }
+}
+
+void GlobalSettings::setDateFormat(const QString &value)
+{
+    if (value == "cn"){
+        m_date_format = tr("yyyy/MM/dd");
+    }
+    else{
+        m_date_format = tr("yyyy-MM-dd");
+    }
+}
+
+QString GlobalSettings::getSystemTimeFormat()
+{
+    m_system_time_format = m_date_format + " " + m_time_format;
+    return m_system_time_format;
 }

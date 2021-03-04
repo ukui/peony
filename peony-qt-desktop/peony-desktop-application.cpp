@@ -30,6 +30,8 @@
 
 #include "desktop-icon-view.h"
 
+#include "primary-manager.h"
+
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QTimer>
@@ -62,6 +64,7 @@
 static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
+static PrimaryManager *screensMonitor = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
@@ -172,6 +175,27 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
+
+    // check ukui wayland session, monitor ukui settings daemon dbus
+    if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
+        screensMonitor = new PrimaryManager;
+        connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+            for (auto screen : this->screens()) {
+                if (screen->geometry() == QRect(x, y, width, height))
+                    Q_EMIT this->primaryScreenChanged(screen);
+            }
+        });
+        screensMonitor->start();
+        // init
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        for (auto screen : this->screens()) {
+            if (screen->geometry() == QRect(x, y, width, height))
+                Q_EMIT this->primaryScreenChanged(screen);
+        }
+    }
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
@@ -392,7 +416,19 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimayWindow->updateView();
         currentPrimayWindow->hide();
         currentPrimayWindow->show();
+    } else {
+        currentPrimayWindow = qobject_cast<DesktopWindow *>(getIconView()->topLevelWidget());
+        currentPrimayWindow->setCentralWidget(getIconView());
+        //desktop_icon_view->show();
+        currentPrimayWindow->updateView();
+        currentPrimayWindow->hide();
+        currentPrimayWindow->show();
     }
+    if (currentPrimayWindow) {
+        currentPrimayWindow->activateWindow();
+        currentPrimayWindow->raise();
+    }
+
     return;
 
     //do not check window need exchange
@@ -446,7 +482,32 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
         {
             qDebug()<<"remove window";
             m_window_list.removeOne(win);
+            win->setCentralWidget(nullptr);
             win->deleteLater();
+        }
+
+        // check if there is primary screen
+        bool hasPrimaryScreen = false;
+        if (!getIconView()->parentWidget()) {
+            // init
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            screensMonitor->deleteLater();
+            for (auto screen : this->screens()) {
+                if (screen->geometry() == QRect(x, y, width, height)) {
+                    hasPrimaryScreen = true;
+                    Q_EMIT this->primaryScreenChanged(screen);
+                }
+            }
+        }
+
+        // check again
+        if (!hasPrimaryScreen) {
+            if (!m_window_list.isEmpty()) {
+                Q_EMIT this->primaryScreenChanged(m_window_list.first()->getScreen());
+            }
         }
     }
 }
@@ -497,11 +558,13 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
     char *mountUri;
     bool openFolder;
     QProcess process;
+    static QString lastMountUri;
 
     error = NULL;
     openFolder = true;
     root = g_mount_get_default_location(G_MOUNT(object));
     mountUri = g_file_get_uri(root);
+
     openFolderCmd = "peony " + QString(mountUri);
     guessType = g_mount_guess_content_type_finish(G_MOUNT(object),res,&error);
 
@@ -525,6 +588,13 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
                     openFolder = false;
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;
+                if(strstr(guessType[n],"x-content/audio-")){
+                    if(!lastMountUri.compare(mountUri)){
+                        lastMountUri.clear();
+                        break;
+                    }
+                    lastMountUri = mountUri;
+                }
 
                 QString uri = mountUri;
                 if (uri.startsWith("gphoto") || uri.startsWith("mtp"))

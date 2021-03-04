@@ -21,7 +21,7 @@
  */
 
 #include "side-bar-file-system-item.h"
-
+#include "sync-thread.h"
 #include "file-info.h"
 #include "file-utils.h"
 #include "file-watcher.h"
@@ -34,12 +34,16 @@
 #include "side-bar-separator-item.h"
 
 #include <QIcon>
+#include <QThread>
 #include <QMessageBox>
 #include <QPushButton>
 #include <udisks/udisks.h>
 #include <sys/stat.h>
+#include <libnotify/notify.h>
 
 using namespace Peony;
+
+void notifyUser(QString notifyContent);
 
 SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
                                              SideBarFileSystemItem *parentItem,
@@ -65,14 +69,18 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         infoJob->setAutoDelete();
         connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
             m_display_name = FileUtils::getFileDisplayName(uri);
-            m_icon_name = FileUtils::getFileIconName(uri);
+            if (m_info.get()->targetUri() == "file:///") {
+                m_display_name = tr("File System");
+                return;
+            }
+            m_icon_name = FileUtils::getFileIconName(uri,false);
             FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
             Q_EMIT this->queryInfoFinished();
         });
         infoJob->queryAsync();
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
-        m_icon_name = FileUtils::getFileIconName(uri);
+        m_icon_name = FileUtils::getFileIconName(uri,false);
     }
 }
 
@@ -124,7 +132,10 @@ void SideBarFileSystemItem::findChildren()
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
     e->setEnumerateWithInfoJob();
-    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
+    connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err/*, const QString &targetUri*/) {
+        // fix can not enumerate children in computer:///xxx, related to 0708ebd30a3ee3f397592f9c64edba263e900a37
+        auto info = FileInfo::fromUri(m_uri);
+        auto targetUri = info.get()->targetUri();
         if (targetUri != nullptr) {
             if (targetUri != this->uri()) {
                 e->setEnumerateDirectory(targetUri);
@@ -315,7 +326,39 @@ bool SideBarFileSystemItem::isMounted()
     return m_is_mounted;
 }
 
+void SideBarFileSystemItem::unmount()
+{
+    SyncThread *syncThread = new SyncThread;
+    QThread* currentThread = new QThread();
+    syncThread->moveToThread(currentThread);
+    connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
+    connect(syncThread,&SyncThread::syncFinished,this,[=](){
+        realUnmount();
+        syncThread->disconnect(this);
+        syncThread->deleteLater();
+        currentThread->disconnect(SIGNAL(started()));
+        //currentThread->deleteLater();
+    });
+    currentThread->start();
+}
+
 void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
+{
+    SyncThread *syncThread = new SyncThread;
+    QThread* currentThread = new QThread();
+    syncThread->moveToThread(currentThread);
+    connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
+    connect(syncThread,&SyncThread::syncFinished,this,[=](){
+        realEject(ejectFlag);
+        syncThread->disconnect(this);
+        syncThread->deleteLater();
+        currentThread->disconnect(SIGNAL(started()));
+        //currentThread->deleteLater();
+    });
+    currentThread->start();
+}
+
+void SideBarFileSystemItem::realEject(GMountUnmountFlags ejectFlag)
 {
     //FIXME: replace BLOCKING api in ui thread.
     VolumeManager *volumeManager;
@@ -350,17 +393,26 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 }
 
 static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
+    auto targetUri = static_cast<QString *>(udata);
+    QString unmountNotify;
     GError *err = nullptr;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
         QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
         g_error_free(err);
+    } else {
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
+        unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        notifyUser(unmountNotify);
     }
+    delete targetUri;
 }
 
 static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 {
+    auto targetUri = static_cast<QString *>(udata);
     GError *err = nullptr;
+    QString unmountNotify;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
@@ -377,17 +429,22 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
                                                                                                "Do you want to unmount forcely?").arg(err->message),
                                            QMessageBox::Yes, QMessageBox::No);
         if (button == QMessageBox::Yes) {
+            QString *string = new QString;
+            *string = *targetUri;
             g_file_unmount_mountable_with_operation(file,
                                                     G_MOUNT_UNMOUNT_FORCE,
                                                     nullptr,
                                                     nullptr,
                                                     GAsyncReadyCallback(unmount_force_cb),
-                                                    udata);
+                                                    string);
         }
         g_error_free(err);
     } else {
-        // do nothing.
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
+        unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        notifyUser(unmountNotify);
     }
+    delete targetUri;
 
     /*!
       \note
@@ -442,7 +499,7 @@ static UDisksObject *get_object_from_block_device (UDisksClient *client,const gc
 }
 
 
-void SideBarFileSystemItem::unmount()
+void SideBarFileSystemItem::realUnmount()
 {
     /*!
       \note
@@ -473,12 +530,14 @@ void SideBarFileSystemItem::unmount()
     //    }
 
     auto file = wrapGFile(g_file_new_for_uri(this->uri().toUtf8().constData()));
+    QString *targetUri = new QString;
+    *targetUri = this->m_info.get()->targetUri();
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
                                             GAsyncReadyCallback(unmount_finished),
-                                            this);
+                                            targetUri);
 }
 
 void SideBarFileSystemItem::ejectOrUnmount()
@@ -512,6 +571,7 @@ void SideBarFileSystemItem::stopWatcher()
 GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *res, SideBarFileSystemItem *p_this)
 {
     GError *err = nullptr;
+    QString ejectNotify;
     bool successed = g_file_eject_mountable_with_operation_finish(file, res, &err);
     qDebug()<<successed;
     if (err) {
@@ -522,10 +582,17 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
         QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
         warningBox.exec();
         if(warningBox.clickedButton() == ensureBtn)
-            p_this->eject(G_MOUNT_UNMOUNT_FORCE);
+            p_this->realEject(G_MOUNT_UNMOUNT_FORCE);
 
         g_error_free(err);
     } else {
+        char *uri = g_file_get_uri(file);
+        VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
+
+        ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
+        notifyUser(ejectNotify);
         // remove item anyway
         /*int index = p_this->parent()->m_children->indexOf(p_this);
         p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);
@@ -548,7 +615,7 @@ void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
     //old's drive name -> now's volume name. fix #17968
     FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
     //icon name.
-    pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri);
+    pThis->m_icon_name = FileUtils::getFileIconName(pThis->m_uri,false);
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk.
@@ -573,4 +640,18 @@ void SideBarFileSystemItem::ejectDevicebyDrive(GObject* object,GAsyncResult* res
             g_error_free(error);
         }
     }
+}
+
+void notifyUser(QString notifyContent)
+{
+    NotifyNotification* notify;
+
+    notify_init(QObject::tr("PeonyNotify").toUtf8().constData());
+    notify  = notify_notification_new(QObject::tr("File Manager").toUtf8().constData(),
+                                      notifyContent.toUtf8().constData(),
+                                      "system-file-manager");
+    notify_notification_show(notify,nullptr);
+
+    notify_uninit();
+    g_object_unref(G_OBJECT(notify));
 }

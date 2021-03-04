@@ -118,13 +118,21 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         FileInfoJob j(info);
         j.querySync();
     }
+
     if (info->canUnmount() || info->canMount()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
             m_item->unmount();
         });
-        auto targetUri = FileUtils::getTargetUri(m_item->uri());
         bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
-        bool isMounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
+        bool isMounted = isUmountable;
+        auto targetUri = FileUtils::getTargetUri(m_item->uri());
+        if (!targetUri.isEmpty()) {
+            if (targetUri == "burn:///") {
+                isMounted = false;
+            } else {
+                isMounted = (targetUri != "file:///") || isUmountable;
+            }
+        }
 
         l.last()->setEnabled(isMounted);
     }
@@ -158,13 +166,19 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      *  provide option for all mountable device
      *  if can not format, will have prompt
      */
-
-      if(!m_uri.endsWith(".mount") && info->isVolume() && info->canUnmount()){
+    auto targetUri = FileUtils::getTargetUri(m_uri);
+    auto mount = VolumeManager::getMountFromUri(targetUri);
+    //fix erasable optical disk can be format issue, bug#32415
+    if(! m_uri.startsWith("burn:///") && !m_uri.endsWith(".mount")
+       && !(m_uri.startsWith("file:///media") && m_uri.endsWith("CDROM"))
+       && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
           fd->show();
       });
-
+      //no right u-disk should not be formated, fix bug#
+      if (! mount)
+          l.last()->setEnabled(false);
     }
     return l;
 }

@@ -52,6 +52,7 @@
 #include "directory-view-factory-manager.h"
 #include "global-settings.h"
 #include "main-window.h"
+#include "volume-manager.h"
 
 #include "file-info-job.h"
 
@@ -277,7 +278,7 @@ void TabWidget::initAdvanceSearch()
     m_search_bar_layout = search;
     QToolBar *searchButtons = new QToolBar(this);
     m_search_bar = searchButtons;
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("tab-close"), "", searchButtons);
+    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("window-close-symbolic"), "", searchButtons);
     m_search_close = closeButton;
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
@@ -678,6 +679,22 @@ void TabWidget::updateButtons()
         m_remove_button_list[0]->setDisabled(true);
     else
         m_remove_button_list[0]->setDisabled(false);
+
+    //limit total number to 10
+    if (m_search_bar_count >= 10)
+    {
+        for(int i=0;i<m_search_bar_count;i++)
+        {
+            m_add_button_list[i]->setDisabled(true);
+        }
+    }
+    else
+    {
+        for(int i=0;i<m_search_bar_count;i++)
+        {
+            m_add_button_list[i]->setDisabled(false);
+        }
+    }
 }
 
 void TabWidget::updateSearchPathButton(const QString &uri)
@@ -908,11 +925,19 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         this->setCursor(c);
 
         //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-        viewContainer->setSortType(Peony::FileItemModel::FileName);
-        viewContainer->setSortOrder(Qt::AscendingOrder);
+        auto settings = Peony::GlobalSettings::getInstance();
+        auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
+        auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
+        viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+        viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
+
+        //process open symbolic link
+        auto realUri = uri;
+        if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+            realUri = "file://" + info->symlinkTarget();
 
         //m_stack->addWidget(viewContainer);
-        viewContainer->goToUri(uri, false, true);
+        viewContainer->goToUri(realUri, false, true);
 
         bindContainerSignal(viewContainer);
         updateTrashBarVisible(uri);
@@ -922,7 +947,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
         else
             viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 
-        m_tab_bar->addPage(uri, jumpTo);
+        m_tab_bar->addPage(realUri, jumpTo);
         updateTabBarGeometry();
     });
 
@@ -935,11 +960,23 @@ void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
+    updatePreviewPage();
 }
 
 void TabWidget::updateTabPageTitle()
 {
     qDebug() << "updateTabPageTitle:" <<getCurrentUri();
+    //fix error for glib2 signal: G_FILE_MONITOR_EVENT_DELETED
+    if("trash:///" == getCurrentUri()){
+        Peony::VolumeManager* vm = Peony::VolumeManager::getInstance();
+        connect(vm,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+            refresh();
+        });
+        connect(vm,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
+            refresh();
+        });
+    }
+
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
     updateTrashBarVisible(getCurrentUri());
 }
@@ -1102,12 +1139,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri);
-        QString targetUri = info.get()->targetUri();
-        if (targetUri.isEmpty())
-            targetUri = uri;
-        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
+        Q_EMIT this->updateWindowLocationRequest(uri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }

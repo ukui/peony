@@ -35,12 +35,14 @@
 #include <QFrame>
 
 #include <QProgressBar>
+#include <QPushButton>
+#include <QProcess>
 
 #include <glib.h>
 
 using namespace Peony;
 
-ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : QWidget(parent)
+ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uri;
     m_layout = new QFormLayout(this);
@@ -163,26 +165,64 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             //Calculated by 1024 bytes
             char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
             char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");           
+            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+
+            //fix system Udisk calculate size wrong issue
+            QString m_volume_name, m_unix_device, m_display_name, sizeInfo;
+            FileUtils::queryVolumeInfo(uri, m_volume_name, m_unix_device, m_display_name);
+            bool bMobileDevice = false;
+            //U disk or other mobile device
+            if (! m_unix_device.isEmpty() && ! uri.startsWith("computer:///WDC"))
+            {
+               char dev_name[256] ={0};
+               strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+               auto size = FileUtils::getDeviceSize(dev_name);
+               if (size > 0)
+               {
+                   sizeInfo = QString::number(size, 'f', 1);
+                   qDebug() << "size:" <<size;
+                   sizeInfo += "G";
+                   bMobileDevice = true;
+               }
+            }
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            if (bMobileDevice)
+                m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
+            else if (total != 0) {
+                m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+            }
+            if (used != 0) {
+                m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
+            }
+            if (aviliable != 0) {
+                m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            }
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
-            g_free(total_format);
-            g_free(used_format);
-            g_free(aviliable_format);
-            g_free(fs_type);
-            g_object_unref(info);
-            g_object_unref(file);
 
             auto progressBar = new QProgressBar(this);
             auto value = double(used*1.0/total)*100;
             progressBar->setValue(int(value));
             m_layout->addRow(progressBar);
             m_layout->setAlignment(progressBar, Qt::AlignBottom);
+
+            if (QString(fs_type) == "isofs" && QFile::exists("/usr/bin/kylin-burner")) {
+                auto pushbutton = new QPushButton(tr("Kylin Burner"));
+                connect(pushbutton, &QPushButton::clicked, pushbutton, [=](){
+                    QProcess p;
+                    p.startDetached("kylin-burner");
+                    p.waitForStarted();
+                });
+                m_layout->addRow(new QLabel(tr("Open with: \t")), pushbutton);
+            }
+
+            g_free(total_format);
+            g_free(used_format);
+            g_free(aviliable_format);
+            g_free(fs_type);
+            g_object_unref(info);
+            g_object_unref(file);
         } else {
             m_layout->addRow(new QLabel(tr("Unknown"), nullptr));
         }
@@ -194,4 +234,9 @@ void ComputerPropertiesPage::addSeparator()
     auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addRow(separator);
+}
+
+void ComputerPropertiesPage::saveAllChange()
+{
+
 }

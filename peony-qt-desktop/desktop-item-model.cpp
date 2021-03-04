@@ -446,12 +446,8 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     case Qt::ToolTipRole:
         return info->displayName();
     case Qt::DecorationRole: {
-        //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
-            if (info->uri().endsWith(".desktop") && !info->canExecute()) {
-                return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
-            }
             return thumbnail;
         }
         return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
@@ -639,9 +635,6 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
-    if (urls.isEmpty()) {
-        return false;
-    }
 
     QStringList srcUris;
     if (data->hasFormat("peony-qt/encoded-uris")) {
@@ -659,6 +652,10 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         }
     }
     srcUris.removeDuplicates();
+
+    if (srcUris.isEmpty()) {
+        return false;
+    }
 
     //can not drag file to recent
     if (destDirUri.startsWith("recent://"))
@@ -716,8 +713,13 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
-    //return Qt::MoveAction|Qt::CopyAction;
+    return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
+}
+
+Qt::DropActions DesktopItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }
 
 void DesktopItemModel::refresh()

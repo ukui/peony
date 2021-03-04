@@ -33,6 +33,8 @@
 #define SHOW_HIDDEN_PREFERENCE      "show-hidden"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
+#define SORT_ORDER                  "sort-order"
+#define SORT_COLUMN                 "sort-column"
 #define RESIDENT_IN_BACKEND         "resident"
 #define LAST_DESKTOP_SORT_ORDER     "last-desktop-sort-order"
 #define ALLOW_FILE_OP_PARALLEL      "allow-file-op-parallel"
@@ -47,11 +49,18 @@
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
+#define FONT_SETTINGS                "org.ukui.style"
+
 //difference between Community version and Commercial version
 #define COMMERCIAL_VERSION          false
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
+
+// control center
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // time format key, value is '12' or '24'
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE       "org.ukui.control-center.panel.plugins.date"            // date format key, value is cn or en
 
 class QGSettings;
 
@@ -82,6 +91,9 @@ public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
     void reset(const QString &key);
     void resetAll();
+    void setTimeFormat(const QString &value);
+    void setDateFormat(const QString &value);
+    QString getSystemTimeFormat();
 
     /*!
      * \brief forceSync
@@ -96,12 +108,17 @@ private:
     explicit GlobalSettings(QObject *parent = nullptr);
     ~GlobalSettings();
 
-    QSettings *m_settings;
-    QMap<QString, QVariant> m_cache;
+    QSettings*                  m_settings;
+    QMap<QString, QVariant>     m_cache;
 
-    QGSettings *m_gsettings = nullptr;
+    QGSettings*                 m_gsettings = nullptr;
+    QGSettings*                 m_control_center_plugin = nullptr;
 
-    QMutex m_mutex;
+    QMutex                      m_mutex;
+
+    QString                     m_date_format = "";
+    QString                     m_time_format = "";
+    QString                     m_system_time_format  = "";
 };
 
 }

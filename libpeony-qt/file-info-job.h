@@ -123,7 +123,8 @@ protected:
             FileInfoJob *thisJob);
 
 private:
-    void refreshInfoContents(GFileInfo *new_info);
+    void refreshFileSystemInfo (GFileInfo* new_info);
+    void refreshInfoContents (GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
 
     quint64 m_file_size_uint = 0;
@@ -137,6 +138,7 @@ private:
     bool m_auto_delete = false;
 
     GCancellable *m_cancellable = nullptr;
+    GCancellable *m_fs_cancellable = nullptr;
 };
 
 }

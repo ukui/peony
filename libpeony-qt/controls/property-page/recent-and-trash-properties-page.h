@@ -24,13 +24,17 @@
 #define RECENTANDTRASHPROPERTIESPAGE_H
 
 #include <QWidget>
+#include <QtConcurrent>
+
+#include "file-info.h"
+#include "properties-window-tab-iface.h"
 #include "peony-core_global.h"
 
 class QFormLayout;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT RecentAndTrashPropertiesPage : public QWidget
+class PEONYCORESHARED_EXPORT RecentAndTrashPropertiesPage : public PropertiesWindowTabIface
 {
     Q_OBJECT
 public:
@@ -38,10 +42,17 @@ public:
 
 protected:
     void addSeparator();
+    void init();
 
 private:
     QString m_uri;
     QFormLayout *m_layout;
+    std::shared_ptr<FileInfo> m_fileInfo = nullptr;
+    QFutureWatcher<void> *m_futureWatcher = nullptr;
+
+    // PropertiesWindowTabIface interface
+public:
+    void saveAllChange();
 };
 
 }

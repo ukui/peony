@@ -57,6 +57,7 @@
 #include <QStyleHints>
 
 #include <QDebug>
+#include <QToolTip>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -102,7 +103,10 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
+    m_renameTimer->setSingleShot(true);
     m_editValid = false;
+
+    setMouseTracking(true);//追踪鼠标
 }
 
 IconView::~IconView()
@@ -197,7 +201,7 @@ void IconView::closeView()
 void IconView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_editValid = false;
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -212,7 +216,7 @@ void IconView::dragEnterEvent(QDragEnterEvent *e)
 
 void IconView::dragMoveEvent(QDragMoveEvent *e)
 {
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -249,7 +253,7 @@ void IconView::dropEvent(QDropEvent *e)
 {
     m_last_index = QModelIndex();
     //m_edit_trigger_timer.stop();
-    if (e->keyboardModifiers() && Qt::ControlModifier)
+    if (e->keyboardModifiers() & Qt::ControlModifier)
         m_ctrl_key_pressed = true;
     else
         m_ctrl_key_pressed = false;
@@ -267,6 +271,10 @@ void IconView::dropEvent(QDropEvent *e)
             auto uri = m_sort_filter_proxy_model->itemFromIndex(proxy_index)->uri();
             if(!e->mimeData()->urls().contains(uri))
                 m_model->dropMimeData(e->mimeData(), action, 0, 0, index);
+        } else {
+            if (m_ctrl_key_pressed) {
+                m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+            }
         }
         return;
     }
@@ -276,6 +284,13 @@ void IconView::dropEvent(QDropEvent *e)
 
 void IconView::mouseMoveEvent(QMouseEvent *e)
 {
+    QModelIndex itemIndex = indexAt(e->pos());
+    if (!itemIndex.isValid()) {
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
+    }
+
     if (m_ignore_mouse_move_event) {
         return;
     }
@@ -497,11 +512,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(FileItemModel::UriRole).toString();
-        //process open symbolic link
-        auto info = FileInfo::fromUri(uri);
-        if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
-            uri = "file://" + FileUtils::getSymbolicTarget(uri);
+        auto uri = getSelections().first();
         Q_EMIT m_proxy->viewDoubleClicked(uri);
     });
 
@@ -649,7 +660,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         //when selections is more than 1, let mainwindow to process
         if (getSelections().count() != 1)
             return;
-        auto uri = index.data(Qt::UserRole).toString();
+        auto uri = getSelections().first();
         Q_EMIT this->viewDoubleClicked(uri);
     });
 

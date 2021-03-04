@@ -163,15 +163,7 @@ void FileItem::findChildrenAsync()
                 GFile *targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
                 QUrl targetUrl = targetUri;
                 auto path = g_file_get_path(targetFile);
-                if (path && !targetUrl.isLocalFile() && false) {
-                    QString localUri = QString("file://%1").arg(path);
-                    this->m_info = FileInfo::fromUri(localUri);
-                    enumerator->setEnumerateDirectory(localUri);
-                    g_free(path);
-                } else {
-                    enumerator->setEnumerateDirectory(targetFile);
-                }
-
+                enumerator->setEnumerateDirectory(targetFile);
                 g_object_unref(targetFile);
             }
 
@@ -390,7 +382,7 @@ void FileItem::findChildrenAsync()
 
                     m_ending_uris.removeOne(uri);
                     if (isEnding && m_ending_uris.isEmpty()) {
-                        qApp->processEvents();
+                        //qApp->processEvents();
                         Q_EMIT m_model->findChildrenFinished();
                         Q_EMIT m_model->updated();
                     }
@@ -685,4 +677,33 @@ void FileItem::clearChildren()
     m_expanded = false;
     m_watcher.reset();
     m_watcher = nullptr;
+}
+
+/* Func: if it isn't a vaild volume device,it should not be displayed.
+ */
+bool FileItem::shouldShow()
+{
+    QString uri,unixDevice,displayName;
+
+    uri = m_info->uri();
+    if(uri.isEmpty())
+        return false;
+    if("computer:///root.link" == uri)
+        return true;
+
+    //non computer path, no need check
+    //to fix sftp IO stuck issue
+    if (! uri.startsWith("computer:///"))
+        return true;
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+    displayName = FileUtils::getFileDisplayName(uri);
+
+    if(displayName.isEmpty())
+        return false;
+    if(!unixDevice.isEmpty() && !displayName.contains(":")){
+        if(uri.endsWith(".drive"))
+            return false;
+    }
+    return true;
 }

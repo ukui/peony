@@ -37,6 +37,7 @@
 
 #include <QKeyEvent>
 #include <QItemDelegate>
+#include <file-label-model.h>
 
 #include <QApplication>
 
@@ -52,6 +53,11 @@ ListViewDelegate::~ListViewDelegate()
     m_styled_button->deleteLater();
 }
 
+void ListViewDelegate::initIndexOption(QStyleOptionViewItem *option, const QModelIndex &index) const
+{
+    return initStyleOption(option, index);
+}
+
 void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;
@@ -59,21 +65,31 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
     if (index.column() == 0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
-            auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
-            int offset = 0;
-            for (auto color : colors) {
+            int xoffset = 0;
+            int yoffset = 0;
+            int index = 0;
+            const int MAX_LABEL_NUM = 3;
+            int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+
+            for (int i = startIndex; i < colors.count(); ++i, ++index) {
+                auto color = colors.at(i);
+//                if (index == 3) {
+//                    xoffset += 10/2;
+//                    yoffset = 3;
+//                }
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
                 painter->translate(2, 2);
                 painter->setPen(opt.palette.highlightedText().color());
                 painter->setBrush(color);
-                painter->drawEllipse(QRectF(offset, 0, 10, 10));
+                painter->drawEllipse(QRectF(xoffset, yoffset, 10, 10));
                 painter->restore();
-                offset += 10;
+                yoffset += 10/2;
             }
         }
     }
@@ -85,10 +101,43 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
+            else{
+                painter->setOpacity(1);
+            }
         }
     }
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+
+    //add link and read only icon support
+    if (index.column() == 0) {
+        auto rect = view->visualRect(index);
+        auto iconSize = view->iconSize();
+        auto size = iconSize.width()/2;
+        bool isSymbolicLink = info->isSymbolLink();
+        auto loc_x = rect.x() + iconSize.width() - size/2;
+        auto loc_y =rect.y();
+        //paint symbolic link emblems
+        if (isSymbolicLink) {
+            QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
+            //qDebug()<<info->symbolicIconName();
+            icon.paint(painter, loc_x, loc_y, size, size);
+            //painter->restore();
+        }
+
+        //paint access emblems
+        //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
+        loc_x = rect.x();
+        if (info->uri().startsWith("file:")) {
+            if (!info->canRead()) {
+                QIcon icon = QIcon::fromTheme("emblem-unreadable");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            } else if (!info->canWrite() && !info->canExecute()) {
+                QIcon icon = QIcon::fromTheme("emblem-readonly");
+                icon.paint(painter, loc_x, loc_y, size, size);
+            }
+        }
+    }
 }
 
 QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -100,15 +149,15 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
 
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, parent, [=]() {
         this->updateEditorGeometry(edit, option, index);
     });
 
-    connect(edit, &TextEdit::textChanged, [=]() {
+    connect(edit, &TextEdit::textChanged, this, [=]() {
         updateEditorGeometry(edit, option, index);
     });
 
-    connect(edit, &TextEdit::finishEditRequest, [=]() {
+    connect(edit, &TextEdit::finishEditRequest, this, [=]() {
         setModelData(edit, nullptr, index);
         edit->deleteLater();
     });
@@ -156,7 +205,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (text == index.data(Qt::DisplayRole).toString())
         return;
     //process special name . or .. or only space
-    if (text == "." || text == ".." || text.trimmed() == "")
+    if (text == "." || text == ".." || text.trimmed() == "" || text.contains("\\"))
         return;
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
@@ -180,10 +229,11 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QMod
 {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-    auto colors = info->getColors();
+//    auto colors = info->getColors();
     //fix color labels over 2 will overlap with item issue
-    if (colors.count() >2)
-        size.setHeight( size.height() + 20);
+
+//    if (FileLabelModel::getGlobalModel()->getFileColors(index.data(Qt::UserRole).toString()).count() >2)
+//    size.setHeight( size.height() + 20);
     return size;
 }
 

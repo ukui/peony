@@ -169,6 +169,15 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         if (view->indexWidget(index)) {
         } else if (! view->isDraggingState() && view->m_allow_set_index_widget) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
+            connect(getView()->m_model, &FileItemModel::dataChanged, indexWidget, [=](const QModelIndex &topleft, const QModelIndex &bottomRight){
+                if (topleft.data(Qt::UserRole).toString() == indexWidget->m_index.data(Qt::UserRole).toString()) {
+                    if (getView()->getSelections().count() == 1 && getView()->getSelections().first() == topleft.data(Qt::UserRole).toString()) {
+                        auto selections = getView()->getSelections();
+                        getView()->clearSelection();
+                        getView()->setSelections(selections);
+                    }
+                }
+            });
             view->setIndexWidget(index, indexWidget);
             indexWidget->adjustPos();
         }
@@ -178,7 +187,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (!isDragging || !view->selectedIndexes().contains(index)) {
         auto colors = info->getColors();
         int offset = 0;
-        for (auto color : colors) {
+        const int MAX_LABEL_NUM = 3;
+        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+        for (int i = startIndex; i < colors.count(); ++i) {
+            auto color = colors.at(i);
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->translate(option.rect.topLeft());
@@ -187,7 +199,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             painter->setBrush(color);
             painter->drawEllipse(QRectF(offset, 0, 10, 10));
             painter->restore();
-            offset += 10;
+            offset += 10/2;
         }
     }
 
@@ -311,14 +323,13 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
     auto newName = edit->toPlainText();
     auto oldName = index.data(Qt::DisplayRole).toString();
-    QFileInfo info(index.data().toUrl().path());
-    auto suffix = "." + info.suffix();
     if (newName.isNull())
         return;
     //process special name . or .. or only space
-    if (newName == "." || newName == ".." || newName.trimmed() == "")
+    if (newName == "." || newName == ".." || newName.trimmed() == "" || newName.contains("\\"))
         newName = "";
-    if (newName.length() >0 && newName != oldName && newName != suffix) {
+    //comment new name != suffix check to fix feedback issue
+    if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
 

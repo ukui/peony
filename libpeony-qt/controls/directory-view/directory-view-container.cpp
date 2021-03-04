@@ -27,10 +27,15 @@
 #include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
 #include "file-utils.h"
+#include "global-settings.h"
+
+#include "file-label-model.h"
 
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
+
+#include "file-info.h"
 
 #include <QVBoxLayout>
 #include <QAction>
@@ -62,6 +67,18 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
+        refresh();
+    });
+
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+           qDebug() << "panel settings changed:" <<key;
+           if (getView()->viewId() == "List View" && (key == "date" || key == "hoursystem"))
+              refresh();
+        });
+    }
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -230,6 +247,7 @@ update:
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
+
     //update status bar zoom level
     updateStatusBarSliderStateRequest();
     if (zoomLevel < 0)
@@ -277,8 +295,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!factory)
         return;
 
-    auto sortType = 0;
-    auto sortOrder = 0;
+    auto settings = GlobalSettings::getInstance();
+    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
+    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
 
     auto oldView = m_view;
     QStringList selection;
@@ -303,7 +322,20 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     view->setSortOrder(sortOrder);
 
     connect(m_view, &DirectoryViewWidget::menuRequest, this, &DirectoryViewContainer::menuRequest);
-    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, &DirectoryViewContainer::directoryChanged);
+    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
+        if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
+            auto dirInfo = FileInfo::fromUri(m_current_uri);
+            if (dirInfo.get()->isEmptyInfo() && !dirInfo.get()->uri().startsWith("search://")) {
+                goBack();
+                if (!m_forward_list.isEmpty())
+                    m_forward_list.takeFirst();
+            } else {
+                Q_EMIT this->directoryChanged();
+            }
+        } else {
+            Q_EMIT this->directoryChanged();
+        }
+    });
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::viewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
@@ -351,7 +383,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
-        if (selections.count() == 1) {
+        bool hasStandardPath = FileUtils::containsStandardPath(selections);
+        if (selections.count() == 1 && !hasStandardPath) {
             m_view->editUri(selections.first());
         }
     });
@@ -436,6 +469,7 @@ void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
     if (!m_view)
         return;
     m_view->setSortType(type);
+    Peony::GlobalSettings::getInstance()->setValue(SORT_COLUMN, type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
@@ -452,6 +486,7 @@ void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
         return;
     if (!m_view)
         return;
+    Peony::GlobalSettings::getInstance()->setValue(SORT_ORDER, order);
     m_view->setSortOrder(order);
 }
 
