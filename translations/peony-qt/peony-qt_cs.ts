@@ -148,32 +148,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="319"/>
+        <location filename="../../src/windows/main-window.cpp" line="317"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="326"/>
+        <location filename="../../src/windows/main-window.cpp" line="324"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1464"/>
+        <location filename="../../src/windows/main-window.cpp" line="1462"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1465"/>
+        <location filename="../../src/windows/main-window.cpp" line="1463"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1474"/>
+        <location filename="../../src/windows/main-window.cpp" line="1472"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1475"/>
+        <location filename="../../src/windows/main-window.cpp" line="1473"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="703"/>
+        <location filename="../../src/windows/main-window.cpp" line="701"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -194,12 +194,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="167"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
         <source>Open In &amp;New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="190"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="184"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="218"/>
+        <source>Can not open %1, %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
         <source>Open In New &amp;Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,7 +213,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="364"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="387"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>

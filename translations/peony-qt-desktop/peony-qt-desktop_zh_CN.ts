@@ -349,12 +349,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="97"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="96"/>
         <source>Desktop</source>
         <translation>桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="162"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="161"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
