@@ -58,6 +58,7 @@
 #include <QMimeData>
 
 #include <QTimer>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -172,8 +173,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            auto newWindow = window->create(targetUri);
-                            dynamic_cast<QWidget *>(newWindow)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    auto newWindow = window->create(targetUri);
+                                    dynamic_cast<QWidget *>(newWindow)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             auto newWindow = window->create(item->uri());
                             dynamic_cast<QWidget *>(newWindow)->show();
@@ -195,8 +207,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            window->addNewTabs(QStringList()<<targetUri);
-                            dynamic_cast<QWidget *>(window)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    window->addNewTabs(QStringList()<<targetUri);
+                                    dynamic_cast<QWidget *>(window)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             window->addNewTabs(QStringList()<<item->uri());
                             dynamic_cast<QWidget *>(window)->show();
