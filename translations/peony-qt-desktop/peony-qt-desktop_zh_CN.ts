@@ -315,7 +315,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="461"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
-        <translation>确定删除这些文件？一旦确定这些文件将被永久删除且不可恢复。</translation>
+        <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
