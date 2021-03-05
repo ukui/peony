@@ -29,6 +29,7 @@
 
 #include <QStandardPaths>
 #include <QTimer>
+#include <QVariantAnimation>
 
 #include <QMap>
 
@@ -96,6 +97,7 @@ public:
 
     QRect visualRect(const QModelIndex &index) const;
     const QFont getViewItemFont(QStyleOptionViewItem *item);
+    void setAnimationInfo(bool running = true, bool  tablet = true);
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
@@ -251,6 +253,9 @@ private:
     QMap<QString, QRect> m_item_rect_hash;
 
     QPoint m_press_pos;
+    QVariantAnimation *m_opacity = nullptr;
+    bool m_animation_running = false;
+    bool m_is_tablet_mode = false;
 };
 
 }
