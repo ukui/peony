@@ -42,7 +42,7 @@
   <widget class="QComboBox" name="comboBox_system">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>140</x>
      <y>80</y>
      <width>291</width>
      <height>26</height>
@@ -69,7 +69,7 @@
     <rect>
      <x>30</x>
      <y>140</y>
-     <width>151</width>
+     <width>101</width>
      <height>18</height>
     </rect>
    </property>
@@ -80,13 +80,13 @@
   <widget class="QLineEdit" name="lineEdit_device_name">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>140</x>
      <y>140</y>
      <width>291</width>
      <height>26</height>
     </rect>
-</property>
-    <property name="maxLength">
+   </property>
+   <property name="maxLength">
     <number>11</number>
    </property>
   </widget>
@@ -132,7 +132,7 @@
   <widget class="QComboBox" name="comboBox_rom_size">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>140</x>
      <y>20</y>
      <width>291</width>
      <height>26</height>
