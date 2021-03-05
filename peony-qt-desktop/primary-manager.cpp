@@ -1,3 +1,25 @@
+/*
+ * Peony-Qt
+ *
+ * Copyright (C) 2020, KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Authors: Yue Lan <lanyue@kylinos.cn>
+ *
+ */
+
 #include "primary-manager.h"
 #include <QDebug>
 #include <QTimer>
@@ -79,9 +101,5 @@ QString PrimaryManager::getScreenName(QString methodName)
 void PrimaryManager::priScreenChanged(int x, int y, int width, int height)
 {
     Q_EMIT this->priScreenChangedSignal(x, y, width, height);
-    // re-check
-    QTimer::singleShot(500, this, [=](){
-        Q_EMIT this->priScreenChangedSignal(x, y, width, height);
-    });
     qDebug("primary screen  changed, geometry is  x=%d, y=%d, windth=%d, height=%d", x, y, width, height);
 }

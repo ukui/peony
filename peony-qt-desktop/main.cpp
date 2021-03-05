@@ -79,6 +79,7 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
+    //qputenv("QT_QPA_PLATFORM", "wayland");
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
     qInstallMessageHandler(messageOutput);
     qDebug() << "desktop start time in main:" <<PeonyDesktopApplication::peony_desktop_start_time;

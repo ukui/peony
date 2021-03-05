@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui x11extras dbus concurrent KWindowSystem
+QT       += core gui x11extras dbus concurrent KWindowSystem KWaylandClient
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -47,6 +47,7 @@ SOURCES += \
     peony-json-operation.cpp \
     bw-list-info.cpp \
     peony-dbus-service.cpp \
+    plasma-shell-manager.cpp \
     primary-manager.cpp \
     user-dir-manager.cpp
 
@@ -64,6 +65,7 @@ HEADERS += \
     peony-json-operation.h \
     bw-list-info.h \
     peony-dbus-service.h \
+    plasma-shell-manager.h \
     primary-manager.h \
     user-dir-manager.h
 
