@@ -23,6 +23,7 @@
 #include "open-with-properties-page.h"
 #include "file-info.h"
 #include "file-launch-manager.h"
+#include "global-settings.h"
 
 #include <QLabel>
 #include <QPushButton>
@@ -183,7 +184,11 @@ void OpenWithPropertiesPage::initFloorThree()
     connect(otherOpenLabel, &QLabel::linkActivated, this, [=]() {
         QtConcurrent::run([=]() {
             QProcess p;
-            p.setProgram("ubuntu-kylin-software-center");
+            if (COMMERCIAL_VERSION)
+                p.setProgram("kylin-software-center");
+            else
+                p.setProgram("ubuntu-kylin-software-center");
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
             p.startDetached();
 #else
