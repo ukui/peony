@@ -461,9 +461,15 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
-    if (screen != nullptr)
+    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+    if (screen != nullptr) {
         qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
-    else {
+        connect(screen, &QScreen::geometryChanged, this, [=](){
+            auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+            virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+        });
+    } else {
         return;
     }
 
@@ -472,6 +478,8 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
+    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
     //if (screen != nullptr)
     //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
