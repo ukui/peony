@@ -25,6 +25,7 @@
 
 #include <QMessageBox>
 #include <QObject>
+#include <KWindowSystem>
 
 using namespace  Peony;
 static bool b_finished = false;
@@ -154,9 +155,12 @@ void Format_Dialog::acceptFormat(bool)
     ui->pushButton_close->setDisabled(true);
 
     //check format or not 
-   if(!format_makesure_dialog()){
+    if(!format_makesure_dialog()){
         return;
-   };
+    };
+
+    //keep this window above, fix bug #41227
+    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
