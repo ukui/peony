@@ -798,7 +798,7 @@ void DesktopWindow::updateScreenVisible()
                 setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
                 show();
                 view->setAnimationInfo(true,false);
-                 view->m_opacity->setDirection(QAbstractAnimation::Backward);
+                view->m_opacity->setDirection(QAbstractAnimation::Backward);
                 view->m_opacity->start();
             }
         } else {
