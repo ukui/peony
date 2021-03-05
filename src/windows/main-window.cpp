@@ -812,6 +812,12 @@ void MainWindow::updateWindowIcon()
 
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
+    auto viewId = this->getCurrentPage()->getView()->viewId();
+
+    if (QString::compare(viewId, "Icon View", Qt::CaseSensitive) == 0) {
+        this->getCurrentPage()->getView()->disableMultiSelect();
+    }
+
     QUrl url(uri);
     auto realUri = uri;
     if (url.scheme().isEmpty()) {
