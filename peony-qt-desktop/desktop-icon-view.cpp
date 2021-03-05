@@ -682,8 +682,8 @@ void DesktopIconView::resolutionChange()
                 }
             }
 //            // first item doesn't need re-layout
-//            if (!needChanged.isEmpty())
-//                needChanged.removeFirst();
+            if (!needChanged.isEmpty())
+                needChanged.removeFirst();
 
             int posX = 0;
             int posY = 0;
