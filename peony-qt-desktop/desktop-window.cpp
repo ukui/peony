@@ -103,6 +103,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
     m_tabletmode = tabletMode;
+
     if(tabletMode){
         setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
         this->hide();
@@ -773,23 +774,32 @@ void DesktopWindow::updateWinGeometry() {
 //    Q_EMIT this->checkWindow();
 
     scaleBg(g);
-
     updateScreenVisible();
 }
 
 void DesktopWindow::updateScreenVisible()
 {
     m_tabletmode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-
+    auto  view = qobject_cast<DesktopIconView *>(centralWidget());
     if (true == m_tabletmode) {
         //pad mode desktop should hide, pla
-        hide();
+         setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
+        if(view)
+        {
+            view->setAnimationInfo(true,true);
+            view->m_opacity->setDirection(QAbstractAnimation::Forward);
+            view->m_opacity->start();
+        }
     } else {
         //PC mode desktop will show,
         if (m_screen == qApp->primaryScreen()) {
             //primary screen must be show
-            if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
+            if (view) {
+                setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
                 show();
+                view->setAnimationInfo(true,false);
+                 view->m_opacity->setDirection(QAbstractAnimation::Backward);
+                view->m_opacity->start();
             }
         } else {
             // if desktop is mirror mode the slave screen will hide, or show empty desktop.

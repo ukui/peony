@@ -24,6 +24,7 @@
 #define DESKTOPICONVIEWDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QTransform>
 
 class QPushButton;
 

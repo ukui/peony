@@ -64,7 +64,30 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 {
     painter->save();
     auto view = qobject_cast<Peony::DesktopIconView*>(parent());
+    qreal value = view->m_opacity->currentValue().toReal();
 
+    int x = option.rect.x();
+    int y = option.rect.y();
+    int height = option.rect.height();
+    int width = option.rect.width();
+    int midx = view->viewport()->width()/2+view->viewport()->x();
+    int midy = view->viewport()->height()/2+view->viewport()->y();
+    if(view->m_animation_running)
+    {
+        painter->setWorldMatrixEnabled(true);
+        if(view->m_is_tablet_mode)
+        {
+            painter->setOpacity(value);
+//            painter->scale(value/10+0.9,value/10+0.9);
+            painter->translate((1-value)*0.05*(midx  -x) ,(1-value)*0.05*(midy  -y));
+        }
+        else
+        {
+            painter->setOpacity(value);
+//            painter->scale(value/10+0.9,value/10+0.9);
+            painter->translate((1-value)*0.05*(midx  -x) ,(1-value)*0.05*(midy  -y));
+        }
+    }
     auto style = option.widget->style();
 
     QStyleOptionViewItem opt = option;

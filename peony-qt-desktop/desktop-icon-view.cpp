@@ -301,6 +301,17 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_peonyDbusSer->DbusServerRegister();
 
     setMouseTracking(true);//追踪鼠标
+    m_opacity = new QVariantAnimation(this);
+    m_opacity->setDuration(600);
+    m_opacity->setStartValue(double(1));
+    m_opacity->setEndValue(double(0.01));
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
+        this->viewport()->update();
+    });
+    connect(m_opacity,&QVariantAnimation::finished,this,[=](){
+        if(m_is_tablet_mode)
+            window()->hide();
+    });
 
     this->refresh();
 }
@@ -955,6 +966,8 @@ void DesktopIconView::wheelEvent(QWheelEvent *e)
 
 void DesktopIconView::keyPressEvent(QKeyEvent *e)
 {
+    if(m_is_tablet_mode)
+        return;
     switch (e->key()) {
     case Qt::Key_Home: {
         auto boundingRect = getBoundingRect();
@@ -1359,6 +1372,8 @@ void DesktopIconView::setEditFlag(bool edit)
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
+    if(m_is_tablet_mode)
+        return;
     m_press_pos = e->pos();
     // bug extend selection bug
     m_real_do_edit = false;
@@ -1383,8 +1398,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                 setIndexWidget(m_last_index, nullptr);
             //if (!indexWidget(m_last_index)) {
             auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
-            setIndexWidget(m_last_index,
-                           indexWidget);
+            setIndexWidget(m_last_index,indexWidget);
             indexWidget->move(visualRect(m_last_index).topLeft());
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
             for (auto uri : getAllFileUris()) {
@@ -1425,6 +1439,8 @@ void DesktopIconView::mouseMoveEvent(QMouseEvent *e)
 
 void DesktopIconView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if(m_is_tablet_mode)
+        return;
     QListView::mouseDoubleClickEvent(event);
     m_real_do_edit = false;
 }
@@ -1617,9 +1633,9 @@ void DesktopIconView::dropEvent(QDropEvent *e)
                 while (next.translated(0, -grid.height()).top() >= 0) {
                     next.translate(0, -grid.height());
                 }
-
                 while (notEmptyRegion.contains(next.center())) {
                     next.translate(0, grid.height());
+
                     if (next.bottom() > viewRect.bottom()) {
                         int top = next.y();
                         while (true) {
@@ -1719,7 +1735,14 @@ const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
 //    default:
 //        break;
 //    }
-//    return font;
+    //    return font;
+}
+
+void DesktopIconView::setAnimationInfo(bool running,bool  tablet)
+{
+     m_animation_running = running;
+     m_is_tablet_mode = tablet;
+     return;
 }
 
 void DesktopIconView::clearAllIndexWidgets()
