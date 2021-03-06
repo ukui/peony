@@ -121,6 +121,15 @@ QRect caculateVirtualDesktopGeometry() {
     for (auto screen : qApp->screens()) {
         screensRegion += screen->geometry();
     }
+
+    if (screensMonitor) {
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        screensRegion += QRect(x, y, width, height);
+    }
+
     auto rect = screensRegion.boundingRect();
     return rect;
 }
@@ -317,7 +326,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
                 //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
                 auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-                virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
                 virtualDesktopWindow->show();
 
                 virtualDesktopWindow->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -388,6 +397,8 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
             screensMonitor = new PrimaryManager;
             connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
                 getIconView()->setGeometry(x, y, width, height);
             });
             screensMonitor->start();
@@ -418,12 +429,12 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
 {
     auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
     if (screen != nullptr) {
         qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
         connect(screen, &QScreen::geometryChanged, this, [=](){
             auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-            virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+            virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
         });
     } else {
         return;
@@ -479,7 +490,7 @@ void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
     auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
     //if (screen != nullptr)
     //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
