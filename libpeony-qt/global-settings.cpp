@@ -96,6 +96,16 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
         setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
     }
+
+
+    if (m_cache.value (SORT_TYPE).isNull()) {
+        setValue (SORT_TYPE, 0);
+    }
+
+    if (m_cache.value (SORT_ORDER).isNull()) {
+        setValue (SORT_ORDER, 0);
+    }
+
 }
 
 GlobalSettings::~GlobalSettings()

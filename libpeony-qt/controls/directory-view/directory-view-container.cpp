@@ -31,11 +31,13 @@
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
+#include "global-settings.h"
 
 #include <QVBoxLayout>
 #include <QAction>
 
 #include <QApplication>
+
 
 using namespace Peony;
 
@@ -274,8 +276,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     if (!factory)
         return;
 
-    auto sortType = 0;
-    auto sortOrder = 0;
+    auto settings = GlobalSettings::getInstance();
+    auto sortType = settings->isExist (SORT_TYPE) ? settings->getValue (SORT_TYPE).toInt() : 0;
+    auto sortOrder = settings->isExist (SORT_ORDER) ? settings->getValue (SORT_ORDER).toInt() : 0;
 
     auto oldView = m_view;
     QStringList selection;
@@ -440,6 +443,7 @@ void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
     if (!m_view)
         return;
     m_view->setSortType(type);
+    Peony::GlobalSettings::getInstance()->setValue (SORT_TYPE, type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
@@ -456,6 +460,8 @@ void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
         return;
     if (!m_view)
         return;
+
+    Peony::GlobalSettings::getInstance()->setValue (SORT_ORDER, order);
     m_view->setSortOrder(order);
 }
 
