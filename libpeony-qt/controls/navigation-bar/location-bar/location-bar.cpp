@@ -134,8 +134,9 @@ LocationBar::~LocationBar()
 
 void LocationBar::setRootUri(const QString &uri)
 {
-//    if (m_current_uri == uri)
-//        return;
+    //when is the same uri and has buttons return
+    if (m_current_uri == uri && m_buttons.count() >0)
+        return;
 
     m_current_uri = uri;
 
