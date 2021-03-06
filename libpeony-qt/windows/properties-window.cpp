@@ -31,6 +31,7 @@
 #include "mark-properties-page-factory.h"
 #include "open-with-properties-page-factory.h"
 #include "details-properties-page-factory.h"
+#include "thumbnail-manager.h"
 
 #include <QToolBar>
 #include <QPushButton>
@@ -46,6 +47,9 @@
 #include <QTimer>
 #include <QPainter>
 #include <QStyleOptionTab>
+
+#include <glib/gstdio.h>
+#include <gio/gdesktopappinfo.h>
 
 #include "file-info-job.h"
 
@@ -220,7 +224,18 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
     }
 
     windowTitle += " " + tr("Properties");
-    this->setWindowIcon(QIcon::fromTheme(iconName));
+
+    if (iconName == "application-x-desktop") {
+        QUrl url = m_fileInfo.get()->uri();
+        auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+        if (_desktop_file) {
+            iconName = g_desktop_app_info_get_string(_desktop_file, "Icon");
+        }
+    }
+
+    QIcon fileIcon = QIcon::fromTheme(iconName, QIcon::fromTheme("text-x-generic"));
+
+    this->setWindowIcon(fileIcon);
     this->setWindowTitle(windowTitle);
 }
 

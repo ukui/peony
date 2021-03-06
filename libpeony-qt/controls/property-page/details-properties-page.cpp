@@ -157,9 +157,17 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     if (!m_tableWidget)
         return;
 
+    QFontMetrics fm = this->fontMetrics();
+
     //name
-    QString fileName =  m_tableWidget->fontMetrics().elidedText(m_fileInfo->displayName(), Qt::ElideMiddle,FIXED_CONTENT_WIDTH);
-    this->addRow(tr("Name:"),fileName);
+    QString fileName =  m_fileInfo->displayName();
+    m_nameLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
+    if (fm.width(fileName) > FIXED_CONTENT_WIDTH) {
+        m_nameLabel->setToolTip(fileName);
+        fileName = m_tableWidget->fontMetrics().elidedText(fileName, Qt::ElideMiddle, FIXED_CONTENT_WIDTH);
+    }
+    m_nameLabel->setText(fileName);
+    this->addRow(tr("Name:"), m_nameLabel);
 
     //type
     this->addRow(tr("File type:"),m_fileInfo->fileType());
@@ -171,7 +179,6 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
         location = location.split("file://").last();
 
     m_localLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
-    QFontMetrics fm = this->fontMetrics();
     if (fm.width(location) > FIXED_CONTENT_WIDTH)
     {
         m_localLabel->setToolTip(location);
@@ -179,7 +186,7 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     }
     m_localLabel->setText(location);
 
-    this->addRow(tr("Location:"),m_localLabel);
+    this->addRow(tr("Location:"), m_localLabel);
 
     //createTime
     m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
