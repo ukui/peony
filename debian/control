@@ -20,7 +20,8 @@ Build-Depends: debhelper-compat (=12),
                libpoppler-dev,
                libpoppler-qt5-dev,
                libkf5windowsystem-dev,
-               libcanberra-dev
+               libcanberra-dev,
+               libkf5wayland-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
