@@ -90,7 +90,7 @@
 using namespace Peony;
 
 DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
-    : QMainWindow(parent) {
+    : QWidget(parent) {
     initGSettings();
 
     setWindowTitle(tr("Desktop"));
@@ -116,73 +116,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_is_primary = is_primary;
     setContentsMargins(0, 0, 0, 0);
 
-    qDebug() << "DesktopWindow is_primary:" << is_primary << screen->objectName()
-             << screen->name();
-    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
-    setAttribute(Qt::WA_TranslucentBackground);
-
-    //fix qt5.6 setAttribute as desktop has no effect issue
-#if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
-    if (QX11Info::isPlatformX11()) {
-        Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
-        Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
-        XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
-        XChangeProperty(QX11Info::display(), winId(), m_WindowType,
-                        XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
-    }
-#endif
-
     setGeometry(screen->geometry());
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
-
-    // menu
-    connect(this, &QMainWindow::customContextMenuRequested,
-    [=](const QPoint &pos) {
-        // FIXME: use other menu
-        qDebug() << "menu request in desktop window";
-        auto contentMargins = contentsMargins();
-        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
-        if (!index.isValid() || !centralWidget()) {
-            PeonyDesktopApplication::getIconView()->clearSelection();
-        } else {
-            if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
-                PeonyDesktopApplication::getIconView()->clearSelection();
-                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
-            }
-        }
-
-        QTimer::singleShot(1, [=]() {
-            DesktopMenu menu(PeonyDesktopApplication::getIconView());
-            if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
-                auto action = menu.addAction(tr("set background"));
-                connect(action, &QAction::triggered, [=]() {
-                    //go to control center set background
-                    gotoSetBackground();
-//                    QFileDialog dlg;
-//                    dlg.setNameFilters(QStringList() << "*.jpg"
-//                                       << "*.png");
-//                    if (dlg.exec()) {
-//                        auto url = dlg.selectedUrls().first();
-//                        this->setBg(url.path());
-//                        // qDebug()<<url;
-//                        Q_EMIT this->changeBg(url.path());
-//                    }
-                });
-            }
-            menu.exec(mapToGlobal(pos));
-            auto urisToEdit = menu.urisToEdit();
-            if (urisToEdit.count() == 1) {
-                QTimer::singleShot(
-                100, this, [=]() {
-                    PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
-                });
-            }
-        });
-    });
 
     connect(m_screen, &QScreen::geometryChanged, this,
             &DesktopWindow::geometryChangedProcess);
@@ -211,7 +145,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 }
 
 DesktopWindow::~DesktopWindow() {
-    setCentralWidget(nullptr);
+//    setCentralWidget(nullptr);
 }
 
 void DesktopWindow::initGSettings() {
@@ -351,7 +285,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
         }
     }
-    QMainWindow::paintEvent(e);
+    QWidget::paintEvent(e);
 }
 
 QString DesktopWindow::getAccountBackground()
@@ -524,29 +458,6 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
         return;
 
     setGeometry(geometry);
-    /*!
-     * \note
-     * There is a bug in kwin, if we directly set window
-     * geometry or showFullScreen, window will not be resized
-     * correctly.
-     *
-     * reset the window flags will resovle the problem,
-     * but screen will be black a while.
-     * this is not user's expected.
-     */
-    //setWindowFlag(Qt::FramelessWindowHint, false);
-    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    setWindowFlags(flags |Qt::FramelessWindowHint);
-
-    //fix qt5.6 setAttribute as desktop has no effect issue
-#if QT_VERSION_CHECK(5, 6, 0)
-    Atom m_WindowType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", true);
-    Atom m_DesktopType = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_DESKTOP", true);
-    XDeleteProperty(QX11Info::display(), winId(), m_WindowType);
-    XChangeProperty(QX11Info::display(), winId(), m_WindowType,
-                    XA_ATOM, 32, 1, (unsigned char *)&m_DesktopType, 1);
-#endif
-
     show();
 
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -570,32 +481,10 @@ void DesktopWindow::virtualGeometryChangedProcess(const QRect &geometry) {
 void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     // screen resolution ratio change
     updateWinGeometry();
-    qDebug() << "geometryChangedProcess:" <<geometry <<topLevelWidget()->winId();
-    KWindowSystem::setState(topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepBelow));
-    QTimer::singleShot(500, this, [=](){
-        auto view = PeonyDesktopApplication::getIconView();
-        if (view->topLevelWidget()->isVisible()) {
-            qDebug() << "geometryChangedProcess visible view:" <<view->topLevelWidget()->winId();
-            KWindowSystem::raiseWindow(view->topLevelWidget()->winId());
-            KWindowSystem::setState(view->topLevelWidget()->winId(), NET::States(NET::Desktop|NET::KeepAbove));
-        }
-    });
 }
 
 void DesktopWindow::updateView() {
-    auto avaliableGeometry = m_screen->availableGeometry();
-    auto geomerty = m_screen->geometry();
-    qDebug() << "updateView:" <<avaliableGeometry<<geomerty;
-    int top = qAbs(avaliableGeometry.top() - geomerty.top());
-    int left = qAbs(avaliableGeometry.left() - geomerty.left());
-    int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
-    int right = qAbs(avaliableGeometry.right() - geomerty.right());
-    //skip unexpected avaliable geometry, it might lead by ukui-panel.
-    if (top > 200 | left > 200 | bottom > 200 | right > 200) {
-        setContentsMargins(0, 0, 0, 0);
-        return;
-    }
-    setContentsMargins(left, top, right, bottom);
+
 }
 
 void DesktopWindow::updateWinGeometry() {
@@ -605,35 +494,5 @@ void DesktopWindow::updateWinGeometry() {
     auto vg = getScreen()->virtualGeometry();
     auto ag = getScreen()->availableGeometry();
 
-    qDebug() << "updateWinGeometry: args:" <<screenName <<screenSize<<g<<vg<<ag<<this->geometry();
-
-//    this->move(m_screen->geometry().topLeft());
-//    this->setFixedSize(m_screen->geometry().size());
-//    /*!
-//      \bug
-//      can not set window geometry correctly in kwin.
-//      strangely it works in ukwm.
-//      */
-//    this->setGeometry(m_screen->geometry());
-//    Q_EMIT this->checkWindow();
-
     scaleBg(g);
-
-    auto name = m_screen->name();
-    if (m_screen == qApp->primaryScreen()) {
-        if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
-            this->show();
-        }
-    } else {
-//        qDebug() << "non primaryScreen:" <<m_screen->geometry() <<qApp->primaryScreen()->geometry();
-//        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
-//        {
-//            this->hide();
-//            qWarning() << "error: non primaryScreen geometry same with primaryScreen ! " <<m_screen->geometry();
-//        }
-//        else
-//            this->show();
-    }
-
-    //updateView();
 }

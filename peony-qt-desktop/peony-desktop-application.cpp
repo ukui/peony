@@ -31,6 +31,8 @@
 #include "desktop-icon-view.h"
 
 #include "primary-manager.h"
+#include "plasma-shell-manager.h"
+#include "desktop-menu.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -55,6 +57,8 @@
 #include <QDBusReply>
 #include <QDesktopServices>
 
+#include <QScreen>
+
 #define KYLIN_USER_GUIDE_PATH "/"
 #define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
 #define KYLIN_USER_GUIDE_INTERFACE "com.guide.hotel"
@@ -65,6 +69,7 @@ static bool has_desktop = false;
 static bool has_daemon = false;
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 static PrimaryManager *screensMonitor = nullptr;
+static QMainWindow *virtualDesktopWindow = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
@@ -109,6 +114,24 @@ void trySetDefaultFolderUrlHandler() {
             return;
         });
     });
+}
+
+QRect caculateVirtualDesktopGeometry() {
+    QRegion screensRegion;
+    for (auto screen : qApp->screens()) {
+        screensRegion += screen->geometry();
+    }
+
+    if (screensMonitor) {
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        screensRegion += QRect(x, y, width, height);
+    }
+
+    auto rect = screensRegion.boundingRect();
+    return rect;
 }
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
@@ -175,33 +198,12 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
-
-    // check ukui wayland session, monitor ukui settings daemon dbus
-    if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
-        screensMonitor = new PrimaryManager;
-        connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
-            for (auto screen : this->screens()) {
-                if (screen->geometry() == QRect(x, y, width, height))
-                    Q_EMIT this->primaryScreenChanged(screen);
-            }
-        });
-        screensMonitor->start();
-        // init
-        int x = screensMonitor->getScreenGeometry("x");
-        int y = screensMonitor->getScreenGeometry("y");
-        int width = screensMonitor->getScreenGeometry("width");
-        int height = screensMonitor->getScreenGeometry("height");
-        for (auto screen : this->screens()) {
-            if (screen->geometry() == QRect(x, y, width, height))
-                Q_EMIT this->primaryScreenChanged(screen);
-        }
-    }
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
 {
     if (!desktop_icon_view)
-        desktop_icon_view = new Peony::DesktopIconView;
+        desktop_icon_view = new Peony::DesktopIconView(virtualDesktopWindow);
     return desktop_icon_view;
 }
 
@@ -319,15 +321,69 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
         if (parser.isSet(desktopOption)) {
             if (!has_desktop) {
-                //FIXME: load menu plugin
-                //FIXME: take over desktop displaying
-                getIconView();
+                virtualDesktopWindow = new QMainWindow;
+                virtualDesktopWindow->setWindowFlag(Qt::FramelessWindowHint);
+                virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+                //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
+                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+                virtualDesktopWindow->show();
+
+                virtualDesktopWindow->setContextMenuPolicy(Qt::CustomContextMenu);
+                virtualDesktopWindow->connect(virtualDesktopWindow, &QMainWindow::customContextMenuRequested, virtualDesktopWindow, [=](const QPoint &pos){
+                    qWarning()<<pos;
+                    auto fixedPos = getIconView()->mapFromGlobal(pos);
+                    auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
+                    if (!index.isValid()) {
+                        PeonyDesktopApplication::getIconView()->clearSelection();
+                    } else {
+                        if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
+                            PeonyDesktopApplication::getIconView()->clearSelection();
+                            PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
+                        }
+                    }
+
+                    QTimer::singleShot(1, [=]() {
+                        DesktopMenu menu(PeonyDesktopApplication::getIconView());
+                        if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
+                            auto action = menu.addAction(tr("set background"));
+                            connect(action, &QAction::triggered, [=]() {
+                                //go to control center set background
+                                DesktopWindow::gotoSetBackground();
+            //                    QFileDialog dlg;
+            //                    dlg.setNameFilters(QStringList() << "*.jpg"
+            //                                       << "*.png");
+            //                    if (dlg.exec()) {
+            //                        auto url = dlg.selectedUrls().first();
+            //                        this->setBg(url.path());
+            //                        // qDebug()<<url;
+            //                        Q_EMIT this->changeBg(url.path());
+            //                    }
+                            });
+                        }
+
+                        for (auto screen : qApp->screens()) {
+                            if (screen->geometry().contains(pos));
+                            //menu.windowHandle()->setScreen(screen);
+                        }
+                        menu.exec(pos);
+                        auto urisToEdit = menu.urisToEdit();
+                        if (urisToEdit.count() == 1) {
+                            QTimer::singleShot(
+                            100, this, [=]() {
+                                PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
+                            });
+                        }
+                    });
+                });
+
                 for(auto screen : this->screens())
                 {
                     addWindow(screen);
                 }
             }
             has_desktop = true;
+            PlasmaShellManager::getInstance()->setRole(virtualDesktopWindow->windowHandle(), KWayland::Client::PlasmaShellSurface::Role::Desktop);
         }
 
         connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
@@ -336,6 +392,26 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 w->update();
             }
         });
+
+        // check ukui wayland session, monitor ukui settings daemon dbus
+        if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
+            screensMonitor = new PrimaryManager;
+            connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+                getIconView()->setGeometry(x, y, width, height);
+            });
+            screensMonitor->start();
+            // init
+            getIconView()->show();
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            getIconView()->setGeometry(x, y, width, height);
+        } else {
+            getIconView()->setGeometry(qApp->primaryScreen()->availableGeometry());
+        }
     }
     else {
         auto helpOption = parser.addHelpOption();
@@ -352,18 +428,30 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
 void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
 {
+    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+    if (screen != nullptr) {
+        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+        connect(screen, &QScreen::geometryChanged, this, [=](){
+            auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+            virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+        });
+    } else {
+        return;
+    }
+
     Peony::DesktopWindow *window;
     if (checkPrimay) {
         bool is_primary = isPrimaryScreen(screen);
-        window = new Peony::DesktopWindow(screen, is_primary);
+        window = new Peony::DesktopWindow(screen, is_primary, virtualDesktopWindow);
         if (is_primary)
         {
-            window->setCentralWidget(desktop_icon_view);
+//            window->setCentralWidget(desktop_icon_view);
             window->updateView();
             //connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
         }
     } else {
-        window = new Peony::DesktopWindow(screen, false);
+        window = new Peony::DesktopWindow(screen, false, virtualDesktopWindow);
     }
 
     connect(window, &Peony::DesktopWindow::checkWindow, this, &PeonyDesktopApplication::checkWindowProcess);
@@ -373,6 +461,11 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
     for (auto window : m_window_list) {
         window->updateWinGeometry();
     }
+
+    window->show();
+
+    getIconView()->show();
+    getIconView()->raise();
 }
 
 void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection direction)
@@ -383,94 +476,21 @@ void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection 
 
 void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
-    if (screen != nullptr)
-        qDebug()<<"primaryScreenChangedProcess"<<screen->name()<<screen->geometry()<<screen->availableGeometry()<<screen->virtualGeometry();
-    else {
-        qWarning()<<"no primary screen!";
+    if (screensMonitor)
         return;
-    }
-
-    bool need_exchange = false;
-    QScreen *preMainScreen = nullptr;
-    Peony::DesktopWindow *rawPrimaryWindow = nullptr;
-    Peony::DesktopWindow *currentPrimayWindow = nullptr;
-    for(auto win : m_window_list)
-    {
-        if (win->centralWidget())
-            rawPrimaryWindow = win;
-
-        if (win->getScreen() == screen)
-            currentPrimayWindow = win;
-        //need exchange window screen
-//        if (win->getView() && win->getScreen() != screen)
-//        {
-//            preMainScreen = win->getScreen();
-//            need_exchange = true;
-//            break;
-//        }
-    }
-
-    if (rawPrimaryWindow && currentPrimayWindow) {
-        currentPrimayWindow->setCentralWidget(getIconView());
-        //desktop_icon_view->show();
-        currentPrimayWindow->updateView();
-        currentPrimayWindow->hide();
-        currentPrimayWindow->show();
-    } else {
-        currentPrimayWindow = qobject_cast<DesktopWindow *>(getIconView()->topLevelWidget());
-        currentPrimayWindow->setCentralWidget(getIconView());
-        //desktop_icon_view->show();
-        currentPrimayWindow->updateView();
-        currentPrimayWindow->hide();
-        currentPrimayWindow->show();
-    }
-    if (currentPrimayWindow) {
-        currentPrimayWindow->activateWindow();
-        currentPrimayWindow->raise();
-    }
-
-    return;
-
-    //do not check window need exchange
-    //cause we always put the desktop icon view into window
-    //which in current primary screen.
-    if (need_exchange)
-    {
-        for(auto win : m_window_list)
-        {
-            //qDebug()<<"before screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry()<<preMainScreen->name();
-            win->disconnectSignal();
-            if (win->getScreen() == preMainScreen)
-            {
-                win->setScreen(screen);
-                win->setIsPrimary(true);
-            }
-            else if (win->getScreen() == screen) {
-                win->setScreen(preMainScreen);
-                win->setIsPrimary(false);
-            }
-            win->connectSignal();
-            win->updateWinGeometry();
-            //qDebug()<<"end screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry();
-            //if (win->getView())
-            //qDebug()<<"view info:"<<win->getView();
-        }
-    }
+    getIconView()->setGeometry(screen->availableGeometry());
+    getIconView()->raise();
 }
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
-    if (screen != nullptr)
-        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
-    else {
-        return;
-    }
-
     addWindow(screen, false);
 }
 
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
+    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
     //if (screen != nullptr)
     //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
@@ -482,32 +502,8 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
         {
             qDebug()<<"remove window";
             m_window_list.removeOne(win);
-            win->setCentralWidget(nullptr);
+//            win->setCentralWidget(nullptr);
             win->deleteLater();
-        }
-
-        // check if there is primary screen
-        bool hasPrimaryScreen = false;
-        if (!getIconView()->parentWidget()) {
-            // init
-            int x = screensMonitor->getScreenGeometry("x");
-            int y = screensMonitor->getScreenGeometry("y");
-            int width = screensMonitor->getScreenGeometry("width");
-            int height = screensMonitor->getScreenGeometry("height");
-            screensMonitor->deleteLater();
-            for (auto screen : this->screens()) {
-                if (screen->geometry() == QRect(x, y, width, height)) {
-                    hasPrimaryScreen = true;
-                    Q_EMIT this->primaryScreenChanged(screen);
-                }
-            }
-        }
-
-        // check again
-        if (!hasPrimaryScreen) {
-            if (!m_window_list.isEmpty()) {
-                Q_EMIT this->primaryScreenChanged(m_window_list.first()->getScreen());
-            }
         }
     }
 }

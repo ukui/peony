@@ -92,6 +92,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
     //m_refresh_timer.setInterval(500);
     //m_refresh_timer.setSingleShot(true);
+    setAttribute(Qt::WA_AlwaysStackOnTop);
 
     installEventFilter(this);
 
@@ -107,7 +108,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_edit_trigger_timer.setInterval(3000);
     m_last_index = QModelIndex();
 
-    setContentsMargins(0, 0, 0, 0);
     setAttribute(Qt::WA_TranslucentBackground);
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -130,7 +130,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     setDragDropMode(QListView::DragDrop);
 
-    //setContextMenuPolicy(Qt::CustomContextMenu);
     setSelectionMode(QListView::ExtendedSelection);
 
     auto zoomLevel = this->zoomLevel();
@@ -198,13 +197,50 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         //panel monitor
         QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
         connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
-            qDebug() << "panelSetting changed:" << key;
-            if (key == "panelposition")
+            if (key == "panelposition" || key == "panelsize")
             {
-               auto zoomLevel = this->zoomLevel();
-               this->setDefaultZoomLevel(zoomLevel);
+                int position = panelSetting->get("panelposition").toInt();
+                int margins = panelSetting->get("panelsize").toInt();
+                switch (position) {
+                case 1: {
+                    setViewportMargins(0, margins, 0, 0);
+                    break;
+                }
+                case 2: {
+                    setViewportMargins(margins, 0, 0, 0);
+                    break;
+                }
+                case 3: {
+                    setViewportMargins(0, 0, margins, 0);
+                    break;
+                }
+                default: {
+                    setViewportMargins(0, 0, 0, margins);
+                    break;
+                }
+                }
             }
         });
+        int position = panelSetting->get("panelposition").toInt();
+        int margins = panelSetting->get("panelsize").toInt();
+        switch (position) {
+        case 1: {
+            setViewportMargins(0, margins, 0, 0);
+            break;
+        }
+        case 2: {
+            setViewportMargins(margins, 0, 0, 0);
+            break;
+        }
+        case 3: {
+            setViewportMargins(0, 0, margins, 0);
+            break;
+        }
+        default: {
+            setViewportMargins(0, 0, 0, margins);
+            break;
+        }
+        }
     }
 
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
@@ -509,12 +545,6 @@ void DesktopIconView::initShoutCut()
 
 void DesktopIconView::initMenu()
 {
-    /*!
-     * \bug
-     *
-     * when view switch to another desktop window,
-     * menu might no be callable.
-     */
     return;
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -652,8 +682,8 @@ void DesktopIconView::resolutionChange()
                 }
             }
 //            // first item doesn't need re-layout
-//            if (!needChanged.isEmpty())
-//                needChanged.removeFirst();
+            if (!needChanged.isEmpty())
+                needChanged.removeFirst();
 
             int posX = 0;
             int posY = 0;

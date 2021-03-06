@@ -39,7 +39,7 @@ namespace Peony {
 
 class DesktopIconView;
 
-class DesktopWindow : public QMainWindow
+class DesktopWindow : public QWidget
 {
     Q_OBJECT
 

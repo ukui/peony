@@ -20,32 +20,27 @@
  *
  */
 
-#ifndef PRIMARYMANAGER_H
-#define PRIMARYMANAGER_H
+#ifndef PLASMASHELLMANAGER_H
+#define PLASMASHELLMANAGER_H
 
 #include <QObject>
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusInterface>
+#include <QWindow>
+#include <KWayland/Client/plasmashell.h>
 
-class PrimaryManager : public QObject
+class PlasmaShellManager : public QObject
 {
     Q_OBJECT
 public:
-    PrimaryManager();
-    void start();
-    int getScreenGeometry (QString methodName);
-    QString getScreenName (QString methodName);
+    static PlasmaShellManager *getInstance();
 
-Q_SIGNALS:
-    void priScreenChangedSignal(int x, int y, int width, int height);
-
-public Q_SLOTS:
-    void priScreenChanged(int x, int y, int width, int height);
+    bool setRole(QWindow *window, KWayland::Client::PlasmaShellSurface::Role role);
+    bool setPos(QWindow *window, const QPoint &pos);
+    bool supportPlasmaShell();
 
 private:
-    QDBusInterface  *mDbusXrandInter;
+    explicit PlasmaShellManager(QObject *parent = nullptr);
 
+    KWayland::Client::PlasmaShell *m_shell = nullptr;
 };
 
-#endif // PRIMARYMANAGER_H
+#endif // PLASMASHELLMANAGER_H
