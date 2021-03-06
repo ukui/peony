@@ -417,6 +417,18 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
 void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
 {
+    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+    if (screen != nullptr) {
+        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+        connect(screen, &QScreen::geometryChanged, this, [=](){
+            auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+            virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
+        });
+    } else {
+        return;
+    }
+
     Peony::DesktopWindow *window;
     if (checkPrimay) {
         bool is_primary = isPrimaryScreen(screen);
@@ -461,18 +473,6 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
-    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-    virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
-    if (screen != nullptr) {
-        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
-        connect(screen, &QScreen::geometryChanged, this, [=](){
-            auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-            virtualDesktopWindow->resize(virtualDesktopWindowRect.size());
-        });
-    } else {
-        return;
-    }
-
     addWindow(screen, false);
 }
 
