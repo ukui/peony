@@ -252,8 +252,16 @@ const QString FileInfo::displayName()
     if(!isMountPoint ||                /*@m_uri is like "computer:///xxx"*/
        unixDevice.isEmpty() ||
        !unixDevice.contains("/dev") || /*audio-cd*/
-       unixDevice.contains("/dev/sr")) /*blank-cd or blank-dvd*/
+       unixDevice.contains("/dev/sr")) { /*blank-cd or blank-dvd*/
         return m_display_name;
+    } else if (nullptr != m_uri) {
+        QString uri = m_uri;
+        if (m_uri.endsWith("/") && !m_uri.endsWith(":///") && !m_uri.endsWith("://")) {
+            uri.chop(1);
+        }
+        return uri.split("/").last();
+    }
+
 
     mountDir.setPath(m_uri.mid(7));
     deviceName = m_uri.mid(m_uri.lastIndexOf("/")+1);

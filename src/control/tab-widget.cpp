@@ -960,7 +960,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
-    qDebug() << "goToUri:" <<uri;
+    qDebug() << "goToUri:" << uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);

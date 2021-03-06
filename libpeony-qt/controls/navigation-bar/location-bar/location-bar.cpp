@@ -134,14 +134,13 @@ LocationBar::~LocationBar()
 
 void LocationBar::setRootUri(const QString &uri)
 {
-    if (m_current_uri == uri)
-        return;
+//    if (m_current_uri == uri)
+//        return;
 
     m_current_uri = uri;
 
     //clear buttons
     clearButtons();
-
     if (m_current_uri.startsWith("search://")) {
         m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
