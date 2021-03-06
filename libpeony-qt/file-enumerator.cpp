@@ -185,7 +185,7 @@ const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
         auto file_info = FileInfo::fromUri(uri);
-        children<<file_info;
+        children << file_info;
     }
     return children;
 }

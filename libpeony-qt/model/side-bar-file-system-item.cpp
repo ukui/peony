@@ -37,6 +37,7 @@
 #include <QThread>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QUrl>
 #include <udisks/udisks.h>
 #include <sys/stat.h>
 #include <libnotify/notify.h>
@@ -93,6 +94,7 @@ QString SideBarFileSystemItem::displayName()
     if (!m_unix_device.isEmpty() && !m_uri.contains("root.link")) {
         displayName += QString(" (%1)").arg(m_unix_device);
     }
+
     if (!displayName.isEmpty())
         return displayName;
 
