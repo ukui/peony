@@ -1,3 +1,10 @@
+peony (3.0.3-2+0308) v101; urgency=medium
+
+  * Fix: The sort method was not saved
+  * Fix: The multi-select mode does not exit after switching paths
+
+ -- wangweinan <wangweinan@kylinos.cn>  Mon, 08 Mar 2021 09:29:31 +0800
+
 peony (3.0.3-2+0303) v101; urgency=medium
 
   * Modify:add log for trace black screen
@@ -6,13 +13,13 @@ peony (3.0.3-2+0303) v101; urgency=medium
   * fix:hide the templete dir,so it can not be operated.
   * fix:desktop file show with .desktop format
 
- -- weinan1 <wangweinan@kylinos.cn>  Wed, 03 Mar 2021 09:29:31 +0800
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 03 Mar 2021 09:29:31 +0800
 
 peony (3.0.3-2+0226) v101; urgency=medium
 
   * Update changelog
 
- -- weinan1 <wangweinan@kylinos.cn>  Fri, 26 Feb 2021 09:29:31 +0800
+ -- wangweinan <wangweinan@kylinos.cn>  Fri, 26 Feb 2021 09:29:31 +0800
 
 peony (3.0.3-2+0224) v101; urgency=medium
 
@@ -21,7 +28,7 @@ peony (3.0.3-2+0224) v101; urgency=medium
   * Fix: hide the templete dir,so it can not be operated. #33221
   * Fix: desktop file show with .desktop format. #37179
 
- -- weinan1 <wangweinan@kylinos.cn>  Wed, 24 Feb 2021 09:29:31 +0800
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 24 Feb 2021 09:29:31 +0800
 
 peony (3.0.3-2+0203) v101; urgency=medium
 
@@ -30,7 +37,7 @@ peony (3.0.3-2+0203) v101; urgency=medium
   * Fix: adjust the order of music and download in side bar #34510
   * Fix: icons in desktop is stacked #32870
 
- -- weinan1 <wangweinan@kylinos.cn>  Wed, 03 Feb 2021 09:29:31 +0800
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 03 Feb 2021 09:29:31 +0800
 
 peony (3.0.3-2+0127) v101; urgency=medium
 
@@ -38,7 +45,7 @@ peony (3.0.3-2+0127) v101; urgency=medium
   * Fix: blank CD cannot be unmount
   * Modify: Custom desktop default sort
 
- -- weinan1 <wangweinan@kylinos.cn>  Wed, 27 Jan 2021 09:29:31 +0800
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 27 Jan 2021 09:29:31 +0800
 
 peony (3.0.3-2+0123) v101; urgency=medium
 
