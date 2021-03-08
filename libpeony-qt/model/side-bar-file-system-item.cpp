@@ -284,7 +284,25 @@ bool SideBarFileSystemItem::isRemoveable()
             FileInfoJob j(info);
             j.querySync();
         }
-        return info->canEject() || info->canStop();
+        bool removable = info->canEject() || info->canStop();
+        if (!removable && !info.get()->unixDeviceFile().isEmpty()) {
+            // check if drive is removable
+            auto targetUri = info.get()->targetUri();
+            auto targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
+            auto mount = g_file_find_enclosing_mount(targetFile, nullptr, nullptr);
+            g_object_unref(targetFile);
+            if (mount) {
+                auto drive = g_mount_get_drive(mount);
+                if (drive) {
+                    removable = g_drive_is_removable(drive);
+                    g_object_unref(drive);
+                }
+                g_object_unref(mount);
+            }
+            return removable;
+        } else {
+            return true;
+        }
     }
     return false;
 }
@@ -298,7 +316,7 @@ bool SideBarFileSystemItem::isEjectable()
             FileInfoJob j(info);
             j.querySync();
         }
-        return info->canEject();
+        return isRemoveable();
     }
     return false;
 }
@@ -387,7 +405,7 @@ void SideBarFileSystemItem::realEject(GMountUnmountFlags ejectFlag)
                                               nullptr,
                                               GAsyncReadyCallback(eject_cb),
                                               this);
-    }else if(g_drive_can_stop(gdrive)){//for mobile harddisk.
+    }else if(g_drive_can_stop(gdrive) || g_drive_is_removable(gdrive)){//for mobile harddisk.
         g_drive_stop(gdrive,ejectFlag,NULL,NULL,
                      GAsyncReadyCallback(ejectDevicebyDrive),
                      this);

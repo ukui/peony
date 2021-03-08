@@ -136,7 +136,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 
         l.last()->setEnabled(isMounted);
     }
-    if (info->canEject() || info->canStop()) {
+    if (m_item->isRemoveable()) {
         l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
             m_item->eject(G_MOUNT_UNMOUNT_NONE);
         });
