@@ -108,14 +108,26 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         PEONY_DESKTOP_LOG_WARN("hide the desktop");
         this->hide();
     }
-
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+
+
+    m_boot_stage = PEONY_BOOT_START;
+    m_boot_timer = new QTimer(this);
+    connect(m_boot_timer, SIGNAL(timeout()), this, SLOT(bootStageUpdate()));
 
     connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
 
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
-        PEONY_DESKTOP_LOG_WARN("value   changed   update view");
-        this->update();
+            PEONY_DESKTOP_LOG_WARN("value changed update view(%d %d %d %d)",
+                                   m_screen->geometry().top(), m_screen->geometry().left(),
+                                   m_screen->geometry().height(), m_screen->geometry().width());
+            if (PEONY_BOOT_START == m_boot_stage) {
+                if (!m_boot_timer->isActive()) {
+                    m_boot_timer->start(500);
+                }
+            } else {
+                this->update();
+            }
     });
 
     connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
@@ -135,10 +147,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     qDebug() << "DesktopWindow is_primary:" << is_primary << screen->objectName()
              << screen->name();
-    PEONY_DESKTOP_LOG_WARN("desktop screen %s", screen->name());
+    PEONY_DESKTOP_LOG_WARN("desktop screen %s", screen->name().toUtf8().constData());
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
     setWindowFlags(flags |Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_TranslucentBackground);
+    //setAttribute(Qt::WA_TranslucentBackground);
 
     //fix qt5.6 setAttribute as desktop has no effect issue
 #if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
@@ -325,7 +337,7 @@ void DesktopWindow::initGSettings() {
             m_picture_option = m_bg_settings->get("pictureOptions").toString();
             if(m_picture_option == ""||m_picture_option == NULL)
                 m_picture_option = "stretched";
-            PEONY_DESKTOP_LOG_WARN("settings pictureoptions %s", m_picture_option);
+            PEONY_DESKTOP_LOG_WARN("settings pictureoptions %s", m_picture_option.toUtf8().constData());
             this->setBg(m_current_bg_path);
         }
     });
@@ -347,6 +359,7 @@ void DesktopWindow::gotoSetBackground()
 
 void DesktopWindow::paintEvent(QPaintEvent *e)
 {
+    qDebug()<<"painevent..........................";
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     if (m_opacity->state() == QVariantAnimation::Running) {
@@ -446,7 +459,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             m_used_pure_color = true;
             m_last_pure_color = m_color_to_be_set;
         } else {
-            PEONY_DESKTOP_LOG_WARN("no running paint back picture option: %s", m_picture_option);
+            PEONY_DESKTOP_LOG_WARN("no running paint back picture option: %s", m_picture_option.toUtf8().constData());
 //            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
             if(m_picture_option == "centered")
                 p.drawPixmap((m_screen->size().width()-m_bg_font_cache_pixmap.rect().width())/2,
@@ -481,7 +494,10 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
         }
     }
 
-    PEONY_DESKTOP_LOG_WARN("paint back groud finished", m_picture_option);
+    if (PEONY_BOOT_UPDATE == m_boot_stage) {
+        m_boot_stage = PEONY_BOOT_PAINT;
+    }
+    PEONY_DESKTOP_LOG_WARN("paint back groud finished", m_picture_option.toUtf8().constData());
     QMainWindow::paintEvent(e);
 }
 
@@ -607,6 +623,28 @@ void DesktopWindow::disconnectSignal() {
     }
 }
 
+void DesktopWindow::bootStageUpdate()
+{
+    if (PEONY_BOOT_START == m_boot_stage) {
+        m_boot_stage = PEONY_BOOT_UPDATE;
+        //delay
+        ::usleep(5000);
+        PEONY_DESKTOP_LOG_WARN("boot start stage update");
+        this->update();
+        m_boot_timer->stop();
+        m_boot_timer->start(500);
+    } else if (PEONY_BOOT_UPDATE == m_boot_stage) {
+        PEONY_DESKTOP_LOG_WARN("boot update stage reboot");
+        m_boot_timer->stop();
+        qint64 pid = QCoreApplication::applicationPid();
+        QProcess::startDetached("kill -9 " + QString::number(pid));
+    } else if (PEONY_BOOT_PAINT == m_boot_stage) {
+        PEONY_DESKTOP_LOG_WARN("boot paint stage finished");
+        m_boot_stage = PEONY_BOOT_FINSH;
+        m_boot_timer->stop();
+    }
+}
+
 void DesktopWindow::scaleBg(const QRect &geometry) {
     if (this->geometry() == geometry) {
         PEONY_DESKTOP_LOG_WARN("not scale back ground");
@@ -695,7 +733,7 @@ void DesktopWindow::updateScreenVisible()
 {
     m_tabletmode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
 
-    PEONY_DESKTOP_LOG_WARN("update screen %s visible", m_screen->name());
+    PEONY_DESKTOP_LOG_WARN("update screen %s visible", m_screen->name().toUtf8().constData());
     if (true == m_tabletmode) {
         //pad mode desktop should hide, pla
         PEONY_DESKTOP_LOG_WARN("update screen visible hide");
