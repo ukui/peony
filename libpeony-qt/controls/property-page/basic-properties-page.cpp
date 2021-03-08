@@ -753,12 +753,10 @@ void BasicPropertiesPage::updateCountInfo(bool isDone)
 void BasicPropertiesPage::updateInfo(const QString &uri)
 {
     //QT获取文件相关时间 ,
-    QtConcurrent::run([=](){
-        m_info = FileInfo::fromUri(uri);
-        FileInfoJob *fileInfoJob = new FileInfoJob(m_info);
-        fileInfoJob->setAutoDelete();
-        fileInfoJob->querySync();
-
+    m_info = FileInfo::fromUri(uri);
+    FileInfoJob *fileInfoJob = new FileInfoJob(m_info);
+    fileInfoJob->setAutoDelete();
+    connect(fileInfoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
         QUrl url(uri);
         //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
         if (url.isLocalFile()) {
@@ -809,35 +807,36 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
                 m_timeCreatedLabel->setText(tr("Can't get remote file information"));
         }
 
+        //FIXME:GVFS底层暂未实现文件创建时间获取API,暂时使用QT获取文件创建时间
+        /*
+         m_timeCreated = g_file_info_get_attribute_uint64(info,G_FILE_ATTRIBUTE_TIME_CREATED);
+        //m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
+        QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
+        QString time1 = date1.toString(m_systemTimeFormat);
+        m_timeCreatedLabel->setText(time1);
+
+         if(m_timeModifiedLabel) {
+            m_timeModified = g_file_info_get_attribute_uint64(info,
+                                                              "time::modified");
+            QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
+            QString time2 = date2.toString(m_systemTimeFormat);
+
+            m_timeModifiedLabel->setText(time2);
+        }
+        if(m_timeAccessLabel) {
+            m_timeAccess = g_file_info_get_attribute_uint64(info,
+                                                            "time::access");
+            QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
+            QString time3 = date3.toString(m_systemTimeFormat);
+            m_timeAccessLabel->setText(time3);
+        }
+
+        g_object_unref(info);
+
+         */
     });
 
-    //FIXME:GVFS底层暂未实现文件创建时间获取API,暂时使用QT获取文件创建时间
-    /*
-     m_timeCreated = g_file_info_get_attribute_uint64(info,G_FILE_ATTRIBUTE_TIME_CREATED);
-    //m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
-    QDateTime date1 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
-    QString time1 = date1.toString(m_systemTimeFormat);
-    m_timeCreatedLabel->setText(time1);
-
-     if(m_timeModifiedLabel) {
-        m_timeModified = g_file_info_get_attribute_uint64(info,
-                                                          "time::modified");
-        QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
-        QString time2 = date2.toString(m_systemTimeFormat);
-
-        m_timeModifiedLabel->setText(time2);
-    }
-    if(m_timeAccessLabel) {
-        m_timeAccess = g_file_info_get_attribute_uint64(info,
-                                                        "time::access");
-        QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
-        QString time3 = date3.toString(m_systemTimeFormat);
-        m_timeAccessLabel->setText(time3);
-    }
-
-    g_object_unref(info);
-
-     */
+    fileInfoJob->queryAsync();
 }
 
 QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent)
