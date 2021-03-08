@@ -37,6 +37,13 @@ class QSettings;
 
 namespace Peony {
 
+typedef enum {
+    PEONY_BOOT_START,
+    PEONY_BOOT_UPDATE,
+    PEONY_BOOT_PAINT,
+    PEONY_BOOT_FINSH,
+}PEONY_BOOT_STAGE;
+
 class DesktopIconView;
 
 class DesktopWindow : public QMainWindow
@@ -81,6 +88,7 @@ public Q_SLOTS:
 
     void connectSignal();
     void disconnectSignal();
+    void bootStageUpdate();
 
     void testSig() {
         printf("1111");
@@ -123,6 +131,9 @@ private:
     bool m_use_pure_color = false;
     bool m_used_pure_color = false;
     bool m_tabletmode = false;
+
+    PEONY_BOOT_STAGE m_boot_stage;
+    QTimer *m_boot_timer;
 
     QVariantAnimation *m_opacity = nullptr;
 };
