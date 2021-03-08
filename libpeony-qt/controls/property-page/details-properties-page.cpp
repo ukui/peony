@@ -259,39 +259,7 @@ void DetailsPropertiesPage::setSystemTimeFormat(QString format)
 
 void DetailsPropertiesPage::updateFileInfo(const QString &uri)
 {
-    QtConcurrent::run([=](){
-        this->getFIleInfo();
-
-        QUrl url(uri);
-
-        //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
-        if (url.isLocalFile()) {
-            QString path = url.path();
-            QFileInfo qFileInfo(path);
-
-            m_ownerLabel->setText(qFileInfo.owner());
-            //FIXME:明确当前文件所属计算机
-            if (qFileInfo.isNativePath()) {
-                m_computerLabel->setText(tr("%1 (this computer)").arg(QHostInfo::localHostName()));
-            } else {
-                m_computerLabel->setText(tr("Unknown"));
-            }
-
-            //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题 后期将qt的方法替换为gio的方法
-            //参考：https://www.oschina.net/news/126468/gnome-40-alpha-preview
-            QDateTime date1 = qFileInfo.birthTime();
-            QString time1 = date1.toString(m_systemTimeFormat);
-            if (m_createDateLabel && qFileInfo.isDir())
-                m_createDateLabel->setText(time1);
-
-            GFile     *file = g_file_new_for_uri(uri.toUtf8().constData());
-            GFileInfo *info = g_file_query_info(file,
-                                                "time::*",
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                nullptr,
-                                                nullptr);
-            g_object_unref(file);
-
+    this->getFIleInfo();
     QUrl url(uri);
 
     //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
@@ -307,13 +275,17 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
             if (m_createDateLabel)
                 m_createDateLabel->setText(tr("Can't get remote file information"));
             m_modifyDateLabel->setText(tr("Can't get remote file information"));
+            m_computerLabel->setText(tr("Unknown"));
         }
 
         //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题 后期将qt的方法替换为gio的方法
         //参考：https://www.oschina.net/news/126468/gnome-40-alpha-preview
-        QDateTime date1 = qFileInfo.birthTime();
-        QString time1 = date1.toString(m_systemTimeFormat);
-        m_createDateLabel->setText(time1);
+        if (qFileInfo.isDir() && m_createDateLabel)
+        {
+            QDateTime date1 = qFileInfo.birthTime();
+            QString time1 = date1.toString(m_systemTimeFormat);
+            m_createDateLabel->setText(time1);
+        }
 
         GFile     *file = g_file_new_for_uri(uri.toUtf8().constData());
         GFileInfo *info = g_file_query_info(file,
@@ -331,7 +303,8 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
         g_object_unref(info);
 
     } else {
-        m_createDateLabel->setText(tr("Can't get remote file information"));
+        if (m_createDateLabel)
+            m_createDateLabel->setText(tr("Can't get remote file information"));
         m_modifyDateLabel->setText(tr("Can't get remote file information"));
     }
 
