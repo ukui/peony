@@ -117,6 +117,11 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_list.takeLast();
+    //fix bug 41094, go back to the same path
+    while(FileUtils::isSamePath(uri, getCurrentUri()))
+    {
+        uri = m_back_list.takeLast();
+    }
     //avoid same uri add twice
     int count = m_forward_list.count();
     if (count <= 0 || m_forward_list.at(0) != getCurrentUri())
@@ -138,7 +143,9 @@ void DirectoryViewContainer::goForward()
     //avoid same uri add twice
     int count = m_back_list.count();
     if (! getCurrentUri().contains("search://") &&
-        (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        (count <= 0
+         || (m_back_list.at(count-1) != getCurrentUri()
+         && ! FileUtils::isSamePath(getCurrentUri(), uri))))
     {
         m_back_list.append(getCurrentUri());
         qDebug() << "m_back_list add:" <<getCurrentUri();
@@ -238,7 +245,9 @@ update:
         //avoid same uri add twice
         int count = m_back_list.count();
         if (! getCurrentUri().contains("search://")
-            && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+            && (count <= 0
+            || (m_back_list.at(count-1) != getCurrentUri()
+            && ! FileUtils::isSamePath(getCurrentUri(), uri))))
         {
             m_back_list.append(getCurrentUri());
             qDebug() << "goToUri m_back_list add:" <<getCurrentUri();
