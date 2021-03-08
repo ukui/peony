@@ -42,18 +42,11 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
 {
     m_uri = uris.first();
 
-    QFuture<void> future = QtConcurrent::run([=]() {
-        m_fileInfo = FileInfo::fromUri(m_uri);
-        if (m_fileInfo->displayName().isEmpty()) {
-            FileInfoJob job(m_fileInfo);
-            job.querySync();
-        }
-    });
-
-    m_futureWatcher = new QFutureWatcher<void>();
-    m_futureWatcher->setFuture(future);
-
-    connect(m_futureWatcher,&QFutureWatcher<void>::finished,this,&RecentAndTrashPropertiesPage::init);
+    m_fileInfo = FileInfo::fromUri(m_uri);
+    FileInfoJob *job = new FileInfoJob(m_fileInfo);
+    job->setAutoDelete(true);
+    connect(job, &FileInfoJob::queryAsyncFinished, this, &RecentAndTrashPropertiesPage::init);
+    job->queryAsync();
 }
 
 void RecentAndTrashPropertiesPage::init()
@@ -105,34 +98,23 @@ void RecentAndTrashPropertiesPage::init()
             }
         } else {
             QLabel *label =new QLabel(this);
-            QFuture<void> future = QtConcurrent::run([=]() {
-                GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
-                GFileInfo *info = g_file_query_info(file,
-                                                    G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
-                                                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                    nullptr,
-                                                    nullptr);
-                auto origin_path = g_file_info_get_attribute_byte_string(info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
+            GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
+            GFileInfo *info = g_file_query_info(file,
+                                                G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                nullptr,
+                                                nullptr);
+            auto origin_path = g_file_info_get_attribute_byte_string(info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
 
-                QUrl url(FileUtils::getParentUri("file://" + QString(origin_path)));
+            QUrl url(FileUtils::getParentUri("file://" + QString(origin_path)));
 
-                quint64 width = FIXED_ROW_WIDTH - label->fontMetrics().width(tr("Origin Path: "));
-                label->setText(label->fontMetrics().elidedText(url.path(), Qt::ElideMiddle,width));
-                label->setWordWrap(true);
+            quint64 width = FIXED_ROW_WIDTH - label->fontMetrics().width(tr("Origin Path: "));
+            label->setText(label->fontMetrics().elidedText(url.path(), Qt::ElideMiddle,width));
+            label->setWordWrap(true);
 
-                g_object_unref(info);
-                g_object_unref(file);
-            });
-
-            m_futureWatcher = new QFutureWatcher<void>();
-            m_futureWatcher->setFuture(future);
-
-            connect(m_futureWatcher,&QFutureWatcher<void>::finished,this,[=]() {
-                m_layout->addRow(tr("Origin Path: "), label);
-
-                if (m_futureWatcher)
-                    delete m_futureWatcher;
-            });
+            g_object_unref(info);
+            g_object_unref(file);
+            m_layout->addRow(tr("Origin Path: "), label);
         }
     } else {
         if (m_uri == "recent:///") {
@@ -140,25 +122,15 @@ void RecentAndTrashPropertiesPage::init()
         } else {
             QLabel *sizeLabel =new QLabel(this);
             QLabel *locationLabel =new QLabel(this);
-            QFuture<void> future = QtConcurrent::run([=]() {
-                auto targetUri = FileUtils::getTargetUri(m_uri);
-                quint64 width = FIXED_ROW_WIDTH - locationLabel->fontMetrics().width(tr("Original Location: "));
-                locationLabel->setText(locationLabel->fontMetrics().elidedText(QUrl(targetUri).toDisplayString(), Qt::ElideMiddle,width));
-                locationLabel->setWordWrap(true);
+            auto targetUri = FileUtils::getTargetUri(m_uri);
+            quint64 width = FIXED_ROW_WIDTH - locationLabel->fontMetrics().width(tr("Original Location: "));
+            locationLabel->setText(locationLabel->fontMetrics().elidedText(QUrl(targetUri).toDisplayString(), Qt::ElideMiddle,width));
+            locationLabel->setWordWrap(true);
 
-                sizeLabel->setText(m_fileInfo->fileSize());
-            });
+            sizeLabel->setText(m_fileInfo->fileSize());
 
-            m_futureWatcher = new QFutureWatcher<void>();
-            m_futureWatcher->setFuture(future);
-
-            connect(m_futureWatcher,&QFutureWatcher<void>::finished,this,[=]() {
-                m_layout->addRow(tr("Size: "), sizeLabel);
-                m_layout->addRow(tr("Original Location: "), locationLabel);
-
-                if (m_futureWatcher)
-                    delete m_futureWatcher;
-            });
+            m_layout->addRow(tr("Size: "), sizeLabel);
+            m_layout->addRow(tr("Original Location: "), locationLabel);
         }
     }
 }

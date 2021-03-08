@@ -34,18 +34,11 @@ using namespace Peony;
 
 OpenWithPropertiesPage::OpenWithPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
-    QFuture<void> future = QtConcurrent::run([=]() {
-        m_fileInfo = FileInfo::fromUri(uri);
-        FileInfoJob *job = new FileInfoJob(m_fileInfo);
-        job->setAutoDelete(true);
-        job->querySync();
-    });
-
-    m_futureWatcher = new QFutureWatcher<void>();
-    m_futureWatcher->setFuture(future);
-
-    connect(m_futureWatcher, &QFutureWatcher<void>::finished, this, &OpenWithPropertiesPage::init);
-
+    m_fileInfo = FileInfo::fromUri(uri);
+    FileInfoJob *job = new FileInfoJob(m_fileInfo);
+    job->setAutoDelete(true);
+    connect(job, &FileInfoJob::queryAsyncFinished, this, &OpenWithPropertiesPage::init);
+    job->queryAsync();
 }
 
 void OpenWithPropertiesPage::init()
