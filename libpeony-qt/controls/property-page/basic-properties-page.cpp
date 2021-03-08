@@ -335,10 +335,6 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 
     layout3->setContentsMargins(22,16,0,16);
 
-    m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
-
-    layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
-
     //设计稿上文件夹只显示创建时间 - The folder on the design draft only shows the creation time
     switch (fileType) {
     case BP_File:
@@ -350,6 +346,8 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
         break;
     case BP_MultipleFIle:
     case BP_Folder:
+        m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
+        layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
     default:
         break;
     }
@@ -770,7 +768,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题
             QDateTime date1 = qFileInfo.birthTime();
             QString time1 = date1.toString(m_systemTimeFormat);
-            m_timeCreatedLabel->setText(time1);
+            if (qFileInfo.isDir() && m_timeCreatedLabel)
+                m_timeCreatedLabel->setText(time1);
 
 //            if(m_timeModifiedLabel) {
 //                QDateTime date2 = qFileInfo.lastModified();
@@ -806,7 +805,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             g_object_unref(info);
 
         } else {
-            m_timeCreatedLabel->setText(tr("Can't get remote file information"));
+            if (m_timeCreatedLabel)
+                m_timeCreatedLabel->setText(tr("Can't get remote file information"));
         }
 
     });

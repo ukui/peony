@@ -189,8 +189,11 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     this->addRow(tr("Location:"), m_localLabel);
 
     //createTime
-    m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
-    this->addRow(tr("Create time:"),m_createDateLabel);
+    if (m_fileInfo->isDir())
+    {
+      m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
+      this->addRow(tr("Create time:"),m_createDateLabel);
+    }
 
     //modifiedTime
     m_modifyDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
@@ -278,7 +281,8 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
             //参考：https://www.oschina.net/news/126468/gnome-40-alpha-preview
             QDateTime date1 = qFileInfo.birthTime();
             QString time1 = date1.toString(m_systemTimeFormat);
-            m_createDateLabel->setText(time1);
+            if (m_createDateLabel && qFileInfo.isDir())
+                m_createDateLabel->setText(time1);
 
             GFile     *file = g_file_new_for_uri(uri.toUtf8().constData());
             GFileInfo *info = g_file_query_info(file,
@@ -296,7 +300,8 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
             g_object_unref(info);
 
         } else {
-            m_createDateLabel->setText(tr("Can't get remote file information"));
+            if (m_createDateLabel)
+                m_createDateLabel->setText(tr("Can't get remote file information"));
             m_modifyDateLabel->setText(tr("Can't get remote file information"));
         }
 
