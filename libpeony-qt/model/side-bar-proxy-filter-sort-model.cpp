@@ -55,13 +55,14 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
                 return false;
         }
     }
-    if (item) {
-        if (!item->displayName().isEmpty()) {
-            if (QString(item->displayName().at(0)) == ".") {
-                return false;
-            }
-        }
-    }
+    //comment to fix bug 41426, user add .config file to bookmark for convinient accesss
+//    if (item) {
+//        if (!item->displayName().isEmpty()) {
+//            if (QString(item->displayName().at(0)) == ".") {
+//                return false;
+//            }
+//        }
+//    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             if (item->uri() != "computer:///root.link") {
