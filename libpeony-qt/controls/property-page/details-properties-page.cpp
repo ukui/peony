@@ -272,9 +272,6 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
         if (qFileInfo.isNativePath()) {
             m_computerLabel->setText(tr("%1 (this computer)").arg(QHostInfo::localHostName()));
         } else {
-            if (m_createDateLabel)
-                m_createDateLabel->setText(tr("Can't get remote file information"));
-            m_modifyDateLabel->setText(tr("Can't get remote file information"));
             m_computerLabel->setText(tr("Unknown"));
         }
 
