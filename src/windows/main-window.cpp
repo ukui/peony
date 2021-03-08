@@ -964,33 +964,6 @@ void MainWindow::refresh()
     //goToUri(getCurrentUri(), false, true);
 }
 
-void MainWindow::advanceSearch()
-{
-    qDebug()<<"advanceSearch clicked";
-    initAdvancePage();
-}
-
-void MainWindow::clearRecord()
-{
-    //qDebug()<<"clearRecord clicked";
-//    m_search_bar->clearSearchRecord();
-//    m_clear_record->setDisabled(true);
-}
-
-void MainWindow::searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content)
-{
-//    auto targetUri = SearchVFSUriParser::parseSearchKey(target_path, keyWord, search_file_name, search_content);
-//    //qDebug()<<"targeturi:"<<targetUri;
-//    m_update_condition = true;
-//    this->goToUri(targetUri, true);
-}
-
-void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
-{
-    //qDebug()<<"filterUpdate:";
-    //m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
-}
-
 void MainWindow::setLabelNameFilter(QString name)
 {
     //update filter flag
@@ -1484,12 +1457,6 @@ void MainWindow::recoverFromTrash()
     } else {
         Peony::FileOperationUtils::restore(m_selections);
     }
-}
-
-void MainWindow::initAdvancePage()
-{
-    //Fix me: advance search page, need the new design to develop new UI
-    //auto filterBar = new Peony::AdvanceSearchBar(this);
 }
 
 QRect MainWindow::sideBarRect()

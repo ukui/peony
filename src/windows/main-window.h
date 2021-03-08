@@ -125,12 +125,6 @@ public Q_SLOTS:
     void refresh();
     void forceStopLoading();
 
-    //imigrate from fm-window
-    void advanceSearch();
-    void clearRecord();
-    void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content);
-    void filterUpdate(int type_index=0, int time_index=0, int size_index=0);
-
     void setShowHidden();
     void setUseDefaultNameSortOrder();
     void setSortFolderFirst();
@@ -165,7 +159,6 @@ protected:
 
     void validBorder();
     void initUI(const QString &uri);
-    void initAdvancePage();
 
     QRect sideBarRect();
 
