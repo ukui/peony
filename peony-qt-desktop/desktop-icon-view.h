@@ -130,6 +130,8 @@ public Q_SLOTS:
 
     void editUris(const QStringList uris);
 
+    void scrollTo(const QModelIndex &index, ScrollHint hint) override;
+
     //zoom
     void setDefaultZoomLevel(ZoomLevel level);
     ZoomLevel zoomLevel() const;

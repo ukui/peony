@@ -660,7 +660,7 @@ void DesktopIconView::resolutionChange()
             int posX = 0;
             int posY = 0;
             for (int i = 0; i < needChanged.count(); i++) {
-                while (!notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + iconHeigth > screenSize.height()) {
                         posY = 0;
                         posX += iconWidth;
@@ -673,6 +673,7 @@ void DesktopIconView::resolutionChange()
                     newRect.moveTo(0, 0);
                 }
                 m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+                notEmptyRegion += newRect;
             }
         } else {
             // re-layout overlayed items
@@ -998,6 +999,11 @@ void DesktopIconView::editUri(const QString &uri)
 void DesktopIconView::editUris(const QStringList uris)
 {
 
+}
+
+void DesktopIconView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
+{
+    return;
 }
 
 void DesktopIconView::setCutFiles(const QStringList &uris)

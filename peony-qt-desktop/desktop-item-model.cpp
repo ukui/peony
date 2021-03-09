@@ -131,7 +131,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto view = PeonyDesktopApplication::getIconView();
             auto itemRectHash = view->getCurrentItemRects();
             auto grid = view->gridSize();
-            auto viewRect = view->rect();
+            auto viewRect = view->viewport()->rect();
 
             QRegion notEmptyRegion;
             for (auto rect : itemRectHash.values()) {

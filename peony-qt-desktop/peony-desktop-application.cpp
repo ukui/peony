@@ -384,6 +384,26 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             }
             has_desktop = true;
             PlasmaShellManager::getInstance()->setRole(virtualDesktopWindow->windowHandle(), KWayland::Client::PlasmaShellSurface::Role::Desktop);
+
+            // check ukui wayland session, monitor ukui settings daemon dbus
+            if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
+                screensMonitor = new PrimaryManager;
+                connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+                    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+                    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+                    getIconView()->setGeometry(x, y, width, height);
+                });
+                screensMonitor->start();
+                // init
+                getIconView()->show();
+                int x = screensMonitor->getScreenGeometry("x");
+                int y = screensMonitor->getScreenGeometry("y");
+                int width = screensMonitor->getScreenGeometry("width");
+                int height = screensMonitor->getScreenGeometry("height");
+                getIconView()->setGeometry(x, y, width, height);
+            } else {
+                getIconView()->setGeometry(qApp->primaryScreen()->geometry());
+            }
         }
 
         connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
@@ -392,26 +412,6 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 w->update();
             }
         });
-
-        // check ukui wayland session, monitor ukui settings daemon dbus
-        if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
-            screensMonitor = new PrimaryManager;
-            connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
-                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
-                getIconView()->setGeometry(x, y, width, height);
-            });
-            screensMonitor->start();
-            // init
-            getIconView()->show();
-            int x = screensMonitor->getScreenGeometry("x");
-            int y = screensMonitor->getScreenGeometry("y");
-            int width = screensMonitor->getScreenGeometry("width");
-            int height = screensMonitor->getScreenGeometry("height");
-            getIconView()->setGeometry(x, y, width, height);
-        } else {
-            getIconView()->setGeometry(qApp->primaryScreen()->availableGeometry());
-        }
     }
     else {
         auto helpOption = parser.addHelpOption();
