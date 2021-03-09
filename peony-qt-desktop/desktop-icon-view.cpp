@@ -161,7 +161,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //    });
 
     auto screens = qApp->screens();
-    connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
+    connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
     connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
         m_screens[screen] = false;
         for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
@@ -179,14 +179,14 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
         for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
             if (it.value()) {
-                disconnect(it.key(), &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
+                disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
             }
             m_screens[it.key()] = false;
         }
 
         m_screens[screen] = true;
-        connect(screen, &QScreen::geometryChanged, this, &DesktopIconView::resolutionChange);
-        resolutionChange();
+        connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+        setGeometry(screen->geometry());
 //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
     });
 
@@ -595,21 +595,8 @@ void DesktopIconView::setShowHidden()
 
 void DesktopIconView::resolutionChange()
 {
-    QSize screenSize = qApp->primaryScreen()->availableSize();
-    // note: sometimes primary screen avaliable size will be invalid.
-    // for example, hot plug in a screen, then put the primary screen
-    // below the sencondary screnn.
-    // to avoid this problem, check if avaliable size is valid.
-    if (screenSize == QSize(0, 0)) {
-        screenSize = qApp->primaryScreen()->size();
-        // if the primary screen size is invalid, do not re-layout items
-        if (screenSize == QSize(0, 0)) {
-            return;
-        }
-    }
+    QSize screenSize = this->viewport()->size();
 
-    int row = 0;
-    int column = 0;
     float iconWidth = 0;
     float iconHeigth = 0;
 
@@ -648,7 +635,7 @@ void DesktopIconView::resolutionChange()
         QRegion notEmptyRegion;
         QList<QPair<QRect, QString>> needChanged;
         for (auto pair : newPosition) {
-            if (!screenRect.contains(pair.first)) {
+            if (!screenRect.contains(pair.first.center())) {
                 needChanged.append(pair);
                 m_item_rect_hash.remove(pair.second);
             } else {
@@ -678,7 +665,7 @@ void DesktopIconView::resolutionChange()
         } else {
             // re-layout overlayed items
             for (auto pair : newPosition) {
-                if (pair.first.topLeft() == QPoint(0, 0)) {
+                if (QRect(0, 0, 10, 10).contains(pair.first.topLeft())) {
                     needChanged.append(pair);
                 }
             }
@@ -1192,6 +1179,8 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
     QListView::resizeEvent(e);
     //refresh();
+
+    resolutionChange();
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
