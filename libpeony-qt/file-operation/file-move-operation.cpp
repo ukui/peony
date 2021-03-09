@@ -465,6 +465,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
                 break;
             }
             auto destFile = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
+
             g_file_delete(destFile.get()->get(), nullptr, nullptr);
             break;
         }
@@ -860,7 +861,7 @@ fallback_retry:
                 goto fallback_retry;
             }
             case Cancel: {
-                //node->setState(FileNode::Unhandled);
+                node->setState(FileNode::Unhandled);
                 cancel();
                 break;
             }
