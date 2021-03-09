@@ -69,27 +69,38 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (index.column() == 0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto colors = info->getColors();
-            int xoffset = 0;
+            int xoffset = 5;
             int yoffset = 0;
             int index = 0;
             const int MAX_LABEL_NUM = 3;
             int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
 
+            //set color label on center, fix bug#40609
+            auto iconSize = view->iconSize();
+            auto size = iconSize.height()/2;
+            auto labelSize = iconSize.height()/3;
+            if (labelSize > 10)
+                labelSize = 10;
+            if (labelSize <6)
+                labelSize = 6;
+            if (colors.count() == 1)
+                yoffset = size-labelSize/2;
+            else if (colors.count() == 2)
+                yoffset = size - labelSize;
+            else
+                yoffset = labelSize/2;
+
             for (int i = startIndex; i < colors.count(); ++i, ++index) {
                 auto color = colors.at(i);
-//                if (index == 3) {
-//                    xoffset += 10/2;
-//                    yoffset = 3;
-//                }
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
                 painter->translate(2, 2);
                 painter->setPen(opt.palette.highlightedText().color());
                 painter->setBrush(color);
-                painter->drawEllipse(QRectF(xoffset, yoffset, 10, 10));
+                painter->drawEllipse(QRectF(xoffset, yoffset, labelSize, labelSize));
                 painter->restore();
-                yoffset += 10/2;
+                yoffset += labelSize/2;
             }
         }
     }
