@@ -400,6 +400,15 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 int y = screensMonitor->getScreenGeometry("y");
                 int width = screensMonitor->getScreenGeometry("width");
                 int height = screensMonitor->getScreenGeometry("height");
+                QRect geometry = QRect(x, y, width, height);
+                if (geometry.size() == QSize(0, 0)) {
+                    for (auto screen : qApp->screens()) {
+                        if (screen->geometry().topLeft() == QPoint(0, 0)) {
+                            geometry.setSize(screen->geometry().size());
+                            break;
+                        }
+                    }
+                }
                 getIconView()->setGeometry(x, y, width, height);
             } else {
                 getIconView()->setGeometry(qApp->primaryScreen()->geometry());
