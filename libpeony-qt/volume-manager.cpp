@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QDebug>
+#include "file-info.h"
 
 #include <gio/gunixmounts.h>
 
@@ -139,7 +140,7 @@ void VolumeManager::mount_removed_callback(GVolumeMonitor *monitor,
     Q_EMIT p_this->mountRemoved(std::make_shared<Mount>(mount));
 }
 
-void VolumeManager::unmount_cb(GFile *file, GAsyncResult *result, GError **error)
+void VolumeManager::unmount_cb(GFile *file, GAsyncResult *result, GError **error, QString *targetUri)
 {
     bool successed = g_file_unmount_mountable_with_operation_finish(file, result, error);
     if (!successed) {
@@ -147,18 +148,23 @@ void VolumeManager::unmount_cb(GFile *file, GAsyncResult *result, GError **error
             auto err = GErrorWrapper::wrapFrom(g_error_copy(*error));
             QMessageBox::warning(nullptr, tr("Error"), err.get()->message());
         }
+    } else {
+        VolumeManager::getInstance()->fileUnmounted(*targetUri);
     }
+    delete targetUri;
 }
 
 void VolumeManager::unmount(const QString &uri)
 {
+    auto targetUri = new QString;
+    *targetUri = FileInfo::fromUri(uri).get()->targetUri();
     auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
     g_file_unmount_mountable_with_operation(file.get()->get(),
                                             G_MOUNT_UNMOUNT_NONE,
                                             nullptr,
                                             nullptr,
                                             GAsyncReadyCallback(unmount_cb),
-                                            nullptr);
+                                            targetUri);
 }
 
 //FIXME: should i add async support?

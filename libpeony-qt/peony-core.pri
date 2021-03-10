@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/thumbnail-manager.h           \
     $$PWD/linux-pwd-helper.h            \
     $$PWD/file-meta-info.h              \
-    $$PWD/bookmark-manager.h
+    $$PWD/bookmark-manager.h            \
+    $$PWD/sync-thread.h
 
 SOURCES += \
     $$PWD/file-info.cpp                 \
@@ -35,7 +36,8 @@ SOURCES += \
     $$PWD/thumbnail-manager.cpp         \
     $$PWD/linux-pwd-helper.cpp          \
     $$PWD/file-meta-info.cpp            \
-    $$PWD/bookmark-manager.cpp
+    $$PWD/bookmark-manager.cpp          \
+    $$PWD/sync-thread.cpp
 
 FORMS += \
     $$PWD/connect-server-dialog.ui

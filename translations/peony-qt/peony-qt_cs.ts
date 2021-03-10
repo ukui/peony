@@ -147,12 +147,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1350"/>
+        <location filename="../../src/windows/main-window.cpp" line="1356"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1351"/>
+        <location filename="../../src/windows/main-window.cpp" line="1357"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -303,12 +303,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="400"/>
+        <location filename="../../src/peony-application.cpp" line="404"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="401"/>
+        <location filename="../../src/peony-application.cpp" line="405"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
