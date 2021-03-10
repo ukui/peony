@@ -10,13 +10,17 @@
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.ui" line="82"/>
-        <location filename="../../src/windows/about-dialog.ui" line="136"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans CJK SC&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.ui" line="109"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Offical Website: </source>
@@ -52,7 +56,7 @@ p, li { white-space: pre-wrap; }
         <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="118"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -182,12 +186,12 @@ p, li { white-space: pre-wrap; }
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1472"/>
+        <location filename="../../src/windows/main-window.cpp" line="1445"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1473"/>
+        <location filename="../../src/windows/main-window.cpp" line="1446"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -196,12 +200,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1462"/>
+        <location filename="../../src/windows/main-window.cpp" line="1435"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1463"/>
+        <location filename="../../src/windows/main-window.cpp" line="1436"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>

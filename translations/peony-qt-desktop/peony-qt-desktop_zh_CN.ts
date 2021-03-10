@@ -23,22 +23,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="745"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="733"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="746"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="734"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="729"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="717"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="730"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="718"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
@@ -78,9 +78,8 @@
         <translation type="vanished">打开方式(&amp;W)...</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="204"/>
         <source>&amp;Open %1 selected files</source>
-        <translation>打开%1个选中文件(&amp;O)</translation>
+        <translation type="vanished">打开%1个选中文件(&amp;O)</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="228"/>
@@ -159,6 +158,11 @@
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
         <source>More applications...</source>
         <translation>更多应用</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="204"/>
+        <source>Open %1 selected files</source>
+        <translation>打开%1个选中文件</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="305"/>
@@ -369,7 +373,7 @@
         <translation type="vanished">关闭桌面并退出</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="142"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="151"/>
         <source>peony-qt-desktop</source>
         <translation>桌面</translation>
     </message>
@@ -382,22 +386,22 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="244"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="253"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="247"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="256"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="250"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="259"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="340"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="349"/>
         <source>set background</source>
         <translation>设置壁纸</translation>
     </message>
