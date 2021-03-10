@@ -96,13 +96,10 @@ void AboutDialog::initUI()
 	textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
 
-//	ui->developTextedit->setFont(font14);
-	ui->developTextedit->setReadOnly(true);
-    ui->developTextedit->setStyleSheet("color:#595959;");
-	textCursor = ui->developTextedit->textCursor();//before the setText();
-    ui->developTextedit->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>");
+    ui->openlinkLabel->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>");
+    ui->openlinkLabel->setOpenExternalLinks(true);
+    ui->openlinkLabel->setStyleSheet("color:#595959;");
 	textCursor.setBlockFormat(blockFormat);
-    ui->developTextedit->setTextCursor(textCursor);
 }
 
 QString AboutDialog::getCurrentVersion()
