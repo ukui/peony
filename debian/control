@@ -22,6 +22,7 @@ Build-Depends: debhelper-compat (=12),
                libkf5windowsystem-dev,
                libcanberra-dev,
                libkf5wayland-dev
+               libkysec-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/

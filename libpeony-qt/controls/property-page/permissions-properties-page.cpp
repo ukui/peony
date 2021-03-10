@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <kysec/libkysec.h>
 
 #include <QVBoxLayout>
 #include <QTableWidget>
@@ -174,10 +175,10 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
             bool enable = true;
             auto table = p_this->m_table;
             auto user = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER);
-            auto owner = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER_REAL);
+            //auto owner = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER_REAL);
             QString userString = user;
             QString groupName = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_GROUP);
-            QString userNameDisplayString = owner;
+            QString userNameDisplayString = user;
 
             bool current_user_readable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
             bool current_user_writeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
@@ -236,11 +237,18 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                     groupName = tr("Unkwon");
                     */
 
-                if (!isSelf && !isSameGroup)
+                if (!isSelf && !isSameGroup) {
+                    qDebug()<<"the uid not permit";
                     enable = false;
+                }
 
                 if (pw->pw_uid == 0) {
-                    enable = true;
+                    if (!kysec_is_disabled() && kysec_get_3adm_status()) {
+                        qDebug()<<"now it is in strict mode, so root is not super";
+                    } else {
+                        qDebug()<<"pw uid is 0, it is super";
+                        enable = true;
+                    }
                 }
             } else {
                 enable = false;
@@ -404,8 +412,12 @@ void PermissionsPropertiesPage::savePermissions()
 
     QUrl url = m_uri;
     if (url.isLocalFile()) {
-        g_chmod(url.path().toUtf8(), mod);
-        qDebug()<<mod;
+        int ret = g_chmod(url.path().toUtf8(), mod);
+        if (ret < 0) {
+            qDebug()<<"uri"<<url.path().toUtf8()<<"chmod" <<mod<<"failed";
+        } else {
+            qDebug()<<"chmod uri"<<url.path().toUtf8() <<"mod"<<mod <<"success";
+        }
     }
 }
 

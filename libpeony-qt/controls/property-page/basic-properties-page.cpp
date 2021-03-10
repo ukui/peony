@@ -770,15 +770,6 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
         QUrl url(uri);
         //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
         if (url.isLocalFile()) {
-            QString path = url.path();
-            QFileInfo qFileInfo(path);
-
-            //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题
-            QDateTime date1 = qFileInfo.birthTime();
-            QString time1 = date1.toString(m_systemTimeFormat);
-            if (qFileInfo.isDir() && m_timeCreatedLabel)
-                m_timeCreatedLabel->setText(time1);
-
 //            if(m_timeModifiedLabel) {
 //                QDateTime date2 = qFileInfo.lastModified();
 //                QString time2 = date2.toString(m_systemTimeFormat);
@@ -798,17 +789,36 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
                                                 nullptr);
             g_object_unref(file);
 
+
             if(m_timeModifiedLabel) {
                 m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
                 QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
                 QString time2 = date2.toString(m_systemTimeFormat);
                 m_timeModifiedLabel->setText(time2);
             }
+
             if(m_timeAccessLabel) {
                 m_timeAccess = g_file_info_get_attribute_uint64(info,"time::access");
                 QDateTime date3 = QDateTime::fromMSecsSinceEpoch(m_timeAccess*1000);
                 QString time3 = date3.toString(m_systemTimeFormat);
                 m_timeAccessLabel->setText(time3);
+            }
+
+            QString path = url.path();
+            QFileInfo qFileInfo(path);
+            if (qFileInfo.isDir() && m_timeCreatedLabel) {
+                //FIXME:目前只是文件夹显示创建时间，当创建时间获取失败的时候，将修改时间作为创建时间
+                QDateTime date1 = qFileInfo.birthTime();
+                if (date1.isValid()) {
+                    QString time1 = date1.toString(m_systemTimeFormat);
+                    m_timeCreatedLabel->setText(time1);
+                } else {
+                    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::modified");
+                    QDateTime createDate = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
+                    QString createTime = createDate.toString(m_systemTimeFormat);
+                    m_timeCreatedLabel->setText(createTime);
+                }
+
             }
             g_object_unref(info);
 
