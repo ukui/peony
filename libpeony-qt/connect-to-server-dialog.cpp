@@ -338,7 +338,7 @@ QString ConnectServerLogin::user()
 
 QString ConnectServerLogin::domain()
 {
-    return "";
+    return "WORKGROUP";
 }
 
 QString ConnectServerLogin::password()
