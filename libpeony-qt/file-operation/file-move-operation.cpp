@@ -358,7 +358,6 @@ retry:
     //native move has not clear operation.
     operationProgressed();
 
-    //rollback if cancelled
     //FIXME: if native move function get into error,
     //such as the target is existed, the rollback might
     //get into error too.
@@ -368,54 +367,6 @@ retry:
             rollbackNodeRecursively(node);
         }
     }
-
-//    if (isCancelled()) {
-//        for (auto file : nodes) {
-//            if (!file->destUri().isEmpty()) {
-//                GFileWrapperPtr destFile = wrapGFile(g_file_new_for_uri(file->destUri().toUtf8().constData()));
-//                GFileWrapperPtr srcFile = wrapGFile(g_file_new_for_uri(file->uri().toUtf8().constData()));
-//                //try rollbacking
-//                switch (file->responseType()) {
-//                case Other: {
-//                    //no error, move dest back to src
-//                    g_file_move(destFile.get()->get(),
-//                                srcFile.get()->get(),
-//                                m_default_copy_flag,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr);
-//                    break;
-//                }
-//                case IgnoreOne: {
-//                    break;
-//                }
-//                case OverWriteOne: {
-//                    g_file_copy(destFile.get()->get(),
-//                                srcFile.get()->get(),
-//                                m_default_copy_flag,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr);
-//                    break;
-//                }
-//                case BackupOne: {
-//                    g_file_copy(destFile.get()->get(),
-//                                srcFile.get()->get(),
-//                                m_default_copy_flag,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr,
-//                                nullptr);
-//                    break;
-//                }
-//                default:
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
     //release node
     m_info.get()->m_src_uris.clear();
@@ -439,7 +390,7 @@ void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
             rollbackNodeRecursively(child);
         }
 
-        if (node->responseType() != OverWriteOne && node->responseType() != OverWriteAll) {
+        if (node->responseType() != OverWriteOne && node->responseType() != OverWriteAll && !isCancelled()) {
             auto destDir = wrapGFile(g_file_new_for_uri(node->destUri().toUtf8().constData()));
             g_file_delete(destDir.get()->get(), nullptr, nullptr);
         }
