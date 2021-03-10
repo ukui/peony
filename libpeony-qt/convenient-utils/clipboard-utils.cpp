@@ -45,7 +45,7 @@ static ClipboardUtils *global_instance = nullptr;
  */
 static QString m_clipboard_parent_uri = nullptr;
 
-static QString m_last_target_directory_uri = nullptr;
+static QList<QString> m_target_directory_uri;
 
 ClipboardUtils *ClipboardUtils::getInstance()
 {
@@ -68,7 +68,7 @@ ClipboardUtils::ClipboardUtils(QObject *parent) : QObject(parent)
 
 ClipboardUtils::~ClipboardUtils()
 {
-
+    m_target_directory_uri.clear();
 }
 
 void ClipboardUtils::release()
@@ -83,7 +83,7 @@ const QString ClipboardUtils::getClipedFilesParentUri()
 
 const QString ClipboardUtils::getLastTargetDirectoryUri()
 {
-    return m_last_target_directory_uri;
+    return m_target_directory_uri.size() > 0 ? m_target_directory_uri.back() : "";
 }
 
 void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
@@ -192,7 +192,14 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
         fileOpMgr->startOperation(copyOp, true);
     }
 
-    m_last_target_directory_uri = targetDirUri;
+    if (m_target_directory_uri.size() <= 0 || m_target_directory_uri.back() != targetDirUri) {
+        m_target_directory_uri.append(targetDirUri);
+    }
+
+
+    if (m_target_directory_uri.size() > 2) {
+        m_target_directory_uri.pop_front();
+    }
 
     return op;
 }
@@ -200,4 +207,11 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
 void ClipboardUtils::clearClipboard()
 {
     QApplication::clipboard()->clear();
+}
+
+void ClipboardUtils::popLastTargetDirectoryUri(QString &uri)
+{
+    if (uri == m_target_directory_uri.back()) {
+        m_target_directory_uri.pop_back();
+    }
 }

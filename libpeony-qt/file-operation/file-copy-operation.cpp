@@ -559,7 +559,11 @@ void FileCopyOperation::run()
 
 void FileCopyOperation::cancel()
 {
-    if (m_reporter)
+    if (m_reporter) {
         m_reporter->cancel();
+    }
+
+    ClipboardUtils::popLastTargetDirectoryUri(m_dest_dir_uri);
+
     FileOperation::cancel();
 }
