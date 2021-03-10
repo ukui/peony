@@ -1,3 +1,10 @@
+peony (3.0.3-2+0310) v101; urgency=medium
+
+  * Fix: Dragging the user directory folder on the desktop is prohibited.
+  * Fix: When you drag a file with the same name to another directory with your mouse, click Cancel and the file with the same name in the target window is deleted.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 10 Mar 2021 09:29:31 +0800
+
 peony (3.0.3-2+0308) v101; urgency=medium
 
   * Fix: The sort method was not saved
