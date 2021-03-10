@@ -172,6 +172,7 @@ private:
 
     //file , zip
     QHBoxLayout        *m_openWithLayout   = nullptr;    //文件打开方式
+    QListWidget        *m_defaultOpenListWidget = nullptr;
 
     //application
     QLabel *m_descrptionLabel = nullptr;       //应用程序描述
