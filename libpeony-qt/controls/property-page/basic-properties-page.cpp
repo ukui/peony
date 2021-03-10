@@ -140,9 +140,10 @@ void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
     auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
     if (m_openWithLayout && recommendActions.count() >= 1) {
+        m_defaultOpenListWidget = OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(), parent);
         m_openWithLayout->setContentsMargins(0,0,16,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
-        m_openWithLayout->addWidget(OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(),parent));
+        m_openWithLayout->addWidget(m_defaultOpenListWidget);
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
@@ -152,7 +153,14 @@ void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
             NewFileLaunchDialog dialog(m_info.get()->uri());
-            dialog.exec();
+            if (QDialog::Accepted == dialog.exec()) {
+                QListWidgetItem *m_listItem = m_defaultOpenListWidget->item(0);
+                auto defaultLaunchAction = FileLaunchManager::getDefaultAction(m_info.get()->uri());
+                if (defaultLaunchAction) {
+                    m_listItem->setIcon(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon() : QIcon::fromTheme("application-x-desktop"));
+                    m_listItem->setText(defaultLaunchAction->text());
+                }
+            }
         });
     }
 }
@@ -684,6 +692,8 @@ void BasicPropertiesPage::chooseFileIcon()
     auto picture = QFileDialog::getOpenFileName(nullptr, tr("Choose a custom icon"), "/usr/share/icons", "*.png *.jpg *.jpeg *.svg");
 
     if (!picture.isEmpty()) {
+        qDebug()<<"chose new file icon:"<< picture;
+        m_iconButton->setIcon(QIcon(picture));
         this->m_newFileIconPath = picture;
         this->thisPageChanged();
     }
