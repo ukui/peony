@@ -93,6 +93,10 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
     if (g_file_unmount_mountable_with_operation_finish (file, result, &err) == TRUE){
         flags = 1;
+        char *uri = g_file_get_uri(file);
+        VolumeManager::getInstance()->fileUnmounted(uri);
+        if (uri)
+            g_free(uri);
     }
 
     //add QMessageBox error ,let user know the error messages

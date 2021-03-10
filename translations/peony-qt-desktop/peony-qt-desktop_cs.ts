@@ -9,37 +9,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="401"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="404"/>
         <source>New Folder</source>
         <translation type="unfinished">Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="487"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="490"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="608"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="624"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="609"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="625"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="624"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="640"/>
         <source>Open failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="625"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="641"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="667"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="683"/>
         <source>Can not open path &quot;%1&quot;，permission denied.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -47,7 +47,7 @@
 <context>
     <name>Peony::DesktopItemModel</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="469"/>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="467"/>
         <source>My Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -272,12 +272,12 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="96"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="97"/>
         <source>Desktop</source>
         <translation type="unfinished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="173"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="190"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
@@ -305,17 +305,17 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="227"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="228"/>
         <source>Close the peony desktop window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="230"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="231"/>
         <source>Take over the dbus service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="233"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="234"/>
         <source>Take over the desktop displaying</source>
         <translation type="unfinished"></translation>
     </message>
@@ -323,7 +323,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="668"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="684"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="140"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="240"/>
         <source>Error</source>

@@ -265,6 +265,9 @@ Q_SIGNALS:
     void mountAdded(const std::shared_ptr<Mount> &mount);
     void mountRemoved(const std::shared_ptr<Mount> &mount);
 
+    // internal signal
+    void fileUnmounted(const QString &uri);
+
 protected:
     static void drive_connected_callback(GVolumeMonitor *monitor,
                                          GDrive *drive,
@@ -296,7 +299,7 @@ public Q_SLOTS:
 protected:
     static void unmount_cb(GFile *file,
                            GAsyncResult *result,
-                           GError **error);
+                           GError **error, QString *targetUri);
 
 private:
     explicit VolumeManager(QObject *parent = nullptr);
