@@ -320,7 +320,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 });
             }
         } else {
-            l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+            l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open %1 selected files").arg(m_selections.count()));
             connect(l.last(), &QAction::triggered, [=]() {
                 qDebug()<<"triggered";
                 QStringList dirs;

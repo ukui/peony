@@ -19,33 +19,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="729"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="717"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="730"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="718"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="745"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="733"/>
         <source>Open failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="746"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="734"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Peony::DesktopMenu</name>
-    <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="204"/>
-        <source>&amp;Open %1 selected files</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="228"/>
         <source>Reverse Select</source>
@@ -123,6 +118,11 @@
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="158"/>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="184"/>
         <source>More applications...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="204"/>
+        <source>Open %1 selected files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -269,7 +269,7 @@
         <translation type="vanished">Masaüstünü kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="142"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="151"/>
         <source>peony-qt-desktop</source>
         <translation>Masaüstü</translation>
     </message>
@@ -282,22 +282,22 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="244"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="253"/>
         <source>Close the peony desktop window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="247"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="256"/>
         <source>Take over the dbus service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="250"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="259"/>
         <source>Take over the desktop displaying</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="340"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="349"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
