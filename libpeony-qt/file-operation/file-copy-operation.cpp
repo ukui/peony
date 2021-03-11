@@ -100,12 +100,6 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
     QUrl firstSrcUrl = sourceUris.first();
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
-    } else {
-        auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
-        QUrl lastPasteDirectoryUrl = lastPasteDirectoryUri;
-        if (destDirUrl == lastPasteDirectoryUrl) {
-            m_is_duplicated_copy = true;
-        }
     }
 
     m_conflict_files.clear();
