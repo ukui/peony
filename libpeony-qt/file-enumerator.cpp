@@ -167,6 +167,7 @@ void FileEnumerator::setEnumerateDirectory(GFile *file)
     }
 }
 
+//try not to use this function for now, some info can not get correctly
 void FileEnumerator::setEnumerateWithInfoJob(bool query)
 {
     m_with_info_job = query;   
