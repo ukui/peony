@@ -31,6 +31,7 @@
 #include "file-launch-manager.h"
 #include "search-vfs-uri-parser.h"
 #include "properties-window.h"
+#include "file-enumerator.h"
 
 #include <QStackedWidget>
 #include <QToolButton>
@@ -890,69 +891,74 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
-    auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-    bool hasCurrentPage = currentPage();
-    bool hasView = false;
-    if (hasCurrentPage)
-        hasView = currentPage()->getView();
-    int zoomLevel = -1;
-
-    if (hasCurrentPage) {
-        // perfer to use current page view type
-        auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
-        //fix continuously click add button quickly crash issue, bug #41425
-        if (hasView && internalViews.contains(currentPage()->getView()->viewId()))
-            viewContainer->switchViewType(currentPage()->getView()->viewId());
-
-        if (hasView && hasCurrentPage) {
-            hasCurrentPage = true;
-            zoomLevel = currentPage()->getView()->currentZoomLevel();
-        }
-    } else {
-        viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
-    }
-    m_stack->addWidget(viewContainer);
-    if (jumpTo) {
-        m_stack->setCurrentWidget(viewContainer);
-    }
+    setCursor(QCursor(Qt::WaitCursor));
 
     auto info = Peony::FileInfo::fromUri(uri);
     auto infoJob = new Peony::FileInfoJob(info);
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
-        if (!info->isEmptyInfo() && ! info->isDir() && !info.get()->isVolume() && !info.get()->isVirtual())
-            return;
+        auto enumerator = new Peony::FileEnumerator;
+        enumerator->setEnumerateDirectory(info.get()->uri());
+        connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+            if (critical) {
+                QMessageBox::critical(0, 0, err.get()->message());
+                setCursor(QCursor(Qt::ArrowCursor));
+                return;
+            }
+            auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+            bool hasCurrentPage = currentPage();
+            bool hasView = false;
+            if (hasCurrentPage)
+                hasView = currentPage()->getView();
+            int zoomLevel = -1;
 
-        QCursor c;
-        c.setShape(Qt::WaitCursor);
-        this->setCursor(c);
+            if (hasCurrentPage) {
+                // perfer to use current page view type
+                auto internalViews = Peony::DirectoryViewFactoryManager2::getInstance()->internalViews();
+                //fix continuously click add button quickly crash issue, bug #41425
+                if (hasView && internalViews.contains(currentPage()->getView()->viewId()))
+                    viewContainer->switchViewType(currentPage()->getView()->viewId());
 
-        //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-        auto settings = Peony::GlobalSettings::getInstance();
-        auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
-        auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
-        viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
-        viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
+                if (hasView && hasCurrentPage) {
+                    hasCurrentPage = true;
+                    zoomLevel = currentPage()->getView()->currentZoomLevel();
+                }
+            } else {
+                viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
+            }
+            m_stack->addWidget(viewContainer);
+            if (jumpTo) {
+                m_stack->setCurrentWidget(viewContainer);
+            }
 
-        //process open symbolic link
-        auto realUri = uri;
-        if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
-            realUri = "file://" + info->symlinkTarget();
+            //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+            auto settings = Peony::GlobalSettings::getInstance();
+            auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
+            auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
+            viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+            viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
 
-        //m_stack->addWidget(viewContainer);
-        viewContainer->goToUri(realUri, false, true);
+            //process open symbolic link
+            auto realUri = uri;
+            if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+                realUri = "file://" + info->symlinkTarget();
 
-        bindContainerSignal(viewContainer);
-        updateTrashBarVisible(uri);
+            //m_stack->addWidget(viewContainer);
+            viewContainer->goToUri(realUri, false, true);
 
-        if (zoomLevel > 0)
-            viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
-        else
-            viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+            bindContainerSignal(viewContainer);
+            updateTrashBarVisible(uri);
 
-        m_tab_bar->addPage(realUri, jumpTo);
-        updateTabBarGeometry();
+            if (zoomLevel > 0)
+                viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
+            else
+                viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+
+            m_tab_bar->addPage(realUri, jumpTo);
+            updateTabBarGeometry();
+        });
+        enumerator->prepare();
     });
 
     infoJob->queryAsync();
