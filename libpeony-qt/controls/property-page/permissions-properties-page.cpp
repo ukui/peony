@@ -32,18 +32,19 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <kysec/libkysec.h>
 
 #include <QVBoxLayout>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QLabel>
 #include <QCheckBox>
+#include <QProcess>
 
 #include <QUrl>
 #include <QStandardPaths>
 
 #include <QDebug>
+#include <QFileInfo>
 
 using namespace Peony;
 
@@ -243,13 +244,39 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 }
 
                 if (pw->pw_uid == 0) {
+                    QFileInfo file("/usr/sbin/security-switch");
+                    if(file.exists() == true) {
+                        QProcess shProcess;
+                        shProcess.start("security-switch --get");
+                        if (!shProcess.waitForStarted()) {
+                            qDebug()<<"wait get security state start timeout";
+                        } else {
+                            if (!shProcess.waitForFinished()) {
+                                qDebug()<<"wait get security state finshed timeout";
+                            } else {
+                                QString secState = shProcess.readAllStandardOutput();
+                                qDebug()<<"security-switch get test "<< secState;
+                                if (secState.contains("strict")) {
+                                    qDebug()<<"now it is in strict mode, so root is not super";
+                                } else {
+                                    qDebug()<<"pw uid is 0, it is super";
+                                    enable = true;
+                                }
+                            }
+                        }
+                    } else {
+                        qDebug()<<"security-switch is not support, so it is super";
+                        enable = true;
+                    }
+                   /*
                     if (!kysec_is_disabled() && kysec_get_3adm_status()) {
                         qDebug()<<"now it is in strict mode, so root is not super";
                     } else {
                         qDebug()<<"pw uid is 0, it is super";
                         enable = true;
-                    }
+                    }*/
                 }
+
             } else {
                 enable = false;
             }
