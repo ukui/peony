@@ -678,6 +678,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     }
                 });
             }
+            else if (m_is_recent)
+            {
+                //fix recent files can not be deleted issue
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                });
+            }
 
             l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Refresh"));
             connect(l.last(), &QAction::triggered, [=]() {
