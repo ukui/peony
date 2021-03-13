@@ -493,53 +493,53 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="192"/>
+        <location filename="../../src/control/tab-widget.cpp" line="193"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="196"/>
+        <location filename="../../src/control/tab-widget.cpp" line="197"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="200"/>
+        <location filename="../../src/control/tab-widget.cpp" line="201"/>
         <source>Recover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="285"/>
+        <location filename="../../src/control/tab-widget.cpp" line="286"/>
         <source>Close advance search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="293"/>
+        <location filename="../../src/control/tab-widget.cpp" line="294"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="302"/>
+        <location filename="../../src/control/tab-widget.cpp" line="303"/>
         <source>Choose other path to search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="311"/>
+        <location filename="../../src/control/tab-widget.cpp" line="312"/>
         <source>Search recursively</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="384"/>
+        <location filename="../../src/control/tab-widget.cpp" line="385"/>
         <source>Select path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="419"/>
-        <location filename="../../src/control/tab-widget.cpp" line="508"/>
+        <location filename="../../src/control/tab-widget.cpp" line="420"/>
+        <location filename="../../src/control/tab-widget.cpp" line="509"/>
         <source>is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="437"/>
+        <location filename="../../src/control/tab-widget.cpp" line="438"/>
         <source>Please input key words...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -548,8 +548,8 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="474"/>
-        <location filename="../../src/control/tab-widget.cpp" line="495"/>
+        <location filename="../../src/control/tab-widget.cpp" line="475"/>
+        <location filename="../../src/control/tab-widget.cpp" line="496"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
