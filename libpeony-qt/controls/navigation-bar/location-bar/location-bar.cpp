@@ -245,6 +245,13 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             });
             QList<QAction *> actions;
             for (auto uri : suburis) {
+                //QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+                auto iconName = FileUtils::getFileIconName(uri);
+                
+                if (QString::compare ("folder-templates", iconName) == 0) {
+                    continue;
+                }
+
                 QString tmp = uri;
                 displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -252,8 +259,9 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
                     int  charWidth = fontMetrics().averageCharWidth();
                     displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
                 }
-                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
-                QAction *action = new QAction(icon, displayName, this);
+                QIcon icon = QIcon::fromTheme (iconName, QIcon::fromTheme("folder"));
+                QAction *action = new QAction (icon, displayName, this);
+                
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {
                     Q_EMIT groupChangedRequest(tmp);
