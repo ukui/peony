@@ -337,15 +337,16 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
                 selections.push_back(m_uri);
                 FileOperationUtils::trash(selections, true);
             }
-        }
-        else {
-            if(!QFile(m_uri).exists())
+        } else {
+            QUrl url = m_uri;
+            if(!QFile(url.path()).exists())
             {
                 QMessageBox::warning(nullptr,
                                      tr("Error"),
                                      tr("File original path not exist, are you deleted or moved it?"));
                 return;
             }
+
             auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
             if (result == QMessageBox::Yes) {
                 GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);
