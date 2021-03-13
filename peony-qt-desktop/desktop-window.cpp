@@ -104,9 +104,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_tabletmode = tabletMode;
     PEONY_DESKTOP_LOG_WARN("tablet mode value %s", m_tabletmode? "true":"false");
     if(tabletMode){
-    //    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop,false);
         PEONY_DESKTOP_LOG_WARN("hide the desktop");
         this->hide();
+    } else {
+        this->show();
     }
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
 
@@ -150,7 +151,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     PEONY_DESKTOP_LOG_WARN("desktop screen %s", screen->name().toUtf8().constData());
     auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
     setWindowFlags(flags |Qt::FramelessWindowHint);
-    //setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_TranslucentBackground, false);
 
     //fix qt5.6 setAttribute as desktop has no effect issue
 #if (QT_VERSION < QT_VERSION_CHECK(5, 7, 0))
@@ -627,6 +628,15 @@ void DesktopWindow::bootStageUpdate()
 {
     if (PEONY_BOOT_START == m_boot_stage) {
         m_boot_stage = PEONY_BOOT_UPDATE;
+        if (!m_tabletmode && this->isHidden()) {
+            PEONY_DESKTOP_LOG_WARN("boot start stage is hide in pc");
+            this->show();
+        }
+
+        if (!m_tabletmode && !updatesEnabled()) {
+            PEONY_DESKTOP_LOG_WARN("boot start stage update disabled");
+            this->setUpdatesEnabled(true);
+        }
         //delay
         ::usleep(5000);
         PEONY_DESKTOP_LOG_WARN("boot start stage update");
@@ -634,10 +644,12 @@ void DesktopWindow::bootStageUpdate()
         m_boot_timer->stop();
         m_boot_timer->start(500);
     } else if (PEONY_BOOT_UPDATE == m_boot_stage) {
-        PEONY_DESKTOP_LOG_WARN("boot update stage reboot");
         m_boot_timer->stop();
-        qint64 pid = QCoreApplication::applicationPid();
-        QProcess::startDetached("kill -9 " + QString::number(pid));
+        if (!m_tabletmode) {
+            PEONY_DESKTOP_LOG_WARN("boot update stage reboot");
+            qint64 pid = QCoreApplication::applicationPid();
+            QProcess::startDetached("kill -9 " + QString::number(pid));
+        }
     } else if (PEONY_BOOT_PAINT == m_boot_stage) {
         PEONY_DESKTOP_LOG_WARN("boot paint stage finished");
         m_boot_stage = PEONY_BOOT_FINSH;
