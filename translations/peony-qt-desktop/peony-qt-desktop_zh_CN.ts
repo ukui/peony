@@ -16,7 +16,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="566"/>
         <source>set background</source>
-        <translation>设置壁纸</translation>
+        <translation>设置背景</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -403,7 +403,7 @@
     <message>
         <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="349"/>
         <source>set background</source>
-        <translation>设置壁纸</translation>
+        <translation>设置背景</translation>
     </message>
 </context>
 </TS>
