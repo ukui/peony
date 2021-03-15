@@ -88,6 +88,8 @@ using namespace Peony;
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
+static bool initialized = false;
+
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
     //m_refresh_timer.setInterval(500);
@@ -190,61 +192,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
     });
 
-    //fix task bar overlap with desktop icon and can drag move issue
-    //bug #27811,33188
-    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
-    {
-        //panel monitor
-        QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
-        connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "panelposition" || key == "panelsize")
-            {
-                int position = panelSetting->get("panelposition").toInt();
-                int margins = panelSetting->get("panelsize").toInt();
-                switch (position) {
-                case 1: {
-                    setViewportMargins(0, margins, 0, 0);
-                    break;
-                }
-                case 2: {
-                    setViewportMargins(margins, 0, 0, 0);
-                    break;
-                }
-                case 3: {
-                    setViewportMargins(0, 0, margins, 0);
-                    break;
-                }
-                default: {
-                    setViewportMargins(0, 0, 0, margins);
-                    break;
-                }
-                }
-            }
-            resolutionChange();
-        });
-        int position = panelSetting->get("panelposition").toInt();
-        int margins = panelSetting->get("panelsize").toInt();
-        switch (position) {
-        case 1: {
-            setViewportMargins(0, margins, 0, 0);
-            break;
-        }
-        case 2: {
-            setViewportMargins(margins, 0, 0, 0);
-            break;
-        }
-        case 3: {
-            setViewportMargins(0, 0, margins, 0);
-            break;
-        }
-        default: {
-            setViewportMargins(0, 0, 0, margins);
-            break;
-        }
-        }
-        resolutionChange();
-    }
-
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
     }
@@ -280,6 +227,36 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 //this->refresh();
             }
         });
+
+        if (!initialized) {
+            initialized = true;
+
+            if (!QGSettings::isSchemaInstalled(PANEL_SETTINGS))
+                return;
+            //panel
+            QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+            int position = panelSetting->get("panelposition").toInt();
+            int margins = panelSetting->get("panelsize").toInt();
+            switch (position) {
+            case 1: {
+                setViewportMargins(0, margins, 0, 0);
+                break;
+            }
+            case 2: {
+                setViewportMargins(margins, 0, 0, 0);
+                break;
+            }
+            case 3: {
+                setViewportMargins(0, 0, margins, 0);
+                break;
+            }
+            default: {
+                setViewportMargins(0, 0, 0, margins);
+                break;
+            }
+            }
+            resolutionChange();
+        }
         return;
     });
 
@@ -341,6 +318,40 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     setMouseTracking(true);//追踪鼠标
 
     this->refresh();
+
+    //fix task bar overlap with desktop icon and can drag move issue
+    //bug #27811,33188
+    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
+    {
+        //panel monitor
+        QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+        connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "panelposition" || key == "panelsize")
+            {
+                int position = panelSetting->get("panelposition").toInt();
+                int margins = panelSetting->get("panelsize").toInt();
+                switch (position) {
+                case 1: {
+                    setViewportMargins(0, margins, 0, 0);
+                    break;
+                }
+                case 2: {
+                    setViewportMargins(margins, 0, 0, 0);
+                    break;
+                }
+                case 3: {
+                    setViewportMargins(0, 0, margins, 0);
+                    break;
+                }
+                default: {
+                    setViewportMargins(0, 0, 0, margins);
+                    break;
+                }
+                }
+            }
+            resolutionChange();
+        });
+    }
 }
 
 DesktopIconView::~DesktopIconView()
