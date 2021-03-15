@@ -67,6 +67,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    setSelectionBehavior(QTreeView::SelectRows);
+
     setAlternatingRowColors(true);
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
@@ -103,12 +105,9 @@ void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint 
 {
     // NOTE:
     // scrollTo() is confilcted with updateGeometry(), where it will
-    // leave a space for view. So I override this method. However,
-    // the fast keyboard locating of default tree view will be disabled
-    // due to the function is overrided, too.
+    // leave a space for view.
 
-    QTreeView::scrollTo(index, hint);
-//    updateGeometries();
+    QTreeView::scrollTo(index, QAbstractItemView::PositionAtCenter);
 }
 
 bool ListView::isDragging()
@@ -735,6 +734,21 @@ void ListView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+void ListView::keyboardSearch(const QString &key)
+{
+    // ensure current index is index in display name column
+    if (currentIndex().column() != 0) {
+        selectionModel()->setCurrentIndex(m_model->index(currentIndex().row(), 0, currentIndex().parent()), QItemSelectionModel::SelectCurrent);
+    }
+
+    // note: checking qtreeview.cpp we can find that the keyboard search only select rows
+    // while selection mode is single selection. so we have a trick here for trigger that
+    // action.
+    setSelectionMode(QTreeView::SingleSelection);
+    QAbstractItemView::keyboardSearch(key);
+    setSelectionMode(QTreeView::ExtendedSelection);
 }
 
 //List View 2

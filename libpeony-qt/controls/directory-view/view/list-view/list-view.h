@@ -107,6 +107,8 @@ public Q_SLOTS:
     void editUri(const QString &uri) override;
     void editUris(const QStringList uris) override;
 
+    void keyboardSearch(const QString &key) override;
+
     void resort();
     void reportViewDirectoryChanged();
     void adjustColumnsSize();
