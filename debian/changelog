@@ -1,3 +1,18 @@
+peony (3.0.3-2+0315) v101; urgency=medium
+
+  * Fix: add log for black screen;
+  * Fix: desktop can not normal show.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Mon, 15 Mar 2021 09:29:31 +0800
+
+peony (3.0.3-2+0313) v101; urgency=medium
+
+  * Fix: Hide "Templates" directory in popupmenu which is poped up on location bar.
+  * Fix: 同名文件复制自动重命名而不是提示用户
+  * Fix: the desktop is black, when it boots in tablet model.
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 13 Mar 2021 09:29:31 +0800
+
 peony (3.0.3-2+0310) v101; urgency=medium
 
   * Fix: Dragging the user directory folder on the desktop is prohibited.
