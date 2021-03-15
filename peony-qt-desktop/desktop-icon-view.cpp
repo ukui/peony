@@ -220,6 +220,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 }
                 }
             }
+            resolutionChange();
         });
         int position = panelSetting->get("panelposition").toInt();
         int margins = panelSetting->get("panelsize").toInt();
@@ -241,6 +242,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             break;
         }
         }
+        resolutionChange();
     }
 
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
@@ -352,6 +354,7 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
     //fixme:
     //comment to fix change night style refresh desktop issue
     if (e->type() == QEvent::StyleChange || e->type() == QEvent::ApplicationFontChange || e->type() == QEvent::FontChange) {
+        auto type = e->type();
         if (m_model) {
             for (auto uri : getAllFileUris()) {
                 auto pos = getFileMetaInfoPos(uri);
@@ -648,7 +651,7 @@ void DesktopIconView::resolutionChange()
             int posY = 0;
             for (int i = 0; i < needChanged.count(); i++) {
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
-                    if (posY + iconHeigth > screenSize.height()) {
+                    if (posY + 2 * iconHeigth > screenSize.height()) {
                         posY = 0;
                         posX += iconWidth;
                     } else {
