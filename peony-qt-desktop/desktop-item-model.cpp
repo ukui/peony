@@ -628,7 +628,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     auto info = FileInfo::fromUri(destDirUri);
-    if (!info->isDir()) {
+    if (!info->isDir()  && ! destDirUri.startsWith("trash:///")) {
         return false;
     }
 
@@ -676,12 +676,12 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash///")
+    if (b_trash_item && destDirUri != "trash:///")
         return false;
 
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
-    if (destDirUri == "trash:///") {
+    if (destDirUri.startsWith("trash:///")) {
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {

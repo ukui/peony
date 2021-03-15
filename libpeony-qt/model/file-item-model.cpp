@@ -489,7 +489,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))
     //fix drag file to folder symbolic fail issue
-    if (! info->isDir())
+    if (! info->isDir() && ! destDirUri.startsWith("trash:///"))
         return false;
 
     //NOTE:
@@ -534,10 +534,17 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash///")
+    if (b_trash_item && destDirUri != "trash:///")
         return false;
 
-    qDebug() << "dropMimeData:" <<action;
+    //fix drag file to trash issue, #42328
+    if (destDirUri.startsWith("trash:///"))
+    {
+        FileOperationUtils::trash(srcUris, true);
+        return true;
+    }
+
+    qDebug() << "dropMimeData:" <<action<<destDirUri;
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
     switch (action) {
