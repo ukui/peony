@@ -134,7 +134,7 @@ void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QSt
 {
     m_uri = uri;
     QUrl url = m_uri;
-    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.toDisplayString()), Qt::ElideMiddle,TARGET_LABEL_WIDTH));
+    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.path()), Qt::ElideMiddle,TARGET_LABEL_WIDTH));
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
