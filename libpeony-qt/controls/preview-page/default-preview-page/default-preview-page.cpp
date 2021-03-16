@@ -221,16 +221,9 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     QLocale locale;
     auto access = QDateTime::fromMSecsSinceEpoch(info->accessTime()*1000);
     auto modify = QDateTime::fromMSecsSinceEpoch(info->modifiedTime()*1000);
-    if (locale.language() == QLocale::Chinese)
-    {
-        m_time_access_label->setText(access.toString(Qt::SystemLocaleShortDate));
-        m_time_modified_label->setText(modify.toString(Qt::SystemLocaleShortDate));
-    }
-    else
-    {
-        m_time_access_label->setText(access.toString(Qt::ISODate));
-        m_time_modified_label->setText(modify.toString(Qt::ISODate));
-    }
+
+    m_time_access_label->setText(access.toString(Qt::SystemLocaleShortDate));
+    m_time_modified_label->setText(modify.toString(Qt::SystemLocaleShortDate));
 
     m_file_count_label->setText(tr(""));
     if (info->isDir()) {
