@@ -308,6 +308,7 @@ void ListView::mouseDoubleClickEvent(QMouseEvent *event)
 void ListView::dragEnterEvent(QDragEnterEvent *e)
 {
     m_editValid = false;
+    m_isLeftButtonPressed = false;
     qDebug()<<"dragEnterEvent()";
     //QTreeView::dragEnterEvent(e);
     if (e->keyboardModifiers() && Qt::ControlModifier)
