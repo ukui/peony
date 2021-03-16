@@ -1,3 +1,9 @@
+peony (3.0.3-2+0316) v101; urgency=medium
+
+  * Fix: it will show rubberBand, after drag some item in lsit mode #42628
+
+ -- wangweinan <wangweinan@kylinos.cn>  Tue, 16 Mar 2021 09:29:31 +0800
+
 peony (3.0.3-2+0315) v101; urgency=medium
 
   * Fix: add log for black screen;
