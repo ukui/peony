@@ -222,41 +222,84 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
         // check if there are items overlapped.
         QTimer::singleShot(150, this, [=](){
+            if (!initialized) {
+                initialized = true;
+
+                if (!QGSettings::isSchemaInstalled(PANEL_SETTINGS))
+                    return;
+                //panel
+                QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+                int position = panelSetting->get("panelposition").toInt();
+                int margins = panelSetting->get("panelsize").toInt();
+                switch (position) {
+                case 1: {
+                    setViewportMargins(0, margins, 0, 0);
+                    break;
+                }
+                case 2: {
+                    setViewportMargins(margins, 0, 0, 0);
+                    break;
+                }
+                case 3: {
+                    setViewportMargins(0, 0, margins, 0);
+                    break;
+                }
+                default: {
+                    setViewportMargins(0, 0, 0, margins);
+                    break;
+                }
+                }
+                resolutionChange();
+            }
+
             if (isItemsOverlapped()) {
                 // refresh again?
                 //this->refresh();
+                QStringList needRelayoutItems;
+                QRegion notEmptyRegion;
+                for (auto value : m_item_rect_hash.values()) {
+                    auto keys = m_item_rect_hash.keys(value);
+                    if (keys.count() > 1) {
+                        keys.pop_front();
+                        for (auto key : keys) {
+                            needRelayoutItems.append(key);
+                            m_item_rect_hash.remove(key);
+                        }
+                    }
+                    notEmptyRegion += value;
+                }
+
+                int posX = 0;
+                int posY = 0;
+                int gridWidth = gridSize().width();
+                int gridHeight = gridSize().height();
+                for (auto item : needRelayoutItems) {
+                    QRect itemRect = QRect(posX, posY, gridWidth, gridHeight);
+                    while (notEmptyRegion.contains(itemRect.center())) {
+                        if (posY + 2*gridHeight > this->viewport()->height()) {
+                            posY = 0;
+                            posX += gridWidth;
+                        } else {
+                            posY += gridHeight;
+                        }
+                        if (this->viewport()->geometry().contains(itemRect.topLeft())) {
+                            itemRect.moveTo(posX, posY);
+                        } else {
+                            itemRect.moveTo(0, 0);
+                        }
+                    }
+                    notEmptyRegion += itemRect;
+                    m_item_rect_hash.insert(item, itemRect);
+                }
+                for (auto uri : m_item_rect_hash.keys()) {
+                    auto rect = m_item_rect_hash.value(uri);
+                    updateItemPosByUri(uri, rect.topLeft());
+                    setFileMetaInfoPos(uri, rect.topLeft());
+                }
+                this->saveAllItemPosistionInfos();
             }
         });
 
-        if (!initialized) {
-            initialized = true;
-
-            if (!QGSettings::isSchemaInstalled(PANEL_SETTINGS))
-                return;
-            //panel
-            QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
-            int position = panelSetting->get("panelposition").toInt();
-            int margins = panelSetting->get("panelsize").toInt();
-            switch (position) {
-            case 1: {
-                setViewportMargins(0, margins, 0, 0);
-                break;
-            }
-            case 2: {
-                setViewportMargins(margins, 0, 0, 0);
-                break;
-            }
-            case 3: {
-                setViewportMargins(0, 0, margins, 0);
-                break;
-            }
-            default: {
-                setViewportMargins(0, 0, 0, margins);
-                break;
-            }
-            }
-            resolutionChange();
-        }
         return;
     });
 
@@ -349,7 +392,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 }
                 }
             }
-            resolutionChange();
+            if (initialized)
+                resolutionChange();
         });
     }
 }
@@ -1194,7 +1238,8 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
     QListView::resizeEvent(e);
     //refresh();
 
-    resolutionChange();
+    if (initialized)
+        resolutionChange();
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
