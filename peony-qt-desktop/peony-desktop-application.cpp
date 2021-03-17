@@ -391,6 +391,9 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
                     auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
                     virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+                    for (auto window : m_window_list) {
+                        window->ensureGeometry();
+                    }
                     getIconView()->setGeometry(x, y, width, height);
                 });
                 screensMonitor->start();
@@ -444,6 +447,14 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
         connect(screen, &QScreen::geometryChanged, this, [=](){
             auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
             virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+            for (auto window : m_window_list) {
+                window->ensureGeometry();
+            }
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            getIconView()->setGeometry(x, y, width, height);
         });
     } else {
         return;
@@ -513,6 +524,8 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
             m_window_list.removeOne(win);
 //            win->setCentralWidget(nullptr);
             win->deleteLater();
+        } else {
+            win->ensureGeometry();
         }
     }
 }
