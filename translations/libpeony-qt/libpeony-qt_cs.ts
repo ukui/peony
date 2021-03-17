@@ -2105,7 +2105,7 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="108"/>
-        <source>Can not trash %1, would you like to delete this file permanently?</source>
+        <source>Can not trash this file, would you like to delete it permanently?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -2311,8 +2311,12 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="108"/>
+        <source>Can not trash this file, would you like to delete it permanently?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Can not trash %1, would you like to delete this file permanently?</source>
-        <translation>%1 çöp kutusuna atılamıyor, bu dosyayı kalıcı olarak silmek ister misiniz?</translation>
+        <translation type="vanished">%1 çöp kutusuna atılamıyor, bu dosyayı kalıcı olarak silmek ister misiniz?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="192"/>

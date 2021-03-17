@@ -105,7 +105,7 @@ retry:
                 if (err->code == G_IO_ERROR_NOT_SUPPORTED) {
                     except.dlgType = ED_NOT_SUPPORTED;
                     auto fileName = g_file_get_basename(srcFile.get()->get());
-                    except.errorStr = tr("Can not trash %1, would you like to delete this file permanently?").arg(fileName);
+                    except.errorStr = tr("Can not trash this file, would you like to delete it permanently?");
                     if (fileName) {
                         g_free(fileName);
                     }

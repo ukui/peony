@@ -9,32 +9,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="486"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="500"/>
         <source>New Folder</source>
         <translation type="unfinished">Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="566"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="580"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="717"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="731"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="718"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="732"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="733"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="747"/>
         <source>Open failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="734"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="748"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>

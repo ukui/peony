@@ -2320,8 +2320,12 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="108"/>
+        <source>Can not trash this file, would you like to delete it permanently?</source>
+        <translation>不能回收该文件, 是否要永久删除?</translation>
+    </message>
+    <message>
         <source>Can not trash %1, would you like to delete this file permanently?</source>
-        <translation>不能回收%1, 是否永久删除?</translation>
+        <translation type="vanished">不能回收%1, 是否永久删除?</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="192"/>
