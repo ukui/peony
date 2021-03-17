@@ -49,7 +49,10 @@ public:
     QString getIP();
 
 private:
+    void syncUri();
     void setUri(QString uri);
+    void addUri (QString uri);
+    void removeUri (QString uri);
 
 private:
     float           m_widget_margin         = 24;

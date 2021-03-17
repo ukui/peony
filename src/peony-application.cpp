@@ -158,12 +158,15 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
             auto dir = g_get_current_dir();
             args<<"peony"<<dir;
             g_free(dir);
-            auto message = args.join(' ').toUtf8();
+            auto message = getUriMessage(args, false).toUtf8(); //args.join("{]").toUtf8();
             sendMessage(message);
             return;
         }
         parser.process(arguments());
-        auto message = this->arguments().join(' ').toUtf8();
+        QStringList allArgs = arguments();
+        QStringList positionArgs = parser.positionalArguments();
+        QStringList optArgs = (QSet<QString>::fromList(allArgs) - QSet<QString>::fromList(positionArgs)).toList();
+        auto message = (getUriMessage(optArgs, false) + ' ' + getUriMessage(positionArgs, true)).toUtf8(); //this->arguments().join("{]").toUtf8();
         sendMessage(message);
         return;
     }
@@ -173,7 +176,12 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     }
 
     //parse cmd
-    auto message = this->arguments().join(' ').toUtf8();
+    parser.process(arguments());
+    QStringList allArgs = arguments();
+    QStringList positionArgs = parser.positionalArguments();
+    QStringList optArgs = (QSet<QString>::fromList(allArgs) - QSet<QString>::fromList(positionArgs)).toList();
+    auto message = (getUriMessage(optArgs, false) + ' ' + getUriMessage(positionArgs, true)).toUtf8();
+
     parseCmd(this->instanceId(), message);
 
     auto testIcon = QIcon::fromTheme("folder");
@@ -267,6 +275,34 @@ void PeonyApplication::unmountAllFtpLinks()
                                                 this);
         g_object_unref(file);
     }
+}
+
+static QString uriFormat (QString path)
+{
+    return QUrl(path).url(QUrl::FullyEncoded);
+}
+
+QString PeonyApplication::getUriMessage(QStringList& strList, bool positionOp)
+{
+    QStringList args;
+
+    if (positionOp) {
+        for (auto uri = strList.constBegin(); uri != strList.constEnd(); ++uri) {
+            if ((*uri).startsWith("--") || (*uri).startsWith("%")) {
+                args << *uri;
+            } else if ((*uri).startsWith("/")) {
+                args << uriFormat("file://" + *uri);
+            } else if ((*uri).contains("://")) {
+                args << uriFormat(*uri);
+            } else {
+                args << uriFormat(QString("file://%1/%2").arg(g_get_current_dir()).arg(*uri));
+            }
+        }
+    } else {
+        args = strList;
+    }
+
+    return args.join(' ');
 }
 
 void PeonyApplication::parseCmd(quint32 id, QByteArray msg)

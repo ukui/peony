@@ -56,6 +56,9 @@ public Q_SLOTS:
     //unmount all ftp links
     void unmountAllFtpLinks();
 
+private:
+    QString getUriMessage (QStringList&, bool positionOp);
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
 
