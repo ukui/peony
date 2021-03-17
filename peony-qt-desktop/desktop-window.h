@@ -83,8 +83,6 @@ public Q_SLOTS:
     void connectSignal();
     void disconnectSignal();
 
-    void ensureGeometry();
-
 protected:
     void paintEvent(QPaintEvent *e);
 

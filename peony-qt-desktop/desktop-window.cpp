@@ -453,11 +453,6 @@ void DesktopWindow::disconnectSignal() {
     }
 }
 
-void DesktopWindow::ensureGeometry()
-{
-    setGeometry(m_screen->geometry());
-}
-
 void DesktopWindow::scaleBg(const QRect &geometry) {
     if (this->geometry() == geometry)
         return;
