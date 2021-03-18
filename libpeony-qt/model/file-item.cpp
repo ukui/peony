@@ -693,17 +693,16 @@ bool FileItem::shouldShow()
 
     //non computer path, no need check
     //to fix sftp IO stuck issue
-    if (! uri.startsWith("computer:///"))
+    if (! uri.startsWith("computer:///") || ! uri.endsWith(".drive"))
         return true;
 
+    //comment to not use this IO stuck API
     unixDevice = FileUtils::getUnixDevice(uri);
     displayName = FileUtils::getFileDisplayName(uri);
-
     if(displayName.isEmpty())
         return false;
-    if(!unixDevice.isEmpty() && !displayName.contains(":")){
-        if(uri.endsWith(".drive"))
-            return false;
+    if(!unixDevice.isEmpty() && ! displayName.contains(":")){
+        return false;
     }
     return true;
 }
