@@ -57,7 +57,7 @@ public Q_SLOTS:
     void unmountAllFtpLinks();
 
 private:
-    QString getUriMessage (QStringList&, bool positionOp);
+    QString getUriMessage (QStringList&);
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg);
