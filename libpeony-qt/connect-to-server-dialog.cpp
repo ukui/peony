@@ -120,61 +120,46 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     setLayout(m_main_layout);
 
     if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_IP)) {
-        m_favorite_uri = QSet<QString>::fromList(GlobalSettings::getInstance()->getValue(REMOTE_SERVER_IP).toStringList());
+        QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_IP).toStringList();
+        for (auto uri = uriList.constBegin(); uri != uriList.constEnd(); ++uri) {
+            QUrl url(*uri);
+            if ("" != *uri) {
+                QString urit = *uri == url.toDisplayString() ? *uri : url.toDisplayString();
+                QListWidgetItem* item = new QListWidgetItem;
+                item->setText(urit);
+                m_favorite_uri += urit;
+                m_favorite_list->addItem(item);
+                m_favorite_widgets.insert(urit, item);
+            }
+        }
+
+        syncUri();
     }
 
-    for (auto uri = m_favorite_uri.begin(); uri != m_favorite_uri.end(); ++uri) {
-        if ("" != *uri) {
-            QListWidgetItem* item = new QListWidgetItem;
-            item->setText(*uri);
-            m_favorite_list->addItem(item);
-        }
-    }
-
-    connect(m_btn_add, &QPushButton::clicked, [=] (bool checked) {
-        if (!m_favorite_uri.contains(uri())) {
-            m_favorite_uri.insert(uri());
-            GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.toList()));
-            GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
-
-            QListWidgetItem* item = new QListWidgetItem;
-            item->setText(uri());
-            m_favorite_list->addItem(item);
-            m_favorite_widgets.insert(uri(), item);
-            m_favorite_list->setCurrentItem(item);
-        }
+    connect(m_btn_add, &QPushButton::clicked, this, [=] (bool checked) {
+        addUri(uri());
 
         Q_UNUSED(checked);
     });
 
-    connect(m_btn_del, &QPushButton::clicked, [=] (bool checked) {
-        if (m_favorite_uri.contains(uri())) {
-            m_favorite_uri.remove(uri());
-            GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.toList()));
-            GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
-
-            QListWidgetItem* item = m_favorite_widgets[uri()];
-            m_favorite_list->removeItemWidget(item);
-            m_favorite_widgets.remove(uri());
-            delete item;
-        }
-
+    connect(m_btn_del, &QPushButton::clicked, this, [=] (bool checked) {
+        removeUri(uri());
         if (m_favorite_uri.count() <= 0) {
             m_favorite_list->clear();
         } else {
+            setUri(*(m_favorite_uri.begin()));
             m_favorite_list->setCurrentItem(m_favorite_widgets[*(m_favorite_uri.begin())]);
         }
-
         m_favorite_list->update();
 
         Q_UNUSED(checked);
     });
 
-    connect(m_favorite_list, &QListWidget::itemClicked, [=] (QListWidgetItem *item) {
+    connect(m_favorite_list, &QListWidget::itemClicked, this, [=] (QListWidgetItem *item) {
         setUri(item->text());
     });
 
-    connect(m_btn_conn, &QPushButton::clicked, [=] (bool checked) {
+    connect(m_btn_conn, &QPushButton::clicked, this, [=] (bool checked) {
         if ("" != uri()) {
             accept();
         }
@@ -206,6 +191,12 @@ QString ConnectServerDialog::getIP()
     return m_ip_edit->text();
 }
 
+void ConnectServerDialog::syncUri()
+{
+    GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.values()));
+    GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
+}
+
 void ConnectServerDialog::setUri(QString uri)
 {
     QUrl        rl   = uri;
@@ -222,6 +213,52 @@ void ConnectServerDialog::setUri(QString uri)
     m_port_editor->setCurrentText(port);
 }
 
+void ConnectServerDialog::addUri(QString uri)
+{
+    bool canInsert = false;
+    QUrl url(uri);
+
+    // fixme:// fix
+    if (!m_favorite_uri.contains(uri) && !m_favorite_uri.contains(url.toDisplayString())) {
+        canInsert = true;
+    }
+
+    if (canInsert) {
+        m_favorite_uri.insert(url.toDisplayString());
+
+        QListWidgetItem* item = new QListWidgetItem;
+        item->setText(url.toDisplayString());
+        m_favorite_list->addItem(item);
+        m_favorite_widgets.insert(url.toDisplayString(), item);
+        m_favorite_list->setCurrentItem(item);
+
+        syncUri();
+    }
+}
+
+void ConnectServerDialog::removeUri(QString uri)
+{
+    QUrl url (uri);
+    QString removeUrl = uri;
+
+    if (m_favorite_uri.contains(uri)) {
+        removeUrl = uri;
+    } else if (m_favorite_uri.contains(url.toDisplayString())) {
+        removeUrl = url.toDisplayString();
+    }
+
+    if (m_favorite_uri.contains(removeUrl)) {
+        m_favorite_uri.remove(removeUrl);
+        syncUri();
+    }
+
+    if (m_favorite_widgets.contains(removeUrl)) {
+        QListWidgetItem* item = m_favorite_widgets[removeUrl];
+        m_favorite_list->removeItemWidget(item);
+        m_favorite_widgets.remove(removeUrl);
+        delete item;
+    }
+}
 
 ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDialog(parent)
 {
