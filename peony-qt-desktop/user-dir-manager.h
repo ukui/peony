@@ -32,6 +32,7 @@ private:
     QSettings *m_settings;
     bool m_do_not_thumbnail;
     bool m_allow_parallel;
+    bool m_showTrashDialog;
     int m_times = 5;
 
 };
