@@ -94,7 +94,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     m_renameTimer->setInterval(3000);
     m_editValid = false;
 
-    setUniformRowHeights(true);
+    //comment to fix icon size wrong lead to overlaped issue bug#42244
+    //may effect bug 33558
+    //setUniformRowHeights(true);
     setIconSize(QSize(40, 40));
     setMouseTracking(true);//追踪鼠标
 

@@ -66,9 +66,9 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
     auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-    if (index.column() == 0) {
+    auto colors = info->getColors();
+    if (index.column() == 0 && colors.count() >0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
-            auto colors = info->getColors();
             int xoffset = 5;
             int yoffset = 0;
             int index = 0;
