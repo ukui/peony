@@ -696,12 +696,16 @@ bool FileItem::shouldShow()
     if (! uri.startsWith("computer:///") || ! uri.endsWith(".drive"))
         return true;
 
-    //comment to not use this IO stuck API
-    unixDevice = FileUtils::getUnixDevice(uri);
     displayName = FileUtils::getFileDisplayName(uri);
     if(displayName.isEmpty())
         return false;
-    if(!unixDevice.isEmpty() && ! displayName.contains(":")){
+
+    if (displayName.contains(":"))
+        return true;
+
+    //if needed, comment to not use this IO stuck API
+    unixDevice = FileUtils::getUnixDevice(uri);
+    if(!unixDevice.isEmpty()){
         return false;
     }
     return true;
