@@ -163,7 +163,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //    });
 
     auto screens = qApp->screens();
-    connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
+        connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+    }
     connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
         m_screens[screen] = false;
         for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
@@ -178,19 +180,21 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         }
     });
 
-    connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
-        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-            if (it.value()) {
-                disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
+        connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
+            for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
+                if (it.value()) {
+                    disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+                }
+                m_screens[it.key()] = false;
             }
-            m_screens[it.key()] = false;
-        }
 
-        m_screens[screen] = true;
-        connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-        setGeometry(screen->geometry());
-//        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
-    });
+            m_screens[screen] = true;
+            connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+            setGeometry(screen->geometry());
+    //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
+        });
+    }
 
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
