@@ -26,6 +26,7 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     m_do_not_thumbnail = m_settings->value(FORBID_THUMBNAIL_IN_VIEW).toBool();
     m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
+    m_showTrashDialog = m_settings->value(SHOW_TRASH_DIALOG).toBool();
     m_user_dir_watcher = new QFileSystemWatcher(this);
 
     m_user_path = "/home/"+m_user_name;
@@ -88,6 +89,12 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
             {
                 m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
                 FileOperationManager::getInstance()->setAllowParallel(m_allow_parallel);
+            }
+            if(m_showTrashDialog != m_settings->value(SHOW_TRASH_DIALOG).toBool())
+            {
+                m_showTrashDialog = m_settings->value(SHOW_TRASH_DIALOG).toBool();
+                GlobalSettings::getInstance()->setValue("showTrashDialog", m_showTrashDialog);
+                GlobalSettings::getInstance()->forceSync("showTrashDialog");
             }
         }
         m_user_dir_watcher->addPath(uri);

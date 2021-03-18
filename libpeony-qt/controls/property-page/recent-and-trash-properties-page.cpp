@@ -146,4 +146,5 @@ void RecentAndTrashPropertiesPage::saveAllChange()
 {
     bool check = this->property("check").toBool();
     GlobalSettings::getInstance()->setValue("showTrashDialog", check);
+    GlobalSettings::getInstance()->forceSync("showTrashDialog");
 }
