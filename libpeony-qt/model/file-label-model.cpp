@@ -167,6 +167,8 @@ void FileLabelModel::removeLabel(int id)
     m_label_settings->endArray();
     m_label_settings->sync();
 
+    Q_EMIT dataChanged(QModelIndex(), QModelIndex());
+
     endResetModel();
 }
 
