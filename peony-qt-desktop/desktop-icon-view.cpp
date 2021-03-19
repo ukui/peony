@@ -1845,7 +1845,7 @@ void DesktopIconView::startDrag(Qt::DropActions supportedActions)
         }
 
         drag->setPixmap(pixmap);
-        drag->setHotSpot(pos - rect.boundingRect().topLeft());
+        drag->setHotSpot(pos - rect.boundingRect().topLeft() - QPoint(viewportMargins().left(), viewportMargins().top()));
         drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
         drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
 
