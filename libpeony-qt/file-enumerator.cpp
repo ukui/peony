@@ -133,18 +133,6 @@ void FileEnumerator::setEnumerateDirectory(QString uri)
     m_root_file = vfsMgr->newVFSFile(uri);
 #endif
 
-    // Special characters may cause a GFile creation to fail
-    if (!g_file_query_exists(m_root_file, nullptr)) {
-        char* name = g_uri_escape_string (uri.toUtf8().data(), G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
-        if (m_root_file) g_object_unref (m_root_file);
-#if GLIB_CHECK_VERSION(2, 50, 0)
-        m_root_file = g_file_new_for_uri(name);
-#else
-        auto vfsMgr = VFSPluginManager::getInstance();
-        m_root_file = vfsMgr->newVFSFile(name);
-#endif
-        if (name) g_free (name);
-    }
 }
 
 void FileEnumerator::setEnumerateDirectory(GFile *file)
