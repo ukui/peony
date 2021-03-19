@@ -697,7 +697,7 @@ void DesktopIconView::resolutionChange()
         QRegion notEmptyRegion;
         QList<QPair<QRect, QString>> needChanged;
         for (auto pair : newPosition) {
-            if (!screenRect.contains(pair.first.center())) {
+            if (!screenRect.contains(pair.first)) {
                 needChanged.append(pair);
                 m_item_rect_hash.remove(pair.second);
             } else {
