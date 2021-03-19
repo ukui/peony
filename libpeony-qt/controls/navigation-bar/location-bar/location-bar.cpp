@@ -374,11 +374,11 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         FMWindowIface *windowIface = dynamic_cast<FMWindowIface *>(this->topLevelWidget());
         auto copy = menu.addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy Directory"));
 
-        menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
+        menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New Tab"), [=](){
             windowIface->addNewTabs(QStringList()<<uri);
         });
 
-        menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
+        menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In New Window"), [=](){
             auto newWindow = windowIface->create(uri);
             dynamic_cast<QWidget *>(newWindow)->show();
         });

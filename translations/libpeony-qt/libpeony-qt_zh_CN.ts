@@ -810,52 +810,52 @@
 <context>
     <name>Peony::ConnectServerLogin</name>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="230"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="267"/>
         <source>The login user</source>
         <translation>登录身份</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="239"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="276"/>
         <source>Please enter the %1&apos;s user name and password of the server.</source>
         <translation>请输入服务器 %1 的用户名和密码。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="248"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="285"/>
         <source>User&apos;s identity</source>
         <translation>连接身份</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="249"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="286"/>
         <source>guest</source>
         <translation>游客（匿名登录）</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="250"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="287"/>
         <source>Registered users</source>
         <translation>注册用户</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="266"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="303"/>
         <source>name</source>
         <translation>用户名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="267"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="304"/>
         <source>password</source>
         <translation>密码</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="268"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="305"/>
         <source>Remember the password</source>
         <translation>记住密码</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="288"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="325"/>
         <source>cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="289"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="326"/>
         <source>ok</source>
         <translation>连接</translation>
     </message>
@@ -2253,12 +2253,12 @@ Do you want to delete the link file?</source>
         <translation>图片格式：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="250"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="243"/>
         <source>%1x%2</source>
         <translation>%1x%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="300"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="293"/>
         <source>%1 total, %2 hidden</source>
         <translation>共%1项，其中%2个隐藏文件</translation>
     </message>
@@ -2402,13 +2402,21 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="377"/>
-        <source>Open In New &amp;Tab</source>
-        <translation>在新标签页中打开(&amp;T)</translation>
+        <source>Open In New Tab</source>
+        <translation>在新标签页中打开</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="381"/>
+        <source>Open In New Window</source>
+        <translation>在新窗口中打开</translation>
+    </message>
+    <message>
+        <source>Open In New &amp;Tab</source>
+        <translation type="vanished">在新标签页中打开(&amp;T)</translation>
+    </message>
+    <message>
         <source>Open In &amp;New Window</source>
-        <translation>在新窗口中打开(&amp;N)</translation>
+        <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
         <source>Copy Directory</source>
@@ -2682,19 +2690,19 @@ Do you want to delete the link file?</source>
         <translation>删除到回收站时弹出确认框。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="111"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="117"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="109"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="115"/>
         <source>Origin Path: </source>
         <translation>原路径: </translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="132"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="130"/>
         <source>Size: </source>
         <translation>文件大小: </translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="126"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="133"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="124"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="131"/>
         <source>Original Location: </source>
         <translation>原路径: </translation>
     </message>
@@ -2817,18 +2825,30 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="79"/>
-        <source>&amp;Delete Symbolic</source>
-        <translation>删除(&amp;D)</translation>
+        <source>Delete Symbolic</source>
+        <translation>删除</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="123"/>
-        <source>&amp;Unmount</source>
-        <translation>卸载(&amp;U)</translation>
+        <source>Unmount</source>
+        <translation>卸载</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="140"/>
+        <source>Eject</source>
+        <translation>弹出</translation>
+    </message>
+    <message>
+        <source>&amp;Delete Symbolic</source>
+        <translation type="vanished">删除(&amp;D)</translation>
+    </message>
+    <message>
+        <source>&amp;Unmount</source>
+        <translation type="vanished">卸载(&amp;U)</translation>
+    </message>
+    <message>
         <source>&amp;Eject</source>
-        <translation>弹出(&amp;E)</translation>
+        <translation type="vanished">弹出(&amp;E)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="175"/>
@@ -2889,14 +2909,12 @@ Do you want to delete the link file?</source>
         <translation type="vanished">在新窗口中打开(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="71"/>
         <source>Open in &amp;New window</source>
-        <translation>在新窗口中打开(&amp;N)</translation>
+        <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="73"/>
         <source>Open in new &amp;Tab</source>
-        <translation>在新标签页中打开(&amp;T)</translation>
+        <translation type="vanished">在新标签页中打开(&amp;T)</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="137"/>
@@ -2922,6 +2940,16 @@ Do you want to delete the link file?</source>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="142"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="71"/>
+        <source>Open in New window</source>
+        <translation>在新窗口中打开</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="73"/>
+        <source>Open in new Tab</source>
+        <translation>在新标签页中打开</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="154"/>

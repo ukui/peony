@@ -226,9 +226,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">所有标记...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
         <source>Open In &amp;New Window</source>
-        <translation>在新窗口中打开(&amp;N)</translation>
+        <translation type="vanished">在新窗口中打开(&amp;N)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
+        <source>Open In New Window</source>
+        <translation>在新窗口中打开</translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="184"/>
@@ -238,8 +242,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
+        <source>Open In New Tab</source>
+        <translation>在新标签页中打开</translation>
+    </message>
+    <message>
         <source>Open In New &amp;Tab</source>
-        <translation>在新标签页中打开(&amp;T)</translation>
+        <translation type="vanished">在新标签页中打开(&amp;T)</translation>
     </message>
 </context>
 <context>
@@ -350,12 +358,12 @@ p, li { white-space: pre-wrap; }
         <translation>[文件1，文件2...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -368,12 +376,12 @@ p, li { white-space: pre-wrap; }
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="404"/>
+        <location filename="../../src/peony-application.cpp" line="432"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="405"/>
+        <location filename="../../src/peony-application.cpp" line="433"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -434,22 +442,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 版权所有(C): 2019-2020,天津麒麟信息技术有限公司.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="64"/>
+        <location filename="../../src/peony-application.h" line="67"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>关闭所有窗口并退出</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="65"/>
+        <location filename="../../src/peony-application.h" line="68"/>
         <source>Show items</source>
         <translation>打开文件所在目录并选中它们</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="66"/>
+        <location filename="../../src/peony-application.h" line="69"/>
         <source>Show folders</source>
         <translation>显示文件夹下的内容</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="67"/>
+        <location filename="../../src/peony-application.h" line="70"/>
         <source>Show properties</source>
         <translation>打开文件属性窗口</translation>
     </message>

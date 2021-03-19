@@ -214,9 +214,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
         <source>Open In &amp;New Window</source>
-        <translation type="unfinished">Yeni Pencerede Aç</translation>
+        <translation type="obsolete">Yeni Pencerede Aç</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
+        <source>Open In New Window</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="184"/>
@@ -226,8 +230,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
+        <source>Open In New Tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Open In New &amp;Tab</source>
-        <translation type="unfinished">Yeni Sekmede Aç</translation>
+        <translation type="obsolete">Yeni Sekmede Aç</translation>
     </message>
 </context>
 <context>
@@ -338,12 +346,12 @@ p, li { white-space: pre-wrap; }
         <translation>[DOSYA1, DOSYA2,...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Warning</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -356,12 +364,12 @@ p, li { white-space: pre-wrap; }
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="404"/>
+        <location filename="../../src/peony-application.cpp" line="432"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="405"/>
+        <location filename="../../src/peony-application.cpp" line="433"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -422,22 +430,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="64"/>
+        <location filename="../../src/peony-application.h" line="67"/>
         <source>Close all peony-qt windows and quit</source>
         <translation>Tüm peony-qt pencerelerini kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="65"/>
+        <location filename="../../src/peony-application.h" line="68"/>
         <source>Show items</source>
         <translation>Öğeleri göster</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="66"/>
+        <location filename="../../src/peony-application.h" line="69"/>
         <source>Show folders</source>
         <translation>Klasörleri göster</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="67"/>
+        <location filename="../../src/peony-application.h" line="70"/>
         <source>Show properties</source>
         <translation>Seçenekleri göster</translation>
     </message>

@@ -766,52 +766,52 @@
 <context>
     <name>Peony::ConnectServerLogin</name>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="230"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="267"/>
         <source>The login user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="239"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="276"/>
         <source>Please enter the %1&apos;s user name and password of the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="248"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="285"/>
         <source>User&apos;s identity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="249"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="286"/>
         <source>guest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="250"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="287"/>
         <source>Registered users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="266"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="303"/>
         <source>name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="267"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="304"/>
         <source>password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="268"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="305"/>
         <source>Remember the password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="288"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="325"/>
         <source>cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="289"/>
+        <location filename="../../libpeony-qt/connect-to-server-dialog.cpp" line="326"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2061,12 +2061,12 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="250"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="243"/>
         <source>%1x%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="300"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="293"/>
         <source>%1 total, %2 hidden</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2179,12 +2179,12 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="377"/>
-        <source>Open In New &amp;Tab</source>
+        <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="381"/>
-        <source>Open In &amp;New Window</source>
+        <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2427,19 +2427,19 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="111"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="117"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="109"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="115"/>
         <source>Origin Path: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="132"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="130"/>
         <source>Size: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="126"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="133"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="124"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="131"/>
         <source>Original Location: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2558,17 +2558,17 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="79"/>
-        <source>&amp;Delete Symbolic</source>
+        <source>Delete Symbolic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="123"/>
-        <source>&amp;Unmount</source>
+        <source>Unmount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="140"/>
-        <source>&amp;Eject</source>
+        <source>Eject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2630,16 +2630,6 @@ Do you want to delete the link file?</source>
         <translation type="vanished">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="71"/>
-        <source>Open in &amp;New window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="73"/>
-        <source>Open in new &amp;Tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="137"/>
         <source>Sort Type</source>
         <translation type="unfinished"></translation>
@@ -2662,6 +2652,16 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="142"/>
         <source>Modified Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="71"/>
+        <source>Open in New window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/tool-bar.cpp" line="73"/>
+        <source>Open in new Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
