@@ -87,8 +87,6 @@ void RecentAndTrashPropertiesPage::init()
             m_layout->addWidget(checkbox);
             connect(checkbox, &QCheckBox::toggled, this, [=](bool checked){
                 this->setProperty("check", checked);
-                //fix bug 41657
-                GlobalSettings::getInstance()->setValue("showTrashDialog", checked);
             });
             auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
             if (value.isValid()) {
@@ -146,4 +144,5 @@ void RecentAndTrashPropertiesPage::saveAllChange()
 {
     bool check = this->property("check").toBool();
     GlobalSettings::getInstance()->setValue("showTrashDialog", check);
+    GlobalSettings::getInstance()->forceSync("showTrashDialog");
 }
