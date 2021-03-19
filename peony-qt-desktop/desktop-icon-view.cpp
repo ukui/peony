@@ -273,10 +273,21 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                     notEmptyRegion += value;
                 }
 
-                int posX = 0;
-                int posY = 0;
                 int gridWidth = gridSize().width();
                 int gridHeight = gridSize().height();
+                // aligin exsited rect
+                int marginTop = notEmptyRegion.boundingRect().top();
+                while (marginTop - gridHeight > 0) {
+                    marginTop -= gridHeight;
+                }
+                int marginLeft = notEmptyRegion.boundingRect().left();
+                while (marginLeft - gridWidth > 0) {
+                    marginLeft -= gridWidth;
+                }
+                marginLeft = marginLeft < 0? 0: marginLeft;
+                marginTop = marginTop < 0? 0: marginTop;
+                int posX = marginLeft;
+                int posY = marginTop;
                 for (auto item : needRelayoutItems) {
                     QRect itemRect = QRect(posX, posY, gridWidth, gridHeight);
                     while (notEmptyRegion.contains(itemRect.center())) {
@@ -705,9 +716,22 @@ void DesktopIconView::resolutionChange()
             }
         }
 
+        // aligin exsited rect
+        int marginTop = notEmptyRegion.boundingRect().top();
+        while (marginTop - iconHeigth > 0) {
+            marginTop -= iconHeigth;
+        }
+        int marginLeft = notEmptyRegion.boundingRect().left();
+        while (marginLeft - iconWidth > 0) {
+            marginLeft -= iconWidth;
+        }
+        marginTop = marginTop < 0? 0: marginTop;
+        marginLeft = marginLeft < 0? 0: marginLeft;
+
         if (!needChanged.isEmpty()) {
-            int posX = 0;
-            int posY = 0;
+            int posX = marginLeft;
+            int posY = marginTop;
+
             for (int i = 0; i < needChanged.count(); i++) {
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + 2 * iconHeigth > screenSize.height()) {
@@ -735,8 +759,8 @@ void DesktopIconView::resolutionChange()
             if (!needChanged.isEmpty())
                 needChanged.removeFirst();
 
-            int posX = 0;
-            int posY = 0;
+            int posX = marginLeft;
+            int posY = marginTop;
             for (int i = 0; i < needChanged.count(); i++) {
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + iconHeigth * 2 > screenSize.height()) {
@@ -1331,6 +1355,8 @@ void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
     while (marginLeft - grid.width() > 0) {
         marginLeft -= grid.width();
     }
+    marginLeft = marginLeft < 0? 0: marginLeft;
+    marginTop = marginTop < 0? 0: marginTop;
 
     for (auto uri : uris) {
         auto indexRect = QRect(QPoint(marginLeft, marginTop), m_item_rect_hash.values().first().size());
@@ -1650,25 +1676,26 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             QListView::dropEvent(e);
         }
 
+        QRegion dirtyRegion;
         QHash<QModelIndex, QRect> currentIndexesRects;
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
             auto tmp = m_proxy_model->index(i, 0);
             currentIndexesRects.insert(tmp, QListView::visualRect(tmp));
+            if (!m_drag_indexes.contains(tmp)) {
+                dirtyRegion += QListView::visualRect(tmp);
+            }
         }
 
         //fixme: handle overlapping.
         if (!m_drag_indexes.isEmpty()) {
             QModelIndexList overlappedIndexes;
             QModelIndexList unoverlappedIndexes = m_drag_indexes;
-            for (auto value : currentIndexesRects.values()) {
-                auto keys = currentIndexesRects.keys(value);
-                if (keys.count() > 1) {
-                    for (auto key : keys) {
-                        if (m_drag_indexes.contains(key) && !overlappedIndexes.contains(key)) {
-                            overlappedIndexes<<key;
-                            unoverlappedIndexes.removeOne(key);
-                        }
-                    }
+
+            for (auto index : unoverlappedIndexes) {
+                QRect visualRect = QListView::visualRect(index);
+                if (dirtyRegion.contains(visualRect.center())) {
+                    unoverlappedIndexes.removeOne(index);
+                    overlappedIndexes.append(index);
                 }
             }
 
@@ -1680,7 +1707,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             }
 
             auto grid = this->gridSize();
-            auto viewRect = this->rect();
+            auto viewRect = this->viewport()->rect();
 
             QRegion notEmptyRegion;
             for (auto rect : currentIndexesRects) {
