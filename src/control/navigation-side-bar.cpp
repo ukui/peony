@@ -165,7 +165,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
             if (item->type() != Peony::SideBarAbstractItem::SeparatorItem) {
                 Peony::SideBarMenu menu(item, nullptr);
                 MainWindow *window = dynamic_cast<MainWindow *>(this->topLevelWidget());
-                menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
+                menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In New Window"), [=](){
                     auto enumerator = new Peony::FileEnumerator;
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();
@@ -199,7 +199,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->prepare();
                 });
 
-                menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
+                menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New Tab"), [=](){
                     auto enumerator = new Peony::FileEnumerator;
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();

@@ -76,7 +76,7 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
 const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
-    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete Symbolic"), [=]() {
+    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete Symbolic"), [=]() {
         BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
     if (!m_item->firstColumnIndex().parent().isValid()) {
@@ -120,7 +120,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     }
 
     if (info->canUnmount() || info->canMount()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
+        l<<addAction(QIcon::fromTheme("media-eject"), tr("Unmount"), [=]() {
             m_item->unmount();
         });
         bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
@@ -137,7 +137,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         l.last()->setEnabled(isMounted);
     }
     if (m_item->isRemoveable()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
+        l<<addAction(QIcon::fromTheme("media-eject"), tr("Eject"), [=](){
             m_item->eject(G_MOUNT_UNMOUNT_NONE);
         });
     }

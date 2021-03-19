@@ -199,7 +199,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
-        <source>Open In &amp;New Window</source>
+        <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
-        <source>Open In New &amp;Tab</source>
+        <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -322,12 +322,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="185"/>
+        <location filename="../../src/peony-application.cpp" line="188"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -336,12 +336,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="404"/>
+        <location filename="../../src/peony-application.cpp" line="432"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="405"/>
+        <location filename="../../src/peony-application.cpp" line="433"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -398,22 +398,22 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="64"/>
+        <location filename="../../src/peony-application.h" line="67"/>
         <source>Close all peony-qt windows and quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="65"/>
+        <location filename="../../src/peony-application.h" line="68"/>
         <source>Show items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="66"/>
+        <location filename="../../src/peony-application.h" line="69"/>
         <source>Show folders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.h" line="67"/>
+        <location filename="../../src/peony-application.h" line="70"/>
         <source>Show properties</source>
         <translation type="unfinished"></translation>
     </message>
