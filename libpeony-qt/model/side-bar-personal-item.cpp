@@ -43,38 +43,59 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
         //m_icon_name = "emblem-personal";
         //top dir don't show icon
         m_icon_name = "";
+        int count = 0;
 
         QString documentUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-        SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,
-                this,
-                m_model);
-        m_children->append(documentItem);
+        if(homeUri != documentUri)
+        {
+            SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,
+                                                                        this,
+                                                                        m_model);
+            m_children->append(documentItem);
+            count++;
+        }
 
         QString pictureUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-        SideBarPersonalItem *pictureItem = new SideBarPersonalItem(pictureUri,
-                this,
-                m_model);
-        m_children->append(pictureItem);
+        if(homeUri != pictureUri)
+        {
+            SideBarPersonalItem *pictureItem = new SideBarPersonalItem(pictureUri,
+                                                                       this,
+                                                                       m_model);
+            m_children->append(pictureItem);
+            count++;
+        }
 
         QString mediaUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-        SideBarPersonalItem *mediaItem = new SideBarPersonalItem(mediaUri,
-                this,
-                m_model);
-        m_children->append(mediaItem);
+        if(homeUri != mediaUri)
+        {
+            SideBarPersonalItem *mediaItem = new SideBarPersonalItem(mediaUri,
+                                                                     this,
+                                                                     m_model);
+            m_children->append(mediaItem);
+            count++;
+        }
 
         QString musicUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-        SideBarPersonalItem *musicItem = new SideBarPersonalItem(musicUri,
-                this,
-                m_model);
-        m_children->append(musicItem);
+        if(homeUri != musicUri)
+        {
+            SideBarPersonalItem *musicItem = new SideBarPersonalItem(musicUri,
+                                                                     this,
+                                                                     m_model);
+            m_children->append(musicItem);
+            count++;
+        }
 
         QString downloadUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        SideBarPersonalItem *downloadItem = new SideBarPersonalItem(downloadUri,
-                this,
-                m_model);
-        m_children->append(downloadItem);
+        if(homeUri != downloadUri)
+        {
+            SideBarPersonalItem *downloadItem = new SideBarPersonalItem(downloadUri,
+                                                                        this,
+                                                                        m_model);
+            m_children->append(downloadItem);
+            count++;
+        }
 
-        m_model->insertRows(0, 5, firstColumnIndex());
+        m_model->insertRows(0, count, firstColumnIndex());
 
         //! \brief Add monitor dir del
         this->initWatcher();
@@ -84,27 +105,14 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
             QString path = g_file_get_path(file);
             qDebug() << path;
             QString _uri = "file://" + path;
-            if (_uri == documentUri) {
-                m_model->removeRow(m_children->indexOf(documentItem), this->firstColumnIndex());
-                m_children->removeOne(documentItem);
+            for(SideBarAbstractItem* i : *m_children)
+            {
+                if(i->uri() == _uri )
+                {
+                    m_model->removeRow(m_children->indexOf(i), this->firstColumnIndex());
+                    m_children->removeOne(i);
+                }
             }
-            else if (_uri == pictureUri) {
-                m_model->removeRow(m_children->indexOf(pictureItem), this->firstColumnIndex());
-                m_children->removeOne(pictureItem);
-            }
-            else if (_uri == mediaUri) {
-                m_model->removeRow(m_children->indexOf(mediaItem), this->firstColumnIndex());
-                m_children->removeOne(mediaItem);
-            }
-            else if (_uri == downloadUri) {
-                m_model->removeRow(m_children->indexOf(downloadItem), this->firstColumnIndex());
-                m_children->removeOne(downloadItem);
-            }
-            else if (_uri == musicUri) {
-                m_model->removeRow(m_children->indexOf(musicItem), this->firstColumnIndex());
-                m_children->removeOne(musicItem);
-            }
-
             g_object_unref(file);
         });
 
