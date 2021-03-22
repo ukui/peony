@@ -304,6 +304,7 @@ void FileItem::findChildrenAsync()
                 //tell the model update
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
+                ThumbnailManager::getInstance()->releaseThumbnail(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -424,6 +425,7 @@ void FileItem::findChildrenAsync()
                 this->onChildRemoved(uri);
                 Q_EMIT this->childRemoved(uri);
                 qDebug() << "childRemoved:" <<uri;
+                ThumbnailManager::getInstance()->releaseThumbnail(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
