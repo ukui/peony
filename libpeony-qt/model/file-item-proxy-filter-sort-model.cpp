@@ -174,7 +174,7 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             return false;
         if (! checkFileModifyTimeFilter(item->m_info->modifiedTime()))
             return false;
-        if (! checkFileSizeFilter(item->m_info->size()))
+        if (! checkFileSizeOrTypeFilter(item->m_info->size(), item->m_info->isDir()))
             return false;
         if (! checkFileNameFilter(item->m_info->displayName()))
             return false;
@@ -457,6 +457,56 @@ bool FileItemProxyFilterSortModel::checkFileSizeFilter(quint64 size) const
     return false;
 }
 
+bool FileItemProxyFilterSortModel::checkFileSizeOrTypeFilter(quint64 size, bool isDir) const
+{
+
+    if (m_file_size_list.count() == 0 || m_file_size_list.contains(ALL_FILE))
+        return true;
+    else if(isDir)
+        return false;
+
+    for(int i=0; i<m_file_size_list.count(); i++)
+    {
+        auto cur = m_file_size_list[i];
+        switch (cur)
+        {
+        case TINY: //[0-16K)
+        {
+            if (size < 16 * K_BASE)
+                return true;
+            break;
+        }
+        case SMALL:  //[16k-1M]
+        {
+            if(size >= 16 * K_BASE && size <=K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case MEDIUM: //(1M-100M]
+        {
+            if(size > K_BASE * K_BASE && size <= 100 * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case BIG:  //(100M-1G]
+        {
+            if(size > 100 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case LARGE: //>1G
+        {
+            if (size > K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    return false;
+}
 
 void FileItemProxyFilterSortModel::update()
 {

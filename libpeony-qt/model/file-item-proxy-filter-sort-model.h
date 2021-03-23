@@ -116,6 +116,7 @@ private:
     bool checkFileTypeFilter(QString type) const;
     bool checkFileModifyTimeFilter(quint64 modifiedTime) const;
     bool checkFileSizeFilter(quint64 size) const;
+    bool checkFileSizeOrTypeFilter(quint64 sizem, bool isDir) const;
     bool checkFileNameFilter(const QString &displayName) const;
 
 private:
