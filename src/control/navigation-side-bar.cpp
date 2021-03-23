@@ -410,7 +410,7 @@ QSize NavigationSideBarContainer::sizeHint() const
     qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
     //fix width value abnormal issue
     if (width <= 0)
-        width = 195;
+        width = 210;
     size.setWidth(width);
     return size;
 }
