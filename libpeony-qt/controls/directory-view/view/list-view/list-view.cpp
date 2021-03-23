@@ -156,6 +156,13 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 void ListView::keyPressEvent(QKeyEvent *e)
 {
     QTreeView::keyPressEvent(e);
+    if(e->key() == Qt::Key_Down||e->key() == Qt::Key_Up)
+    {
+        QStringList selections = getSelections();
+        if(selections.size() == 1)
+            this->scrollToSelection(selections.at(0));
+    }
+
     if (e->key() == Qt::Key_Control)
         m_ctrl_key_pressed = true;
 }
