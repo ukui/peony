@@ -37,6 +37,7 @@ namespace Peony {
 class PEONYCORESHARED_EXPORT FileUtils
 {
 public:
+    static quint64 getCreateTime(const QString& uri);
     NO_BLOCKING static QString getQStringFromCString(char *c_string, bool free = true);
     NO_BLOCKING static QString getFileUri(const GFileWrapperPtr &file);
     NO_BLOCKING static QString getFileBaseName(const GFileWrapperPtr &file);

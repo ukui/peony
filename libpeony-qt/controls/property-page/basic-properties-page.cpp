@@ -347,8 +347,10 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     switch (fileType) {
     case BP_File:
     case BP_Application:
-        m_timeModifiedLabel = this->createFixedLabel(0,32,floor3);
         m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
+        m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
+        m_timeModifiedLabel = this->createFixedLabel(0,32,floor3);
+        layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
         break;
@@ -789,6 +791,13 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
                                                 nullptr);
             g_object_unref(file);
 
+            if(m_timeCreatedLabel) {
+                m_timeCreated = g_file_info_get_attribute_uint64(info,"time::created");
+                m_timeCreated = m_timeCreated != 0 ? m_timeCreated : FileUtils::getCreateTime(uri);
+                QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
+                QString time2 = date2.toString(m_systemTimeFormat);
+                m_timeCreatedLabel->setText(time2);
+            }
 
             if(m_timeModifiedLabel) {
                 m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
