@@ -113,7 +113,7 @@ void CreateTemplateOperation::run()
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
         GError *err = nullptr;
-        g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
+        GFileOutputStream *newFile = g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
             FileOperationError except;
             if (err->code == G_IO_ERROR_EXISTS) {
@@ -133,6 +133,8 @@ retry_create_empty_file:
                 Q_EMIT errored(except);
             }
         }
+        //fix bug 35145, function occupy udisk issue
+        g_object_unref(newFile);
         break;
     }
     case EmptyFolder: {
