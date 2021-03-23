@@ -340,15 +340,23 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         auto zoomLevel = desktopView->zoomLevel();
 
         auto smallAction = viewTypeSubMenu->addAction(tr("Small"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Small)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Small);
         });
         auto normalAction = viewTypeSubMenu->addAction(tr("Normal"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Normal)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Normal);
         });
         auto largeAction = viewTypeSubMenu->addAction(tr("Large"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Large)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Large);
         });
         auto hugeAction = viewTypeSubMenu->addAction(tr("Huge"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Huge)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Huge);
         });
 

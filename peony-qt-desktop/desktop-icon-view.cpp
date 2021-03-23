@@ -583,6 +583,8 @@ void DesktopIconView::initShoutCut()
     QAction *normalIconAction = new QAction(this);
     normalIconAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
     connect(normalIconAction, &QAction::triggered, [=]() {
+        if (this->zoomLevel() == DesktopIconView::Normal)
+            return;
         this->setDefaultZoomLevel(DesktopIconView::Normal);
     });
     addAction(normalIconAction);
