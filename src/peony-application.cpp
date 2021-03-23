@@ -359,6 +359,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 });
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             }
         }
 
@@ -375,6 +378,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             }
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
         if (parser.isSet(showPropertiesOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
@@ -386,6 +392,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
     } else {
         if (!parser.positionalArguments().isEmpty()) {
@@ -403,11 +412,17 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             } else {
                 auto window = new MainWindow();
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             }
         } else {
             auto window = new MainWindow;
@@ -415,6 +430,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
     }
 

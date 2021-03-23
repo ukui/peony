@@ -292,7 +292,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                     QRect itemRect = QRect(posX, posY, gridWidth, gridHeight);
                     while (notEmptyRegion.contains(itemRect.center())) {
                         if (posY + 2*gridHeight > this->viewport()->height()) {
-                            posY = 0;
+                            posY = marginTop;
                             posX += gridWidth;
                         } else {
                             posY += gridHeight;
@@ -735,7 +735,7 @@ void DesktopIconView::resolutionChange()
             for (int i = 0; i < needChanged.count(); i++) {
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + 2 * iconHeigth > screenSize.height()) {
-                        posY = 0;
+                        posY = marginTop;
                         posX += iconWidth;
                     } else {
                         posY += iconHeigth;
@@ -764,7 +764,7 @@ void DesktopIconView::resolutionChange()
             for (int i = 0; i < needChanged.count(); i++) {
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + iconHeigth * 2 > screenSize.height()) {
-                        posY = 0;
+                        posY = marginTop;
                         posX += iconWidth;
                     } else {
                         posY += iconHeigth;
