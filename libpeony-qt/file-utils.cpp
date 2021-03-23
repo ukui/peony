@@ -23,74 +23,22 @@
 #include "file-utils.h"
 #include "file-info.h"
 #include "volume-manager.h"
-
 #include <QUrl>
-#include <QDir>
-#include <QIcon>
-#include <fcntl.h>
-#include <unistd.h>
 #include <QFileInfo>
-#include <sys/stat.h>
+#include <QFileInfoList>
 #include <QTextCodec>
 #include <QByteArray>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <linux/stat.h>
-#include <QFileInfoList>
 #include <QStandardPaths>
+#include <QDir>
+#include <QIcon>
+#include <sys/stat.h>
 #include <udisks/udisks.h>
-#include <linux/version.h>
-
-
-
 
 using namespace Peony;
 
 FileUtils::FileUtils()
 {
 
-}
-
-quint64 FileUtils::getCreateTime(const QString &uri)
-{
-    quint64         createTime = 0;
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
-    int             fd = 0;
-    int             ret = 0;
-    struct statx    buf;
-    char*           basename = NULL;
-    char*           parentPath = NULL;
-    GFile*          gparent = NULL;
-    GFile*          gfile = g_file_new_for_uri (uri.toUtf8());
-
-    if (g_file_is_native(gfile)) {
-        basename = g_file_get_basename(gfile);
-        gparent = g_file_get_parent(gfile);
-        if (NULL != gparent) {
-            parentPath = g_file_get_path(gparent);
-        }
-    }
-
-    if (basename && parentPath) {
-        fd = open (parentPath, O_RDONLY);
-        if (fd < 0) {
-            goto end;
-        }
-        ret = statx (fd, basename, AT_SYMLINK_NOFOLLOW, STATX_ALL, &buf);
-        if (0 == ret) {
-            createTime = buf.stx_ctime.tv_sec;
-        }
-    }
-
-end:
-    if (basename)       g_free (basename);
-    if (parentPath)     g_free(parentPath);
-    if (gfile)          g_object_unref(gfile);
-    if (gparent)        g_object_unref (gparent);
-#endif
-
-    return createTime;
 }
 
 QString FileUtils::getQStringFromCString(char *c_string, bool free)
