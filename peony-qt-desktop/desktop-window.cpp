@@ -94,6 +94,8 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     : QMainWindow(parent) {
     initGSettings();
 
+    m_screen = screen;
+
     setWindowTitle(tr("Desktop"));
     m_opacity = new QVariantAnimation(this);
     m_opacity->setDuration(1000);
@@ -118,7 +120,8 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
 
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
-            PEONY_DESKTOP_LOG_WARN("value changed update view(%d %d %d %d)",
+            PEONY_DESKTOP_LOG_WARN("screen %s value changed update view(%d %d %d %d)",
+                                   m_screen->name().toUtf8().constData(),
                                    m_screen->geometry().top(), m_screen->geometry().left(),
                                    m_screen->geometry().height(), m_screen->geometry().width());
             if (PEONY_BOOT_START == m_boot_stage) {
@@ -137,9 +140,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
         m_last_pure_color = m_color_to_be_set;
     });
 
-    m_screen = screen;
-
-    //connect(m_screen, &QScreen::availableGeometryChanged, this, &DesktopWindow::updateView);
     connectSignal();
 
     m_is_primary = is_primary;
@@ -538,7 +538,7 @@ void DesktopWindow::setBg(const QString &path) {
         return;
     }
 
-    PEONY_DESKTOP_LOG_WARN("back picture path %s", path);
+    PEONY_DESKTOP_LOG_WARN("back picture path %s", path.toUtf8().constData());
     m_use_pure_color = false;
 
     m_bg_back_pixmap = m_bg_font_pixmap;
@@ -575,9 +575,12 @@ void DesktopWindow::setBg(const QString &path) {
 void DesktopWindow::setBg(const QColor &color)
 {
     m_color_to_be_set = color;
-    m_use_pure_color = true;
 
-    PEONY_DESKTOP_LOG_WARN("set screen %s color %d", m_screen->name(), m_color_to_be_set);
+    if (m_current_bg_path.isEmpty()) {
+        m_use_pure_color = true;
+    }
+
+    PEONY_DESKTOP_LOG_WARN("set screen %s color %d", m_screen->name().toUtf8().constData(), m_color_to_be_set);
     if(m_used_pure_color) {
         if (m_opacity->state() == QVariantAnimation::Running) {
             m_opacity->setCurrentTime(500);
