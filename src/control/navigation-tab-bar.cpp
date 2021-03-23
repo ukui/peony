@@ -263,12 +263,19 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
 {
     QTabBar::mousePressEvent(e);
     m_press_pos = e->pos();
-    m_start_drag = true;
+    if (tabAt(e->pos()) >= 0)
+        m_start_drag = true;
+    else
+        m_start_drag = false;
 }
 
 void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
 {
     QTabBar::mouseMoveEvent(e);
+
+    if (e->source() != Qt::MouseEventNotSynthesized) {
+        return;
+    }
 
     auto offset = e->pos() - m_press_pos;
     auto offsetX = qAbs(offset.x());
