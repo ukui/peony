@@ -105,12 +105,14 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
             QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString originPath = QUrl(selectionUris.first()).path();
             //special type mountable, or isVirtual then return
-            if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
-                || selectionUris.first().startsWith("trash:///")
-                || selectionUris.first().startsWith("recent:///")
-                || selectionUris.first().startsWith("mtp://")
-                || originPath.startsWith(desktopPath))
+            if (selectionUris.first().startsWith("computer:///")
+                    || info->isVirtual()
+                    || selectionUris.first().startsWith("trash:///")
+                    || selectionUris.first().startsWith("recent:///")
+                    || selectionUris.first().startsWith("mtp://")
+                    || originPath == desktopPath) {
                 return l;
+            }
 
             connect(createLinkToDesktop, &QAction::triggered, [=]() {
                 //QUrl src = selectionUris.first();
