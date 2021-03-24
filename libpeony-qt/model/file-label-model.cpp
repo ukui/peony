@@ -43,7 +43,7 @@ FileLabelModel::FileLabelModel(QObject *parent)
         addLabel(tr("Blue"), Qt::blue);
         addLabel(tr("Purple"), QColor("purple"));
         addLabel(tr("Gray"), Qt::gray);
-        addLabel(tr("Transparent"), Qt::transparent);
+        //addLabel(tr("Transparent"), Qt::transparent);
     } else {
         initLabelItems();
     }

@@ -82,9 +82,8 @@
         <translation>Gri</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
         <source>Transparent</source>
-        <translation>Şeffaf</translation>
+        <translation type="vanished">Şeffaf</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -92,13 +91,13 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="112"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="335"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="112"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="335"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Label or color is duplicated.</source>
         <translation>Etiket veya renk yinelendi.</translation>
     </message>
@@ -900,13 +899,13 @@
         <translation>Dosya oluştur</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="139"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="141"/>
         <source>NewFolder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="158"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="191"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="160"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="193"/>
         <source>Create file error</source>
         <translation>Dosya oluşturma hatası</translation>
     </message>
@@ -1549,7 +1548,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="514"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="502"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
@@ -3390,12 +3389,12 @@ Zorla ayrılmak ister misin?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="359"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="347"/>
         <source>permission denied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="365"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
         <source>file not found</source>
         <translation type="unfinished"></translation>
     </message>

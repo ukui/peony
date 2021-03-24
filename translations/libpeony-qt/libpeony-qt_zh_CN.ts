@@ -82,9 +82,8 @@
         <translation>灰色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
         <source>Transparent</source>
-        <translation>无颜色</translation>
+        <translation type="vanished">无颜色</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
@@ -92,13 +91,13 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="112"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="335"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-label-model.cpp" line="112"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="335"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Label or color is duplicated.</source>
         <translation>标签或者颜色重复</translation>
     </message>
@@ -901,13 +900,13 @@
         <translation>文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="139"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="141"/>
         <source>NewFolder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="158"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="191"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="160"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="193"/>
         <source>Create file error</source>
         <translation>创建文件错误</translation>
     </message>
@@ -1554,7 +1553,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="514"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="502"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -3399,12 +3398,12 @@ Do you want to unmount forcely?</source>
         <translation>操作设备前需要同步数据，请稍等！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="359"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="347"/>
         <source>permission denied</source>
         <translation>没有权限</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="365"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
         <source>file not found</source>
         <translation>没有发现该文件</translation>
     </message>
