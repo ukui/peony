@@ -336,12 +336,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="432"/>
+        <location filename="../../src/peony-application.cpp" line="450"/>
         <source>Peony Qt</source>
         <translation type="unfinished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="433"/>
+        <location filename="../../src/peony-application.cpp" line="451"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
