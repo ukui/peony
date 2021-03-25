@@ -243,7 +243,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     s->addWidget(m_stack);
     m_stack->installEventFilter(this);
-    s->addWidget(m_preview_page_container);
+    //s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
 
     s->setStretchFactor(0, 3);
@@ -268,8 +268,15 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     });
 
     connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=]() {
+        if (m_first_add_page) {
+            previewButtons->setEnabled(true);
+            s->addWidget(m_preview_page_container);
+            m_first_add_page = false;
+        }
         m_status_bar->update();
     });
+
+    previewButtons->setEnabled(false);
 }
 
 void TabWidget::initAdvanceSearch()
