@@ -35,6 +35,8 @@
 #include <QIcon>
 #include <QUrl>
 #include <QLocale>
+#include <QFileInfo>
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -245,8 +247,24 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     }
 
     info->m_size = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
-    info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-    info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
+    QString real_file_path;
+    QFileInfo real_file_info;
+    info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+    if(info->m_target_uri == "trash:///") { 
+        real_file_path = QStandardPaths::locate(QStandardPaths::HomeLocation, "/.local/share/Trash", QStandardPaths::LocateDirectory);
+        real_file_info.setFile(real_file_path);
+        char *rpath = real_file_path.toLatin1().data();
+    }else if(info->m_target_uri == "recent:///") {
+        real_file_path = QStandardPaths::locate(QStandardPaths::HomeLocation, "/.local/share/recently-used.xbel");
+        real_file_info.setFile(real_file_path);
+    }
+    if(real_file_path == "") {
+        info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+        info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
+    }else {
+        info->m_modified_time = real_file_info.fileTime(QFileDevice::FileModificationTime).toSecsSinceEpoch(); 
+        info->m_access_time = real_file_info.fileTime(QFileDevice::FileAccessTime).toSecsSinceEpoch(); 
+    }
 
     info->m_mime_type_string = info->m_content_type;
     if (!info->m_mime_type_string.isEmpty()) {
@@ -316,7 +334,6 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         g_object_unref(desktop_info);
     }
 
-    info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     info->m_symlink_target = g_file_info_get_symlink_target(new_info);
 
     Q_EMIT info->updated();
