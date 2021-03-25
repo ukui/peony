@@ -322,6 +322,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         if (parser.isSet(desktopOption)) {
             if (!has_desktop) {
                 virtualDesktopWindow = new QMainWindow;
+                virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
                 virtualDesktopWindow->setWindowFlag(Qt::FramelessWindowHint);
                 virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
                 //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
