@@ -1,10 +1,12 @@
-peony (3.0.3-2+0324) v101; urgency=medium
+peony (3.0.3-2+0325) v101; urgency=medium
 
   * Fix: the disktop is blue, when system boot. #37173
   * Fix: Key_up and Key_down can not make list view scroll to selection.
   * Fix: Side bar will display 'usr_xxxxx' if some user default path been removed.
-
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 24 Mar 2021 09:29:31 +0800
+  * Fix: the expand screen is black,when drag expand screen. #38140
+  * Fix: The Trash and Recent dates do not appear correctly after the Favorites interface switches to list view #41566
+ 
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 25 Mar 2021 09:29:31 +0800
 
 peony (3.0.3-2+0316) v101; urgency=medium
 
