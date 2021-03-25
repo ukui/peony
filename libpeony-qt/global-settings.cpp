@@ -52,23 +52,13 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     //if local languege is chinese, set chinese first as deafult
     if (QLocale::system().name().contains("zh") && !m_settings->allKeys().contains(SORT_CHINESE_FIRST))
         setValue(SORT_CHINESE_FIRST, true);
+
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
     }
 
-    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
-    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "peonySideBarTransparency") {
-                m_cache.remove(SIDEBAR_BG_OPACITY);
-                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
-            }
-        });
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
-    }
+    getUkuiStyle();
+    getDualScreenMode();
 
     if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull()) {
         setValue(DEFAULT_WINDOW_SIZE, QSize(1200, 675));
@@ -82,16 +72,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
         setValue(DEFAULT_VIEW_ZOOM_LEVEL, 70);
     }
-    if (QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode")) {
-        m_gsettings_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode", QByteArray(), this);
-        m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get("tablet-mode").toString());
-        connect(m_gsettings_tablet_mode, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "tabletMode") {
-                m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
-            }
-        });
-    }
+
+    getMachineMode();
 
     if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
         setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
@@ -111,6 +93,58 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 GlobalSettings::~GlobalSettings()
 {
 
+}
+
+void GlobalSettings::getUkuiStyle()
+{
+    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        m_cache.remove(SIDEBAR_BG_OPACITY);
+        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
+
+        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "peonySideBarTransparency") {
+                m_cache.remove(SIDEBAR_BG_OPACITY);
+                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
+    }
+}
+
+void GlobalSettings::getMachineMode()
+{
+    m_cache.insert(TABLET_MODE, "false");
+    if (QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode")) {
+        m_gsettings_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode", QByteArray(), this);
+        m_cache.remove(TABLET_MODE);
+        m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get("tablet-mode").toString());
+        connect(m_gsettings_tablet_mode, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "tabletMode") {
+                m_cache.remove(TABLET_MODE);
+                m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
+    }
+}
+
+void GlobalSettings::getDualScreenMode()
+{
+    m_cache.insert(DUAL_SCREEN_MODE, DUAL_SCREEN_EXPAND_MODE);
+    if(QGSettings::isSchemaInstalled(SETTINGS_DAEMON_SCHEMA_XRANDR)) {
+        m_gsettings_dual_screen_mode = new QGSettings(SETTINGS_DAEMON_SCHEMA_XRANDR, QByteArray(), this);
+        m_cache.remove(DUAL_SCREEN_MODE);
+        m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(DUAL_SCREEN_MODE).toString());
+        connect(m_gsettings_dual_screen_mode, &QGSettings::changed, this, [=](const QString &key){
+           if (key == DUAL_SCREEN_MODE) {
+               m_cache.remove(DUAL_SCREEN_MODE);
+               m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(key).toString());
+               qApp->paletteChanged(qApp->palette());
+           }
+        });
+    }
 }
 
 const QVariant GlobalSettings::getValue(const QString &key)

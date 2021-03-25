@@ -770,7 +770,9 @@ void DesktopWindow::updateScreenVisible()
             }
         } else {
             // if desktop is mirror mode the slave screen will hide, or show empty desktop.
-            if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
+            QString dualScreenMode = Peony::GlobalSettings::getInstance()->getValue(DUAL_SCREEN_MODE).toString();
+            PEONY_DESKTOP_LOG_WARN("dual screen mode %s", dualScreenMode.toUtf8().constData());
+            if (DUAL_SCREEN_MIRROR_MODE == dualScreenMode) {
                 PEONY_DESKTOP_LOG_WARN("update screen visible mirror hide");
                 hide();
             } else {

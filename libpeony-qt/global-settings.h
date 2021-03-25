@@ -56,6 +56,11 @@
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
+#define SETTINGS_DAEMON_SCHEMA_XRANDR        "org.ukui.SettingsDaemon.plugins.xrandr"
+#define DUAL_SCREEN_MODE                     "xrandrMirrorMode"
+#define DUAL_SCREEN_EXPAND_MODE              "expand"
+#define DUAL_SCREEN_MIRROR_MODE              "mirror"
+
 class QGSettings;
 
 namespace Peony {
@@ -99,11 +104,16 @@ private:
     explicit GlobalSettings(QObject *parent = nullptr);
     ~GlobalSettings();
 
+    void getUkuiStyle();
+    void getMachineMode();
+    void getDualScreenMode();
+
     QSettings *m_settings;
     QMap<QString, QVariant> m_cache;
 
     QGSettings *m_gsettings = nullptr;
-    QGSettings *m_gsettings_tablet_mode;
+    QGSettings *m_gsettings_tablet_mode = nullptr;
+    QGSettings *m_gsettings_dual_screen_mode = nullptr;
 
     QMutex m_mutex;
 };
