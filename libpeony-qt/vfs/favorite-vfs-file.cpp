@@ -62,6 +62,8 @@ GFileEnumerator*    vfs_favorite_file_enumerate_children_internal(GFile *file, c
 gboolean            vfs_favorite_file_copy(GFile* source, GFile* destination, GFileCopyFlags flags, GCancellable* cancellable, GFileProgressCallback pcallback, gpointer pcallbackdata, GError** error);
 gboolean            vfs_favorite_file_move(GFile* source, GFile* destination, GFileCopyFlags flags, GCancellable* cancellable, GFileProgressCallback progress_callback, gpointer progress, GError** error);
 
+static char*        vfs_favorite_file_get_target_file (GFile* file);
+
 G_DEFINE_TYPE_EXTENDED(FavoriteVFSFile, vfs_favorite_file, G_TYPE_OBJECT, 0, G_ADD_PRIVATE(FavoriteVFSFile) G_IMPLEMENT_INTERFACE(G_TYPE_FILE, vfs_favorite_file_g_file_iface_init));
 
 static void vfs_favorite_file_init(FavoriteVFSFile* self)
@@ -173,7 +175,26 @@ GFile* vfs_favorite_file_new_for_uri(const char *uri)
 {
     auto vfsfile = VFS_FAVORITES_FILE(g_object_new(VFS_TYPE_FAVORITE_FILE, nullptr));
 
-    vfsfile->priv->uri = g_strdup(uri);
+    // fix favorite:///xxx/xxx/xxx?schema=file/sss.txt
+    QString quri = uri;
+    QStringList path1 = quri.split("/");
+    QStringList path2;
+    QString schemaInfo;
+
+    for (auto i : path1) {
+        if (!i.contains("?schema=")) {
+            path2 << i;
+            continue;
+        }
+        QStringList tmp = i.split("?schema=");
+        if (tmp.size() >= 2) {
+            path2 << tmp[0];
+            schemaInfo = "?schema=" + tmp[1];
+        }
+    }
+
+    quri = path2.join("/") + schemaInfo;
+    vfsfile->priv->uri = g_strdup(quri.toUtf8().constData());
 
     return G_FILE(vfsfile);
 }
@@ -369,17 +390,23 @@ gboolean vfs_favorite_file_is_equal(GFile *file1, GFile* file2)
 
 GFileOutputStream* vfs_favorite_file_create(GFile* file, GFileCreateFlags flags, GCancellable* cancellable, GError** error)
 {
-    Q_UNUSED(file);
-    Q_UNUSED(flags);
-    Q_UNUSED(error);
-    Q_UNUSED(cancellable);
+    if (nullptr == file) {
+        QString str = QObject::tr("Incorrect source file");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_INVALID_FILENAME, "%s\n", str.toUtf8().constData());
+    }
+    GFileOutputStream*      ret = nullptr;
 
-    // fixme:// Do not implement
-    QString str = QObject::tr("Virtual file directories do not support move and copy operations");
+    gchar*                  sourceUri = vfs_favorite_file_get_target_file (file);
 
-    *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    if (nullptr != sourceUri && 0 == strncmp("file://", sourceUri, 7)) {
+        GFile* srcFile = g_file_new_for_uri(sourceUri);
+        ret = g_file_create(srcFile, flags, cancellable, error);
+    } else {
+        QString str = QObject::tr("Unable to create virtual file");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    }
 
-    return FALSE;
+    return ret;
 }
 
 gboolean vfs_favorite_file_make_directory(GFile* file, GCancellable* cancellable, GError** error)
@@ -403,7 +430,7 @@ gboolean vfs_favorite_file_make_symbolic_link(GFile* file, const char* svalue, G
     Q_UNUSED(cancellable);
 
     // fixme:// Do not implement
-    QString str = QObject::tr("Virtual file directories do not support move and copy operations");
+    QString str = QObject::tr("Unable to create linker for virtual file");
 
     *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
 
@@ -412,30 +439,66 @@ gboolean vfs_favorite_file_make_symbolic_link(GFile* file, const char* svalue, G
 
 gboolean vfs_favorite_file_move(GFile* source, GFile* destination, GFileCopyFlags flags, GCancellable* cancellable, GFileProgressCallback progress_callback, gpointer progress, GError** error)
 {
-    Q_UNUSED(error);
-    Q_UNUSED(flags);
-    Q_UNUSED(source);
-    Q_UNUSED(progress);
-    Q_UNUSED(cancellable);
-    Q_UNUSED(destination);
-    Q_UNUSED(progress_callback);
+    if (nullptr == source || nullptr == destination) {
+        QString str = QObject::tr("Incorrect source or destination file");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_INVALID_FILENAME, "%s\n", str.toUtf8().constData());
+    }
 
-    // fixme:// Do not implement
-    QString str = QObject::tr("Virtual file directories do not support move and copy operations");
+    gboolean                ret = FALSE;
+    gchar*                  destSUri = g_file_get_uri(destination);
+    gchar*                  sourceUri = vfs_favorite_file_get_target_file (source);
+    gchar*                  destUri = vfs_favorite_file_get_target_file (destination);
 
-    *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    if (nullptr != sourceUri && nullptr != destUri && 0 == strncmp("favorite://", destSUri, 11) && 0 == strncmp("file://", sourceUri, 7)) {
+        GFile* destFile = g_file_new_for_uri(destUri);
+        GFile* srcFile = g_file_new_for_uri(sourceUri);
 
-    return FALSE;
+        ret = g_file_move(srcFile, destFile, flags, cancellable, progress_callback, progress, error);
+
+        if (nullptr != destFile) g_object_unref(destFile);
+        if (nullptr != srcFile)  g_object_unref(srcFile);
+    } else {
+        QString str = QObject::tr("Unable to move the virtual file to the file system");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    }
+
+    if (nullptr != destSUri)    g_free(destSUri);
+    if (nullptr != destUri)     g_free (destUri);
+    if (nullptr != sourceUri)   g_free (sourceUri);
+
+    return ret;
 }
 
 gboolean vfs_favorite_file_copy(GFile* source, GFile* destination, GFileCopyFlags flags, GCancellable* cancellable, GFileProgressCallback pcallback, gpointer pcallbackdata, GError** error)
 {
-    // fixme:// Do not implement
-    QString str = QObject::tr("Virtual file directories do not support move and copy operations");
+    if (nullptr == source || nullptr == destination) {
+        QString str = QObject::tr("Incorrect source or destination file");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_INVALID_FILENAME, "%s\n", str.toUtf8().constData());
+    }
 
-    *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    gboolean                ret = FALSE;
+    gchar*                  destSUri = g_file_get_uri(destination);
+    gchar*                  sourceUri = vfs_favorite_file_get_target_file (source);
+    gchar*                  destUri = vfs_favorite_file_get_target_file (destination);
 
-    return FALSE;
+    if (nullptr != sourceUri && nullptr != destUri && 0 == strncmp("favorite://", destSUri, 11) && 0 == strncmp("file://", sourceUri, 7)) {
+        GFile* destFile = g_file_new_for_uri(destUri);
+        GFile* srcFile = g_file_new_for_uri(sourceUri);
+
+        ret = g_file_copy(srcFile, destFile, flags, cancellable, pcallback, pcallbackdata, error);
+
+        if (nullptr != destFile) g_object_unref(destFile);
+        if (nullptr != srcFile)  g_object_unref(srcFile);
+    } else {
+        QString str = QObject::tr("Unable to copy the virtual file to the file system");
+        *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
+    }
+
+    if (nullptr != destSUri)    g_free(destSUri);
+    if (nullptr != destUri)     g_free (destUri);
+    if (nullptr != sourceUri)   g_free (sourceUri);
+
+    return ret;
 }
 
 GFile* vfs_favorite_file_set_display_name (GFile* file, const gchar* display_name, GCancellable* cancellable, GError** error)
@@ -505,4 +568,30 @@ gboolean vfs_favorite_file_is_exist(const char *uri)
     }
 
     return ret;
+}
+
+static char* vfs_favorite_file_get_target_file (GFile* file)
+{
+    if (nullptr == file) {
+        return nullptr;
+    }
+
+    gchar*          uri = nullptr;
+    GFileInfo*      fileInfo = nullptr;
+    gchar*          targetUri = nullptr;
+
+    uri = g_file_get_uri(file);
+    if (nullptr != uri && 0 != strncmp("favorite://", uri, 11)) {
+        return uri;
+    }
+
+    if (nullptr != uri) g_free(uri);
+
+    fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+    if (nullptr != fileInfo) {
+        targetUri = g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+        g_object_unref(fileInfo);
+    }
+
+    return targetUri;
 }

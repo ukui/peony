@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include <QDebug>
+#include <syslog.h>
 
 using namespace Peony;
 
@@ -51,11 +52,12 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
         if (m_mutex.tryLock(1000)) {
             for (int i = 0; i < urist.count(); ++i) {
                 QUrl url = urist.at(i);
+
                 if (url.toString().contains("?schema=")) {
                     m_uris << url.toString();
                 } else {
-                    QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
-                    m_uris << origin_path;
+                    QString originPath = "favorite://" + url.path() + "?schema=" + url.scheme();
+                    m_uris << originPath;
                 }
             }
             m_uris.removeDuplicates();

@@ -867,12 +867,12 @@
         <translation>发送到桌面快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="124"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="126"/>
         <source>Create Link to...</source>
         <translation>发送快捷方式到...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="127"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="129"/>
         <source>Choose a Directory to Create Link</source>
         <translation>选择创建链接的目录</translation>
     </message>
@@ -1652,12 +1652,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileLabelInternalMenuPlugin</name>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="163"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="165"/>
         <source>Add File Label...</source>
         <translation>添加标记...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="186"/>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.cpp" line="188"/>
         <source>Delete All Label</source>
         <translation>删除所有标记</translation>
     </message>
@@ -3332,32 +3332,59 @@ Do you want to unmount forcely?</source>
         <translation>弹出失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="241"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="262"/>
         <source>favorite</source>
         <translation>收藏夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="308"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="329"/>
         <source>Operation not supported</source>
         <translation>操作不支持</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="391"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="394"/>
+        <source>Incorrect source file</source>
+        <translation>源目录错误</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="405"/>
+        <source>Unable to create virtual file</source>
+        <translation>无法创建虚拟文件</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="418"/>
         <source>The virtual file system does not support folder creation</source>
         <translation>虚拟文件系统下不支持创建新文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="476"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="484"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="433"/>
+        <source>Unable to create linker for virtual file</source>
+        <translation>无法给虚拟文件创建链接</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="443"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="475"/>
+        <source>Incorrect source or destination file</source>
+        <translation>源路径或目标路径不正确</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="461"/>
+        <source>Unable to move the virtual file to the file system</source>
+        <translation>无法移动虚拟文件到本地文件系统</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="493"/>
+        <source>Unable to copy the virtual file to the file system</source>
+        <translation>无法复制虚拟文件到本地文件系统</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="539"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="547"/>
         <source>The virtual file system cannot be opened</source>
         <translation>虚拟文件系统无法打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="378"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="406"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="424"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="434"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="452"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="515"/>
         <source>Virtual file directories do not support move and copy operations</source>
         <translation>虚拟文件路径不支持移动和复制操作</translation>
     </message>
