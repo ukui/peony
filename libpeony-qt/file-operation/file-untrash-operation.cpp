@@ -23,6 +23,9 @@
 #include "file-utils.h"
 #include "file-untrash-operation.h"
 #include "file-operation-manager.h"
+#include "file-info-job.h"
+#include "file-info.h"
+#include "file-meta-info.h"
 #include <QUrl>
 
 using namespace Peony;
@@ -359,6 +362,16 @@ void FileUntrashOperation::run()
     for (auto uri : m_uris) {
         //cacheOriginalUri();
         auto originUri = m_restore_hash.value(uri);
+        if (originUri.isEmpty()) {
+            // try get meta info origin path
+            FileInfoJob j(uri);
+            j.querySync();
+            auto trashedFileLocaledUri = FileUtils::getTargetUri(uri);
+            FileInfoJob j2(trashedFileLocaledUri);
+            j2.querySync();
+            auto metaInfo = FileMetaInfo::fromUri(trashedFileLocaledUri);
+            originUri = "file://" + metaInfo.get()->getMetaInfoString("orig-path");
+        }
 
         auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
         auto destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
