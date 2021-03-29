@@ -30,6 +30,11 @@ using namespace Peony;
 FileDeleteOperation::FileDeleteOperation(QStringList sourceUris, QObject *parent) : FileOperation(parent)
 {
     m_source_uris = sourceUris;
+
+    if (!sourceUris.isEmpty() && sourceUris.first().startsWith("favorite://")) {
+        m_delete_virtual_file = true;
+    }
+
     m_reporter = new FileNodeReporter;
     m_info = std::make_shared<FileOperationInfo>(sourceUris, nullptr, FileOperationInfo::Delete);
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
@@ -53,8 +58,10 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
     GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
     if (node->isFolder()) {
-        for (auto child : *(node->children())) {
-            deleteRecursively(child);
+        if (!m_delete_virtual_file) {
+            for (auto child : *(node->children())) {
+                deleteRecursively(child);
+            }
         }
         GError *err = nullptr;
         g_file_delete(file,
@@ -83,7 +90,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
             // Similar errors only remind the user once
             m_prehandle_hash.insert(err->code, IgnoreAll);
         }
-    } else {
+    } else if (!m_delete_virtual_file) {
         GError *err = nullptr;
         g_file_delete(file,getCancellable().get()->get(),&err);
         if (err) {
@@ -133,8 +140,10 @@ void FileDeleteOperation::run()
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
-        node->findChildrenRecursively();
-        node->computeTotalSize(total_size);
+        if (!m_delete_virtual_file) {
+            node->findChildrenRecursively();
+            node->computeTotalSize(total_size);
+        }
         nodes<<node;
     }
     operationPrepared();

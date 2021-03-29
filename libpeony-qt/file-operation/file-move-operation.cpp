@@ -27,7 +27,6 @@
 #include "file-info.h"
 
 #include "file-operation-manager.h"
-
 #include <QProcess>
 
 using namespace Peony;
@@ -93,6 +92,9 @@ FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri,
 {
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
+    if (destDirUri.startsWith("favorite://")) {
+        m_dest_is_virtual = true;
+    }
     m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
 
@@ -162,8 +164,7 @@ void FileMoveOperation::move()
 
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         char *base_name = g_file_get_basename(srcFile.get()->get());
-        auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(),
-                                  base_name));
+        auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(), base_name));
 
         char *dest_uri = g_file_get_uri(destFile.get()->get());
         file->setDestUri(dest_uri);
@@ -353,7 +354,10 @@ retry:
         }
         //FIXME: ignore the total size when using native move.
         operationProgressedOne(file->uri(), file->destUri(), 0);
-        fileSync(file->uri(), file->destUri());
+
+        if (!file->destIsVirtual()) {
+            fileSync(file->uri(), file->destUri());
+        }
     }
     //native move has not clear operation.
     operationProgressed();
@@ -362,7 +366,7 @@ retry:
     //such as the target is existed, the rollback might
     //get into error too.
 
-    if (isCancelled()) {
+    if (isCancelled() && !m_dest_is_virtual) {
         for (auto node : nodes) {
             rollbackNodeRecursively(node);
         }
@@ -990,7 +994,7 @@ start:
     }
 
     //ensure again
-    if (m_force_use_fallback) {
+    if (m_force_use_fallback && !m_dest_is_virtual) {
         moveForceUseFallback();
         operationStartSnyc();
 

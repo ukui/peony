@@ -138,6 +138,7 @@ protected:
     ExceptionResponse prehandle(GError *err);
 
 private:
+    bool m_dest_is_virtual = false;
     QStringList m_source_uris;
     QString m_dest_dir_uri = nullptr;
 
