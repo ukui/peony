@@ -1529,18 +1529,20 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             clearSelection();
         } else {
             auto index = indexAt(e->pos());
-            //fix rename state has no menuRequest issue
-            if (! m_is_edit)
-               clearAllIndexWidgets();
             m_last_index = index;
-            //force to recreate new DesktopIndexWidget, to fix not show name issue
-            if (indexWidget(m_last_index))
-                setIndexWidget(m_last_index, nullptr);
-            //if (!indexWidget(m_last_index)) {
-            auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
-            setIndexWidget(m_last_index,
-                           indexWidget);
-            indexWidget->move(visualRect(m_last_index).topLeft());
+            //fix rename state has no menuRequest issue, bug#44107
+            if (! m_is_edit)
+            {
+                clearAllIndexWidgets();
+                //force to recreate new DesktopIndexWidget, to fix not show name issue
+                if (indexWidget(m_last_index))
+                    setIndexWidget(m_last_index, nullptr);
+                auto indexWidget = new DesktopIndexWidget(qobject_cast<DesktopIconViewDelegate *>(itemDelegate()), viewOptions(), m_last_index);
+                setIndexWidget(m_last_index,
+                               indexWidget);
+                indexWidget->move(visualRect(m_last_index).topLeft());
+            }
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
             for (auto uri : getAllFileUris()) {
                 auto pos = getFileMetaInfoPos(uri);
@@ -1548,7 +1550,6 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                     updateItemPosByUri(uri, pos);
             }
 #endif
-            //}
         }
     }
 
