@@ -49,6 +49,7 @@ public:
 private:
     QStringList m_source_uris;
 
+    bool m_delete_virtual_file = false;
     int m_current_count = 0;
     int m_total_count = 0;
     QString m_current_src_uri = nullptr;

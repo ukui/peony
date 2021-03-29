@@ -50,13 +50,15 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
 
         if (m_mutex.tryLock(1000)) {
             for (int i = 0; i < urist.count(); ++i) {
-                QUrl url = urist.at(i);
-                if (url.toString().contains("?schema=")) {
-                    m_uris << url.toString();
-                } else {
-                    QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
-                    m_uris << origin_path;
+                GFile* file = g_file_new_for_uri (urist.at(i).toUtf8());
+                char* uri = g_file_get_uri(file);
+
+                if (0 != strcmp ("favorite:///", uri) && g_file_query_exists(file, nullptr)) {
+                    m_uris << uri;
                 }
+
+                if (nullptr != uri)  g_free (uri);
+                if (nullptr != file) g_object_unref (file);
             }
             m_uris.removeDuplicates();
             m_book_mark->setValue("uris", m_uris);
@@ -114,37 +116,22 @@ void BookMarkManager::removeBookMark(const QString &uri)
         while (!this->isLoaded()) {
             g_usleep(100);
         }
-        QUrl url = uri;
-
-        if ("favorite" == url.scheme()) {
-            GFile* file = g_file_new_for_uri (uri.toUtf8().constData());
-            if (nullptr != file) {
-                GFileInfo* fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
-                if (nullptr != fileInfo) {
-                    url = QString(g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI));
-                    g_object_unref(fileInfo);
-                }
-                g_object_unref(file);
-            }
-        }
-
-        QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
 
         if (m_mutex.tryLock(1000)) {
-            bool successed = m_uris.contains(origin_path);
+            bool successed = m_uris.contains(uri);
             if (successed) {
-                m_uris.removeOne(origin_path);
+                m_uris.removeOne(uri);
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
                 m_book_mark->sync();
-                qDebug()<<"removeBookMark"<<origin_path;
-                Q_EMIT this->bookMarkRemoved(origin_path, true);
+                qDebug()<<"removeBookMark"<<uri;
+                Q_EMIT this->bookMarkRemoved(uri, true);
             } else {
-                Q_EMIT this->bookMarkRemoved(origin_path, false);
+                Q_EMIT this->bookMarkRemoved(uri, false);
             }
             m_mutex.unlock();
         } else {
-            Q_EMIT this->bookMarkRemoved(origin_path, false);
+            Q_EMIT this->bookMarkRemoved(uri, false);
         }
     });
 }

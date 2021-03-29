@@ -87,6 +87,7 @@ private:
      * use FileDuplicateOperation instead.
      */
     bool m_is_duplicated_copy = false;
+    bool m_dest_is_virtual = false;
     QStringList m_source_uris;
     QString m_dest_dir_uri = nullptr;
 

@@ -27,7 +27,6 @@
 #include "file-info.h"
 
 #include "file-operation-manager.h"
-
 #include <QProcess>
 
 using namespace Peony;
@@ -152,8 +151,9 @@ void FileMoveOperation::move()
     auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     m_total_count = m_source_uris.count();
     for (auto file : nodes) {
-        if (isCancelled())
+        if (isCancelled()) {
             return;
+        }
 
         QString srcUri = file->uri();
         m_current_count = nodes.indexOf(file) + 1;
@@ -162,8 +162,7 @@ void FileMoveOperation::move()
 
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         char *base_name = g_file_get_basename(srcFile.get()->get());
-        auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(),
-                                  base_name));
+        auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(), base_name));
 
         char *dest_uri = g_file_get_uri(destFile.get()->get());
         file->setDestUri(dest_uri);
@@ -178,8 +177,7 @@ retry:
                     m_default_copy_flag,
                     getCancellable().get()->get(),
                     GFileProgressCallback(progress_callback),
-                    this,
-                    &err);
+                    this, &err);
 
         if (err) {
             setHasError(true);
@@ -353,7 +351,10 @@ retry:
         }
         //FIXME: ignore the total size when using native move.
         operationProgressedOne(file->uri(), file->destUri(), 0);
-        fileSync(file->uri(), file->destUri());
+
+        if (!file->destIsVirtual()) {
+            fileSync(file->uri(), file->destUri());
+        }
     }
     //native move has not clear operation.
     operationProgressed();

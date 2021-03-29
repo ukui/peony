@@ -525,23 +525,25 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     }
 
     bool b_trash_item = false;
-    for(auto path : srcUris)
-    {
-        if (path.contains("trash:///"))
-        {
+    for(auto path : srcUris) {
+        if (path.contains("trash:///")) {
             b_trash_item = true;
             break;
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash:///")
+    if (b_trash_item && destDirUri != "trash:///") {
         return false;
+    }
 
     //fix drag file to trash issue, #42328
-    if (destDirUri.startsWith("trash:///"))
-    {
+    if (destDirUri.startsWith("trash:///")) {
         FileOperationUtils::trash(srcUris, true);
         return true;
+    }
+
+    if (destDirUri.startsWith("favorite:///")) {
+        action = Qt::CopyAction;
     }
 
     qDebug() << "dropMimeData:" <<action<<destDirUri;

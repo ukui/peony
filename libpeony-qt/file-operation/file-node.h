@@ -105,6 +105,9 @@ public:
     bool isFolder() {
         return m_is_folder;
     }
+    bool destIsVirtual () {
+        return m_dest_is_virtual;
+    }
 
     /*!
      * \brief getRelativePath
@@ -131,9 +134,7 @@ public:
      * </br>
      * \see setState().
      */
-    void setDestUri(QString uri) {
-        m_dest_uri = uri;
-    }
+    void setDestUri(QString uri);
     /*!
      * \brief setState
      * \param state
@@ -182,6 +183,7 @@ private:
 
     goffset m_size = 0;
     bool m_is_folder = false;
+    bool m_dest_is_virtual = false;
     FileNode *m_parent = nullptr;
     QList<FileNode*> *m_children = nullptr;
 

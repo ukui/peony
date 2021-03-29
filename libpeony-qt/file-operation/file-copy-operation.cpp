@@ -108,6 +108,11 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
         }
     }
 
+    // FIXME:// use GFileInfo ???
+    if ("favorite:///" == destDirUri) {
+        m_dest_is_virtual = true;
+    }
+
     m_conflict_files.clear();
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
@@ -191,9 +196,12 @@ fallback_retry:
         GError *err = nullptr;
 
         //NOTE: mkdir doesn't have a progress callback.
-        g_file_make_directory(destFile.get()->get(),
-                              getCancellable().get()->get(),
-                              &err);
+        if (!m_dest_is_virtual) {
+            g_file_make_directory(destFile.get()->get(), getCancellable().get()->get(), &err);
+        } else {
+            GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
+            g_file_copy(sourceFile.get()->get(), destFile.get()->get(), m_default_copy_flag, nullptr, nullptr, nullptr, &err);
+        }
         if (err) {
             FileOperationError except;
             if (err->code == G_IO_ERROR_CANCELLED) {
@@ -298,7 +306,7 @@ fallback_retry:
         for (auto child : *(node->children())) {
             copyRecursively(child);
         }
-    } else {
+    } else if (!m_dest_is_virtual) {
         GError *err = nullptr;
         GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
         g_file_copy(sourceFile.get()->get(),
@@ -444,7 +452,9 @@ fallback_retry:
             node->setState(FileNode::Handled);
         }
         m_current_offset += node->size();
-        fileSync(srcUri, destFileUri);
+        if (!node->destIsVirtual()) {
+            fileSync(srcUri, destFileUri);
+        }
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
     }
     destFile.reset();
@@ -504,8 +514,9 @@ void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
 
 void FileCopyOperation::run()
 {
-    if (isCancelled())
+    if (isCancelled()) {
         return;
+    }
 
     Q_EMIT operationStarted();
 
@@ -516,8 +527,10 @@ void FileCopyOperation::run()
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
-        node->findChildrenRecursively();
-        node->computeTotalSize(total_size);
+        if (!m_dest_is_virtual) {
+            node->findChildrenRecursively();
+            node->computeTotalSize(total_size);
+        }
         nodes << node;
     }
 
@@ -535,7 +548,7 @@ void FileCopyOperation::run()
         Q_EMIT operationStartRollbacked();
         for (auto file : nodes) {
             qDebug()<<file->uri();
-            if (isCancelled()) {
+            if (isCancelled() && !m_dest_is_virtual) {
                 rollbackNodeRecursively(file);
             }
         }

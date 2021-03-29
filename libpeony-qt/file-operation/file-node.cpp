@@ -25,6 +25,7 @@
 #include "file-info.h"
 #include "file-node-reporter.h"
 
+static bool destFileIsVirtual (const QString& destRootDir);
 
 using namespace Peony;
 
@@ -35,10 +36,8 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
     m_reporter = reporter;
     GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
     char *basename = g_file_get_basename(file);
-    m_basename = basename;
     m_dest_basename = basename;
-    m_basename = m_uri.split("/").last();
-    m_dest_basename = m_basename;
+    m_basename = basename;
     g_free(basename);
 
     //use G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS to avoid unnecessary recursion.
@@ -50,8 +49,10 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
                                         nullptr);
     g_object_unref(file);
     m_size = g_file_info_get_size(info);
-    if (uri == "file:///proc/kcore")
+    if (uri == "file:///proc/kcore") {
         m_size = 0;
+    }
+
     g_object_unref(info);
 
     if (m_reporter) {
@@ -81,9 +82,9 @@ void FileNode::findChildrenRecursively()
             return;
     }
 
-    if (!m_is_folder)
+    if (!m_is_folder) {
         return;
-    else {
+    } else {
         auto uris = FileUtils::getChildrenUris(m_uri);
         for (auto uri: uris) {
             FileNode *node = new FileNode(uri, this, m_reporter);
@@ -122,8 +123,41 @@ QString FileNode::getRelativePath()
     return relativePath;
 }
 
+void FileNode::setDestUri(QString uri)
+{
+    m_dest_uri = uri;
+
+    QString destUri = uri;
+
+    if (destFileIsVirtual(destUri)) {
+        m_dest_is_virtual = true;
+    }
+}
+
+static bool destFileIsVirtual (const QString& destRootDir)
+{
+    bool destIsVirtual = false;
+    GFile*  destFile = g_file_new_for_uri (destRootDir.toUtf8().constData());
+
+    if (nullptr != destFile) {
+        GFileInfo* fileInfo = g_file_query_info(destFile, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        if (nullptr != fileInfo) {
+            destIsVirtual = g_file_info_get_attribute_boolean(fileInfo, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL);
+            g_object_unref(fileInfo);
+        }
+        g_object_unref(destFile);
+    }
+
+    return destIsVirtual;
+}
+
 const QString FileNode::resolveDestFileUri(const QString &destRootDir)
 {
+    setDestUri(destRootDir);
+    if (m_dest_is_virtual) {
+        return destRootDir;
+    }
+
     QStringList relativePathList;
     relativePathList.prepend(m_dest_basename);
     FileNode *parent = this->parent();
@@ -137,5 +171,6 @@ const QString FileNode::resolveDestFileUri(const QString &destRootDir)
     }
     QString url = destRootDir + "/" + relativePath;
     setDestUri(url);
+
     return url;
 }
