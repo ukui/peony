@@ -74,7 +74,10 @@ retry:
                 g_error_free(err);
                 continue;
             }
-            setErrorMessage (&err);
+
+            // ref the error, released after error handling.
+            auto refPtr = GErrorWrapper::wrapFrom(err);
+
             FileOperationError except;
             except.srcUri = src;
             except.destDirUri = tr("trash:///");
@@ -199,19 +202,5 @@ void FileTrashOperation::forceDelete(QString uri)
 
 void FileTrashOperation::setErrorMessage(GError** err)
 {
-    if (nullptr == *err) {
-        return;
-    }
 
-    GError* peonyError = nullptr;
-
-    switch ((*err)->code) {
-    case G_IO_ERROR_FILENAME_TOO_LONG:
-        g_set_error(&peonyError, (*err)->domain, (*err)->code, "%s%s", (*err)->message, tr(". Are you sure you want to permanently delete the file").toUtf8().constData());
-        g_error_free(*err);
-        *err = peonyError;
-        break;
-    default:
-        break;
-    }
 }
