@@ -130,7 +130,7 @@ void UserdirManager::getUserdir()
     if (! QLocale::system().name().contains("zh"))
     {
         QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString templateDir = "file://" + homePath + "/模板";
+        QString templateDir = homePath + "/模板/";
         GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
     }
 }
