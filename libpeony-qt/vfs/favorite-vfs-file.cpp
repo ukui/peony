@@ -190,11 +190,14 @@ char* vfs_favorite_file_get_path(GFile *file)
 
 GFile* vfs_favorite_file_resolve_relative_path(GFile *file, const char *relativepath)
 {
-    Q_UNUSED(file);
-    Q_UNUSED(relativepath);
-
-    if (relativepath) {
-        return g_file_new_for_uri(relativepath);
+    QString tmp = relativepath;
+    if (tmp.contains('/')) {
+        if (relativepath) {
+            return g_file_new_for_uri(relativepath);
+        }
+    } else if (!tmp.isEmpty()) {
+        QString uri = "favorite:///" + tmp;
+        return vfs_favorite_file_new_for_uri(uri.toUtf8().constData());
     }
 
     return g_file_new_for_uri("favorite:///");;
@@ -412,16 +415,80 @@ gboolean vfs_favorite_file_make_symbolic_link(GFile* file, const char* svalue, G
 
 gboolean vfs_favorite_file_move(GFile* source, GFile* destination, GFileCopyFlags flags, GCancellable* cancellable, GFileProgressCallback progress_callback, gpointer progress, GError** error)
 {
-    Q_UNUSED(error);
     Q_UNUSED(flags);
-    Q_UNUSED(source);
     Q_UNUSED(progress);
     Q_UNUSED(cancellable);
-    Q_UNUSED(destination);
     Q_UNUSED(progress_callback);
 
     // fixme:// Do not implement
     QString str = QObject::tr("Virtual file directories do not support move and copy operations");
+    char *src_uri = g_file_get_uri(source);
+    char *dest_uri = g_file_get_uri(destination);
+    char *src_scheme = g_file_get_uri_scheme(source);
+    char *dest_scheme = g_file_get_uri_scheme(destination);
+    QString srcUri = src_uri;
+    QString destUri = dest_uri;
+    // we have constructed a error dest uri in FileMoveOperation::run(),
+    // at here we should chop the relative path and add it here manually.
+    destUri.chop(destUri.length() - destUri.lastIndexOf('/'));
+    QString srcScheme = src_scheme;
+    QString destScheme = dest_scheme;
+    if (src_uri) {
+        g_free(src_uri);
+    }
+    if (dest_uri) {
+        g_free(dest_uri);
+    }
+    if (src_scheme) {
+        g_free(src_scheme);
+    }
+    if (dest_scheme) {
+        g_free(dest_scheme);
+    }
+    if (srcScheme == destScheme) {
+        // dnd from favorite:/// to favorite:///, do nothing
+        return true;
+    }
+    if (srcScheme == "favorite" && destScheme == "file") {
+        // dnd from favorite:/// to file:///xxx
+        // find file favorite file point to, and create a symbolic link.
+        auto file_info = g_file_query_info(source, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        auto target_uri = g_file_info_get_attribute_as_string(file_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+        QString targetUri = target_uri;
+        if (target_uri) {
+            g_free(target_uri);
+        }
+        g_object_unref(file_info);
+        if (!targetUri.startsWith("file:///")) {
+            *error = g_error_new_literal(G_IO_ERROR, G_IO_ERROR_FAILED, QObject::tr("Can not create a symbolic file for vfs location").toUtf8().constData());
+            return false;
+        }
+        auto real_src_file = g_file_new_for_uri(targetUri.toUtf8().constData());
+        auto real_src_path = g_file_get_path(real_src_file);
+        auto base_name = g_file_get_basename(real_src_file);
+        g_object_unref(real_src_file);
+        QString destLinkUri = destUri + "/" + QObject::tr("Symbolic Link") + " - " + base_name;
+        auto symbolic_file = g_file_new_for_uri(destLinkUri.toUtf8().constData());
+        GError *error2 = nullptr;
+        bool success = g_file_make_symbolic_link(symbolic_file, real_src_path, nullptr, &error2);
+        if (base_name) {
+            g_free(base_name);
+        }
+        if (real_src_path) {
+            g_free(real_src_path);
+        }
+        g_object_unref(symbolic_file);
+        if (!success) {
+            *error = g_error_new_literal(G_IO_ERROR, G_IO_ERROR_FAILED, QObject::tr("Can not create symbolic file here, %1").arg(error2->message).toUtf8().constData());
+            g_error_free(error2);
+        }
+        return success;
+    }
+    if (srcScheme == "file" && destScheme == "favorite") {
+        // add src file to favorite:///
+        Peony::BookMarkManager::getInstance()->addBookMark(srcUri);
+        return true;
+    }
 
     *error = g_error_new(G_FILE_ERROR_FAILED, G_IO_ERROR_NOT_SUPPORTED, "%s\n", str.toUtf8().constData());
 

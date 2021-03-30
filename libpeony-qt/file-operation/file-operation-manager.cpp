@@ -142,6 +142,33 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         }
     }
 
+    // do not add move operation between favorite:///
+    // FIXME: due to some desgin issues, we can not
+    // support undo/redo with favorite:/// yet. that
+    // should be fixed in the future.
+
+    // dnd use copy move mode here between different
+    // file system, so we should better check operation class,
+    // not operation info type.
+    if (dynamic_cast<FileMoveOperation *>(operation)) {
+        if (addToHistory) {
+            for (QString uri : operationInfo.get()->sources()) {
+                if (uri.startsWith("favorite:///")) {
+                    addToHistory = false;
+                    break;
+                }
+            }
+            if (addToHistory) {
+                for (QString uri : operationInfo.get()->dests()) {
+                    if (uri.startsWith("favorite:///")) {
+                        addToHistory = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 start:
 
     QApplication::setQuitOnLastWindowClosed(false);
