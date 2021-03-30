@@ -389,7 +389,7 @@
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="349"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="350"/>
         <source>set background</source>
         <translation type="unfinished">Arkaplanı Değiştir</translation>
     </message>

@@ -401,7 +401,7 @@
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="349"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="350"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>
