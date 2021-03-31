@@ -386,6 +386,10 @@ bool FileUtils::isStandardPath(const QString &uri)
 
 bool FileUtils::isSamePath(const QString &uri, const QString &targetUri)
 {
+    //computer:/// and file:///, favorite:/// path check
+    if (uri.endsWith(":///") && targetUri.endsWith(":///"))
+        return uri == targetUri;
+
     return QUrl(uri).path() == QUrl(targetUri).path();
 }
 
