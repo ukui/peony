@@ -117,15 +117,16 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_list.takeLast();
+    auto curUri = getCurrentUri();
     //fix bug 41094, go back to the same path
-    while(FileUtils::isSamePath(uri, getCurrentUri()))
+    while(m_back_list.count() > 0 && FileUtils::isSamePath(uri, curUri))
     {
         uri = m_back_list.takeLast();
     }
     //avoid same uri add twice
     int count = m_forward_list.count();
-    if (count <= 0 || m_forward_list.at(0) != getCurrentUri())
-        m_forward_list.prepend(getCurrentUri());
+    if (count <= 0 || m_forward_list.at(0) != curUri)
+        m_forward_list.prepend(curUri);
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
