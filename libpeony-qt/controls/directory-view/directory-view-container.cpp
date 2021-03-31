@@ -117,16 +117,7 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_list.takeLast();
-    auto curUri = getCurrentUri();
-    //fix bug 41094, go back to the same path
-    while(m_back_list.count() > 0 && FileUtils::isSamePath(uri, curUri))
-    {
-        uri = m_back_list.takeLast();
-    }
-    //avoid same uri add twice
-    int count = m_forward_list.count();
-    if (count <= 0 || m_forward_list.at(0) != curUri)
-        m_forward_list.prepend(curUri);
+    m_forward_list.prepend(getCurrentUri());
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
@@ -141,17 +132,7 @@ void DirectoryViewContainer::goForward()
         return;
 
     auto uri = m_forward_list.takeFirst();
-    //avoid same uri add twice
-    int count = m_back_list.count();
-    if (! getCurrentUri().contains("search://") &&
-        (count <= 0
-         || (m_back_list.at(count-1) != getCurrentUri()
-         && ! FileUtils::isSamePath(getCurrentUri(), uri))))
-    {
-        m_back_list.append(getCurrentUri());
-        qDebug() << "m_back_list add:" <<getCurrentUri();
-    }
-
+    m_back_list.append(getCurrentUri());
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
@@ -243,15 +224,11 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
 update:
     if (addHistory) {
         m_forward_list.clear();
-        //avoid same uri add twice
-        int count = m_back_list.count();
-        if (! getCurrentUri().contains("search://")
-            && (count <= 0
-            || (m_back_list.at(count-1) != getCurrentUri()
-            && ! FileUtils::isSamePath(getCurrentUri(), uri))))
-        {
+        //qDebug() << "getCurrentUri():" <<getCurrentUri()<<uri;
+        //fix bug 41094, avoid go back to same path issue
+        if (! getCurrentUri().startsWith("search://")
+            && !FileUtils::isSamePath(getCurrentUri(), uri)) {
             m_back_list.append(getCurrentUri());
-            qDebug() << "goToUri m_back_list add:" <<getCurrentUri();
         }
     }
 
