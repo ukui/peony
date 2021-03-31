@@ -474,14 +474,9 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
-            if (info->uri().endsWith(".desktop") && !info->canExecute()) {
-                return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
-            }
             if(info->canExecute()&&info->isExecDisable())  //add by nsg
             {
-
-                 QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
-
+                QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
                  return QIcon(pixmap);
             }
             return thumbnail;

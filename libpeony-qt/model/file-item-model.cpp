@@ -217,17 +217,8 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole: {
-            /*
-            auto thumbnail = item->info()->thumbnail();
-            if (!thumbnail.isNull()) {
-                return thumbnail;
-            }
-            */
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
             if (!thumbnail.isNull()) {
-                if (item->m_info->uri().endsWith(".desktop") && !item->m_info->canExecute()) {
-                    return QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
-                }
                 // to make the applications disable
                 std::shared_ptr<FileInfo> info = item->info();
                 if(info->canExecute()&&info->isExecDisable()) {
