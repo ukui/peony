@@ -798,7 +798,7 @@ void TopMenuBar::addWindowButtons()
     layout->addWidget(close);
 
     m_top_menu_internal_widget->setLayout(layout);
-    QSpacerItem *spacer = new QSpacerItem(2000, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    QSpacerItem *spacer = new QSpacerItem(4000, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_top_menu_layout->addSpacerItem(spacer);
     m_top_menu_layout->addWidget(m_top_menu_internal_widget);
 
