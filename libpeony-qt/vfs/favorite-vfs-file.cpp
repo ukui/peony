@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <bookmark-manager.h>
 
+static char* vfs_favorite_file_get_target_file (GFile* file);
 static void vfs_favorite_file_g_file_iface_init(GFileIface *iface);
 
 GFile*              vfs_favorite_file_dup(GFile *file);
@@ -173,7 +174,35 @@ GFile* vfs_favorite_file_new_for_uri(const char *uri)
 {
     auto vfsfile = VFS_FAVORITES_FILE(g_object_new(VFS_TYPE_FAVORITE_FILE, nullptr));
 
-    vfsfile->priv->uri = g_strdup(uri);
+    QString quri;
+    QString urii1 = QString(uri).replace("favorite://", "");
+    QStringList path1 = urii1.split("/");
+    QStringList path2;
+    QString path3;
+    QString schemaInfo;
+
+    for (auto i : path1) {
+        if ("" != i) {
+            if (!i.contains("?schema=")) {
+                path2 << i;
+                continue;
+            }
+            QStringList tmp = i.split("?schema=");
+            if (tmp.size() >= 2 && "favorite" != tmp[1]) {
+                path2 << tmp[0];
+                schemaInfo = "?schema=" + tmp[1];
+            }
+        }
+    }
+
+    path3 = path2.join("/") + schemaInfo;
+    if ("?schema=" == schemaInfo || "" == path3) {
+        quri = "favorite:///";
+    } else {
+        quri = "favorite:///" + path2.join("/") + schemaInfo;
+    }
+
+    vfsfile->priv->uri = g_strdup(quri.toUtf8().constData());
 
     return G_FILE(vfsfile);
 }
@@ -345,8 +374,19 @@ char* vfs_favorite_file_get_basename (GFile* file)
 {
     g_return_val_if_fail(VFS_IS_FAVORITES_FILE(file), nullptr);
 
-    QString url = QString(vfs_favorite_file_get_uri (file));
-    QString baseName = url.split("/").takeLast();
+    char*       uri = vfs_favorite_file_get_uri (file);
+    QString     baseName = nullptr;
+
+    if (0 == strcmp("favorite:///", uri)) {
+        return g_strdup("favorite:///");
+    } else {
+        QString url = uri;
+        QString baseNamet = url.split("/").takeLast();
+        if (baseNamet.contains("?schema=") && baseNamet.split("?schema=").size() >= 2) {
+            baseName = baseNamet.split("?schema=").first();
+        }
+    }
+    if (nullptr != uri) g_free(uri);
 
     return g_strdup (baseName.toUtf8().constData());
 }
@@ -572,4 +612,30 @@ gboolean vfs_favorite_file_is_exist(const char *uri)
     }
 
     return ret;
+}
+
+static char* vfs_favorite_file_get_target_file (GFile* file)
+{
+    if (nullptr == file) {
+        return nullptr;
+    }
+
+    gchar*          uri = nullptr;
+    GFileInfo*      fileInfo = nullptr;
+    gchar*          targetUri = nullptr;
+
+    uri = g_file_get_uri(file);
+    if (nullptr != uri && 0 != strncmp("favorite://", uri, 11)) {
+        return uri;
+    }
+
+    if (nullptr != uri) g_free(uri);
+
+    fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+    if (nullptr != fileInfo) {
+        targetUri = g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+        g_object_unref(fileInfo);
+    }
+
+    return targetUri;
 }
