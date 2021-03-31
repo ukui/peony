@@ -34,6 +34,8 @@
 
 namespace Peony {
 
+class FileWatcher;
+
 class DetailsPropertiesPage : public PropertiesWindowTabIface
 {
     Q_OBJECT
@@ -63,6 +65,7 @@ Q_SIGNALS:
 private:
     QString m_uri = nullptr;
     std::shared_ptr<FileInfo> m_fileInfo = nullptr;
+    std::shared_ptr<FileWatcher> m_watcher;
 
     QString m_systemTimeFormat  = nullptr;
     QVBoxLayout *m_layout       = nullptr;
