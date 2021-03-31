@@ -387,18 +387,27 @@ void FileLabelModel::setColor(FileLabelItem *item, const QColor &color)
 
 void FileLabelModel::initLabelItems()
 {
+    QMap<QVariant, QString>  colorMap;
+    colorMap.insert(QColor(Qt::red), tr("Red"));
+    colorMap.insert(QColor("orange"), tr("Orange"));
+    colorMap.insert(QColor(Qt::yellow), tr("Yellow"));
+    colorMap.insert(QColor(Qt::green), tr("Green"));
+    colorMap.insert(QColor(Qt::blue), tr("Blue"));
+    colorMap.insert(QColor("purple"), tr("Purple"));
+    colorMap.insert(QColor(Qt::gray), tr("Gray"));
+    colorMap.insert(QColor(Qt::transparent), tr("Transparent"));
+
     beginResetModel();
     auto size = m_label_settings->beginReadArray("labels");
     for (int i = 0; i < size; i++) {
         m_label_settings->setArrayIndex(i);
         bool visible = m_label_settings->value("visible").toBool();
         if (visible) {
-            auto name = m_label_settings->value("label").toString();
             auto color = qvariant_cast<QColor>(m_label_settings->value("color"));
 
             auto item = new FileLabelItem(this);
             item->m_id = i;
-            item->setName(name);
+            item->setName(colorMap[color]);
             item->setColor(color);
 
             m_labels.append(item);

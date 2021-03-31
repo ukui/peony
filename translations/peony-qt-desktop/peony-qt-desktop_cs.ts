@@ -272,7 +272,7 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="97"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="99"/>
         <source>Desktop</source>
         <translation type="unfinished">Masaüstü</translation>
     </message>
@@ -305,17 +305,17 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="228"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="234"/>
         <source>Close the peony desktop window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="231"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="237"/>
         <source>Take over the dbus service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="234"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="240"/>
         <source>Take over the desktop displaying</source>
         <translation type="unfinished"></translation>
     </message>

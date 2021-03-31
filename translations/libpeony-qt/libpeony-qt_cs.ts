@@ -47,54 +47,62 @@
 <context>
     <name>FileLabelModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="39"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="393"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="394"/>
         <source>Orange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="395"/>
         <source>Yellow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="396"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="397"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="398"/>
         <source>Purple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="399"/>
         <source>Gray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="47"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="400"/>
         <source>Transparent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
         <source>Label or color is duplicated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1054,8 +1062,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Dosya kopyalama</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="206"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="326"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="200"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="320"/>
         <source>File copy error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1160,32 +1168,32 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileItemModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="264"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="255"/>
         <source>child(ren)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="278"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="269"/>
         <source>Symbol Link, </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="299"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="290"/>
         <source>File Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="303"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="294"/>
         <source>File Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="305"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="296"/>
         <source>File Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="301"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="292"/>
         <source>Modified Date</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1236,28 +1244,28 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="170"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="288"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="454"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="455"/>
         <source>Execute Directly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="171"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="289"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="455"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="456"/>
         <source>Execute in Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="174"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="293"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="459"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="460"/>
         <source>Detected launching an executable file %1, you want?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="192"/>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="326"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="492"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="493"/>
         <source>Open Failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1276,51 +1284,51 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="287"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="453"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="454"/>
         <source>By Default App</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="292"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="458"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="459"/>
         <source>Launch Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="316"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="482"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="483"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="317"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="483"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="484"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="327"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="493"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="494"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="331"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="497"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="498"/>
         <source>Open App failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="332"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="498"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="499"/>
         <source>The linked app is changed or uninstalled, so it can not work correctly. 
 Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="345"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="349"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="508"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="350"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="509"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1330,8 +1338,8 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="349"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="508"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="350"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="509"/>
         <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1826,17 +1834,17 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="275"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="283"/>
         <source>&amp;Copy Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="277"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="285"/>
         <source>Open In New &amp;Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="281"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="289"/>
         <source>Open In &amp;New Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2134,7 +2142,7 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="170"/>
+        <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="175"/>
         <source>format</source>
         <translation type="unfinished"></translation>
     </message>
