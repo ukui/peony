@@ -211,7 +211,7 @@ void ClipboardUtils::clearClipboard()
 
 void ClipboardUtils::popLastTargetDirectoryUri(QString &uri)
 {
-    if (uri == m_target_directory_uri.back()) {
+    if (m_target_directory_uri.size() > 0 && uri == m_target_directory_uri.back()) {
         m_target_directory_uri.pop_back();
     }
 }
