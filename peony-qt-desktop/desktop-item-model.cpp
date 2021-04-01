@@ -59,7 +59,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 {
     // do not redo layout new items while we start an operation with peony's api.
     connect(FileOperationManager::getInstance(), &FileOperationManager::operationStarted, this, [=](){
-        m_new_file_info_query_queue.clear();
+        m_items_need_relayout.clear();
     });
 
     m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
@@ -104,6 +104,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
+        m_items_need_relayout.append(uri);
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri);
@@ -113,12 +114,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 exsited = true;
                 break;
             }
-        }
-
-        if (m_new_file_info_query_queue.contains(uri)) {
-            exsited = true;
-        } else {
-            m_new_file_info_query_queue<<uri;
         }
 
         if (!exsited) {
@@ -141,6 +136,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             if (!view->isRenaming()) {
                 view->setFileMetaInfoPos(uri, QPoint(-1, -1));
             } else {
+                m_items_need_relayout.removeOne(uri);
                 view->setRenaming(false);
             }
 
@@ -253,18 +249,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
-        // try relayout floating items, it's often occurred when unarchive a archive file, or modify a file with vim outside of peony.
-        m_last_deleted_item_uri = uri;
-        int index = m_new_file_info_query_queue.indexOf(uri);
-        if (index >= 0) {
-            m_items_need_relayout = m_new_file_info_query_queue;
-            for (int i = 0; i <= index; i++) {
-                m_items_need_relayout.removeFirst();
-            }
-        } else {
-            m_items_need_relayout.clear();
-        }
-        m_new_file_info_query_queue.removeOne(uri);
+        m_items_need_relayout.removeOne(uri);
         auto view = PeonyDesktopApplication::getIconView();
         view->removeItemRect(uri);
 
@@ -382,6 +367,7 @@ DesktopItemModel::~DesktopItemModel()
 
 void DesktopItemModel::refreshInternal()
 {
+    m_items_need_relayout.clear();
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
     //removeRows(0, m_files.count());
@@ -526,6 +512,16 @@ void DesktopItemModel::onEnumerateFinished()
         });
         asyncJob->queryAsync();
     }
+}
+
+void DesktopItemModel::clearFloatItems()
+{
+    m_items_need_relayout.clear();
+}
+
+void DesktopItemModel::relayoutAddedItems()
+{
+    PeonyDesktopApplication::getIconView()->relayoutExsitingItems(m_items_need_relayout);
 }
 
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)
@@ -726,6 +722,7 @@ void DesktopItemModel::refresh()
 {
     m_desktop_info = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     auto infoJob = new FileInfoJob(m_desktop_info);
+    infoJob->setAutoDelete();
     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
         refreshInternal();
     });

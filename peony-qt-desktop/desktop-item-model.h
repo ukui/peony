@@ -87,6 +87,8 @@ public Q_SLOTS:
 
 protected Q_SLOTS:
     void onEnumerateFinished();
+    void clearFloatItems();
+    void relayoutAddedItems();
 
 private:
     FileEnumerator *m_enumerator;
@@ -99,10 +101,8 @@ private:
     std::shared_ptr<FileWatcher> m_system_app_watcher;
     std::shared_ptr<FileWatcher> m_andriod_app_watcher;
 
-    QQueue<QString> m_info_query_queue;
     QQueue<QString> m_new_file_info_query_queue;
 
-    QString m_last_deleted_item_uri;
     QStringList m_items_need_relayout;
     UserdirManager * m_dir_manager;
 

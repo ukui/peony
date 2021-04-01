@@ -269,7 +269,7 @@ void FileItem::findChildrenAsync()
                         }
                     });
 
-                    connect(job, &FileInfoJob::infoUpdated, this, [=](){
+                    connect(job, &FileInfoJob::infoUpdated, child, [=](){
                         m_model->dataChanged(child->firstColumnIndex(), child->lastColumnIndex());
                     });
 
