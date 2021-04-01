@@ -81,7 +81,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         infoJob->queryAsync();
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
-        m_icon_name = FileUtils::getFileIconName(uri,false);
+        m_icon_name = FileUtils::getFileIconName(uri, false);
     }
 }
 
