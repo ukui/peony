@@ -1281,6 +1281,8 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
             updateItemPosByUri(uri, pos);
         }
     }
+    m_model->relayoutAddedItems();
+    clearAllIndexWidgets();
 }
 
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
@@ -1293,6 +1295,8 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 //                updateItemPosByUri(uri, pos);
 //        }
 //    });
+    m_model->relayoutAddedItems();
+    clearAllIndexWidgets();
 }
 
 bool DesktopIconView::isItemsOverlapped()
@@ -1472,6 +1476,9 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
     }
 
     resetAllItemPositionInfos();
+    if (m_model) {
+        m_model->clearFloatItems();
+    }
 }
 
 DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
@@ -1633,6 +1640,7 @@ void DesktopIconView::dragMoveEvent(QDragMoveEvent *e)
 
 void DesktopIconView::dropEvent(QDropEvent *e)
 {
+    m_model->clearFloatItems();
     m_real_do_edit = false;
     //qDebug()<<"drop event";
     /*!

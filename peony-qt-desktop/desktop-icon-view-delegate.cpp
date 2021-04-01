@@ -354,9 +354,12 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     });
 
     getView()->setEditFlag(true);
-    connect(edit, &IconViewEditor::returnPressed, [=]() {
+    connect(edit, &IconViewEditor::returnPressed, getView(), [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
+        getView()->setEditFlag(false);
+    });
+    connect(edit, &IconViewEditor::destroyed, getView(), [=](){
         getView()->setEditFlag(false);
     });
 
