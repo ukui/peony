@@ -150,6 +150,11 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                 auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
                 this->collapse(leftIndex);
                 item->ejectOrUnmount();
+            } else {
+                // if item is not unmountable, just be same with first column.
+                // fix #39716
+                if (!item->uri().isNull())
+                    Q_EMIT this->updateWindowLocationRequest(item->uri());
             }
             break;
         }
