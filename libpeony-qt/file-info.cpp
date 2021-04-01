@@ -256,11 +256,12 @@ const QString FileInfo::displayName()
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
-    if(!isMountPoint ||                /*@m_uri is like "computer:///xxx"*/
-       unixDevice.isEmpty() ||
-       !unixDevice.contains("/dev") || /*audio-cd*/
-       unixDevice.contains("/dev/sr")) { /*blank-cd or blank-dvd*/
-        return m_display_name;
+    if((nullptr != m_display_name)
+            && (!isMountPoint
+                || unixDevice.isEmpty()  /*@m_uri is like "computer:///xxx"*/
+                || !unixDevice.contains("/dev")  /*audio-cd*/
+                || unixDevice.contains("/dev/sr"))) { /*blank-cd or blank-dvd*/
+         return m_display_name;
     } else if (nullptr != m_uri) {
         QString uri = m_uri;
         if (m_uri.endsWith("/") && !m_uri.endsWith(":///") && !m_uri.endsWith("://")) {
@@ -268,6 +269,7 @@ const QString FileInfo::displayName()
         }
         return uri.split("/").last();
     }
+
 
 
     mountDir.setPath(m_uri.mid(7));

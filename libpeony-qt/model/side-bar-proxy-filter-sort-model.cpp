@@ -43,6 +43,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 {
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
         if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
@@ -69,12 +70,19 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 
                 //FIXME: replace BLOCKING api in ui thread.
                 auto gvfsFileInfo = FileInfo::fromUri(item->uri());
-                if (gvfsFileInfo->displayName().isEmpty()) {
+                if (gvfsFileInfo->displayName().isEmpty() || gvfsFileInfo->targetUri().isEmpty()) {
                         FileInfoJob j(gvfsFileInfo);
                         j.querySync();
                 }
                 QString gvfsDisplayName = gvfsFileInfo->displayName();
                 QString gvfsUnixDevice = gvfsFileInfo->unixDeviceFile();
+
+                // FIX bug 43701 This filters out mounted FTP file systems
+                if (!gvfsUnixDevice.isNull()
+                        && (gvfsFileInfo->targetUri().startsWith("ftp://")
+                            || gvfsFileInfo->targetUri().startsWith("ftp://")))
+                    return true;
+
                 if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
                     return false;//Filter some non-mountable drive items
 
