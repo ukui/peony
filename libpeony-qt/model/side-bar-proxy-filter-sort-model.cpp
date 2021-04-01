@@ -89,6 +89,11 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             }
         }
     }
+
+    //special Volumn of 839 M upgrade part not show process
+    if (item->uri().startsWith("file:///media/") && item->uri().endsWith("/2691-6AB8"))
+        return false;
+
     return true;
 }
 
