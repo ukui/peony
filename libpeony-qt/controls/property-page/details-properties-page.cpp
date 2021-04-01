@@ -32,6 +32,7 @@
 #include <QImageReader>
 #include <QtNetwork/QHostInfo>
 #include "global-settings.h"
+#include "file-watcher.h"
 
 using namespace Peony;
 
@@ -42,6 +43,9 @@ using namespace Peony;
 DetailsPropertiesPage::DetailsPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uri;
+
+    m_watcher = std::make_shared<FileWatcher>(m_uri);
+    m_watcher->startMonitor();
 
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0,10,0,0);
@@ -238,6 +242,10 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
 
     m_tableWidget->hideRow(m_tableWidget->rowCount() - 1);
     this->updateFileInfo(m_uri);
+
+    connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
+        this->updateFileInfo(m_uri);
+    });
 
 }
 
