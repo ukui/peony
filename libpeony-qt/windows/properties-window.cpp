@@ -327,6 +327,7 @@ void PropertiesWindow::initStatusBar()
     statusBar->setLayout(bottomToolLayout);
 
     this->setStatusBar(statusBar);
+    statusBar->setSizeGripEnabled(false);
 
     //set cancelButton event process
     connect(cancelButton, &QPushButton::clicked, this, &QMainWindow::close);
