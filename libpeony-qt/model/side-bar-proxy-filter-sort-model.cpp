@@ -66,6 +66,11 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 //    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
+            //special Volumn of 839 M upgrade part not show process
+            auto targetUri = FileUtils::getTargetUri(item->uri());
+            if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
+                return false;
+
             if (item->uri() != "computer:///root.link") {
 
                 //FIXME: replace BLOCKING api in ui thread.
@@ -97,10 +102,6 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             }
         }
     }
-
-    //special Volumn of 839 M upgrade part not show process
-    if (item->uri().startsWith("file:///media/") && item->uri().endsWith("/2691-6AB8"))
-        return false;
 
     return true;
 }
