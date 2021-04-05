@@ -35,6 +35,9 @@
 #include "vfs-plugin-manager.h"
 #include "side-bar-vfs-item.h"
 
+#include "side-bar-single-item.h"
+#include "file-utils.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -67,6 +70,11 @@ SideBarModel::SideBarModel(QObject *parent)
 //    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator2);
 
+    if (FileUtils::isFileExsit("file:///data/usershare")) {
+        SideBarSingleItem *userShareItem = new SideBarSingleItem("file:///data/usershare", nullptr, tr("Shared Data"), this);
+        m_root_children->append(userShareItem);
+    }
+
     SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
     m_root_children->append(personal_root_item);
     //personal_root_item->findChildren();
@@ -79,6 +87,9 @@ SideBarModel::SideBarModel(QObject *parent)
             this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
+
+    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+    m_root_children->append(networkItem);
 
     endResetModel();
 
