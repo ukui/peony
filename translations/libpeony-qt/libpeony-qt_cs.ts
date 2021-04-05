@@ -97,52 +97,52 @@
 <context>
     <name>Format_Dialog</name>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="14"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="20"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="26"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="32"/>
         <source>rom_size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="39"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="45"/>
         <source>system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="53"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="59"/>
         <source>ntfs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="58"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="64"/>
         <source>vfat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="63"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="69"/>
         <source>ext4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="77"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="83"/>
         <source>device_name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="103"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="109"/>
         <source>clean it total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="116"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="122"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="129"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.ui" line="135"/>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="504"/>
         <source>close</source>
         <translation type="unfinished"></translation>
@@ -786,95 +786,95 @@
 <context>
     <name>Peony::DetailsPropertiesPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="170"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="174"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="173"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="177"/>
         <source>File type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="189"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="193"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="203"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="210"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="207"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="214"/>
         <source>yyyy-MM-dd, HH:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="195"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="199"/>
         <source>Create time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="200"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="204"/>
         <source>Modify time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="208"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="212"/>
         <source>yyyy-MM-dd, hh:mm:ss AP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="217"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="221"/>
         <source>File size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="223"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="227"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="226"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="230"/>
         <source>Height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="233"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="237"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="234"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="238"/>
         <source>Owner:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="236"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="240"/>
         <source>Computer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="237"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="241"/>
         <source>Computer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="273"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="281"/>
         <source>%1 (this computer)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="275"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="283"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="304"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="305"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="312"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="313"/>
         <source>Can&apos;t get remote file information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="314"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="315"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="322"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="323"/>
         <source>%1 px</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2030,27 +2030,27 @@ Do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="280"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="281"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="304"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="305"/>
         <source>File System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="375"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="376"/>
         <source>&amp;Copy Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="377"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="378"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="381"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="382"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2441,6 +2441,19 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/controls/menu/side-bar-menu/side-bar-menu.cpp" line="175"/>
         <source>format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Peony::SideBarModel</name>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="74"/>
+        <source>Shared Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="91"/>
+        <source>Network</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2882,47 +2895,47 @@ Do you want to unmount forcely?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="244"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="273"/>
         <source>favorite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="311"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="340"/>
         <source>Operation not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="394"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="434"/>
         <source>The virtual file system does not support folder creation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="463"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="503"/>
         <source>Can not create a symbolic file for vfs location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="470"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="510"/>
         <source>Symbolic Link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="482"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="522"/>
         <source>Can not create symbolic file here, %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="543"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="551"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="583"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="591"/>
         <source>The virtual file system cannot be opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="381"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="409"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="424"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="501"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="519"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="421"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="449"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="464"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="541"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="559"/>
         <source>Virtual file directories do not support move and copy operations</source>
         <translation type="unfinished"></translation>
     </message>
