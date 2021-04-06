@@ -313,6 +313,11 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
             if (!_name_string.isEmpty()) {
                 info->m_display_name = _name_string;
             }
+            else {
+                _name_string = desktop_file.value("Name").toString();
+                if (!_name_string.isEmpty())
+                    info->m_display_name = _name_string;
+            }
             m_info->m_mutex.unlock();
             info->updated();
             return;
