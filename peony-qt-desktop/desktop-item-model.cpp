@@ -469,7 +469,11 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             return info->displayName();
         }
     case Qt::ToolTipRole:
-        return info->displayName();
+        if (m_userName == info->displayName()) {
+            return tr("My Document");
+        } else {
+            return info->displayName();
+        }
     case Qt::DecorationRole: {
         //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
