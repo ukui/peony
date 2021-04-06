@@ -184,6 +184,14 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             }
         }
 
+//        if (index.isValid()) {
+//            //! \note 针对mdm禁用后的快捷方式不弹出右键
+//            auto model = static_cast<DesktopItemModel*>(PeonyDesktopApplication::getIconView()->model());
+//            auto info = FileInfo::fromUri(model->data(index, DesktopItemModel::Role::UriRole).toString());
+//            if (info->isExecDisable())
+//                return;
+//        }
+
         QTimer::singleShot(1, [=]() {
             DesktopMenu menu(PeonyDesktopApplication::getIconView());
             if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {

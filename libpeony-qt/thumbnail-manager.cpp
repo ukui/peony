@@ -185,12 +185,21 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
         //qDebug()<<url;
     }
 
-    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-    if (!_desktop_file) {
-        return;
-    }
+//    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+//    if (!_desktop_file) {
+//        return;
+//    }
 
-    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+//    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+    //! \note add for mdm
+    //! mdm禁用应用会把可执行文件的属性改为不可执行，g_desktop_app_info_new_from_filename会
+    //! 认为这个desktop文件不是快捷方式，导致图标变为默认图标
+    if (!uri.endsWith(".desktop") || !QFile(url.path()).exists())
+        return;
+    QSettings desktop_file(url.path(), QSettings::IniFormat);
+    desktop_file.beginGroup("Desktop Entry");
+    QString _icon_string = desktop_file.value("Icon").toString();
+
     thumbnail = QIcon::fromTheme(_icon_string);
     QString string = _icon_string;
 
@@ -229,8 +238,8 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
             thumbnail = QIcon(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(_icon_string).arg("svg"));
     }
 
-    g_free(_icon_string);
-    g_object_unref(_desktop_file);
+//    g_free(_icon_string);
+//    g_object_unref(_desktop_file);
 
     if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);
@@ -375,5 +384,6 @@ const QIcon ThumbnailManager::tryGetThumbnail(const QString &uri)
     m_semaphore->acquire();
     auto icon = m_hash.value(uri);
     m_semaphore->release();
+
     return icon;
 }
