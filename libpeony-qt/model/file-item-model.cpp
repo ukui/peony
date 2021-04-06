@@ -430,13 +430,19 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     QMimeData* data = QAbstractItemModel::mimeData(indexes);
     //set urls data URLs correspond to the MIME type text/uri-list.
     QList<QUrl> urls;
+    QStringList uris;
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
         QUrl url = item->m_info->uri();
-        if (!urls.contains(url))
+        if (!urls.contains(url)) {
             urls<<url;
+            uris<<item->uri();
+        }
     }
     data->setUrls(urls);
+    auto string = uris.join(" ");
+    data->setData("peony-qt/encoded-uris", string.toUtf8());
+    data->setText(string);
     return data;
 }
 
@@ -488,7 +494,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))
     //fix drag file to folder symbolic fail issue
-    if (! info->isDir())
+    if (! info->isDir() && ! destDirUri.startsWith("trash:///"))
         return false;
 
     //NOTE:
@@ -500,13 +506,24 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     }
 
     QStringList srcUris;
-    for (auto url : urls) {
-        //can not drag file from recent
-        if (url.url().startsWith("recent://"))
-            return false;
-        srcUris<<url.url();
+    if (data->hasFormat("peony-qt/encoded-uris")) {
+        srcUris = data->text().split(" ");
+        for (QString uri : srcUris) {
+            if (uri.startsWith("recent://"))
+                srcUris.removeOne(uri);
+        }
+    } else {
+        for (auto url : urls) {
+            //can not drag file from recent
+            if (url.url().startsWith("recent://"))
+                return false;
+            srcUris<<url.url();
+        }
     }
+
     srcUris.removeDuplicates();
+    if (srcUris.isEmpty())
+        return false;
 
     //can not drag file to recent
     if (destDirUri.startsWith("recent://"))
