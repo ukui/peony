@@ -1,3 +1,9 @@
+peony (3.0.3-2+0406) v101; urgency=medium
+
+   *Fix: icon and displayname error when desktop file disable. #46784
+
+ -- wangweinan <wangweinan@kylinos.cn>  Tue, 06 Apr 2021 09:29:31 +0800
+
 peony (3.0.3-2+0330) v101; urgency=medium
 
    *Fix: the empty cdrom can not format. #44643
