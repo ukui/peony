@@ -68,6 +68,8 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
             //special Volumn of 839 M upgrade part not show process
             auto targetUri = FileUtils::getTargetUri(item->uri());
+            if (targetUri == "")
+                targetUri = item->uri();
             if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
                 return false;
 

@@ -168,6 +168,13 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         }
         //regExp
 
+        //special Volumn of 839 M upgrade part not show process
+        auto targetUri = FileUtils::getTargetUri(item->uri());
+        if (targetUri == "")
+            targetUri = item->uri();
+        if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
+            return false;
+
         //check the file info filter conditions
         //qDebug()<<"start filter conditions check"<<item->m_info->displayName()<<item->m_info->type();
         if (! checkFileTypeFilter(item->m_info->type()))
