@@ -300,6 +300,19 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         QUrl url = info->uri();
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
         if (!desktop_info) {
+            //! \note add for mdm
+            //! mdm将应用禁用后快捷方式的可执行路径会被改成不可执行，g_desktop_app_info_new_from_filename会
+            //! 认为这个文件不是一个快捷方式因此displayName会是文件本身的名字
+            if (!info->uri().endsWith(".desktop") || !QFile(url.path()).exists())
+                return;
+            QSettings desktop_file(url.path(), QSettings::IniFormat);
+            desktop_file.setIniCodec("UTF8");
+            desktop_file.beginGroup("Desktop Entry");
+            QString key = "Name[" + QLocale::system().name() + "]";
+            QString _name_string = desktop_file.value(key).toString();
+            if (!_name_string.isEmpty()) {
+                info->m_display_name = _name_string;
+            }
             m_info->m_mutex.unlock();
             info->updated();
             return;
