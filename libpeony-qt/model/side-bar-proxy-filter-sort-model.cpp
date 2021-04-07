@@ -73,6 +73,10 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
                 return false;
 
+            //fix side bar show kylin box issue, bug#45781
+            if (targetUri.startsWith("file:///home/"))
+                return false;
+
             if (item->uri() != "computer:///root.link") {
 
                 //FIXME: replace BLOCKING api in ui thread.
