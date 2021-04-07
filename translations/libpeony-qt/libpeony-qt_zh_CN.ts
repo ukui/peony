@@ -54,50 +54,50 @@
 <context>
     <name>FileLabelModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="393"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="39"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="391"/>
         <source>Red</source>
         <translation>红色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="394"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="392"/>
         <source>Orange</source>
         <translation>橙色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="395"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="393"/>
         <source>Yellow</source>
         <translation>黄色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="396"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="394"/>
         <source>Green</source>
         <translation>绿色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="397"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="395"/>
         <source>Blue</source>
         <translation>蓝色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="398"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="396"/>
         <source>Purple</source>
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="399"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="397"/>
         <source>Gray</source>
         <translation>灰色</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="47"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="400"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="398"/>
         <source>Transparent</source>
         <translation>透明</translation>
     </message>
@@ -106,14 +106,14 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Label or color is duplicated.</source>
         <translation>标签或者颜色重复</translation>
     </message>
@@ -783,13 +783,13 @@
         <translation>文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="140"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="142"/>
         <source>NewFolder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="159"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="192"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="161"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="194"/>
         <source>Create file error</source>
         <translation>创建文件错误</translation>
     </message>
@@ -2122,10 +2122,16 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件重命名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="197"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="236"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="122"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="214"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="253"/>
         <source>Rename file error</source>
         <translation>重命名文件错误</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="124"/>
+        <source>is not as the name of file</source>
+        <translation>不能作为文件名</translation>
     </message>
 </context>
 <context>

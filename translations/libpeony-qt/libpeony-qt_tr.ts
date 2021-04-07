@@ -54,50 +54,50 @@
 <context>
     <name>FileLabelModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="393"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="39"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="391"/>
         <source>Red</source>
         <translation>Kırmızı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="394"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="40"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="392"/>
         <source>Orange</source>
         <translation>Turuncu</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="395"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="41"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="393"/>
         <source>Yellow</source>
         <translation>Sarı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="396"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="42"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="394"/>
         <source>Green</source>
         <translation>Yeşil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="397"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="43"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="395"/>
         <source>Blue</source>
         <translation>Mavi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="398"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="44"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="396"/>
         <source>Purple</source>
         <translation>Mor</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="399"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="45"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="397"/>
         <source>Gray</source>
         <translation>Gri</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="47"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="400"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="46"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="398"/>
         <source>Transparent</source>
         <translation>Şeffaf</translation>
     </message>
@@ -106,14 +106,14 @@
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="114"/>
-        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="337"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="113"/>
+        <location filename="../../libpeony-qt/model/file-label-model.cpp" line="336"/>
         <source>Label or color is duplicated.</source>
         <translation>Etiket veya renk yinelendi.</translation>
     </message>
@@ -783,13 +783,13 @@
         <translation type="unfinished">Dosya oluştur</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="140"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="142"/>
         <source>NewFolder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="159"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="192"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="161"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="194"/>
         <source>Create file error</source>
         <translation type="unfinished">Dosya oluşturma hatası</translation>
     </message>
@@ -2114,10 +2114,16 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="obsolete">Dosyayı yeniden isimlendir</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="197"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="236"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="122"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="214"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="253"/>
         <source>Rename file error</source>
         <translation type="unfinished">Dosya yeniden adlandırma hatası</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="124"/>
+        <source>is not as the name of file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -122,6 +122,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri, true);
+        if (!info->isDir() && !fileIsExists(uri)) {
+            return;
+        }
         bool exsited = false;
         for (auto file : m_files) {
             if (file->uri() == info->uri()) {
@@ -809,6 +812,34 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
     auto view = PeonyDesktopApplication::getIconView();
     view->viewport()->update(view->viewport()->rect());
+}
+
+
+/*
+* 重命名desktop文件，会产生类似下面的临时文件
+* /home/kylin/桌面/sdfsd.desktop.1UID10
+* 为了避免最桌面上面显示该临时文件，需要对此进行过滤
+*/
+bool DesktopItemModel::fileIsExists(const QString &uri)
+{
+    QUrl url = uri;
+    QString fileName = url.fileName();
+
+    QStringList list = fileName.split(".");
+    if (list.count() >= 3 && list[list.count() - 2] == "desktop") {
+       int loop = 3;
+       while (loop--) {
+           ::usleep(1500);
+           //qDebug()<<"loop"<<loop <<"path" << url.path();
+           QFileInfo fileInfo(url.path());
+           if (!fileInfo.exists()) {
+               qDebug()<< url.path() <<"is not exist" ;
+               return false;
+           }
+       }
+    }
+
+    return true;
 }
 
 static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2)
