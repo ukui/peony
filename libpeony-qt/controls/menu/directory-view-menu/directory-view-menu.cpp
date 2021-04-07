@@ -681,9 +681,9 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             else if (m_is_recent)
             {
                 //fix recent files can not be deleted issue
-                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
                 connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    FileOperationUtils::remove(m_selections);
                 });
             }
 
