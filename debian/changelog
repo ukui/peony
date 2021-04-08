@@ -1,3 +1,9 @@
+peony (3.0.3-2+0408) v101; urgency=medium
+
+   *Feature: it will tell to ukui-session
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 08 Apr 2021 09:29:31 +0800
+
 peony (3.0.3-2+0406) v101; urgency=medium
 
    *Fix: icon and displayname error when desktop file disable. #46784
