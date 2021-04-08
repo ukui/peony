@@ -31,6 +31,13 @@
 #include <QFile>
 
 #include <QStandardPaths>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDBusInterface>
+
+#define UKUI_SERVICE    "org.gnome.SessionManager"
+#define UKUI_PATH   "/org/gnome/SessionManager"
+#define UKUI_INTERFACE    "org.gnome.SessionManager"
 
 void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -94,6 +101,14 @@ int main(int argc, char *argv[])
     PeonyDesktopApplication a(argc, argv);
     if (a.isSecondary())
         return 0;
+
+    QDBusInterface interface(UKUI_SERVICE,
+                                 UKUI_PATH,
+                                 UKUI_INTERFACE,
+                                 QDBusConnection::sessionBus());
+
+    interface.call("startupfinished","peony-qt-desktop","finish");
+    PEONY_DESKTOP_LOG_WARN("peony desktop end#######################");
 
     return a.exec();
 }
