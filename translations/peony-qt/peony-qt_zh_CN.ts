@@ -20,7 +20,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/windows/about-dialog.ui" line="109"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>标签</translation>
     </message>
     <message>
         <source>Offical Website: </source>
@@ -36,14 +36,27 @@ p, li { white-space: pre-wrap; }
         <translation>服务与支持团队: </translation>
     </message>
     <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
+        <source>Peony</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <source>peony</source>
+        <translation type="vanished">文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
+        <source>Peony is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
+        <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
+    </message>
+    <message>
         <source>Hot Service: </source>
         <translation type="vanished">服务热线: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
         <source>File Manager</source>
-        <translation>文件管理器</translation>
+        <translation type="vanished">文件管理器</translation>
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.cpp" line="85"/>
@@ -51,9 +64,8 @@ p, li { white-space: pre-wrap; }
         <translation>版本号: %1</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
-        <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
+        <translation type="vanished">文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.cpp" line="115"/>
@@ -230,18 +242,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="168"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="173"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="184"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="218"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="189"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="223"/>
         <source>Can not open %1, %2</source>
         <translation>无法打开%1, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="207"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
@@ -253,7 +265,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="387"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="392"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>

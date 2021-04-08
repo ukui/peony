@@ -66,7 +66,7 @@ void AboutDialog::initUI()
     ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
 
 //    ui->titleLabel->setFont(font14);
-    ui->titleLabel->setText(tr("File Manager"));
+    ui->titleLabel->setText(tr("Peony"));
 
     ui->closeBtn->setFlat(true);
 	ui->closeBtn->setPalette(palette);
@@ -78,7 +78,7 @@ void AboutDialog::initUI()
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
 
 //    ui->nameLabel->setFont(font18);
-    ui->nameLabel->setText(tr("File Manager"));
+    ui->nameLabel->setText(tr("Peony"));
 
 //    ui->versionLabel->setFont(font14);
     ui->versionLabel->setStyleSheet("color:#595959;");
@@ -88,7 +88,7 @@ void AboutDialog::initUI()
 	ui->briefTextedit->setReadOnly(true);
     ui->briefTextedit->setStyleSheet("color:#595959;");
 	textCursor = ui->briefTextedit->textCursor();	//before the setText().
-    ui->briefTextedit->setText(tr("File manager is a graphical software to help users manage system files. "
+    ui->briefTextedit->setText(tr("Peony is a graphical software to help users manage system files. "
                                 "It provides common file operation functions for users, such as file viewing, "
                                 "file copy, paste, cut, delete, rename, file selection, application opening, "
                                 "file search, file sorting, file preview, etc. it is convenient for users to "
