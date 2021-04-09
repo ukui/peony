@@ -616,6 +616,17 @@ void DesktopIconView::initShoutCut()
         //qDebug() << "show hidden";
         this->setShowHidden();
     });
+
+    auto cancelAction = new QAction(this);
+    cancelAction->setShortcut(Qt::Key_Escape);
+    connect(cancelAction, &QAction::triggered, [=]() {
+        if (Peony::ClipboardUtils::isClipboardHasFiles())
+        {
+            Peony::ClipboardUtils::clearClipboard();
+            this->update();
+        }
+    });
+    addAction(cancelAction);
 }
 
 void DesktopIconView::initMenu()

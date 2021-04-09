@@ -120,7 +120,8 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
-    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+    if (ClipboardUtils::isClipboardHasFiles() &&
+        FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(index.data(FileItemModel::UriRole).toString())) {
@@ -129,6 +130,8 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             }
         }
     }
+    else
+       painter->setOpacity(1.0);
 
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);

@@ -105,18 +105,18 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
 
-    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+    if (ClipboardUtils::isClipboardHasFiles() &&
+        FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(index.data(Qt::UserRole).toString())) {
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
-            else{
-                painter->setOpacity(1);
-            }
         }
     }
+    else
+        painter->setOpacity(1.0);
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 

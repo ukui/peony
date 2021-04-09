@@ -999,6 +999,13 @@ void MainWindow::setSortFolderFirst()
 void MainWindow::forceStopLoading()
 {
     m_tab->stopLoading();
+
+    //Key_escape also use as cancel
+    if (Peony::ClipboardUtils::isClipboardHasFiles())
+    {
+        Peony::ClipboardUtils::clearClipboard();
+        update();
+    }
 }
 
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
