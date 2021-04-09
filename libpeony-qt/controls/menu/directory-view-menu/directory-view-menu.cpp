@@ -47,10 +47,10 @@
 
 #include "properties-window.h"
 
+#include "windows/format_dialog.h"
 #include "file-launch-manager.h"
 #include "file-launch-action.h"
 #include "file-lauch-dialog.h"
-
 #include "file-operation-error-dialog.h"
 #include "file-enumerator.h"
 #include "gerror-wrapper.h"
@@ -755,22 +755,30 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
 {
     QList<QAction *> l;
 
-    if (m_is_computer) {
-        /*
-        //FIXME: get the volume state and add action dynamicly.
-        if (m_selections.count() == 1) {
-            l<<addAction(tr("&Umount"));
-            connect(l.last(), &QAction::triggered, [=](){
-                VolumeManager::unmount(m_selections.first());
-            });
-            l<<addAction(tr("&Format"));
-            connect(l.last(), &QAction::triggered, [=](){
-                //FIXME:
-                //add format function?
-                //maybe put it in plugin...
-            });
+    if (m_is_computer && m_selections.count() == 1) {
+        auto uri = m_selections.first();
+
+        auto info = FileInfo::fromUri(uri);
+        if (info->displayName().isEmpty() || info->targetUri().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
         }
-        */
+
+        auto mount = VolumeManager::getMountFromUri(info->targetUri());
+        if (nullptr != mount) {
+            if (!uri.startsWith("burn:///") && !(uri.startsWith("file:///media") && uri.endsWith("CDROM"))
+                    && info->isVolume() && info->canUnmount()) {
+                l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=] () {
+                    // FIXME:// refactory Format_Dialog
+                    Format_Dialog* fd  = new Format_Dialog(info->uri(), nullptr, m_view);
+                    fd->show();
+                });
+
+                if (!mount) {
+                    l.last()->setEnabled(false);
+                }
+            }
+        }
     }
 
     return l;
@@ -862,7 +870,7 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
                 {
                     QMessageBox::warning(nullptr,
                                          tr("Error"),
-                                         tr("File:\"%1\ is not exist, did you moved or deleted it?").arg(QUrl(uri).path()));
+                                         tr("File:\"%1\" is not exist, did you moved or deleted it?").arg(QUrl(uri).path()));
                 }
             }
         });
