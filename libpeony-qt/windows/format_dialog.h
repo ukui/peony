@@ -23,18 +23,16 @@
 #ifndef FORMAT_DIALOG_H
 #define FORMAT_DIALOG_H
 
-#include <QDialog>
-#include <sys/stat.h>
-#include <udisks/udisks.h>
-#include <libnotify/notify.h>
-#include <glib/gi18n.h>
 #include <QTimer>
 #include <errno.h>
+#include <QDialog>
+#include <sys/stat.h>
+#include <glib/gi18n.h>
+#include <udisks/udisks.h>
+#include <libnotify/notify.h>
 
-#include "side-bar-menu.h"
-#include "volume-manager.h"
-#include "file-utils.h"
-#include "side-bar-abstract-item.h"
+#include "peony-core_global.h"
+
 namespace Ui {
 class Format_Dialog;
 }
@@ -61,7 +59,7 @@ struct CreateformatData{
 };
 
 
-class Format_Dialog : public QDialog
+class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
 
