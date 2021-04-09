@@ -890,6 +890,9 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
     locationChangeStart();
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
+
+    m_label_box->clearSelection();
+    Q_EMIT m_label_box->leftClickOnBlank();
 }
 
 void MainWindow::updateSearch(const QString &uri, const QString &key, bool updateKey)
