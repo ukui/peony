@@ -313,7 +313,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestUpdateItemPositions();
                     QStringList list;
                     list.append(info->uri());
-                    FileOperationUtils::trash(list, false);
+                    FileOperationUtils::remove(list);
                 }
             }
         }
