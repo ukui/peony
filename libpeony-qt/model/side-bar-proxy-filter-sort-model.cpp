@@ -71,6 +71,11 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
                 return false;
 
+            //hide data volumn if /data/usershare exsited.
+            if (targetUri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
+                return false;
+            }
+
             if (item->uri() != "computer:///root.link") {
 
                 //FIXME: replace BLOCKING api in ui thread.
