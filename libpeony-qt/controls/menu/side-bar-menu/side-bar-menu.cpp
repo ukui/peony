@@ -37,6 +37,7 @@
 #include <format_dialog.h>
 
 #include <QDebug>
+#include <volume-manager.h>
 
 using namespace Peony;
 

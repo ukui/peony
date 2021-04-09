@@ -20,11 +20,15 @@
  *
  */
 
+#include "file-utils.h"
 #include "format_dialog.h"
+#include "side-bar-menu.h"
+#include "volume-manager.h"
 #include "ui_format_dialog.h"
+#include "side-bar-abstract-item.h"
 
-#include <QMessageBox>
 #include <QObject>
+#include <QMessageBox>
 #include <KWindowSystem>
 
 using namespace  Peony;
