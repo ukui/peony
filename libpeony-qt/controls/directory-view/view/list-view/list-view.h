@@ -113,6 +113,8 @@ public Q_SLOTS:
     void reportViewDirectoryChanged();
     void adjustColumnsSize();
 
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
@@ -128,7 +130,8 @@ protected:
 
     void resizeEvent(QResizeEvent *e) override;
 
-//    void updateGeometries() override;
+    void updateGeometries() override;
+    void reUpdateScrollBar();
 
     void wheelEvent (QWheelEvent *e) override;
 
@@ -138,6 +141,7 @@ protected:
 
 private Q_SLOTS:
     void slotRename();
+
 private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;

@@ -239,12 +239,9 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
-    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-//    auto colors = info->getColors();
-    //fix color labels over 2 will overlap with item issue
-
-//    if (FileLabelModel::getGlobalModel()->getFileColors(index.data(Qt::UserRole).toString()).count() >2)
-//    size.setHeight( size.height() + 20);
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    int expectedHeight = view->iconSize().height() + 4;
+    size.setHeight(qMax(expectedHeight, size.height()));
     return size;
 }
 
