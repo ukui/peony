@@ -419,6 +419,17 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
         getView()->setRenaming(true);
+
+        //select file when rename finished
+        connect(renameOp, &FileRenameOperation::operationFinished, getView(), [=](){
+            auto info = renameOp->getOperationInfo().get();
+            auto uri = info->target();
+            QTimer::singleShot(100, getView(), [=](){
+                getView()->setSelections(QStringList()<<uri);
+                getView()->scrollToSelection(uri);
+            });
+        }, Qt::BlockingQueuedConnection);
+
         fileOpMgr->startOperation(renameOp, true);
     }
 }
