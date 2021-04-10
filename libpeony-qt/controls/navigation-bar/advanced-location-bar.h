@@ -67,6 +67,8 @@ private:
     QString m_last_non_search_path;
     QString m_last_key = "";
 
+    bool m_in_search_mode = false;
+
     const QStringList SPECIAL_CHARS = {"\$", "\|", "\^", "\*"};
 };
 
