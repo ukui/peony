@@ -196,11 +196,20 @@ void ListView::keyPressEvent(QKeyEvent *e)
         m_ctrl_key_pressed = true;
         break;
     case Qt::Key_Up: {
-        verticalScrollBar()->setValue(qMax(0, verticalScrollBar()->value() - iconSize().height()));
+        if (!selectedIndexes().isEmpty()) {
+            QTreeView::scrollTo(selectedIndexes().first());
+        }
         break;
     }
     case Qt::Key_Down: {
-        verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+        if (!selectedIndexes().isEmpty()) {
+            auto index = selectedIndexes().first();
+            if (index.row() + 1 == model()->rowCount()) {
+                verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+            } else {
+                QTreeView::scrollTo(selectedIndexes().first());
+            }
+        }
         break;
     }
     default:
@@ -804,6 +813,9 @@ void ListView::keyboardSearch(const QString &key)
     if (!indexes.isEmpty()) {
         QTreeView::scrollTo(indexes.first(), QTreeView::PositionAtCenter);
         reUpdateScrollBar();
+        if (verticalScrollBar()->value() < viewport()->height()) {
+            return;
+        }
         verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
     }
 }
