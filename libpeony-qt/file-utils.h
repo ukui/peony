@@ -44,6 +44,12 @@ public:
     NO_BLOCKING static GFileWrapperPtr getFileParent(const GFileWrapperPtr &file);
     NO_BLOCKING static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
     NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
+
+
+    /**
+     * @return handled name
+     */
+    BLOCKING static QString handleDuplicateName (const QString& uri);
     BLOCKING static bool getFileHasChildren(const GFileWrapperPtr &file);
     BLOCKING static bool getFileIsFolder(const GFileWrapperPtr &file);
     BLOCKING static bool getFileIsFolder(const QString &uri);
