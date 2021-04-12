@@ -108,10 +108,11 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
 {
-    // FIXME: check index visible, if true, do not trigger scrollTo.
-    // there is a small bug while scroll to last items when view can be scrolled,
-    // which caused by reimplement of scroll bar range calculation.
-    QTreeView::scrollTo(index, QAbstractItemView::EnsureVisible);
+    // Note: due to we rewrite the calculation of view scroll area based on current process,
+    // we could not use QTreeView::scrollTo in some cases because it still based on old process
+    // and will conflict with new calculation.
+    Q_UNUSED(index)
+    Q_UNUSED(hint)
     reUpdateScrollBar();
 }
 
@@ -190,8 +191,21 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 void ListView::keyPressEvent(QKeyEvent *e)
 {
     QTreeView::keyPressEvent(e);
-    if (e->key() == Qt::Key_Control)
+    switch (e->key()) {
+    case Qt::Key_Control:
         m_ctrl_key_pressed = true;
+        break;
+    case Qt::Key_Up: {
+        verticalScrollBar()->setValue(qMax(0, verticalScrollBar()->value() - iconSize().height()));
+        break;
+    }
+    case Qt::Key_Down: {
+        verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void ListView::keyReleaseEvent(QKeyEvent *e)
@@ -488,6 +502,7 @@ void ListView::focusInEvent(QFocusEvent *e)
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
             QTreeView::scrollTo(selectedIndexes().first(), QTreeView::EnsureVisible);
+            reUpdateScrollBar();
             auto selections = selectedIndexes();
             clearSelection();
             QTimer::singleShot(100, this, [=](){
@@ -727,6 +742,7 @@ void ListView::scrollToSelection(const QString &uri)
 {
     auto index = m_proxy_model->indexFromUri(uri);
     QTreeView::scrollTo(index);
+    reUpdateScrollBar();
 }
 
 void ListView::setCutFiles(const QStringList &uris)
@@ -783,6 +799,13 @@ void ListView::keyboardSearch(const QString &key)
     setSelectionMode(QTreeView::SingleSelection);
     QAbstractItemView::keyboardSearch(key);
     setSelectionMode(QTreeView::ExtendedSelection);
+
+    auto indexes = selectedIndexes();
+    if (!indexes.isEmpty()) {
+        QTreeView::scrollTo(indexes.first(), QTreeView::PositionAtCenter);
+        reUpdateScrollBar();
+        verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+    }
 }
 
 //List View 2
