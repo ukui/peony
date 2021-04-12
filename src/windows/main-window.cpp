@@ -1004,7 +1004,7 @@ void MainWindow::forceStopLoading()
     if (Peony::ClipboardUtils::isClipboardHasFiles())
     {
         Peony::ClipboardUtils::clearClipboard();
-        update();
+        this->getCurrentPage()->getView()->repaintView();
     }
 }
 

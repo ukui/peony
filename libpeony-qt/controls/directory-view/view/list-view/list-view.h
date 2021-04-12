@@ -266,6 +266,8 @@ public Q_SLOTS:
 
     void clearIndexWidget();
 
+    void repaintView();
+
 private:
     ListView *m_view = nullptr;
     FileItemModel *m_model = nullptr;

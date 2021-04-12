@@ -850,6 +850,12 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
 }
 
+void ListView2::repaintView()
+{
+    m_view->update();
+    m_view->viewport()->update();
+}
+
 void ListView2::setCurrentZoomLevel(int zoomLevel)
 {
     int base = 16;
