@@ -37,61 +37,9 @@
 
 using namespace Peony;
 
-static void handleDuplicate(FileNode *node) {
-    QString name = node->destBaseName();
-    QRegExp regExpNum("^\\(\\d+\\)");
-    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
-    if (name.contains(regExp)) {
-        int num = 0;
-        QString numStr = "";
-
-        QString ext = regExp.cap(0);
-        if (ext.contains(regExpNum)) {
-            numStr = regExpNum.cap(0);
-        }
-
-        numStr.remove(0, 1);
-        numStr.chop(1);
-        num = numStr.toInt();
-        ++num;
-        name = name.replace(regExp, ext.replace(regExpNum, QString("(%1)").arg(num)));
-        node->setDestFileName(name);
-    } else {
-        if (name.contains(".")) {
-            auto list = name.split(".");
-            if (list.count() <= 1) {
-                node->setDestFileName(name+"(1)");
-            } else {
-                int pos = list.count() - 1;
-                if (list.last() == "gz" |
-                        list.last() == "xz" |
-                        list.last() == "Z" |
-                        list.last() == "sit" |
-                        list.last() == "bz" |
-                        list.last() == "bz2") {
-                    pos--;
-                }
-                if (pos < 0)
-                    pos = 0;
-                //list.insert(pos, "(1)");
-                auto tmp = list;
-                QStringList suffixList;
-                for (int i = 0; i < list.count() - pos; i++) {
-                    suffixList.prepend(tmp.takeLast());
-                }
-                auto suffix = suffixList.join(".");
-
-                auto basename = tmp.join(".");
-                name = basename + "(1)" + "." + suffix;
-                if (name.endsWith("."))
-                    name.chop(1);
-                node->setDestFileName(name);
-            }
-        } else {
-            name = name + "(1)";
-            node->setDestFileName(name);
-        }
-    }
+static void handleDuplicate(FileNode *node)
+{
+    node->setDestFileName(FileUtils::handleDuplicateName(node->destBaseName()));
 }
 
 FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)

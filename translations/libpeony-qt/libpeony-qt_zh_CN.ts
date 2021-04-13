@@ -890,23 +890,23 @@
 <context>
     <name>Peony::CreateTemplateOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="113"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="62"/>
         <source>NewFile</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="129"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="78"/>
         <source>Create file</source>
         <translation>文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="141"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="90"/>
         <source>NewFolder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="160"/>
-        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="193"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="109"/>
+        <location filename="../../libpeony-qt/file-operation/create-template-operation.cpp" line="142"/>
         <source>Create file error</source>
         <translation>创建文件错误</translation>
     </message>
@@ -1536,8 +1536,8 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">文件复制</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="208"/>
-        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="341"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="156"/>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="289"/>
         <source>File copy error</source>
         <translation>文件复制错误</translation>
     </message>
@@ -1846,24 +1846,24 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="215"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="335"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="585"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="163"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="283"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="533"/>
         <source>Move file error</source>
         <translation>移动文件错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="730"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="678"/>
         <source>Create file error</source>
         <translation>创建文件错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="952"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="900"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="967"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="915"/>
         <source>File delete error</source>
         <translation>文件删除错误</translation>
     </message>
@@ -1872,7 +1872,7 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="969"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="917"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -2301,8 +2301,8 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件重命名</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="202"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="241"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="151"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="190"/>
         <source>Rename file error</source>
         <translation>重命名文件错误</translation>
     </message>
@@ -2398,22 +2398,22 @@ Do you want to delete the link file?</source>
         <translation>在%2中搜索%1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="305"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="308"/>
         <source>File System</source>
         <translation>文件系统</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="376"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="378"/>
         <source>&amp;Copy Directory</source>
         <translation>拷贝路径(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="378"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="380"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="382"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="384"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
@@ -3429,6 +3429,14 @@ Do you want to unmount forcely?</source>
         <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
         <source>file not found</source>
         <translation>没有发现该文件</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="106"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="128"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="150"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="157"/>
+        <source>duplicate</source>
+        <translation>副本</translation>
     </message>
 </context>
 </TS>

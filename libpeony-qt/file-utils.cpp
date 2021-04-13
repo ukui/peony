@@ -94,7 +94,71 @@ QString FileUtils::getRelativePath(const GFileWrapperPtr &dir, const GFileWrappe
 GFileWrapperPtr FileUtils::resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath)
 {
     return wrapGFile(g_file_resolve_relative_path(dir.get()->get(),
-                     relativePath.toUtf8().constData()));
+                                                  relativePath.toUtf8().constData()));
+}
+
+QString FileUtils::handleDuplicateName(const QString& uri)
+{
+    QString handledName = nullptr;
+    QString name = QUrl(uri).toDisplayString().split("/").last();
+
+    QRegExp regExpNum("\\(\\d+\\)");
+    QRegExp regExp (QString("\\ -\\ %1\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$").arg(QObject::tr("duplicate")));
+
+    QString dupReg = nullptr;
+
+    if (name.contains(regExp)) {
+        int num = 0;
+        QString numStr = "";
+
+        QString ext = regExp.cap(0);
+        if (ext.contains(regExpNum)) {
+            numStr = regExpNum.cap(0);
+        }
+
+        numStr.remove(0, 1);
+        numStr.chop(1);
+        num = numStr.toInt();
+        ++num;
+        handledName = name.replace(regExp, ext.replace(regExpNum, QString("(%1)").arg(num)));
+    } else {
+        if (name.contains(".")) {
+            auto list = name.split(".");
+            if (list.count() <= 1) {
+                handledName = name + QString(" - %1(1)").arg(QObject::tr("duplicate"));
+            } else {
+                int pos = list.count() - 1;
+                if (list.last() == "gz"
+                        || list.last() == "xz"
+                        || list.last() == "Z"
+                        || list.last() == "sit"
+                        || list.last() == "bz"
+                        || list.last() == "bz2") {
+                    --pos;
+                }
+                if (pos < 0) {
+                    pos = 0;
+                }
+                auto tmp = list;
+                QStringList suffixList;
+                for (int i = 0; i < list.count() - pos; i++) {
+                    suffixList.prepend(tmp.takeLast());
+                }
+                auto suffix = suffixList.join(".");
+
+                auto basename = tmp.join(".");
+                name = basename + QString(" - %1(1)").arg(QObject::tr("duplicate")) + "." + suffix;
+                if (name.endsWith(".")) {
+                    name.chop(1);
+                }
+                handledName = name;
+            }
+        } else {
+            handledName = name + QString(" - %1(1)").arg(QObject::tr("duplicate"));
+        }
+    }
+
+    return handledName;
 }
 
 bool FileUtils::getFileHasChildren(const GFileWrapperPtr &file)
