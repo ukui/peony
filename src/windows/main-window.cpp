@@ -969,6 +969,9 @@ void MainWindow::refresh()
 
 void MainWindow::setLabelNameFilter(QString name)
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     //update filter flag
     if (name == "")
         m_filter_working = false;
@@ -980,18 +983,27 @@ void MainWindow::setLabelNameFilter(QString name)
 
 void MainWindow::setShowHidden()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
 void MainWindow::setUseDefaultNameSortOrder()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_use_default_name_sort_order = ! m_use_default_name_sort_order;
     getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
 }
 
 void MainWindow::setSortFolderFirst()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_folder_first = ! m_folder_first;
     getCurrentPage()->setSortFolderFirst(m_folder_first);
 }
