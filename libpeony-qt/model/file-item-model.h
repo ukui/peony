@@ -55,8 +55,8 @@ public:
     enum ColumnType {
         FileName,
         ModifiedDate,
-        FileSize,
         FileType,
+        FileSize,
         Owner,
         Other
     };

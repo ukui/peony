@@ -178,7 +178,7 @@ QModelIndex FileItemModel::parent(const QModelIndex &child) const
 int FileItemModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return FileType+1;
+    return FileSize+1;
 }
 
 int FileItemModel::rowCount(const QModelIndex &parent) const
