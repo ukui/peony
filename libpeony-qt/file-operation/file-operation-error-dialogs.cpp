@@ -131,11 +131,10 @@ void Peony::FileOperationErrorDialogConflict::setTipFileicon(QString icon)
 void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
     m_error = &error;
-    QString destUrl = error.destDirUri;
 
-    FileInfoJob file(destUrl, nullptr);
-    file.querySync();
-    if (!file.getInfo()->isDir()) {
+    if (FileOpRename == m_error->op) {
+        FileInfoJob file(error.destDirUri, nullptr);
+        file.querySync();
         setTipFileicon(file.getInfo()->iconName());
         setTipFilename(file.getInfo()->displayName());
     } else {
