@@ -21,12 +21,13 @@
  */
 #include "file-operation-error-dialogs.h"
 
+#include <QUrl>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPushButton>
 #include <file-info.h>
-#include <file-info-job.h>
 #include <QHBoxLayout>
+#include <file-info-job.h>
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
@@ -113,7 +114,7 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
 {
     if (!name.isEmpty()) {
-        m_file_name = name;
+        m_file_name = QUrl(name).toDisplayString();
         m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
                        .arg(m_file_name));
     }
