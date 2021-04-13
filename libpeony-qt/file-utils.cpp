@@ -103,7 +103,7 @@ QString FileUtils::handleDuplicateName(const QString& uri)
     QString name = QUrl(uri).toDisplayString().split("/").last();
 
     QRegExp regExpNum("\\(\\d+\\)");
-    QRegExp regExp (QString("\\ -\\ %1\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$").arg(QObject::tr("duplicate")));
+    QRegExp regExp (QString("\\ -\\ %1\\(\\d+\\)(\\.[0-9a-zA-Z\\.]+|)$").arg(QObject::tr("duplicate")));
 
     QString dupReg = nullptr;
 
