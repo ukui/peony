@@ -137,11 +137,15 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 
         l.last()->setEnabled(isMounted);
     }
-    if (m_item->isRemoveable()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("Eject"), [=](){
-            m_item->eject(G_MOUNT_UNMOUNT_NONE);
-        });
+    if(0 != QString::compare(m_uri, "computer:///root.link"))
+    {
+        if (m_item->isRemoveable()) {
+            l<<addAction(QIcon::fromTheme("media-eject"), tr("Eject"), [=](){
+                m_item->eject(G_MOUNT_UNMOUNT_NONE);
+            });
+        }
     }
+    
 
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();
