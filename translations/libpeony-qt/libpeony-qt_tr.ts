@@ -2847,6 +2847,19 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
 </context>
 <context>
+    <name>Peony::SideBarModel</name>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="74"/>
+        <source>Shared Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="91"/>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::SideBarPersonalItem</name>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-personal-item.cpp" line="42"/>

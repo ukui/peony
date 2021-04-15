@@ -216,6 +216,8 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/side-bar-proxy-filter-sort-model.h
   libpeony-qt/model/side-bar-separator-item.cpp
   libpeony-qt/model/side-bar-separator-item.h
+  libpeony-qt/model/side-bar-single-item.cpp
+  libpeony-qt/model/side-bar-single-item.h
 Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 

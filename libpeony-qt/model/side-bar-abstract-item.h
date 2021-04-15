@@ -47,7 +47,8 @@ public:
         PersonalItem,
         FileSystemItem,
         SeparatorItem,
-        VFSItem
+        VFSItem,
+        SingleItem
     };
 
     explicit SideBarAbstractItem(SideBarModel* model, QObject *parent = nullptr);
