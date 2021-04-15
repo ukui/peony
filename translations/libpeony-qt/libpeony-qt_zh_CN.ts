@@ -2864,6 +2864,19 @@ Do you want to delete the link file?</source>
     </message>
 </context>
 <context>
+    <name>Peony::SideBarModel</name>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="74"/>
+        <source>Shared Data</source>
+        <translation>共享数据</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="91"/>
+        <source>Network</source>
+        <translation>网络</translation>
+    </message>
+</context>
+<context>
     <name>Peony::SideBarPersonalItem</name>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-personal-item.cpp" line="42"/>
