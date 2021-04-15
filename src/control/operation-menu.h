@@ -47,7 +47,6 @@ private:
 private:
     MainWindow *m_window;
     OperationMenuEditWidget *m_edit_widget;
-    AboutDialog *m_aboutDialog = nullptr;
 };
 
 class OperationMenuEditWidget : public QWidget

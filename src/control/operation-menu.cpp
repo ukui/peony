@@ -112,10 +112,8 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addAction(/*QIcon::fromTheme("gtk-about"),*/ tr("About"), this, [=]() {
         //PeonyApplication::about();
-        if(!m_aboutDialog)
-            m_aboutDialog = new AboutDialog(m_window);
-
-        m_aboutDialog->exec();
+        AboutDialog dlg (m_window);
+        dlg.exec();
     });
 }
 
