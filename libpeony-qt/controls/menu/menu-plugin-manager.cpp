@@ -21,6 +21,7 @@
  */
 
 #include "menu-plugin-manager.h"
+#include "file-info.h"
 
 //create link
 #include <file-operation-manager.h>
@@ -100,6 +101,9 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
     QList<QAction *> l;
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
         if (selectionUris.count() == 1) {
+            auto select_file_info = FileInfo::fromUri(selectionUris[0]);
+            if(select_file_info->isSymbolLink())
+                return l;
             auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
             auto info = FileInfo::fromUri(selectionUris.first());
             QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
