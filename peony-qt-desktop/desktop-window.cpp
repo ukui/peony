@@ -135,7 +135,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
             setAccountBackground();
         }
         // do not animate while window first create.
-        m_opacity->setCurrentTime(m_opacity->totalDuration());
+        //m_opacity->setCurrentTime(m_opacity->totalDuration());
         return;
     }
 
