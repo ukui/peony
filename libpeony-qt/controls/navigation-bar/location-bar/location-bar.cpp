@@ -300,10 +300,12 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
         if (uri == "file:///") {
-            auto text = FileUtils::getFileDisplayName("computer:///root.link");
-            if (text.isNull()) {
-                text = tr("File System");
-            }
+//            auto text = FileUtils::getFileDisplayName("computer:///root.link");
+//            if (text.isNull()) {
+//                text = tr("File System");
+//            }
+            //fix bug#47597, show as root.link issue
+            QString text = tr("File System");
             button->setText(text);
         } else {
             button->setText(displayName);
@@ -373,7 +375,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
     connect(button, &QWidget::customContextMenuRequested, this, [=](){
         QMenu menu;
         FMWindowIface *windowIface = dynamic_cast<FMWindowIface *>(this->topLevelWidget());
-        auto copy = menu.addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy Directory"));
+        auto copy = menu.addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy Directory"));
 
         menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New Tab"), [=](){
             windowIface->addNewTabs(QStringList()<<uri);

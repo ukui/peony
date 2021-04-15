@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QPalette>
+#include <QScreen>
 
 using namespace Peony;
 
@@ -99,7 +100,15 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     }
 
     if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
-        setValue(DEFAULT_WINDOW_SIZE, QSize(850, 850*0.618));
+        QScreen *screen=qApp->primaryScreen();
+        QRect geometry = screen->availableGeometry() ;
+        int default_width = geometry.width() * 2/3;
+        int default_height =  geometry.height() * 2/3;
+        if (default_width < 850)
+            default_width = 850;
+        if (default_height < 850 *0.618)
+            default_height = 850 *0.618;
+        setValue(DEFAULT_WINDOW_SIZE, QSize(default_width, default_height));
         setValue(DEFAULT_SIDEBAR_WIDTH, 210);
         qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<210;
     }

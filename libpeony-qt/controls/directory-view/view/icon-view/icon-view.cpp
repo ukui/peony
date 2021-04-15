@@ -383,15 +383,30 @@ void IconView::wheelEvent(QWheelEvent *e)
 
 void IconView::updateGeometries()
 {
-    QListView::updateGeometries();
-
-    if (!model())
+    horizontalScrollBar()->setRange(0, 0);
+    if (!model()) {
+        verticalScrollBar()->setRange(0, 0);
         return;
+    }
 
-    if (model()->columnCount() == 0 || model()->rowCount() == 0)
+    if (model()->columnCount() == 0 || model()->rowCount() == 0) {
+        verticalScrollBar()->setRange(0, 0);
         return;
+    }
 
-    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + BOTTOM_STATUS_MARGIN);
+    int itemCount = model()->rowCount();
+    QRegion itemRegion;
+    for (int row = 0; row < itemCount; row++) {
+        auto index = model()->index(row, 0);
+        itemRegion += visualRect(index);
+    }
+    if (itemRegion.boundingRect().bottom() + gridSize().height() < viewport()->height()) {
+        verticalScrollBar()->setRange(0, 0);
+    } else {
+        verticalScrollBar()->setSingleStep(gridSize().height()/2);
+        verticalScrollBar()->setPageStep(viewport()->height());
+        verticalScrollBar()->setRange(0, itemRegion.boundingRect().bottom() - viewport()->height() + gridSize().height());
+    }
 }
 
 void IconView::focusInEvent(QFocusEvent *e)

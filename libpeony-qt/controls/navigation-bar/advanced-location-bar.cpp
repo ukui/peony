@@ -168,13 +168,18 @@ void AdvancedLocationBar::switchEditMode(bool bSearchMode)
         m_layout->setCurrentWidget(m_search_bar);
         m_search_bar->setPlaceholderText(tr("Search Content..."));
         m_search_bar->setFocus();
+        m_in_search_mode = true;
     }
-    else
+    else if(m_in_search_mode)
     {
         //quit search mode, show non search contents
+        if (m_last_key.length() > 0)
+        {
+            Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
+        }
         m_search_bar->setText("");
-        Q_EMIT this->updateWindowLocationRequest(m_last_non_search_path, false);
         m_layout->setCurrentWidget(m_bar);
+        m_in_search_mode = false;
     }
 }
 

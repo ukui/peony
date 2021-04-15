@@ -105,18 +105,18 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
 
-    if (FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+    if (ClipboardUtils::isClipboardHasFiles() &&
+        FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(index.data(Qt::UserRole).toString())) {
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
-            else{
-                painter->setOpacity(1);
-            }
         }
     }
+    else
+        painter->setOpacity(1.0);
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
@@ -239,12 +239,9 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QSize size = QStyledItemDelegate::sizeHint(option, index);
-    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
-//    auto colors = info->getColors();
-    //fix color labels over 2 will overlap with item issue
-
-//    if (FileLabelModel::getGlobalModel()->getFileColors(index.data(Qt::UserRole).toString()).count() >2)
-//    size.setHeight( size.height() + 20);
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    int expectedHeight = view->iconSize().height() + 4;
+    size.setHeight(qMax(expectedHeight, size.height()));
     return size;
 }
 

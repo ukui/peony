@@ -62,6 +62,9 @@ using namespace Peony::DirectoryView;
 
 ListView::ListView(QWidget *parent) : QTreeView(parent)
 {
+    // use scroll per pixel mode for calculate vertical scroll bar range.
+    // see reUpdateScrollBar()
+    setVerticalScrollMode(ScrollPerPixel);
     setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
@@ -105,11 +108,12 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
 {
-    // NOTE:
-    // scrollTo() is confilcted with updateGeometry(), where it will
-    // leave a space for view.
-
-    QTreeView::scrollTo(index, QAbstractItemView::PositionAtCenter);
+    // Note: due to we rewrite the calculation of view scroll area based on current process,
+    // we could not use QTreeView::scrollTo in some cases because it still based on old process
+    // and will conflict with new calculation.
+    Q_UNUSED(index)
+    Q_UNUSED(hint)
+    reUpdateScrollBar();
 }
 
 bool ListView::isDragging()
@@ -187,8 +191,30 @@ void ListView::bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortMode
 void ListView::keyPressEvent(QKeyEvent *e)
 {
     QTreeView::keyPressEvent(e);
-    if (e->key() == Qt::Key_Control)
+    switch (e->key()) {
+    case Qt::Key_Control:
         m_ctrl_key_pressed = true;
+        break;
+    case Qt::Key_Up: {
+        if (!selectedIndexes().isEmpty()) {
+            QTreeView::scrollTo(selectedIndexes().first());
+        }
+        break;
+    }
+    case Qt::Key_Down: {
+        if (!selectedIndexes().isEmpty()) {
+            auto index = selectedIndexes().first();
+            if (index.row() + 1 == model()->rowCount()) {
+                verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+            } else {
+                QTreeView::scrollTo(selectedIndexes().first());
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void ListView::keyReleaseEvent(QKeyEvent *e)
@@ -428,22 +454,45 @@ void ListView::resizeEvent(QResizeEvent *e)
     }
 }
 
-//void ListView::updateGeometries()
-//{
-//    QTreeView::updateGeometries();
-//    if (!model())
-//        return;
+/*!
+ * \brief ListView::reUpdateScrollBar
+ * \details
+ * tree view use QTreeViewPrivate::updateScrollBars() for reset scrollbar range.
+ * there are 3 parts for that method called.
+ *
+ * 1. QTreeView::scrollTo()
+ * 2. QTreeView::dataChanged()
+ * 3. QTreeView::updateGeometries()
+ *
+ * we have to override all of them to make sure that our custom scrollbar range
+ * set correctly.
+ */
+void ListView::reUpdateScrollBar()
+{
+    if (!model())
+        return;
 
-//    if (model()->columnCount() == 0 || model()->rowCount() == 0)
-//        return;
+    if (model()->rowCount() == 0) {
+        return;
+    }
 
-//    header()->setFixedWidth(this->width());
+    int totalHeight = 0;
+    int rowCount = model()->rowCount();
+    for (int row = 0; row < rowCount; row++) {
+        auto index = model()->index(row, 0);
+        totalHeight += sizeHintForIndex(index).height();
+    }
 
-//    QStyleOptionViewItem opt = viewOptions();
-//    int height = itemDelegate()->sizeHint(opt, QModelIndex()).height();
-//    verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + 2);
-//    //setViewportMargins(0, header()->height(), 0, height);
-//}
+    verticalScrollBar()->setSingleStep(iconSize().height());
+    verticalScrollBar()->setPageStep(viewport()->height() - header()->height());
+    verticalScrollBar()->setRange(0, totalHeight + header()->height() + 100 - viewport()->height());
+}
+
+void ListView::updateGeometries()
+{
+    QTreeView::updateGeometries();
+    reUpdateScrollBar();
+}
 
 void ListView::wheelEvent(QWheelEvent *e)
 {
@@ -461,7 +510,8 @@ void ListView::focusInEvent(QFocusEvent *e)
         if (selectedIndexes().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
-            QTreeView::scrollTo(selectedIndexes().first(), QTreeView::PositionAtCenter);
+            QTreeView::scrollTo(selectedIndexes().first(), QTreeView::EnsureVisible);
+            reUpdateScrollBar();
             auto selections = selectedIndexes();
             clearSelection();
             QTimer::singleShot(100, this, [=](){
@@ -602,6 +652,12 @@ void ListView::adjustColumnsSize()
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
 }
 
+void ListView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+{
+    QTreeView::dataChanged(topLeft, bottomRight, roles);
+    reUpdateScrollBar();
+}
+
 DirectoryViewProxyIface *ListView::getProxy()
 {
     return m_proxy;
@@ -695,6 +751,7 @@ void ListView::scrollToSelection(const QString &uri)
 {
     auto index = m_proxy_model->indexFromUri(uri);
     QTreeView::scrollTo(index);
+    reUpdateScrollBar();
 }
 
 void ListView::setCutFiles(const QStringList &uris)
@@ -751,6 +808,16 @@ void ListView::keyboardSearch(const QString &key)
     setSelectionMode(QTreeView::SingleSelection);
     QAbstractItemView::keyboardSearch(key);
     setSelectionMode(QTreeView::ExtendedSelection);
+
+    auto indexes = selectedIndexes();
+    if (!indexes.isEmpty()) {
+        QTreeView::scrollTo(indexes.first(), QTreeView::PositionAtCenter);
+        reUpdateScrollBar();
+        if (verticalScrollBar()->value() < viewport()->height()) {
+            return;
+        }
+        verticalScrollBar()->setValue(qMin(verticalScrollBar()->value() + iconSize().height(), verticalScrollBar()->maximum()));
+    }
 }
 
 //List View 2
@@ -848,6 +915,12 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
         }
         m_need_resize_header = false;
     });
+}
+
+void ListView2::repaintView()
+{
+    m_view->update();
+    m_view->viewport()->update();
 }
 
 void ListView2::setCurrentZoomLevel(int zoomLevel)

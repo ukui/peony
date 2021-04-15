@@ -911,6 +911,10 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
             if (critical) {
                 QMessageBox::critical(0, 0, err.get()->message());
                 setCursor(QCursor(Qt::ArrowCursor));
+                // if there is no active page, window should be closed to avoid crash. link to: #48031
+                if (!currentPage()) {
+                    this->topLevelWidget()->close();
+                }
                 return;
             }
             auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
@@ -973,6 +977,10 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
+    if (!currentPage()) {
+        // do not trigger go to uri if there is no active page, avoid crash. link to: #45684
+        return;
+    }
     qDebug() << "goToUri:" << uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);

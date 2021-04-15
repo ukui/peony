@@ -20,7 +20,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/windows/about-dialog.ui" line="109"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>标签</translation>
     </message>
     <message>
         <source>Offical Website: </source>
@@ -36,14 +36,27 @@ p, li { white-space: pre-wrap; }
         <translation>服务与支持团队: </translation>
     </message>
     <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
+        <source>Peony</source>
+        <translation>文件管理器</translation>
+    </message>
+    <message>
+        <source>peony</source>
+        <translation type="vanished">文件管理器</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
+        <source>Peony is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
+        <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
+    </message>
+    <message>
         <source>Hot Service: </source>
         <translation type="vanished">服务热线: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="69"/>
-        <location filename="../../src/windows/about-dialog.cpp" line="81"/>
         <source>File Manager</source>
-        <translation>文件管理器</translation>
+        <translation type="vanished">文件管理器</translation>
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.cpp" line="85"/>
@@ -51,9 +64,8 @@ p, li { white-space: pre-wrap; }
         <translation>版本号: %1</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
         <source>File manager is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
-        <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
+        <translation type="vanished">文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
         <location filename="../../src/windows/about-dialog.cpp" line="115"/>
@@ -186,12 +198,12 @@ p, li { white-space: pre-wrap; }
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1445"/>
+        <location filename="../../src/windows/main-window.cpp" line="1455"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1446"/>
+        <location filename="../../src/windows/main-window.cpp" line="1456"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -200,12 +212,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1435"/>
+        <location filename="../../src/windows/main-window.cpp" line="1445"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1436"/>
+        <location filename="../../src/windows/main-window.cpp" line="1446"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>

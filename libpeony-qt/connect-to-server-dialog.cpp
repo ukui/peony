@@ -23,13 +23,13 @@
 #include "connect-to-server-dialog.h"
 #include "global-settings.h"
 
+#include <QUrl>
 #include <QIcon>
 #include <QDebug>
 #include <QLineEdit>
 #include <QSizePolicy>
 #include <QSpacerItem>
 #include <QButtonGroup>
-#include <QUrl>
 
 using namespace Peony;
 
@@ -141,6 +141,15 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
         Q_UNUSED(checked);
     });
+
+    connect(m_remote_type_edit, &QComboBox::currentTextChanged, this, [=] (const QString& type) {
+        if ("samba" == type.toLower()) {
+            m_port_editor->setEditText("445");
+        } else if ("ftp" == type.toLower()) {
+            m_port_editor->setEditText("21");
+        }
+    });
+    Q_EMIT m_remote_type_edit->currentTextChanged("ftp");
 
     connect(m_btn_del, &QPushButton::clicked, this, [=] (bool checked) {
         removeUri(uri());

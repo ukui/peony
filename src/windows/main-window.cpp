@@ -890,6 +890,9 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
     locationChangeStart();
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
+
+    m_label_box->clearSelection();
+    Q_EMIT m_label_box->leftClickOnBlank();
 }
 
 void MainWindow::updateSearch(const QString &uri, const QString &key, bool updateKey)
@@ -966,6 +969,9 @@ void MainWindow::refresh()
 
 void MainWindow::setLabelNameFilter(QString name)
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     //update filter flag
     if (name == "")
         m_filter_working = false;
@@ -977,18 +983,27 @@ void MainWindow::setLabelNameFilter(QString name)
 
 void MainWindow::setShowHidden()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
 void MainWindow::setUseDefaultNameSortOrder()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_use_default_name_sort_order = ! m_use_default_name_sort_order;
     getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
 }
 
 void MainWindow::setSortFolderFirst()
 {
+    if (!getCurrentPage()) {
+        return;
+    }
     m_folder_first = ! m_folder_first;
     getCurrentPage()->setSortFolderFirst(m_folder_first);
 }
@@ -996,6 +1011,13 @@ void MainWindow::setSortFolderFirst()
 void MainWindow::forceStopLoading()
 {
     m_tab->stopLoading();
+
+    //Key_escape also use as cancel
+    if (Peony::ClipboardUtils::isClipboardHasFiles())
+    {
+        Peony::ClipboardUtils::clearClipboard();
+        this->getCurrentPage()->getView()->repaintView();
+    }
 }
 
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)

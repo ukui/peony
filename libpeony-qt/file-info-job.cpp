@@ -287,16 +287,28 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         content_type = nullptr;
     }
 
-    char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
-    info->m_file_size = size_full;
-    g_free(size_full);
+    if (info->m_size) {
+        char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
+        info->m_file_size = size_full;
+        g_free(size_full);
+    } else {
+        info->m_file_size = nullptr;
+    }
 
     auto systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
-    info->m_modified_date = date.toString(systemTimeFormat);
+    if (info->m_modified_time) {
+        info->m_modified_date = date.toString(systemTimeFormat);
+    } else {
+        info->m_modified_date = nullptr;
+    }
 
-    date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
-    info->m_access_date = date.toString(systemTimeFormat);
+    if (info->m_access_time) {
+        date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
+        info->m_access_date = date.toString(systemTimeFormat);
+    } else {
+        info->m_access_date = nullptr;
+    }
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
     // update peony qt color list after meta info updated.
