@@ -138,7 +138,7 @@ public Q_SLOTS:
     void zoomIn();
     void zoomOut();
 
-    void clearAllIndexWidgets();
+    void clearAllIndexWidgets(const QStringList &uris = QStringList());
 
     void refresh();
 

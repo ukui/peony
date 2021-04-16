@@ -76,7 +76,7 @@ public:
 
 Q_SIGNALS:
     void requestLayoutNewItem(const QString &uri);
-    void requestClearIndexWidget();
+    void requestClearIndexWidget(const QStringList &uris = QStringList());
     void requestUpdateItemPositions(const QString &uri = nullptr);
     void refreshed();
 

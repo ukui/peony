@@ -262,7 +262,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_files.removeOne(info);
                 this->endRemoveRows();
                 //this->endResetModel();
-                Q_EMIT this->requestClearIndexWidget();
+                Q_EMIT this->requestClearIndexWidget(QStringList()<<uri);
                 Q_EMIT this->requestUpdateItemPositions();
             }
         }
@@ -279,7 +279,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 connect(job, &FileInfoJob::infoUpdated, this, [=]() {
                     ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
-                    Q_EMIT this->requestClearIndexWidget();
+                    Q_EMIT this->requestClearIndexWidget(QStringList()<<uri);
 
                 });
                 job->queryAsync();

@@ -1899,7 +1899,7 @@ const QFont DesktopIconView::getViewItemFont(QStyleOptionViewItem *item)
 //    return font;
 }
 
-void DesktopIconView::clearAllIndexWidgets()
+void DesktopIconView::clearAllIndexWidgets(const QStringList &uris)
 {
     if (!model())
         return;
@@ -1907,7 +1907,9 @@ void DesktopIconView::clearAllIndexWidgets()
     int row = 0;
     auto index = model()->index(row, 0);
     while (index.isValid()) {
-        setIndexWidget(index, nullptr);
+        if (uris.isEmpty() || uris.contains(index.data(Qt::UserRole).toString())) {
+            setIndexWidget(index, nullptr);
+        }
         row++;
         index = model()->index(row, 0);
     }
