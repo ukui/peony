@@ -205,7 +205,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     m_proxy_model->setSourceModel(m_model);
 
-    connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
+    connect(m_proxy_model, &QAbstractItemModel::rowsRemoved, this, [=](){
         auto itemsNeedRelayout = m_model->m_items_need_relayout;
         if (!itemsNeedRelayout.isEmpty()) {
             this->relayoutExsitingItems(itemsNeedRelayout);
