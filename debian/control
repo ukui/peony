@@ -21,6 +21,7 @@ Build-Depends: debhelper-compat (=12),
                libpoppler-qt5-dev,
                libkf5windowsystem-dev,
                libcanberra-dev,
+               libukui-log4qt-dev,
                libkf5wayland-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
@@ -33,6 +34,7 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         libukui-log4qt,
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
 Recommends: gvfs-backends,
