@@ -269,6 +269,7 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
 {
     this->getFIleInfo();
     QUrl url(uri);
+    QFontMetrics fm = this->fontMetrics();
 
     //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
     if (url.isLocalFile()) {
@@ -278,7 +279,12 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
         m_ownerLabel->setText(qFileInfo.owner());
         //FIXME:明确当前文件所属计算机
         if (qFileInfo.isNativePath()) {
-            m_computerLabel->setText(tr("%1 (this computer)").arg(QHostInfo::localHostName()));
+            QString str_m_computerLabel = tr("%1 (this computer)").arg(QHostInfo::localHostName());
+            if (fm.width(str_m_computerLabel) > FIXED_CONTENT_WIDTH) {
+                m_computerLabel->setToolTip(str_m_computerLabel);
+                str_m_computerLabel = m_tableWidget->fontMetrics().elidedText(str_m_computerLabel, Qt::ElideMiddle, FIXED_CONTENT_WIDTH);
+            }
+            m_computerLabel->setText(str_m_computerLabel);
         } else {
             m_computerLabel->setText(tr("Unknown"));
         }
