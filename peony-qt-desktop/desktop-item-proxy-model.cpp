@@ -127,7 +127,6 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
         }
     }
 
-    //qDebug()<<"sort in desktop"<<SortType(m_sort_type)<<m_sort_type;
     switch (m_sort_type) {
     case FileName: {
         if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftInfo->displayName(), rightInfo->displayName())) {
@@ -138,7 +137,7 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
                 return (sortOrder()==Qt::AscendingOrder)? true: false;
             } else {
                 //chinese pinyin sort order is reversed compared with english.
-                return !QSortFilterProxyModel::lessThan(source_left, source_right);
+                return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
             }
         } else {
             if (startWithChinese(rightInfo->displayName())) {
@@ -146,13 +145,13 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
             }
         }
         return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
-        //return QSortFilterProxyModel::lessThan(source_left, source_right);
     }
     case ModifiedDate: {
         return leftInfo->modifiedTime() < rightInfo->modifiedTime();
     }
     case FileType: {
         return leftInfo->type() < rightInfo->type();
+
     }
     case FileSize: {
         return leftInfo->size() < rightInfo->size();

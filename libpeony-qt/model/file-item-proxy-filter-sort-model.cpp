@@ -85,20 +85,6 @@ const QModelIndex FileItemProxyFilterSortModel::indexFromUri(const QString &uri)
 
 bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    //comment these improve code to fix disorder issue
-    //and chinese first or folder first has not effect issue
-    //Fix me with better solutions
-//    if (left.data().isNull())
-//        return sortOrder() == Qt::AscendingOrder? false: true;
-
-//    if (right.data().isNull())
-//        return sortOrder() == Qt::AscendingOrder? true: false;
-
-//    if (left.column() != 0 || right.column() != 0) {
-//        return true;
-//    }
-
-    //qDebug()<<left<<right;
     if (left.isValid() && right.isValid()) {
         FileItemModel *model = static_cast<FileItemModel*>(sourceModel());
         auto leftItem = model->itemFromIndex(left);
@@ -133,7 +119,7 @@ default_sort:
             return leftItem->m_info->size() < rightItem->m_info->size();
         }
         case FileItemModel::FileType: {
-            return leftItem->m_info->fileType() < rightItem->m_info->fileType();
+            return leftItem->m_info->type() < rightItem->m_info->type();
         }
         case FileItemModel::ModifiedDate: {
             return leftItem->m_info->modifiedTime() < rightItem->m_info->modifiedTime();
