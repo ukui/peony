@@ -343,7 +343,6 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
 
     layout3->setContentsMargins(22,16,0,16);
 
-    //设计稿上文件夹只显示创建时间 - The folder on the design draft only shows the creation time
     switch (fileType) {
     case BP_File:
     case BP_Application:
@@ -351,7 +350,7 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
         m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
-        break;
+//        break;
     case BP_MultipleFIle:
     case BP_Folder:
         m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
@@ -790,8 +789,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             g_object_unref(file);
 
 
+            m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
             if(m_timeModifiedLabel) {
-                m_timeModified = g_file_info_get_attribute_uint64(info,"time::modified");
                 QDateTime date2 = QDateTime::fromMSecsSinceEpoch(m_timeModified*1000);
                 QString time2 = date2.toString(m_systemTimeFormat);
                 m_timeModifiedLabel->setText(time2);
@@ -806,18 +805,30 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
 
             QString path = url.path();
             QFileInfo qFileInfo(path);
-            if (qFileInfo.isDir() && m_timeCreatedLabel) {
-                //FIXME:目前只是文件夹显示创建时间，当创建时间获取失败的时候，将修改时间作为创建时间
-                QDateTime date1 = qFileInfo.birthTime();
-                if (date1.isValid()) {
-                    QString time1 = date1.toString(m_systemTimeFormat);
-                    m_timeCreatedLabel->setText(time1);
-                } else {
-                    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::modified");
-                    QDateTime createDate = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
-                    QString createTime = createDate.toString(m_systemTimeFormat);
-                    m_timeCreatedLabel->setText(createTime);
-                }
+            if (/*qFileInfo.isDir() && */m_timeCreatedLabel) {
+                m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
+
+                // 客户需要必须显示创建时间，因此使用三个时间最小时间戳为创建时间
+                quint64 minTime = m_timeCreated != 0 ? m_timeCreated : m_timeModified;
+                minTime = qMin (minTime, m_timeModified);
+                if (m_timeAccess != 0)
+                    minTime = qMin (minTime, m_timeAccess);
+                m_timeCreated = minTime;
+                QDateTime createDate = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
+                QString createTime = createDate.toString(m_systemTimeFormat);
+                m_timeCreatedLabel->setText(createTime);
+
+//                // FIXME:目前只是文件夹显示创建时间，当创建时间获取失败的时候，将修改时间作为创建时间
+//                QDateTime date1 = qFileInfo.birthTime();
+//                if (date1.isValid()) {
+//                    QString time1 = date1.toString(m_systemTimeFormat);
+//                    m_timeCreatedLabel->setText(time1);
+//                } else {
+//                    m_timeCreated = g_file_info_get_attribute_uint64(info, "time::modified");
+//                    QDateTime createDate = QDateTime::fromMSecsSinceEpoch(m_timeCreated*1000);
+//                    QString createTime = createDate.toString(m_systemTimeFormat);
+//                    m_timeCreatedLabel->setText(createTime);
+//                }
 
             }
             g_object_unref(info);
