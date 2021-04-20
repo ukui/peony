@@ -481,10 +481,10 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
-            if(info->canExecute()&&info->isExecDisable())  //add by nsg
+            if(info->isExecDisable())  //add by nsg
             {
-                QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
-                 return QIcon(pixmap);
+                QPixmap pixmap = thumbnail. pixmap((100,100), QIcon::Disabled, QIcon::Off);
+                return QIcon(pixmap);
             }
             return thumbnail;
         }
