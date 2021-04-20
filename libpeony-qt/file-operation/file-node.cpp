@@ -136,7 +136,7 @@ const QString FileNode::resolveDestFileUri(const QString &destRootDir)
     if (relativePath.endsWith("/")) {
         relativePath.chop(1);
     }
-    QUrl url = destRootDir + "/" + relativePath;
-    setDestUri(url.toString());
-    return url.toEncoded();
+    QString url = destRootDir + "/" + relativePath;
+    setDestUri(url);
+    return url;
 }

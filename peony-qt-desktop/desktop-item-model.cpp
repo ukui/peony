@@ -122,6 +122,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri, true);
+        if (!info->isDir() && !fileIsExists(uri)) {
+            return;
+        }
         bool exsited = false;
         for (auto file : m_files) {
             if (file->uri() == info->uri()) {
@@ -469,20 +472,19 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             return info->displayName();
         }
     case Qt::ToolTipRole:
-        return info->displayName();
+        if (m_userName == info->displayName()) {
+            return tr("My Document");
+        } else {
+            return info->displayName();
+        }
     case Qt::DecorationRole: {
         //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
-            if (info->uri().endsWith(".desktop") && !info->canExecute()) {
-                return QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
-            }
             if(info->isExecDisable())  //add by nsg
             {
-
-                 QPixmap pixmap = thumbnail.pixmap((100,100),QIcon::Disabled,QIcon::Off);
-
-                 return QIcon(pixmap);
+                QPixmap pixmap = thumbnail. pixmap((100,100), QIcon::Disabled, QIcon::Off);
+                return QIcon(pixmap);
             }
             return thumbnail;
         }
@@ -633,12 +635,17 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
     QMimeData* data = QAbstractItemModel::mimeData(indexes);
     //set urls data URLs correspond to the MIME type text/uri-list.
     QList<QUrl> urls;
+    QStringList uris;
     for (auto index : indexes) {
         QUrl url = index.data(UriRole).toString();
         if (!urls.contains(url))
             urls<<url;
+        uris<<index.data(UriRole).toString();
     }
     data->setUrls(urls);
+    auto string = uris.join(" ");
+    data->setData("peony-qt/encoded-uris", string.toUtf8());
+    data->setText(string);
     return data;
 }
 
@@ -660,7 +667,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     auto info = FileInfo::fromUri(destDirUri);
-    if (!info->isDir()) {
+    if (!info->isDir()  && ! destDirUri.startsWith("trash:///")) {
         return false;
     }
 
@@ -672,13 +679,25 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     QStringList srcUris;
-    for (auto url : urls) {
-        //can not drag file from recent
-        if (url.url().startsWith("recent://"))
-            return false;
-        srcUris<<url.url();
+    if (data->hasFormat("peony-qt/encoded-uris")) {
+        srcUris = data->text().split(" ");
+        for (QString uri : srcUris) {
+            if (uri.startsWith("recent://"))
+                srcUris.removeOne(uri);
+        }
+    } else {
+        for (auto url : urls) {
+            //can not drag file from recent
+            if (url.url().startsWith("recent://"))
+                return false;
+            srcUris<<url.url();
+        }
     }
     srcUris.removeDuplicates();
+
+    if (srcUris.isEmpty()) {
+        return false;
+    }
 
     //can not drag file to recent
     if (destDirUri.startsWith("recent://"))
@@ -793,6 +812,34 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
     auto view = PeonyDesktopApplication::getIconView();
     view->viewport()->update(view->viewport()->rect());
+}
+
+
+/*
+* 重命名desktop文件，会产生类似下面的临时文件
+* /home/kylin/桌面/sdfsd.desktop.1UID10
+* 为了避免最桌面上面显示该临时文件，需要对此进行过滤
+*/
+bool DesktopItemModel::fileIsExists(const QString &uri)
+{
+    QUrl url = uri;
+    QString fileName = url.fileName();
+
+    QStringList list = fileName.split(".");
+    if (list.count() >= 3 && list[list.count() - 2] == "desktop") {
+       int loop = 3;
+       while (loop--) {
+           ::usleep(1500);
+           //qDebug()<<"loop"<<loop <<"path" << url.path();
+           QFileInfo fileInfo(url.path());
+           if (!fileInfo.exists()) {
+               qDebug()<< url.path() <<"is not exist" ;
+               return false;
+           }
+       }
+    }
+
+    return true;
 }
 
 static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2)

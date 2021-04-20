@@ -84,7 +84,8 @@
 <context>
     <name>Peony::DesktopItemModel</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="467"/>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="470"/>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="476"/>
         <source>My Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -329,7 +330,7 @@
 <context>
     <name>Peony::DesktopWindow</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="97"/>
+        <location filename="../../peony-qt-desktop/desktop-window.cpp" line="99"/>
         <source>Desktop</source>
         <translation>Masaüstü</translation>
     </message>
@@ -552,17 +553,17 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="228"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="234"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="231"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="237"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="234"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="240"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>

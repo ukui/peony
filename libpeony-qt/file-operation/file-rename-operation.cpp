@@ -111,6 +111,23 @@ void FileRenameOperation::run()
 {
     QString destUri;
     Q_EMIT operationStarted();
+
+    if (m_new_name == "/"
+            || m_new_name == "."
+            || m_new_name == "./") {
+        FileOperationError except;
+
+        except.isCritical = true;
+        except.op = FileOpRename;
+        except.title = tr("Rename file error");
+        except.errorType = ET_GIO;
+        except.errorStr = m_new_name + " " + tr("is not as the name of file");
+        except.dlgType = ED_WARNING;
+        Q_EMIT errored(except);
+        Q_EMIT operationFinished();
+        return;
+    }
+
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -120,7 +137,7 @@ void FileRenameOperation::run()
     bool is_local_desktop_file = false;
     QUrl url = m_uri;
     //change the content of .desktop file;
-    if (url.isLocalFile()) {
+    if (url.isLocalFile() && m_uri.endsWith(".desktop")) {
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
         if (G_IS_DESKTOP_APP_INFO(desktop_info)) {
             bool is_executable = g_file_test (url.path().toUtf8().constData(), G_FILE_TEST_IS_EXECUTABLE);

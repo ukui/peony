@@ -256,7 +256,13 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!m_top_window)
                         return;
-                    m_top_window->goToUri(m_selections.first(), true);
+
+                    auto info = Peony::FileInfo::fromUri(m_selections.first(), false);
+                    QString targetUri = info.get()->targetUri();
+                    //qDebug()<<"targetUri"<<targetUri;
+                    if (targetUri.isEmpty())
+                        targetUri = m_selections.first();
+                    m_top_window->goToUri(targetUri, true);
                 });
 
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
@@ -330,7 +336,11 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     //FIXME:
-                    m_top_window->goToUri(uri, true);
+                    auto info = Peony::FileInfo::fromUri(uri, false);
+                    QString targetUri = info.get()->targetUri();
+                    if (targetUri.isEmpty())
+                        targetUri = uri;
+                    m_top_window->goToUri(targetUri, true);
                 });
             }
         } else {
