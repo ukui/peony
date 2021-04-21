@@ -60,6 +60,7 @@ public Q_SLOTS:
     void addWindow(QScreen *screen, bool checkPrimay = true);
     void changeBgProcess(const QString& bgPath);
     void checkWindowProcess();
+    void updateVirtualDesktopGeometryByWindows();
 
 private:
     bool m_first_parse = true;

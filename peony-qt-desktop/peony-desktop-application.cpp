@@ -630,6 +630,20 @@ void PeonyDesktopApplication::checkWindowProcess()
     }
 }
 
+void PeonyDesktopApplication::updateVirtualDesktopGeometryByWindows()
+{
+    if (virtualDesktopWindow) {
+        QRegion region;
+        for (auto window : m_window_list) {
+            region += window->geometry();
+        }
+        if (region.boundingRect().x() <= 0 || region.boundingRect().y() <= 0) {
+            return;
+        }
+        virtualDesktopWindow->setFixedSize(region.boundingRect().right(), region.boundingRect().bottom());
+    }
+}
+
 void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
 {
     char **guessType;
