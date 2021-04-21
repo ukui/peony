@@ -93,7 +93,10 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     //fix desktop show Desktop folder issue, bug#20293
     if (QUrl(uri).path() == QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Desktop"
         || QUrl(uri).path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop" + "/Desktop")
-        return false;
+    {
+        if (! QFile::exists(QUrl(uri).path()))
+           return false;
+    }
 
     if (info->isDesktopFile() && nullptr != info->desktopName()){
         if (m_bwListInfo->isBlackListMode()){
