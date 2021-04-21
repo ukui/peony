@@ -454,6 +454,11 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
         return;
 
     setGeometry(geometry);
+
+    // resize virtual desktop first.
+    auto app = static_cast<PeonyDesktopApplication *>(qApp);
+    app->updateVirtualDesktopGeometryByWindows();
+
     show();
 
     this->update();
