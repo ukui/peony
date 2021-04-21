@@ -1,3 +1,21 @@
+peony (3.0.3-2+0421) v101; urgency=medium
+
+   * Fix: the desktop file is showed fialed,when it is trashed. #44190
+   * Fix: the window is invalid, when it is moved to screen of 4K. #37822
+   * Fix: resolve file label translation problem. #43023
+   * Fix: it can not drag file to desktop from phone. #39051
+   * Fix: ssd card can not show in sidebar. #28533
+   * Fix: udisk cna not ejected, when create empty file in udisk. #44566
+   * Fix: an inconsistency in the display of my document tooltip #46830
+   * Fix: rename file with ./ failed #46787
+   * Fix: it will show tmp file, when rename desktop file. #39805
+   * Fix: peony sort with size wrong. #47542
+   * Fix: can not go back,when open a folder in favorite with menu. #44813
+   * Fix: files are not sorted correctly #48612
+   * Fix: resolue file conflict
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Apr 2021 09:29:31 +0800
+
 peony (3.0.3-2+0408) v101; urgency=medium
 
    *Feature: it will tell to ukui-session
