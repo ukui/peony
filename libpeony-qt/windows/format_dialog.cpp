@@ -33,6 +33,7 @@
 
 using namespace  Peony;
 static bool b_finished = false;
+static bool b_failed = false;
 
 Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
     QDialog(parent),
@@ -128,6 +129,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     
     if (err) {
         flags = 0;
+        b_failed = true;
         
         QMessageBox message_error;
           
@@ -217,6 +219,7 @@ void Format_Dialog::acceptFormat(bool)
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
+    b_failed = false;
     if(full_clean){
         my_time->setInterval(1000);
         m_total_predict = 1800;
@@ -281,6 +284,11 @@ void Format_Dialog::formatloop(){
     {
         ui->progressBar_process->setValue(100);
         ui->label_process->setText("100%");
+        my_time->stop();
+        return;
+    }
+    else if (b_failed)
+    {
         my_time->stop();
         return;
     }
@@ -474,6 +482,7 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
         data->dl->format_ok_dialog();
     }
     else{
+        b_failed = true;
         data->dl->format_err_dialog();  
     }
 
