@@ -119,7 +119,7 @@ void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
         QStyleOptionViewItem opt;
         m_file_name = QUrl(name).toDisplayString();
         m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
-                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 300).toHtmlEscaped()));
+                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480)));
     }
 }
 
