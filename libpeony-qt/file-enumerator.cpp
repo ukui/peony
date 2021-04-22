@@ -341,6 +341,12 @@ void FileEnumerator::handleError(GError *err)
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
         //QMessageBox::critical(nullptr, tr("Error"), err->message);
         break;
+    case G_IO_ERROR_EXISTS:
+    {
+        QString str_error = QObject::tr("file not found");
+        Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_new(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, "%s\n", str_error.toUtf8().constData())), nullptr, true);
+        break;
+    }
     case G_IO_ERROR_PERMISSION_DENIED:
     {
         //emit error message to upper levels to process
