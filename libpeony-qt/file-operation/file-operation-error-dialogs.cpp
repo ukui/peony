@@ -28,6 +28,8 @@
 #include <file-info.h>
 #include <QHBoxLayout>
 #include <file-info-job.h>
+#include <file-utils.h>
+#include <QStyleOptionViewItem>
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
@@ -114,9 +116,10 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
 {
     if (!name.isEmpty()) {
+        QStyleOptionViewItem opt;
         m_file_name = QUrl(name).toDisplayString();
         m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
-                       .arg(m_file_name));
+                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480)));
     }
 }
 
