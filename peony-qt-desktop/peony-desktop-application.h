@@ -63,6 +63,9 @@ public Q_SLOTS:
     void updateVirtualDesktopGeometryByWindows();
 
 private:
+    void setupDesktop();
+    void setupBgAndDesktop();
+
     bool m_first_parse = true;
     QList<Peony::DesktopWindow*> m_window_list;
 };

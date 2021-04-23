@@ -325,170 +325,11 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         }
 
         if (parser.isSet(desktopOption)) {
-            if (!has_desktop) {
-                has_desktop = true;
-                virtualDesktopWindow = new QMainWindow;
-                virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
-                virtualDesktopWindow->setWindowFlag(Qt::FramelessWindowHint);
-                virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
-                //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
-                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
-                virtualDesktopWindow->show();
-
-                virtualDesktopWindow->setContextMenuPolicy(Qt::CustomContextMenu);
-                virtualDesktopWindow->connect(virtualDesktopWindow, &QMainWindow::customContextMenuRequested, virtualDesktopWindow, [=](const QPoint &pos){
-                    qWarning()<<pos;
-                    auto fixedPos = getIconView()->mapFromGlobal(pos);
-                    auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
-                    if (!index.isValid()) {
-                        PeonyDesktopApplication::getIconView()->clearSelection();
-                    } else {
-                        if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
-                            PeonyDesktopApplication::getIconView()->clearSelection();
-                            PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
-                        }
-                    }
-
-                    QTimer::singleShot(1, [=]() {
-                        DesktopMenu menu(PeonyDesktopApplication::getIconView());
-                        if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
-                            auto action = menu.addAction(tr("set background"));
-                            connect(action, &QAction::triggered, [=]() {
-                                //go to control center set background
-                                DesktopWindow::gotoSetBackground();
-            //                    QFileDialog dlg;
-            //                    dlg.setNameFilters(QStringList() << "*.jpg"
-            //                                       << "*.png");
-            //                    if (dlg.exec()) {
-            //                        auto url = dlg.selectedUrls().first();
-            //                        this->setBg(url.path());
-            //                        // qDebug()<<url;
-            //                        Q_EMIT this->changeBg(url.path());
-            //                    }
-                            });
-                        }
-
-                        for (auto screen : qApp->screens()) {
-                            if (screen->geometry().contains(pos));
-                            //menu.windowHandle()->setScreen(screen);
-                        }
-                        menu.exec(pos);
-                        auto urisToEdit = menu.urisToEdit();
-                        if (urisToEdit.count() == 1) {
-                            QTimer::singleShot(
-                            100, this, [=]() {
-                                PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
-                            });
-                        }
-                    });
-                });
-            }
-            has_desktop = true;
-            PlasmaShellManager::getInstance()->setRole(virtualDesktopWindow->windowHandle(), KWayland::Client::PlasmaShellSurface::Role::Desktop);
-
-            // check ukui wayland session, monitor ukui settings daemon dbus
-            if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
-                screensMonitor = new PrimaryManager;
-                connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
-                    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-                    virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
-                    getIconView()->setGeometry(x, y, width, height);
-                });
-                screensMonitor->start();
-                // init
-                getIconView()->show();
-                int x = screensMonitor->getScreenGeometry("x");
-                int y = screensMonitor->getScreenGeometry("y");
-                int width = screensMonitor->getScreenGeometry("width");
-                int height = screensMonitor->getScreenGeometry("height");
-                QRect geometry = QRect(x, y, width, height);
-                if (geometry.size() == QSize(0, 0)) {
-                    for (auto screen : qApp->screens()) {
-                        if (screen->geometry().topLeft() == QPoint(0, 0)) {
-                            geometry.setSize(screen->geometry().size());
-                            break;
-                        }
-                    }
-                }
-                getIconView()->setGeometry(x, y, width, height);
-            } else {
-                getIconView()->setGeometry(qApp->primaryScreen()->geometry());
-            }
+            setupDesktop();
         }
 
         if (parser.isSet(backgroundOption)) {
-            if (!has_desktop) {
-                has_desktop = true;
-                virtualDesktopWindow = new QMainWindow;
-                virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
-                virtualDesktopWindow->setWindowFlag(Qt::FramelessWindowHint);
-                virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
-                //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
-                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
-                virtualDesktopWindow->show();
-
-                virtualDesktopWindow->setContextMenuPolicy(Qt::CustomContextMenu);
-                virtualDesktopWindow->connect(virtualDesktopWindow, &QMainWindow::customContextMenuRequested, virtualDesktopWindow, [=](const QPoint &pos){
-                    qWarning()<<pos;
-                    auto fixedPos = getIconView()->mapFromGlobal(pos);
-                    auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
-                    if (!index.isValid()) {
-                        PeonyDesktopApplication::getIconView()->clearSelection();
-                    } else {
-                        if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
-                            PeonyDesktopApplication::getIconView()->clearSelection();
-                            PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
-                        }
-                    }
-
-                    QTimer::singleShot(1, [=]() {
-                        DesktopMenu menu(PeonyDesktopApplication::getIconView());
-                        if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
-                            auto action = menu.addAction(tr("set background"));
-                            connect(action, &QAction::triggered, [=]() {
-                                //go to control center set background
-                                DesktopWindow::gotoSetBackground();
-            //                    QFileDialog dlg;
-            //                    dlg.setNameFilters(QStringList() << "*.jpg"
-            //                                       << "*.png");
-            //                    if (dlg.exec()) {
-            //                        auto url = dlg.selectedUrls().first();
-            //                        this->setBg(url.path());
-            //                        // qDebug()<<url;
-            //                        Q_EMIT this->changeBg(url.path());
-            //                    }
-                            });
-                        }
-
-                        for (auto screen : qApp->screens()) {
-                            if (screen->geometry().contains(pos));
-                            //menu.windowHandle()->setScreen(screen);
-                        }
-                        menu.exec(pos);
-                        auto urisToEdit = menu.urisToEdit();
-                        if (urisToEdit.count() == 1) {
-                            QTimer::singleShot(
-                            100, this, [=]() {
-                                PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
-                            });
-                        }
-                    });
-                });
-            }
-            has_desktop = true;
-
-            if (!has_background) {
-                has_background = true;
-                QTimer::singleShot(1000, this, [=](){
-                    for(auto screen : this->screens())
-                    {
-                        addWindow(screen);
-                    }
-                });
-            }
-            has_background = true;
+            setupBgAndDesktop();
         }
 
         connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
@@ -642,6 +483,115 @@ void PeonyDesktopApplication::updateVirtualDesktopGeometryByWindows()
         }
         virtualDesktopWindow->setFixedSize(region.boundingRect().right(), region.boundingRect().bottom());
     }
+}
+
+void PeonyDesktopApplication::setupDesktop()
+{
+    if (!has_desktop) {
+        has_desktop = true;
+        virtualDesktopWindow = new QMainWindow;
+        virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
+        virtualDesktopWindow->setWindowFlag(Qt::FramelessWindowHint);
+        virtualDesktopWindow->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+        //virtualDesktopWindow->setAttribute(Qt::WA_TranslucentBackground);
+        auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+        virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+        virtualDesktopWindow->show();
+
+        virtualDesktopWindow->setContextMenuPolicy(Qt::CustomContextMenu);
+        virtualDesktopWindow->connect(virtualDesktopWindow, &QMainWindow::customContextMenuRequested, virtualDesktopWindow, [=](const QPoint &pos){
+            qWarning()<<pos;
+            auto fixedPos = getIconView()->mapFromGlobal(pos);
+            auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
+            if (!index.isValid()) {
+                PeonyDesktopApplication::getIconView()->clearSelection();
+            } else {
+                if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
+                    PeonyDesktopApplication::getIconView()->clearSelection();
+                    PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
+                }
+            }
+
+            QTimer::singleShot(1, [=]() {
+                DesktopMenu menu(PeonyDesktopApplication::getIconView());
+                if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
+                    auto action = menu.addAction(tr("set background"));
+                    connect(action, &QAction::triggered, [=]() {
+                        //go to control center set background
+                        DesktopWindow::gotoSetBackground();
+    //                    QFileDialog dlg;
+    //                    dlg.setNameFilters(QStringList() << "*.jpg"
+    //                                       << "*.png");
+    //                    if (dlg.exec()) {
+    //                        auto url = dlg.selectedUrls().first();
+    //                        this->setBg(url.path());
+    //                        // qDebug()<<url;
+    //                        Q_EMIT this->changeBg(url.path());
+    //                    }
+                    });
+                }
+
+                for (auto screen : qApp->screens()) {
+                    if (screen->geometry().contains(pos));
+                    //menu.windowHandle()->setScreen(screen);
+                }
+                menu.exec(pos);
+                auto urisToEdit = menu.urisToEdit();
+                if (urisToEdit.count() == 1) {
+                    QTimer::singleShot(
+                    100, this, [=]() {
+                        PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
+                    });
+                }
+            });
+        });
+
+        PlasmaShellManager::getInstance()->setRole(virtualDesktopWindow->windowHandle(), KWayland::Client::PlasmaShellSurface::Role::Desktop);
+
+        // check ukui wayland session, monitor ukui settings daemon dbus
+        if (QString(qgetenv("DESKTOP_SESSION")) == "ukui-wayland") {
+            screensMonitor = new PrimaryManager;
+            connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, [=](int x, int y, int width, int height){
+                auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
+                virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+                getIconView()->setGeometry(x, y, width, height);
+            });
+            screensMonitor->start();
+            // init
+            getIconView()->show();
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            QRect geometry = QRect(x, y, width, height);
+            if (geometry.size() == QSize(0, 0)) {
+                for (auto screen : qApp->screens()) {
+                    if (screen->geometry().topLeft() == QPoint(0, 0)) {
+                        geometry.setSize(screen->geometry().size());
+                        break;
+                    }
+                }
+            }
+            getIconView()->setGeometry(x, y, width, height);
+        } else {
+            getIconView()->setGeometry(qApp->primaryScreen()->geometry());
+        }
+    }
+}
+
+void PeonyDesktopApplication::setupBgAndDesktop()
+{
+    setupDesktop();
+    if (!has_background) {
+        has_background = true;
+        QTimer::singleShot(1000, this, [=](){
+            for(auto screen : this->screens())
+            {
+                addWindow(screen);
+            }
+        });
+    }
+    has_background = true;
 }
 
 void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
