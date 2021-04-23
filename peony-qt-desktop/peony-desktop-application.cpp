@@ -184,7 +184,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);
-    connect(this, &SingleApplication::primaryScreenChanged, this, &PeonyDesktopApplication::primaryScreenChangedProcess);
+//    connect(this, &SingleApplication::primaryScreenChanged, this, &PeonyDesktopApplication::primaryScreenChangedProcess);
     connect(this, &SingleApplication::screenAdded, this, &PeonyDesktopApplication::screenAddedProcess);
     connect(this, &SingleApplication::screenRemoved, this, &PeonyDesktopApplication::screenRemovedProcess);
 
