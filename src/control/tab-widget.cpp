@@ -1001,8 +1001,7 @@ void TabWidget::updateTabPageTitle()
             refresh();
         });
     }
-
-    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri());
+    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
     updateTrashBarVisible(getCurrentUri());
 }
 

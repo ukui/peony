@@ -53,6 +53,7 @@
 
 #include <QProxyStyle>
 #include <QStyleOptionToolButton>
+#include <syslog.h>
 
 using namespace Peony;
 
@@ -177,7 +178,7 @@ void LocationBar::setRootUri(const QString &uri)
                         // add buttons
                         clearButtons();
                         for (auto info : m_buttons_info) {
-                            addButton(info.get()->uri(), true, true);
+                            addButton(QUrl::fromPercentEncoding(info.get()->uri().toLocal8Bit()), true, true);
                         }
                         doLayout();
                     }
