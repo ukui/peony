@@ -213,13 +213,23 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     auto text = edit->toPlainText();
     if (text.isEmpty())
         return;
-    if (text == index.data(Qt::DisplayRole).toString())
-        return;
+
     //process special name . or .. or only space
     if (text == "." || text == ".." || text.trimmed() == "" || text.contains("\\"))
         return;
 
+    if (! index.isValid())
+        return;
+
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    auto oldName = index.data(Qt::DisplayRole).toString();
+    if (text == oldName)
+    {
+        //create new file, should select the file or folder
+        auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
+        view->selectionModel()->select(index, flags);
+        return;
+    }
 
     auto fileOpMgr = FileOperationManager::getInstance();
     auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), text);

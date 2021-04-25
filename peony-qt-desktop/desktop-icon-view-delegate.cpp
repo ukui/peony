@@ -432,6 +432,11 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
 
         fileOpMgr->startOperation(renameOp, true);
     }
+    else if (newName == oldName)
+    {
+        //create new file, should select the file or folder
+        getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+    }
 }
 
 DesktopIconView *DesktopIconViewDelegate::getView() const

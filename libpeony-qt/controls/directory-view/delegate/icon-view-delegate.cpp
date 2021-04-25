@@ -353,6 +353,11 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
         fileOpMgr->startOperation(renameOp, true);
     }
+    else if (newName == oldName)
+    {
+        //create new file, should select the file or folder
+        getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+    }
 }
 
 void IconViewDelegate::setIndexWidget(const QModelIndex &index, QWidget *widget) const
