@@ -671,7 +671,10 @@ void MainWindow::setShortCuts()
                 QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
                 QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
                 if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
-                    Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+                {
+                   Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+                   this->getCurrentPage()->getView()->repaintView();
+                }
             }
         });
         addAction(cutAction);
@@ -1016,8 +1019,6 @@ void MainWindow::forceStopLoading()
     if (Peony::ClipboardUtils::isClipboardHasFiles())
     {
         Peony::ClipboardUtils::clearClipboard();
-        QStringList uris;
-        this->getCurrentPage()->getView()->setSelections(uris);
         this->getCurrentPage()->getView()->repaintView();
     }
 }

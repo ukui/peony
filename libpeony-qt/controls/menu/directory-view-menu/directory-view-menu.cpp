@@ -636,6 +636,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     ClipboardUtils::setClipboardFiles(m_selections, true);
+                    m_view->repaintView();
                 });
             }
 

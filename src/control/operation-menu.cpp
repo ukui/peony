@@ -36,6 +36,8 @@
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 #include "file-operation-manager.h"
+#include "directory-view-widget.h"
+#include "directory-view-container.h"
 
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
@@ -201,6 +203,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
                 return ;
             }
             Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+            window->getCurrentPage()->getView()->repaintView();
             Q_EMIT operationAccepted();
         }
     });

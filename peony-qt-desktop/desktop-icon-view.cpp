@@ -460,7 +460,10 @@ void DesktopIconView::initShoutCut()
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
         if (!selectedUris.isEmpty())
+        {
             ClipboardUtils::setClipboardFiles(selectedUris, true);
+            this->update();
+        }
     });
     addAction(cutAction);
 
@@ -631,7 +634,6 @@ void DesktopIconView::initShoutCut()
         if (Peony::ClipboardUtils::isClipboardHasFiles())
         {
             Peony::ClipboardUtils::clearClipboard();
-            clearSelection();
             this->update();
         }
     });
