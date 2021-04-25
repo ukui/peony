@@ -168,10 +168,10 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
 
     showWidgetList(false);
 
-    connect(m_main_progressbar, &MainProgressBar::minimized, [=]() {
+    connect(m_main_progressbar, &MainProgressBar::minimized, this, [=]() {
         this->showMinimized();
     });
-    connect(m_main_progressbar, &MainProgressBar::closeWindow, [=](){
+    connect(m_main_progressbar, &MainProgressBar::closeWindow, this, [=](){
         for (auto pg = m_widget_list->constBegin(); pg != m_widget_list->constEnd(); ++pg) {
             Q_EMIT pg.value()->cancelled();
         }
@@ -253,6 +253,9 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 {
     if (nullptr != m_main_progressbar && nullptr != m_current_main) {
         m_main_progressbar->disconnect(m_current_main, &ProgressBar::sendValue, 0, 0);
+
+        m_current_main->disconnect(m_main_progressbar, &MainProgressBar::start, 0, 0);
+        m_current_main->disconnect(m_main_progressbar, &MainProgressBar::pause, 0, 0);
     }
 
     ProgressBar* pb = (*m_widget_list)[item];
@@ -264,6 +267,20 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
     m_main_progressbar->setFileIcon(m_current_main->getIcon());
     m_main_progressbar->connect(m_current_main, &ProgressBar::cancelled, m_main_progressbar, &MainProgressBar::cancelld);
     m_main_progressbar->connect(m_current_main, &ProgressBar::sendValue, m_main_progressbar, &MainProgressBar::updateValue);
+
+    if (m_current_main->isPause()) {
+        m_main_progressbar->setPause();
+    } else {
+        m_main_progressbar->setResume();
+    }
+
+    m_current_main->connect(m_main_progressbar, &MainProgressBar::pause, this, [=] () {
+        m_current_main->setPause();
+    });
+    m_current_main->connect(m_main_progressbar, &MainProgressBar::start, this, [=] () {
+        m_current_main->setResume();
+    });
+
     update();
 }
 
@@ -303,6 +320,16 @@ void MainProgressBar::setTitle(QString title)
     m_title = title;
 }
 
+void MainProgressBar::setPause()
+{
+    m_pause = true;
+}
+
+void MainProgressBar::setResume()
+{
+    m_pause = false;
+}
+
 void MainProgressBar::paintEvent(QPaintEvent *event)
 {
     QPainter painter (this);
@@ -320,15 +347,20 @@ void MainProgressBar::mouseMoveEvent(QMouseEvent *event)
 {
     // minilize button
     QPoint pos = event->pos();
-    if ((pos.x() >= m_fix_width - m_btn_margin * 2 - m_btn_size * 2)
-            && (pos.x() <= (m_fix_width - m_btn_margin * 2 - m_btn_size))
-            && (pos.y() >= m_btn_margin_top)
-            && (pos.y() <= m_btn_margin_top + m_btn_size)) {
+    if ((pos.x() >= m_minilize_button_x_l)
+            && (pos.x() <= m_minilize_button_x_r)
+            && (pos.y() >= m_minilize_button_y_t)
+            && (pos.y() <= m_minilize_button_y_b)) {
         setCursor(Qt::PointingHandCursor);
-    } else if ((pos.x() >= m_fix_width - m_btn_margin - m_btn_size)
-               && (pos.x() <= (m_fix_width - m_btn_margin))
-               && (pos.y() >= m_btn_margin_top)
-               && (pos.y() <= m_btn_margin_top + m_btn_size)) {
+    } else if ((pos.x() >= m_close_button_x_l)
+               && (pos.x() <= m_close_button_x_r)
+               && (pos.y() >= m_close_button_y_t)
+               && (pos.y() <= m_close_button_y_b)) {
+        setCursor(Qt::PointingHandCursor);
+    } else if ((pos.x() >= m_progress_pause_x)
+               && (pos.x() <= m_progress_pause_x_r)
+               && (pos.y() >= m_progress_pause_y)
+               && (pos.y() <= m_progress_pause_y_b)) {
         setCursor(Qt::PointingHandCursor);
     } else {
         setCursor(Qt::ArrowCursor);
@@ -340,15 +372,15 @@ void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
 {
     // minilize button
     QPoint pos = event->pos();
-    if ((pos.x() >= m_fix_width - m_btn_margin * 2 - m_btn_size * 2)
-            && (pos.x() <= (m_fix_width - m_btn_margin * 2 - m_btn_size))
-            && (pos.y() >= m_btn_margin_top)
-            && (pos.y() <= m_btn_margin_top + m_btn_size)) {
+    if ((pos.x() >= m_minilize_button_x_l)
+            && (pos.x() <= m_minilize_button_x_r)
+            && (pos.y() >= m_minilize_button_y_t)
+            && (pos.y() <= m_minilize_button_y_b)) {
         Q_EMIT minimized();
-    } else if ((pos.x() >= m_fix_width - m_btn_margin - m_btn_size)
-               && (pos.x() <= (m_fix_width - m_btn_margin))
-               && (pos.y() >= m_btn_margin_top)
-               && (pos.y() <= m_btn_margin_top + m_btn_size)) {
+    } else if ((pos.x() >= m_close_button_x_l)
+               && (pos.x() <= m_close_button_x_r)
+               && (pos.y() >= m_close_button_y_t)
+               && (pos.y() <= m_close_button_y_b)) {
         QMessageBox msgBox(QMessageBox::Warning, tr("cancel all file operations"),
                            tr("Are you sure want to cancel all file operations"),
                            QMessageBox::Ok | QMessageBox::Cancel);
@@ -356,6 +388,17 @@ void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
         if (QMessageBox::Ok == msgBox.exec()) {
             Q_EMIT closeWindow();
+        }
+    } else if ((pos.x() >= m_progress_pause_x)
+               && (pos.x() <= m_progress_pause_x_r)
+               && (pos.y() >= m_progress_pause_y)
+               && (pos.y() <= m_progress_pause_y_b)) {
+        if (m_pause) {
+            m_pause = false;
+            Q_EMIT start();
+        } else {
+            m_pause = true;
+            Q_EMIT pause();
         }
     }
 
@@ -375,9 +418,9 @@ void MainProgressBar::paintFoot(QPainter &painter)
 //    painter.setBrush(progressBarBgGradient);
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Button)));
-    painter.drawRoundedRect(0, m_fix_height - m_foot_margin, m_fix_width, m_foot_margin, 1, 1);
+    painter.drawRoundedRect(0, m_foot_progress_back_y, m_fix_width, m_foot_margin, 1, 1);
     painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight)));
-    painter.drawRoundedRect(0, m_fix_height - m_foot_margin, value, m_foot_margin, 1, 1);
+    painter.drawRoundedRect(0, m_foot_progress_back_y, value, m_foot_margin, 1, 1);
 
     painter.restore();
 }
@@ -387,18 +430,18 @@ void MainProgressBar::paintHeader(QPainter &painter)
     painter.save();
 
     // paint title
-    QRect textArea (width() / 2 - m_title_width / 2, 0, m_title_width, m_header_height);
+    QRect textArea (m_text_area_x, 0, m_title_width, m_header_height);
     QFont font = painter.font();
     font.setPixelSize(14);
     painter.setFont(font);
     painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_title);
 
     // paint minilize button
-    painter.drawPixmap(m_fix_width - m_btn_margin * 2 - m_btn_size * 2, m_btn_margin_top, m_btn_size, m_btn_size,
+    painter.drawPixmap(m_minilize_button_x_l, m_btn_margin_top, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size)));
 
     // paint close button
-    painter.drawPixmap(m_fix_width - m_btn_margin - m_btn_size, m_btn_margin_top, m_btn_size, m_btn_size,
+    painter.drawPixmap(m_close_button_x_l, m_btn_margin_top, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
 
     painter.restore();
@@ -406,42 +449,38 @@ void MainProgressBar::paintHeader(QPainter &painter)
 
 void MainProgressBar::paintContent(QPainter &painter)
 {
-    double x = 0;
-    double y = 0;
-    double w = 0;
-
     painter.save();
 
     // paint icon
-    y = m_fix_height / 2 - m_icon_size / 2;
     if (m_icon.isNull()) {
-        painter.drawPixmap(m_icon_margin, y, m_icon_size, m_icon_size,
+        painter.drawPixmap(m_icon_margin, m_icon_area_y, m_icon_size, m_icon_size,
                            QIcon::fromTheme("text").pixmap(m_icon_size, m_icon_size));
     } else {
-        painter.drawPixmap(m_icon_margin, y, m_icon_size, m_icon_size,
+        painter.drawPixmap(m_icon_margin, m_icon_area_y, m_icon_size, m_icon_size,
                            m_icon.pixmap(m_icon_size, m_icon_size));
     }
 
     // paint file name
-    x = m_icon_margin + m_file_name_margin + m_icon_size;
-    y = m_fix_height / 2 - m_file_name_height / 2;
-    w = m_fix_width - m_icon_size - m_icon_margin - m_file_name_margin * 3;
     QFont font = painter.font();
     font.setPixelSize(14);
     painter.setFont(font);
     if (m_stopping) {
-        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(x, y, w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
+        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
+    }
+
+    if (m_pause) {
+        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+    } else {
+        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
     }
 
     // paint percentage
-    x = m_fix_width - m_percent_margin - m_percent_height;
-    y = m_fix_height - m_foot_margin - m_percent_height - m_percent_margin / 5;
     font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
-    painter.drawText(x, y, m_percent_height, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
+    painter.drawText(m_percent_x, m_percent_y, m_percent_height, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
 
     painter.restore();
@@ -456,12 +495,6 @@ void MainProgressBar::paintProgress(QPainter &painter)
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight).lighter(150)));
     painter.drawRoundedRect(0, 0, value, m_fix_height, 1, 1);
-
-//    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
-//    progressBarBgGradient.setColorAt(0.0, QColor(175, 238, 238));
-//    progressBarBgGradient.setColorAt(1.0, QColor(175, 238, 238));
-//    painter.setBrush(progressBarBgGradient);
-
 
     painter.restore();
 }
@@ -580,6 +613,39 @@ bool ProgressBar::getStatus()
     return m_is_stopping;
 }
 
+float ProgressBar::getProgress()
+{
+    return m_current_value;
+}
+
+float ProgressBar::getTotalSize()
+{
+    return m_total_size;
+}
+
+bool ProgressBar::isPause()
+{
+    return m_pause;
+}
+
+void ProgressBar::setPause()
+{
+    if (!m_pause) {
+        m_pause = true;
+        Q_EMIT pause();
+        update();
+    }
+}
+
+void ProgressBar::setResume()
+{
+    if (m_pause) {
+        m_pause = false;
+        Q_EMIT resume();
+        update();
+    }
+}
+
 ProgressBar::~ProgressBar()
 {
 
@@ -587,29 +653,20 @@ ProgressBar::~ProgressBar()
 
 void ProgressBar::paintEvent(QPaintEvent *event)
 {
-    double x = 0;
-    double y = 0;
-    double w = 0;
-
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.save();
 
     // paint icon
-    x = m_margin_lr;
-    y = (height() - m_margin_ud * 2 - m_icon_size) / 2 + m_margin_ud;
     if (m_icon.isNull()) {
-        painter.drawPixmap(x, y, m_icon_size, m_icon_size,
+        painter.drawPixmap(m_icon_x, m_icon_y, m_icon_size, m_icon_size,
                            QIcon::fromTheme("text").pixmap(m_icon_size, m_icon_size));
     } else {
-        painter.drawPixmap(x, y, m_icon_size, m_icon_size,
+        painter.drawPixmap(m_icon_x, m_icon_y, m_icon_size, m_icon_size,
                            m_icon.pixmap(m_icon_size, m_icon_size));
     }
 
     // paint text
-    x = m_margin_lr * 2 + m_icon_size;
-    y = (height() - m_margin_ud * 2 - m_text_height) / 2 + m_margin_ud;
-    w = width() - m_margin_lr * 5 - m_icon_size - m_btn_size - m_progress_width - m_percent_width;
     QPen pen;
     pen.setBrush(QBrush(btn->palette().color(QPalette::WindowText)));
     pen.setStyle(Qt::SolidLine);
@@ -618,39 +675,34 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     font.setPixelSize(12);
     painter.setFont(font);
     if (m_is_stopping) {
-        painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+        painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(x, y, w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
+        painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
     }
 
     // paint progress
-    x = m_margin_lr * 3 + m_icon_size + w;
-    y = (height() - m_margin_ud * 2 - m_progress_height) / 2 + m_margin_ud;
     double value = m_current_value * m_progress_width;
 
     pen.setStyle(Qt::SolidLine);
     painter.setBrush(Qt::NoBrush);
     painter.setPen(pen);
 
-//    QLinearGradient progressBarBgGradient (QPointF(0, 0), QPointF(0, height()));
-//    progressBarBgGradient.setColorAt(0.0, QColor(175,238,238));
-//    progressBarBgGradient.setColorAt(1.0, QColor(175,238,238));
-//    painter.setPen(Qt::NoPen);
-//    painter.setBrush(progressBarBgGradient);
-
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Button)));
-    painter.drawRect(x, y, m_progress_width, m_progress_height);
+    painter.drawRect(m_progress_x, m_progress_y, m_progress_width, m_progress_height);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
-    painter.drawRoundedRect(x, y, value, m_progress_height, 1, 1);
+    painter.drawRoundedRect(m_progress_x, m_progress_y, value, m_progress_height, 1, 1);
+
+    // paint stop
+    if (m_pause) {
+        painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size));
+    } else {
+        painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
+    }
 
     // paint close
-    x =  m_margin_lr * 5 + m_icon_size + w + m_progress_width;
-    y = (height() - m_margin_ud * 2 - m_btn_size) / 2 + m_margin_ud;
-    painter.drawPixmap(x, y, m_btn_size, m_btn_size,
+    painter.drawPixmap(m_close_x, m_close_y, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
-
-    // paint stopping
 
     painter.restore();
 
@@ -659,13 +711,18 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 
 void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
 {
-    double w = width() - m_margin_lr * 5 - m_icon_size - m_btn_size - m_progress_width - m_percent_width;
-    double x =  m_margin_lr * 5 + m_icon_size + w + m_progress_width;
-    double y = (height() - m_margin_ud * 2 - m_btn_size) / 2 + m_margin_ud;
-
     QPoint pos = event->pos();
-    if ((pos.x() >= x) && (pos.x() <= (x + m_btn_size))
-            && (pos.y() >= y) && (pos.y() <= y + m_btn_size)) {
+    if ((pos.x() >= m_pause_x) && (pos.x() <= m_pause_x_r)
+            && (pos.y() >= m_pause_y) && (pos.y() <= m_pause_y_b)) {
+        if (m_pause) {
+            m_pause = false;
+            Q_EMIT resume();
+        } else {
+            m_pause = true;
+            Q_EMIT pause();
+        }
+    } else if ((pos.x() >= m_close_x) && (pos.x() <= m_close_x_r)
+               && (pos.y() >= m_close_y) && (pos.y() <= m_close_y_b)) {
         QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
                            tr("Are you sure want to cancel the current selected file operation"),
                            QMessageBox::Ok | QMessageBox::Cancel);

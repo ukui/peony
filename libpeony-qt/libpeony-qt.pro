@@ -65,3 +65,9 @@ unix {
     #QM_FILES_RESOURCE_PREFIX = ../translations/libpeony-qt
     QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
 }
+
+HEADERS += \
+    file-copy.h
+
+SOURCES += \
+    file-copy.cpp

@@ -294,6 +294,31 @@ Q_SIGNALS:
      */
     void operationFinished();
 
+    /**
+     * @brief operationPause
+     * <br>
+     * This signal tells the thread that the current file operation should be paused.
+     * </br>
+     */
+    void operationPause();
+
+    /**
+     * @brief operationStart
+     * <br>
+     * This signal tells the thread that the current file operation should resume from its pause.
+     * </br>
+     */
+    void operationResume();
+
+    /**
+     * @brief operationCancel
+     * <br>
+     * This signal tells the thread that the current user has chosen to cancel the operation.
+     *  this signal is used for custom copy operations to release the lock in the thread.
+     * </br>
+     */
+    void operationCancel();
+
 public Q_SLOTS:
     virtual void cancel();
 
@@ -310,6 +335,8 @@ protected:
      * tell views operation finished.
      */
     void notifyFileWatcherOperationFinished();
+protected:
+    bool                        m_is_pause = false;
 
 private:
     bool                        m_has_error = false;

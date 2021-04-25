@@ -34,6 +34,7 @@
 #include "clipboard-utils.h"
 #include <QProcess>
 #include <QDebug>
+#include <file-copy.h>
 
 using namespace Peony;
 
@@ -111,7 +112,7 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
     auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
     auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
                 p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
-    qDebug()<<currnet*1.0/total;
+//    qDebug()<<currnet*1.0/total;
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri, destFileName, fileIconName, currnet, total);
 }
 
@@ -248,15 +249,27 @@ fallback_retry:
         }
     } else {
         GError *err = nullptr;
-        GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
-        g_file_copy(sourceFile.get()->get(),
-                    destFile.get()->get(),
-                    m_default_copy_flag,
-                    getCancellable().get()->get(),
-                    GFileProgressCallback(progress_callback),
-                    this,
-                    &err);
+//        GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
+//        g_file_copy(sourceFile.get()->get(),
+//                    destFile.get()->get(),
+//                    m_default_copy_flag,
+//                    getCancellable().get()->get(),
+//                    GFileProgressCallback(progress_callback),
+//                    this,
+//                    &err);
 
+
+        FileCopy fileCopy (node->uri(), destFileUri, m_default_copy_flag,
+                           getCancellable().get()->get(),
+                           GFileProgressCallback(progress_callback),
+                           this,
+                           &err);
+        if (m_is_pause) fileCopy.pause();
+        fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+        fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+        fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+        if (m_is_pause) fileCopy.pause();
+        fileCopy.run();
         if (err) {
             switch (err->code) {
             case G_IO_ERROR_INVALID_FILENAME: {
@@ -320,25 +333,47 @@ fallback_retry:
                 break;
             }
             case OverWriteOne: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
+//                FileCopy fileCopy(sourceFile.get()->get(),
+//                            destFile.get()->get(),
+//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+//                            getCancellable().get()->get(),
+//                            GFileProgressCallback(progress_callback),
+//                            this,
+//                            nullptr);
+                FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
+                                   (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                                   getCancellable().get()->get(),
+                                   GFileProgressCallback(progress_callback),
+                                   this,
+                                   nullptr);
+                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileCopy.pause();
+                fileCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 break;
             }
             case OverWriteAll: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
+//                g_file_copy(sourceFile.get()->get(),
+//                            destFile.get()->get(),
+//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+//                            getCancellable().get()->get(),
+//                            GFileProgressCallback(progress_callback),
+//                            this,
+//                            nullptr);
+                FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
+                                   (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                                   getCancellable().get()->get(),
+                                   GFileProgressCallback(progress_callback),
+                                   this,
+                                   nullptr);
+                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileCopy.pause();
+                fileCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
