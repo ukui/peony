@@ -104,7 +104,6 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
     m_desktop_watcher->setMonitorChildrenChange(true);
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
-        m_items_need_relayout.append(uri);
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri);
@@ -117,6 +116,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
 
         if (!exsited) {
+            m_items_need_relayout.append(uri);
+            m_items_need_relayout.removeDuplicates();
+
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             job->querySync();
