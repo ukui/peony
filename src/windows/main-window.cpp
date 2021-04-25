@@ -1016,6 +1016,8 @@ void MainWindow::forceStopLoading()
     if (Peony::ClipboardUtils::isClipboardHasFiles())
     {
         Peony::ClipboardUtils::clearClipboard();
+        QStringList uris;
+        this->getCurrentPage()->getView()->setSelections(uris);
         this->getCurrentPage()->getView()->repaintView();
     }
 }

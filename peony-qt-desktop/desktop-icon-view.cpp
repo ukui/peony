@@ -631,6 +631,7 @@ void DesktopIconView::initShoutCut()
         if (Peony::ClipboardUtils::isClipboardHasFiles())
         {
             Peony::ClipboardUtils::clearClipboard();
+            clearSelection();
             this->update();
         }
     });
