@@ -181,6 +181,11 @@ Files: libpeony-qt/file-operation/file-operation-progress-bar.cpp
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
+Files: libpeony-qt/file-copy.cpp
+  libpeony-qt/file-copy.h
+Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-3+
+
 Files: libpeony-qt/file-operation/file-operation-test/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+

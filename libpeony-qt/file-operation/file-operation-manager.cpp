@@ -245,10 +245,15 @@ start:
    proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &ProgressBar::onFileRollbacked);
    proc->connect(operation, &FileOperation::operationStartSnyc, proc, &ProgressBar::onStartSync);
    proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
-   proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &FileOperation::cancel);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &FileOperation::operationCancel);
+   proc->connect(proc, &ProgressBar::pause, operation, &FileOperation::operationPause);
+   proc->connect(proc, &ProgressBar::resume, operation, &FileOperation::operationResume);
+
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
    });
+
    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        Q_EMIT this->operationFinished(operation->getOperationInfo(), !operation->hasError());

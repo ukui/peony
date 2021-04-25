@@ -37,6 +37,12 @@ FileOperation::FileOperation(QObject *parent) : QObject (parent)
 {
     m_cancellable_wrapper = wrapGCancellable(g_cancellable_new());
     setAutoDelete(true);
+    connect(this, &FileOperation::operationPause, this, [=] () {
+        m_is_pause = true;
+    });
+    connect(this, &FileOperation::operationResume, this, [=] () {
+        m_is_pause = false;
+    });
 }
 
 FileOperation::~FileOperation()
