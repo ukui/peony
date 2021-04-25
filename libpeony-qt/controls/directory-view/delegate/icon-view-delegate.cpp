@@ -173,7 +173,13 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         } else if (! view->isDraggingState() && view->m_allow_set_index_widget) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
             connect(getView()->m_model, &FileItemModel::dataChanged, indexWidget, [=](const QModelIndex &topleft, const QModelIndex &bottomRight){
-                if (topleft.data(Qt::UserRole).toString() == indexWidget->m_index.data(Qt::UserRole).toString()) {
+                // if item has been removed and there is no reference for responding info,
+                // clear index widgets.
+                if (!indexWidget->m_info.lock()) {
+                    getView()->clearIndexWidget();
+                    return;
+                }
+                if (topleft.data(Qt::UserRole).toString() == indexWidget->m_info.lock().get()->uri()) {
                     if (getView()->getSelections().count() == 1 && getView()->getSelections().first() == topleft.data(Qt::UserRole).toString()) {
                         auto selections = getView()->getSelections();
                         getView()->clearSelection();

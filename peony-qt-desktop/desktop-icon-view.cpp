@@ -1357,6 +1357,11 @@ const QRect DesktopIconView::getBoundingRect()
 
 void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
 {
+    if (uris.isEmpty()) {
+        return;
+    }
+    auto allFileUris = getAllFileUris();
+
     auto ensuredItemRectHash = m_item_rect_hash;
     for (auto uri : uris) {
         ensuredItemRectHash.remove(uri);
@@ -1384,6 +1389,8 @@ void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
     marginTop = marginTop < 0? 0: marginTop;
 
     for (auto uri : uris) {
+        if (!allFileUris.contains(uri))
+            continue;
         auto indexRect = QRect(QPoint(marginLeft, marginTop), m_item_rect_hash.values().first().size());
         if (notEmptyRegion.contains(indexRect.center())) {
 
