@@ -115,6 +115,8 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     setApplicationName("peony-qt-desktop");
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
+    PEONY_DESKTOP_LOG_WARN("PeonyDesktopApplication enter..........");
+
     QTranslator *t = new QTranslator(this);
     t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t);
@@ -127,6 +129,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
+        PEONY_DESKTOP_LOG_WARN("it is Primary screen");
         connect(this, &SingleApplication::receivedMessage, [=](quint32 id, QByteArray msg) {
             this->parseCmd(id, msg, true);
         });
@@ -163,6 +166,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     connect(this, &SingleApplication::screenRemoved, this, &PeonyDesktopApplication::screenRemovedProcess);
 
     //parse cmd
+    PEONY_DESKTOP_LOG_WARN("before parse cmd............");
     auto message = this->arguments().join(' ').toUtf8();
     parseCmd(this->instanceId(), message, isPrimary());
 
@@ -179,6 +183,8 @@ Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
 {
     if (!desktop_icon_view)
         desktop_icon_view = new Peony::DesktopIconView;
+
+    PEONY_DESKTOP_LOG_WARN("create icon view");
     return desktop_icon_view;
 }
 
@@ -235,6 +241,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     parser.addOption(desktopOption);
 
     if (isPrimary) {
+        PEONY_DESKTOP_LOG_WARN("parse cmd: it is primary screen");
         if (m_first_parse) {
             auto helpOption = parser.addHelpOption();
             auto versionOption = parser.addVersionOption();
@@ -247,6 +254,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         parser.process(args);
         if (parser.isSet(quitOption)) {
             QTimer::singleShot(1, [=]() {
+                PEONY_DESKTOP_LOG_WARN("peony desktop exited");
                 qApp->quit();
             });
             return;
@@ -255,6 +263,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         if (parser.isSet(daemonOption)) {
             if (!has_daemon) {
                 qDebug()<<"-d";
+                PEONY_DESKTOP_LOG_WARN("has paramer d");
 
                 trySetDefaultFolderUrlHandler();
 
@@ -296,6 +305,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
 
         if (parser.isSet(desktopOption)) {
             if (!has_desktop) {
+                PEONY_DESKTOP_LOG_WARN("has parameter w");
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
                 getIconView();
@@ -314,6 +324,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             }
         });
     } else {
+        PEONY_DESKTOP_LOG_WARN("parse cmd: it is not primary screen");
         auto helpOption = parser.addHelpOption();
         auto versionOption = parser.addVersionOption();
 
