@@ -363,7 +363,6 @@ void FileEnumerator::handleError(GError *err)
         break;
     }
     default:
-        qDebug() << "---- test ----" << err->message;
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
         break;
     }
