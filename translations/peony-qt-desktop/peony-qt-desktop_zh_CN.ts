@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="559"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="570"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="652"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="663"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="832"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="843"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="833"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="844"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="816"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="827"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="817"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="828"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
@@ -225,7 +225,7 @@
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="491"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="493"/>
         <source>Delete to trash</source>
         <translation>删除到回收站</translation>
     </message>
@@ -260,22 +260,22 @@
         <translation type="vanished">永久删除</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="504"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="506"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="511"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="513"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="517"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="519"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="531"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="533"/>
         <source>Properties</source>
         <translation>属性</translation>
     </message>
