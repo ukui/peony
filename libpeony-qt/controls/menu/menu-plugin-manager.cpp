@@ -100,32 +100,37 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
 {
     QList<QAction *> l;
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
+        QString str_cmp = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        str_cmp.insert(0, QString("file://"));
         if (selectionUris.count() == 1) {
             auto select_file_info = FileInfo::fromUri(selectionUris[0]);
             if(select_file_info->isSymbolLink())
                 return l;
-            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
-            auto info = FileInfo::fromUri(selectionUris.first());
-            QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-            QString originPath = QUrl(selectionUris.first()).path();
-            //special type mountable, or isVirtual then return
-            if (selectionUris.first().startsWith("computer:///")
-                    || info->isVirtual()
-                    || selectionUris.first().startsWith("trash:///")
-                    || selectionUris.first().startsWith("recent:///")
-                    || selectionUris.first().startsWith("mtp://")
-                    || originPath == desktopPath) {
-                return l;
-            }
+            if(QString::compare(QUrl::fromPercentEncoding(uri.toLocal8Bit()), str_cmp))
+            {
+                auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
+                auto info = FileInfo::fromUri(selectionUris.first());
+                QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                QString originPath = QUrl(selectionUris.first()).path();
+                //special type mountable, or isVirtual then return
+                if (selectionUris.first().startsWith("computer:///")
+                        || info->isVirtual()
+                        || selectionUris.first().startsWith("trash:///")
+                        || selectionUris.first().startsWith("recent:///")
+                        || selectionUris.first().startsWith("mtp://")
+                        || originPath == desktopPath) {
+                    return l;
+                }
 
-            connect(createLinkToDesktop, &QAction::triggered, [=]() {
-                //QUrl src = selectionUris.first();
-                QString desktopUri = "file://" + desktopPath;
-                FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
-                op->setAutoDelete(true);
-                FileOperationManager::getInstance()->startOperation(op, true);
-            });
-            l<<createLinkToDesktop;
+                connect(createLinkToDesktop, &QAction::triggered, [=]() {
+                    //QUrl src = selectionUris.first();
+                    QString desktopUri = "file://" + desktopPath;
+                    FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
+                    op->setAutoDelete(true);
+                    FileOperationManager::getInstance()->startOperation(op, true);
+                });
+                l<<createLinkToDesktop;
+            }
 
             auto createLinkTo = new QAction(tr("Create Link to..."), nullptr);
             connect(createLinkTo, &QAction::triggered, [=]() {
