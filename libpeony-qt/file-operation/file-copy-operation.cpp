@@ -148,7 +148,6 @@ fallback_retry:
                 return;
             }
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            qDebug() << "--1-- test ----" << err->message;
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
             except.srcUri = m_current_src_uri;
