@@ -226,11 +226,7 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
     windowTitle += " " + tr("Properties");
 
     if (iconName == "application-x-desktop") {
-        QUrl url = m_fileInfo.get()->uri();
-        auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-        if (_desktop_file) {
-            iconName = g_desktop_app_info_get_string(_desktop_file, "Icon");
-        }
+        iconName = getIconName();
     }
 
     QIcon fileIcon = QIcon::fromTheme(iconName, QIcon::fromTheme("text-x-generic"));
@@ -403,6 +399,30 @@ void PropertiesWindow::removeThisWindow(qint64 index)
         qDebug() << __FILE__ << __FUNCTION__ << "delete->openedPropertiesWindows";
     }
 
+}
+
+QString PropertiesWindow::getIconName()
+{
+    if (m_fileInfo == nullptr)
+        return "application-x-desktop";
+
+    QString realPath;
+    bool startWithTrash = m_fileInfo->uri().startsWith("trash:///");
+
+    if (startWithTrash) {
+        realPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
+                   + "/.local/share/Trash/files/"
+                   + m_fileInfo->displayName();
+    } else {
+        realPath = m_fileInfo->targetUri();
+    }
+
+    auto _desktop_file = g_desktop_app_info_new_from_filename(QUrl(realPath).path().toUtf8().constData());
+    if (_desktop_file) {
+        return QString(g_desktop_app_info_get_string(_desktop_file, "Icon"));
+    }
+    //在找不到图标时，返回默认图标 - When the icon is not found, return to the default icon
+    return "application-x-desktop";
 }
 
 void PropertiesWindow::closeEvent(QCloseEvent *event)

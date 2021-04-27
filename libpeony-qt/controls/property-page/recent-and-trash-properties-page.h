@@ -43,6 +43,7 @@ public:
 protected:
     void addSeparator();
     void init();
+    QString getIconName();
 
 private:
     QString m_uri;
