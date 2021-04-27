@@ -167,7 +167,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="305"/>
         <source>Empty File</source>
-        <translation>空文件</translation>
+        <translation>空文本</translation>
     </message>
     <message>
         <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="315"/>
