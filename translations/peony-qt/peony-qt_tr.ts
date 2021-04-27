@@ -178,12 +178,12 @@ p, li { white-space: pre-wrap; }
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1467"/>
+        <location filename="../../src/windows/main-window.cpp" line="1470"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1468"/>
+        <location filename="../../src/windows/main-window.cpp" line="1471"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -192,12 +192,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1457"/>
+        <location filename="../../src/windows/main-window.cpp" line="1460"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1458"/>
+        <location filename="../../src/windows/main-window.cpp" line="1461"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -206,7 +206,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="701"/>
+        <location filename="../../src/windows/main-window.cpp" line="704"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -265,37 +265,37 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Gelişmiş Arama</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="66"/>
+        <location filename="../../src/control/operation-menu.cpp" line="68"/>
         <source>Keep Allow</source>
         <translation>İzin Ver</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="75"/>
+        <location filename="../../src/control/operation-menu.cpp" line="77"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="82"/>
+        <location filename="../../src/control/operation-menu.cpp" line="84"/>
         <source>Forbid thumbnailing</source>
         <translation>Küçük Resimleri Yasakla</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="91"/>
+        <location filename="../../src/control/operation-menu.cpp" line="93"/>
         <source>Resident in Backend</source>
         <translation>Arka Uçta Yerleşik</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="100"/>
+        <location filename="../../src/control/operation-menu.cpp" line="102"/>
         <source>Parallel Operations</source>
         <translation>Paralel İşlemler</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="109"/>
+        <location filename="../../src/control/operation-menu.cpp" line="111"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="113"/>
+        <location filename="../../src/control/operation-menu.cpp" line="115"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -303,27 +303,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="144"/>
+        <location filename="../../src/control/operation-menu.cpp" line="146"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="155"/>
+        <location filename="../../src/control/operation-menu.cpp" line="157"/>
         <source>copy</source>
         <translation type="unfinished">Kopyala</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="164"/>
+        <location filename="../../src/control/operation-menu.cpp" line="166"/>
         <source>paste</source>
         <translation type="unfinished">Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="173"/>
+        <location filename="../../src/control/operation-menu.cpp" line="175"/>
         <source>cut</source>
         <translation type="unfinished">Kes</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="182"/>
+        <location filename="../../src/control/operation-menu.cpp" line="184"/>
         <source>trash</source>
         <translation type="unfinished">Çöp</translation>
     </message>

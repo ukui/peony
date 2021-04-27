@@ -283,13 +283,14 @@ fallback_retry:
 
             FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
+            QString str_error = QObject::tr("Error when getting information for file : No target file found");
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
             except.op = FileOpCopy;
             except.title = tr("File copy error");
             except.srcUri = m_current_src_uri;
             except.errorCode = err->code;
-            except.errorStr = err->message;
+            except.errorStr = str_error.toUtf8().constData();
             except.destDirUri = m_current_dest_dir_uri;
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
