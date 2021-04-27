@@ -102,6 +102,7 @@ int main(int argc, char *argv[])
     if (a.isSecondary())
         return 0;
 
+    PEONY_DESKTOP_LOG_WARN("peony desktop start before dbus interface#######################");
     QDBusInterface interface(UKUI_SERVICE,
                                  UKUI_PATH,
                                  UKUI_INTERFACE,
