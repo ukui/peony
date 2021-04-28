@@ -556,7 +556,7 @@ void PeonyDesktopApplication::setupDesktop()
                 virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
                 getIconView()->setGeometry(x, y, width, height);
             });
-            screensMonitor->start();
+            //screensMonitor->start();
             // init
             getIconView()->show();
             int x = screensMonitor->getScreenGeometry("x");
@@ -564,15 +564,16 @@ void PeonyDesktopApplication::setupDesktop()
             int width = screensMonitor->getScreenGeometry("width");
             int height = screensMonitor->getScreenGeometry("height");
             QRect geometry = QRect(x, y, width, height);
-            if (geometry.size() == QSize(0, 0)) {
-                for (auto screen : qApp->screens()) {
-                    if (screen->geometry().topLeft() == QPoint(0, 0)) {
-                        geometry.setSize(screen->geometry().size());
-                        break;
-                    }
+            if (width == 0) {
+                qCritical()<<"failed to get primary screen info from dbus service, which provided by usd";
+                if (qApp->screens().count() > 0) {
+                    geometry = qApp->screens().first()->geometry();
                 }
+
+                // ukui settings daemon doesn't start. setup background directly.
+                setupBgAndDesktop();
             }
-            getIconView()->setGeometry(x, y, width, height);
+            getIconView()->setGeometry(geometry);
         } else {
             getIconView()->setGeometry(qApp->primaryScreen()->geometry());
         }
