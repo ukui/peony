@@ -75,6 +75,7 @@ private:
     QStringList m_selections;
 
     bool m_is_cd = false;
+    bool m_is_ftp = false;
     bool m_is_computer = false;
     bool m_is_trash = false;
     bool m_is_search = false;

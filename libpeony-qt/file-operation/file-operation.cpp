@@ -140,7 +140,8 @@ void FileOperation::notifyFileWatcherOperationFinished()
         // notify operation for file watchers.
         auto info = this->getOperationInfo();
         qDebug()<<info->m_src_dir_uri;
-        if (info)
+        if (info) {
             FileOperationManager::getInstance()->manuallyNotifyDirectoryChanged(info.get());
+        }
     }
 }

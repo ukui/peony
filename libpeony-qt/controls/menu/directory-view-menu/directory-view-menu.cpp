@@ -126,6 +126,11 @@ void DirectoryViewMenu::fillActions()
         m_is_kydroid = true;
     }
 
+    if (m_directory.startsWith("ftp://")
+            || m_directory.startsWith("sftp://")) {
+        m_is_ftp = true;
+    }
+
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
@@ -379,8 +384,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             job.querySync();
         }
 
-        if (! info->canWrite())
-        {
+        if (!info->canWrite() && !m_is_ftp) {
             createAction->setEnabled(false);
         }
 

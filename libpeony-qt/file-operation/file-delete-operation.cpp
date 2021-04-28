@@ -155,7 +155,6 @@ void FileDeleteOperation::run()
     }
 
     Q_EMIT operationFinished();
-    //notifyFileWatcherOperationFinished();
 }
 
 void FileDeleteOperation::cancel()
