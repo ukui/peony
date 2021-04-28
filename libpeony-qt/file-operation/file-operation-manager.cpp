@@ -455,12 +455,14 @@ void FileOperationManager::unregisterFileWatcher(FileWatcher *watcher)
 
 void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *info)
 {
-    if (!info)
+    if (!info) {
         return;
+    }
 
     // skip create template opeartion, it will be handled by operation itself.
-    if (info->m_src_dir_uri == QStandardPaths::writableLocation(QStandardPaths::TempLocation))
+    if (info->m_src_dir_uri == QStandardPaths::writableLocation(QStandardPaths::TempLocation)) {
         return;
+    }
 
     for (auto watcher : m_watchers) {
         if (!watcher->supportMonitor()) {
@@ -490,9 +492,14 @@ void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *inf
                 watcher->requestUpdateDirectory();
             }
 
-            if (srcDir.startsWith("smb://") && (info->operationType() == FileOperationInfo::Delete
-                    || info->operationType() == FileOperationInfo::Move
-                    || info->operationType() == FileOperationInfo::Trash)) {
+            qDebug() << "src:" << srcDir << " == dest:" << destDir << " == type:" << info->operationType();
+
+            if (srcDir.startsWith("smb://")
+                 || srcDir.startsWith("ftp://")
+                 || srcDir.startsWith("sftp://")
+                 || destDir.startsWith("smb://")
+                 || destDir.startsWith("ftp://")
+                 || destDir.startsWith("sftp://")) {
                 watcher->requestUpdateDirectory();
             }
         }
