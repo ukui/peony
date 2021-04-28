@@ -35,14 +35,22 @@ FileLabelModel::FileLabelModel(QObject *parent)
 {
     m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
     if (m_label_settings->value("lastid").isNull()) {
+        //adjsut color value to design instead of Qt define color,task#25507
+        QColor Red(0xFA6056);
+        QColor Orange(0xF8A34C);
+        QColor Yellow(0xF7CE52);
+        QColor Green(0x5FD065);
+        QColor Blue(0x478EF8);
+        QColor Purple(0xB470D5);
+        QColor Gray(0x9D9DA0);
         //init settings
-        addLabel(tr("Red"), Qt::red);
-        addLabel(tr("Orange"), QColor("orange"));
-        addLabel(tr("Yellow"), Qt::yellow);
-        addLabel(tr("Green"), Qt::green);
-        addLabel(tr("Blue"), Qt::blue);
-        addLabel(tr("Purple"), QColor("purple"));
-        addLabel(tr("Gray"), Qt::gray);
+        addLabel(tr("Red"), Red);
+        addLabel(tr("Orange"), Orange);
+        addLabel(tr("Yellow"), Yellow);
+        addLabel(tr("Green"), Green);
+        addLabel(tr("Blue"), Blue);
+        addLabel(tr("Purple"), Purple);
+        addLabel(tr("Gray"), Gray);
         //addLabel(tr("Transparent"), Qt::transparent);
     } else {
         initLabelItems();
