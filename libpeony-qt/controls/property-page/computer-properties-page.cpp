@@ -151,26 +151,27 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             return;
         }
         if (mount) {
-            auto volume = VolumeManager::getVolumeFromMount(mount);
-            auto drive = VolumeManager::getDriveFromMount(mount);
-
-            GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
-            GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
-            quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
-            quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
-            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-            //char *total_format = g_format_size(total);
-            //char *used_format = g_format_size(used);
-            //char *aviliable_format = g_format_size(aviliable);
-            //Calculated by 1024 bytes
-            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
-
+//            auto volume = VolumeManager::getVolumeFromMount(mount);
+//            auto drive = VolumeManager::getDriveFromMount(mount);
             //fix system Udisk calculate size wrong issue
             QString m_volume_name, m_unix_device, m_display_name, sizeInfo;
             FileUtils::queryVolumeInfo(uri, m_volume_name, m_unix_device, m_display_name);
             bool bMobileDevice = false;
+
+            GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
+            GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
+            quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
+            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+            //use used add aviliable as total to fix bug#51957
+            quint64 total = used + aviliable;
+            auto *total_format = g_format_size_full(total, G_FORMAT_SIZE_IEC_UNITS);
+            auto *used_format = g_format_size_full(used, G_FORMAT_SIZE_IEC_UNITS);
+            auto *aviliable_format = g_format_size_full(aviliable, G_FORMAT_SIZE_IEC_UNITS);
+            //Calculated by 1024 bytes
+//            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+//            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
+//            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+
             //U disk or other mobile device
             if (! m_unix_device.isEmpty() && ! uri.startsWith("computer:///WDC"))
             {
