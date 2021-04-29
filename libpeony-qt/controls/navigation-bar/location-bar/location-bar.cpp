@@ -82,8 +82,6 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_Hover);
     setMouseTracking(true);
 
-    setToolTip(tr("click the blank area for edit"));
-
     setStyleSheet("padding-right: 15;"
                   "margin-left: 2");
     m_styled_edit = new QLineEdit;
