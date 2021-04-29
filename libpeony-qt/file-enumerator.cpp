@@ -613,7 +613,12 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
             g_free(path);
         } else {
             uriList<<uri;
-            *(p_this->m_cache_uris)<<uri;
+            auto urldecode = url.toDisplayString();
+            if (urldecode.startsWith("file:///media/")) {
+                *(p_this->m_cache_uris)<<urldecode;
+            } else {
+                *(p_this->m_cache_uris)<<uri;
+            }
         }
 
         if (p_this->m_with_info_job) {
