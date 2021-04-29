@@ -907,6 +907,15 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
         auto enumerator = new Peony::FileEnumerator;
         enumerator->setEnumerateDirectory(info.get()->uri());
+        enumerator->setAutoDelete();
+        connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed){
+            if (!successed) {
+                if (!currentPage()) {
+                    QTimer::singleShot(100, topLevelWidget(), &QWidget::close);
+                }
+                return;
+            }
+        });
         connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
             if (critical) {
                 QMessageBox::critical(0, 0, err.get()->message());
