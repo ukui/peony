@@ -290,7 +290,7 @@ void TabWidget::initAdvanceSearch()
     m_search_close = closeButton;
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
-    closeButton->setToolTip(tr("Close advance search."));
+    closeButton->setToolTip(tr("Close Filter."));
 
     connect(closeButton, &QPushButton::clicked, [=]()
     {
@@ -642,6 +642,31 @@ void TabWidget::handleZoomLevel(int zoomLevel)
     }
 }
 
+void TabWidget::enableSearchBar(bool enable)
+{
+    //qDebug() << "enable:" <<enable;
+    m_search_path->setEnabled(enable);
+    //m_search_close->setEnabled(enable);
+    m_search_title->setEnabled(enable);
+    m_search_bar->setEnabled(enable);
+    if (m_search_bar_count >0)
+    {
+        //already had a list,just set to show
+        for(int i=0; i<m_search_bar_list.count(); i++)
+        {
+            m_conditions_list[i]->setEnabled(enable);
+            m_link_label_list[i]->setEnabled(enable);
+            if (m_conditions_list[i]->currentIndex()%4 < 3)
+                m_classify_list[i]->setEnabled(enable);
+            else
+                m_input_list[i]->setEnabled(enable);
+            m_search_bar_list[i]->setEnabled(enable);
+            m_add_button_list[i]->setEnabled(enable);
+            m_remove_button_list[i]->setEnabled(enable);
+        }
+    }
+}
+
 void TabWidget::updateSearchBar(bool showSearch)
 {
     qDebug() << "updateSearchBar:" <<showSearch;
@@ -680,6 +705,8 @@ void TabWidget::updateSearchBar(bool showSearch)
         clearConditions();
         updateFilter();
     }
+
+    enableSearchBar(false);
 }
 
 void TabWidget::updateButtons()

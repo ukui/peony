@@ -182,6 +182,7 @@ public Q_SLOTS:
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
+    void enableSearchBar(bool enable);
 
 protected:
     void changeCurrentIndex(int index);
