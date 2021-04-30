@@ -503,7 +503,6 @@ void FileCopyOperation::run()
     nodes.clear();
 
     Q_EMIT operationFinished();
-    //notifyFileWatcherOperationFinished();
 }
 
 void FileCopyOperation::cancel()
