@@ -269,7 +269,7 @@
         <translation type="vanished">Masaüstünü kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="151"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="152"/>
         <source>peony-qt-desktop</source>
         <translation>Masaüstü</translation>
     </message>
@@ -282,22 +282,27 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="253"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="254"/>
         <source>Close the peony desktop window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="256"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="257"/>
         <source>Take over the dbus service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="259"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="260"/>
         <source>Take over the desktop displaying</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="350"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="263"/>
+        <source>Setup backgrounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="518"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>

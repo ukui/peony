@@ -298,7 +298,7 @@ void TabWidget::initAdvanceSearch()
         Q_EMIT this->closeSearch();
     });
 
-    QLabel *title = new QLabel(tr("Search"), searchButtons);
+    QLabel *title = new QLabel(tr("Filter"), searchButtons);
     m_search_title = title;
     title->setFixedWidth(TRASH_BUTTON_WIDTH);
     title->setFixedHeight(TRASH_BUTTON_HEIGHT);
@@ -310,6 +310,7 @@ void TabWidget::initAdvanceSearch()
     tabButton->setToolTip(tr("Choose other path to search."));
     connect(tabButton, &QPushButton::clicked, this, &TabWidget::browsePath);
 
+    //comment to fix bug#50625, change search to filter
     QPushButton *childButton = new QPushButton(searchButtons);
     m_search_child = childButton;
     childButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
@@ -317,6 +318,7 @@ void TabWidget::initAdvanceSearch()
     //qDebug() << QIcon(":/custom/icons/child-folder").name();
     childButton->setIcon(QIcon(":/custom/icons/child-folder"));
     childButton->setToolTip(tr("Search recursively"));
+    m_search_child->setVisible(false);
     connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
     //set default select recursive
     m_search_child_flag = true;
@@ -652,7 +654,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_close->show();
         m_search_title->show();
         m_search_bar->show();
-        m_search_child->show();
+        //m_search_child->show();
         //m_search_more->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
         //m_search_more->setIcon(QIcon::fromTheme("go-down"));
@@ -664,7 +666,7 @@ void TabWidget::updateSearchBar(bool showSearch)
         m_search_close->hide();
         m_search_title->hide();
         m_search_bar->hide();
-        m_search_child->hide();
+        //m_search_child->hide();
         //m_search_more->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }

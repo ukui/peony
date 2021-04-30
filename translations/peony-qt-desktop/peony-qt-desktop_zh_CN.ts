@@ -373,7 +373,7 @@
         <translation type="vanished">关闭桌面并退出</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="151"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="152"/>
         <source>peony-qt-desktop</source>
         <translation>桌面</translation>
     </message>
@@ -386,22 +386,27 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="253"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="254"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="256"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="257"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="259"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="260"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="350"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="263"/>
+        <source>Setup backgrounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="518"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>

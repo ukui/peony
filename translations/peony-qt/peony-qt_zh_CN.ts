@@ -581,8 +581,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="301"/>
+        <source>Filter</source>
+        <translation>筛选</translation>
+    </message>
+    <message>
         <source>Search</source>
-        <translation>搜索</translation>
+        <translation type="vanished">搜索</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="310"/>
@@ -590,7 +594,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>选择其他搜索路径。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="319"/>
+        <location filename="../../src/control/tab-widget.cpp" line="320"/>
         <source>Search recursively</source>
         <translation>递归搜索</translation>
     </message>
@@ -603,18 +607,18 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="392"/>
+        <location filename="../../src/control/tab-widget.cpp" line="394"/>
         <source>Select path</source>
         <translation>选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="427"/>
-        <location filename="../../src/control/tab-widget.cpp" line="516"/>
+        <location filename="../../src/control/tab-widget.cpp" line="429"/>
+        <location filename="../../src/control/tab-widget.cpp" line="518"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="445"/>
+        <location filename="../../src/control/tab-widget.cpp" line="447"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -623,8 +627,8 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="482"/>
-        <location filename="../../src/control/tab-widget.cpp" line="503"/>
+        <location filename="../../src/control/tab-widget.cpp" line="484"/>
+        <location filename="../../src/control/tab-widget.cpp" line="505"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>
