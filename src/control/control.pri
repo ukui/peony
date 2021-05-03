@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/sort-type-menu.h \
     $$PWD/tab-status-bar.h \
     $$PWD/tab-widget.h \
-    $$PWD/view-type-menu.h
+    $$PWD/view-type-menu.h \
+    $$PWD/float-pane-widget.h
 
 SOURCES += \
     $$PWD/file-label-box.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
     $$PWD/sort-type-menu.cpp \
     $$PWD/tab-status-bar.cpp \
     $$PWD/tab-widget.cpp \
-    $$PWD/view-type-menu.cpp
+    $$PWD/view-type-menu.cpp \
+    $$PWD/float-pane-widget.cpp
