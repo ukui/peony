@@ -694,6 +694,10 @@ void DesktopIconView::resolutionChange()
 {
     QSize screenSize = this->viewport()->size();
 
+    // do not relayout items while screen size is empty.
+    if (screenSize.isEmpty())
+        return;
+
     float iconWidth = 0;
     float iconHeigth = 0;
 
