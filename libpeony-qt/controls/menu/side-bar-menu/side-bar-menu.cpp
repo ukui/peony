@@ -173,9 +173,12 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      */
     auto targetUri = FileUtils::getTargetUri(m_uri);
     auto mount = VolumeManager::getMountFromUri(targetUri);
+    //qDebug() << "targetUri:"<<targetUri<<m_uri;
     //fix erasable optical disk can be format issue, bug#32415
+    //fix bug#52491, CDROM and DVD can format issue
     if(! m_uri.startsWith("burn:///") && !m_uri.endsWith(".mount")
        && !(m_uri.startsWith("file:///media") && m_uri.endsWith("CDROM"))
+       && !(targetUri.startsWith("file:///media") && (m_uri.contains("DVD") || m_uri.contains("CDROM")))
        && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
