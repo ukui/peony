@@ -188,22 +188,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="317"/>
+        <location filename="../../src/windows/main-window.cpp" line="319"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="324"/>
+        <location filename="../../src/windows/main-window.cpp" line="326"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1470"/>
+        <location filename="../../src/windows/main-window.cpp" line="1469"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1471"/>
+        <location filename="../../src/windows/main-window.cpp" line="1470"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -212,12 +212,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1460"/>
+        <location filename="../../src/windows/main-window.cpp" line="1459"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1461"/>
+        <location filename="../../src/windows/main-window.cpp" line="1460"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -226,7 +226,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="704"/>
+        <location filename="../../src/windows/main-window.cpp" line="706"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
