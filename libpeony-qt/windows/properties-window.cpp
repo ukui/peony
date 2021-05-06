@@ -140,6 +140,7 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris = uris;
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
+    setWindowOpacity(0);
 
     //FIX:BUG #31635
     if (m_uris.contains("computer:///")) {
@@ -184,6 +185,10 @@ void PropertiesWindow::init()
     this->initStatusBar();
 
     this->initTabPage(m_uris);
+
+    QTimer::singleShot(300, this, [=]{
+        setWindowOpacity(1);
+    });
 }
 
 /*!
