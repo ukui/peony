@@ -408,13 +408,16 @@ QString PropertiesWindow::getIconName()
 
     QString realPath;
     bool startWithTrash = m_fileInfo->uri().startsWith("trash:///");
+    bool startWithRecent = m_fileInfo->uri().startsWith("recent:///");
 
     if (startWithTrash) {
         realPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
                    + "/.local/share/Trash/files/"
                    + m_fileInfo->displayName();
-    } else {
+    } else if (startWithRecent) {
         realPath = m_fileInfo->targetUri();
+    } else {
+        realPath = m_fileInfo->uri();
     }
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(QUrl(realPath).path().toUtf8().constData());
