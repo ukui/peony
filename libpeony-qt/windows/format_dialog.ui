@@ -135,16 +135,6 @@
     <string>close</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_rom_size">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>20</y>
-     <width>291</width>
-     <height>26</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QProgressBar" name="progressBar_process">
    <property name="geometry">
     <rect>
@@ -169,6 +159,19 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_rom_size_text">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>20</y>
+     <width>291</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
  </widget>
