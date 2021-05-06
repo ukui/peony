@@ -299,6 +299,7 @@ public Q_SLOTS:
 
 protected:
     void fileSync (QString srcFile, QString destFile);
+    bool nameIsValid (QString& uri);
     bool makeFileNameValidForDestFS (QString& srcPath, QString& destPath, QString* newFileName);
 
     GCancellableWrapperPtr getCancellable() {

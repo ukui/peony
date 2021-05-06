@@ -60,7 +60,17 @@ void FileRenameOperation::run()
     QString destUri;
     Q_EMIT operationStarted();
 
-    if (m_new_name == "/" || m_new_name == ".") {
+    if (m_new_name == "/" || m_new_name == "." || !nameIsValid(m_new_name)) {
+        FileOperationError except;
+        except.srcUri = m_uri;
+        except.errorType = ET_GIO;
+        except.op = FileOpRename;
+        except.dlgType = ED_WARNING;
+        except.title = tr("File Rename error");
+        except.errorStr = QObject::tr(QString("Invalid file name \"%1\" ").arg(m_new_name).toUtf8());
+
+        Q_EMIT errored(except);
+
         Q_EMIT operationFinished();
         return;
     }
