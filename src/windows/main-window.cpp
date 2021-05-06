@@ -70,6 +70,8 @@
 #include "global-settings.h"
 #include "audio-play-manager.h"
 
+#include "float-pane-widget.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -1319,14 +1321,9 @@ void MainWindow::initUI(const QString &uri)
     connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
 
     auto labelDialog = new FileLabelBox(this);
+    labelDialog->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     labelDialog->hide();
     m_label_box = labelDialog;
-
-    auto splitter = new QSplitter(this);
-    splitter->setChildrenCollapsible(false);
-    splitter->setHandleWidth(0);
-    splitter->addWidget(navigationSidebarContainer);
-    splitter->addWidget(labelDialog);
 
     connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
     {
@@ -1344,19 +1341,9 @@ void MainWindow::initUI(const QString &uri)
         setLabelNameFilter("");
     });
 
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, this, [=]()
-    {
-        bool visible = m_label_box->isVisible();
-        //quit label filter, clear conditions
-        if (visible)
-        {
-           setLabelNameFilter("");
-           m_label_box->clearSelection();
-        }
-        m_label_box->setVisible(! visible);
-    });
 
-    sidebarContainer->setWidget(splitter);
+
+    sidebarContainer->setWidget(navigationSidebarContainer);
     addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
 //    m_status_bar = new Peony::StatusBar(this, this);
@@ -1397,7 +1384,19 @@ void MainWindow::initUI(const QString &uri)
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
 
-    setCentralWidget(views);
+    auto paneAndViews = new FloatPaneWidget(views, labelDialog, this);
+    connect(sidebar, &NavigationSideBar::labelButtonClicked, this, [=](bool checked)
+    {
+        bool visible = checked;
+        //quit label filter, clear conditions
+        if (visible)
+        {
+           setLabelNameFilter("");
+           m_label_box->clearSelection();
+        }
+        paneAndViews->setFloatWidgetVisible(visible);
+    });
+    setCentralWidget(paneAndViews);
 
 //    // check slider zoom level
 //    if (currentViewSupportZoom())
