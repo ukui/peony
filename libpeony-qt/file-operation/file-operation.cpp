@@ -22,6 +22,7 @@
 
 #include <QApplication>
 #include <QProcess>
+#include <QRegExp>
 #include <file-info-job.h>
 #include <file-info.h>
 
@@ -30,8 +31,7 @@
 
 using namespace Peony;
 
-
-#define FAT_FORBIDDEN_CHARACTERS "/:*?\"<>\\|"
+QRegExp gInvalidName ("[/|:|\\*|\\?|\"|<|>|\\|/]");
 
 FileOperation::FileOperation(QObject *parent) : QObject (parent)
 {
@@ -55,19 +55,32 @@ void FileOperation::cancel()
     m_is_cancelled = true;
 }
 
+
+bool FileOperation::nameIsValid (QString& name)
+{
+    if (nullptr == name) {
+        return false;
+    }
+
+    return !name.contains(gInvalidName);
+}
+
 bool FileOperation::makeFileNameValidForDestFS(QString &srcPath, QString &destPath, QString *newFileName)
 {
     FileInfoJob fileInfoJob(destPath);
+    FileInfoJob fileInfoJobSrc(srcPath);
     fileInfoJob.querySync();
+    fileInfoJobSrc.querySync();
 
-    QString srcFileName = srcPath.split("/").back();
+    QString srcFileName = fileInfoJobSrc.getInfo()->displayName();
     *newFileName = srcFileName;
     QString fsType = fileInfoJob.getInfo()->fileSystemType();
 
+    qDebug() << "target filesystem type is: " << fsType;
+
     if ("fat" == fsType || "vfat" == fsType || "fuse" == fsType || "ntfs" == fsType || "msdos" == fsType || "msdosfs" == fsType) {
-        for (size_t i = 0; i < strlen(FAT_FORBIDDEN_CHARACTERS); ++i) {
-            *newFileName = newFileName->replace(FAT_FORBIDDEN_CHARACTERS[i], "_");
-        }
+        *newFileName = (*newFileName).replace(gInvalidName, "_");
+        qDebug() << "uri:" << QUrl(srcPath).toDisplayString() << "target filesystem type is: " << fsType << "  old name:" << srcFileName << "  new name:" << *newFileName;
     }
 
     return *newFileName != srcFileName;
