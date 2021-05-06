@@ -119,7 +119,7 @@ void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
         QStyleOptionViewItem opt;
         m_file_name = QUrl(name).toDisplayString();
         m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
-                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480)));
+                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480).toHtmlEscaped()));
     }
 }
 
@@ -259,7 +259,7 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p class='bold'>%1</p>")
-                .arg(m_error->errorStr);
+                .arg(m_error->errorStr.toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<style>"
@@ -383,7 +383,7 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
                                      "  .bold{text-align: left;font-size:13px;font-wight:500;}"
                                      "</style>"
                                      "<p class='bold'>%1</p>")
-                .arg(m_error->errorStr);
+                .arg(m_error->errorStr.toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<style>"
