@@ -68,6 +68,7 @@
 static bool has_desktop = false;
 static bool has_daemon = false;
 static bool has_background = false;
+static QRect max_size = QRect(0, 0, 0, 0);
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 static PrimaryManager *screensMonitor = nullptr;
 static QMainWindow *virtualDesktopWindow = nullptr;
@@ -132,7 +133,19 @@ QRect caculateVirtualDesktopGeometry() {
     }
 
     auto rect = screensRegion.boundingRect();
-    return rect;
+    if (rect.size().width()> rect.size().height())
+    {
+        rect = QRect(0, 0, rect.size().width(), rect.size().width());
+    }
+    else
+    {
+        rect = QRect(0, 0, rect.size().height(), rect.size().height());
+    }
+    if (rect.size().width()> max_size.size().width())
+    {
+        max_size = rect;
+    }
+    return max_size;
 }
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
@@ -199,6 +212,8 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
+    // 获取max_size初始值
+    caculateVirtualDesktopGeometry();
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
