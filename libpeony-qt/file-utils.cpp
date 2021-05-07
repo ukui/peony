@@ -496,6 +496,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             uris << args;
         }
     }
+
     return uris;
 }
 

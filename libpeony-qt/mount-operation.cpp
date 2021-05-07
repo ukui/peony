@@ -69,26 +69,28 @@ void MountOperation::cancel()
 
 void MountOperation::start()
 {
-//    ConnectServerDialog *dlg = new ConnectServerDialog;
-    QUrl uri = QUrl(g_file_get_uri(m_volume));
-    ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
-    m_dlg = dlg;
-    //block ui
-    auto code = dlg->exec();
-    if (code == QDialog::Accepted) {
-        g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
-        g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
-        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
-        g_mount_operation_set_anonymous(m_op, dlg->anonymous());
-        //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
-        g_mount_operation_set_password_save(m_op, dlg->savePassword()? G_PASSWORD_SAVE_FOR_SESSION: G_PASSWORD_SAVE_NEVER);
-    }
-    if (code == QDialog::Rejected) {
-        cancel();
-        QMessageBox msg;
-        msg.setText(tr("Operation Cancelled"));
-        msg.exec();
-        return;
+    gchar* urit = g_file_get_uri(m_volume);
+    QUrl uri = QUrl(urit);
+    if (uri.scheme() != "mtp") {
+        ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
+        m_dlg = dlg;
+        //block ui
+        auto code = dlg->exec();
+        if (code == QDialog::Accepted) {
+            g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
+            g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
+            g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
+            g_mount_operation_set_anonymous(m_op, dlg->anonymous());
+            //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
+            g_mount_operation_set_password_save(m_op, dlg->savePassword()? G_PASSWORD_SAVE_FOR_SESSION: G_PASSWORD_SAVE_NEVER);
+        }
+        if (code == QDialog::Rejected) {
+            cancel();
+            QMessageBox msg;
+            msg.setText(tr("Operation Cancelled"));
+            msg.exec();
+            return;
+        }
     }
 
     g_file_mount_enclosing_volume(m_volume, G_MOUNT_MOUNT_NONE, m_op, m_cancellable, GAsyncReadyCallback(mount_enclosing_volume_callback), this);
@@ -96,6 +98,8 @@ void MountOperation::start()
     g_signal_connect (m_op, "ask-question", G_CALLBACK(ask_question_cb), this);
     g_signal_connect (m_op, "ask-password", G_CALLBACK (ask_password_cb), this);
     g_signal_connect (m_op, "aborted", G_CALLBACK (aborted_cb), this);
+
+    if (nullptr != urit)  g_free(urit);
 }
 
 GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volume,
