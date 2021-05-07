@@ -81,12 +81,13 @@ void AboutDialog::initUI()
     ui->nameLabel->setText(tr("Peony"));
 
 //    ui->versionLabel->setFont(font14);
-    ui->versionLabel->setStyleSheet("color:#595959;");
+//    ui->versionLabel->setStyleSheet("color:#595959;");
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
 //	ui->briefTextedit->setFont(font14);
 	ui->briefTextedit->setReadOnly(true);
-    ui->briefTextedit->setStyleSheet("color:#595959;");
+//    ui->briefTextedit->setStyleSheet("color:#595959;");
+
 	textCursor = ui->briefTextedit->textCursor();	//before the setText().
     ui->briefTextedit->setText(tr("Peony is a graphical software to help users manage system files. "
                                 "It provides common file operation functions for users, such as file viewing, "
@@ -98,7 +99,7 @@ void AboutDialog::initUI()
 
     ui->openlinkLabel->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>");
     ui->openlinkLabel->setOpenExternalLinks(true);
-    ui->openlinkLabel->setStyleSheet("color:#595959;");
+//    ui->openlinkLabel->setStyleSheet("color:#595959;");
 	textCursor.setBlockFormat(blockFormat);
 }
 
