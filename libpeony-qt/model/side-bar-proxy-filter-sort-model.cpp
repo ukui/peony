@@ -102,6 +102,10 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
                             || gvfsFileInfo->targetUri().startsWith("ftp://")))
                     return true;
 
+                if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")
+                                                 /*||gvfsDisplayName.contains("CDROM")*/))
+                    return true;
+
                 if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
                     return false;//Filter some non-mountable drive items
 
