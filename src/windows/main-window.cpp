@@ -105,7 +105,8 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
-    setWindowIcon(QIcon::fromTheme("system-file-manager"));
+    //use qApp set window icon, task#29435
+    qApp->setWindowIcon(QIcon::fromTheme("system-file-manager"));
     //setWindowTitle(tr("File Manager"));
 
     //check all settings and init
@@ -291,9 +292,11 @@ void MainWindow::checkSettings()
                 QFont font = this->font();
                 for(auto widget : qApp->allWidgets())
                     widget->setFont(font);
-            } else if ("iconThemeName" == key) {
-                setWindowIcon(QIcon::fromTheme("system-file-manager"));
             }
+            //use qApp set window icon, task#29435
+            /*else if ("iconThemeName" == key) {
+                setWindowIcon(QIcon::fromTheme("system-file-manager"));
+            }*/
         });
     }
 }
@@ -840,17 +843,17 @@ void MainWindow::updateWindowIcon()
    if (currentUri.startsWith("trash://"))
    {
        QIcon icon = QIcon::fromTheme("user-trash");
-       setWindowIcon(icon);
+       qApp->setWindowIcon(icon);
    }
    else if (currentUri.startsWith("computer://"))
    {
        QIcon icon = QIcon::fromTheme("computer");
-       setWindowIcon(icon);
+       qApp->setWindowIcon(icon);
    }
    else
    {
        QIcon icon = QIcon::fromTheme("system-file-manager");
-       setWindowIcon(icon);
+       qApp->setWindowIcon(icon);
    }
 }
 
