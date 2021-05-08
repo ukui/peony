@@ -29,6 +29,7 @@
 #include "file-operation-manager.h"
 
 #include <QProcess>
+#include <file-copy.h>
 
 using namespace Peony;
 
@@ -641,13 +642,24 @@ fallback_retry:
         GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
         auto realDestUri = node->resolveDestFileUri(m_dest_dir_uri);
         destFile = wrapGFile(g_file_new_for_uri(realDestUri.toUtf8().constData()));
-        g_file_copy(sourceFile.get()->get(),
-                    destFile.get()->get(),
-                    m_default_copy_flag,
-                    getCancellable().get()->get(),
-                    GFileProgressCallback(progress_callback),
-                    this,
-                    &err);
+//        g_file_copy(sourceFile.get()->get(),
+//                    destFile.get()->get(),
+//                    m_default_copy_flag,
+//                    getCancellable().get()->get(),
+//                    GFileProgressCallback(progress_callback),
+//                    this,
+//                    &err);
+
+        FileCopy fileCopy (node->uri(), realDestUri, m_default_copy_flag,
+                           getCancellable().get()->get(),
+                           GFileProgressCallback(progress_callback),
+                           this,
+                           &err);
+        fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+        fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+        fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+        if (m_is_pause) fileCopy.pause();
+        fileCopy.run();
 
         if (err) {
             setHasError(true);
@@ -705,25 +717,45 @@ fallback_retry:
                 break;
             }
             case OverWriteOne: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
+//                g_file_copy(sourceFile.get()->get(),
+//                            destFile.get()->get(),
+//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+//                            getCancellable().get()->get(),
+//                            GFileProgressCallback(progress_callback),
+//                            this,
+//                            nullptr);
+                FileCopy fileCopy (node->uri(), realDestUri, GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                                   getCancellable().get()->get(),
+                                   GFileProgressCallback(progress_callback),
+                                   this,
+                                   &err);
+                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileCopy.pause();
+                fileCopy.run();
                 //node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 break;
             }
             case OverWriteAll: {
-                g_file_copy(sourceFile.get()->get(),
-                            destFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
+//                g_file_copy(sourceFile.get()->get(),
+//                            destFile.get()->get(),
+//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+//                            getCancellable().get()->get(),
+//                            GFileProgressCallback(progress_callback),
+//                            this,
+//                            nullptr);
+                FileCopy fileCopy (node->uri(), realDestUri, GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
+                                   getCancellable().get()->get(),
+                                   GFileProgressCallback(progress_callback),
+                                   this,
+                                   &err);
+                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileCopy.pause();
+                fileCopy.run();
                 //node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
@@ -751,13 +783,23 @@ fallback_retry:
                 }
                 auto handledDestFileUri = node->resolveDestFileUri(m_dest_dir_uri);
                 auto handledDestFile = wrapGFile(g_file_new_for_uri(handledDestFileUri.toUtf8()));
-                g_file_copy(sourceFile.get()->get(),
-                            handledDestFile.get()->get(),
-                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
-                            getCancellable().get()->get(),
-                            GFileProgressCallback(progress_callback),
-                            this,
-                            nullptr);
+//                g_file_copy(sourceFile.get()->get(),
+//                            handledDestFile.get()->get(),
+//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
+//                            getCancellable().get()->get(),
+//                            GFileProgressCallback(progress_callback),
+//                            this,
+//                            nullptr);
+                FileCopy fileCopy (node->uri(), realDestUri, GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_BACKUP),
+                                   getCancellable().get()->get(),
+                                   GFileProgressCallback(progress_callback),
+                                   this,
+                                   &err);
+                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileCopy.pause();
+                fileCopy.run();
                 //node->setState(FileNode::Handled);
                 node->setErrorResponse(BackupOne);
                 setHasError(false);
