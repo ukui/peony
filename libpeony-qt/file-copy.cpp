@@ -64,7 +64,9 @@ void FileCopy::resume ()
 
 void FileCopy::cancel()
 {
-    g_cancellable_cancel (mCancel);
+    if (mCancel) {
+        g_cancellable_cancel (mCancel);
+    }
     mPause.unlock();
 }
 
@@ -108,18 +110,18 @@ void FileCopy::run ()
     srcFile = g_file_new_for_uri(mSrcUri.toUtf8());
     destFile = g_file_new_for_uri(mDestUri.toUtf8());
 
-    qDebug() << "copy - src: " << mSrcUri << "  to: " << mDestUri;
-
     // it's impossible
     if (nullptr == srcFile || nullptr == destFile) {
-        *mError = g_error_new (0, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+        error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+        detailError(&error);
         goto out;
     }
 
     // impossible
     srcFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
     if (G_FILE_TYPE_UNKNOWN == srcFileType || G_FILE_TYPE_DIRECTORY == srcFileType) {
-        *mError = g_error_new (0, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+        error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+        detailError(&error);
         goto out;
     }
 
@@ -129,50 +131,69 @@ void FileCopy::run ()
         g_object_unref(destFile);
         destFile = g_file_new_for_uri(mDestUri.toUtf8());
         if (nullptr == destFile) {
-            *mError = g_error_new (0, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+            error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
+            detailError(&error);
             goto out;
         }
     }
 
-    srcFileInfo = g_file_query_info(srcFile, "standard::*,time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, mCancel, mError);
-    if (nullptr != *mError) {
-        goto out;
-    }
-
-    mTotalSize = g_file_info_get_size(srcFileInfo);
-
     // check file status
     if (FileUtils::isFileExsit(mDestUri)) {
         if (mCopyFlags & G_FILE_COPY_OVERWRITE) {
-            g_file_delete(destFile,  nullptr, mError);
-            if (nullptr != mError) {
+            g_file_delete(destFile,  nullptr, &error);
+            if (nullptr != error) {
+                detailError(&error);
                 goto out;
             }
         } else if (mCopyFlags & G_FILE_COPY_BACKUP) {
             do {
-                mDestUri = FileUtils::handleDuplicateName(mDestUri);
+                g_autofree gchar* decodeUri = g_uri_unescape_string(mDestUri.toUtf8(), ":/");
+                QStringList newUrl = mDestUri.split("/");
+                newUrl.pop_back();
+                newUrl.append(FileUtils::handleDuplicateName(decodeUri));
+                mDestUri = newUrl.join("/");
             } while (FileUtils::isFileExsit(mDestUri));
             if (nullptr != destFile) {
                 g_object_unref(destFile);
-                destFile = g_file_new_for_uri(mDestUri.toUtf8());
             }
+            destFile = g_file_new_for_uri(mDestUri.toUtf8());
+        } else {
+            error = g_error_new (1, G_IO_ERROR_EXISTS, "%s", QString(tr("The dest file \"%1\" has existed!")).arg(mDestUri).toUtf8().constData());
+            detailError(&error);
+            goto out;
         }
     }
 
+    srcFileInfo = g_file_query_info(srcFile, "standard::*,time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, mCancel ? mCancel : nullptr, &error);
+    if (nullptr != error) {
+        mTotalSize = 0;
+        qDebug() << error->message;
+        detailError(&error);
+    } else {
+        mTotalSize = g_file_info_get_size(srcFileInfo);
+    }
+
+    qDebug() << "copy - src: " << mSrcUri << "  to: " << mDestUri;
+
     // read io stream
-    readIO = g_file_read(srcFile, mCancel, mError);
-    if (nullptr != *mError) {
+    readIO = g_file_read(srcFile, mCancel ? mCancel : nullptr, &error);
+    if (nullptr != error) {
+        detailError(&error);
+        qDebug() << "read source file error!";
         goto out;
     }
 
     // write io stream
-    writeIO = g_file_create(destFile, G_FILE_CREATE_REPLACE_DESTINATION, mCancel, mError);
-    if (nullptr != *mError) {
+    writeIO = g_file_create(destFile, G_FILE_CREATE_REPLACE_DESTINATION, mCancel ? mCancel : nullptr, &error);
+    if (nullptr != error) {
+        detailError(&error);
+        qDebug() << "create dest file error!" << mDestUri << " == " << g_file_get_uri(destFile);
         goto out;
     }
 
     if (!readIO || !writeIO) {
-        *mError = g_error_new (0, G_IO_ERROR_FAILED,"%s", tr("Error opening source or destination file!").toUtf8().constData());
+        error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Error opening source or destination file!").toUtf8().constData());
+        detailError(&error);
         goto out;
     }
 
@@ -186,7 +207,7 @@ void FileCopy::run ()
             memset(buf, 0, sizeof(buf));
             mPause.lock();
             // read data
-            readSize = g_input_stream_read(G_INPUT_STREAM(readIO), buf, sizeof(buf) - 1, mCancel, &error);
+            readSize = g_input_stream_read(G_INPUT_STREAM(readIO), buf, sizeof(buf) - 1, mCancel ? mCancel : nullptr, &error);
             if (0 == readSize && nullptr == error) {
                 mStatus = FINISHED;
                 mPause.unlock();
@@ -200,7 +221,7 @@ void FileCopy::run ()
             mPause.unlock();
 
             // write data
-            writeSize = g_output_stream_write(G_OUTPUT_STREAM(writeIO), buf, readSize, mCancel, &error);
+            writeSize = g_output_stream_write(G_OUTPUT_STREAM(writeIO), buf, readSize, mCancel ? mCancel : nullptr, &error);
             if (nullptr != error) {
                 detailError(&error);
                 mStatus = ERROR;
@@ -209,22 +230,28 @@ void FileCopy::run ()
 
             if (readSize != writeSize) {
                 // it's impossible
-                *mError = g_error_new (0, G_IO_ERROR_FAILED,"%s", tr("Reading and Writing files are inconsistent!").toUtf8().constData());
+                error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Reading and Writing files are inconsistent!").toUtf8().constData());
+                detailError(&error);
                 mStatus = ERROR;
                 continue;
             }
 
-            mOffset += writeSize;
+            if (mOffset <= mTotalSize) {
+                mOffset += writeSize;
+            }
+
             updateProgress ();
 
         } else if (CANCEL == mStatus) {
-            g_set_error(mError, 0, G_IO_ERROR_CANCELLED, "%s", tr("operation cancel").toUtf8().constData());
+            error = g_error_new(1, G_IO_ERROR_CANCELLED, "%s", tr("operation cancel").toUtf8().constData());
+            detailError(&error);
             g_file_delete (destFile, nullptr, nullptr);
             break;
         } else if (ERROR == mStatus) {
             g_file_delete (destFile, nullptr, nullptr);
             break;
         } else if (FINISHED == mStatus) {
+            qDebug() << "copy file finish!";
             break;
         } else {
             mStatus = RUNNING;
@@ -233,9 +260,10 @@ void FileCopy::run ()
 
     // finally set some metaData, not used!
     if (mCopyFlags & G_FILE_COPY_ALL_METADATA && FINISHED == mStatus && FileUtils::isFileExsit(mDestUri)) {
-        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, mError);
-        if (nullptr != *mError) {
-            goto out;
+        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
+        if (nullptr != error) {
+            detailError(&error);
+            goto finish;
         }
 
         g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED));
@@ -248,9 +276,11 @@ void FileCopy::run ()
         g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC));
     }
 
+finish:
     // if copy sucessed, flush all data
     if (FINISHED == mStatus) {
-        g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, mError);
+        g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, &error);
+        detailError(&error);
     }
 
 
