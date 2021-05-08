@@ -274,9 +274,12 @@ void PeonyApplication::unmountAllFtpLinks()
 
 static QString uriFormat (QString path)
 {
-    g_autofree gchar* url = g_uri_escape_string (path.toUtf8(), ":/", true);
+    g_autofree gchar* decodeUrl = g_uri_unescape_string(path.toUtf8(), ":/");
+    g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl, ":/", true);
 
-    return url;
+    qDebug() << "old: " << path << "  ==  decode: " << decodeUrl << "   ==   encode: " << encodeUrl;
+
+    return encodeUrl;
 }
 
 QString PeonyApplication::getUriMessage(QStringList& strList)
