@@ -130,6 +130,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             auto grid = view->gridSize();
             auto viewRect = view->viewport()->rect();
 
+            if (!view->m_show_hidden && info.get()->displayName().startsWith("."))
+                return;
+
             QRegion notEmptyRegion;
             for (auto rect : itemRectHash.values()) {
                 notEmptyRegion += rect;
