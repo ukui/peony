@@ -23,7 +23,7 @@ include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra wayland-client
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
@@ -49,7 +49,9 @@ SOURCES += \
     peony-dbus-service.cpp \
     plasma-shell-manager.cpp \
     primary-manager.cpp \
-    user-dir-manager.cpp
+    user-dir-manager.cpp \
+    waylandoutputmanager.cpp \
+    ukui-output-core.c
 
 HEADERS += \
     desktop-window.h \
@@ -67,7 +69,9 @@ HEADERS += \
     peony-dbus-service.h \
     plasma-shell-manager.h \
     primary-manager.h \
-    user-dir-manager.h
+    user-dir-manager.h \
+    waylandoutputmanager.h \
+    ukui-output-client.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

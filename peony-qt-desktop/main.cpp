@@ -22,6 +22,7 @@
 
 #include "desktop-window.h"
 #include "peony-desktop-application.h"
+#include "waylandoutputmanager.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -30,6 +31,7 @@
 #include <stdlib.h>
 #include <QTime>
 #include <QFile>
+#include <QThread>
 
 #include <QStandardPaths>
 
@@ -94,6 +96,12 @@ int main(int argc, char *argv[])
     PeonyDesktopApplication a(argc, argv);
     if (a.isSecondary())
         return 0;
+
+    WaylandOutputManager waylandOutputManager;
+    QThread waylandThread;
+    waylandOutputManager.moveToThread(&waylandThread);
+    QObject::connect(&waylandThread, &QThread::started, &waylandOutputManager, &WaylandOutputManager::run);
+    waylandThread.start();
 
     QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
                                                           "/org/gnome/SessionManager",
