@@ -44,6 +44,7 @@ public:
     NO_BLOCKING static GFileWrapperPtr getFileParent(const GFileWrapperPtr &file);
     NO_BLOCKING static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
     NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
+    NO_BLOCKING static QString urlEncode(const QString& url);
 
 
     /**
