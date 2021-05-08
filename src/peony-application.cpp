@@ -272,16 +272,6 @@ void PeonyApplication::unmountAllFtpLinks()
     }
 }
 
-static QString uriFormat (QString path)
-{
-    g_autofree gchar* decodeUrl = g_uri_unescape_string(path.toUtf8(), ":/");
-    g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl, ":/", true);
-
-    qDebug() << "old: " << path << "  ==  decode: " << decodeUrl << "   ==   encode: " << encodeUrl;
-
-    return encodeUrl;
-}
-
 QString PeonyApplication::getUriMessage(QStringList& strList)
 {
     QStringList args;
@@ -291,11 +281,11 @@ QString PeonyApplication::getUriMessage(QStringList& strList)
                 || (*uri).startsWith("/usr/") || (*uri).startsWith("/bin/") || (*uri).startsWith("/sbin/")) {
             args << *uri;
         } else if ((*uri).startsWith("/")) {
-            args << uriFormat("file://" + *uri);
+            args << Peony::FileUtils::urlEncode("file://" + *uri);
         } else if ((*uri).contains("://")) {
-            args << uriFormat(*uri);
+            args << Peony::FileUtils::urlEncode(*uri);
         } else {
-            args << uriFormat(QString("file://%1/%2").arg(g_get_current_dir()).arg(*uri));
+            args << Peony::FileUtils::urlEncode(QString("file://%1/%2").arg(g_get_current_dir()).arg(*uri));
         }
     }
 

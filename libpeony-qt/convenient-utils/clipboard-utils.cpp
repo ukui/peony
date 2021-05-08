@@ -106,8 +106,9 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
     QList<QUrl> urls;
     QStringList encodedUris;
     for (auto uri : uris) {
-        urls<<uri;
-        encodedUris<<uri;
+        auto encodeUrl = Peony::FileUtils::urlEncode(uri);
+        urls << QString(encodeUrl);
+        encodedUris << QString(encodeUrl);
     }
     data->setUrls(urls);
     QString string = encodedUris.join(" ");
@@ -146,6 +147,7 @@ QStringList ClipboardUtils::getClipboardFilesUris()
     auto peonyText = mimeData->data("peony-qt/encoded-uris");
 
     if (!peonyText.isEmpty()) {
+        qDebug() << "peony text:" << peonyText;
         auto byteArrays = peonyText.split(' ');
         for (auto byteArray : byteArrays) {
             l<<byteArray;
@@ -187,6 +189,8 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
         fileOpMgr->startOperation(moveOp, true);
         QApplication::clipboard()->clear();
     } else {
+
+        qDebug() << "clipboard:" << uris;
         auto copyOp = new FileCopyOperation(uris, targetDirUri);
         op = copyOp;
         fileOpMgr->startOperation(copyOp, true);

@@ -108,6 +108,8 @@ void FileCopy::run ()
     srcFile = g_file_new_for_uri(mSrcUri.toUtf8());
     destFile = g_file_new_for_uri(mDestUri.toUtf8());
 
+    qDebug() << "copy - src: " << mSrcUri << "  to: " << mDestUri;
+
     // it's impossible
     if (nullptr == srcFile || nullptr == destFile) {
         *mError = g_error_new (0, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
