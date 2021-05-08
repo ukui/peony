@@ -499,6 +499,7 @@ void FileCopyOperation::run()
 
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
+        qDebug() << "copy uri:" << uri;
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);

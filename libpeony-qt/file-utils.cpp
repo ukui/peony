@@ -97,6 +97,14 @@ GFileWrapperPtr FileUtils::resolveRelativePath(const GFileWrapperPtr &dir, const
                                                   relativePath.toUtf8().constData()));
 }
 
+QString FileUtils::urlEncode(const QString& url)
+{
+    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
+    g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl, ":/", true);
+
+    return encodeUrl;
+}
+
 QString FileUtils::handleDuplicateName(const QString& uri)
 {
     QString handledName = nullptr;

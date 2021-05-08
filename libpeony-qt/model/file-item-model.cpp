@@ -424,10 +424,13 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     QStringList uris;
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
-        QUrl url = item->m_info->uri();
+        auto encodeUrl = Peony::FileUtils::urlEncode(item->m_info->uri());
+        QUrl url = encodeUrl;
         if (!urls.contains(url)) {
-            urls<<url;
-            uris<<item->uri();
+            qDebug() << "mimeData:" << url;
+
+            urls << url;
+            uris << encodeUrl;
         }
     }
     data->setUrls(urls);
@@ -549,6 +552,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     bool addHistory = true;
     switch (action) {
     case Qt::MoveAction: {
+        qDebug() << "model move uris:" << srcUris;
         auto op = FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
         connect(op, &FileOperation::operationFinished, this, [=](){
             auto opInfo = op->getOperationInfo();
@@ -567,6 +571,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         break;
     }
     case Qt::CopyAction: {
+        qDebug() << "model copy uris:" << srcUris;
         FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
         connect(copyOp, &FileOperation::operationFinished, this, [=](){
             auto opInfo = copyOp->getOperationInfo();
