@@ -228,6 +228,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         //create new file, should select the file or folder
         auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
         view->selectionModel()->select(index, flags);
+        view->setFocus();
         return;
     }
 
@@ -240,6 +241,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         QTimer::singleShot(100, view, [=](){
             view->setSelections(QStringList()<<uri);
             view->scrollToSelection(uri);
+            view->setFocus();
         });
     }, Qt::BlockingQueuedConnection);
 

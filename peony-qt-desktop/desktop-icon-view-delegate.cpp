@@ -427,6 +427,7 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
             QTimer::singleShot(100, getView(), [=](){
                 getView()->setSelections(QStringList()<<uri);
                 getView()->scrollToSelection(uri);
+                getView()->setFocus();
             });
         }, Qt::BlockingQueuedConnection);
 
@@ -436,6 +437,7 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
     {
         //create new file, should select the file or folder
         getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+        getView()->setFocus();
     }
 }
 
