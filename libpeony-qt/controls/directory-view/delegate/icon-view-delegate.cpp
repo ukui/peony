@@ -348,6 +348,8 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             QTimer::singleShot(100, getView(), [=](){
                 getView()->setSelections(QStringList()<<uri);
                 getView()->scrollToSelection(uri);
+                //set focus to fix bug#54061
+                getView()->setFocus();
             });
         }, Qt::BlockingQueuedConnection);
 
@@ -357,6 +359,8 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     {
         //create new file, should select the file or folder
         getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+        //set focus to fix bug#54061
+        getView()->setFocus();
     }
 }
 
