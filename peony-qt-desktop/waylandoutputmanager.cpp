@@ -10,11 +10,15 @@
 #include <QSocketNotifier>
 
 #include <QRect>
+#include <QTimeLine>
 
 #include <QDebug>
 
 WaylandOutputManager::WaylandOutputManager(QObject *parent) : QObject(parent)
 {
+    m_timeLine = new QTimeLine(1000, this);
+    connect(m_timeLine, &QTimeLine::finished, this, &WaylandOutputManager::setUKUIOutputEnableInternal);
+
     auto _display = wl_display_connect(NULL);
     m_display = _display;
     int fd = wl_display_get_fd(_display);
@@ -96,9 +100,8 @@ void WaylandOutputManager::run()
 
 void WaylandOutputManager::setUKUIOutputEnable(bool enable)
 {
-    if (m_ukuiOutput) {
-        ukui_output_set_outputs_paint_enabled(m_ukuiOutput, enable);
-    }
+    m_timeLine->setCurrentTime(0);
+    m_timeLine->start();
 }
 
 void WaylandOutputManager::addXdgOutput(KWayland::Client::Output *output)
@@ -119,6 +122,13 @@ void WaylandOutputManager::addXdgOutput(KWayland::Client::Output *output)
     });
 
     Q_EMIT xdgOutputsAdded(xdgOutput);
+}
+
+void WaylandOutputManager::setUKUIOutputEnableInternal()
+{
+    if (m_ukuiOutput) {
+        ukui_output_set_outputs_paint_enabled(m_ukuiOutput, true);
+    }
 }
 
 QList<KWayland::Client::Output *> WaylandOutputManager::outputs()

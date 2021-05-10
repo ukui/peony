@@ -8,6 +8,7 @@
 #include <QMap>
 
 class QSocketNotifier;
+class QTimeLine;
 
 namespace KWayland {
 namespace Client {
@@ -35,6 +36,9 @@ public Q_SLOTS:
 protected:
     void addXdgOutput(KWayland::Client::Output *output);
 
+private Q_SLOTS:
+    void setUKUIOutputEnableInternal();
+
 private:
     struct wl_display *m_display = nullptr;
     int m_fd = -1;
@@ -48,6 +52,7 @@ private:
     QSocketNotifier *m_socketNotifier = nullptr;
 
     struct ukui_output *m_ukuiOutput = nullptr;
+    QTimeLine *m_timeLine = nullptr;
 };
 
 #endif // WAYLANDOUTPUTMANAGER_H

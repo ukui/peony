@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
     QThread waylandThread;
     waylandOutputManager.moveToThread(&waylandThread);
     QObject::connect(&waylandThread, &QThread::started, &waylandOutputManager, &WaylandOutputManager::run);
+    QObject::connect(&a, &PeonyDesktopApplication::requestSetUKUIOutputEnable, &waylandOutputManager, &WaylandOutputManager::setUKUIOutputEnable);
     waylandThread.start();
 
     QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
