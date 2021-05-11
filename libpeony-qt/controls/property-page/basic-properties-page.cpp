@@ -239,25 +239,27 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
     //move -button
     if(fileType == BP_Folder) {
-        m_moveButtonButton = new QPushButton(floor1);
+        m_moveButton = new QPushButton(floor1);
 
         auto form3 = new QFormLayout(floor1);
         form3->setContentsMargins(0,0,16,0);
         form3->setFormAlignment(Qt::AlignBottom);
 
-        m_moveButtonButton->setText(tr("move"));
-        m_moveButtonButton->setMinimumSize(70,32);
-        m_moveButtonButton->setMaximumWidth(70);
+        m_moveButton->setText(tr("move"));
+        m_moveButton->setMinimumSize(70,32);
+        m_moveButton->setMaximumWidth(70);
 
-        form3->addRow(m_moveButtonButton);
+        form3->addRow(m_moveButton);
         //home目录不支持移动和重命名
-        //不能改名的文件自然不能移动
-        if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()) || !m_info->canRename()) {
+        //不能改名的文件自然不能移动  标准位置文件夹也不能移动
+        if(m_info.get()->uri() == ("file://"+QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first())
+            || !m_info->canRename()
+            || FileUtils::isStandardPath(m_info->uri())) {
             m_displayNameEdit->setReadOnly(true);
-            m_moveButtonButton->setDisabled(true);
+            m_moveButton->setDisabled(true);
         }
 
-        connect(m_moveButtonButton,&QPushButton::clicked,this,&BasicPropertiesPage::moveFile);
+        connect(m_moveButton,&QPushButton::clicked,this,&BasicPropertiesPage::moveFile);
         layout1->addLayout(form3,0,2);
     } else {
         layout1->setContentsMargins(22,16,16,16);
