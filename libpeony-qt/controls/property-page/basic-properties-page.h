@@ -154,7 +154,7 @@ private:
     //**new version
     QLineEdit   *m_displayNameEdit  = nullptr;    //文件名称
     QLineEdit   *m_locationEdit     = nullptr;    //文件路径
-    QPushButton *m_moveButtonButton = nullptr;    //移动位置按钮
+    QPushButton *m_moveButton = nullptr;    //移动位置按钮
 
     //floor2  --  public
     QLabel *m_fileTypeLabel         = nullptr;    //文件类型
