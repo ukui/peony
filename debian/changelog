@@ -1,3 +1,11 @@
+peony (3.0.3-2+0512) v101; urgency=medium
+
+   * Fix: 删除视图方式icon,仅显示选项前的“.”选中符号 #45911
+   * Fix: 去除tabpage的页签图标 #45774
+   * Fix: 为清空回收站设计新的弹窗
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 12 May 2021 09:29:31 +0800
+
 peony (3.0.3-2+0421) v101; urgency=medium
 
    * Fix: the desktop file is showed fialed,when it is trashed. #44190
