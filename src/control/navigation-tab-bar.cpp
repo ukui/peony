@@ -114,7 +114,7 @@ void NavigationTabBar::addPages(const QStringList &uri)
 void NavigationTabBar::updateLocation(int index, const QString &uri)
 {
     //FIXME: replace BLOCKING api in ui thread.
-    auto iconName = Peony::FileUtils::getFileIconName(uri);
+//    auto iconName = Peony::FileUtils::getFileIconName(uri);
     auto displayName = Peony::FileUtils::getFileDisplayName(uri);
     //qDebug() << "updateLocation text:" <<displayName <<uri;
     if (uri.startsWith("search:///"))
@@ -132,7 +132,8 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     }
 
     setTabText(index, displayName);
-    setTabIcon(index, QIcon::fromTheme(iconName));
+    //去除tabPage的图标
+//    setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);
     relayoutFloatButton(false);
 
@@ -145,6 +146,7 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
         //FIXME: replace BLOCKING api in ui thread.
 //        auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        //去除tabpage图标
 //        addTab(QIcon::fromTheme(iconName), displayName);
         addTab(displayName);
         setTabData(count() - 1, uri);

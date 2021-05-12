@@ -105,7 +105,8 @@ void ViewTypeMenu::updateMenuActions()
         auto text = m_model->getViewDisplayNameFromId(id);
         action->setText(text);
         action->setData(id);
-        action->setIcon(m_model->iconFromViewId(id));
+        //Fix:45911
+//        action->setIcon(m_model->iconFromViewId(id));
         m_view_actions->addAction(action);
         addAction(action);
 
