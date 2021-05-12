@@ -84,11 +84,13 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
     }
 
+    bool bCutFile = false;
     if (Peony::FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())){
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(FileUtils::urlEncode(index.data(DesktopItemModel::UriRole).toString()))) {
                 painter->setOpacity(0.5);
+                bCutFile = true;
                 qDebug()<<"cut item in desktop"<<index.data();
             }
         }
@@ -119,6 +121,10 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         }
         painter->restore();
     }
+
+    //fix bug#46785, select one file cut has no effect issue
+    if (bCutFile)
+        view->setIndexWidget(index, nullptr);
 
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
