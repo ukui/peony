@@ -109,7 +109,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
-            if (clipedUris.contains(index.data(Qt::UserRole).toString())) {
+            if (clipedUris.contains(FileUtils::urlEncode(index.data(Qt::UserRole).toString()))) {
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
