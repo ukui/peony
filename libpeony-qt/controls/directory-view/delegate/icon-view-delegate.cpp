@@ -120,12 +120,14 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
+    bool bCutFile = false;
     if (ClipboardUtils::isClipboardHasFiles() &&
         FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(FileUtils::urlEncode(index.data(FileItemModel::UriRole).toString()))) {
                 painter->setOpacity(0.5);
+                bCutFile = true;
                 qDebug()<<"cut item"<<index.data();
             }
         }
@@ -167,7 +169,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto rect = view->visualRect(index);
 
     bool useIndexWidget = false;
-    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
+    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index && !bCutFile) {
         useIndexWidget = true;
         if (view->indexWidget(index)) {
         } else if (! view->isDraggingState() && view->m_allow_set_index_widget) {
@@ -191,6 +193,10 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             indexWidget->adjustPos();
         }
     }
+
+    //fix bug#46785, select one file cut has no effect issue
+    if (bCutFile)
+        view->setIndexWidget(index, nullptr);
 
     // draw color symbols
     if (!isDragging || !view->selectedIndexes().contains(index)) {
