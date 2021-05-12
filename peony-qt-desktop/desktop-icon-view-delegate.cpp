@@ -87,7 +87,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     if (Peony::FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())){
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
-            if (clipedUris.contains(index.data(DesktopItemModel::UriRole).toString())) {
+            if (clipedUris.contains(FileUtils::urlEncode(index.data(DesktopItemModel::UriRole).toString()))) {
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in desktop"<<index.data();
             }
