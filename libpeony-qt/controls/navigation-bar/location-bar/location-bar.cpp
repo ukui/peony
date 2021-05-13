@@ -299,6 +299,11 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
         if (uri == "file:///") {
+//            auto text = FileUtils::getFileDisplayName("computer:///root.link");
+//            if (text.isNull()) {
+//                text = tr("File System");
+//            }
+            //fix bug#47597, show as root.link issue
             QString text = tr("File System");
             button->setText(text);
         } else {
@@ -430,36 +435,36 @@ void LocationBar::resizeEvent(QResizeEvent *event)
 void LocationBar::doLayout()
 {
     m_indicator->setVisible(false);
-    m_indicator_menu->clear();
 
-    int totalWidth = this->width();
-    int currentWidth = 30;
-    int visibleButtonCount = 0;
+    QList<int> sizeHints;
+
+    m_indicator_menu->clear();
 
     for (auto button : m_buttons) {
         button->setVisible(true);
         button->resize(button->sizeHint().width(), button->height());
-
-        button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        button->adjustSize();
-        auto buttonMax = button->width();
-
         button->setToolButtonStyle(Qt::ToolButtonTextOnly);
         button->adjustSize();
-
-        if (currentWidth + buttonMax < totalWidth) {
-            visibleButtonCount++;
-            currentWidth += button->width();
-        } else if (currentWidth + button->width() < totalWidth) {
-            currentWidth += button->width();
-        }
-
+        sizeHints<<button->sizeHint().width();
         button->setVisible(false);
+    }
+
+    int totalWidth = this->width();
+    int currentWidth = 0;
+    int visibleButtonCount = 0;
+    for (int index = sizeHints.count() - 1; index >= 0; index--) {
+        int tmp = currentWidth + sizeHints.at(index);
+        if (tmp <= totalWidth) {
+            visibleButtonCount++;
+            currentWidth = tmp;
+        } else {
+            break;
+        }
     }
 
     int offset = 0;
 
-    bool indicatorVisible = visibleButtonCount < m_buttons.count();
+    bool indicatorVisible = visibleButtonCount < sizeHints.count();
     if (indicatorVisible) {
         m_indicator->setVisible(true);
         offset += m_indicator->width();
@@ -467,11 +472,11 @@ void LocationBar::doLayout()
         m_indicator->setVisible(false);
     }
 
-    for (int index = m_buttons.count() - visibleButtonCount; index < m_buttons.count(); index++) {
+    for (int index = sizeHints.count() - visibleButtonCount; index < sizeHints.count(); index++) {
         auto button = m_buttons.values().at(index);
         button->setVisible(true);
         button->move(offset, 0);
-        if (index == m_buttons.count() - visibleButtonCount) {
+        if (index == sizeHints.count() - visibleButtonCount) {
             button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             button->adjustSize();
         }
@@ -479,7 +484,7 @@ void LocationBar::doLayout()
     }
 
     if (visibleButtonCount == 0 && !m_buttons.isEmpty()) {
-        auto button = m_buttons.values().at(m_buttons.count() - 1);
+        auto button = m_buttons.values().at(sizeHints.count() - 1);
         button->setVisible(true);
         button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         button->resize(totalWidth - 20, button->height());
