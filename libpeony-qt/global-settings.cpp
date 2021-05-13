@@ -85,6 +85,19 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         setDateFormat(dateValue);
     }
 
+    m_cache.insert(SHOW_TRASH_DIALOG, true);
+    if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
+        m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
+        connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "showTrashDialog") {
+                m_cache.remove(SHOW_TRASH_DIALOG);
+                m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
+            }
+        });
+        m_cache.remove(SHOW_TRASH_DIALOG);
+        m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
+    }
+
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
         m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
@@ -228,4 +241,17 @@ QString GlobalSettings::getSystemTimeFormat()
 {
     m_system_time_format = m_date_format + " " + m_time_format;
     return m_system_time_format;
+}
+void GlobalSettings::setGSettingValue(const QString &key, const QVariant &value)
+{
+    if (!m_peony_gsettings)
+        return;
+
+    const QStringList list = m_peony_gsettings->keys();
+    if (!list.contains(key))
+        return;
+
+    m_peony_gsettings->set(key, value);
+    m_cache.remove(key);
+    m_cache.insert(key, m_peony_gsettings->get(key));
 }

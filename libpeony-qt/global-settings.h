@@ -97,6 +97,13 @@ public Q_SLOTS:
     QString getSystemTimeFormat();
 
     /*!
+     * \brief 通过GSetting保存设置
+     * \param key
+     * \param value
+     */
+    void setGSettingValue(const QString &key, const QVariant &value);
+
+    /*!
      * \brief forceSync
      * \param key
      * \details
@@ -114,6 +121,7 @@ private:
 
     QGSettings*                 m_gsettings = nullptr;
     QGSettings*                 m_control_center_plugin = nullptr;
+    QGSettings*                 m_peony_gsettings  = nullptr;
 
     QMutex                      m_mutex;
 
