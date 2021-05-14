@@ -86,16 +86,28 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     }
 
     m_cache.insert(SHOW_TRASH_DIALOG, true);
+    m_cache.insert(SHOW_HIDDEN_PREFERENCE, false);
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
         connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "showTrashDialog") {
                 m_cache.remove(SHOW_TRASH_DIALOG);
                 m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
+            } else if (SHOW_HIDDEN_PREFERENCE == key) {
+                if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
+                {
+                    m_cache.remove(key);
+                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());
+                    Q_EMIT this->valueChanged(key);
+                }
             }
         });
+
         m_cache.remove(SHOW_TRASH_DIALOG);
         m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
+
+        m_cache.remove(SHOW_HIDDEN_PREFERENCE);
+        m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
@@ -193,6 +205,8 @@ void GlobalSettings::resetAll()
 
 void GlobalSettings::setValue(const QString &key, const QVariant &value)
 {
+
+    m_cache.remove(key);
     m_cache.insert(key, value);
     QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {

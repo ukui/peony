@@ -361,6 +361,13 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         });
     });
 
+    connect(m_proxy_model, &DesktopItemProxyModel::showHiddenFile, this, [=]() {
+        QTimer::singleShot(100, this, [=]() {
+            resetAllItemPositionInfos();
+            refresh();
+        });
+    });
+
     connect(this, &QListView::iconSizeChanged, this, [=]() {
         //qDebug()<<"save=============";
         this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
@@ -624,7 +631,6 @@ void DesktopIconView::initShoutCut()
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
     connect(showHiddenAction, &QAction::triggered, this, [=]() {
-        //qDebug() << "show hidden";
         this->setShowHidden();
     });
 
@@ -680,8 +686,7 @@ void DesktopIconView::initMenu()
 
 void DesktopIconView::setShowHidden()
 {
-    m_show_hidden = ! m_show_hidden;
-    qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
+    m_show_hidden = !GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     m_proxy_model->setShowHidden(m_show_hidden);
     //fix show hidden file desktop icons overlapped issue
     QTimer::singleShot(100, this, [=]() {
