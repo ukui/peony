@@ -30,7 +30,7 @@
 #include "peony-core_global.h"
 
 #define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE      "show-hidden"
+#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
 #define SORT_ORDER                  "sort-order"

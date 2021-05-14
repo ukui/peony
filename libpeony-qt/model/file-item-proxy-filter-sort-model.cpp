@@ -51,6 +51,12 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QS
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_HIDDEN_PREFERENCE == key) {
+            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
+            invalidateFilter();
+        }
+    });
     m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
     m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
 }
@@ -526,7 +532,7 @@ void FileItemProxyFilterSortModel::update()
 
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }

@@ -59,6 +59,13 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
     setDynamicSortFilter(false);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_HIDDEN_PREFERENCE == key) {
+            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
+            invalidateFilter();
+            Q_EMIT showHiddenFile();
+        }
+    });
     //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist(SHOW_HIDDEN_PREFERENCE)<<m_show_hidden;
 
     m_bwListInfo = new BWListInfo();
@@ -188,7 +195,7 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
 
 void DesktopItemProxyModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }

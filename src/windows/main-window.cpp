@@ -995,7 +995,8 @@ void MainWindow::setShowHidden()
     if (!getCurrentPage()) {
         return;
     }
-    m_show_hidden_file = !m_show_hidden_file;
+
+    m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
