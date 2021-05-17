@@ -61,6 +61,7 @@ void WaylandOutputManager::run()
         if (interfaceName == "ukui_output") {
             m_ukuiOutput = static_cast<ukui_output *>(wl_registry_bind(*m_registry, name, &ukui_output_interface, version));
             qDebug()<<"ukui output created"<<m_ukuiOutput<<name<<version;
+            ukui_output_set_outputs_paint_enabled(m_ukuiOutput, true);
         }
     });
 
@@ -130,6 +131,8 @@ void WaylandOutputManager::setUKUIOutputEnableInternal()
     m_timeLine->setCurrentTime(0);
     if (m_ukuiOutput) {
         ukui_output_set_outputs_paint_enabled(m_ukuiOutput, true);
+        // flush message to wayland server
+        m_eventQueue->dispatch();
     }
 }
 

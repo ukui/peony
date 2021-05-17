@@ -462,7 +462,6 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
     show();
 
     this->update();
-    Q_EMIT app->requestSetUKUIOutputEnable(true);
 }
 
 void DesktopWindow::initShortcut() {

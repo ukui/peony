@@ -1,4 +1,5 @@
 #include "desktopbackground.h"
+#include "peony-desktop-application.h"
 
 #include <QPainter>
 #include <QApplication>
@@ -83,6 +84,9 @@ void DesktopBackground::updateScreens()
     setFixedSize(size);
 
     update();
+
+    auto app = static_cast<PeonyDesktopApplication *>(qApp);
+    Q_EMIT app->requestSetUKUIOutputEnable(true);
 }
 
 void DesktopBackground::initBackground()
