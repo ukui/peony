@@ -126,6 +126,8 @@ void WaylandOutputManager::addXdgOutput(KWayland::Client::Output *output)
 
 void WaylandOutputManager::setUKUIOutputEnableInternal()
 {
+    m_timeLine->stop();
+    m_timeLine->setCurrentTime(0);
     if (m_ukuiOutput) {
         ukui_output_set_outputs_paint_enabled(m_ukuiOutput, true);
     }

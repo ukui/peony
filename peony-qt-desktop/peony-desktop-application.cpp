@@ -402,6 +402,7 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
         connect(screen, &QScreen::geometryChanged, this, [=](){
             auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
             virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+            Q_EMIT requestSetUKUIOutputEnable(true);
         });
     } else {
         return;

@@ -30,7 +30,11 @@
 
 PrimaryManager::PrimaryManager()
 {
-    //QDBusConnection conn = QDBusConnection::sessionBus();
+    QDBusConnection conn = QDBusConnection::sessionBus();
+    if (!conn.isConnected()) {
+        qCritical()<<"failed to init primary screen manager, can not connect to session dbus";
+        return;
+    }
     mDbusXrandInter = new QDBusInterface(DBUS_NAME,
                                          DBUS_PATH,
                                          DBUS_INTERFACE,
