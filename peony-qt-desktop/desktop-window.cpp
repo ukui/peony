@@ -483,11 +483,13 @@ void DesktopWindow::geometryChangedProcess(const QRect &geometry) {
     updateWinGeometry();
 }
 
-void DesktopWindow::updateView() {
+void DesktopWindow::updateView()
+{
 
 }
 
-void DesktopWindow::updateWinGeometry() {
+void DesktopWindow::updateWinGeometry()
+{
     auto screenName = m_screen->name();
     auto screenSize = m_screen->size();
     auto g = getScreen()->geometry();
