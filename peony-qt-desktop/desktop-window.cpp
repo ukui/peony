@@ -120,10 +120,10 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
 
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
-            PEONY_DESKTOP_LOG_WARN("screen %s value changed update view(%d %d %d %d)",
-                                   m_screen->name().toUtf8().constData(),
-                                   m_screen->geometry().top(), m_screen->geometry().left(),
-                                   m_screen->geometry().height(), m_screen->geometry().width());
+            //PEONY_DESKTOP_LOG_WARN("screen %s value changed update view(%d %d %d %d)",
+            //                       m_screen->name().toUtf8().constData(),
+            //                       m_screen->geometry().top(), m_screen->geometry().left(),
+            //                       m_screen->geometry().height(), m_screen->geometry().width());
             if (PEONY_BOOT_START == m_boot_stage) {
                 if (!m_boot_timer->isActive()) {
                     m_boot_timer->start(500);
@@ -368,18 +368,18 @@ void DesktopWindow::gotoSetBackground()
 void DesktopWindow::paintEvent(QPaintEvent *e)
 {
     qDebug()<<"painevent..........................";
-    PEONY_DESKTOP_LOG_WARN("paint %s back groud begin", m_screen->name().toUtf8().constData());
-    PEONY_DESKTOP_LOG_WARN("paint rect(left:%d top:%d widh:%d height:%d)",
-                           this->rect().left(), this->rect().top(), this->rect().width(), this->rect().height());
-    PEONY_DESKTOP_LOG_WARN("pait screen (top:%d  left:%d height:%d width:%d)",
-                           m_screen->geometry().top(), m_screen->geometry().left(),
-                           m_screen->geometry().height(), m_screen->geometry().width());
+   // PEONY_DESKTOP_LOG_WARN("paint %s back groud begin", m_screen->name().toUtf8().constData());
+   // PEONY_DESKTOP_LOG_WARN("paint rect(left:%d top:%d widh:%d height:%d)",
+   //                        this->rect().left(), this->rect().top(), this->rect().width(), this->rect().height());
+   // PEONY_DESKTOP_LOG_WARN("pait screen (top:%d  left:%d height:%d width:%d)",
+   //                        m_screen->geometry().top(), m_screen->geometry().left(),
+   //                        m_screen->geometry().height(), m_screen->geometry().width());
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     if (m_opacity->state() == QVariantAnimation::Running) {
         //draw bg?
         if (m_use_pure_color) {
-            PEONY_DESKTOP_LOG_WARN("running paint back color");
+           // PEONY_DESKTOP_LOG_WARN("running paint back color");
             auto opacity = m_opacity->currentValue().toDouble();
             p.fillRect(this->rect(), m_last_pure_color);
             p.save();
@@ -387,7 +387,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             p.fillRect(this->rect(), m_color_to_be_set);
             p.restore();
         } else {
-            PEONY_DESKTOP_LOG_WARN("running paint back picture option: %s", m_picture_option.toUtf8().constData());
+         //   PEONY_DESKTOP_LOG_WARN("running paint back picture option: %s", m_picture_option.toUtf8().constData());
             auto opacity = m_opacity->currentValue().toDouble();
             if(m_picture_option == "centered")//居中
             {
@@ -468,12 +468,12 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
     } else {
         //draw bg?
         if (m_use_pure_color) {
-            PEONY_DESKTOP_LOG_WARN("no running paint back color");
+          //  PEONY_DESKTOP_LOG_WARN("no running paint back color");
             p.fillRect(this->rect(), m_color_to_be_set);
             m_used_pure_color = true;
             m_last_pure_color = m_color_to_be_set;
         } else {
-            PEONY_DESKTOP_LOG_WARN("no running paint back picture option: %s", m_picture_option.toUtf8().constData());
+           // PEONY_DESKTOP_LOG_WARN("no running paint back picture option: %s", m_picture_option.toUtf8().constData());
 //            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
             if(m_picture_option == "centered")
                 p.drawPixmap((m_screen->size().width()-m_bg_font_cache_pixmap.rect().width())/2,
@@ -511,7 +511,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
     if (PEONY_BOOT_UPDATE == m_boot_stage) {
         m_boot_stage = PEONY_BOOT_PAINT;
     }
-    PEONY_DESKTOP_LOG_WARN("paint %s back groud finished", m_screen->name().toUtf8().constData());
+   // PEONY_DESKTOP_LOG_WARN("paint %s back groud finished", m_screen->name().toUtf8().constData());
     QMainWindow::paintEvent(e);
 }
 
