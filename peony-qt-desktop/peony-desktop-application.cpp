@@ -77,6 +77,7 @@ static QMainWindow *virtualDesktopWindow = nullptr;
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
 
 void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data);
+static void volume_mount_cb (GObject* source, GAsyncResult* res, gpointer udata);
 
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
@@ -194,6 +195,29 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
         connect(trayIcon, &QSystemTrayIcon::messageClicked, trayIcon, &QSystemTrayIcon::hide);
         */
+
+        // auto mount local driver
+        GVolumeMonitor* vm = g_volume_monitor_get ();
+        if (vm) {
+            GList* drives = g_volume_monitor_get_connected_drives(vm);
+            if (drives) {
+                for (GList* i = drives; nullptr != i; i = i->next) {
+                    GDrive * d = static_cast<GDrive*>(i->data);
+                    GList* volumes = g_drive_get_volumes(d);
+                    if (volumes) {
+                        for (GList* j = volumes; nullptr != j; j = j->next) {
+                            GVolume* v = static_cast<GVolume*>(j->data);
+                            g_volume_mount(v, G_MOUNT_MOUNT_NONE, nullptr, nullptr, volume_mount_cb, nullptr);
+                            g_object_unref(v);
+                        }
+                        g_list_free(volumes);
+                    }
+                    g_object_unref(d);
+                }
+                g_list_free(drives);
+            }
+        }
+        g_object_unref(vm);
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);
@@ -207,9 +231,11 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
     auto volumeManager = Peony::VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
-        //auto open dir for inserted dvd.
-        GMount *newMount = (GMount*)g_object_ref(mount->getGMount());
-        g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
+        // auto open dir for inserted dvd.
+        GMount* newMount = (GMount*) g_object_ref(mount->getGMount());
+        g_mount_guess_content_type(newMount, FALSE, NULL, guessContentTypeCallback, NULL);
+
+        // mount
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
     // 获取max_size初始值
@@ -610,7 +636,7 @@ void PeonyDesktopApplication::setupBgAndDesktop()
     has_background = true;
 }
 
-void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
+void guessContentTypeCallback(GObject* object, GAsyncResult *res,gpointer data)
 {
     char **guessType;
     GError *error;
@@ -629,10 +655,10 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
     openFolderCmd = "peony " + QString(mountUri);
     guessType = g_mount_guess_content_type_finish(G_MOUNT(object),res,&error);
 
-    if(error){
+    if (error) {
         g_error_free(error);
         error = NULL;
-    }else{
+    } else {
         GDrive *drive = g_mount_get_drive(G_MOUNT(object));
         char *unixDevice = NULL;
         if(drive){
@@ -714,3 +740,11 @@ void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::
    // if(gdrive && g_drive_can_stop(gdrive))
    //     g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
 };
+
+
+static void volume_mount_cb (GObject* source, GAsyncResult* res, gpointer udata)
+{
+    g_volume_mount_finish(G_VOLUME (source), res, nullptr);
+
+    Q_UNUSED(udata);
+}
