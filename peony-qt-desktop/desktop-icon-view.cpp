@@ -87,7 +87,7 @@ using namespace Peony;
 #define PANEL_SETTINGS "org.ukui.panel.settings"
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
-
+static QList<QString> getScreenInfo (const QScreen* screen);
 static bool initialized = false;
 
 DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
@@ -137,67 +137,50 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
 
-//#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-//    QTimer::singleShot(500, this, [=](){
-//#else
-//    QTimer::singleShot(500, [=](){
-//#endif
-//        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-//            //qDebug()<<"selection changed";
-//            m_real_do_edit = false;
-//            this->setIndexWidget(m_last_index, nullptr);
-//            auto currentSelections = this->selectionModel()->selection().indexes();
+    m_primary_screen_name = qApp->primaryScreen()->name();
 
-//            if (currentSelections.count() == 1) {
-//                //qDebug()<<"set index widget";
-//                m_last_index = currentSelections.first();
-//                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-//                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
-//            } else {
-//                m_last_index = QModelIndex();
-//                for (auto index : deselection.indexes()) {
-//                    this->setIndexWidget(index, nullptr);
-//                }
-//            }
-//        });
-//    });
+    checkConf();
 
-    auto screens = qApp->screens();
-    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
-        connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-    }
+//    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
+//        connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+//    }
+
     connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
-        m_screens[screen] = false;
-        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
-        }
+        screen->connect(screen, &QScreen::geometryChanged, this, [=] () {
+            resolutionChange();
+            qDebug() << "geometryChanged";
+        });
+
+        m_screens[screen->name()] = screen;
+        QList<QString> info = getScreenInfo(screen);
+        m_screens_info[screen->name()] = QVariant(info);
+        resolutionChange();
     });
 
     connect(qApp, &QGuiApplication::screenRemoved, [=] (QScreen* screen) {
-        m_screens.remove(screen);
-        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
+
+        qDebug() << "screen remove";
+
+        if (m_screens.contains(screen->name())) {
+            m_screens.remove(screen->name());
         }
+
+        if (m_screens_info.contains(screen->name())) {
+            m_screens_info.remove(screen->name());
+        }
+
+        if (screen->name() == m_primary_screen_name) {
+            m_screens_info[qApp->primaryScreen()->name()] = QVariant(getScreenInfo(qApp->primaryScreen()));
+            m_primary_screen_name = qApp->primaryScreen()->name();
+        }
+        resolutionChange();
     });
 
     if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
         connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
-            for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-                if (it.value()) {
-                    disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-                }
-                m_screens[it.key()] = false;
-            }
-
-            m_screens[screen] = true;
-            connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-            setGeometry(screen->geometry());
-    //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
+            resolutionChange();
+            Q_UNUSED(screen);
         });
-    }
-
-    for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
-        m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
     }
 
     m_model = new DesktopItemModel(this);
@@ -312,6 +295,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                         }
                     }
                     notEmptyRegion += itemRect;
+
+                    // FIXME://
                     m_item_rect_hash.insert(item, itemRect);
                 }
                 for (auto uri : m_item_rect_hash.keys()) {
@@ -369,6 +354,8 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             this->saveAllItemPosistionInfos();
             for (int i = 0; i < m_proxy_model->rowCount(); i++) {
                 auto index = m_proxy_model->index(i, 0);
+
+                // FIXME:// 虚拟桌面的位置
                 m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
                 updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
             }
@@ -385,11 +372,10 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     this->refresh();
 
-    //fix task bar overlap with desktop icon and can drag move issue
-    //bug #27811,33188
-    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
-    {
-        //panel monitor
+    // fix task bar overlap with desktop icon and can drag move issue
+    // bug #27811,33188
+    // panel monitor
+    if (QGSettings::isSchemaInstalled(PANEL_SETTINGS)) {
         QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
         connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
             if (key == "panelposition" || key == "panelsize")
@@ -692,129 +678,170 @@ void DesktopIconView::setShowHidden()
 
 void DesktopIconView::resolutionChange()
 {
-    QSize screenSize = this->viewport()->size();
-
     // do not relayout items while screen size is empty.
-    if (screenSize.isEmpty())
+    if (viewport()->size().isEmpty())
         return;
 
-    float iconWidth = 0;
-    float iconHeigth = 0;
+    QString oldPrimaryScreen = m_primary_screen_name;
+    bool primaryScreenChanged = false;
+    primaryScreenChanged = m_primary_screen_name == qApp->primaryScreen()->name() ? false : true;
+    if (primaryScreenChanged) m_primary_screen_name = qApp->primaryScreen()->name();
+
+    qDebug() << "DJ- primary screen changed ? -- " << (primaryScreenChanged ? " true" : " false");
 
     // icon size
     QSize icon = gridSize();
-    iconWidth = icon.width();
-    iconHeigth = icon.height();
+    float iconWidth = icon.width();
+    float iconHeigth = icon.height();
 
-    QRect screenRect = QRect(0, 0, screenSize.width(), screenSize.height());
+    if (iconWidth == 0 || iconHeigth == 0) {
+        qDebug() << "Unable to get icon size, need to get it another way!";
+        return;
+    }
 
     if (!m_item_rect_hash.isEmpty()) {
-        QList<QPair<QRect, QString>> newPosition;
+        QList<QPair<QRect, QString>>        needNewPos;
+        QMap<QString, QString>              rightPos;
+        for (auto i = m_item_rect_hash.begin(); i != m_item_rect_hash.end(); ++i) {
+            bool isok = false;
+            QPoint pos(0, 0);
 
-        for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
-            // FIXME:// more than one screen
-    //        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
-    //                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
-                newPosition << QPair<QRect, QString>(i.value(), i.key());
-    //        }
-        }
+            QScreen* screen = nullptr;
+            QString screenName = nullptr;
+            QPoint geoma(0, 0);
+            QPoint virtGeoma(0, 0);
 
-        // not get current size
-        if (iconWidth == 0 || iconHeigth == 0) {
-            qDebug() << "Unable to get icon size, need to get it another way!";
-            return;
-        }
+            QList<QString> iconInfo = getFileMetaInfo(i.key());
+            if (3 == iconInfo.length()) {
+                screenName = iconInfo.at(0);
+                QString tmp = iconInfo.at(1);
+                QStringList ttmp = tmp.split(",");
 
-    //    qDebug() << "icon width: " << iconWidth << " icon heigth: " << iconHeigth;
-    //    qDebug() << "width:" << screenSize.width() << " height:" << screenSize.height();
+                geoma.setX(ttmp.at(0).toInt());
+                geoma.setY(ttmp.at(1).toInt());
 
-        std::stable_sort(newPosition.begin(), newPosition.end(), iconSizeLessThan);
+                qDebug() << "OLD:" << i.key() << " - " <<  screenName << " - " << tmp;
 
-        //m_item_rect_hash.clear();
+                tmp = iconInfo.at(2);
+                ttmp = tmp.split(",");
 
-        // only reset items over viewport.
-        QRegion notEmptyRegion;
-        QList<QPair<QRect, QString>> needChanged;
-        for (auto pair : newPosition) {
-            if (!screenRect.contains(pair.first)) {
-                needChanged.append(pair);
-                m_item_rect_hash.remove(pair.second);
+                virtGeoma.setX(ttmp.at(0).toInt());
+                virtGeoma.setY(ttmp.at(1).toInt());
+
+                if (primaryScreenChanged && screenName == oldPrimaryScreen) {
+                    screenName = m_primary_screen_name;
+                } else if (primaryScreenChanged && screenName == m_primary_screen_name) {
+                    screenName = oldPrimaryScreen;
+                }
+
+                if (m_screens.contains(screenName)) {
+                    screen = m_screens[screenName];
+                    auto geo = screen->availableGeometry();
+
+                    QPoint curPos(screen->geometry().x() + geoma.x(), screen->geometry().y() + geoma.y());
+                    if (curPos.x() >= geo.x() && curPos.x() + iconWidth <= geo.x() + geo.width()
+                            && curPos.y() >= geo.y() && curPos.y() + iconHeigth <= geo.y() + geo.height()) {
+                        isok = true;
+                        pos = curPos;
+                    }
+                }
+
+                if (isok) {
+                    qDebug() << "no change NEW:" << i.key() << " - " <<  screenName << " - " << QString("%1,%2").arg(pos.x()).arg(pos.y());
+                }
+            }
+
+            QString r = QString("%1x%2").arg(pos.x()).arg(pos.y());
+            if (isok && !(rightPos.contains(r))) {
+                updateItemPosByUri(i.key(), pos);
+                setFileMetaInfoPos(i.key(), pos);
+                m_item_screen_name[i.key()] = screenName;
+                m_item_rect_hash[i.key()] = QRect(pos.x(), pos.y(), iconWidth, iconHeigth);
+                m_item_screen_rec[i.key()] = QRect(pos.x() - screen->geometry().x(), pos.y() - screen->geometry().y(), iconWidth, iconHeigth);
+                rightPos[r] = i.key();
             } else {
-                notEmptyRegion += pair.first;
+                needNewPos << QPair<QRect, QString>(i.value(), i.key());
             }
         }
 
-        // aligin exsited rect
-        int marginTop = notEmptyRegion.boundingRect().top();
-        while (marginTop - iconHeigth > 0) {
-            marginTop -= iconHeigth;
-        }
-        int marginLeft = notEmptyRegion.boundingRect().left();
-        while (marginLeft - iconWidth > 0) {
-            marginLeft -= iconWidth;
-        }
-        marginTop = marginTop < 0? 0: marginTop;
-        marginLeft = marginLeft < 0? 0: marginLeft;
+        // some icon get error pos, sort and put it on primary screen and other screens
+        std::stable_sort(needNewPos.begin(), needNewPos.end(), iconSizeLessThan);
 
-        if (!needChanged.isEmpty()) {
-            int posX = marginLeft;
-            int posY = marginTop;
+        int pX = 0;
+        int pY = 0;
+        bool primaryOK = false;
+        bool otherScreensOk = false;
+        QMap<QScreen*, bool> screenFull;
+        QScreen* currentScreen = qApp->primaryScreen();
+        QRect screenRect = qApp->primaryScreen()->geometry();
 
-            for (int i = 0; i < needChanged.count(); i++) {
-                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
-                    if (posY + 2 * iconHeigth > screenSize.height()) {
-                        posY = marginTop;
-                        posX += iconWidth;
-                    } else {
-                        posY += iconHeigth;
+        for (auto pair : needNewPos) {
+            // primary screen;
+            if (!primaryOK) {
+                while (true) {
+                    int posX = pX * iconWidth;
+                    int posY = pY * iconHeigth;
+                    if (posX >= screenRect.x() && posX < screenRect.x() + screenRect.width()
+                            && posY >= screenRect.y() && posY < screenRect.y() + screenRect.height()) {
+                        QModelIndex it = indexAt(QPoint(screenRect.x() + posX + iconWidth / 2, screenRect.x() + posY + iconHeigth / 2));
+                        if (!it.data().isValid()) {
+                            updateItemPosByUri(pair.second, QPoint(screenRect.x() + posX, screenRect.y() + posY));
+                            qDebug() << "primary NEW:" << pair.second << " - " <<  currentScreen->name() << " - " << QString("%1,%2").arg(screenRect.x() + posX).arg(screenRect.y() + posY);
+                            ++pY;
+                            break;
+                        }
+                    } else if (posY > screenRect.y() + screenRect.width()) {
+                        ++pX;
+                        pY = 0;
+                    } else if (posX > screenRect.x() + screenRect.width()) {
+                        primaryOK = true;
+                        currentScreen = nullptr;
+                        screenFull[currentScreen] = true;
+                        break;
                     }
+                    ++pY;
                 }
-                QRect newRect = QRect(QPoint(posX, posY), gridSize());
-                if (posX + iconWidth > screenSize.width()) {
-                    newRect.moveTo(0, 0);
-                }
-                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
-                notEmptyRegion += newRect;
-            }
-        } else {
-            // re-layout overlayed items
-            for (auto pair : newPosition) {
-                if (QRect(0, 0, 10, 10).contains(pair.first.topLeft())) {
-                    needChanged.append(pair);
-                }
-            }
-//            // first item doesn't need re-layout
-            if (!needChanged.isEmpty())
-                needChanged.removeFirst();
-
-            int posX = marginLeft;
-            int posY = marginTop;
-            for (int i = 0; i < needChanged.count(); i++) {
-                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
-                    if (posY + iconHeigth * 2 > screenSize.height()) {
-                        posY = marginTop;
-                        posX += iconWidth;
-                    } else {
-                        posY += iconHeigth;
+            } else if (!otherScreensOk) {
+                if (currentScreen) {
+                    while (true) {
+                        int posX = pX * iconWidth;
+                        int posY = pY * iconHeigth;
+                        if (posX >= screenRect.x() && posX < screenRect.x() + screenRect.width()
+                                && posY >= screenRect.y() && posY < screenRect.y() + screenRect.height()) {
+                            QModelIndex it = indexAt(QPoint(screenRect.x() + posX + iconWidth / 2, screenRect.x() + posY + iconHeigth / 2));
+                            if (!it.data().isValid()) {
+                                updateItemPosByUri(pair.second, QPoint(screenRect.x() + posX, screenRect.y() + posY));
+                                qDebug() << "other NEW:" << pair.second << " - " <<  currentScreen->name() << " - " << QString("%1,%2").arg(screenRect.x() + posX).arg(screenRect.y() + posY);
+                                ++pY;
+                                break;
+                            }
+                        } else if (posY > screenRect.y() + screenRect.width()) {
+                            ++pX;
+                            pY = 0;
+                        } else if (posX > screenRect.x() + screenRect.width()) {
+                            screenFull[currentScreen] = true;
+                            currentScreen = nullptr;
+                            break;
+                        }
+                        ++pY;
                     }
+                } else {
+                    for (auto s : qApp->screens()) {
+                        if (screenFull.contains(s)) continue;
+                        pX = 0;
+                        pY = 0;
+                        currentScreen = s;
+                        screenRect = s->geometry();
+                    }
+                    if (!currentScreen) otherScreensOk = true;
                 }
-                QRect newRect = QRect(QPoint(posX, posY), gridSize());
-                if (posX + iconWidth > screenSize.width()) {
-                    newRect.moveTo(0, 0);
-                }
-                notEmptyRegion += newRect;
-                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+            } else {
+                updateItemPosByUri(pair.second, QPoint(qApp->primaryScreen()->geometry().x(), qApp->primaryScreen()->geometry().y()));
             }
         }
-    }
 
-    for (auto uri : m_item_rect_hash.keys()) {
-        auto rect = m_item_rect_hash.value(uri);
-        updateItemPosByUri(uri, rect.topLeft());
-        setFileMetaInfoPos(uri, rect.topLeft());
+        qDebug() << "put all icons pos ok!!";
     }
-
-    this->saveAllItemPosistionInfos();
 }
 
 void DesktopIconView::openFileByUri(QString uri)
@@ -887,21 +914,13 @@ void DesktopIconView::initDoubleClick()
 
 void DesktopIconView::saveAllItemPosistionInfos()
 {
-    //qDebug()<<"======================save";
     for (int i = 0; i < m_proxy_model->rowCount(); i++) {
         auto index = m_proxy_model->index(i, 0);
-        auto indexRect = QListView::visualRect(index);
-        QStringList topLeft;
-        topLeft<<QString::number(indexRect.top());
-        topLeft<<QString::number(indexRect.left());
-
-        auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
-        if (metaInfo) {
-            //qDebug()<<"save real"<<index.data()<<topLeft;
-            metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
-        }
+        QPoint pos = QListView::visualRect(index).topLeft();
+        setFileMetaInfoPos (index.data(Qt::UserRole).toString(), pos);
     }
-    //qDebug()<<"======================save finished";
+
+    qDebug() << "save all icons pos ok!";
 }
 
 void DesktopIconView::saveItemPositionInfo(const QString &uri)
@@ -924,7 +943,7 @@ void DesktopIconView::resetAllItemPositionInfos()
         auto metaInfo = FileMetaInfo::fromUri(index.data(Qt::UserRole).toString());
         if (metaInfo) {
             QStringList tmp;
-            tmp<<"-1"<<"-1";
+            tmp << "" << "-1,-1" << "-1,-1";
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, tmp);
         }
     }
@@ -945,37 +964,99 @@ QPoint DesktopIconView::getFileMetaInfoPos(const QString &uri)
     auto value = m_item_rect_hash.value(uri);
     if (!value.isEmpty())
         return value.topLeft();
+    auto srcIndex = m_model->indexFromUri("computer:///");
+    auto index = m_proxy_model->mapFromSource(srcIndex);
+    QSize iconSize = QListView::visualRect(index).size();
 
     auto metaInfo = FileMetaInfo::fromUri(uri);
     if (metaInfo) {
         auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
         if (!list.isEmpty()) {
-            if (list.count() == 2) {
-                int top = list.first().toInt();
-                int left = list.at(1).toInt();
-                if (top >= 0 && left >= 0) {
-                    QPoint p(left, top);
+            if (list.count() == 3) {
+                m_item_screen_name[uri] = list.first();
+                QStringList geo = list.at(1).split(",");
+                QStringList virtGeo = list.at(2).split(",");
+
+                int x = geo.at(0).toInt();
+                int y = geo.at(1).toInt();
+                if (x >= 0 && y >= 0) {
+                    m_item_screen_rec[uri] = QRect(x, y, iconSize.width(), iconSize.height());
+                }
+
+                x = virtGeo.at(0).toInt();
+                y = virtGeo.at(1).toInt();
+                if (x >= 0 && y >= 0) {
+                    m_item_rect_hash[uri] = QRect(x, y, iconSize.width(), iconSize.height());
+                    QPoint p(x, y);
                     return p;
                 }
             }
         }
     }
+
+    qDebug() << "uri:" << uri << " -- get error pos!";
+
     return QPoint(-1, -1);
+}
+
+QList<QString> DesktopIconView::getFileMetaInfo(const QString &uri)
+{
+    if (m_screens_info.contains(uri)) {
+        return qvariant_cast<QList<QString>>(m_screens_info[uri].toList());
+    }
+
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (metaInfo) {
+        auto list = metaInfo->getMetaInfoStringList(ITEM_POS_ATTRIBUTE);
+        if (!list.isEmpty()) {
+            if (list.count() == 3) {
+                return std::move(list);
+            }
+        }
+    }
+    qDebug() << "uri:" << uri << " -- get error pos!";
+
+    return QList<QString>();
 }
 
 void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
 {
     auto srcIndex = m_model->indexFromUri("computer:///");
     auto index = m_proxy_model->mapFromSource(srcIndex);
-    m_item_rect_hash.remove(uri);
-    m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
+    QScreen* screen = nullptr;
+
+    QSize iconSize = QListView::visualRect(index).size();
+
+    for (auto s : qApp->screens()) {
+        auto gemo = s->geometry();
+        if (pos.x() >= gemo.x() && pos.x() < gemo.x() + gemo.width()
+                && pos.y() >= gemo.y() && pos.y() < gemo.y() + gemo.height()) {
+            screen = s;
+            m_item_screen_name[uri] = s->name();
+            m_screens[s->name()] = s;
+            break;
+        }
+    }
+
+    m_item_rect_hash[uri] = QRect(pos, iconSize);
 
     auto metaInfo = FileMetaInfo::fromUri(uri);
     if (metaInfo) {
-        QStringList topLeft;
-        topLeft<<QString::number(pos.y());
-        topLeft<<QString::number(pos.x());
-        metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+        QStringList position;
+        if (nullptr != screen) {
+            QPoint tmp(pos.x() - screen->geometry().x(), pos.y() - screen->geometry().y());
+            m_item_screen_rec[uri] = QRect(tmp, iconSize);
+            position += {screen->name(),
+                            QString("%1,%2").arg(pos.x() - screen->geometry().x()).arg(pos.y() - screen->geometry().y()),
+                            QString("%1,%2").arg(pos.x()).arg(pos.y())};
+        } else {
+            position += {"",
+                            QString("-1,-1"),
+                            QString("%1,%2").arg(pos.x()).arg(pos.y())};
+        }
+
+        qDebug() << "set file meta save:" << index.data() << position;
+        metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, position);
     }
 }
 
@@ -995,8 +1076,27 @@ void DesktopIconView::updateItemPosByUri(const QString &uri, const QPoint &pos)
     auto index = m_proxy_model->mapFromSource(srcIndex);
     if (index.isValid()) {
         setPositionForIndex(pos, index);
-        m_item_rect_hash.remove(uri);
-        m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
+
+        auto srcIndex = m_model->indexFromUri("computer:///");
+        auto index = m_proxy_model->mapFromSource(srcIndex);
+        QScreen* screen = nullptr;
+
+        QSize iconSize = QListView::visualRect(index).size();
+
+        for (auto s : qApp->screens()) {
+            auto gemo = s->geometry();
+            if (pos.x() >= gemo.x() && pos.x() < gemo.x() + gemo.width()
+                    && pos.y() >= gemo.y() && pos.y() < gemo.y() + gemo.height()) {
+                screen = s;
+                m_item_screen_name[uri] = s->name();
+                m_screens[s->name()] = s;
+                QPoint tmp(pos.x() - gemo.x(), pos.y() - gemo.y());
+                m_item_screen_rec[uri] = QRect(tmp, iconSize);
+                break;
+            }
+        }
+
+        m_item_rect_hash[uri] = QRect(pos, iconSize);
     }
 }
 
@@ -1006,8 +1106,6 @@ void DesktopIconView::ensureItemPosByUri(const QString &uri)
     auto index = m_proxy_model->mapFromSource(srcIndex);
     auto rect = QListView::visualRect(index);
     if (index.isValid()) {
-        m_item_rect_hash.remove(uri);
-        m_item_rect_hash.insert(uri, rect);
         setFileMetaInfoPos(uri, rect.topLeft());
     }
 }
@@ -1421,6 +1519,8 @@ void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
                     continue;
 
                 isEmptyPos = true;
+
+                // FIXME://
                 m_item_rect_hash.insert(uri, next);
                 notEmptyRegion += next;
 
@@ -1430,6 +1530,36 @@ void DesktopIconView::relayoutExsitingItems(const QStringList &uris)
             setFileMetaInfoPos(uri, indexRect.topLeft());
         }
     }
+}
+
+void DesktopIconView::checkConf()
+{
+    auto screens = qApp->screens();
+    QString primaryScreenName = nullptr;
+
+    // get conf file value
+    QMap<QString, QVariant> confScreen = GlobalSettings::getInstance()->getValue(DESKTOP_SCREENS_INFO).toMap();
+
+    for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
+        m_screens[(*i)->name()] = *i;
+        m_screens_info[(*i)->name()] = QVariant(getScreenInfo(*i));
+    }
+
+    for (auto i : confScreen.keys()) {
+        QList<QVariant> tmp = confScreen[i].toList();
+        if (tmp.length() != 3) {
+            continue;
+        }
+
+        QString ratio = tmp.at(0).toString();
+        QString virtualRatio = tmp.at(1).toString();
+        bool    isPrimary = tmp.at(2).toInt() ? true : false;
+        if (isPrimary) {
+            primaryScreenName = i;
+        }
+    }
+
+    GlobalSettings::getInstance()->setValue(DESKTOP_SCREENS_INFO, m_screens_info);
 }
 
 void DesktopIconView::zoomOut()
@@ -1891,10 +2021,10 @@ void DesktopIconView::startDrag(Qt::DropActions supportedActions)
         drag->setPixmap(pixmap);
         drag->setHotSpot(pos - rect.boundingRect().topLeft() - QPoint(viewportMargins().left(), viewportMargins().top()));
         drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
-        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction : Qt::MoveAction);
 
     } else {
-        return QListView::startDrag(Qt::MoveAction|Qt::CopyAction);
+        return QListView::startDrag(Qt::MoveAction | Qt::CopyAction);
     }
 }
 
@@ -1999,4 +2129,23 @@ static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect
         return p1.first.y() < p2.first.y();
 
     return true;
+}
+
+
+static QList<QString> getScreenInfo (const QScreen* screen)
+{
+    bool isPrimary = false;
+    QString screenName = screen->name();
+    QRect geomy = screen->geometry();
+    QString screenGeomy = QString("%1,%2,%3,%4").arg(geomy.x()).arg(geomy.y()).arg(geomy.width()).arg(geomy.height());
+    QRect virtualGeomy = screen->virtualGeometry();
+    QString virtualScreenGeomy = QString("%1,%2,%3,%4").arg(virtualGeomy.x()).arg(virtualGeomy.y()).arg(virtualGeomy.width()).arg(virtualGeomy.height());
+
+    if (screen == qApp->primaryScreen()) {
+        isPrimary = true;
+    }
+
+    QList<QString> val = {screenGeomy, virtualScreenGeomy, isPrimary ? "1" : "0"};
+
+    return val;
 }

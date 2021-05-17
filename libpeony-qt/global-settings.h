@@ -47,6 +47,8 @@
 
 #define REMOTE_SERVER_IP            "remote-server/favorite-ip"
 
+#define DESKTOP_SCREENS_INFO        "desktop-screen/screens-info"
+
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
