@@ -711,15 +711,16 @@ void TopMenuBar::addWindowButtons()
     m_window->installEventFilter(this);
     auto layout = new QHBoxLayout;
 
-    layout->setContentsMargins(0, 0, 4, 0);
-    layout->setSpacing(4);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
 
     //minimize, maximize and close
+    //  最小化，最大化，关闭
     auto minimize = new QToolButton(m_top_menu_internal_widget);
     minimize->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
     minimize->setToolTip(tr("Minimize"));
     minimize->setAutoRaise(true);
-    minimize->setFixedSize(QSize(38, 38));
+    minimize->setFixedSize(QSize(48, 48));
     minimize->setIconSize(QSize(16, 16));
 
     connect(minimize, &QToolButton::clicked, this, [=]() {
@@ -733,7 +734,7 @@ void TopMenuBar::addWindowButtons()
     maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
     maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
     maximizeAndRestore->setAutoRaise(true);
-    maximizeAndRestore->setFixedSize(QSize(38, 38));
+    maximizeAndRestore->setFixedSize(QSize(48, 48));
     maximizeAndRestore->setIconSize(QSize(16, 16));
 
     connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
@@ -746,6 +747,7 @@ void TopMenuBar::addWindowButtons()
         } else {
             maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
             //maximizeAndRestore->setToolTip(tr("Maximize"));
+
         }
     });
     m_max_or_restore = maximizeAndRestore;
@@ -754,7 +756,7 @@ void TopMenuBar::addWindowButtons()
     close->setIcon(QIcon::fromTheme("window-close-symbolic"));
     close->setToolTip(tr("Close"));
     close->setAutoRaise(true);
-    close->setFixedSize(QSize(38, 38));
+    close->setFixedSize(QSize(48, 48));
     close->setIconSize(QSize(16, 16));
 
     connect(close, &QToolButton::clicked, this, [=]() {
@@ -799,6 +801,7 @@ void TopMenuBar::addWindowButtons()
 
     m_top_menu_internal_widget->setLayout(layout);
     QSpacerItem *spacer = new QSpacerItem(4000, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
     m_top_menu_layout->addSpacerItem(spacer);
     m_top_menu_layout->addWidget(m_top_menu_internal_widget);
 
