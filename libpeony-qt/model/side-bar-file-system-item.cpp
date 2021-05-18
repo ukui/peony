@@ -158,7 +158,7 @@ void SideBarFileSystemItem::findChildren()
                     this);
 
             // skip local device
-            if (!item->isEjectable() && !item->isRemoveable() && info->uri().startsWith("computer:///INTEL")) {
+            if (!item->isEjectable() && !item->isRemoveable() && item->uri() != "computer:///root.link") {
                 real_children_count--;
                 delete item;
                 continue;
