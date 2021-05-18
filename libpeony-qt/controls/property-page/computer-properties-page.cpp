@@ -37,6 +37,8 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QProcess>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 #include <glib.h>
 
@@ -188,6 +190,10 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
 //            }
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            //use dubs to get file system type, fix ntfs show as fuse issue
+            QString type = getFileSystemType(uri);
+            if (type.length() <=0 )
+                type = fs_type;
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
 /*            if (bMobileDevice)
                 m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
@@ -201,7 +207,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             if (aviliable != 0) {
                 m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
             }
-            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
+            m_layout->addRow(tr("Type: "), new QLabel(type, this));
 
             auto progressBar = new QProgressBar(this);
             auto value = double(used*1.0/total)*100;
@@ -241,4 +247,28 @@ void ComputerPropertiesPage::addSeparator()
 void ComputerPropertiesPage::saveAllChange()
 {
 
+}
+
+QString ComputerPropertiesPage::getFileSystemType(QString uri)
+{
+    QString unixDevice,dbusPath;
+    QString fsType = "";
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return fsType;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return fsType;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Block",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        fsType = blockInterface.property("IdType").toString();
+
+    return fsType;
 }

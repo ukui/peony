@@ -53,7 +53,7 @@
 #define FONT_SETTINGS                "org.ukui.style"
 
 //difference between Community version and Commercial version
-#define COMMERCIAL_VERSION          false
+#define COMMERCIAL_VERSION          true
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 

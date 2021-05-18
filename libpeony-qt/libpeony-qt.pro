@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets gui concurrent xml KWindowSystem
+QT       += core widgets gui concurrent xml KWindowSystem dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
