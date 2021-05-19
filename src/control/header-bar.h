@@ -120,9 +120,13 @@ private:
 
     QWidgetList m_focus_list;
 
+    const int GBACK_BTN_WIDTH = 36;
+    const int SEARCH_BTN_WIDTH = 40;
+    const int ADDRESS_BAR_LEFT_WIDTH = 9;
+    const int ADDRESS_BAR_RIGHT_WIDTH = 2;
     const int ADDRESS_BAR_MINIMUN_WIDTH = 250;
-    const int DRAG_AREA_MINIMUN_WIDTH = 32;
-    const int DRAG_AREA_DEFAULT_WIDTH = 49;
+    const int DRAG_AREA_MINIMUN_WIDTH = 80;
+    const int DRAG_AREA_DEFAULT_WIDTH = 120;
 };
 
 class HeaderBarToolButton : public QToolButton
