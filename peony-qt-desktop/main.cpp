@@ -20,7 +20,6 @@
  *
  */
 
-#include "desktop-window.h"
 #include "peony-desktop-application.h"
 #include "waylandoutputmanager.h"
 
