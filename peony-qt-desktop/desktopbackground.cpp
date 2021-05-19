@@ -7,8 +7,13 @@
 #include <QVariantAnimation>
 #include <QTimeLine>
 #include <QGSettings/QGSettings>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QFile>
 
 #include <QDebug>
+
+#define BACKGROUND_SETTINGS "org.mate.background"
 
 DesktopBackground::DesktopBackground(QWidget *parent) : QWidget(parent)
 {
@@ -92,8 +97,8 @@ void DesktopBackground::updateScreens()
 void DesktopBackground::initBackground()
 {
     m_paintBackground = true;
-    if (QGSettings::isSchemaInstalled("org.mate.background")) {
-        m_backgroundSettings = new QGSettings("org.mate.background", QByteArray(), this);
+    if (QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
+        m_backgroundSettings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
 
         switchBackground();
 
@@ -111,17 +116,27 @@ void DesktopBackground::initBackground()
             }
         });
     } else {
-        m_frontPixmap = QPixmap("/usr/share/background/calla.png");
+        QString defaultBg = "/usr/share/background/calla.png";
+        auto accountBack = getAccountBackground();
+        if (accountBack != "" && QFile::exists(accountBack))
+            defaultBg = accountBack;
+        m_frontPixmap = QPixmap(defaultBg);
+        m_current_bg_path = defaultBg;
+        if (defaultBg != accountBack)
+            setAccountBackground();
     }
 }
 
 void DesktopBackground::switchBackground()
 {
     auto path = m_backgroundSettings->get("pictureFilename").toString();
+    if (! QFile::exists(path))
+        path = getAccountBackground();
     if (path.isEmpty()) {
         m_usePureColor = true;
         auto colorName = m_backgroundSettings->get("primaryColor").toString();
         m_color = QColor(colorName);
+        m_current_bg_path = "";
     } else {
         m_usePureColor = false;
         auto colorName = m_backgroundSettings->get("primaryColor").toString();
@@ -129,11 +144,75 @@ void DesktopBackground::switchBackground()
     }
     if (m_animation->state() == QVariantAnimation::Running) {
         m_pendingPixmap = QPixmap(path);
+        m_current_bg_path = path;
     } else {
         m_frontPixmap = QPixmap(path);
         m_animation->start();
+        m_current_bg_path = path;
     }
+
+    //if background picture changed, update it
+    if (m_current_bg_path != getAccountBackground())
+        setAccountBackground();
 }
+
+QString DesktopBackground::getAccountBackground()
+{
+    uid_t uid = getuid();
+    QDBusInterface iface("org.freedesktop.Accounts", "/org/freedesktop/Accounts",
+                         "org.freedesktop.Accounts",QDBusConnection::systemBus());
+
+    QDBusReply<QDBusObjectPath> userPath = iface.call("FindUserById", (qint64)uid);
+    if(!userPath.isValid())
+        qWarning() << "Get UserPath error:" << userPath.error();
+    else {
+        QDBusInterface userIface("org.freedesktop.Accounts", userPath.value().path(),
+                                 "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
+        QDBusReply<QDBusVariant> backgroundReply = userIface.call("Get", "org.freedesktop.Accounts.User", "BackgroundFile");
+        if(backgroundReply.isValid())
+            return  backgroundReply.value().variant().toString();
+    }
+    return "";
+}
+
+void DesktopBackground::setAccountBackground()
+{
+    QDBusInterface * interface = new QDBusInterface("org.freedesktop.Accounts",
+                                     "/org/freedesktop/Accounts",
+                                     "org.freedesktop.Accounts",
+                                     QDBusConnection::systemBus());
+
+    if (!interface->isValid()){
+        qCritical() << "Create /org/freedesktop/Accounts Client Interface Failed " << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusReply<QDBusObjectPath> reply =  interface->call("FindUserByName", g_get_user_name());
+    QString userPath;
+    if (reply.isValid()){
+        userPath = reply.value().path();
+    }
+    else {
+        qCritical() << "Call 'GetComputerInfo' Failed!" << reply.error().message();
+        return;
+    }
+
+    QDBusInterface * useriFace = new QDBusInterface("org.freedesktop.Accounts",
+                                                    userPath,
+                                                    "org.freedesktop.Accounts.User",
+                                                    QDBusConnection::systemBus());
+
+    if (!useriFace->isValid()){
+        qCritical() << QString("Create %1 Client Interface Failed").arg(userPath) << QDBusConnection::systemBus().lastError();
+        return;
+    }
+
+    QDBusMessage msg = useriFace->call("SetBackgroundFile", m_current_bg_path);
+    qDebug() << "setAccountBackground path:" <<m_current_bg_path;
+    if (!msg.errorMessage().isEmpty())
+        qDebug() << "update user background file error: " << msg.errorMessage();
+}
+
 
 void DesktopBackground::connectScreensChangement()
 {

@@ -17,6 +17,8 @@ public:
 
     void updateScreens();
     void initBackground();
+    QString getAccountBackground();
+    void setAccountBackground();
 
 protected:
     void switchBackground();
@@ -36,6 +38,8 @@ private:
     bool m_paintBackground = false;
 
     QTimeLine *m_timeLine = nullptr;
+
+    QString m_current_bg_path;
 };
 
 #endif // DESKTOPBACKGROUND_H
