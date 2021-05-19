@@ -40,7 +40,6 @@
 #include "file-operation-utils.h"
 
 #include "desktop-menu.h"
-#include "desktop-window.h"
 
 #include "file-item-model.h"
 #include "file-info-job.h"
@@ -669,7 +668,7 @@ void DesktopIconView::initMenu()
                 auto action = menu.addAction(tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
-                    DesktopWindow::gotoSetBackground();
+                    PeonyDesktopApplication::gotoSetBackground();
                 });
             }
             menu.exec(QCursor::pos());

@@ -24,13 +24,15 @@
 #ifndef PEONYDESKTOPAPPLICATION_H
 #define PEONYDESKTOPAPPLICATION_H
 
-
 #include "singleapplication.h"
-#include "desktop-window.h"
 #include "volume-manager.h"
 
 #include <QScreen>
 #include <QWindow>
+
+namespace Peony {
+class DesktopIconView;
+}
 
 using namespace Peony;
 
@@ -43,8 +45,12 @@ public:
     static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
     static void showGuide(const QString &appName = "");
+    static void gotoSetBackground();
 
     static qint64 peony_desktop_start_time;
+
+Q_SIGNALS:
+    void requestSetUKUIOutputEnable(bool enable);
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
@@ -62,12 +68,12 @@ public Q_SLOTS:
     void checkWindowProcess();
     void updateVirtualDesktopGeometryByWindows();
 
+
 private:
     void setupDesktop();
     void setupBgAndDesktop();
 
     bool m_first_parse = true;
-    QList<Peony::DesktopWindow*> m_window_list;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H
