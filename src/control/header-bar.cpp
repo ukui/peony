@@ -137,7 +137,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_go_back = goBack;
     goBack->setEnabled(false);
     goBack->setToolTip(tr("Go Back"));
-    goBack->setFixedSize(QSize(36, 28));
+    goBack->setFixedSize(QSize(GBACK_BTN_WIDTH, 28));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
     addWidget(goBack);
 
@@ -145,14 +145,14 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_go_forward = goForward;
     goForward->setEnabled(false);
     goForward->setToolTip(tr("Go Forward"));
-    goForward->setFixedSize(QSize(36, 28));
+    goForward->setFixedSize(QSize(GBACK_BTN_WIDTH, 28));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
 
-    addSpacing(9);
+    addSpacing(ADDRESS_BAR_LEFT_WIDTH);
 
     auto locationBar = new Peony::AdvancedLocationBar(this);
     locationBar->setMinimumWidth(ADDRESS_BAR_MINIMUN_WIDTH);
@@ -190,7 +190,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
 
-    addSpacing(9 - 7);
+    addSpacing(ADDRESS_BAR_RIGHT_WIDTH);
 //    auto a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
 //    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
 //    auto search = qobject_cast<QToolButton *>(widgetForAction(a));
@@ -202,7 +202,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     //use theme buttons
     auto search = new HeadBarPushButton(this);
     m_search_button = search;
-    search->setFixedSize(QSize(40, 40));
+    search->setFixedSize(QSize(SEARCH_BTN_WIDTH, SEARCH_BTN_WIDTH));
     search->setIconSize(QSize(16, 16));
     search->setIcon(QIcon::fromTheme("edit-find-symbolic"));
     search->setToolTip(tr("Search"));
@@ -311,6 +311,10 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
         }
     }
 
+    setMinimumWidth(GBACK_BTN_WIDTH * 2
+                    + ADDRESS_BAR_LEFT_WIDTH + ADDRESS_BAR_MINIMUN_WIDTH + ADDRESS_BAR_RIGHT_WIDTH
+                    + SEARCH_BTN_WIDTH
+                    + DRAG_AREA_MINIMUN_WIDTH);
 //    m_focus_list<<(createFolder);
 //    m_focus_list<<(openTerminal);
     m_focus_list<<(goBack);
