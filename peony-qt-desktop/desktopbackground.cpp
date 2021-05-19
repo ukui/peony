@@ -108,6 +108,8 @@ void DesktopBackground::initBackground()
             }
 
             if (key == "primaryColor") {
+                m_current_bg_path = "";
+                switchBackground();
                 auto colorName = m_backgroundSettings->get("primaryColor").toString();
                 m_color = QColor(colorName);
                 if (m_usePureColor) {
