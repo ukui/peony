@@ -47,11 +47,13 @@ class PropertiesWindowPluginManager : public QObject
 Q_OBJECT
 
 public:
-    static PropertiesWindowPluginManager *getInstance();
+    static PropertiesWindowPluginManager* getInstance();
 
     void release();
+    void setOpenFromDesktop();
 
     bool registerFactory(PropertiesWindowTabPagePluginIface *factory);
+    bool unregisterFactory(PropertiesWindowTabPagePluginIface *factory);
 
     const QStringList getFactoryNames();
 
@@ -64,7 +66,6 @@ private:
 
     QHash<QString, PropertiesWindowTabPagePluginIface *> m_factory_hash;
     QMap<int, QString> m_sorted_factory_map;
-
     QMutex m_mutex;
 };
 
