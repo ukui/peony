@@ -40,6 +40,7 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
     m_new_name = newName;
+    //qDebug() << "FileRenameOperation:"<<uri<<newName;
     QStringList srcUris;
     srcUris<<uri;
     QString destUri = FileUtils::getParentUri(uri);
@@ -112,11 +113,13 @@ void FileRenameOperation::run()
                                        G_KEY_FILE_DESKTOP_GROUP,
                                        local_generic_name_key.toUtf8().constData(),
                                        nullptr)) {
+                    //qDebug() << "local_generic_name_key:" <<local_generic_name_key<<m_new_name;
                     g_key_file_set_value(key_file,
                                          G_KEY_FILE_DESKTOP_GROUP,
                                          local_generic_name_key.toUtf8().constData(),
                                          m_new_name.toUtf8().constData());
                 } else {
+                    //qDebug() << "m_new_name:" <<m_new_name;
                     g_key_file_set_value(key_file,
                                          G_KEY_FILE_DESKTOP_GROUP,
                                          G_KEY_FILE_DESKTOP_KEY_NAME,
@@ -144,8 +147,8 @@ void FileRenameOperation::run()
         }
     }
 
-    if (is_local_desktop_file) {
-        m_new_name = m_new_name+".desktop";
+    if (is_local_desktop_file && ! m_new_name.endsWith(".desktop")) {
+       m_new_name = m_new_name+".desktop";
     }
 
     auto parent = FileUtils::getFileParent(file);
