@@ -1,3 +1,13 @@
+peony (3.0.3-2+0519) v101; urgency=medium
+
+   * Fix: rename desktop file of trash #54924
+   * Fix: desktop file parse error #47636
+   * Fix: Unify the style of triple keys, meet the design requirements. Id: #54139
+   * Modify: cancel commit 3012c18f2a26a6b8c604313f5a83a9c0068853fb,and resolve bug 51008
+   * Fix: Delete unnecessary logs
+
+ -- wangweinan <wangweinan@kylinos.cn>  Wed, 19 May 2021 09:29:31 +0800
+
 peony (3.0.3-2+0512) v101; urgency=medium
 
    * Fix: 删除视图方式icon,仅显示选项前的“.”选中符号 #45911
