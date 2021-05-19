@@ -120,28 +120,45 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     if(fileInfo->isExecDisable())return;
 
     if (fileInfo->type() == "application/x-desktop") {
-        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
-        if (tmp == nullptr) {
+        QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
+        desktop_file.setIniCodec("UTF8");
+        desktop_file.beginGroup("Desktop Entry");
+        QString key = "Exec";
+        QString exe = desktop_file.value(key).toString();
+
+        if (exe.isEmpty()) {
             qDebug() << "Get desktop file Exec value error";
             return;
         }
-        QString exe(tmp);
+
         QStringList parameters;
-        if (exe.indexOf("%") != -1) {
-            exe = exe.left(exe.indexOf("%") - 1);
-        }
-        if (exe.indexOf("-") != -1) {
+
+        // 首先把exec整个截取成 path+parameter形式
+        if (exe.contains(" ")) {
             parameters = exe.split(" ");
             exe = parameters[0];
             parameters.removeAt(0);
         }
 
-        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
-        if (parameters.isEmpty())
-            session.call("app_open", exe, parameters);
-        else
-            session.call("app_open", exe, parameters);
+        // 优先判断path里有没有带%U等，如果存在的话，删除%和后面紧跟的字符
+        if (exe.contains("%")) {
+            exe = exe.left(exe.indexOf("%"));
+        }
 
+        for (auto begin = parameters.begin(); begin != parameters.end(); ++begin) {
+            if (begin->contains("%")) {
+                // 命令行最多可包含一个％f，％u，％F或％U字段代码
+                if (begin->count() == 2)
+                    parameters.removeOne(*begin);
+                else {
+                    begin->remove(begin->indexOf("%"), 2);
+                }
+                break;
+            }
+        }
+
+        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+        session.call("app_open", exe, parameters);
         return;
     }
 
@@ -237,27 +254,51 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     if(fileInfo->isExecDisable())return;
 
     if (fileInfo->type() == "application/x-desktop") {
-        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
-        if (tmp == nullptr) {
+
+//        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
+        QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
+        desktop_file.setIniCodec("UTF8");
+        desktop_file.beginGroup("Desktop Entry");
+        QString key = "Exec";
+        QString exe = desktop_file.value(key).toString();
+
+        if (exe.isEmpty()) {
             qDebug() << "Get desktop file Exec value error";
             return;
         }
-        QString exe(tmp);
+
         QStringList parameters;
-        if (exe.indexOf("%") != -1) {
-            exe = exe.left(exe.indexOf("%") - 1);
-        }
-        if (exe.indexOf("-") != -1) {
+
+        // 首先把exec整个截取成 path+parameter形式
+        if (exe.contains(" ")) {
             parameters = exe.split(" ");
             exe = parameters[0];
             parameters.removeAt(0);
         }
 
+        // 优先判断path里有没有带%U等，如果存在的话，删除%和后面紧跟的字符
+        if (exe.contains("%")) {
+            exe = exe.left(exe.indexOf("%"));
+        }
+
+        for (auto begin = parameters.begin(); begin != parameters.end(); ++begin) {
+            if (begin->contains("%")) {
+                // 命令行最多可包含一个％f，％u，％F或％U字段代码
+                if (begin->count() == 2)
+                    parameters.removeOne(*begin);
+                else {
+                    begin->remove(begin->indexOf("%"), 2);
+                }
+                break;
+            }
+        }
+
         QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
-        if (parameters.isEmpty())
-            session.call("app_open", exe, parameters);
-        else
-            session.call("app_open", exe, parameters);
+        session.call("app_open", exe, parameters);
+//        if (parameters.isEmpty())
+//            session.call("app_open", exe, parameters);
+//        else
+//            session.call("app_open", exe, parameters);
 
         return;
     }
