@@ -2,9 +2,9 @@
 Name=Peony Trash
 GenericName=Trash
 GenericName[tr]=Çöp
-GenericName[zh_CN]=打开回收站
+GenericName[zh_CN]=打开回收箱
 Name[tr]=Çöp
-Name[zh_CN]=回收站
+Name[zh_CN]=回收箱
 Exec=/usr/bin/peony trash:///
 Icon=user-trash
 Terminal=false
