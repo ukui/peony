@@ -59,7 +59,6 @@ using namespace Peony;
 //single properties-window
 //static QHash<QString,PropertiesWindow> openPropertiesWindow = nullptr;
 static QList<PropertiesWindow *> *openedPropertiesWindows = nullptr;
-
 //plugin manager
 
 static PropertiesWindowPluginManager *global_instance = nullptr;
@@ -69,6 +68,11 @@ PropertiesWindowPluginManager *PropertiesWindowPluginManager::getInstance()
     if (!global_instance)
         global_instance = new PropertiesWindowPluginManager;
     return global_instance;
+}
+
+void PropertiesWindowPluginManager::setOpenFromDesktop()
+{
+    unregisterFactory(MarkPropertiesPageFactory::getInstance());
 }
 
 void PropertiesWindowPluginManager::release()
@@ -112,6 +116,29 @@ bool PropertiesWindowPluginManager::registerFactory(PropertiesWindowTabPagePlugi
     return true;
 }
 
+bool PropertiesWindowPluginManager::unregisterFactory(PropertiesWindowTabPagePluginIface *factory)
+{
+    m_mutex.lock();
+    auto id = factory->name();
+    if (m_factory_hash.value(id)) {
+        m_factory_hash.remove(id);
+
+        int current = 0;
+        for (auto i = m_sorted_factory_map.begin(); i != m_sorted_factory_map.end(); ++i) {
+            if (i.value() == id) {
+                current = i.key();
+                break;
+            }
+        }
+        m_sorted_factory_map.remove(current);
+        m_mutex.unlock();
+        return true;
+    }
+
+    m_mutex.unlock();
+    return false;
+}
+
 const QStringList PropertiesWindowPluginManager::getFactoryNames()
 {
     QStringList list;
@@ -140,6 +167,10 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris = uris;
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
+
+    if (qApp->property("showProperties").isValid()) {
+        PropertiesWindowPluginManager::getInstance()->setOpenFromDesktop();
+    }
 
     //FIX:BUG #31635
     if (m_uris.contains("computer:///")) {
