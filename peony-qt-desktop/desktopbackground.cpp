@@ -97,10 +97,9 @@ void DesktopBackground::updateScreens()
 void DesktopBackground::initBackground()
 {
     m_paintBackground = true;
+    setBackground();
     if (QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
         m_backgroundSettings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
-
-        switchBackground();
 
         connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
             if (key == "pictureFilename") {
@@ -108,25 +107,28 @@ void DesktopBackground::initBackground()
             }
 
             if (key == "primaryColor") {
+                auto colorName = m_backgroundSettings->get("primaryColor").toString();
                 m_current_bg_path = "";
                 switchBackground();
-                auto colorName = m_backgroundSettings->get("primaryColor").toString();
                 m_color = QColor(colorName);
                 if (m_usePureColor) {
                     update();
                 }
             }
         });
-    } else {
-        QString defaultBg = "/usr/share/background/calla.png";
-        auto accountBack = getAccountBackground();
-        if (accountBack != "" && QFile::exists(accountBack))
-            defaultBg = accountBack;
-        m_frontPixmap = QPixmap(defaultBg);
-        m_current_bg_path = defaultBg;
-        if (defaultBg != accountBack)
-            setAccountBackground();
     }
+}
+
+void DesktopBackground::setBackground()
+{
+    QString defaultBg = "/usr/share/background/calla.png";
+    auto accountBack = getAccountBackground();
+    if (accountBack != "" && QFile::exists(accountBack))
+        defaultBg = accountBack;
+    m_frontPixmap = QPixmap(defaultBg);
+    m_current_bg_path = defaultBg;
+    if (defaultBg != accountBack)
+        setAccountBackground();
 }
 
 void DesktopBackground::switchBackground()

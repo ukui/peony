@@ -17,6 +17,7 @@ public:
 
     void updateScreens();
     void initBackground();
+    void setBackground();
     QString getAccountBackground();
     void setAccountBackground();
 
