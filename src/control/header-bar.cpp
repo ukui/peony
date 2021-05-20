@@ -612,7 +612,7 @@ bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
     Q_UNUSED(obj)
     auto window = qobject_cast<MainWindow *>(obj);
     if (window) {
-        if (e->type() == QEvent::Resize) {
+        if (e->type() == QEvent::Resize || QEvent::WindowStateChange == e->type()) {
             if (window->isMaximized()) {
                 m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
                 //m_max_or_restore->setToolTip(tr("Restore"));
