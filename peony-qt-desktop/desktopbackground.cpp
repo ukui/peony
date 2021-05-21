@@ -121,7 +121,7 @@ void DesktopBackground::initBackground()
 
 void DesktopBackground::setBackground()
 {
-    QString defaultBg = "/usr/share/background/calla.png";
+    QString defaultBg = "/usr/share/backgrounds/aurora.jpg";
     auto accountBack = getAccountBackground();
     if (accountBack != "" && QFile::exists(accountBack))
         defaultBg = accountBack;
