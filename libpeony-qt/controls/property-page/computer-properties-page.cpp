@@ -129,7 +129,8 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             // char *aviliable_format = g_format_size(aviliable);
             //Calculated by 1024 bytes
             char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
+            //fix used + availiable != total issue
+            char *used_format = strtok(g_format_size_full(total - aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
             char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
@@ -166,7 +167,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             //char *aviliable_format = g_format_size(aviliable);
             //Calculated by 1024 bytes
             char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
+            char *used_format = strtok(g_format_size_full(total - aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
             char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
 
             //fix system Udisk calculate size wrong issue
