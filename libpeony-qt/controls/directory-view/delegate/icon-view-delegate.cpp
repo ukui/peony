@@ -265,11 +265,11 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     //NOTE: if we directly call this method, there will be
     //nothing happen. add a very short delay will ensure that
     //the edit be resized.
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, edit, [=]() {
         edit->minimalAdjust();
     });
 
-    connect(edit, &IconViewEditor::returnPressed, [=]() {
+    connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
     });
