@@ -123,14 +123,26 @@ void DesktopBackground::initBackground()
 
 void DesktopBackground::setBackground()
 {
+    //if not find account background, use default background
     QString defaultBg = "/usr/share/backgrounds/aurora.jpg";
     auto accountBack = getAccountBackground();
     if (accountBack != "" && QFile::exists(accountBack))
         defaultBg = accountBack;
+
+    //if default bg and account bg not exist, use color bg
+    if (! QFile::exists(defaultBg))
+    {
+       qWarning() << "default bg and account bg not exist";
+       switchBackground();
+       return;
+    }
+
     m_frontPixmap = QPixmap(defaultBg);
     m_current_bg_path = defaultBg;
     if (defaultBg != accountBack)
         setAccountBackground();
+
+    m_animation->start();
 }
 
 void DesktopBackground::switchBackground()
