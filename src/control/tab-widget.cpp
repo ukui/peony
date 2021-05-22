@@ -76,7 +76,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QStackedWidget(this);
-    m_preview_page_container->setMinimumWidth(200);
+    m_preview_page_container->setMinimumWidth(270);
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
