@@ -355,7 +355,7 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     //NOTE: if we directly call this method, there will be
     //nothing happen. add a very short delay will ensure that
     //the edit be resized.
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, edit, [=]() {
         edit->minimalAdjust();
     });
 
