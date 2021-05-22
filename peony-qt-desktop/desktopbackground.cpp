@@ -83,10 +83,12 @@ void DesktopBackground::updateScreens()
     }
     move(0, 0);
     screensRegion += rect();
-    auto size = screensRegion.boundingRect().size();
-    //auto maxLength = qMax(size.width(), size.height());
-    //setFixedSize(maxLength, maxLength);
-    setFixedSize(size);
+    auto screensSize = screensRegion.boundingRect().size();
+    QSize size = this->size();
+    int maxWidth = qMax(size.width(), screensSize.width());
+    int maxHeight = qMax(size.height(), screensSize.height());
+    int maxLength = qMax(maxWidth, maxHeight);
+    setFixedSize(maxLength, maxLength);
 
     update();
 
