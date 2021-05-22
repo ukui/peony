@@ -246,8 +246,10 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         addAction(createAction);
 
         //enumerate template dir
-//        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
-        QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        //QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        //QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        QString templatePath(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
+        qWarning()<<"tempalte Path is"<<templatePath;
         if(!templatePath.isEmpty())
         {
             QDir templateDir(templatePath);
@@ -255,6 +257,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
             if (!templates.isEmpty()) {
                 for (auto t : templates) {
                     QFileInfo qinfo(templateDir, t);
+                    qWarning()<<"template entry is"<<qinfo.filePath();
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
                     //FIXME: replace BLOCKING api in ui thread.
@@ -298,7 +301,11 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                     g_object_unref(gtk_file);
                 }
                 subMenu->addSeparator();
+            } else {
+                qWarning()<<"template entries is empty";
             }
+        } else {
+            qWarning()<<"template path is empty";
         }
 
         QList<QAction *> actions;
