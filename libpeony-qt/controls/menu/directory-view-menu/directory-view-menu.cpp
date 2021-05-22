@@ -728,6 +728,10 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     if (m_selections.count() >1 && m_is_trash)
         return l;
 
+    //favorite is should not show property
+    if (m_selections.isEmpty() && m_directory == "favorite:///")
+        return l;
+
     if (! m_is_search) {
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         connect(l.last(), &QAction::triggered, [=]() {
@@ -739,9 +743,29 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
                 p->setAttribute(Qt::WA_DeleteOnClose);
                 p->show();
             } else {
-                PropertiesWindow *p = new PropertiesWindow(m_selections);
-                p->setAttribute(Qt::WA_DeleteOnClose);
-                p->show();
+                QStringList selectUriList;
+                if (m_selections.first().contains("favorite:///")) {
+                    for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
+                        if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                        || m_selections.at(uriIndex) == "favorite:///?schema=recent") {
+                            QStringList urisList;
+                            urisList << FileUtils::getTargetUri(m_selections.at(uriIndex));
+                            PropertiesWindow *p = new PropertiesWindow(urisList);
+                            p->setAttribute(Qt::WA_DeleteOnClose);
+                            p->show();
+                        } else {
+                            selectUriList<< m_selections.at(uriIndex);
+                        }
+                    }
+                }else {
+                    selectUriList = m_selections;
+                }
+
+                if (selectUriList.count() > 0) {
+                    PropertiesWindow *p = new PropertiesWindow(selectUriList);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                }
             }
         });
     } else if (m_selections.count() == 1) {
