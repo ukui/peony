@@ -125,11 +125,11 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
             quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
             //use dbus to get total size, to agree with gparted size
-            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
-            if (dbusTotal > 0)
-                total = dbusTotal;
-            if (aviliable > 0)
-                used = total - aviliable;
+//            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
+//            if (dbusTotal > 0)
+//                total = dbusTotal;
+//            if (aviliable > 0)
+//                used = total - aviliable;
             // char *total_format = g_format_size(total);
             // char *used_format = g_format_size(used);
             // char *aviliable_format = g_format_size(aviliable);
@@ -168,11 +168,11 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
             quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
             //use dbus to get total size, to agree with gparted size
-            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
-            if (dbusTotal > 0)
-                total = dbusTotal;
-            if (aviliable > 0)
-                used = total - aviliable;
+//            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
+//            if (dbusTotal > 0)
+//                total = dbusTotal;
+//            if (aviliable > 0)
+//                used = total - aviliable;
             //char *total_format = g_format_size(total);
             //char *used_format = g_format_size(used);
             //char *aviliable_format = g_format_size(aviliable);
@@ -280,11 +280,11 @@ QString ComputerPropertiesPage::getFileSystemType(QString uri)
                                   QDBusConnection::systemBus());
 
     if(blockInterface.isValid())
-        fsType = blockInterface.property("IdVersion").toString();
-
-    //ntfs get IdVersion is null, should use IdType
-    if(fsType == "" && blockInterface.isValid())
         fsType = blockInterface.property("IdType").toString();
+
+    //if need diff FAT16 and FAT32, should use IdVersion
+//    if(fsType == "" && blockInterface.isValid())
+//        fsType = blockInterface.property("IdVersion").toString();
 
     return fsType;
 }
