@@ -283,7 +283,7 @@ QString ComputerPropertiesPage::getFileSystemType(QString uri)
         fsType = blockInterface.property("IdVersion").toString();
 
     //ntfs get IdVersion is null, should use IdType
-    if(fsType == "")
+    if(fsType == "" && blockInterface.isValid())
         fsType = blockInterface.property("IdType").toString();
 
     return fsType;
