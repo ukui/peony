@@ -548,6 +548,14 @@ void PeonyDesktopApplication::setupDesktop()
         } else {
             getIconView()->setGeometry(qApp->primaryScreen()->geometry());
         }
+
+        // delay 3 sec to setup background anyway.
+        QTimer::singleShot(3000, this, [=](){
+            if (!has_background) {
+                has_background = true;
+                virtualDesktopWindow->initBackground();
+            }
+        });
     }
 }
 
