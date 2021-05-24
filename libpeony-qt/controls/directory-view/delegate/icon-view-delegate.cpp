@@ -304,8 +304,8 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    //qDebug()<<cursor.position();
-    if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+    bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
+    if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
         cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
         cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
         //qDebug()<<cursor.position();
