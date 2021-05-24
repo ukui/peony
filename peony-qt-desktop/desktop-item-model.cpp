@@ -857,10 +857,15 @@ static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInf
 
     desktopDefaultSort << "mdm-acpanel.desktop"
                        << "eye-protection-center.desktop"
+                       << "tencent-chinese-composition-exercise.desktop"
+                       << "tencent-english-composition-exercise.desktop"
                        << "tencent-chinese-composition-correction.desktop"
                        << "tencent-english-composition-correction.desktop"
                        << "tencent-course-center.desktop"
-                       << "tencent-precise-practice.desktop";
+                       << "tencent-precise-practice.desktop"
+                       << "tencent-english-precise-practice.desktop"
+                       << "tencent-math-precise-practice.desktop"
+                       << "tencent-chinese-precise-practice.desktop";
 
     return desktopDefaultSort.indexOf(p1FileName) > desktopDefaultSort.indexOf(p2FileName);
 
