@@ -3,3 +3,6 @@ peony-qt-desktop/org.ukui.freedesktop.FileManager1.service usr/share/dbus-1/serv
 libpeony-qt/org.ukui.peony.settings.gschema.xml usr/share/glib-2.0/schemas
 peony-qt-desktop/.qm/*.qm usr/share/peony-qt-desktop
 src/.qm/*.qm usr/share/peony-qt
+translations/peony-qt/* usr/share/peony-qt
+translations/peony-qt-desktop/* usr/share/peony-qt-desktop
+data/peony/* usr/share/kylin-user-guide/data/guide/peony

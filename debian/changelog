@@ -1,3 +1,288 @@
+peony (3.2.2+0523hw) v101.hw; urgency=medium
+
+  * 主版本更新
+    - BUG号：55109-990,54939-990,
+      52164-990,45682-990,43199-990。
+    - 需求号：无。
+    - 其他修改说明：使用云账户壁纸。
+    - 响应域：分区属性显示,侧边栏光驱显示，
+      桌面文件设置标记，窗口最大/小化图标，
+      壁纸设置及显示。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 22 May 2021 14:36:35 +0800
+
+peony (3.2.2+0517hw) v101.hw; urgency=medium
+
+  * 主版本更新
+    - BUG号：54093,54281,54096,54816,54727,
+      55109,54886。
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：删除文件到回收站, 多屏显示，
+      分区挂载，桌面隐藏文件显示，文件重
+      命名，分区属性显示。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 17 May 2021 19:29:35 +0800
+
+peony (3.2.2+0512hw) v101.hw; urgency=medium
+
+  * 主版本更新
+    - BUG号：51957,50625,50496,52438,52491,
+      52802,52164,49977,52340,50812,51983,
+      51486,52668,52830,51050，47146,52298，
+      51801,45684,51417,52412,52458,54003,
+      54031,54030,54061,46785。
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：侧边栏，右键菜单，搜索，属性，
+      计算机视图，用户手册，桌面图标、显示，
+      文件进度提示框，关于界面，格式化界面,
+      剪切文件。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 12 May 2021 16:29:35 +0800
+
+peony (3.2.2+0428) v101.hw; urgency=medium
+
+  * 主版本更新
+    - BUG号：51137,25737,43123,44080,51144,
+      48400,51775,45222,48079,50505,45244,
+      50392,50812,47456,50494,50679,50683,
+      50900,51039,51120,51131,51138,51721。
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：U盘中文名或特殊字符显示，解压缩选项，
+      计算机视图显示，特殊分区显示(839MB),桌面文件
+      图标重叠问题。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 29 Apr 2021 09:20:35 +0800
+
+peony (3.2.2+0425) v101.hw; urgency=medium
+
+  * 主版本更新
+    - BUG号：50625,45693,48320,50848，47793。
+    - 需求号：无。
+    - 其他修改说明：剪切效果修改，桌面重叠问题修改。
+    - 响应域：剪切文件效果，桌面显示，文件管理器
+      升级，用户手册。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 26 Apr 2021 09:50:35 +0800
+
+peony (3.2.2+0421) v101; urgency=medium
+
+  * 主版本更新
+    - 完成需求：添加统一的日志接口。
+    - 修复bug(#46906,48627,48513,43555，47793)。
+    - 其他修改：修复依赖包不对导致的升级失败问题。
+    - 响应域：属性页面，程序日志，桌面文件重命名，
+      开机时桌面背景动画，文件管理器升级。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 21 Apr 2021 15:09:35 +0800
+
+peony (3.2.2+0416) v101; urgency=medium
+
+  * 主版本更新
+    - 完成需求：侧边栏数据分区调整，有新共享分区
+      则不显示Data分区。
+    - 修复Esc取消剪切不生效问题。
+    - 修复bug(#37773,47456,45734,31642,47822,
+      45746,45684,47355,46906,48031,45684)。
+    - 响应域：剪切文件取消，用户手册，地址栏显示,
+      手机挂载操作，英文关于界面,切换用户使用U盘。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 15 Apr 2021 20:45:35 +0800
+
+peony (3.2.2+0407) v101; urgency=medium
+
+  * 主版本更新
+    - 修复桌面双击计算机，文件系统，后退闪退问题。
+    - 修复bug(#45684,44815,42542,45008,44314,
+      40096,44107,42484,#45781,#37773)。
+    - 响应域：桌面重命名文件，列表模式底部遮挡，
+      英文模式下新建模板，路径前进后退操作。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 09 Apr 2021 09:20:35 +0800
+
+peony (3.2.2+0325) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#43637,38591,39389,44839,
+       43499)。
+    - 响应域：详细信息，颜色标记，快捷方式，
+      高级搜索文件大小筛选。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 25 Mar 2021 16:20:35 +0800
+
+peony (3.2.2+0324) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#42299,40207,33429,25323,42244,
+      40737,42256,43134,42484,35145,44318,
+      43044)。
+    - 响应域：拖动文件删除，英文系统右键新建，
+      打开下载路径，用户手册，权限拒绝汉化,
+      U盘新建文件占用。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 23 Mar 2021 16:20:35 +0800
+
+peony (3.2.2+0315) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#42558,42485,41909,42496,42328),
+      添加高分屏适配。
+    - 响应域：高分屏显示，桌面图标文字显示，拖动删除文件
+      到回收站，右键菜单显示。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 15 Mar 2021 16:20:35 +0800
+
+peony (3.2.2+0311) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#41426,41464,41094,41874,41897,41682,
+      40457,40120,40123,40218,40487,41874,41897,
+      41682,41623,42185,42454)。
+    - 响应域：右键菜单，关于界面，属性界面，文件保护箱。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 11 Mar 2021 20:20:35 +0800
+
+peony (3.2.2+0306) v101; urgency=medium
+
+  * 主版本更新
+    - 重构桌面代码，增加对wayland适配。
+    - 修复bug(#41779，39999,37629，40457,41779)。
+    - 响应域：文件管理器自身，系统桌面，如主屏改变，
+      屏幕旋转，屏幕插拔这些操作。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 06 Mar 2021 16:30:35 +0800
+
+peony (3.2.2+0304) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#40779,38942,41239,41038,41293)。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 04 Mar 2021 17:00:35 +0800
+
+peony (3.2.2+0301) v101; urgency=medium
+
+  * 主版本更新
+    - 修复bug(#38545,38690,39579,39657,39966,40003,
+      39884,40099,40179,40331,40346,40284,40492)。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 01 Mar 2021 09:00:35 +0800
+
+peony (3.2.1+0219) v101; urgency=medium
+
+  * 主版本更新
+    - 最新版本更新。
+    - Bug清仓大处理。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 19 Feb 2021 09:00:35 +0800
+
+peony (3.2.1) v101; urgency=medium
+
+  * 主版本更新
+    - UI根据新设计调整，标题栏去掉新建文件夹和打开终端，
+      设置窗口最小宽度，限制拉伸，留出空白拖拽。
+    - 属性窗口根据新设计稿重构。
+    - 修复新提的和激活的bug,列表如下:bug#31190,33923,
+      35543,33604,18296,35331,28392,29055,33022,19133,
+      27423,31847,20293等。
+
+  * New upstream release.
+    - Fix new report bugs(bug#31190,33923,35543,
+      33604,18296,35331,28392,29055,33022,19133,
+      27423,31847,20293).
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 28 Jan 2021 15:00:35 +0800
+
+peony (3.2.0+0120) v101; urgency=medium
+
+  * 主版本更新
+    - 修复设计师反馈的UI问题，侧边栏默认宽度错误，
+      工具栏新建文件夹，打开终端按钮有背景。
+
+  * New upstream release.
+    - Fix UI issues by design request.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 19 Jan 2021 14:00:35 +0800
+
+peony (3.2.0) v101; urgency=medium
+
+  * 主版本更新
+    - 添加版本检查功能，解决编包问题。
+
+  * New upstream release.
+    - Formal version to give out.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 18 Jan 2021 09:00:35 +0800
+
+peony (3.0.15) v101; urgency=medium
+
+  * 主版本更新
+    - 添加版本检查功能，解决编包问题。
+    - 添加用户手册文件到安装包。
+    - 修复侧边栏以及计算机视图导致的插拔U盘闪退问题。
+    - 修复剪切文件状态看不到变化问题。
+    - 修复安装百度网盘桌面图标不能即时更新问题。
+    - 修复其他一些问题，具体看如下bug列表。
+    - 修复bug#33791,33656,33234,33031,31582,32337,31203,
+      30996,32726,31123,31249,33452,31651.
+
+  * New upstream release.
+    - Add Version check function, use master as commercial
+      version and try to fix build issue.
+    - Fix bugs(#33791,33656,33234,33031,31582,32337,31203,
+      30996,32726,31123,31249,33452,31651).
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 16 Jan 2021 17:00:35 +0800
+
 peony (3.0.6-1) unstable; urgency=medium
 
   * New upstream release.
