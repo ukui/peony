@@ -1,3 +1,9 @@
+peony (3.0.3-2+0524) v101; urgency=medium
+
+   * Fix: default sort in desktop after tencent app rename
+
+ -- wangweinan <wangweinan@kylinos.cn>  Mon, 24 May 2021 09:29:31 +0800
+
 peony (3.0.3-2+0519) v101; urgency=medium
 
    * Fix: rename desktop file of trash #54924
