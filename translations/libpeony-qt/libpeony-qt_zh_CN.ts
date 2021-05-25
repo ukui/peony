@@ -753,7 +753,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="213"/>
         <source>Kylin Burner</source>
-        <translation>麒麟刻录</translation>
+        <translation>刻录</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="219"/>
