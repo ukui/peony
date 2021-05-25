@@ -383,8 +383,11 @@ void DesktopIconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
     if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+        QStringList sl = edit->toPlainText().split(".");
+        sl.pop_front();
+        int pos = sl.join(".").length();
+        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, pos + 1);
+//        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
         //qDebug()<<cursor.position();
     }
     //qDebug()<<cursor.anchor();
