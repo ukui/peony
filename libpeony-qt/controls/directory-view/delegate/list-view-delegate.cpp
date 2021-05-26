@@ -113,10 +113,10 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 painter->setOpacity(0.5);
                 qDebug()<<"cut item in list view"<<index.data();
             }
+            else
+                painter->setOpacity(1.0);
         }
     }
-    else
-        painter->setOpacity(1.0);
 
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
