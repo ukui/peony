@@ -383,7 +383,7 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 return;
             }
 
-            qApp->setProperty("showProperties", "true");
+            qApp->setProperty("showProperties", true);
 
             Peony::PropertiesWindow *window = new Peony::PropertiesWindow(uris);
 

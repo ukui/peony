@@ -75,6 +75,11 @@ void PropertiesWindowPluginManager::setOpenFromDesktop()
     unregisterFactory(MarkPropertiesPageFactory::getInstance());
 }
 
+void PropertiesWindowPluginManager::setOpenFromPeony()
+{
+    registerFactory(MarkPropertiesPageFactory::getInstance());
+}
+
 void PropertiesWindowPluginManager::release()
 {
     deleteLater();
@@ -168,8 +173,11 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
 
-    if (qApp->property("showProperties").isValid()) {
+    if (qApp->property("showProperties").isValid() && qApp->property("showProperties").toBool()) {
         PropertiesWindowPluginManager::getInstance()->setOpenFromDesktop();
+        qApp->setProperty("showProperties", false);
+    } else {
+        PropertiesWindowPluginManager::getInstance()->setOpenFromPeony();
     }
 
     //FIX:BUG #31635
