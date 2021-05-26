@@ -140,11 +140,31 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
         file.querySync();
         setTipFileicon(file.getInfo()->iconName());
         setTipFilename(file.getInfo()->displayName());
+    } else if (FileOpUntrash == m_error->op) {
+        // The Recycle Bin has special treatment for files with the same name
+        QString srcFileName = error.srcUri.split("/").back();
+        QString srcFileNoExt = srcFileName.split(".").first();
+
+        QString destFileName = error.destDirUri.split("/").back();
+        QString destFileNoExt = destFileName.split(".").first();
+
+        FileInfoJob file(error.srcUri, nullptr);
+        file.querySync();
+
+        setTipFileicon(file.getInfo()->iconName());
+
+        if (srcFileNoExt == destFileNoExt && srcFileName.contains(destFileNoExt)) {
+            setTipFilename(destFileName);
+        } else {
+            setTipFilename(file.getInfo()->displayName());
+        }
+
     } else {
         QString fileName = error.srcUri.split("/").back();
         QString url = error.destDirUri.contains(fileName) ? error.destDirUri : error.destDirUri + "/" + fileName;
         FileInfoJob file(url, nullptr);
         file.querySync();
+
         setTipFileicon(file.getInfo()->iconName());
         setTipFilename(file.getInfo()->displayName());
     }
