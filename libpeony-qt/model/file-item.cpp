@@ -175,7 +175,7 @@ void FileItem::findChildrenAsync()
         if (!target.isEmpty()) {
             enumerator->cancel();
             //enumerator->deleteLater();
-            m_model->sendPathChangeRequest(target);
+            m_model->setRootUri(target);
             return;
         }
         if (err) {
@@ -188,11 +188,11 @@ void FileItem::findChildrenAsync()
                 {
                     //check bookmark and delete
                     BookMarkManager::getInstance()->removeBookMark(this->uri());
-                    m_model->sendPathChangeRequest("computer:///");
+                    m_model->setRootUri("computer:///");
                 }
-                else {
-                    m_model->sendPathChangeRequest(FileUtils::getParentUri(this->uri()));
-                }
+                else
+                    m_model->setRootUri(FileUtils::getParentUri(this->uri()));
+
                 auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
@@ -341,7 +341,7 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->sendPathChangeRequest("computer:///");
+                m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
 
@@ -458,7 +458,7 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->sendPathChangeRequest("computer:///");
+                m_model->setRootUri("computer:///");
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
@@ -589,9 +589,9 @@ void FileItem::onDeleted(const QString &thisUri)
             tmpItem = tmpItem->m_parent;
         }
         if (!tmpUri.isNull()) {
-            m_model->sendPathChangeRequest(tmpUri);
+            m_model->setRootUri(tmpUri);
         } else {
-            m_model->sendPathChangeRequest("file:///");
+            m_model->setRootUri("file:///");
         }
     }
     m_model->updated();

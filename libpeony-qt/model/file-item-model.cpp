@@ -599,8 +599,3 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //use QAbstractModel::dropMimeData() here;
     return true;
 }
-
-void FileItemModel::sendPathChangeRequest(const QString &uri)
-{
-    Q_EMIT this->changePathRequest(uri, true, true);
-}
