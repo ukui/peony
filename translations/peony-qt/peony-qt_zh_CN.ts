@@ -46,7 +46,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="92"/>
         <source>Peony is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation>文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
@@ -68,7 +68,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件选用应用打开，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="116"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -188,22 +188,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="319"/>
+        <location filename="../../src/windows/main-window.cpp" line="322"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="326"/>
+        <location filename="../../src/windows/main-window.cpp" line="329"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1469"/>
+        <location filename="../../src/windows/main-window.cpp" line="1472"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1470"/>
+        <location filename="../../src/windows/main-window.cpp" line="1473"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -212,12 +212,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1459"/>
+        <location filename="../../src/windows/main-window.cpp" line="1462"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1460"/>
+        <location filename="../../src/windows/main-window.cpp" line="1463"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -226,7 +226,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="706"/>
+        <location filename="../../src/windows/main-window.cpp" line="709"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -388,12 +388,12 @@ p, li { white-space: pre-wrap; }
 2.你使用的系统主题不是qt默认支持的主题，并且你没有安装相关的平台插件。如果你正在使用Gtk主题作为系统主题，尝试安装qt5-gtk2-platformtheme以解决此问题。</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="450"/>
+        <location filename="../../src/peony-application.cpp" line="445"/>
         <source>Peony Qt</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="451"/>
+        <location filename="../../src/peony-application.cpp" line="446"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -718,27 +718,49 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>tiny(0-16K)</source>
-        <translation>极小</translation>
+        <translation>极小(0-16K)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>small(16k-1M)</source>
-        <translation>很小</translation>
+        <translation>很小(16k-1M)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>empty(0K)</source>
+        <translation>空(0K)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>medium(1M-128M)</source>
+        <translation>中等(1M-128M)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>big(128M-1G)</source>
+        <translation>大(128M-1G)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>large(1-4G)</source>
+        <translation>巨大(1-4G)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>great(&gt;4G)</source>
+        <translation>极大(&gt;4G)</translation>
+    </message>
+    <message>
         <source>medium(1M-100M)</source>
-        <translation>中等</translation>
+        <translation type="vanished">中等(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>big(100M-1G)</source>
-        <translation>很大</translation>
+        <translation type="vanished">很大(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>large(&gt;1G)</source>
-        <translation>极大</translation>
+        <translation type="vanished">极大(&gt;1G)</translation>
     </message>
 </context>
 </TS>

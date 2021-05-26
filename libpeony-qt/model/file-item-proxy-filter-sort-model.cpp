@@ -426,93 +426,64 @@ bool FileItemProxyFilterSortModel::checkFileSizeFilter(quint64 size) const
         auto cur = m_file_size_list[i];
         switch (cur)
         {
-        case TINY: //[0-16K)
-        {
-            if (size < 16 * K_BASE)
+        case EMPTY: //[0K]
+        {           
+            if (size ==0 )
                 return true;
             break;
         }
-        case SMALL:  //[16k-1M]
-        {
-            if(size >= 16 * K_BASE && size <=K_BASE * K_BASE)
+        case TINY: //（0-16K]
+        {          
+            if (size > 0  &&size <=16 * K_BASE)
                 return true;
             break;
         }
-        case MEDIUM: //(1M-100M]
+        case SMALL:  //（16k-1M]
         {
-            if(size > K_BASE * K_BASE && size <= 100 * K_BASE * K_BASE)
+            if(size > 16 * K_BASE && size <=K_BASE * K_BASE)
                 return true;
             break;
         }
-        case BIG:  //(100M-1G]
+        case MEDIUM: //(1M-128M]
         {
-            if(size > 100 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+            if(size > K_BASE * K_BASE && size <= 128 * K_BASE * K_BASE)
                 return true;
             break;
         }
-        case LARGE: //>1G
+        case BIG:  //(128M-1G]
         {
-            if (size > K_BASE * K_BASE * K_BASE)
+            if(size > 128 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case LARGE: //(1-4G]
+        {
+            if (size > K_BASE * K_BASE * K_BASE&& size <= 4*K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case GREAT: //>4G
+        {
+            if (size > 4*K_BASE * K_BASE * K_BASE)
                 return true;
             break;
         }
         default:
             break;
         }
-    }
 
+    }
     return false;
 }
 
 bool FileItemProxyFilterSortModel::checkFileSizeOrTypeFilter(quint64 size, bool isDir) const
 {
-
     if (m_file_size_list.count() == 0 || m_file_size_list.contains(ALL_FILE))
         return true;
     else if(isDir)
         return false;
 
-    for(int i=0; i<m_file_size_list.count(); i++)
-    {
-        auto cur = m_file_size_list[i];
-        switch (cur)
-        {
-        case TINY: //[0-16K)
-        {
-            if (size < 16 * K_BASE)
-                return true;
-            break;
-        }
-        case SMALL:  //[16k-1M]
-        {
-            if(size >= 16 * K_BASE && size <=K_BASE * K_BASE)
-                return true;
-            break;
-        }
-        case MEDIUM: //(1M-100M]
-        {
-            if(size > K_BASE * K_BASE && size <= 100 * K_BASE * K_BASE)
-                return true;
-            break;
-        }
-        case BIG:  //(100M-1G]
-        {
-            if(size > 100 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
-                return true;
-            break;
-        }
-        case LARGE: //>1G
-        {
-            if (size > K_BASE * K_BASE * K_BASE)
-                return true;
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-    return false;
+   return checkFileSizeFilter(size);
 }
 
 void FileItemProxyFilterSortModel::update()

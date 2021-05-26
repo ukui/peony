@@ -19,22 +19,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="827"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="831"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="828"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="832"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="843"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="847"/>
         <source>Open failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="844"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="848"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>

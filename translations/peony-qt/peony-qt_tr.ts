@@ -28,7 +28,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="91"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="92"/>
         <source>Peony is a graphical software to help users manage system files. It provides common file operation functions for users, such as file viewing, file copy, paste, cut, delete, rename, file selection, application opening, file search, file sorting, file preview, etc. it is convenient for users to manage system files intuitively on the interface.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -48,7 +48,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="115"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="116"/>
         <source>none</source>
         <translation type="unfinished"></translation>
     </message>
@@ -168,22 +168,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="319"/>
+        <location filename="../../src/windows/main-window.cpp" line="322"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="326"/>
+        <location filename="../../src/windows/main-window.cpp" line="329"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1469"/>
+        <location filename="../../src/windows/main-window.cpp" line="1472"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1470"/>
+        <location filename="../../src/windows/main-window.cpp" line="1473"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -192,12 +192,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1459"/>
+        <location filename="../../src/windows/main-window.cpp" line="1462"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1460"/>
+        <location filename="../../src/windows/main-window.cpp" line="1463"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -206,7 +206,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="706"/>
+        <location filename="../../src/windows/main-window.cpp" line="709"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -368,12 +368,12 @@ p, li { white-space: pre-wrap; }
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="450"/>
+        <location filename="../../src/peony-application.cpp" line="445"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="451"/>
+        <location filename="../../src/peony-application.cpp" line="446"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -696,18 +696,40 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>empty(0K)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>medium(1M-128M)</source>
+        <translation type="unfinished">Orta(1M-100M) {1M?} {128M?}</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>big(128M-1G)</source>
+        <translation type="unfinished">Büyük(100M-1G) {128M?} {1G?}</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>large(1-4G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>great(&gt;4G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>medium(1M-100M)</source>
-        <translation>Orta(1M-100M)</translation>
+        <translation type="vanished">Orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>big(100M-1G)</source>
-        <translation>Büyük(100M-1G)</translation>
+        <translation type="vanished">Büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>large(&gt;1G)</source>
-        <translation>Daha büyük(&gt;1G)</translation>
+        <translation type="vanished">Daha büyük(&gt;1G)</translation>
     </message>
 </context>
 </TS>

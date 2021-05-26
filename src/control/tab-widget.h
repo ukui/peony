@@ -259,7 +259,7 @@ private:
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"),
                                     tr("text file"), tr("audio"), tr("wps file"), tr("others")};
     QStringList m_file_mtime_list = {tr("all"), tr("today"), tr("this week"), tr("this month"), tr("this year"), tr("year ago")};
-    QStringList m_file_size_list = {tr("all"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-100M)"), tr("big(100M-1G)"),tr("large(>1G)")};
+    QStringList m_file_size_list = {tr("all"),tr("empty(0K)"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-128M)"), tr("big(128M-1G)"),tr("large(1-4G)"),tr("great(>4G)")};
 
     bool m_first_add_page = true;
 };
