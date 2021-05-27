@@ -125,7 +125,13 @@ default_sort:
             if (m_use_default_name_sort_order) {
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
-                return comparer.compare(leftDisplayName, rightDisplayName) < 0;
+
+                if(startWithChinese(leftDisplayName)&&!startWithChinese(rightDisplayName))
+                    return true;
+                else if(!startWithChinese(leftDisplayName)&&startWithChinese(rightDisplayName))
+                    return false;
+                else
+                    return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
             return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
         }
