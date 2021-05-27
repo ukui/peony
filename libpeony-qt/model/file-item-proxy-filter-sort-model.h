@@ -61,11 +61,13 @@ public:
     Q_ENUM(FilterFileModifyTime)
     enum FilterFileSize {
         ALL_SIZE,
+        EMPTY,
         TINY,
         SMALL,
         MEDIUM,
         BIG,
-        LARGE
+        LARGE,
+        GREAT
     };
     Q_ENUM(FilterFileSize)
 

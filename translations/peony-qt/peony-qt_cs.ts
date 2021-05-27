@@ -652,17 +652,27 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
-        <source>medium(1M-100M)</source>
+        <source>empty(0K)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
-        <source>big(100M-1G)</source>
+        <source>medium(1M-128M)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
-        <source>large(&gt;1G)</source>
+        <source>big(128M-1G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>large(1-4G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>great(&gt;4G)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -704,18 +704,40 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>empty(0K)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>medium(1M-128M)</source>
+        <translation type="unfinished">Orta(1M-100M) {1M?} {128M?}</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>big(128M-1G)</source>
+        <translation type="unfinished">Büyük(100M-1G) {128M?} {1G?}</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>large(1-4G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>great(&gt;4G)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>medium(1M-100M)</source>
-        <translation>Orta(1M-100M)</translation>
+        <translation type="vanished">Orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>big(100M-1G)</source>
-        <translation>Büyük(100M-1G)</translation>
+        <translation type="vanished">Büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>large(&gt;1G)</source>
-        <translation>Daha büyük(&gt;1G)</translation>
+        <translation type="vanished">Daha büyük(&gt;1G)</translation>
     </message>
 </context>
 </TS>

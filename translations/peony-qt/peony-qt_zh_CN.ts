@@ -726,27 +726,49 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>tiny(0-16K)</source>
-        <translation>极小</translation>
+        <translation>极小(0-16K)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>small(16k-1M)</source>
-        <translation>很小</translation>
+        <translation>很小(16k-1M)</translation>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>empty(0K)</source>
+        <translation>空(0K)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>medium(1M-128M)</source>
+        <translation>中等(1M-128M)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>big(128M-1G)</source>
+        <translation>大(128M-1G)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>large(1-4G)</source>
+        <translation>巨大(1-4G)</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <source>great(&gt;4G)</source>
+        <translation>极大(&gt;4G)</translation>
+    </message>
+    <message>
         <source>medium(1M-100M)</source>
-        <translation>中等</translation>
+        <translation type="vanished">中等(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>big(100M-1G)</source>
-        <translation>很大</translation>
+        <translation type="vanished">很大(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>large(&gt;1G)</source>
-        <translation>极大</translation>
+        <translation type="vanished">极大(&gt;1G)</translation>
     </message>
 </context>
 </TS>
