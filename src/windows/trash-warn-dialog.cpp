@@ -98,7 +98,7 @@ TrashWarnDialog::TrashWarnDialog(QWidget *parent) : QDialog(parent)
     textLineLabel->setWordWrap(true);
     textLineLabel->setAlignment(Qt::AlignHCenter);
 
-    textLineLabel->setText(QObject::tr("Are you sure that you want to delete these files? Once you start a deletion, "
+    textLineLabel->setText(tr("Are you sure that you want to delete these files? Once you start a deletion, "
                                        "the files deleting will never be restored again."));
     floor3->addWidget(textLineLabel);
     dialogLayout->addLayout(floor3);

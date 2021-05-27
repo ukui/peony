@@ -157,35 +157,43 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="296"/>
+        <location filename="../../src/windows/main-window.cpp" line="297"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="303"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Redo</source>
         <translation>重做</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="1367"/>
+        <source>Tips info</source>
+        <translation>操作提示</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="1368"/>
+        <source>Trash has no file need to be cleaned.</source>
+        <translation>回收箱中没有文件需要清除。</translation>
     </message>
     <message>
         <source>Delete file Warning</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1356"/>
         <source>Delete Permanently</source>
-        <translation>永久删除</translation>
+        <translation type="vanished">永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1357"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
-        <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
+        <translation type="vanished">您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
     <message>
         <source>Peony Qt</source>
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="662"/>
+        <location filename="../../src/windows/main-window.cpp" line="663"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -645,6 +653,14 @@
     </message>
 </context>
 <context>
+    <name>Peony::TrashWarnDialog</name>
+    <message>
+        <location filename="../../src/windows/trash-warn-dialog.cpp" line="101"/>
+        <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
+        <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
+    </message>
+</context>
+<context>
     <name>PeonyApplication</name>
     <message>
         <source>Peony-Qt</source>
@@ -786,6 +802,10 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <source>Can not open %1.</source>
         <translation type="vanished">无法打开%1</translation>
+    </message>
+    <message>
+        <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
+        <translation type="obsolete">您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
 </context>
 <context>
@@ -1055,17 +1075,17 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="720"/>
+        <location filename="../../src/control/header-bar.cpp" line="721"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="733"/>
+        <location filename="../../src/control/header-bar.cpp" line="734"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="755"/>
+        <location filename="../../src/control/header-bar.cpp" line="757"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
