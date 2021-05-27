@@ -50,7 +50,9 @@ public:
     static PropertiesWindowPluginManager* getInstance();
 
     void release();
+
     void setOpenFromDesktop();
+    void setOpenFromPeony();
 
     bool registerFactory(PropertiesWindowTabPagePluginIface *factory);
     bool unregisterFactory(PropertiesWindowTabPagePluginIface *factory);
