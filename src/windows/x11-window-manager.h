@@ -40,6 +40,8 @@ private:
     explicit X11WindowManager(QObject *parent = nullptr);
 
     bool m_is_draging = false;
+    ulong m_prepare_drag_time = 0;
+
     QWidget *m_current_widget = nullptr;
 
     QPoint m_press_pos;

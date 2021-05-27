@@ -39,6 +39,8 @@
 #include <X11/X.h>
 #include <X11/Xatom.h>
 
+#define START_DRAG_TIME 120
+
 static X11WindowManager *global_instance = nullptr;
 
 X11WindowManager *X11WindowManager::getInstance()
@@ -81,10 +83,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (QObject::eventFilter(watched, event))
             return true;
         if (e->button() == Qt::LeftButton) {
-            m_press_pos = QCursor::pos();
-            m_is_draging = true;
-            m_current_widget = static_cast<QWidget *>(watched);
-            m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
+            m_prepare_drag_time = e->timestamp();
         }
 
         //qDebug()<<event->type();
@@ -153,6 +152,16 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 //auto offset = globalPos - m_press_pos;
                 topLevel->move(globalPos - m_toplevel_offset);
             }
+        } else {
+            bool overDragTime = 0 < m_prepare_drag_time && (m_prepare_drag_time + START_DRAG_TIME) < e->timestamp();
+            bool canDrag = !isTouchMove || overDragTime;
+            if (canDrag) {
+                m_is_draging = true;
+                m_prepare_drag_time = 0;
+                m_press_pos = QCursor::pos();
+                m_current_widget = static_cast<QWidget *>(watched);
+                m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
+            }
         }
         break;
     }
@@ -162,6 +171,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (me->source() == Qt::MouseEventSynthesizedByApplication)
             break;
 
+        m_prepare_drag_time = 0;
         m_press_pos = QPoint();
         m_is_draging = false;
         m_current_widget = nullptr;
