@@ -277,7 +277,7 @@ void SideBarFileSystemItem::findChildrenAsync()
 
 bool SideBarFileSystemItem::isRemoveable()
 {
-    if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+    if (m_uri.contains("computer:///") && m_uri != "computer:///root.link" && m_uri != "computer:///") {
         //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
@@ -309,7 +309,7 @@ bool SideBarFileSystemItem::isRemoveable()
 
 bool SideBarFileSystemItem::isEjectable()
 {
-    if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+    if (m_uri.contains("computer:///") && m_uri != "computer:///root.link" && m_uri != "computer:///") {
         //FIXME: replace BLOCKING api in ui thread.
         auto info = FileInfo::fromUri(m_uri);
         if (info->displayName().isEmpty()) {
