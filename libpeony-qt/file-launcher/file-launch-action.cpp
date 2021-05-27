@@ -205,9 +205,10 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     bool isExecutable = isExcuteableFile(fileInfo->type());
     qDebug() <<"executable:" <<executable <<isAppImage <<fileInfo->type();
+
+    QUrl url = m_uri;
     if (isAppImage) {
         if (executable) {
-            QUrl url = m_uri;
             auto path = url.path();
 
             QProcess p;
@@ -263,7 +264,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             }
             else
                 QMessageBox::critical(nullptr, tr("Open Failed"),
-                                  tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+                                  tr("Can not open %1, Please confirm you have the right authority.").arg(url.toDisplayString()));
         }
         else if (fileInfo->isDesktopFile())
         {
@@ -278,7 +279,8 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             }
         }
         else {
-            auto result = QMessageBox::question(nullptr, tr("Error"), tr("Can not get a default application for opening %1, do you want open it with text format?").arg(m_uri));
+            auto result = QMessageBox::question(nullptr, tr("Error"),
+                                                tr("Can not get a default application for opening %1, do you want open it with text format?").arg(url.toDisplayString()));
             if (result == QMessageBox::Yes) {
                 GAppInfo *text_info = g_app_info_get_default_for_type("text/plain", false);
                 GList *l = nullptr;
