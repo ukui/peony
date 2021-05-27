@@ -1,3 +1,9 @@
+peony (3.0.3-2+0527) v101; urgency=medium
+
+   * Fix: double click response with title bar
+
+ -- wangweinan <wangweinan@kylinos.cn>  Thu, 27 May 2021 09:29:31 +0800
+
 peony (3.0.3-2+0524) v101; urgency=medium
 
    * Fix: default sort in desktop after tencent app rename
