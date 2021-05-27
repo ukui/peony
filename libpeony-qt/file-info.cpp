@@ -262,21 +262,15 @@ const QString FileInfo::displayName()
                 || !unixDevice.contains("/dev")  /*audio-cd*/
                 || unixDevice.contains("/dev/sr"))) { /*blank-cd or blank-dvd*/
          return m_display_name;
-    } else if (nullptr != m_uri) {
+    }
+
+    if (m_uri.endsWith("/")) {
         QString uri = m_uri;
-        if (m_uri.endsWith("/") && !m_uri.endsWith(":///") && !m_uri.endsWith("://")) {
+        if (!m_uri.endsWith(":///") && !m_uri.endsWith("://")) {
             uri.chop(1);
         }
         return uri.split("/").last();
     }
-
-
-
-    mountDir.setPath(m_uri.mid(7));
-    deviceName = m_uri.mid(m_uri.lastIndexOf("/")+1);
-    //@m_uri is not garbled,directly returns the directory name.
-    if(mountDir.exists())
-        return deviceName;
 
     //@deviceName transcoding
     deviceName = m_display_name;
