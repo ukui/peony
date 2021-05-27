@@ -133,7 +133,8 @@ default_sort:
                 else
                     return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
-            return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
+            //return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
+            return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) < 0;
         }
         case FileItemModel::FileSize: {
             return leftItem->m_info->size() < rightItem->m_info->size();
