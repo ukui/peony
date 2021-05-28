@@ -212,19 +212,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         }
     });
 
-    connect(m_proxy_model, &QAbstractItemModel::rowsRemoved, this, [=](){
-        auto itemsNeedRelayout = m_model->m_items_need_relayout;
-        if (!itemsNeedRelayout.isEmpty()) {
-            this->relayoutExsitingItems(itemsNeedRelayout);
-        }
-
-        for (auto uri : getAllFileUris()) {
-            auto pos = getFileMetaInfoPos(uri);
-            if (pos.x() >= 0)
-                updateItemPosByUri(uri, pos);
-        }
-    });
-
     //connect(m_model, &DesktopItemModel::dataChanged, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::refreshed, this, [=]() {
@@ -1311,12 +1298,12 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
             updateItemPosByUri(uri, pos);
         }
     }
-    m_model->relayoutAddedItems();
     clearAllIndexWidgets();
 }
 
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
+    m_model->relayoutAddedItems();
     QListView::rowsAboutToBeRemoved(parent, start, end);
 //    QTimer::singleShot(1, this, [=](){
 //        for (auto uri : getAllFileUris()) {
@@ -1325,7 +1312,6 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 //                updateItemPosByUri(uri, pos);
 //        }
 //    });
-    m_model->relayoutAddedItems();
     clearAllIndexWidgets();
 }
 
