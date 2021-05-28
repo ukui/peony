@@ -60,7 +60,6 @@ using namespace Peony;
 class LocationBarButtonStyle;
 
 static LocationBarButtonStyle *buttonStyle = nullptr;
-bool isDir(const QString &uri);
 
 class LocationBarButtonStyle : public QProxyStyle
 {
@@ -166,7 +165,7 @@ void LocationBar::setRootUri(const QString &uri)
             auto enumerator = new FileEnumerator;
             enumerator->setEnumerateDirectory(info.get()->uri());
             //comment to fix kydroid path show abnormal issue
-            //enumerator->setEnumerateWithInfoJob();
+            enumerator->setEnumerateWithInfoJob();
 
             connect(enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
                 if (successed) {
@@ -329,8 +328,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         auto infos = m_infos_hash.value(uri);
         QStringList uris;
         for (auto info : infos) {
-            if ((info.get()->isDir() || isDir(info.get()->uri()))
-                                     && !info.get()->displayName().startsWith("."))
+            if (info.get()->isDir() && !info.get()->displayName().startsWith("."))
                 uris<<info.get()->uri();
         }
         if (uris.isEmpty())
@@ -548,28 +546,4 @@ void LocationBarButtonStyle::drawComplexControl(QStyle::ComplexControl control, 
         return QProxyStyle::drawComplexControl(control, &opt, painter, widget);
     }
     return QProxyStyle::drawComplexControl(control, option, painter, widget);
-}
-
-bool isDir(const QString &uri){
-    GFile* file;
-    GFileType type;
-    GFileInfo* fileInfo;
-    bool isdir = false;
-
-    if(uri.isEmpty() || 0 == uri.length()){
-        return false;
-    }
-
-    file = g_file_new_for_uri(uri.toUtf8().constData());
-    if(file){
-        fileInfo = g_file_query_info(file,"standard::*",G_FILE_QUERY_INFO_NONE,nullptr,nullptr);
-        if(fileInfo){
-            type = g_file_info_get_file_type(fileInfo);
-            isdir = (type == G_FILE_TYPE_DIRECTORY);
-            g_object_unref(fileInfo);
-        }
-        g_object_unref(file);
-    }
-
-    return isdir;
 }

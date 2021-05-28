@@ -624,7 +624,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         if (p_this->m_with_info_job) {
             auto fileInfo = FileInfo::fromUri(uri);
             FileInfoJob infoJob(fileInfo);
-            infoJob.refreshInfoContents(info);
+            //infoJob.refreshInfoContents(info);
+            infoJob.queryFileType(info);
             p_this->m_cached_infos<<fileInfo;
         }
 

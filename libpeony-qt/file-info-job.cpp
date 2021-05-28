@@ -185,11 +185,7 @@ void FileInfoJob::queryAsync()
         connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
 }
 
-void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
-{
-//    if (!m_info->m_mutex.tryLock(300))
-//        return;
-
+void FileInfoJob::queryFileType(GFileInfo* new_info){
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
@@ -209,6 +205,21 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     default:
         break;
     }
+}
+
+void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
+{
+//    if (!m_info->m_mutex.tryLock(300))
+//        return;
+
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    queryFileType(new_info);
 
     info->m_is_symbol_link = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
     if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
