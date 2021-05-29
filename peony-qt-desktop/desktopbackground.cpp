@@ -98,24 +98,15 @@ void DesktopBackground::updateScreens()
 
 void DesktopBackground::initBackground()
 {
-    m_paintBackground = true;
-    setBackground();
     if (QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
         m_backgroundSettings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
-
+    }
+    m_paintBackground = true;
+    setBackground();
+    if (m_backgroundSettings) {
         connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "pictureFilename") {
+            if (key == "pictureFilename" || key == "primaryColor") {
                 switchBackground();
-            }
-
-            if (key == "primaryColor") {
-                auto colorName = m_backgroundSettings->get("primaryColor").toString();
-                m_current_bg_path = "";
-                switchBackground();
-                m_color = QColor(colorName);
-                if (m_usePureColor) {
-                    update();
-                }
             }
         });
     }
@@ -123,8 +114,7 @@ void DesktopBackground::initBackground()
 
 void DesktopBackground::setBackground()
 {
-    //if not find account background, use default background
-    QString defaultBg = "/usr/share/backgrounds/aurora.jpg";
+    QString defaultBg;
     auto accountBack = getAccountBackground();
     if (accountBack != "" && QFile::exists(accountBack))
         defaultBg = accountBack;
@@ -147,6 +137,9 @@ void DesktopBackground::setBackground()
 
 void DesktopBackground::switchBackground()
 {
+    if (!m_backgroundSettings)
+        return;
+
     auto path = m_backgroundSettings->get("pictureFilename").toString();
     if (! QFile::exists(path))
         path = getAccountBackground();
@@ -154,19 +147,26 @@ void DesktopBackground::switchBackground()
         m_usePureColor = true;
         auto colorName = m_backgroundSettings->get("primaryColor").toString();
         m_color = QColor(colorName);
+        m_animation->stop();
+        m_backPixmap = QPixmap();
+        m_frontPixmap = QPixmap();
         m_current_bg_path = "";
+        update();
     } else {
         m_usePureColor = false;
         auto colorName = m_backgroundSettings->get("primaryColor").toString();
         m_color = QColor(colorName);
-    }
-    if (m_animation->state() == QVariantAnimation::Running) {
-        m_pendingPixmap = QPixmap(path);
-        m_current_bg_path = path;
-    } else {
-        m_frontPixmap = QPixmap(path);
-        m_animation->start();
-        m_current_bg_path = path;
+        if (m_animation->state() == QVariantAnimation::Running) {
+            m_pendingPixmap = QPixmap(path);
+            m_current_bg_path = path;
+        } else {
+            m_frontPixmap = QPixmap(path);
+            if (m_backPixmap.isNull()) {
+                m_backPixmap = m_frontPixmap;
+            }
+            m_animation->start();
+            m_current_bg_path = path;
+        }
     }
 
     //if background picture changed, update it
