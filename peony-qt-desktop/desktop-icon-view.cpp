@@ -1291,6 +1291,7 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
 {
+    m_model->relayoutAddedItems();
     QListView::rowsInserted(parent, start, end);
     for (auto uri : getAllFileUris()) {
         auto pos = getFileMetaInfoPos(uri);
