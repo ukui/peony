@@ -53,6 +53,15 @@ public:
      */
     void initTableWidget();
 
+    /**
+     * \brief 创建一个自定义的表格单元组件，带图标和文字
+     * \param parent
+     * \param icon
+     * \param text
+     * \return
+     */
+    static QWidget* createCellWidget(QWidget* parent,QIcon icon, QString text);
+
     void savePermissions();
 
     void updateCheckBox();

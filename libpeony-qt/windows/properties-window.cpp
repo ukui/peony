@@ -377,7 +377,6 @@ void PropertiesWindow::initTabPage(const QStringList &uris)
     //Do not set the tab height, otherwise it will cause the tab page to switch up and down
     //window->tabBar()->setMinimumHeight(72);
 
-    window->tabBar()->setContentsMargins(0,0,0,0);
     this->setCentralWidget(window);
 }
 
@@ -519,33 +518,36 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter,
                            const QWidget *widget) const
 {
-    /**
-     * FIX:需要修复颜色不能跟随主题的问题
-     * \brief
-     */
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
-            QRect rect = (tab->rect).adjusted(4, 0, 1, -12);
+            QRect rect = tab->rect;
+            //为了更柔和的显示上边框 压低1px
+            rect.setTop(1);
+            //底部上移8px
+            rect.setBottom(rect.height() - 8);
+            //左侧移动4px
+            rect.setLeft(rect.x() + 4);
 
             const QPalette &palette = widget->palette();
+
+            //未选中时文字颜色 - Text color when not selected
+            painter->setPen(palette.color(QPalette::ButtonText));
 
             if (tab->state & QStyle::State_Selected) {
                 painter->save();
                 painter->setPen(palette.color(QPalette::Highlight));
                 painter->setBrush(palette.brush(QPalette::Highlight));
 
-                painter->drawRect(rect);
-                //FIX:圆角矩形绘制问题
-                //painter->drawRoundRect(rect,10,17);
+                painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                painter->drawRoundedRect(rect,4,4);
+
                 painter->restore();
+                //选中时文字颜色 - Text color when selected
+                painter->setPen(palette.color(QPalette::BrightText));
             }
 
-            painter->setPen(palette.color(QPalette::ButtonText));
-
-            QTextOption alignCenter;
-            alignCenter.setAlignment(Qt::AlignCenter);
-            painter->drawText(rect, tab->text, alignCenter);
+            painter->drawText(rect, tab->text, QTextOption(Qt::AlignCenter));
 
             return;
         }
@@ -569,15 +571,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
         barSize.setWidth(fontWidth + 30);
 
         int fontHeight = tab->fontMetrics.height();
-        if (fontHeight <= 30) {
-            //数值大于设计稿的30是因为在下方偏移了12px
-            barSize.setHeight(42);
-        } else {
-            //同上所述
-            barSize.setHeight(fontHeight + 12);
-        }
-//        qDebug() << "tabStyle::sizeFromContents font width:" << fontWidth << "height:" << fontHeight << "text:"
-//                 << tab->text;
+        //高度统一加上18px
+        barSize.setHeight(fontHeight + 18);
     }
 
     return barSize;
