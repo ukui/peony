@@ -53,7 +53,7 @@ FileCopy::~FileCopy()
 void FileCopy::pause ()
 {
     mStatus = PAUSE;
-    mPause.lock();
+    mPause.tryLock();
 }
 
 void FileCopy::resume ()
@@ -205,6 +205,11 @@ void FileCopy::run ()
             }
 
             memset(buf, 0, sizeof(buf));
+
+            if (writeIO) {
+                g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, nullptr);
+            }
+
             mPause.lock();
             // read data
             readSize = g_input_stream_read(G_INPUT_STREAM(readIO), buf, sizeof(buf) - 1, mCancel ? mCancel : nullptr, &error);
