@@ -379,7 +379,7 @@ void FileEnumerator::enumerateAsync()
         //auto uri = g_file_get_uri(m_root_file);
         //auto path = g_file_get_path(m_root_file);
         g_file_enumerate_children_async(m_root_file,
-                                        m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                        m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
                                         G_FILE_QUERY_INFO_NONE,
                                         G_PRIORITY_DEFAULT,
                                         m_cancellable,
@@ -621,13 +621,13 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
             }
         }
 
+        auto fileInfo = FileInfo::fromUri(uri);
+        FileInfoJob infoJob(fileInfo);
+        infoJob.queryFileType(info);
         if (p_this->m_with_info_job) {
-            auto fileInfo = FileInfo::fromUri(uri);
-            FileInfoJob infoJob(fileInfo);
-            //infoJob.refreshInfoContents(info);
-            infoJob.queryFileType(info);
-            p_this->m_cached_infos<<fileInfo;
+            infoJob.refreshInfoContents(info);
         }
+        p_this->m_cached_infos<<fileInfo;
 
         g_free(uri);
         files_count++;
