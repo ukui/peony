@@ -165,7 +165,7 @@ void LocationBar::setRootUri(const QString &uri)
             auto enumerator = new FileEnumerator;
             enumerator->setEnumerateDirectory(info.get()->uri());
             //comment to fix kydroid path show abnormal issue
-            enumerator->setEnumerateWithInfoJob();
+            //enumerator->setEnumerateWithInfoJob();
 
             connect(enumerator, &FileEnumerator::enumerateFinished, this, [=](bool successed){
                 if (successed) {
