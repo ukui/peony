@@ -39,6 +39,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QProcess>
+#include <QPushButton>
 
 #include <QUrl>
 #include <QStandardPaths>
@@ -56,8 +57,8 @@ using namespace Peony;
 #define READABLE 2
 #define WRITEABLE 3
 #define EXECUTEABLE 4
-//460 - 22 - 22 = 416
-#define TARGET_LABEL_WIDTH 416
+//460 - 22 - 22 = 416 ,右侧有字符被遮挡，再减去6px -_-;
+#define TARGET_LABEL_WIDTH 410
 
 PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
@@ -76,14 +77,22 @@ PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QW
 
     m_label = new QLabel(this);
 
-    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.path()), Qt::ElideMiddle,TARGET_LABEL_WIDTH));
+    QString str = tr("Target: %1").arg(url.path());
+    int fontSize = m_label->fontMetrics().width(str);
+
+    if(fontSize > TARGET_LABEL_WIDTH) {
+        m_label->setToolTip(str);
+        str = m_label->fontMetrics().elidedText(str, Qt::ElideMiddle, TARGET_LABEL_WIDTH);
+    }
+    m_label->setText(str);
 
     m_label->setMinimumHeight(60);
     m_label->setContentsMargins(22,0,22,0);
 
+    m_layout->addWidget(m_label);
+
     m_message = new QLabel(this);
     m_message->setAlignment(Qt::AlignCenter);
-    m_layout->addWidget(m_label);
 
     this->initTableWidget();
 
@@ -120,12 +129,21 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->rowHeight(34);
 
     m_table->setAlternatingRowColors(true);
-    m_table->setContentsMargins(24,0,0,0);
 
     auto l = QStringList();
     l<<tr("User or Group")<<tr("Type")<<tr("Read")<<tr("Write")<<tr("Executable");
     m_table->setHorizontalHeaderLabels(l);
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
+    //开启手动设置宽度 - Enable manual width setting
+    m_table->horizontalHeader()->setMinimumSectionSize(30);
+
+    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+
+    m_table->setColumnWidth(0, 200);
 
     m_layout->addWidget(m_table);
 }
@@ -286,17 +304,14 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 //更新表格选中情况
                 p_this->updateCheckBox();
 
-                QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, nullptr);
-                table->setItem(0, 0, itemR0C0);
+                table->setCellWidget(0, 0, createCellWidget(table, QIcon::fromTheme("emblem-personal"), userNameDisplayString));
 
-                QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
                 table->setItem(1, 0, nullptr);
-                table->setItem(1, 0, itemR1C0);
+                table->setCellWidget(1, 0, createCellWidget(table, QIcon::fromTheme("emblem-people"), groupName));
 
-                QTableWidgetItem *itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
                 table->setItem(2, 0, nullptr);
-                table->setItem(2, 0, itemR2C0);
+                table->setCellWidget(2, 0, createCellWidget(table, QIcon::fromTheme("emblem-people"), tr("Others")));
 
                 auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
                 itemR0C1->setTextAlignment(Qt::AlignCenter);
@@ -489,4 +504,48 @@ void PermissionsPropertiesPage::updateCheckBox()
             });
         }
     }
+}
+
+QWidget *PermissionsPropertiesPage::createCellWidget(QWidget *parent, QIcon icon, QString text)
+{
+    QWidget *widget = new QWidget(parent);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+    layout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    layout->setContentsMargins(22, 0, 0, 0);
+    //组件间距 - Widget spacing
+    layout->setSpacing(9);
+
+    QPushButton *cellIcon = new QPushButton(widget);
+    cellIcon->setStyleSheet("QPushButton{"
+                        "border-radius: 8px; "
+                        "background-color: transparent;"
+                        "max-width:16px;"
+                        "max-height:16px;"
+                        "min-width:16px;"
+                        "min-height:16px;"
+                        "}");
+    cellIcon->setEnabled(false);
+
+    cellIcon->setIcon(icon);
+    cellIcon->setIconSize(QSize(16, 16));
+
+    layout->addWidget(cellIcon);
+
+    QLabel *label = new QLabel(widget);
+    label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    QFontMetrics fontMetrics = label->fontMetrics();
+    int fontSize = fontMetrics.width(text);
+    QString str = text;
+    //widget宽度200px;设计稿在左边空出22px;icon宽度16px，icon右侧9px;
+    //200-22-16-9 = 153 , widget：剩下的3px给右侧留空 -_-；
+    if(fontSize > 150) {
+        widget->setToolTip(text);
+        str = fontMetrics.elidedText(text, Qt::ElideRight, 150);
+    }
+    label->setText(str);
+
+    layout->addWidget(label);
+
+    return widget;
 }
