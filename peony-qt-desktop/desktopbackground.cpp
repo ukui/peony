@@ -142,7 +142,7 @@ void DesktopBackground::setBackground()
     if (defaultBg != accountBack)
         setAccountBackground();
 
-    m_animation->start();
+    m_animation->finished();
 }
 
 void DesktopBackground::switchBackground()

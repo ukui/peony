@@ -382,7 +382,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         }
 
         if (parser.isSet(desktopOption)) {
-            setupDesktop();
+            setupBgAndDesktop();
         }
 
         if (parser.isSet(backgroundOption)) {
