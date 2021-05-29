@@ -181,6 +181,13 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     connect(m_other_progressbar, &OtherButton::clicked, this, &FileOperationProgressBar::showWidgetList);
     connect(m_list_widget, &QListWidget::itemClicked, this, &FileOperationProgressBar::mainProgressChange);
 
+    connect(this, &FileOperationProgressBar::pause, this, [=] () {
+        m_main_progressbar->setPause();
+        for (auto pb : m_progress_list->keys()) {
+            pb->setPause();
+        }
+    });
+
     showMore();
 }
 
@@ -301,6 +308,14 @@ MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
     m_title = tr("File operation");
 
     setFixedSize(m_fix_width, m_fix_height);
+
+    connect(this, &MainProgressBar::pause, this, [=] () {
+        setPause();
+    });
+
+    connect(this, &MainProgressBar::start, this, [=] () {
+        setResume();
+    });
 }
 
 void MainProgressBar::initPrarm()
@@ -323,11 +338,13 @@ void MainProgressBar::setTitle(QString title)
 void MainProgressBar::setPause()
 {
     m_pause = true;
+    update();
 }
 
 void MainProgressBar::setResume()
 {
     m_pause = false;
+    update();
 }
 
 void MainProgressBar::paintEvent(QPaintEvent *event)
@@ -394,10 +411,8 @@ void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
                && (pos.y() >= m_progress_pause_y)
                && (pos.y() <= m_progress_pause_y_b)) {
         if (m_pause) {
-            m_pause = false;
             Q_EMIT start();
         } else {
-            m_pause = true;
             Q_EMIT pause();
         }
     }
