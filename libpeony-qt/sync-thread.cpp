@@ -5,13 +5,18 @@
 
 using namespace Peony;
 
-SyncThread::SyncThread(QObject *parent) : QObject(parent)
+SyncThread::SyncThread(QString uri, QObject *parent) : QObject(parent), mUri(uri)
 {
     mHint = QObject::tr("It need to synchronize before operating the device,place wait!");
 }
 
 void SyncThread::parentStartedSlot()
 {
+    if (mUri == "file:///"
+            || mUri == "computer:///root.link") {
+        return;
+    }
+
     QProcess syncProcess;
 
     notifyUser(mHint);

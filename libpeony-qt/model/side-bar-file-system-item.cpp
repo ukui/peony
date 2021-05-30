@@ -348,7 +348,7 @@ bool SideBarFileSystemItem::isMounted()
 
 void SideBarFileSystemItem::unmount()
 {
-    SyncThread *syncThread = new SyncThread;
+    SyncThread *syncThread = new SyncThread(m_uri);
     QThread* currentThread = new QThread();
     syncThread->moveToThread(currentThread);
     connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
@@ -364,7 +364,7 @@ void SideBarFileSystemItem::unmount()
 
 void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
 {
-    SyncThread *syncThread = new SyncThread;
+    SyncThread *syncThread = new SyncThread(m_uri);
     QThread* currentThread = new QThread();
     syncThread->moveToThread(currentThread);
     connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
