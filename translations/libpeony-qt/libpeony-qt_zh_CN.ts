@@ -244,7 +244,7 @@
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="314"/>
         <source>Other queue</source>
-        <translation type="vanished">其它队列</translation>
+        <translation>其它队列</translation>
     </message>
 </context>
 <context>
@@ -365,76 +365,96 @@
         <translation type="vanished">搜索文件名或者内容请至少指定一个！</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>all</source>
-        <translation type="vanished">全部</translation>
+        <translation>全部</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>file folder</source>
-        <translation type="vanished">文件夹</translation>
+        <translation>文件夹</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>image</source>
-        <translation type="vanished">图片</translation>
+        <translation>图片</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>video</source>
-        <translation type="vanished">视频</translation>
+        <translation>视频</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>text file</source>
-        <translation type="vanished">文本</translation>
+        <translation>文本</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>audio</source>
-        <translation type="vanished">音频</translation>
+        <translation>音频</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>others</source>
-        <translation type="vanished">其它</translation>
+        <translation>其它</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>wps file</source>
-        <translation type="vanished">WPS文件</translation>
+        <translation>WPS文件</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>today</source>
-        <translation type="vanished">今天</translation>
+        <translation>今天</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this week</source>
-        <translation type="vanished">本周</translation>
+        <translation>本周</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this month</source>
-        <translation type="vanished">本月</translation>
+        <translation>本月</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this year</source>
-        <translation type="vanished">今年</translation>
+        <translation>今年</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>year ago</source>
-        <translation type="vanished">去年</translation>
+        <translation>去年</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>tiny(0-16K)</source>
-        <translation type="vanished">极小(0-16K)</translation>
+        <translation>极小(0-16K)</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>small(16k-1M)</source>
-        <translation type="vanished">较小(16k-1M)</translation>
+        <translation>较小(16k-1M)</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>medium(1M-100M)</source>
-        <translation type="vanished">中等(1M-100M)</translation>
+        <translation>中等(1M-100M)</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>big(100M-1G)</source>
-        <translation type="vanished">较大(100M-1G)</translation>
+        <translation>较大(100M-1G)</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>large(&gt;1G)</source>
-        <translation type="vanished">极大(&gt;1G)</translation>
+        <translation>极大(&gt;1G)</translation>
     </message>
 </context>
 <context>
@@ -861,12 +881,14 @@
         <translation>选择创建链接的目录</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="61"/>
         <source>Peony-Qt Create Link Extension</source>
-        <translation type="vanished">创建链接</translation>
+        <translation>创建链接</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="64"/>
         <source>Create Link Menu Extension.</source>
-        <translation type="vanished">创建链接.</translation>
+        <translation>创建链接.</translation>
     </message>
 </context>
 <context>
@@ -1023,8 +1045,9 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="66"/>
         <source>Icon View</source>
-        <translation type="vanished">图标视图</translation>
+        <translation>图标视图</translation>
     </message>
 </context>
 <context>
@@ -1037,8 +1060,9 @@
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="56"/>
         <source>List View</source>
-        <translation type="vanished">列表视图</translation>
+        <translation>列表视图</translation>
     </message>
 </context>
 <context>
@@ -1551,6 +1575,11 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <source>File copy error</source>
         <translation>文件复制错误</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="311"/>
+        <source>Cannot opening file, permission denied!</source>
+        <translation>无法打开文件，权限不够！</translation>
+    </message>
 </context>
 <context>
     <name>Peony::FileDeleteOperation</name>
@@ -1681,12 +1710,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>删除所有标记</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="95"/>
         <source>Peony File Labels Menu Extension</source>
-        <translation type="vanished">文件标记</translation>
+        <translation>文件标记</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="98"/>
         <source>Tag a File with Menu.</source>
-        <translation type="vanished">菜单中增加标记功能.</translation>
+        <translation>菜单中增加标记功能.</translation>
     </message>
 </context>
 <context>
@@ -2028,22 +2059,22 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogNotSupported</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="351"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="371"/>
         <source>Yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="355"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="375"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="359"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="379"/>
         <source>Do the same</source>
         <translation>全部应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="394"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="414"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation>请确认磁盘未满或未被写保护而且文件未被使用</translation>
     </message>
@@ -2051,17 +2082,17 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="231"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="251"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="235"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="255"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="270"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="290"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation>请确认磁盘未满或未被写保护而且文件未被使用</translation>
     </message>
@@ -2673,37 +2704,37 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::PropertiesWindow</name>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="235"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="243"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="239"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="247"/>
         <source>Recent</source>
         <translation>最近</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="247"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="255"/>
         <source>Selected</source>
         <translation>选中</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="247"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="255"/>
         <source> %1 Files</source>
         <translation>%1 个文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="257"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="265"/>
         <source>Properties</source>
         <translation>属性</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="342"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="350"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="343"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="351"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3304,8 +3335,9 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>文件管理器</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/vfs/search-vfs-register.h" line="40"/>
         <source>Default search vfs of peony</source>
-        <translation type="vanished">默认文件搜索</translation>
+        <translation>默认文件搜索</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-file-system-item.cpp" line="421"/>
