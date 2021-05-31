@@ -36,6 +36,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <QLocale>
+#include <QFileInfo>
 
 using namespace Peony;
 
@@ -349,23 +350,20 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
 #endif
         qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
-        if (string) {
+        QString path = "/usr/share/applications/" + info->displayName();
+        if(QFileInfo::exists(url.path().toUtf8()) && QFileInfo::exists(path))
+        {
+            url = path;
+            desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+            string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
             info->m_display_name = string;
-            g_free(string);
-        } else {
-            QString path = "/usr/share/applications/" + info->displayName();
-            auto name = getAppName(path);
-            if (name.length() > 0)
-                info->m_display_name = name;
-            else
-            {
-                string = g_desktop_app_info_get_string(desktop_info, "Name");
-                if (string) {
-                    info->m_display_name = string;
-                    g_free(string);
-                }
-            }
         }
+        else{
+            info->m_display_name = string;
+        }
+
+        if (string)
+           g_free(string);
         g_object_unref(desktop_info);
     }
 
