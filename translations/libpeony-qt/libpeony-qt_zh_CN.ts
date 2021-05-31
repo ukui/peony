@@ -2664,7 +2664,7 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="297"/>
         <source>Others</source>
-        <translation>其它</translation>
+        <translation>其他</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/permissions-properties-page.cpp" line="301"/>
