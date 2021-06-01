@@ -662,7 +662,11 @@ void TabWidget::enableSearchBar(bool enable)
                 m_input_list[i]->setEnabled(enable);
             m_search_bar_list[i]->setEnabled(enable);
             m_add_button_list[i]->setEnabled(enable);
-            m_remove_button_list[i]->setEnabled(enable);
+            /* When there is only one filter item,remove button set disable */
+            if(m_search_bar_count==1)
+                m_remove_button_list[0]->setEnabled(false);
+            else
+                m_remove_button_list[i]->setEnabled(enable);
         }
     }
 }
