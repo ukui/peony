@@ -80,6 +80,8 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
+    QString desktopSession = qgetenv("DESKTOP_SESSION");
+    bool isDesktopSessionUKUIWayland = desktopSession == "ukui-wayland";
     //qputenv("QT_QPA_PLATFORM", "wayland");
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
     initUkuiLog4qt("peony-desktop");
@@ -92,7 +94,16 @@ int main(int argc, char *argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    if (isDesktopSessionUKUIWayland)
+        qputenv("QT_QPA_PLATFORM", "wayland");
+#endif
     PeonyDesktopApplication a(argc, argv);
+    a.setProperty("isUKUIWayland", isDesktopSessionUKUIWayland);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    if (isDesktopSessionUKUIWayland)
+        qputenv("QT_QPA_PLATFORM", "xcb");
+#endif
     if (a.isSecondary())
         return 0;
 

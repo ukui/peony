@@ -84,14 +84,22 @@ void DesktopBackground::updateScreens()
     for (auto screen : qApp->screens()) {
         screensRegion += screen->geometry();
     }
-    move(0, 0);
-    screensRegion += rect();
-    auto screensSize = screensRegion.boundingRect().size();
-    QSize size = this->size();
-    int maxWidth = qMax(size.width(), screensSize.width());
-    int maxHeight = qMax(size.height(), screensSize.height());
-    int maxLength = qMax(maxWidth, maxHeight);
-    setFixedSize(maxLength, maxLength);
+
+    if (qApp->property("isUKUIWayland").toBool()) {
+        move(0, 0);
+        screensRegion += rect();
+        auto screensSize = screensRegion.boundingRect().size();
+        setFixedSize(screensSize);
+    } else {
+        move(0, 0);
+        screensRegion += rect();
+        auto screensSize = screensRegion.boundingRect().size();
+        QSize size = this->size();
+        int maxWidth = qMax(size.width(), screensSize.width());
+        int maxHeight = qMax(size.height(), screensSize.height());
+        int maxLength = qMax(maxWidth, maxHeight);
+        setFixedSize(maxLength, maxLength);
+    }
 
     update();
 
