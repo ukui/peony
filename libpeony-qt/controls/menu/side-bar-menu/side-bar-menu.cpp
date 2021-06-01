@@ -143,9 +143,11 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
             l<<addAction(QIcon::fromTheme("media-eject"), tr("Eject"), [=](){
                 m_item->eject(G_MOUNT_UNMOUNT_NONE);
             });
+
+            l.last()->setEnabled(m_item->isMounted());
         }
     }
-    
+
 
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();
@@ -164,7 +166,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
-
+    l.last()->setEnabled(m_item->isMounted());
 
     /*
      *  add format function
