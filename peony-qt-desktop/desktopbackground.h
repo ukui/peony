@@ -20,6 +20,7 @@ public:
     void setBackground();
     QString getAccountBackground();
     void setAccountBackground();
+    void initGSettings();
 
 protected:
     void switchBackground();

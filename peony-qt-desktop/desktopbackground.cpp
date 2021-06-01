@@ -10,6 +10,7 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QFile>
+#include <global-settings.h>
 
 #include <QDebug>
 
@@ -38,6 +39,8 @@ DesktopBackground::DesktopBackground(QWidget *parent) : QWidget(parent)
         }
         update();
     });
+
+    initGSettings();
 
     connectScreensChangement();
 
@@ -94,6 +97,24 @@ void DesktopBackground::updateScreens()
 
     auto app = static_cast<PeonyDesktopApplication *>(qApp);
     Q_EMIT app->requestSetUKUIOutputEnable(true);
+}
+
+void DesktopBackground::initGSettings()
+{
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+        connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+            qDebug() << "fontSetting changed:" << key;
+            if (key == "systemFont" || key == "systemFontSize")
+            {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets())
+                    widget->setFont(font);
+            }
+        });
+    }
 }
 
 void DesktopBackground::initBackground()
