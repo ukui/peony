@@ -138,9 +138,27 @@ void RecentAndTrashPropertiesPage::init()
             label->setText(label->fontMetrics().elidedText(url.path(), Qt::ElideMiddle,width));
             label->setWordWrap(true);
 
+//            g_object_unref(info);
+//            g_object_unref(file);
+            m_layout->addRow(tr("Origin Path: "), label);
+
+            //add delete date label
+            QLabel *delete_label =new QLabel(this);
+            info = g_file_query_info(file,
+                                     G_FILE_ATTRIBUTE_TRASH_DELETION_DATE,
+                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                     nullptr,
+                                     nullptr);
+
+            QString deletion_date = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+            deletion_date = deletion_date.replace("T", " ");
+            quint64 delete_width = FIXED_ROW_WIDTH - delete_label->fontMetrics().width(tr("Deletion Date: "));
+            delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
+            delete_label->setWordWrap(true);
+
             g_object_unref(info);
             g_object_unref(file);
-            m_layout->addRow(tr("Origin Path: "), label);
+            m_layout->addRow(tr("Deletion Date: "), delete_label);
         }
     } else {
         if (m_uri == "recent:///") {

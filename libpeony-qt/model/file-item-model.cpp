@@ -69,8 +69,10 @@ void FileItemModel::setRootUri(const QString &uri)
 {
     if (uri.isNull()) {
         setRootUri("file:///");
+        m_root_uri = "file:///";
         return;
     }
+    m_root_uri = uri;
     auto info = FileInfo::fromUri(uri);
     auto item = new FileItem(info, nullptr, this, this);
     setRootItem(item);
@@ -234,6 +236,9 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     case ModifiedDate: {
         switch (role) {
         case Qt::DisplayRole:
+            //trash files show delete Date
+            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
+                return QVariant(item->m_info->deletionDate());
             return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
@@ -280,6 +285,9 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
         case FileName:
             return tr("File Name");
         case ModifiedDate:
+            //trash files show delete Date
+            if (m_root_uri.startsWith("trash:///"))
+                return tr("Delete Date");
             return tr("Modified Date");
         case FileType:
             return tr("File Type");

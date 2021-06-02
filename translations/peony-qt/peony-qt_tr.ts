@@ -222,18 +222,18 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="173"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="175"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="189"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="223"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="191"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="225"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="207"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="209"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -245,7 +245,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="392"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>

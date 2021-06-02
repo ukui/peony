@@ -197,6 +197,10 @@ public:
     QString accessDate() {
         return m_access_date;
     }
+    QString deletionDate() {
+        return m_deletion_date;
+    }
+
 
     QString type() {
         return m_content_type;
@@ -354,6 +358,7 @@ private:
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;
     QString m_access_date = nullptr;
+    QString m_deletion_date = nullptr;
 
     //access
     bool m_can_read = true;

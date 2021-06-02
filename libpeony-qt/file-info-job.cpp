@@ -90,7 +90,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," "trash::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -175,7 +175,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," "access::*," "mountable::*," "metadata::*,"  "trash::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             m_cancellable,
@@ -320,6 +320,12 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         info->m_access_date = date.toString(systemTimeFormat);
     } else {
         info->m_access_date = nullptr;
+    }
+
+    if (g_file_info_has_attribute(new_info, "trash::deletion-date"))
+    {
+       QString deletionDate = g_file_info_get_attribute_as_string(new_info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+       info->m_deletion_date = deletionDate.replace("T", " ");
     }
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
