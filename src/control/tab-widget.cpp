@@ -400,7 +400,10 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        Q_EMIT this->updateSearch(target_path);
+        /* get search key */
+        MainWindow *mainWindow = dynamic_cast<MainWindow *>(this->topLevelWidget());
+        QString key=mainWindow->getLastSearchKey();
+        Q_EMIT this->updateSearch(target_path,key);
     }
 }
 
@@ -641,12 +644,12 @@ void TabWidget::handleZoomLevel(int zoomLevel)
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     }
 }
-
+#include"windows/FMWindowIface.h"
 void TabWidget::enableSearchBar(bool enable)
 {
     //qDebug() << "enable:" <<enable;
     m_search_path->setEnabled(enable);
-    //m_search_close->setEnabled(enable);
+    //m_search_close->setEnabled(enable);  
     m_search_title->setEnabled(enable);
     m_search_bar->setEnabled(enable);
     if (m_search_bar_count >0)
@@ -1316,6 +1319,19 @@ const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFile
         infos<<info;
     }
     return infos;
+}
+
+const QList<std::shared_ptr<Peony::FileInfo> > TabWidget::getCurrentAllFileInfos()
+{
+
+    const QStringList uris = getAllFileUris();
+    QList<std::shared_ptr<Peony::FileInfo>> infos;
+    for(auto uri : uris) {
+        auto info = Peony::FileInfo::fromUri(uri);
+        infos<<info;
+    }
+    return infos;
+
 }
 
 PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget(parent)
