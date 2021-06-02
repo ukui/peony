@@ -25,9 +25,9 @@
 #include "file-utils.h"
 #include "search-vfs-uri-parser.h"
 #include "tab-widget.h"
+#include "file-info.h"
 
 #include "global-settings.h"
-#include "main-window.h"
 
 #include <QLabel>
 #include <QPainter>
@@ -89,13 +89,39 @@ void TabStatusBar::update()
     if (!m_tab)
         return;
 
+    //qDebug() << "TabStatusBar::update";
     auto selections = m_tab->getCurrentSelectionFileInfos();
     auto uri = m_tab->getCurrentUri();
 
-    //not show path, to design request
+    //show current path files
     if (selections.count() ==0)
     {
-        m_label->setText("");
+        auto uris = m_tab->getCurrentAllFileInfos();
+        auto folder_count = 0;
+        auto file_count = 0;
+        for (auto info : uris)
+        {
+            if (info->isDir())
+                folder_count ++;
+            else{
+                file_count++;
+            }
+        }
+
+        QString tips = tr("Current path has:");
+        if (uris.count() == 0)
+            m_label->setText("");
+        else if (folder_count > 0 && file_count >0)
+        {
+            m_label->setText(tips + tr("\%1 folders, \%2 files").arg(folder_count).arg(file_count));
+        }
+        else if (folder_count > 0)
+        {
+            m_label->setText(tips + tr("\%1 folders").arg(folder_count));
+        }
+        else
+            m_label->setText(tips + tr("\%1 files").arg(file_count));
+
         return;
     }
 

@@ -525,34 +525,54 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabStatusBar</name>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="155"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="163"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="111"/>
+        <source>Current path has:</source>
+        <translation>当前路径包含：</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="116"/>
+        <source>%1 folders, %2 files</source>
+        <translation>%1 文件夹，%2 文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="120"/>
+        <source>%1 folders</source>
+        <translation>%1 文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="123"/>
+        <source>%1 files</source>
+        <translation>%1 文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="181"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="189"/>
         <source>; %1 folders</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="157"/>
-        <location filename="../../src/control/tab-status-bar.cpp" line="165"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="183"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="191"/>
         <source>; %1 files, %2 total</source>
         <translation>; %1 个文件, 共%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="159"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="185"/>
         <source>; %1 folder</source>
         <translation>; %1 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="161"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="187"/>
         <source>; %1 file, %2</source>
         <translation>; %1 个文件, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="170"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="196"/>
         <source>%1 selected</source>
         <translation>选中%1个</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="181"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="207"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
@@ -637,99 +657,99 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation>包含</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="258"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="258"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="258"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>modify time</source>
         <translation>修改时间</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="258"/>
+        <location filename="../../src/control/tab-widget.h" line="259"/>
         <source>file size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="259"/>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="260"/>
         <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>all</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="259"/>
+        <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>file folder</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="259"/>
+        <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>image</source>
         <translation>图片</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="259"/>
+        <location filename="../../src/control/tab-widget.h" line="260"/>
         <source>video</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="260"/>
+        <location filename="../../src/control/tab-widget.h" line="261"/>
         <source>text file</source>
         <translation>文本文档</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="260"/>
+        <location filename="../../src/control/tab-widget.h" line="261"/>
         <source>audio</source>
         <translation>音频</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="260"/>
+        <location filename="../../src/control/tab-widget.h" line="261"/>
         <source>others</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="260"/>
+        <location filename="../../src/control/tab-widget.h" line="261"/>
         <source>wps file</source>
         <translation>WPS文件</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>today</source>
         <translation>今天</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>this week</source>
         <translation>本周</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>this month</source>
         <translation>本月</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>this year</source>
         <translation>今年</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="261"/>
+        <location filename="../../src/control/tab-widget.h" line="262"/>
         <source>year ago</source>
         <translation>一年前</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>tiny(0-16K)</source>
         <translation>极小(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>small(16k-1M)</source>
         <translation>很小(16k-1M)</translation>
     </message>
@@ -767,6 +787,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">很大(100M-1G)</translation>
     </message>
     <message>
+
         <source>large(&gt;1G)</source>
         <translation type="vanished">极大(&gt;1G)</translation>
     </message>

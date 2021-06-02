@@ -24,6 +24,7 @@
 #define TABSTATUSBAR_H
 
 #include <QStatusBar>
+#include <main-window.h>
 
 class QLabel;
 class QToolBar;

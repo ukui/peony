@@ -77,6 +77,7 @@ public:
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
+    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentAllFileInfos();
 
     const QStringList getBackList();
     const QStringList getForwardList();
