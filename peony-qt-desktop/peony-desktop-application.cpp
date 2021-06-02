@@ -235,7 +235,9 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
         // auto open dir for inserted dvd.
         GMount* newMount = (GMount*) g_object_ref(mount->getGMount());
-        g_mount_guess_content_type(newMount, FALSE, NULL, guessContentTypeCallback, NULL);
+        //special Volumn of 839 M upgrade part can not mount
+        if (mount->uuid() != "2691-6AB8")
+            g_mount_guess_content_type(newMount, FALSE, NULL, guessContentTypeCallback, NULL);
 
         // mount
     });
