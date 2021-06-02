@@ -41,6 +41,7 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         connect(timer,&QTimer::timeout,[=](){
             if(QFile(path0).exists())
             {
+                qWarning()<<"m_times............."<<m_times;
                 getUserdir();
                 m_user_dir_watcher->addPath(path0);
                 timer->stop();
