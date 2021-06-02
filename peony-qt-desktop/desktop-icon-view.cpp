@@ -1416,10 +1416,13 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
         for (auto rect : itemRectHash.values()) {
             notEmptyRegion += rect;
         }
+
         auto itemRect = QRect(m_item_rect_hash.value(uri).topLeft(), itemRectSize);
         auto itemCenter = itemRect.center();
         if (notEmptyRegion.contains(itemCenter)) {
             // handle overlapped
+            qWarning()<<"unexpected overrlapped happend";
+            qDebug()<<"check item rect hash"<<m_item_rect_hash;
             QStringList fakeList;
             fakeList<<uri;
             relayoutExsitingItems(fakeList);
