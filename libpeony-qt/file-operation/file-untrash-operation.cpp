@@ -370,7 +370,17 @@ void FileUntrashOperation::run()
             FileInfoJob j2(trashedFileLocaledUri);
             j2.querySync();
             auto metaInfo = FileMetaInfo::fromUri(trashedFileLocaledUri);
-            originUri = "file://" + metaInfo.get()->getMetaInfoString("orig-path");
+            if (metaInfo) {
+                // there is a case which makes peony crash.
+                // 1. trash an item in desktop application.
+                // 2. restore the item from peony application.
+                // 3. undo the operation in desktop application.
+                // in this case trashedFileLocaledUri is empty, and could not get
+                // the responding info. so I add a checkment to avoid the case happend.
+                originUri = "file://" + metaInfo.get()->getMetaInfoString("orig-path");
+            } else {
+                qWarning()<<"invalid file meta info orig-path"<<trashedFileLocaledUri;
+            }
         }
 
         auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
