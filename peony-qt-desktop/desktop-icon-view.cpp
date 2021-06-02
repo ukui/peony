@@ -768,6 +768,8 @@ void DesktopIconView::resolutionChange()
         for (auto pair : newPosition) {
             if (!screenRect.contains(pair.first)) {
                 needChanged.append(pair);
+                // remember item position before resolution changed.
+                m_resolution_item_rect.insert(pair.second, m_item_rect_hash.value(pair.second));
                 m_item_rect_hash.remove(pair.second);
             } else {
                 notEmptyRegion += pair.first;
@@ -836,6 +838,19 @@ void DesktopIconView::resolutionChange()
                 notEmptyRegion += newRect;
                 m_item_rect_hash.insert(needChanged.at(i).second, newRect);
             }
+
+            // try restore items which's positions changed by resolution changed.
+            QStringList needRelayoutItems2;
+            for (auto uri : m_resolution_item_rect.keys()) {
+                auto rect = m_resolution_item_rect.value(uri);
+                if (screenRect.contains(rect)) {
+                    m_item_rect_hash.insert(uri, rect);
+                } else {
+                    // need be relayout.
+                    needRelayoutItems2<<uri;
+                }
+            }
+            relayoutExsitingItems(needRelayoutItems2);
         }
     }
 
@@ -945,6 +960,7 @@ void DesktopIconView::resetAllItemPositionInfos()
     if (!m_proxy_model)
         return;
 
+    m_resolution_item_rect.clear();
     m_item_rect_hash.clear();
     for (int i = 0; i < m_proxy_model->rowCount(); i++) {
         auto index = m_proxy_model->index(i, 0);
@@ -1096,6 +1112,7 @@ int DesktopIconView::getSortType()
 
 void DesktopIconView::setSortType(int sortType)
 {
+    m_resolution_item_rect.clear();
     m_item_rect_hash.clear();
     //resetAllItemPositionInfos();
     m_proxy_model->setSortType(sortType);
@@ -1386,6 +1403,12 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 //        }
 //    });
     m_model->relayoutAddedItems();
+
+    for (int row = start; row <= end; row++) {
+        auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
+        m_resolution_item_rect.remove(uri);
+    }
+
     clearAllIndexWidgets();
 }
 
@@ -1796,6 +1819,11 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
         //fixme: handle overlapping.
         if (!m_drag_indexes.isEmpty()) {
+            // remove info from resolution item rect map.
+            for (auto index : m_drag_indexes) {
+                m_resolution_item_rect.remove(index.data(Qt::UserRole).toString());
+            }
+
             QModelIndexList overlappedIndexes;
             QModelIndexList unoverlappedIndexes = m_drag_indexes;
 

@@ -257,6 +257,9 @@ private:
     PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
 
+    // remember items postions before resolution changed.
+    QMap<QString, QRect> m_resolution_item_rect;
+
     QPoint m_press_pos;
 };
 
