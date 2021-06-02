@@ -173,10 +173,10 @@ void TabStatusBar::update()
         if (uri != "computer:///")
         {
             if (selections.count() == 1) {
-                if (directoryCount == 1 && selections.first()->displayName() != "")
-                    directoriesString = QString(", %1").arg(selections.first()->displayName());
+//                if (directoryCount == 1 && selections.first()->displayName() != "")
+//                    directoriesString = QString(", %1").arg(selections.first()->displayName());
                 if (fileCount == 1 && size >0)
-                    filesString = QString(", %1, %2").arg(selections.first()->displayName()).arg(format_size);
+                    filesString = QString(", %1").arg(format_size);
             } else if (directoryCount > 1 && (fileCount > 1)) {
                 directoriesString = tr("; %1 folders").arg(directoryCount);
                 if (size >0)
