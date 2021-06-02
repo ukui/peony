@@ -1405,7 +1405,26 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
             updateItemPosByUri(uri, pos);
         }
     }
-    m_model->relayoutAddedItems();
+    // try fix item overrlapped sometimes, link to #58739
+    if (start == end) {
+        auto index = model()->index(start, 0);
+        auto uri = index.data(Qt::UserRole).toString();
+        auto itemRectHash = m_item_rect_hash;
+        itemRectHash.remove(uri);
+        QRegion notEmptyRegion;
+        QSize itemRectSize = itemRectHash.first().size();
+        for (auto rect : itemRectHash.values()) {
+            notEmptyRegion += rect;
+        }
+        auto itemRect = QRect(m_item_rect_hash.value(uri).topLeft(), itemRectSize);
+        auto itemCenter = itemRect.center();
+        if (notEmptyRegion.contains(itemCenter)) {
+            // handle overlapped
+            QStringList fakeList;
+            fakeList<<uri;
+            relayoutExsitingItems(fakeList);
+        }
+    }
     clearAllIndexWidgets();
 }
 
