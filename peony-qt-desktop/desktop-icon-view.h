@@ -98,6 +98,9 @@ public:
     const QFont getViewItemFont(QStyleOptionViewItem *item);
     int updateBWList();
 
+private:
+    QRect getScreenArea(QScreen* screen);
+
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
 
@@ -222,6 +225,7 @@ protected:
 
 private:
     ZoomLevel m_zoom_level = Invalid;
+    QMargins m_panel_margin;
 
     QModelIndex m_last_index;
     QTimer m_edit_trigger_timer;
