@@ -207,6 +207,55 @@ void FileInfoJob::queryFileType(GFileInfo* new_info){
     }
 }
 
+void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    info->m_display_name = QString (g_file_info_get_display_name(new_info));
+    if (info->isDesktopFile()) {
+        info->m_desktop_name = info->displayName();
+        QUrl url = info->uri();
+        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+        if (!desktop_info) {
+            m_info->m_mutex.unlock();
+            info->updated();
+            return;
+        }
+#if GLIB_CHECK_VERSION(2, 56, 0)
+        auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
+#else
+        //FIXME: should handle locale?
+        //change "Name" to QLocale::system().name(),
+        //try to fix Qt5.6 untranslated desktop file issue
+        auto key = "Name[" +  QLocale::system().name() + "]";
+        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
+#endif
+        qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
+        if (string) {
+            info->m_display_name = string;
+            g_free(string);
+        } else {
+            QString path = "/usr/share/applications/" + info->displayName();
+            auto name = getAppName(path);
+            if (name.length() > 0)
+                info->m_display_name = name;
+            else
+            {
+                string = g_desktop_app_info_get_string(desktop_info, "Name");
+                if (string) {
+                    info->m_display_name = string;
+                    g_free(string);
+                }
+            }
+        }
+        g_object_unref(desktop_info);
+    }
+}
+
 void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 {
 //    if (!m_info->m_mutex.tryLock(300))
@@ -244,7 +293,6 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     if(g_file_info_has_attribute(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE))
         info->m_unix_device_file = g_file_info_get_attribute_string(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
 
-    info->m_display_name = QString (g_file_info_get_display_name(new_info));
     GIcon *g_icon = g_file_info_get_icon (new_info);
     if (G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
@@ -330,44 +378,7 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         m_info->m_icon_name = customIconName;
     }
 
-    if (info->isDesktopFile()) {
-        info->m_desktop_name = info->displayName();
-        QUrl url = info->uri();
-        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
-        if (!desktop_info) {
-            m_info->m_mutex.unlock();
-            info->updated();
-            return;
-        }
-#if GLIB_CHECK_VERSION(2, 56, 0)
-        auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
-#else
-        //FIXME: should handle locale?
-        //change "Name" to QLocale::system().name(),
-        //try to fix Qt5.6 untranslated desktop file issue
-        auto key = "Name[" +  QLocale::system().name() + "]";
-        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
-#endif
-        qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
-        if (string) {
-            info->m_display_name = string;
-            g_free(string);
-        } else {
-            QString path = "/usr/share/applications/" + info->displayName();
-            auto name = getAppName(path);
-            if (name.length() > 0)
-                info->m_display_name = name;
-            else
-            {
-                string = g_desktop_app_info_get_string(desktop_info, "Name");
-                if (string) {
-                    info->m_display_name = string;
-                    g_free(string);
-                }
-            }
-        }
-        g_object_unref(desktop_info);
-    }
+    queryFileDisplayName(new_info);
 
     info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     info->m_symlink_target = g_file_info_get_symlink_target(new_info);
