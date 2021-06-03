@@ -166,7 +166,6 @@ public Q_SLOTS:
     void updateItemPosistions(const QString &uri = nullptr);
 
     QPoint getFileMetaInfoPos(const QString &uri);
-    QList<QString> getFileMetaInfo(const QString &uri);
     void setFileMetaInfoPos(const QString &uri, const QPoint &pos);
 
     /*!
@@ -222,9 +221,6 @@ protected:
     void relayoutExsitingItems(const QStringList &uris);
 
 private:
-    void checkConf ();
-
-private:
     ZoomLevel m_zoom_level = Invalid;
 
     QModelIndex m_last_index;
@@ -253,17 +249,11 @@ private:
 
     QModelIndexList m_drag_indexes;
 
-    // start
-    QMap<QString, QVariant>             m_screens_info;         // key: screen name; value: geometry, virtual geometry, is primary screen
-    QMap<QString, QScreen*>             m_screens;              // key: screen name; value: QScreen
-    QString                             m_primary_screen_name;
-    QMap<QString, QString>              m_item_screen_name;     // key: uri; value: screen name
-    QMap<QString, QRect>                m_item_screen_rec;      // key: uri; value: virtual geometry
-    QMap<QString, QRect>                m_item_rect_hash;       // key: uri; value: geometry
-    // end
+    QMap<QScreen*, bool> m_screens;
+    PeonyDbusService *m_peonyDbusSer;
+    QMap<QString, QRect> m_item_rect_hash;
 
-    PeonyDbusService*                   m_peonyDbusSer;
-    QPoint                              m_press_pos;
+    QPoint m_press_pos;
 };
 
 }

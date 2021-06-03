@@ -132,10 +132,6 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
         setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
     }
-
-    if (m_cache.value(DESKTOP_SCREENS_INFO).isNull()) {
-        setValue(DESKTOP_SCREENS_INFO, QMap<QString, QVariant>());
-    }
 }
 
 GlobalSettings::~GlobalSettings()

@@ -116,31 +116,21 @@ void trySetDefaultFolderUrlHandler() {
     });
 }
 
-QRect caculateVirtualDesktopGeometry()
-{
-    int minX = 0;
-    int minY = 0;
-    int maxX = 0;
-    int maxY = 0;
-
-    if (screensMonitor) {
-        maxX = minX = screensMonitor->getScreenGeometry("x");
-        maxY = minY = screensMonitor->getScreenGeometry("y");
-    }
-
+QRect caculateVirtualDesktopGeometry() {
     QRegion screensRegion;
     for (auto screen : qApp->screens()) {
-        minX = qMin (minX, screen->virtualGeometry().x());
-        minY = qMin (minY, screen->virtualGeometry().y());
-        maxX = qMax (maxX, screen->virtualGeometry().x() + screen->virtualGeometry().width());
-        maxY = qMax (maxY, screen->virtualGeometry().y() + screen->virtualGeometry().height());
-
-        qDebug() << screen->name() << "minX:" << minX << "maxX:" << maxX << "minY:" << minY << "maxY:" << maxY;
+        screensRegion += screen->geometry();
     }
 
-    screensRegion = QRect(minX, minY, maxX - minX, maxY - minY);
-    auto rect = screensRegion.boundingRect();
+    if (screensMonitor) {
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        screensRegion += QRect(x, y, width, height);
+    }
 
+    auto rect = screensRegion.boundingRect();
     return rect;
 }
 
@@ -422,7 +412,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 }
                 getIconView()->setGeometry(x, y, width, height);
             } else {
-                getIconView()->setGeometry(virtualDesktopWindow->geometry());
+                getIconView()->setGeometry(qApp->primaryScreen()->geometry());
             }
         }
 
@@ -432,7 +422,8 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 w->update();
             }
         });
-    } else {
+    }
+    else {
         auto helpOption = parser.addHelpOption();
         auto versionOption = parser.addVersionOption();
 
@@ -497,10 +488,8 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
     if (screensMonitor)
         return;
-    auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
-    getIconView()->setGeometry(virtualDesktopWindowRect);
+    getIconView()->setGeometry(screen->availableGeometry());
     getIconView()->raise();
-    screen->virtualGeometryChanged(virtualDesktopWindowRect);
 }
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
@@ -512,12 +501,18 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
 {
     auto virtualDesktopWindowRect = caculateVirtualDesktopGeometry();
     virtualDesktopWindow->setFixedSize(virtualDesktopWindowRect.size());
+    //if (screen != nullptr)
+    //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
     //window manage
-    for(auto win : m_window_list) {
-        if (win->getScreen() == screen) {
+    for(auto win :m_window_list)
+    {
+        //screen not changed
+        if (win->getScreen() == screen)
+        {
             qDebug()<<"remove window";
             m_window_list.removeOne(win);
+//            win->setCentralWidget(nullptr);
             win->deleteLater();
         }
     }
