@@ -321,7 +321,19 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 }
                 this->saveAllItemPosistionInfos();
             }
+
+            // check icon is out of screen
+            auto geo = getScreenArea(qApp->primaryScreen());
+            if (geo.width() != 0 && geo.height() != 0) {
+                for (auto rec : m_item_rect_hash.values()) {
+                    if (!geo.contains(rec)) {
+                        resolutionChange();
+                        break;
+                    }
+                }
+            }
         });
+
 
         return;
     });
@@ -343,6 +355,16 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 m_new_files_to_be_selected<<uri;
             }
         }
+
+        auto geo = getScreenArea(qApp->primaryScreen());
+        if (geo.width() != 0 && geo.height() != 0) {
+            QModelIndex index = m_proxy_model->mapToSource(m_model->indexFromUri(uri));
+            QRect indexRect = QListView::visualRect(index);
+            if (!geo.contains(indexRect)) {
+                resolutionChange();
+            }
+        }
+
         //refresh();
     });
 
@@ -366,12 +388,21 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
 
         QTimer::singleShot(100, this, [=]() {
+            bool isFull = false;
+            auto geo = getScreenArea(qApp->primaryScreen());
             this->saveAllItemPosistionInfos();
             for (int i = 0; i < m_proxy_model->rowCount(); i++) {
                 auto index = m_proxy_model->index(i, 0);
                 m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
                 updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+
+                if (geo.width() != 0 && geo.height() != 0) {
+                    if (!geo.contains(QListView::visualRect(index))) {
+                        isFull = true;
+                    }
+                }
             }
+            if (isFull) resolutionChange();
         });
     });
 
@@ -392,25 +423,28 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         //panel monitor
         QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
         connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "panelposition" || key == "panelsize")
-            {
+            if (key == "panelposition" || key == "panelsize") {
                 int position = panelSetting->get("panelposition").toInt();
                 int margins = panelSetting->get("panelsize").toInt();
                 switch (position) {
                 case 1: {
                     setViewportMargins(0, margins, 0, 0);
+                    m_panel_margin = QMargins(0, margins, 0, 0);
                     break;
                 }
                 case 2: {
                     setViewportMargins(margins, 0, 0, 0);
+                    m_panel_margin = QMargins(margins, 0, 0, 0);
                     break;
                 }
                 case 3: {
                     setViewportMargins(0, 0, margins, 0);
+                    m_panel_margin = QMargins(0, 0, margins, 0);
                     break;
                 }
                 default: {
                     setViewportMargins(0, 0, 0, margins);
+                    m_panel_margin = QMargins(0, 0, 0, margins);
                     break;
                 }
                 }
@@ -702,7 +736,7 @@ void DesktopIconView::resolutionChange()
     float iconHeigth = 0;
 
     // icon size
-    QSize icon = gridSize();
+    QSize icon = QListView::gridSize();
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
@@ -712,11 +746,7 @@ void DesktopIconView::resolutionChange()
         QList<QPair<QRect, QString>> newPosition;
 
         for (auto i = m_item_rect_hash.constBegin(); i != m_item_rect_hash.constEnd(); ++i) {
-            // FIXME:// more than one screen
-    //        if (i.value().x() >= screenSize.x() && i.value().y() >= screenSize.y()
-    //                && i.value().x() <= screenSize.width() && i.value().y() <= screenSize.height()) {
-                newPosition << QPair<QRect, QString>(i.value(), i.key());
-    //        }
+            newPosition << QPair<QRect, QString>(i.value(), i.key());
         }
 
         // not get current size
@@ -761,6 +791,7 @@ void DesktopIconView::resolutionChange()
             int posY = marginTop;
 
             for (int i = 0; i < needChanged.count(); i++) {
+                bool placeOK = false;
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + 2 * iconHeigth > screenSize.height()) {
                         posY = marginTop;
@@ -1071,10 +1102,21 @@ void DesktopIconView::setSortType(int sortType)
     m_proxy_model->sort(1);
     m_proxy_model->sort(0, m_proxy_model->sortOrder());
     saveAllItemPosistionInfos();
-    for (int i = 0; i < m_proxy_model->rowCount(); i++) {
-        auto index = m_proxy_model->index(i, 0);
-        m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
-        updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+    bool isFull = false;
+    auto geo = getScreenArea(qApp->primaryScreen());
+    if (geo.width() != 0 && geo.height() != 0) {
+        for (int i = 0; i < m_proxy_model->rowCount(); i++) {
+            auto index = m_proxy_model->index(i, 0);
+            m_item_rect_hash.insert(index.data(Qt::UserRole).toString(), QListView::visualRect(index));
+            updateItemPosByUri(index.data(Qt::UserRole).toString(), QListView::visualRect(index).topLeft());
+            if (!geo.contains(QListView::visualRect(index))) {
+                isFull = true;
+            }
+        }
+
+        if (isFull) {
+            resolutionChange();
+        }
     }
 }
 
@@ -1979,6 +2021,7 @@ void DesktopIconView::refresh()
 QRect DesktopIconView::visualRect(const QModelIndex &index) const
 {
     auto rect = QListView::visualRect(index);
+
     QPoint p(10, 5);
 
     switch (zoomLevel()) {
@@ -1994,6 +2037,7 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     default:
         break;
     }
+
     rect.moveTo(rect.topLeft() + p);
     return rect;
 }
@@ -2008,6 +2052,46 @@ int DesktopIconView::updateBWList()
     setSortType(sortType);
     return 0;
 }
+
+QRect DesktopIconView::getScreenArea(QScreen *screen)
+{
+    if (!screen) return QRect(0, 0, 0, 0);
+
+    if (m_panel_margin.isNull()) {
+        if (QGSettings::isSchemaInstalled(PANEL_SETTINGS)) {
+            QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
+            int pos = panelSetting->get("panelposition").toInt();
+            int size = panelSetting->get("panelsize").toInt();
+
+            switch (pos) {
+            case 1: {
+                m_panel_margin = QMargins(0, size, 0, 0);
+                break;
+            }
+            case 2: {
+                m_panel_margin = QMargins(size, 0, 0, 0);
+                break;
+            }
+            case 3: {
+                m_panel_margin = QMargins(0, 0, size, 0);
+                break;
+            }
+            default: {
+                m_panel_margin = QMargins(0, 0, 0, size);
+                break;
+            }
+            }
+            panelSetting->deleteLater();
+        }
+    }
+
+    QRect geo = screen->geometry();
+
+    geo.adjust(m_panel_margin.left(), m_panel_margin.top(), -m_panel_margin.right(), -m_panel_margin.bottom());
+
+    return geo;
+}
+
 
 static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)
 {
