@@ -101,9 +101,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
         QScreen *screen=qApp->primaryScreen();
-        QRect geometry = screen->availableGeometry() ;
+        QRect geometry = screen->availableGeometry();
         int default_width = geometry.width() * 2/3;
-        int default_height =  geometry.height() * 2/3;
+        int default_height =  geometry.height() * 4/5;
         if (default_width < 850)
             default_width = 850;
         if (default_height < 850 *0.618)

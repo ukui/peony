@@ -199,9 +199,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
+    QSize windowSize;
+    windowSize.setWidth(screenSize.width()*2/3);
+    windowSize.setHeight(screenSize.height()*4/5);
     QSize defaultSize = (Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_SIZE)).toSize();
     if (!defaultSize.isValid())
-        return screenSize*2/3;
+        return windowSize;
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
 
