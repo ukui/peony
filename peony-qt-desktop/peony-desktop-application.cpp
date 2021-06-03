@@ -209,7 +209,11 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
                     if (volumes) {
                         for (GList* j = volumes; nullptr != j; j = j->next) {
                             GVolume* v = static_cast<GVolume*>(j->data);
-                            g_volume_mount(v, G_MOUNT_MOUNT_NONE, nullptr, nullptr, volume_mount_cb, nullptr);
+                            g_autofree char* uuid = g_volume_get_uuid(v);
+                            if (0 != strcmp("2691-6AB8", uuid)) {
+                                g_volume_mount(v, G_MOUNT_MOUNT_NONE, nullptr, nullptr, volume_mount_cb, nullptr);
+                            }
+
                             g_object_unref(v);
                         }
                         g_list_free(volumes);
