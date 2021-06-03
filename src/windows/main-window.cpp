@@ -1066,6 +1066,11 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
         m_tab->m_status_bar->m_slider->setValue(zoomLevel);
 }
 
+QString MainWindow::getLastSearchKey()
+{
+    return m_last_key;
+}
+
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);
