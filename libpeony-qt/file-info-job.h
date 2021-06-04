@@ -124,6 +124,7 @@ protected:
 
 private:
     void queryFileType(GFileInfo* new_info);
+    void queryFileDisplayName(GFileInfo* new_info);
     void refreshFileSystemInfo (GFileInfo* new_info);
     void refreshInfoContents (GFileInfo *new_info);
     std::shared_ptr<FileInfo> m_info;
