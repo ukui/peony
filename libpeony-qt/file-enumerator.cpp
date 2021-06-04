@@ -173,6 +173,18 @@ const QList<std::shared_ptr<FileInfo>> FileEnumerator::getChildren()
     //qDebug()<<"FileEnumerator::getChildren():";
     QList<std::shared_ptr<FileInfo>> children;
     for (auto uri : *m_children_uris) {
+        //uri reencode to prevent the existence of GBK strings
+        if(uri.startsWith("file:///media/")){
+            char* fileName = g_filename_from_uri(uri.toUtf8().constData(),nullptr,nullptr);
+            if(fileName){
+                char* fileUri = g_filename_to_uri(fileName,nullptr,nullptr);
+                if(fileUri){
+                    uri = fileUri;
+                    g_free(fileUri);
+                }
+                g_free(fileName);
+            }
+        }
         auto file_info = FileInfo::fromUri(uri);
         children << file_info;
     }
@@ -379,7 +391,8 @@ void FileEnumerator::enumerateAsync()
         //auto uri = g_file_get_uri(m_root_file);
         //auto path = g_file_get_path(m_root_file);
         g_file_enumerate_children_async(m_root_file,
-                                        m_with_info_job? "*": G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
+                                        m_with_info_job? "*":
+                                        G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME,
                                         G_FILE_QUERY_INFO_NONE,
                                         G_PRIORITY_DEFAULT,
                                         m_cancellable,
@@ -624,6 +637,8 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         auto fileInfo = FileInfo::fromUri(uri);
         FileInfoJob infoJob(fileInfo);
         infoJob.queryFileType(info);
+        if(!strstr(uri,"kydroid:///"))
+            infoJob.queryFileDisplayName(info);
         if (p_this->m_with_info_job) {
             infoJob.refreshInfoContents(info);
         }
