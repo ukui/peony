@@ -287,40 +287,40 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
     QFontMetrics fm(this->font());
     auto elidedText = fm.elidedText(m_text, Qt::TextElideMode::ElideRight, this->size().width() - 150);
     QPainter p(this);
-    //p.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    QLinearGradient linearGradient;
-    linearGradient.setStart(QPoint(10, this->height()));
-    linearGradient.setFinalStop(QPoint(10, 0));
-    linearGradient.setColorAt(0, base);
-    linearGradient.setColorAt(0.75, base);
-    linearGradient.setColorAt(1, Qt::transparent);
+//    //p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+//    QLinearGradient linearGradient;
+//    linearGradient.setStart(QPoint(10, this->height()));
+//    linearGradient.setFinalStop(QPoint(10, 0));
+//    linearGradient.setColorAt(0, base);
+//    linearGradient.setColorAt(0.75, base);
+//    linearGradient.setColorAt(1, Qt::transparent);
 
     int overlap = qApp->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap);
     int layoutWidth = qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     int adjustedY2 = qMin(0, overlap - layoutWidth);
 
     QPainterPath path;
-    path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height(), 0));
+    path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height() + 14, 0));
 
-    p.fillPath(path, linearGradient);
+    p.fillPath(path, base);
 
-    QPainterPath path2;
+//    QPainterPath path2;
 
-    int radius = this->height();
-    QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
-    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
-    path2.moveTo(pos);
-    path2.arcTo(targetRect, 0, 90);
+//    int radius = this->height();
+//    QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
+//    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
+//    path2.moveTo(pos);
+//    path2.arcTo(targetRect, 0, 90);
 
-    QRadialGradient radialGradient;
-    radialGradient.setCenter(pos);
-    radialGradient.setFocalPoint(pos);
-    radialGradient.setRadius(radius);
-    radialGradient.setColorAt(0, base);
-    radialGradient.setColorAt(0.75, base);
-    radialGradient.setColorAt(1, Qt::transparent);
-    p.fillPath(path2, radialGradient);
+//    QRadialGradient radialGradient;
+//    radialGradient.setCenter(pos);
+//    radialGradient.setFocalPoint(pos);
+//    radialGradient.setRadius(radius);
+//    radialGradient.setColorAt(0, base);
+//    radialGradient.setColorAt(0.75, base);
+//    radialGradient.setColorAt(1, Qt::transparent);
+//    p.fillPath(path2, radialGradient);
 
-    style()->drawItemText(&p, this->rect().adjusted(30, 0, -120, 0), Qt::AlignLeft, qApp->palette(), this->isEnabled(), elidedText, QPalette::WindowText);
+    style()->drawItemText(&p, this->rect().adjusted(30, 0, -120, 0), Qt::AlignLeft | Qt::AlignVCenter, qApp->palette(), this->isEnabled(), elidedText, QPalette::WindowText);
 }
 
