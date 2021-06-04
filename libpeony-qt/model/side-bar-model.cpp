@@ -213,6 +213,13 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+
+    if (index.column() == 0 && !index.parent().isValid()) {
+        if(role == Qt::DecorationRole) {
+            return QVariant();
+        }
+    }
+
     if (index.column() == 1) {
         if(role == Qt::DecorationRole){
             bool unmountAble,ejectAble;
