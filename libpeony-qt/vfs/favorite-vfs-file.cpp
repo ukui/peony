@@ -282,6 +282,12 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
     }
 
     g_file_info_set_name (info, vfsfile->priv->uri);
+
+    if (url.path() == "/data/usershare") {
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, FALSE);
+        g_file_info_set_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, QObject::tr("Share Data").toUtf8());
+    }
+
     g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL, TRUE);
     g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, TRUE);
     g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH, FALSE);

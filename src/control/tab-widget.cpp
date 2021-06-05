@@ -76,7 +76,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_stack->setContentsMargins(0, 0, 0, 0);
     m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QStackedWidget(this);
-    m_preview_page_container->setMinimumWidth(200);
+    m_preview_page_container->setMinimumWidth(300);
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
@@ -109,7 +109,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QToolBar *previewButtons = new QToolBar(this);
     m_tool_bar = previewButtons;
-    //previewButtons->setFixedHeight(m_tab_bar->height());
+   // previewButtons->setFixedSize(QSize(40, 40));
+    previewButtons->setIconSize(QSize(16,16));
     t->setContentsMargins(0, 0, 5, 0);
     t->addWidget(m_tab_bar_bg);
 
@@ -1262,7 +1263,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(0, 4, m_tab_bar_bg->width(), m_tab_bar->height());
+    m_tab_bar->setGeometry(2, 4, m_tab_bar_bg->width(), m_tab_bar->height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }

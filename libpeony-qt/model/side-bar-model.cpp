@@ -56,8 +56,12 @@ SideBarModel::SideBarModel(QObject *parent)
     auto vfsMgr = VFSPluginManager::getInstance();
     auto plugins = vfsMgr->registeredPlugins();
     for (auto plugin : plugins) {
-        if (plugin->holdInSideBar())
+        if (plugin->uriScheme().contains("kydroid://")) {
+            continue;
+        }
+        if (plugin->holdInSideBar()) {
             m_root_children->append(new SideBarVFSItem(plugin, this));
+        }
     }
 
 //    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
@@ -70,10 +74,10 @@ SideBarModel::SideBarModel(QObject *parent)
 //    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator2);
 
-    if (FileUtils::isFileExsit("file:///data/usershare")) {
-        SideBarSingleItem *userShareItem = new SideBarSingleItem("file:///data/usershare", nullptr, tr("Shared Data"), this);
-        m_root_children->append(userShareItem);
-    }
+//    if (FileUtils::isFileExsit("file:///data/usershare")) {
+//        SideBarSingleItem *userShareItem = new SideBarSingleItem("file:///data/usershare", nullptr, tr("Shared Data"), this);
+//        m_root_children->append(userShareItem);
+//    }
 
     SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
     m_root_children->append(personal_root_item);

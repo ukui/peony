@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Peony-Qt's Library
  *
  * Copyright (C) 2020, KylinSoft Co., Ltd.
@@ -59,9 +59,11 @@
 
 using namespace Peony;
 
+#define LABEL_MAX_WIDTH       165
+
 DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent)
 {
-    setContentsMargins(10, 0, 10, 0);
+    setContentsMargins(10, 20, 10, 20);
 
     auto label = new QLabel(tr("Select the file you want to preview..."), this);
     label->setWordWrap(true);
@@ -167,23 +169,30 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     m_layout->addWidget(m_icon);
 
     m_form = new QFormLayout(this);
+    m_form->setSpacing(3);
+
     m_display_name_label = new QLabel(this);
-    m_display_name_label->setWordWrap(true);
     m_form->addRow(tr("File Name:"), m_display_name_label);
+
     m_type_label = new QLabel(this);
     m_form->addRow(tr("File Type:"), m_type_label);
+
     m_time_access_label = new QLabel(this);
     m_form->addRow(tr("Time Access:"), m_time_access_label);
+
     m_time_modified_label = new QLabel(this);
     m_form->addRow(tr("Time Modified:"), m_time_modified_label);
+
     m_file_count_label = new QLabel(this);
     m_form->addRow(tr("Children Count:"), m_file_count_label);
+
     m_total_size_label = new QLabel(this);
     m_form->addRow(tr("Size:"), m_total_size_label);
 
     //image
     m_image_size = new QLabel(this);
     m_form->addRow(tr("Image size:"), m_image_size);
+
     m_image_format = new QLabel(this);
     m_form->addRow(tr("Image format:"), m_image_format);
 
@@ -201,6 +210,30 @@ FilePreviewPage::~FilePreviewPage()
 
 }
 
+void FilePreviewPage::wrapData(QLabel *p_label, const QString &text)
+{
+    QString wrapText = text;
+    QFontMetrics fontMetrics = p_label->fontMetrics();
+    int textSize = fontMetrics.width(wrapText);
+
+    if(textSize > LABEL_MAX_WIDTH){
+        int lastIndex = 0;
+        for(int i = lastIndex; i < wrapText.length(); i++) {
+            if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) == LABEL_MAX_WIDTH) {
+                lastIndex = i;
+                wrapText.insert(i, '\n');
+            } else if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) > LABEL_MAX_WIDTH) {
+                lastIndex = i;
+                wrapText.insert(i - 1, '\n');
+            } else {
+                continue;
+            }
+        }
+    }
+
+    p_label->setText(wrapText);
+}
+
 void FilePreviewPage::updateInfo(FileInfo *info)
 {
     if (info->displayName().isEmpty()) {
@@ -214,11 +247,10 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     }
     auto icon = QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-    //m_icon->setIcon(info->thumbnail().isNull()? QIcon::fromTheme(info->iconName()): info->thumbnail());
-    m_display_name_label->setText(info->displayName());
-    m_type_label->setText(info->fileType());
+    wrapData(m_display_name_label, info->displayName());
 
-    QLocale locale;
+    wrapData(m_type_label, info->fileType());
+
     auto access = QDateTime::fromMSecsSinceEpoch(info->accessTime()*1000);
     auto modify = QDateTime::fromMSecsSinceEpoch(info->modifiedTime()*1000);
 
@@ -290,9 +322,8 @@ void FilePreviewPage::countAsync(const QString &uri)
 
 void FilePreviewPage::updateCount()
 {
-    m_file_count_label->setText(tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count));
-    //auto format = g_format_size(m_total_size);
-    //Calculated by 1024 bytes
+    wrapData(m_file_count_label, tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count));
+
     auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
     m_total_size_label->setText(format);
     g_free(format);
