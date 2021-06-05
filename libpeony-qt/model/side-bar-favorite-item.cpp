@@ -34,6 +34,8 @@
 
 using namespace Peony;
 
+bool kydroidInstall = false;
+
 SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         SideBarFavoriteItem *parentItem,
         SideBarModel *model,
@@ -55,6 +57,30 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         m_children->append(recentItem);
         m_children->append(desktopItem);
         m_children->append(trashItem);
+
+        if (FileUtils::isFileExsit("file:///data/usershare")) {
+            m_children->append(new SideBarFavoriteItem("file:///data/usershare", this, m_model));
+        }
+
+        // check kydroid is install
+        if (FileUtils::isFileExsit("file:///var/lib/kydroid")) {
+            GVfs* vfs = g_vfs_get_default();
+            if (vfs) {
+                const gchar* const* schemas = g_vfs_get_supported_uri_schemes (vfs);
+                if (schemas) {
+                    int i = 0;
+                    for (; schemas[i] != NULL; ++i) {
+                        if (0 == strcmp(schemas[i], "kydroid")) {
+                            kydroidInstall = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (kydroidInstall)
+                m_children->append(new SideBarFavoriteItem("kydroid:///", this, m_model));
+        }
+
         m_model->insertRows(0, m_children->count(), firstColumnIndex());
         //TODO: support custom bookmarks.
         auto bookmark = BookMarkManager::getInstance();
