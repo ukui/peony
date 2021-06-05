@@ -25,6 +25,7 @@
 
 #include <QTreeView>
 #include <QStyledItemDelegate>
+#include <QProxyStyle>
 
 namespace Peony {
 class SideBarModel;
@@ -59,6 +60,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
 
+    int sizeHintForColumn(int column) const override;
+
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
     Peony::SideBarModel *m_model;
@@ -86,6 +89,14 @@ class NavigationSideBarItemDelegate : public QStyledItemDelegate
     explicit NavigationSideBarItemDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
+class NavigationSideBarStyle : public QProxyStyle
+{
+public:
+    explicit NavigationSideBarStyle();
+    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
 };
 
 #endif // NAVIGATIONSIDEBAR_H
