@@ -187,7 +187,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
             m_index,
             9999,
             2,
-            0,
+            4,
             false);
 //    style()->drawItemText(&p,
 //                          m_text_rect,

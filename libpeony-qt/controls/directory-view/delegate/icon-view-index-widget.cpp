@@ -178,7 +178,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     p.setPen(opt.palette.highlightedText().color());
     p.translate(0, m_delegate->getView()->iconSize().height() + 5);
-    IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 0);
+    IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4);
 
 //    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
 //    //m_edit->document()->drawContents(&p);
