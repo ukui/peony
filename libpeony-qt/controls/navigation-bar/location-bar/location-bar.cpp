@@ -418,7 +418,7 @@ void LocationBar::paintEvent(QPaintEvent *e)
     fopt.state |= QStyle::State_HasFocus;
     //fopt.state.setFlag(QStyle::State_HasFocus);
     fopt.rect.adjust(-2, 0, 0, 0);
-    fopt.palette.setColor(QPalette::Highlight, fopt.palette.base().color());
+    fopt.palette.setColor(QPalette::Highlight, fopt.palette.button().color());
     fopt.palette.setColor(QPalette::Base, fopt.palette.window().color());
 
     style()->drawPrimitive(QStyle::PE_PanelLineEdit, &fopt, &p, this);
