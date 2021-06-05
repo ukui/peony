@@ -407,7 +407,7 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     QVBoxLayout *l = new QVBoxLayout;
     l->setContentsMargins(4, 4, 2, 4);
 
-    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
+    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
     m_label_button->setProperty("useIconHighlightEffect", true);
     m_label_button->setProperty("iconHighlightEffectMode", 1);
     m_label_button->setProperty("fillIconSymbolicColor", true);

@@ -3,4 +3,12 @@
         <file>icons/child-folder.png</file>
         <file>icons/child-folder2.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>icons/ukui-down-symbolic.svg</file>
+        <file>icons/ukui-end-symbolic.svg</file>
+        <file>icons/ukui-start-symbolic.svg</file>
+        <file>icons/ukui-up-symbolic.svg</file>
+        <file>icons/sign.svg</file>
+        <file>icons/sign.png</file>
+    </qresource>
 </RCC>
