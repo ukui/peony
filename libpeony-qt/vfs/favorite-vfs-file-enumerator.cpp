@@ -27,6 +27,9 @@
 
 #include <QDebug>
 #include <QStandardPaths>
+#include <file-utils.h>
+
+extern bool kydroidInstall;
 
 G_DEFINE_TYPE_WITH_PRIVATE(FavoritesVFSFileEnumerator, vfs_favorites_file_enumerator, G_TYPE_FILE_ENUMERATOR);
 
@@ -49,6 +52,15 @@ static void vfs_favorites_file_enumerator_init (FavoritesVFSFileEnumerator* self
     self->priv->enumerate_queue->enqueue("favorite:///?schema=recent");
     self->priv->enumerate_queue->enqueue("favorite:///?schema=trash");
     self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+
+    if (Peony::FileUtils::isFileExsit("file:///data/usershare")) {
+        self->priv->enumerate_queue->enqueue("favorite:///data/usershare?schema=file");
+    }
+
+    // check kydroid is install
+    if (kydroidInstall)
+        self->priv->enumerate_queue->enqueue("favorite:///?schema=kydroid");
+
 
     // add others
     auto alluris = Peony::BookMarkManager::getInstance()->getCurrentUris();

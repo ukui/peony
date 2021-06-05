@@ -1601,7 +1601,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="508"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="521"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
@@ -2428,23 +2428,23 @@ Do you want to delete the link file?</source>
     <name>Peony::GlobalSettings</name>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="59"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="224"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="220"/>
         <source>yyyy/MM/dd</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="60"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="217"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="213"/>
         <source>HH:mm:ss</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="214"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="210"/>
         <source>hh:mm:ss AP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="227"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="223"/>
         <source>yyyy-MM-dd</source>
         <translation></translation>
     </message>
@@ -2862,7 +2862,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::SideBarFavoriteItem</name>
     <message>
-        <location filename="../../libpeony-qt/model/side-bar-favorite-item.cpp" line="46"/>
+        <location filename="../../libpeony-qt/model/side-bar-favorite-item.cpp" line="48"/>
         <source>Favorite</source>
         <translation>收藏夹</translation>
     </message>
@@ -2935,12 +2935,11 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::SideBarModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="74"/>
         <source>Shared Data</source>
-        <translation>共享数据</translation>
+        <translation type="vanished">共享数据</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="91"/>
+        <location filename="../../libpeony-qt/model/side-bar-model.cpp" line="95"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
@@ -3427,42 +3426,47 @@ Do you want to unmount forcely?</source>
         <translation>收藏夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="340"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="288"/>
+        <source>Share Data</source>
+        <translation>本地共享</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="346"/>
         <source>Operation not supported</source>
         <translation>操作不支持</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="434"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="440"/>
         <source>The virtual file system does not support folder creation</source>
         <translation>虚拟文件系统下不支持创建新文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="503"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="509"/>
         <source>Can not create a symbolic file for vfs location</source>
         <translation>无法为虚拟目录创建快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="510"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="516"/>
         <source>Symbolic Link</source>
         <translation>快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="522"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="528"/>
         <source>Can not create symbolic file here, %1</source>
         <translation>无法在此创建快捷方式, %1</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="583"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="591"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="589"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="597"/>
         <source>The virtual file system cannot be opened</source>
         <translation>虚拟文件系统无法打开</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="421"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="449"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="464"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="541"/>
-        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="559"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="427"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="455"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="470"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="547"/>
+        <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="565"/>
         <source>Virtual file directories do not support move and copy operations</source>
         <translation>虚拟文件路径不支持移动和复制操作</translation>
     </message>
@@ -3503,13 +3507,13 @@ Do you want to unmount forcely?</source>
         <translation>操作设备前需要同步数据，请稍等！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="353"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="365"/>
         <source>permission denied</source>
         <translation>没有权限</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="346"/>
-        <location filename="../../libpeony-qt/file-enumerator.cpp" line="359"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="358"/>
+        <location filename="../../libpeony-qt/file-enumerator.cpp" line="371"/>
         <source>file not found</source>
         <translation>没有发现该文件</translation>
     </message>
