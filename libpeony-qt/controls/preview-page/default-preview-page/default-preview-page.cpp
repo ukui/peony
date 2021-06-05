@@ -63,7 +63,7 @@ using namespace Peony;
 
 DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent)
 {
-    setContentsMargins(10, 0, 10, 0);
+    setContentsMargins(10, 20, 10, 20);
 
     auto label = new QLabel(tr("Select the file you want to preview..."), this);
     label->setWordWrap(true);
@@ -169,6 +169,7 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     m_layout->addWidget(m_icon);
 
     m_form = new QFormLayout(this);
+    m_form->setSpacing(3);
 
     m_display_name_label = new QLabel(this);
     m_form->addRow(tr("File Name:"), m_display_name_label);
