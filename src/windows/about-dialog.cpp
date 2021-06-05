@@ -70,7 +70,7 @@ void AboutDialog::initUI()
 
     ui->closeBtn->setFlat(true);
 	ui->closeBtn->setPalette(palette);
-    ui->closeBtn->setIconSize(QSize(24,24));
+    ui->closeBtn->setIconSize(QSize(16,16));
     ui->closeBtn->setProperty("isWindowButton",0x2);
     ui->closeBtn->setProperty("useIconHighlightEffect",0x2);
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
@@ -97,7 +97,7 @@ void AboutDialog::initUI()
 	textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
 
-    ui->openlinkLabel->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\">support@kylinos.cn</a><br/>");
+    ui->openlinkLabel->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\" style=\"color:#595959;\">support@kylinos.cn</a><br/>");
     ui->openlinkLabel->setOpenExternalLinks(true);
 //    ui->openlinkLabel->setStyleSheet("color:#595959;");
 	textCursor.setBlockFormat(blockFormat);
