@@ -137,7 +137,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_go_back = goBack;
     goBack->setEnabled(false);
     goBack->setToolTip(tr("Go Back"));
-    goBack->setFixedSize(QSize(GBACK_BTN_WIDTH, 28));
+    goBack->setFixedSize(QSize(40, 40));
+    goBack->setIconSize(QSize(16, 16));
     goBack->setIcon(QIcon::fromTheme("go-previous-symbolic"));
     addWidget(goBack);
 
@@ -145,7 +146,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_go_forward = goForward;
     goForward->setEnabled(false);
     goForward->setToolTip(tr("Go Forward"));
-    goForward->setFixedSize(QSize(GBACK_BTN_WIDTH, 28));
+    goForward->setFixedSize(QSize(40, 40));
+    goForward->setIconSize(QSize(16, 16));
     goForward->setIcon(QIcon::fromTheme("go-next-symbolic"));
     addWidget(goForward);
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
