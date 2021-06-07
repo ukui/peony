@@ -56,7 +56,7 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
 
     setLayoutDirection(Qt::LeftToRight);
 
-    QAction *goToAction = new QAction(QIcon::fromTheme("forward"), tr("Go To"), this);
+    QAction *goToAction = new QAction(QIcon::fromTheme("ukui-end-symbolic", QIcon(":/icons/ukui-end-symbolic")), tr("Go To"), this);
     addAction(goToAction, QLineEdit::TrailingPosition);
 
     connect(goToAction, &QAction::triggered, this, &QLineEdit::returnPressed);

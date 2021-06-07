@@ -110,7 +110,7 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
             if (option->state & State_Sunken) {
                 rect.adjust(1, 1, 1, 1);
             }
-            QIcon arrowDown = QIcon::fromTheme("pan-down-symbolic");
+            QIcon arrowDown = QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic"));
             arrowDown.paint(painter, rect.adjusted(-3, 0, -3, 0));
             return;
         } else if (locationBar) {
@@ -120,10 +120,10 @@ void ComplementaryStyle::drawPrimitive(QStyle::PrimitiveElement element, const Q
             rect.setWidth(16);
             rect.setHeight(16);
             if (option->state & State_Sunken) {
-                QIcon arrowDown = QIcon::fromTheme("pan-down-symbolic");
+                QIcon arrowDown = QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic"));
                 arrowDown.paint(painter, rect.adjusted(1, 1, 1, 1));
             } else {
-                QIcon arrowDown = QIcon::fromTheme("pan-end-symbolic");
+                QIcon arrowDown = QIcon::fromTheme("ukui-end-symbolic", QIcon(":/icons/ukui-end-symbolic"));
                 arrowDown.paint(painter, rect.adjusted(1, 1, 1, 1));
             }
             return;
