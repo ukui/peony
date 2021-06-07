@@ -98,8 +98,13 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
 void FileOperationProgressBar::showProgress(ProgressBar &progress)
 {
     if (m_progress_size > 0) {
+        setAttribute(Qt::WA_TranslucentBackground, true);
         progress.show();
         show();
+
+        QTimer::singleShot(300, [=] () {
+            setAttribute(Qt::WA_TranslucentBackground, false);
+        });
     }
 }
 
