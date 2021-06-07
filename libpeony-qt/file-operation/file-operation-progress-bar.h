@@ -135,6 +135,9 @@ public Q_SLOTS:
     void onFileRollbacked(const QString &destUri, const QString &srcUri);
 
 private:
+
+    bool m_sync = false;
+
     int m_fix_width = 550;
     int m_fix_height = 62;
 
@@ -196,6 +199,7 @@ public:
     void setTitle (QString title);
     void setPause();
     void setResume();
+    void setIsSync(bool);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -219,6 +223,7 @@ public Q_SLOTS:
     void updateValue (QString&, QIcon&, double);
 
 private:
+    bool m_sync = false;
     // can modify
     // header
     QString m_title;
