@@ -239,7 +239,9 @@ void Format_Dialog::acceptFormat(bool)
         // set ui button disable
         ui->pushButton_ok->setDisabled(TRUE);
         ui->pushButton_close->setDisabled(TRUE);
-        ui->lineEdit_device_name->setDisabled(TRUE);
+        //ui->lineEdit_device_name->setDisabled(TRUE);
+        //use set readonly property, fix exit issue link to task#33686
+        ui->lineEdit_device_name->setReadOnly(true);
         ui->checkBox_clean_or_not->setDisabled(TRUE);
 
         int format_value = 0;
