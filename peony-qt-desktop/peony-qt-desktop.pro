@@ -33,6 +33,7 @@ TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
 
 SOURCES += \
+    desktop-background-manager.cpp \
     main.cpp \
     peony-desktop-application.cpp \
     fm-dbus-service.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
     desktopbackground.cpp
 
 HEADERS += \
+    desktop-background-manager.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
     desktop-item-model.h \
