@@ -101,7 +101,7 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 //        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
 //    });
 
-    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("pan-down-symbolic", QIcon::fromTheme("go-down")), QLineEdit::TrailingPosition);
+    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic")), QLineEdit::TrailingPosition);
     connect(searchAction, &QAction::triggered, this, [=]() {
         //qDebug() << "triggered search history!";
         m_search_box->completer()->complete();
