@@ -637,7 +637,7 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
         auto fileInfo = FileInfo::fromUri(uri);
         FileInfoJob infoJob(fileInfo);
         infoJob.queryFileType(info);
-        if(!strstr(uri,"kydroid:///"))
+        if(!strstr(uri,"kydroid:///") && !strstr(uri,"kmre:///"))
             infoJob.queryFileDisplayName(info);
         if (p_this->m_with_info_job) {
             infoJob.refreshInfoContents(info);
