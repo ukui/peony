@@ -250,8 +250,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                 });
 
                 if (item->type() == SideBarAbstractItem::FileSystemItem) {
-                    for (const auto &actionItem : actionList) {
-                        actionItem->setEnabled(item->isMounted());
+                    if (0 != QString::compare(item->uri(), "computer:///")) {
+                        for (const auto &actionItem : actionList) {
+                            actionItem->setEnabled(item->isMounted());
+                        }
                     }
                 }
 
