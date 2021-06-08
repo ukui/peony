@@ -13,9 +13,25 @@ class DesktopBackgroundManager : public QObject
     friend class DesktopWindow;
     Q_OBJECT
 public:
-    explicit DesktopBackgroundManager(QObject *parent = nullptr);
+    DesktopBackgroundManager *globalInstance();
+
+    QPixmap getBackPixmap() const;
+
+    QPixmap getFrontPixmap() const;
+
+    QVariantAnimation *getAnimation() const;
+
+    bool getUsePureColor() const;
+
+    QColor getColor() const;
+
+    bool getPaintBackground() const;
+
+Q_SIGNALS:
+    void screensUpdated();
 
 private:
+    explicit DesktopBackgroundManager(QObject *parent = nullptr);
     void initGSettings();
     void updateScreens();
     void initBackground();
@@ -25,7 +41,6 @@ private:
 
 protected:
     void switchBackground();
-    void connectScreensChangement();
 
     QPixmap m_backPixmap;
     QPixmap m_frontPixmap;

@@ -14,6 +14,8 @@
 
 #include <QDebug>
 
+static DesktopBackgroundManager *global_instance = nullptr;
+
 #define BACKGROUND_SETTINGS "org.mate.background"
 
 DesktopBackgroundManager::DesktopBackgroundManager(QObject *parent) : QObject(parent)
@@ -58,12 +60,23 @@ void DesktopBackgroundManager::initGSettings()
 
 void DesktopBackgroundManager::updateScreens()
 {
-
+    Q_EMIT screensUpdated();
 }
 
 void DesktopBackgroundManager::initBackground()
 {
-
+    if (QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
+        m_backgroundSettings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
+    }
+    m_paintBackground = true;
+    setBackground();
+    if (m_backgroundSettings) {
+        connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "pictureFilename" || key == "primaryColor") {
+                switchBackground();
+            }
+        });
+    }
 }
 
 void DesktopBackgroundManager::setBackground()
@@ -148,10 +161,77 @@ void DesktopBackgroundManager::setAccountBackground()
 
 void DesktopBackgroundManager::switchBackground()
 {
+    if (!m_backgroundSettings)
+        return;
 
+    auto path = m_backgroundSettings->get("pictureFilename").toString();
+    if (! QFile::exists(path))
+        path = getAccountBackground();
+    if (path.isEmpty()) {
+        m_usePureColor = true;
+        auto colorName = m_backgroundSettings->get("primaryColor").toString();
+        m_color = QColor(colorName);
+        m_animation->stop();
+        m_backPixmap = QPixmap();
+        m_frontPixmap = QPixmap();
+        m_current_bg_path = "";
+        updateScreens();
+    } else {
+        m_usePureColor = false;
+        auto colorName = m_backgroundSettings->get("primaryColor").toString();
+        m_color = QColor(colorName);
+        if (m_animation->state() == QVariantAnimation::Running) {
+            m_pendingPixmap = QPixmap(path);
+            m_current_bg_path = path;
+        } else {
+            m_frontPixmap = QPixmap(path);
+            if (m_backPixmap.isNull()) {
+                m_backPixmap = m_frontPixmap;
+            }
+            m_animation->start();
+            m_current_bg_path = path;
+        }
+    }
+
+    //if background picture changed, update it
+    if (m_current_bg_path != getAccountBackground())
+        setAccountBackground();
 }
 
-void DesktopBackgroundManager::connectScreensChangement()
+bool DesktopBackgroundManager::getPaintBackground() const
 {
+    return m_paintBackground;
+}
 
+QColor DesktopBackgroundManager::getColor() const
+{
+    return m_color;
+}
+
+bool DesktopBackgroundManager::getUsePureColor() const
+{
+    return m_usePureColor;
+}
+
+QVariantAnimation *DesktopBackgroundManager::getAnimation() const
+{
+    return m_animation;
+}
+
+QPixmap DesktopBackgroundManager::getFrontPixmap() const
+{
+    return m_frontPixmap;
+}
+
+DesktopBackgroundManager *DesktopBackgroundManager::globalInstance()
+{
+    if (!global_instance) {
+        global_instance = new DesktopBackgroundManager;
+    }
+    return global_instance;
+}
+
+QPixmap DesktopBackgroundManager::getBackPixmap() const
+{
+    return m_backPixmap;
 }
