@@ -102,6 +102,10 @@ void DirectoryViewMenu::fillActions()
         m_is_computer = true;
     }
 
+    if (m_directory == "network:///") {
+        m_is_network = true;
+    }
+
     if (m_directory == "trash:///") {
         m_is_trash = true;
     }
@@ -739,6 +743,17 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
         return l;
 
     if (! m_is_search) {
+        //包含network的情况下，不显示属性选项
+        if (m_is_network) {
+            return l;
+        }
+
+        for (QString uri : m_selections) {
+            if (uri.startsWith("network://")) {
+                return l;
+            }
+        }
+
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         connect(l.last(), &QAction::triggered, [=]() {
             //FIXME:

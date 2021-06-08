@@ -186,6 +186,13 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         return;
     }
 
+    for (QString uri : m_uris) {
+        if (uri.startsWith("network://")) {
+            m_destroyThis = true;
+            return;
+        }
+    }
+
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
@@ -523,7 +530,15 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
-            QRect rect = (tab->rect).adjusted(4, 0, 1, -12);
+            QRect rect = tab->rect;
+            //为了更柔和的显示上边框 压低1px
+            rect.setTop(1);
+            //底部上移8px
+            rect.setBottom(rect.height() - 8);
+            //左侧移动4px
+            rect.setLeft(rect.x() + 4);
+            //右侧被挤压，导致圆角不规整，所以移动2px
+            rect.setRight((rect.x() + rect.width()) - 2);
 
             const QPalette &palette = widget->palette();
 
