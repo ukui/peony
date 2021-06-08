@@ -166,7 +166,9 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
-    l.last()->setEnabled(m_item->isMounted());
+    if (0 != QString::compare(m_uri, "computer:///")) {
+        l.last()->setEnabled(m_item->isMounted());
+    }
 
     /*
      *  add format function
