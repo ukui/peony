@@ -193,6 +193,13 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         return;
     }
 
+    for (QString uri : m_uris) {
+        if (uri.startsWith("network://")) {
+            m_destroyThis = true;
+            return;
+        }
+    }
+
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
@@ -528,6 +535,8 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
             rect.setBottom(rect.height() - 8);
             //左侧移动4px
             rect.setLeft(rect.x() + 4);
+            //右侧被挤压，导致圆角不规整，所以移动2px
+            rect.setRight((rect.x() + rect.width()) - 2);
 
             const QPalette &palette = widget->palette();
 
