@@ -36,12 +36,12 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
         p.setRenderHint(QPainter::SmoothPixmapTransform);
         auto animation = manager->getAnimation();
         if (animation->state() == QVariantAnimation::Running) {
-            p.drawPixmap(rect(), manager->getBackPixmap(), manager->getBackPixmap().rect());
+            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
             auto opacity = animation->currentValue().toReal();
             p.setOpacity(opacity);
-            p.drawPixmap(rect(), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
         } else {
-            p.drawPixmap(rect(), manager->getBackPixmap(), manager->getBackPixmap().rect());
+            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
         }
         p.restore();
     }
