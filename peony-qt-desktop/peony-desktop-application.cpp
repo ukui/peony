@@ -35,6 +35,8 @@
 #include "desktop-menu.h"
 
 #include "desktopbackground.h"
+#include "desktop-background-manager.h"
+#include "desktopbackgroundwindow.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -73,6 +75,10 @@ static bool has_background = false;
 static QRect max_size = QRect(0, 0, 0, 0);
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 static PrimaryManager *screensMonitor = nullptr;
+/*!
+ * \brief virtualDesktopWindow
+ * \deprecated
+ */
 static DesktopBackground *virtualDesktopWindow = nullptr;
 
 //record of desktop start time
@@ -253,7 +259,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
 {
     if (!desktop_icon_view)
-        desktop_icon_view = new Peony::DesktopIconView(virtualDesktopWindow);
+        desktop_icon_view = new Peony::DesktopIconView(/*virtualDesktopWindow*/);
     return desktop_icon_view;
 }
 
@@ -308,6 +314,11 @@ void PeonyDesktopApplication::gotoSetBackground()
     p.startDetached("ukui-control-center", QStringList()<<"-b");
 #endif
     p.waitForFinished(-1);
+}
+
+void PeonyDesktopApplication::relocateIconView()
+{
+    //FIXME:
 }
 
 void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimary)
@@ -467,8 +478,27 @@ void PeonyDesktopApplication::updateVirtualDesktopGeometryByWindows()
 
 }
 
+void PeonyDesktopApplication::addBgWindow(QScreen *screen)
+{
+    auto window = new DesktopBackgroundWindow(screen);
+    m_bg_windows.append(window);
+    window->show();
+    connect(screen, &QScreen::destroyed, this, [=](){
+        relocateIconView();
+        m_bg_windows.removeOne(window);
+        window->deleteLater();
+    });
+}
+
 void PeonyDesktopApplication::setupDesktop()
 {
+    DesktopBackgroundManager::globalInstance();
+    for (auto screen : qApp->screens()) {
+        addBgWindow(screen);
+    }
+    relocateIconView();
+    connect(qApp, &QApplication::screenAdded, this, &PeonyDesktopApplication::addBgWindow);
+    return;
     if (!has_desktop) {
         has_desktop = true;
         virtualDesktopWindow = new DesktopBackground;
@@ -568,6 +598,7 @@ void PeonyDesktopApplication::setupDesktop()
 void PeonyDesktopApplication::setupBgAndDesktop()
 {
     setupDesktop();
+    return;
     if (!has_background) {
         has_background = true;
         virtualDesktopWindow->initBackground();

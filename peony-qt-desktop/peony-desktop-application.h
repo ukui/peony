@@ -30,6 +30,8 @@
 #include <QScreen>
 #include <QWindow>
 
+class DesktopBackgroundWindow;
+
 namespace Peony {
 class DesktopIconView;
 }
@@ -48,6 +50,7 @@ public:
     static void gotoSetBackground();
 
     static qint64 peony_desktop_start_time;
+    static void relocateIconView();
 
 Q_SIGNALS:
     void requestSetUKUIOutputEnable(bool enable);
@@ -68,12 +71,16 @@ public Q_SLOTS:
     void checkWindowProcess();
     void updateVirtualDesktopGeometryByWindows();
 
+    void addBgWindow(QScreen *screen);
+
 
 private:
     void setupDesktop();
     void setupBgAndDesktop();
 
     bool m_first_parse = true;
+
+    QList<DesktopBackgroundWindow *> m_bg_windows;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H

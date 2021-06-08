@@ -13,7 +13,7 @@ class DesktopBackgroundManager : public QObject
     friend class DesktopWindow;
     Q_OBJECT
 public:
-    DesktopBackgroundManager *globalInstance();
+    static DesktopBackgroundManager *globalInstance();
 
     QPixmap getBackPixmap() const;
 
