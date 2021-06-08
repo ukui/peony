@@ -535,7 +535,9 @@ void DataCDROM::DVDRWCapacity()
         if (dvdInfo.at(index).startsWith("READ FORMAT CAPACITIES:")) {
             QStringList formatCapacity = dvdInfo.takeAt(index + 1).split("=");
             qWarning()<<"format capacity is"<<formatCapacity.last();
-            m_u64Capacity = formatCapacity.last().toULong();
+            if (m_oMediumType.contains("DVD+RW")) {
+                m_u64Capacity = formatCapacity.last().toULong();
+            }
         }
 
         if (dvdInfo.at(index).startsWith("READ CAPACITY:")) {
@@ -546,7 +548,9 @@ void DataCDROM::DVDRWCapacity()
         if (dvdInfo.at(index).startsWith("READ DVD STRUCTURE")) {
             QStringList dvdStruct = dvdInfo.takeAt(index + 2).split("=");
             qWarning()<<"DVD RW struct capacity is"<<dvdStruct.last();
-            //m_u64Capacity += dvdStruct.last().toULong();
+            if (m_oMediumType.contains("DVD-RW")) {
+                m_u64Capacity += dvdStruct.last().toULong();
+            }
         }
     }
 
