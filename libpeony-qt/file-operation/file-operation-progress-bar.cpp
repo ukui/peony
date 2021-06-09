@@ -276,6 +276,8 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
     if (m_current_main->getStatus()) {
         m_main_progressbar->cancelld();
     }
+    m_main_progressbar->setFileName(pb->getFileName());
+    m_main_progressbar->setProgress(pb->getProgress());
     m_main_progressbar->setFileIcon(m_current_main->getIcon());
     m_main_progressbar->connect(m_current_main, &ProgressBar::cancelled, m_main_progressbar, &MainProgressBar::cancelld);
     m_main_progressbar->connect(m_current_main, &ProgressBar::sendValue, m_main_progressbar, &MainProgressBar::updateValue);
@@ -356,6 +358,16 @@ void MainProgressBar::setResume()
 void MainProgressBar::setIsSync(bool sync)
 {
     m_sync = sync;
+}
+
+void MainProgressBar::setProgress(float val)
+{
+    m_current_value = val;
+}
+
+void MainProgressBar::setFileName(QString name)
+{
+    m_file_name = name;
 }
 
 void MainProgressBar::paintEvent(QPaintEvent *event)
@@ -492,20 +504,20 @@ void MainProgressBar::paintContent(QPainter &painter)
     painter.setFont(font);
     if (m_stopping) {
         painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+    } else if (m_sync) {
+        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
+        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
     } else {
         painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
     }
 
-    if (m_sync) {
-        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-    } else {
+    if (!m_sync) {
         if (m_pause) {
             painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
         } else {
             painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
         }
     }
-
 
     // paint percentage
     font.setPixelSize(12);
@@ -654,6 +666,11 @@ float ProgressBar::getTotalSize()
     return m_total_size;
 }
 
+QString ProgressBar::getFileName()
+{
+    return m_dest_uri;
+}
+
 bool ProgressBar::isPause()
 {
     return m_pause;
@@ -707,6 +724,9 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     painter.setFont(font);
     if (m_is_stopping) {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
+    } else if (m_sync) {
+        painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
+        painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
     } else {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
     }
@@ -724,9 +744,7 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
     painter.drawRoundedRect(m_progress_x, m_progress_y, value, m_progress_height, 1, 1);
 
-    if (m_sync) {
-        painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-    } else {
+    if (!m_sync) {
         if (m_pause) {
             painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size));
         } else {
@@ -785,7 +803,7 @@ void ProgressBar::onCancelled()
 
 void ProgressBar::updateValue(double value)
 {
-    if (value >= 0 && value <= 1) {
+    if (value >= 0 && value < 1) {
         m_current_value = value;
     }
 
