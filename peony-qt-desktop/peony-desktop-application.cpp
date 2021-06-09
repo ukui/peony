@@ -35,6 +35,8 @@
 #include "desktop-menu.h"
 
 #include "desktopbackground.h"
+#include "desktop-background-manager.h"
+#include "desktopbackgroundwindow.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -60,6 +62,9 @@
 #include <QDesktopServices>
 
 #include <QScreen>
+#include <QTimeLine>
+
+#include <KWindowSystem>
 
 #define KYLIN_USER_GUIDE_PATH "/"
 #define KYLIN_USER_GUIDE_SERVICE QString("com.kylinUserGuide.hotel_%1").arg(getuid())
@@ -73,6 +78,10 @@ static bool has_background = false;
 static QRect max_size = QRect(0, 0, 0, 0);
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
 static PrimaryManager *screensMonitor = nullptr;
+/*!
+ * \brief virtualDesktopWindow
+ * \deprecated
+ */
 static DesktopBackground *virtualDesktopWindow = nullptr;
 
 //record of desktop start time
@@ -253,7 +262,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
 {
     if (!desktop_icon_view)
-        desktop_icon_view = new Peony::DesktopIconView(virtualDesktopWindow);
+        desktop_icon_view = new Peony::DesktopIconView(/*virtualDesktopWindow*/);
     return desktop_icon_view;
 }
 
@@ -310,6 +319,34 @@ void PeonyDesktopApplication::gotoSetBackground()
     p.waitForFinished(-1);
 }
 
+void PeonyDesktopApplication::relocateIconView()
+{
+    //FIXME:
+    if (screensMonitor) {
+//        getIconView()->setVisible(false);
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        QRect geometry = QRect(x, y, width, height);
+        if (geometry.isEmpty()) {
+            qCritical()<<"can not get primary screen info from ukui-settings daemon";
+            for (auto window : m_bg_windows) {
+                if (window->screen() == qApp->primaryScreen()) {
+                    getIconView()->setFixedSize(qApp->primaryScreen()->size());
+                    getIconView()->setParent(window);
+                }
+            }
+        } else {
+            if (m_primaryScreenSettingsTimeLine->state() == QTimeLine::Running) {
+                m_primaryScreenSettingsTimeLine->setCurrentTime(0);
+            } else {
+                m_primaryScreenSettingsTimeLine->start();
+            }
+        }
+    }
+}
+
 void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimary)
 {
     QCommandLineParser parser;
@@ -324,7 +361,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     parser.addOption(desktopOption);
 
     QCommandLineOption backgroundOption(QStringList()<<"b"<<"background", tr("Setup backgrounds"));
-    parser.addOption(backgroundOption);
+//    parser.addOption(backgroundOption);
 
     if (isPrimary) {
         if (m_first_parse) {
@@ -467,8 +504,72 @@ void PeonyDesktopApplication::updateVirtualDesktopGeometryByWindows()
 
 }
 
+void PeonyDesktopApplication::addBgWindow(QScreen *screen)
+{
+    auto window = new DesktopBackgroundWindow(screen);
+    m_bg_windows.append(window);
+
+    // recheck primary screen info. new screen might become
+    // primary screen.
+    if (screensMonitor) {
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        QRect geometry = QRect(x, y, width, height);
+        if (!geometry.isEmpty()) {
+            if (screen->geometry() == geometry) {
+                getIconView()->setFixedSize(geometry.size());
+                getIconView()->setParent(window);
+                getIconView()->setVisible(true);
+                getIconView()->restoreItemsPosByMetaInfo();
+                KWindowSystem::raiseWindow(window->winId());
+            }
+        }
+    }
+
+    window->show();
+    connect(screen, &QScreen::destroyed, this, [=](){
+        if (getIconView()->parent() == window) {
+            getIconView()->setParent(nullptr);
+        }
+        relocateIconView();
+        m_bg_windows.removeOne(window);
+        window->deleteLater();
+    });
+}
+
 void PeonyDesktopApplication::setupDesktop()
 {
+    if (qgetenv("DESKTOP_SESSION") == QString("ukui-wayland")) {
+        screensMonitor = new PrimaryManager;
+        connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, &PeonyDesktopApplication::relocateIconView);
+        m_primaryScreenSettingsTimeLine = new QTimeLine(100, screensMonitor);
+        connect(m_primaryScreenSettingsTimeLine, &QTimeLine::finished, this, [=]{
+            int x = screensMonitor->getScreenGeometry("x");
+            int y = screensMonitor->getScreenGeometry("y");
+            int width = screensMonitor->getScreenGeometry("width");
+            int height = screensMonitor->getScreenGeometry("height");
+            QRect geometry = QRect(x, y, width, height);
+            for (auto window : m_bg_windows) {
+                if (window->screen()->geometry() == geometry) {
+                    getIconView()->setFixedSize(geometry.size());
+                    getIconView()->setParent(window);
+                    getIconView()->setVisible(true);
+                    getIconView()->restoreItemsPosByMetaInfo();
+                    KWindowSystem::raiseWindow(window->winId());
+                    break;
+                }
+            }
+        });
+    }
+    DesktopBackgroundManager::globalInstance();
+    for (auto screen : qApp->screens()) {
+        addBgWindow(screen);
+    }
+    relocateIconView();
+    connect(qApp, &QApplication::screenAdded, this, &PeonyDesktopApplication::addBgWindow);
+    return;
     if (!has_desktop) {
         has_desktop = true;
         virtualDesktopWindow = new DesktopBackground;
@@ -567,10 +668,8 @@ void PeonyDesktopApplication::setupDesktop()
 
 void PeonyDesktopApplication::setupBgAndDesktop()
 {
-    setupDesktop();
     if (!has_background) {
-        has_background = true;
-        virtualDesktopWindow->initBackground();
+        setupDesktop();
     }
     has_background = true;
 }

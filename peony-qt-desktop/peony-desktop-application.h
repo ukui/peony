@@ -30,11 +30,15 @@
 #include <QScreen>
 #include <QWindow>
 
+class DesktopBackgroundWindow;
+
 namespace Peony {
 class DesktopIconView;
 }
 
 using namespace Peony;
+
+class QTimeLine;
 
 class PeonyDesktopApplication : public SingleApplication
 {
@@ -68,12 +72,18 @@ public Q_SLOTS:
     void checkWindowProcess();
     void updateVirtualDesktopGeometryByWindows();
 
+    void addBgWindow(QScreen *screen);
+    void relocateIconView();
 
 private:
     void setupDesktop();
     void setupBgAndDesktop();
 
     bool m_first_parse = true;
+
+    QList<DesktopBackgroundWindow *> m_bg_windows;
+
+    QTimeLine *m_primaryScreenSettingsTimeLine = nullptr;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H

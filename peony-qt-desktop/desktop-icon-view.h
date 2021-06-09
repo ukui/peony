@@ -187,6 +187,8 @@ public Q_SLOTS:
     void resolutionChange();
     void setEditFlag(bool edit);
 
+    void restoreItemsPosByMetaInfo();
+
 protected:
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
