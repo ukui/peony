@@ -121,7 +121,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     }
 
     if (info->canUnmount() || info->canMount()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("Unmount"), [=]() {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
             m_item->unmount();
         });
         bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
@@ -140,7 +140,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     if(0 != QString::compare(m_uri, "computer:///root.link"))
     {
         if (m_item->isRemoveable()) {
-            l<<addAction(QIcon::fromTheme("media-eject"), tr("Eject"), [=](){
+            l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
                 m_item->eject(G_MOUNT_UNMOUNT_NONE);
             });
 

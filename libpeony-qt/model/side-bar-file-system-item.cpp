@@ -259,7 +259,7 @@ end:
             });
 
             this->startWatcher();
-            //m_model->setData(lastColumnIndex(), QVariant(QIcon::fromTheme("media-eject")), Qt::DecorationRole);
+            //m_model->setData(lastColumnIndex(), QVariant(QIcon::fromTheme("media-eject-symbolic")), Qt::DecorationRole);
         });
 
         e->enumerateAsync();

@@ -292,6 +292,10 @@ void TabWidget::initAdvanceSearch()
     closeButton->setFixedHeight(20);
     closeButton->setFixedWidth(20);
     closeButton->setToolTip(tr("Close Filter."));
+    closeButton->setFlat(true);
+    closeButton->setProperty("isWindowButton", 1);
+    closeButton->setProperty("useIconHighlightEffect", 2);
+    closeButton->setProperty("isIcon", true);
 
     connect(closeButton, &QPushButton::clicked, [=]()
     {
@@ -447,16 +451,24 @@ void TabWidget::addNewConditionBar()
     inputBox->setPlaceholderText(tr("Please input key words..."));
     inputBox->setText("");
 
-    QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
+    QPushButton *addButton = new QPushButton(QIcon::fromTheme("list-add-symbolic"), "", optionBar);
     m_add_button_list.append(addButton);
     addButton->setFixedHeight(20);
     addButton->setFixedWidth(20);
+    addButton->setFlat(true);
+    addButton->setProperty("isWindowButton", 1);
+    addButton->setProperty("useIconHighlightEffect", 2);
+    addButton->setProperty("isIcon", true);
     connect(addButton, &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
 
-    QPushButton *removeButton = new QPushButton(QIcon::fromTheme("remove"), "", optionBar);
+    QPushButton *removeButton = new QPushButton(QIcon::fromTheme("list-remove-symbolic"), "", optionBar);
     m_remove_button_list.append(removeButton);
     removeButton->setFixedHeight(20);
     removeButton->setFixedWidth(20);
+    removeButton->setFlat(true);
+    removeButton->setProperty("isWindowButton", 1);
+    removeButton->setProperty("useIconHighlightEffect", 2);
+    removeButton->setProperty("isIcon", true);
     //mapper for button clicked parse index
     auto signalMapper = new QSignalMapper(this);
     connect(removeButton, SIGNAL(clicked()), signalMapper, SLOT(map()));

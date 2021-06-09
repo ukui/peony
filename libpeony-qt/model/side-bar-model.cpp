@@ -230,10 +230,10 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
             unmountAble = item->isMountable();
             ejectAble = item->isEjectable();
             if(unmountAble && ejectAble)
-                return QVariant(QIcon::fromTheme("media-eject"));
+                return QVariant(QIcon::fromTheme("media-eject-symbolic"));
             else if(unmountAble){
                 if(item->isMounted())
-                    return QVariant(QIcon::fromTheme("media-eject"));
+                    return QVariant(QIcon::fromTheme("media-eject-symbolic"));
                 else
                     return QVariant();
             }else
