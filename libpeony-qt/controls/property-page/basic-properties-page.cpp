@@ -729,13 +729,14 @@ void BasicPropertiesPage::updateCountInfo(bool isDone)
         qreal fileSizeKMGB = 0.0;
 
         // 1024 KB
-        b *= 4;
+        b = m_fileSizeCount / CELL1K;
         if (b < CELL1K) {
-            fileSizeKMGB = b;
-            if (b < 1)
-               fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
-            else
-               fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
+            if (b < 1) {
+                fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
+            } else {
+                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1K;;
+                fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
+            }
             fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1K;
             fileTotalSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
         } else {
