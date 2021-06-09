@@ -323,6 +323,7 @@ void PeonyDesktopApplication::relocateIconView()
 {
     //FIXME:
     if (screensMonitor) {
+        getIconView()->setVisible(false);
         int x = screensMonitor->getScreenGeometry("x");
         int y = screensMonitor->getScreenGeometry("y");
         int width = screensMonitor->getScreenGeometry("width");
@@ -523,7 +524,7 @@ void PeonyDesktopApplication::setupDesktop()
     if (qgetenv("DESKTOP_SESSION") == QString("ukui-wayland")) {
         screensMonitor = new PrimaryManager;
         connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, &PeonyDesktopApplication::relocateIconView);
-        m_primaryScreenSettingsTimeLine = new QTimeLine(500, screensMonitor);
+        m_primaryScreenSettingsTimeLine = new QTimeLine(100, screensMonitor);
         connect(m_primaryScreenSettingsTimeLine, &QTimeLine::finished, this, [=]{
             int x = screensMonitor->getScreenGeometry("x");
             int y = screensMonitor->getScreenGeometry("y");
