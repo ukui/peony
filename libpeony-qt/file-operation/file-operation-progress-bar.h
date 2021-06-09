@@ -102,6 +102,7 @@ public:
     bool getStatus();
     float getProgress();
     float getTotalSize();
+    QString getFileName();
     bool isPause();
     void setPause();
     void setResume();
@@ -200,6 +201,8 @@ public:
     void setPause();
     void setResume();
     void setIsSync(bool);
+    void setProgress(float);
+    void setFileName(QString);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
