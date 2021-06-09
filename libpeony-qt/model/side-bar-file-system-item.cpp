@@ -370,6 +370,8 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
     connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
     connect(syncThread,&SyncThread::syncFinished,this,[=](){
         realEject(ejectFlag);
+        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        notifyUser(unmountNotify);
         syncThread->disconnect(this);
         syncThread->deleteLater();
         currentThread->disconnect(SIGNAL(started()));
