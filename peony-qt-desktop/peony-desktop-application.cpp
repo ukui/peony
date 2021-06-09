@@ -508,6 +508,26 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
 {
     auto window = new DesktopBackgroundWindow(screen);
     m_bg_windows.append(window);
+
+    // recheck primary screen info. new screen might become
+    // primary screen.
+    if (screensMonitor) {
+        int x = screensMonitor->getScreenGeometry("x");
+        int y = screensMonitor->getScreenGeometry("y");
+        int width = screensMonitor->getScreenGeometry("width");
+        int height = screensMonitor->getScreenGeometry("height");
+        QRect geometry = QRect(x, y, width, height);
+        if (!geometry.isEmpty()) {
+            if (screen->geometry() == geometry) {
+                getIconView()->setFixedSize(geometry.size());
+                getIconView()->setParent(window);
+                getIconView()->setVisible(true);
+                getIconView()->restoreItemsPosByMetaInfo();
+                KWindowSystem::raiseWindow(window->winId());
+            }
+        }
+    }
+
     window->show();
     connect(screen, &QScreen::destroyed, this, [=](){
         if (getIconView()->parent() == window) {
