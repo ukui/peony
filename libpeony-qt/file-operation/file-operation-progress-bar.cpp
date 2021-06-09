@@ -77,8 +77,7 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
     m_list_widget->setItemWidget(li, proc);
     (*m_progress_list)[proc] = li;
     (*m_widget_list)[li] = proc;
-    li->setSizeHint(QSize(m_main_progressbar->width(), m_progress_item_height));
-
+    li->setSizeHint(QSize(m_list_widget->width(), m_progress_item_height));
     li->setFlags(Qt::NoItemFlags);
 
     proc->connect(proc, &ProgressBar::finished, this, &FileOperationProgressBar::removeFileOperation);
@@ -163,6 +162,8 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     m_list_widget = new QListWidget(nullptr);
 
     m_list_widget->setFrameShape(QListWidget::NoFrame);
+    m_list_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    m_list_widget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_main_layout->addWidget(m_main_progressbar);
     m_main_layout->addWidget(m_other_progressbar);
@@ -281,9 +282,11 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
     m_current_main->connect(m_main_progressbar, &MainProgressBar::pause, this, [=] () {
         m_current_main->setPause();
+        m_main_progressbar->setPause();
     });
     m_current_main->connect(m_main_progressbar, &MainProgressBar::start, this, [=] () {
         m_current_main->setResume();
+        m_main_progressbar->setResume();
     });
 
     update();
@@ -310,6 +313,9 @@ MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
 
 void MainProgressBar::initPrarm()
 {
+    m_sync = false;
+    m_show = false;
+    m_pause = false;
     m_stopping = false;
     m_current_value = 0.0;
     m_file_name = tr("starting ...");
@@ -472,13 +478,17 @@ void MainProgressBar::paintContent(QPainter &painter)
     if (m_stopping) {
         painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
-    }
-
-    if (m_pause) {
-        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
-    } else {
-        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+        if (m_sync) {
+            painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
+            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+        } else {
+            painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
+            if (m_pause) {
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            } else {
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            }
+        }
     }
 
     // paint percentage
@@ -597,6 +607,7 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_dest_uri = tr("starting ...");
     connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
+    connect(this, &ProgressBar::destroyed, this, [=] () {m_has_finished = true;});
 }
 
 void ProgressBar::setIcon(const QString& icon)
@@ -635,20 +646,16 @@ bool ProgressBar::isPause()
 
 void ProgressBar::setPause()
 {
-    if (!m_pause) {
-        m_pause = true;
-        Q_EMIT pause();
-        update();
-    }
+    m_pause = true;
+    Q_EMIT pause();
+    update();
 }
 
 void ProgressBar::setResume()
 {
-    if (m_pause) {
-        m_pause = false;
-        Q_EMIT resume();
-        update();
-    }
+    m_pause = false;
+    Q_EMIT resume();
+    update();
 }
 
 ProgressBar::~ProgressBar()
@@ -734,6 +741,7 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
         if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
+            if (m_has_finished) return;
             m_is_stopping = true;
             Q_EMIT cancelled();
             if (m_current_value <= 0) {
@@ -755,7 +763,8 @@ void ProgressBar::onCancelled()
 
 void ProgressBar::updateValue(double value)
 {
-    if (value >= 0 && value <= 1) {
+    if (value >= 0 && value < 1) {
+        m_sync = false;
         m_current_value = value;
     }
 
