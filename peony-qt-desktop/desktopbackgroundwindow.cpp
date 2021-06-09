@@ -1,5 +1,8 @@
 #include "desktopbackgroundwindow.h"
 #include "desktop-background-manager.h"
+#include "peony-desktop-application.h"
+#include "desktop-icon-view.h"
+#include "desktop-menu.h"
 #include <QScreen>
 #include <QPainter>
 #include <QVariantAnimation>
@@ -11,6 +14,8 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     m_screen = screen;
     m_id = desktop_window_id;
     desktop_window_id++;
@@ -20,6 +25,44 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
 
     auto manager = DesktopBackgroundManager::globalInstance();
     connect(manager, &DesktopBackgroundManager::screensUpdated, this, QOverload<>::of(&DesktopBackgroundWindow::update));
+
+    connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
+        qWarning()<<pos;
+        auto fixedPos = PeonyDesktopApplication::getIconView()->mapFromGlobal(pos);
+        auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
+        if (!index.isValid()) {
+            PeonyDesktopApplication::getIconView()->clearSelection();
+        } else {
+            if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
+                PeonyDesktopApplication::getIconView()->clearSelection();
+                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
+            }
+        }
+
+        QTimer::singleShot(1, [=]() {
+            DesktopMenu menu(PeonyDesktopApplication::getIconView());
+            if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
+                auto action = menu.addAction(QObject::tr("set background"));
+                connect(action, &QAction::triggered, [=]() {
+                    //go to control center set background
+                    PeonyDesktopApplication::gotoSetBackground();
+                });
+            }
+
+            for (auto screen : qApp->screens()) {
+                if (screen->geometry().contains(pos));
+                //menu.windowHandle()->setScreen(screen);
+            }
+            menu.exec(QCursor::pos());
+            auto urisToEdit = menu.urisToEdit();
+            if (urisToEdit.count() == 1) {
+                QTimer::singleShot(
+                            100, this, [=]() {
+                    PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
+                });
+            }
+        });
+    });
 }
 
 void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
