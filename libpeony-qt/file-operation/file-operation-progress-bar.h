@@ -137,6 +137,7 @@ public Q_SLOTS:
 
 private:
 
+    bool m_has_finished = false;
     bool m_sync = false;
 
     int m_fix_width = 550;
