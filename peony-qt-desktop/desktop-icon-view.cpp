@@ -1589,6 +1589,16 @@ void DesktopIconView::setEditFlag(bool edit)
     m_is_edit = edit;
 }
 
+void DesktopIconView::restoreItemsPosByMetaInfo()
+{
+    for (auto uri : getAllFileUris()) {
+        auto pos = getFileMetaInfoPos(uri);
+        if (pos.x() >= 0) {
+            updateItemPosByUri(uri, pos);
+        }
+    }
+}
+
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
     m_press_pos = e->pos();

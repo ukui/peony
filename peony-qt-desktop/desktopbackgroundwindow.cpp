@@ -11,6 +11,7 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
+    m_screen = screen;
     m_id = desktop_window_id;
     desktop_window_id++;
     setGeometry(screen->geometry());
