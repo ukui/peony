@@ -323,7 +323,7 @@ void PeonyDesktopApplication::relocateIconView()
 {
     //FIXME:
     if (screensMonitor) {
-        getIconView()->setVisible(false);
+//        getIconView()->setVisible(false);
         int x = screensMonitor->getScreenGeometry("x");
         int y = screensMonitor->getScreenGeometry("y");
         int width = screensMonitor->getScreenGeometry("width");
