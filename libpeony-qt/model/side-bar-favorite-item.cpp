@@ -60,7 +60,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         m_children->append(trashItem);
 
         if (FileUtils::isFileExsit("file:///data/usershare")) {
-            m_children->append(new SideBarFavoriteItem("file:///data/usershare", this, m_model));
+            m_children->append(new SideBarFavoriteItem("favorite:///data/usershare?schema=file", this, m_model));
         }
 
         // check kydroid is install
@@ -104,7 +104,25 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     }
     m_uri = uri;
     //FIXME: replace BLOCKING api in ui thread.
-    m_display_name = FileUtils::getFileDisplayName(uri);
+    GFile* file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    if (nullptr != file) {
+        GFileInfo* fileInfo = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        if (nullptr != fileInfo) {
+            const char* displayName = g_file_info_get_attribute_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
+            if (nullptr != displayName) {
+                m_display_name = displayName;
+
+                qDebug() << "DJ-" << uri << "  --  " << m_display_name;
+            }
+            g_object_unref(fileInfo);
+        }
+        g_object_unref(file);
+    }
+
+    if (m_display_name.isEmpty() || "" == m_display_name) {
+        m_display_name = FileUtils::getFileDisplayName(uri);
+    }
+
     m_icon_name = FileUtils::getFileIconName(uri);
 
     m_info = FileInfo::fromUri(uri);
