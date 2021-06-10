@@ -56,7 +56,7 @@ SideBarModel::SideBarModel(QObject *parent)
     auto vfsMgr = VFSPluginManager::getInstance();
     auto plugins = vfsMgr->registeredPlugins();
     for (auto plugin : plugins) {
-        if (plugin->uriScheme().contains("kydroid://")) {
+        if (plugin->uriScheme().contains("kydroid://") || plugin->uriScheme().contains("kmre://")) {
             continue;
         }
         if (plugin->holdInSideBar()) {

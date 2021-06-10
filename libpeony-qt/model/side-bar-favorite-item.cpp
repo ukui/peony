@@ -34,8 +34,8 @@
 
 using namespace Peony;
 
-bool kydroidInstall = "kydroid:///";
-QString kydroidPath = "";
+bool kydroidInstall = false;
+QString kydroidPath = "kydroid:///";
 
 SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         SideBarFavoriteItem *parentItem,
