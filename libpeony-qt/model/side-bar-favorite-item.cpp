@@ -34,7 +34,8 @@
 
 using namespace Peony;
 
-bool kydroidInstall = false;
+bool kydroidInstall = "kydroid:///";
+QString kydroidPath = "";
 
 SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         SideBarFavoriteItem *parentItem,
@@ -63,7 +64,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         }
 
         // check kydroid is install
-        if (FileUtils::isFileExsit("file:///var/lib/kydroid")) {
+        if (FileUtils::isFileExsit("file:///var/lib/kydroid") || FileUtils::isFileExsit("file:///var/lib/kmre")) {
             GVfs* vfs = g_vfs_get_default();
             if (vfs) {
                 const gchar* const* schemas = g_vfs_get_supported_uri_schemes (vfs);
@@ -72,13 +73,20 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
                     for (; schemas[i] != NULL; ++i) {
                         if (0 == strcmp(schemas[i], "kydroid")) {
                             kydroidInstall = true;
+                            kydroidPath = "kydroid:///";
+                            break;
+                        }
+                        else if(0 == strcmp(schemas[i], "kmre"))
+                        {
+                            kydroidInstall = true;
+                            kydroidPath = "kmre:///";
                             break;
                         }
                     }
                 }
             }
             if (kydroidInstall)
-                m_children->append(new SideBarFavoriteItem("kydroid:///", this, m_model));
+                m_children->append(new SideBarFavoriteItem(kydroidPath, this, m_model));
         }
 
         m_model->insertRows(0, m_children->count(), firstColumnIndex());

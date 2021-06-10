@@ -30,6 +30,7 @@
 #include <file-utils.h>
 
 extern bool kydroidInstall;
+extern QString kydroidPath;
 
 G_DEFINE_TYPE_WITH_PRIVATE(FavoritesVFSFileEnumerator, vfs_favorites_file_enumerator, G_TYPE_FILE_ENUMERATOR);
 
@@ -59,7 +60,12 @@ static void vfs_favorites_file_enumerator_init (FavoritesVFSFileEnumerator* self
 
     // check kydroid is install
     if (kydroidInstall)
-        self->priv->enumerate_queue->enqueue("favorite:///?schema=kydroid");
+    {
+        if (kydroidPath.startsWith("kydroid:///"))
+           self->priv->enumerate_queue->enqueue("favorite:///?schema=kydroid");
+        else
+          self->priv->enumerate_queue->enqueue("favorite:///?schema=kmre");
+    }
 
 
     // add others
