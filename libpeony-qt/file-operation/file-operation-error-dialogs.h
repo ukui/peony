@@ -69,7 +69,7 @@ private:
     float m_fix_height = 188;
 
     float m_text_y = 65;
-    float m_text_heigth = 60;
+    float m_text_heigth = 80;
 
     float m_ok_x = 410;
     float m_ok_y = 132;
@@ -117,9 +117,9 @@ private:
     float           m_file_size = 48;
 
     float           m_tip_x = 85;
-    float           m_tip_y = 62;
+    float           m_tip_y = 45;
     float           m_tip_width = 430;
-    float           m_tip_height = 50;
+    float           m_tip_height = 80;
 
     // replace
     float           m_rp_btn_x = 414;
@@ -142,7 +142,7 @@ private:
     // Then do the same thing
     float           m_sm_btn_x = 16;
     float           m_sm_btn_y = 150;
-    float           m_sm_btn_width = 200;
+    float           m_sm_btn_width = 210;
     float           m_sm_btn_height = 20;
 
     float           m_ck_btn_top = 385;
