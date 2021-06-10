@@ -1403,6 +1403,8 @@ void MainWindow::initUI(const QString &uri)
         {
            setLabelNameFilter("");
            m_label_box->clearSelection();
+        } else {
+            setLabelNameFilter("");
         }
         paneAndViews->setFloatWidgetVisible(visible);
     });
