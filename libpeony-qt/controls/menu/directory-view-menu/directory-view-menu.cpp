@@ -126,7 +126,7 @@ void DirectoryViewMenu::fillActions()
         m_is_favorite = true;
     }
 
-    if (m_directory.startsWith("kydroid:///")) {
+    if (m_directory.startsWith("kydroid:///") || m_directory.startsWith("kmre:///")) {
         m_is_kydroid = true;
     }
 
