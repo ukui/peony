@@ -405,8 +405,13 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     if (index.column() == 1) {
         QPainterPath rightRoundedRegion;
         rightRoundedRegion.setFillRule(Qt::WindingFill);
-        rightRoundedRegion.addRoundedRect(option.rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
-        rightRoundedRegion.addRect(option.rect.adjusted(0, 0, -NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0));
+        auto rect = option.rect;
+        auto view = qobject_cast<const QAbstractItemView *>(option.widget);
+        if (view) {
+            rect.setRight(view->viewport()->rect().right());
+        }
+        rightRoundedRegion.addRoundedRect(rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
+        rightRoundedRegion.addRect(rect.adjusted(0, 0, -NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0));
         painter->setClipPath(rightRoundedRegion);
     }
 
