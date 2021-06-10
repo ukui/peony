@@ -91,36 +91,15 @@ void TabStatusBar::update()
 
     //qDebug() << "TabStatusBar::update";
     auto selections = m_tab->getCurrentSelectionFileInfos();
-    auto uri = m_tab->getCurrentUri();
 
-    //show current path files
+    //show current path files count
     if (selections.count() ==0)
     {
         auto uris = m_tab->getCurrentAllFileInfos();
-        auto folder_count = 0;
-        auto file_count = 0;
-        for (auto info : uris)
-        {
-            if (info->isDir())
-                folder_count ++;
-            else{
-                file_count++;
-            }
-        }
-
-        QString tips = tr("Current path has:");
         if (uris.count() == 0)
             m_label->setText("");
-        else if (folder_count > 0 && file_count >0)
-        {
-            m_label->setText(tips + tr("\%1 folders, \%2 files").arg(folder_count).arg(file_count));
-        }
-        else if (folder_count > 0)
-        {
-            m_label->setText(tips + tr("\%1 folders").arg(folder_count));
-        }
         else
-            m_label->setText(tips + tr("\%1 files").arg(file_count));
+            m_label->setText(tr(" \%1 items ").arg(uris.count()));
 
         return;
     }
@@ -134,84 +113,30 @@ void TabStatusBar::update()
         return;
     }
 
-    //not update search result in status bar
-    if (uri.startsWith("search://") && selections.count() ==0)
-        return;
-
-    if (! selections.isEmpty()) {
-        QString directoriesString = "";
-        int directoryCount = 0;
-        QString filesString="";
-        int fileCount = 0;
-        int specialCount = 0;
-        goffset size = 0;
-        for (auto selection : selections) {
-            //not count special path
-            if (selection->uri() == "network:///"
-               || selection->uri() == "computer:///")
-            {
-                specialCount++;
-                continue;
-            }
-
-            if(selection->isDir()) {
-                directoryCount++;
-            } else if (!selection->isVolume()) {
-                fileCount++;
-                size += selection->size();
-            }
-        }
-      
-        // auto format_size = g_format_size(size);
-    
-       //Calculated by 1024 bytes 
-        auto format_size  = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
-      
-        //qDebug() << "directoryCount:" <<directoryCount <<",fileCount" <<fileCount <<format_size;
-
-        //in computer, only show selected count
-        if (uri != "computer:///")
+    int specialCount = 0;
+    goffset size = 0;
+    for (auto selection : selections) {
+        //not count special path
+        if (selection->uri() == "network:///"
+           || selection->uri() == "computer:///")
         {
-            if (selections.count() == 1) {
-//                if (directoryCount == 1 && selections.first()->displayName() != "")
-//                    directoriesString = QString(", %1").arg(selections.first()->displayName());
-                if (fileCount == 1 && size >0)
-                    filesString = QString(", %1").arg(format_size);
-            } else if (directoryCount > 1 && (fileCount > 1)) {
-                directoriesString = tr("; %1 folders").arg(directoryCount);
-                if (size >0)
-                   filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
-            } else if (directoryCount == 1 && (fileCount > 1)) {
-                directoriesString = tr("; %1 folder").arg(directoryCount);
-                if (size >0)
-                   filesString = tr("; %1 file, %2").arg(fileCount).arg(format_size);
-            } else if (fileCount == 0) {
-                directoriesString = tr("; %1 folders").arg(directoryCount);
-            } else if (size >0){
-                filesString = tr("; %1 files, %2 total").arg(fileCount).arg(format_size);
-            }
+            specialCount++;
+            continue;
         }
 
-        //qDebug() << "directoriesString:" <<directoriesString <<filesString;
-        m_label->setText(tr("%1 selected").arg(selections.count()- specialCount) + directoriesString + filesString);
-        //showMessage(tr("%1 files selected ").arg(selections.count()));
-        g_free(format_size);
-    }
-    else {
-        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-        //qDebug() << "status bar text:" <<displayName <<uri;
-        if (uri.startsWith("search:///"))
-        {
-            QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
-            QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
-            displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
-            m_label->setText(displayName);
-        }
-        else {
-            QUrl url = m_tab->getCurrentUri();
-            m_label->setText(url.toDisplayString());
+        if(! selection->isDir() && ! selection->isVolume()){
+            size += selection->size();
         }
     }
+
+   //Calculated by 1024 bytes
+    auto format_size  = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS);
+    if (size > 0)
+        m_label->setText(tr(" selected \%1 items    \%2").arg(selections.count()).arg(format_size));
+    else
+        m_label->setText(tr(" selected \%1 items").arg(selections.count()- specialCount));
+
+    g_free(format_size);
 }
 
 void TabStatusBar::update(const QString &message)

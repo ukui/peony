@@ -102,6 +102,9 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 //    });
 
     QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic")), QLineEdit::TrailingPosition);
+    searchAction->setProperty("isWindowButton", 1);
+    searchAction->setProperty("useIconHighlightEffect", 2);
+    searchAction->setProperty("isIcon", true);
     connect(searchAction, &QAction::triggered, this, [=]() {
         //qDebug() << "triggered search history!";
         m_search_box->completer()->complete();

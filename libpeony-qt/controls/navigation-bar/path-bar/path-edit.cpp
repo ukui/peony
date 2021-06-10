@@ -58,6 +58,9 @@ PathEdit::PathEdit(QWidget *parent) : QLineEdit(parent)
 
     QAction *goToAction = new QAction(QIcon::fromTheme("ukui-end-symbolic", QIcon(":/icons/ukui-end-symbolic")), tr("Go To"), this);
     addAction(goToAction, QLineEdit::TrailingPosition);
+    goToAction->setProperty("isWindowButton", 1);
+    goToAction->setProperty("useIconHighlightEffect", 2);
+    goToAction->setProperty("isIcon", true);
 
     connect(goToAction, &QAction::triggered, this, &QLineEdit::returnPressed);
 
