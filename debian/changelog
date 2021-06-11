@@ -1,14 +1,14 @@
-peony (3.2.2+0610hw1) v101.hw; urgency=medium
+peony (3.2.2+0611hw) v101.hw; urgency=medium
 
   * 9A0主版本更新
-    - Bug号:60758-9A0，58122-9A0, 52364-9A0,
-      52579-9A0, 59176-9A0, 57383-9A0. 
+    - Bug号:60759-9A0，58122-9A0, 52364-9A0,
+      52579-9A0, 57383-9A0,46492-9A0. 
     - 需求号：无。
-    - 其他修改说明：内测版本。
+    - 其他修改说明：无。
     - 影响域：分区属性，文件复制进度条，桌面，
-      网络属性选项.
+      网络属性选项, 多屏显示.
 
- -- MeihongHe <hemeihong@kylinos.cn>  Thu, 10 Jun 2021 15:28:35 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 11 Jun 2021 16:28:35 +0800
 
 peony (3.2.2+0610hw) v101.hw; urgency=medium
 
