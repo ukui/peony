@@ -123,30 +123,33 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
             quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
-            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-            //use dbus to get total size, to agree with gparted size
-//            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
-//            if (dbusTotal > 0)
-//                total = dbusTotal;
-//            if (aviliable > 0)
-//                used = total - aviliable;
+            quint64 available = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+
             // char *total_format = g_format_size(total);
             // char *used_format = g_format_size(used);
-            // char *aviliable_format = g_format_size(aviliable);
+            // char *available_format = g_format_size(available);
             //Calculated by 1024 bytes
-            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+            char *total_format =g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS);
+            char *used_format = g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS);
+            char *available_format = g_format_size_full(available,G_FORMAT_SIZE_IEC_UNITS);
+
+            QString total_format_string(total_format);
+            QString used_format_string(used_format);
+            QString available_format_string(available_format);
+            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+            total_format_string.replace("iB", "B");
+            used_format_string.replace("iB", "B");
+            available_format_string.replace("iB", "B");
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(total_format_string, this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(used_format_string, this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
             g_free(total_format);
             g_free(used_format);
-            g_free(aviliable_format);
+            g_free(available_format);
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
@@ -166,21 +169,23 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
             quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
-            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-            //use dbus to get total size, to agree with gparted size
-//            quint64 dbusTotal = FileUtils::getFileSystemSize(uri);
-//            if (dbusTotal > 0)
-//                total = dbusTotal;
-//            if (aviliable > 0)
-//                used = total - aviliable;
+            quint64 available = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+
             //char *total_format = g_format_size(total);
             //char *used_format = g_format_size(used);
-            //char *aviliable_format = g_format_size(aviliable);
+            //char *available_format = g_format_size(available);
             //Calculated by 1024 bytes
-            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+            char *total_format = g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS);
+            char *used_format = g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS);
+            char *available_format = g_format_size_full(available,G_FORMAT_SIZE_IEC_UNITS);
 
+            QString total_format_string(total_format);
+            QString used_format_string(used_format);
+            QString available_format_string(available_format);
+            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+            total_format_string.replace("iB", "B");
+            used_format_string.replace("iB", "B");
+            available_format_string.replace("iB", "B");
             //fix system Udisk calculate size wrong issue
             //comment to fix caculate volume capacity wrong issue,bug#51957
 //            QString m_volume_name, m_unix_device, m_display_name, sizeInfo;
@@ -211,13 +216,13 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                 m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
             else */
             if (total != 0) {
-                m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
+                m_layout->addRow(tr("Total Space: "), new QLabel(total_format_string, this));
             }
             if (used != 0) {
-                m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
+                m_layout->addRow(tr("Used Space: "), new QLabel(used_format_string, this));
             }
-            if (aviliable != 0) {
-                m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            if (available != 0) {
+                m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
             }
             m_layout->addRow(tr("Type: "), new QLabel(type, this));
 
@@ -239,7 +244,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
 
             g_free(total_format);
             g_free(used_format);
-            g_free(aviliable_format);
+            g_free(available_format);
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
