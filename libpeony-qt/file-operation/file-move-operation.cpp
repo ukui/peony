@@ -100,6 +100,7 @@ void FileMoveOperation::move()
 
     auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
     m_total_count = m_source_uris.count();
+
     for (auto file : nodes) {
         if (isCancelled())
             return;
@@ -144,13 +145,9 @@ retry:
             case G_IO_ERROR_NOT_SUPPORTED:
             case G_IO_ERROR_WOULD_RECURSE:
             case G_IO_ERROR_EXISTS: {
-                setHasError(false);
-                m_force_use_fallback = true;
-                for (auto node : nodes) {
-                    delete node;
-                }
-                nodes.clear();
-                return;
+                moveForceUseFallback(file);
+                operationStartSnyc();
+                continue;
             }
             default:
                 break;
@@ -915,6 +912,24 @@ void FileMoveOperation::moveForceUseFallback()
     nodes.clear();
 }
 
+void FileMoveOperation::moveForceUseFallback(FileNode* node)
+{
+    if (isCancelled() || nullptr == node)
+        return;
+
+    copyRecursively(node);
+
+    if (isCancelled()) {
+        Q_EMIT operationStartRollbacked();
+    }
+
+    deleteRecursively(node);
+
+    if (isCancelled()) {
+        rollbackNodeRecursively(node);
+    }
+}
+
 bool FileMoveOperation::isValid()
 {
     int index = 0;
@@ -975,29 +990,30 @@ start:
         return;
 
     //should block and wait for other object prepared.
-    if (!m_force_use_fallback) {
-        move();
-    }
+    move();
+//    if (!m_force_use_fallback) {
+//        move();
+//    }
 
-    //ensure again
-    if (m_force_use_fallback) {
-        moveForceUseFallback();
-        operationStartSnyc();
+//    //ensure again
+//    if (m_force_use_fallback) {
+//        moveForceUseFallback();
+//        operationStartSnyc();
 
-        auto info = getOperationInfo();
-        auto destDirUri = info.get()->m_dest_dir_uri;
-        auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
-        auto path = g_file_get_path(dest_file);
-        g_object_unref(dest_file);
-//        if (path) {
-//            QProcess p;
-//            auto shell_path = g_shell_quote(path);
-//            g_free(path);
-//            p.start(QString("sync -d %1").arg(shell_path));
-//            g_free(shell_path);
-//            p.waitForFinished(-1);
-//        }
-    }
+//        auto info = getOperationInfo();
+//        auto destDirUri = info.get()->m_dest_dir_uri;
+//        auto dest_file = g_file_new_for_uri(destDirUri.toUtf8().constData());
+//        auto path = g_file_get_path(dest_file);
+//        g_object_unref(dest_file);
+////        if (path) {
+////            QProcess p;
+////            auto shell_path = g_shell_quote(path);
+////            g_free(path);
+////            p.start(QString("sync -d %1").arg(shell_path));
+////            g_free(shell_path);
+////            p.waitForFinished(-1);
+////        }
+//    }
     qDebug()<<"finished";
 end:
     Q_EMIT operationFinished();
