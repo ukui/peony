@@ -1389,7 +1389,7 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
             relayoutExsitingItems(fakeList);
         }
 
-        if (uri == m_model->m_renaming_file_pos.first) {
+        if (uri == m_model->m_renaming_file_pos.first || uri == m_model->m_renaming_file_pos.first + ".desktop") {
             updateItemPosByUri(uri, m_model->m_renaming_file_pos.second);
         }
     }
