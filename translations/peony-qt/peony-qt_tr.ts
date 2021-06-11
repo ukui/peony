@@ -178,12 +178,12 @@ p, li { white-space: pre-wrap; }
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1475"/>
+        <location filename="../../src/windows/main-window.cpp" line="1477"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1476"/>
+        <location filename="../../src/windows/main-window.cpp" line="1478"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -192,12 +192,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1465"/>
+        <location filename="../../src/windows/main-window.cpp" line="1467"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1466"/>
+        <location filename="../../src/windows/main-window.cpp" line="1468"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -245,7 +245,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="439"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="444"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>
