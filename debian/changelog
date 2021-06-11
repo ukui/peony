@@ -1,3 +1,12 @@
+peony (3.2.2) v101; urgency=medium
+
+  * 20.04-pro版本更新
+    - 同步master修改。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 11 Jun 2021 13:38:18 +0800
+
 peony (3.0.6-1) unstable; urgency=medium
 
   * New upstream release.
