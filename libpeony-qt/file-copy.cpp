@@ -112,6 +112,7 @@ void FileCopy::run ()
 
     // it's impossible
     if (nullptr == srcFile || nullptr == destFile) {
+        qDebug() << "src or dest GFile is null";
         error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
         detailError(&error);
         goto out;
@@ -119,14 +120,16 @@ void FileCopy::run ()
 
     // impossible
     srcFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
-    if (G_FILE_TYPE_UNKNOWN == srcFileType || G_FILE_TYPE_DIRECTORY == srcFileType) {
+    if (G_FILE_TYPE_DIRECTORY == srcFileType) {
+        qDebug() << "src GFile is G_FILE_TYPE_DIRECTORY";
         error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
         detailError(&error);
         goto out;
     }
 
-    destFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
+    destFileType = g_file_query_file_type(destFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
     if (G_FILE_TYPE_DIRECTORY == destFileType) {
+        qDebug() << "dest GFile is G_FILE_TYPE_DIRECTORY";
         mDestUri = mDestUri + "/" + mSrcUri.split("/").last();
         g_object_unref(destFile);
         destFile = g_file_new_for_uri(mDestUri.toUtf8());
@@ -139,13 +142,16 @@ void FileCopy::run ()
 
     // check file status
     if (FileUtils::isFileExsit(mDestUri)) {
+        qDebug() << "mDestUri: " << mDestUri << " is exists!";
         if (mCopyFlags & G_FILE_COPY_OVERWRITE) {
+            qDebug() << "mDestUri: " << mDestUri << " is exists! G_FILE_COPY_OVERWRITE";
             g_file_delete(destFile,  nullptr, &error);
             if (nullptr != error) {
                 detailError(&error);
                 goto out;
             }
         } else if (mCopyFlags & G_FILE_COPY_BACKUP) {
+            qDebug() << "mDestUri: " << mDestUri << " is exists! G_FILE_COPY_BACKUP";
             do {
                 g_autofree gchar* decodeUri = g_uri_unescape_string(mDestUri.toUtf8(), ":/");
                 QStringList newUrl = mDestUri.split("/");
@@ -158,6 +164,7 @@ void FileCopy::run ()
             }
             destFile = g_file_new_for_uri(mDestUri.toUtf8());
         } else {
+            qDebug() << "mDestUri: " << mDestUri << " is exists! return";
             error = g_error_new (1, G_IO_ERROR_EXISTS, "%s", QString(tr("The dest file \"%1\" has existed!")).arg(mDestUri).toUtf8().constData());
             detailError(&error);
             goto out;
@@ -167,7 +174,7 @@ void FileCopy::run ()
     srcFileInfo = g_file_query_info(srcFile, "standard::*,time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, mCancel ? mCancel : nullptr, &error);
     if (nullptr != error) {
         mTotalSize = 0;
-        qDebug() << error->message;
+        qDebug() << "srcFile: " << mSrcUri << " querry info error: " << error->message;
         detailError(&error);
     } else {
         mTotalSize = g_file_info_get_size(srcFileInfo);
@@ -218,6 +225,7 @@ void FileCopy::run ()
                 mPause.unlock();
                 continue;
             } else if (nullptr != error) {
+                qDebug() << "read srcfile: " << mSrcUri << " error: " << error->message;
                 detailError(&error);
                 mStatus = ERROR;
                 mPause.unlock();
@@ -228,6 +236,7 @@ void FileCopy::run ()
             // write data
             writeSize = g_output_stream_write(G_OUTPUT_STREAM(writeIO), buf, readSize, mCancel ? mCancel : nullptr, &error);
             if (nullptr != error) {
+                qDebug() << "write destfile: " << mDestUri << " error: " << error->message;
                 detailError(&error);
                 mStatus = ERROR;
                 continue;
@@ -235,6 +244,7 @@ void FileCopy::run ()
 
             if (readSize != writeSize) {
                 // it's impossible
+                qDebug() << "read file: " << mSrcUri << "  --- write file: " << mDestUri << " size not inconsistent";
                 error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Reading and Writing files are inconsistent!").toUtf8().constData());
                 detailError(&error);
                 mStatus = ERROR;
