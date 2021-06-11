@@ -529,6 +529,40 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
             m_folderContainFolders--;
         }
         this->updateCountInfo(true);
+
+        //使用du -s 命令查看文件实际占用的磁盘空间。
+        for (QString uri : m_uris) {
+            QUrl url(uri);
+            //某些带空格的文件名称会导致命令错误，加上引号解决此问题。
+            QString path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
+
+            QProcess process;
+            process.start("du -s " + path);
+            process.waitForFinished();
+            QString result = process.readAllStandardOutput();
+            //du -s xxx 输出格式：4	xxx  (大小单位为KB)
+            m_fileTotalSizeCount += result.split(QRegExp("\\s+")).first().toLong();
+        }
+        //转换为 xx Bytes
+        m_fileTotalSizeCount *= CELL1K;
+
+        if (m_fileTotalSizeCount == 0) {
+            quint64 a = 0;
+            quint64 b = 0;
+            a = m_fileSizeCount % CELL4K;
+            b = m_fileSizeCount / CELL4K;
+            quint64 cell4k = (a == 0) ? b : (b + 1);
+            m_fileTotalSizeCount = cell4k * CELL4K;
+        }
+        //gio格式化工具
+        char *fileTotalSizeFormat = g_format_size_full(m_fileTotalSizeCount,G_FORMAT_SIZE_IEC_UNITS);
+        QString fileTotalSizeFormatString(fileTotalSizeFormat);
+        fileTotalSizeFormatString.replace("iB", "B");
+
+        QString fileTotalSizeText(tr("%1 (%2 Bytes)").arg(fileTotalSizeFormatString).arg(m_fileTotalSizeCount));
+        g_free(fileTotalSizeFormat);
+
+        m_fileTotalSizeLabel->setText(fileTotalSizeText);
     });
 
     QThreadPool::globalInstance()->start(m_countOp);
@@ -716,46 +750,26 @@ void BasicPropertiesPage::changeFileIcon()
 void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
     if (isDone) {
-        //FIXME:多选文件情况下，文件占用空间大小不准确
-        //FIXME: In the case of multiple selection of files, the space occupied by the files is not accurate
-        qint64 a = m_fileSizeCount % CELL4K;
-        qint64 b = m_fileSizeCount / CELL4K;
-        qint64 cell4k = (a == 0) ? b : (b + 1);
-        m_fileTotalSizeCount = cell4k * CELL4K;
-
         QString fileSizeText;
-        QString fileTotalSizeText;
 
-        qreal fileSizeKMGB = 0.0;
-
-        // 1024 KB
-        b = m_fileSizeCount / CELL1K;
-        if (b < CELL1K) {
-            if (b < 1) {
-                fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
-            } else {
-                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1K;;
-                fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-            }
-            fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1K;
-            fileTotalSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
+        quint64 a = 0;
+        a = m_fileSizeCount / CELL1K;
+        //小于1KB
+        if (a < 1) {
+            fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
         } else {
-            //1024 MB
-            fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1M;
-            if (fileSizeKMGB < CELL1K) {
-                fileSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1M;
-                fileTotalSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
-            } else {
-                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1G;
-                fileSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1G;
-                fileTotalSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
-            }
+            char *fileSizeFormat = g_format_size_full(m_fileSizeCount,G_FORMAT_SIZE_IEC_UNITS);
+            QString fileSizeFormatString(fileSizeFormat);
+            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+            fileSizeFormatString.replace("iB", "B");
+
+            fileSizeText = tr("%1 (%2 Bytes)").arg(fileSizeFormatString).arg(m_fileSizeCount);
+            g_free(fileSizeFormat);
         }
 
         m_fileSizeLabel->setText(fileSizeText);
-        m_fileTotalSizeLabel ->setText(fileTotalSizeText);
+        //在为完成统计前，先显示文件大小而不是占用空间大小
+        m_fileTotalSizeLabel->setText(fileSizeText);
 
         if(m_folderContainLabel)
             m_folderContainLabel->setText(tr("%1 files, %2 folders").arg(m_folderContainFiles).arg(m_folderContainFolders));
