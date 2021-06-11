@@ -1,3 +1,114 @@
+peony (3.2.2+0610hw1) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:60758-9A0，58122-9A0, 52364-9A0,
+      52579-9A0, 59176-9A0, 57383-9A0. 
+    - 需求号：无。
+    - 其他修改说明：内测版本。
+    - 影响域：分区属性，文件复制进度条，桌面，
+      网络属性选项.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 10 Jun 2021 15:28:35 +0800
+
+peony (3.2.2+0610hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:60066-9A0. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 影响域：计算机视图.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 10 Jun 2021 10:58:35 +0800
+
+peony (3.2.2+0610hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号:53261-990, 54063-990. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 影响域：桌面图标重叠，双屏显示.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 10 Jun 2021 09:18:35 +0800
+
+peony (3.2.2+0608hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:53361-9A0, 59176-9A0. 
+    - 需求号：无。
+    - 其他修改说明：内测版本。
+    - 影响域：光盘容量显示，拷问大文件
+      进度提示.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 08 Jun 2021 13:38:35 +0800
+
+peony (3.2.2+0607hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:53360-9A0, 50679-9A0, 52295-9A0，
+      59267-9A0,57029-9A0,58075-9A0. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 影响域：桌面图标重叠问题，属性显示，
+      点击侧边栏通知，U盘格式化选项.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 07 Jun 2021 10:38:35 +0800
+
+peony (3.2.2+0607hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号: 57972-990, 56009-990, 54343-990,
+      57988-990, 55183-990, 49995-990,
+      57811-990. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：桌面显示，用户手册，解压缩，
+      排序，U盘卸载跳转.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 07 Jun 2021 09:18:35 +0800
+
+peony (3.2.2+0604hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号: 58829-990. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：特殊升级分区挂载.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 04 Jun 2021 17:08:35 +0800
+
+peony (3.2.2+0603hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号:54820-990, 57902-990, 51053-990，
+      55563-990. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 响应域：搜索筛选，分区属性，分区右键菜单.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 03 Jun 2021 09:58:35 +0800
+
+peony (3.2.2+0602hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:53361-9A0, 57029-9A0, 52295-9A0，
+      55706-990. 
+    - 需求号：无。
+    - 其他修改说明：内测版本。
+    - 响应域：分区属性，分区右键菜单,创建
+      wps模板文档.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 02 Jun 2021 15:58:35 +0800
+
+peony (3.2.2+0530hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:55167-9A0, 55614-9A0, 56962-9A0. 
+    - 需求号：无。
+    - 其他修改说明：无
+    - 响应域：用户手册，回收站属性，弹出U盘.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 31 May 2021 10:58:35 +0800
+
 peony (3.2.2+0528hw) v101.hw; urgency=medium
 
   * 主版本更新
