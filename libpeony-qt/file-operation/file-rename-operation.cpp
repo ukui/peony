@@ -277,7 +277,6 @@ retry:
 
 cancel:
     if (!isCancelled()) {
-        setHasError(false);
         auto string = g_file_get_uri(newFile.get()->get());
         destUri = string;
         if (string)

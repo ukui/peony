@@ -375,11 +375,15 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
     connect(FileOperationManager::getInstance(), &FileOperationManager::operationFinished, this, [=](std::shared_ptr<FileOperationInfo> info){
         if (info.get()->m_type == FileOperationInfo::Rename) {
-            auto renamingUri = info.get()->target();
-            m_renaming_file_pos.first = renamingUri;
-            m_items_need_relayout.removeOne(renamingUri);
-            m_items_need_relayout.removeOne(renamingUri + ".desktop");
-            PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+            if (!info.get()->m_has_error) {
+                auto renamingUri = info.get()->target();
+                m_renaming_file_pos.first = renamingUri;
+                m_items_need_relayout.removeOne(renamingUri);
+                m_items_need_relayout.removeOne(renamingUri + ".desktop");
+                PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+            } else {
+                // restore/relayout?
+            }
         }
     });
 }

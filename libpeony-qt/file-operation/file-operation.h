@@ -32,6 +32,7 @@
 #include "gobject-template.h"
 #include "peony-core_global.h"
 #include "file-operation-error-handler.h"
+#include "file-operation-manager.h"
 
 namespace Peony {
 
@@ -67,9 +68,7 @@ public:
     ~FileOperation();
     virtual void run();
 
-    void setHasError(bool hasError = true) {
-        m_has_error = hasError;
-    }
+    void setHasError(bool hasError = true);
     bool hasError() {
         return m_has_error;
     }

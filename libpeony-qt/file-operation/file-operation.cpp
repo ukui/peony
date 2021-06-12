@@ -55,6 +55,12 @@ void FileOperation::run()
 
 }
 
+void FileOperation::setHasError(bool hasError)
+{
+    m_has_error = hasError;
+    getOperationInfo().get()->m_has_error = hasError;
+}
+
 void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());
