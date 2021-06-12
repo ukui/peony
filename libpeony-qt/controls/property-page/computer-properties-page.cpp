@@ -39,6 +39,8 @@
 #include <QProcess>
 
 #include <glib.h>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusInterface>
 
 using namespace Peony;
 
@@ -139,11 +141,15 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             available_format_string.replace("iB", "B");
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            QString type = getFileSystemType(uri);
+            if (type.length() <=0)
+                type = fs_type;
+
             m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
             m_layout->addRow(tr("Total Space: "), new QLabel(total_format_string, this));
             m_layout->addRow(tr("Used Space: "), new QLabel(used_format_string, this));
             m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
-            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
+            m_layout->addRow(tr("Type: "), new QLabel(type, this));
             g_free(total_format);
             g_free(used_format);
             g_free(available_format);
@@ -203,6 +209,11 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
 //            }
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            //use dubs to get file system type, fix ntfs show as fuse issue
+            QString type = getFileSystemType(uri);
+            if (type.length() <=0)
+                type = fs_type;
+
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
 /*            if (bMobileDevice)
                 m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
@@ -216,7 +227,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             if (available != 0) {
                 m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
             }
-            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
+            m_layout->addRow(tr("Type: "), new QLabel(type, this));
 
             auto progressBar = new QProgressBar(this);
             auto value = double(used*1.0/total)*100;
@@ -256,4 +267,32 @@ void ComputerPropertiesPage::addSeparator()
 void ComputerPropertiesPage::saveAllChange()
 {
 
+}
+
+QString ComputerPropertiesPage::getFileSystemType(QString uri)
+{
+    QString unixDevice,dbusPath;
+    QString fsType = "";
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return fsType;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return fsType;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Block",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        fsType = blockInterface.property("IdType").toString();
+
+    //if need diff FAT16 and FAT32, should use IdVersion
+//    if(fsType == "" && blockInterface.isValid())
+//        fsType = blockInterface.property("IdVersion").toString();
+
+    return fsType;
 }
