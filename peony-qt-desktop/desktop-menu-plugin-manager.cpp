@@ -107,7 +107,6 @@ DesktopMenuPluginManager *DesktopMenuPluginManager::getInstance()
         if (!m_is_loading) {
             m_is_loading = true;
             global_instance = new DesktopMenuPluginManager;
-            global_instance->loadAsync();
         }
     }
     return global_instance;
