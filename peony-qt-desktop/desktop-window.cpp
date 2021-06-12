@@ -104,7 +104,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 
     connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
         m_bg_back_pixmap = m_bg_font_pixmap;
-        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
         m_last_pure_color = m_color_to_be_set;
     });
 
@@ -260,6 +259,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
+    p.setRenderHint(QPainter::SmoothPixmapTransform);
     if (m_opacity->state() == QVariantAnimation::Running) {
         //draw bg?
         if (m_use_pure_color) {
@@ -271,10 +271,10 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
             p.restore();
         } else {
             auto opacity = m_opacity->currentValue().toDouble();
-            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+            p.drawPixmap(this->rect().adjusted(0,0,-1,-1), m_bg_back_pixmap, m_bg_back_pixmap.rect());
             p.save();
             p.setOpacity(opacity);
-            p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+            p.drawPixmap(this->rect().adjusted(0,0,-1,-1), m_bg_font_pixmap, m_bg_font_pixmap.rect());
             p.restore();
         }
     } else {
@@ -282,7 +282,7 @@ void DesktopWindow::paintEvent(QPaintEvent *e)
         if (m_use_pure_color) {
             p.fillRect(this->rect(), m_last_pure_color);
         } else {
-            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+            p.drawPixmap(this->rect().adjusted(0,0,-1,-1), m_bg_back_pixmap, m_bg_back_pixmap.rect());
         }
     }
     QWidget::paintEvent(e);
@@ -382,10 +382,6 @@ void DesktopWindow::setBg(const QString &path) {
     m_bg_font_pixmap = QPixmap(path);
     // FIXME: implement different pixmap clip algorithm.
 
-    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(m_screen->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
     m_current_bg_path = path;
     setBgPath(path);
 
@@ -460,8 +456,6 @@ void DesktopWindow::scaleBg(const QRect &geometry) {
     setGeometry(geometry);
     show();
 
-    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->update();
 }
 
