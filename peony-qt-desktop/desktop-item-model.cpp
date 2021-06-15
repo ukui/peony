@@ -385,6 +385,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_items_need_relayout.removeOne(renamingUri);
                 m_items_need_relayout.removeOne(renamingUri + ".desktop");
                 PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+                PeonyDesktopApplication::getIconView()->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
             } else {
                 // restore/relayout?
             }
