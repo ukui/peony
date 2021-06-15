@@ -1952,7 +1952,7 @@ void DesktopIconView::startDrag(Qt::DropActions supportedActions)
 {
     auto indexes = selectedIndexes();
     if (indexes.count() > 0) {
-        auto pos = mapFromGlobal(QCursor::pos());
+        auto pos = m_press_pos;
         qreal scale = 1.0;
         QWidget *window = this->window();
         if (window) {
