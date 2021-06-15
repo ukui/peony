@@ -6,3 +6,4 @@ src/.qm/*.qm usr/share/peony-qt
 translations/peony-qt/* usr/share/peony-qt
 translations/peony-qt-desktop/* usr/share/peony-qt-desktop
 data/peony/* usr/share/kylin-user-guide/data/guide/peony
+data/peony-desktop.desktop /etc/xdg/autostart
