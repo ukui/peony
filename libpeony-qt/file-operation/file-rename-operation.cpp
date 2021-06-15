@@ -40,6 +40,7 @@ FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
     m_new_name = newName;
+    m_old_name = FileUtils::getFileDisplayName(uri);
     QStringList srcUris;
     srcUris<<uri;
     QString destUri = FileUtils::getParentUri(uri);
@@ -144,12 +145,13 @@ void FileRenameOperation::run()
         }
     }
 
+    QString targetName = m_new_name;
     if (is_local_desktop_file) {
-        m_new_name = m_new_name+".desktop";
+        targetName = m_new_name+".desktop";
     }
 
     auto parent = FileUtils::getFileParent(file);
-    auto newFile = FileUtils::resolveRelativePath(parent, m_new_name);
+    auto newFile = FileUtils::resolveRelativePath(parent, targetName);
 
     if (is_local_desktop_file) {
 fallback_retry:
@@ -275,12 +277,13 @@ retry:
 
 cancel:
     if (!isCancelled()) {
-        setHasError(false);
         auto string = g_file_get_uri(newFile.get()->get());
         destUri = string;
         if (string)
             g_free(string);
         m_info->m_node_map.insert(m_uri, destUri);
+        m_info->m_newname = m_new_name;
+        m_info->m_oldname = m_old_name;
     }
 
     fileSync(m_uri, destUri);

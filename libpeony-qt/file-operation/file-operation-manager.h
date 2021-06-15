@@ -42,6 +42,7 @@ namespace Peony {
 
 class FileOperationInfo;
 class FileWatcher;
+class FileOperation;
 
 /*!
  * \brief The FileOperationManager class
@@ -209,6 +210,8 @@ public:
     //Rename
     QString m_oldname = nullptr;
     QString m_newname = nullptr;
+
+    bool m_has_error = false;
 };
 
 }

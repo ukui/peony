@@ -25,6 +25,7 @@
 
 #include <QAbstractListModel>
 #include <QQueue>
+#include <QPoint>
 #include <memory>
 #include "user-dir-manager.h"
 
@@ -107,6 +108,9 @@ private:
     UserdirManager * m_dir_manager;
 
     std::shared_ptr<FileInfo> m_desktop_info;
+
+    QPair<QString, QPoint> m_renaming_file_pos;
+
     void refreshInternal();
 };
 
