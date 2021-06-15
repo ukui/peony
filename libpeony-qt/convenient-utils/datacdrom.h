@@ -80,6 +80,7 @@ class PEONYCORESHARED_EXPORT DataCDROM : public QObject
 public:
     explicit DataCDROM(QString &blockName, QObject *parent = nullptr);
     ~DataCDROM();
+
 public:
     void getCDROMInfo();
     unsigned long getCDROMCapacity() {
@@ -88,6 +89,10 @@ public:
 
     unsigned long getCDROMUsedCapacity() {
         return m_u64UsedCapacity;
+    }
+
+    QString getCDROMMediumType() {
+        return m_oMediumType;
     }
 
 private:
