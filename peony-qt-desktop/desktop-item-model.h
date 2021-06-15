@@ -34,6 +34,7 @@ namespace Peony {
 class FileEnumerator;
 class FileInfo;
 class FileWatcher;
+class FileOperationInfo;
 
 class DesktopItemModel : public QAbstractListModel
 {
@@ -108,6 +109,7 @@ private:
     UserdirManager * m_dir_manager;
 
     std::shared_ptr<FileInfo> m_desktop_info;
+    std::shared_ptr<FileOperationInfo> m_renaming_operation_info;
 
     QPair<QString, QPoint> m_renaming_file_pos;
 
