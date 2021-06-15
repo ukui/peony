@@ -172,7 +172,10 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     m_form->setSpacing(3);
 
     m_display_name_label = new QLabel(this);
-    m_form->addRow(tr("File Name:"), m_display_name_label);
+    QLabel *file_name_label = new QLabel(this);
+    file_name_label->setAlignment(Qt::AlignTop);
+    file_name_label->setText(tr("File Name:"));
+    m_form->addRow(file_name_label, m_display_name_label);
 
     m_type_label = new QLabel(this);
     m_form->addRow(tr("File Type:"), m_type_label);
@@ -184,21 +187,24 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     m_form->addRow(tr("Time Modified:"), m_time_modified_label);
 
     m_file_count_label = new QLabel(this);
-    m_form->addRow(tr("Children Count:"), m_file_count_label);
+    QLabel *children_label = new QLabel(this);
+    children_label->setAlignment(Qt::AlignTop);
+    children_label->setText(tr("Children Count:"));
+    m_form->addRow(children_label, m_file_count_label);
 
     m_total_size_label = new QLabel(this);
     m_form->addRow(tr("Size:"), m_total_size_label);
 
     //image
     m_image_size = new QLabel(this);
-    m_form->addRow(tr("Image size:"), m_image_size);
+    m_form->addRow(tr("Image resolution:"), m_image_size);
 
     m_image_format = new QLabel(this);
-    m_form->addRow(tr("Image format:"), m_image_format);
+    m_form->addRow(tr("color model:"), m_image_format);
 
     m_form->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
     m_form->setFormAlignment(Qt::AlignHCenter);
-    m_form->setLabelAlignment(Qt::AlignRight);
+    m_form->setLabelAlignment(Qt::AlignLeft);
 
     QWidget *form = new QWidget(this);
     form->setLayout(m_form);
@@ -325,7 +331,15 @@ void FilePreviewPage::updateCount()
     wrapData(m_file_count_label, tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count));
 
     auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
-    m_total_size_label->setText(format);
+    QString fileSize(format);
+    if (fileSize.contains("KiB")) {
+        fileSize.replace("KiB", "KB");
+    } else if (fileSize.contains("MiB")) {
+        fileSize.replace("MiB", "MB");
+    } else if (fileSize.contains("GiB")) {
+        fileSize.replace("GiB", "GB");
+    }
+    m_total_size_label->setText(fileSize);
     g_free(format);
 }
 
