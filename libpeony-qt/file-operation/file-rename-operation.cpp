@@ -152,6 +152,7 @@ void FileRenameOperation::run()
 
     auto parent = FileUtils::getFileParent(file);
     auto newFile = FileUtils::resolveRelativePath(parent, targetName);
+    getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
 
     if (is_local_desktop_file) {
 fallback_retry:
@@ -228,6 +229,7 @@ retry:
                 while (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
                     QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
                     newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
+                    getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
                 }
                 break;
             }
@@ -275,6 +277,7 @@ retry:
         }
     }
 
+    getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
 cancel:
     if (!isCancelled()) {
         auto string = g_file_get_uri(newFile.get()->get());
