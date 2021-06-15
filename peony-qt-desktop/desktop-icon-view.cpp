@@ -1341,6 +1341,10 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 
         if (uri == m_model->m_renaming_file_pos.first || uri == m_model->m_renaming_file_pos.first + ".desktop") {
             updateItemPosByUri(uri, m_model->m_renaming_file_pos.second);
+        } else if (m_model->m_renaming_operation_info.get()) {
+            if (m_model->m_renaming_operation_info.get()->target() == uri) {
+                updateItemPosByUri(uri, m_model->m_renaming_file_pos.second);
+            }
         }
     }
     clearAllIndexWidgets();
