@@ -44,6 +44,8 @@ public:
 
     ~DesktopIndexWidget();
 
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 protected:
     void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *event);
@@ -55,9 +57,6 @@ private:
     QStyleOptionViewItem m_option;
     QModelIndex m_index;
     const DesktopIconViewDelegate *m_delegate;
-    QFont m_current_font;
-
-    QRect m_text_rect;
 
     bool b_elide_text = false;
     const int ELIDE_TEXT_LENGTH = 40;
