@@ -97,9 +97,11 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
                 {
                     m_cache.remove(key);
-                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());
-                    Q_EMIT this->valueChanged(key);
+                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());                  
                 }
+                /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
+                 *  but the other document management does not take effect in real time.modified by 2021/06/15  */
+                Q_EMIT this->valueChanged(key);
             }
         });
 
