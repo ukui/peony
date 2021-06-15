@@ -54,8 +54,6 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     m_index = index;
     m_delegate = delegate;
 
-    m_current_font = QApplication::font();
-
     updateItem();
 
     //FIXME: how to handle it in old version?
@@ -74,6 +72,20 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
 DesktopIndexWidget::~DesktopIndexWidget()
 {
 
+}
+
+bool DesktopIndexWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::ApplicationFontChange:
+    case QEvent::FontChange: {
+        updateItem();
+        break;
+    }
+    default:
+        break;
+    }
+    return false;
 }
 
 void DesktopIndexWidget::paintEvent(QPaintEvent *e)
@@ -159,25 +171,6 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.translate(-3, -1);
     p.drawImage(0, 0, shadowImage);
 
-//    QColor shadow = Qt::black;
-//    shadow.setAlpha(127);
-//    p.setPen(shadow);
-//    Peony::DirectoryView::IconViewTextHelper::paintText(&p,
-//            m_option,
-//            m_index,
-//            9999,
-//            2,
-//            0,
-//            false);
-//    QFontMetrics fm(m_current_font);
-
-//    style()->drawItemText(&p,
-//                          m_text_rect,
-//                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
-//                          this->palette(),
-//                          true,
-//                          m_option.text,
-//                          QPalette::Shadow);
     p.restore();
 
     // draw text
@@ -189,13 +182,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
             2,
             0,
             false);
-//    style()->drawItemText(&p,
-//                          m_text_rect,
-//                          Qt::AlignTop|Qt::TextWrapAnywhere|Qt::AlignHCenter,
-//                          this->palette(),
-//                          true,
-//                          m_option.text,
-//                          QPalette::HighlightedText);
+
     p.restore();
 
     bgColor.setAlpha(255*0.8);
@@ -271,6 +258,8 @@ void DesktopIndexWidget::updateItem()
 {
     auto view = m_delegate->getView();
     m_option = view->viewOptions();
+    m_option.font = qApp->font();
+    m_option.fontMetrics = qApp->fontMetrics();
     m_delegate->initStyleOption(&m_option, m_index);
     QSize size = m_delegate->sizeHint(m_option, m_index);
     auto visualRect = m_delegate->getView()->visualRect(m_index);
@@ -323,19 +312,5 @@ void DesktopIndexWidget::updateItem()
     rawTextRect.setTop(iconRect.bottom() + y_delta + 5);
     rawTextRect.setHeight(9999);
 
-    QFontMetrics fm(m_current_font);
-    auto textRect = QApplication::style()->itemTextRect(fm,
-                    rawTextRect,
-                    Qt::AlignTop|Qt::AlignHCenter|Qt::TextWrapAnywhere,
-                    true,
-                    m_option.text);
-
-    m_text_rect = textRect;
-
-    //m_option.font = font;
-    //auto opt = m_option;
-
-    qDebug()<<textRect;
-//    setFixedHeight(textRect.bottom() + 10);
     setFixedHeight(fixedHeight);
 }

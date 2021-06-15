@@ -70,6 +70,9 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
 
+    opt.font = qApp->font();
+    opt.fontMetrics = qApp->fontMetrics();
+
     if (view->state() == DesktopIconView::DraggingState) {
         if (auto widget = view->indexWidget(index)) {
             view->setIndexWidget(index, nullptr);
@@ -203,6 +206,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->save();
     painter->translate(0, 0 + iconSizeExpected.height() + 10);
     //painter->setFont(opt.font);
+    painter->setFont(qApp->font());
     QColor textColor = Qt::white;
     textColor.setAlphaF(0.9);
     painter->setPen(textColor);
