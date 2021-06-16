@@ -224,7 +224,9 @@ void PropertiesWindow::init()
 
     this->initTabPage(m_uris);
 
-    QTimer::singleShot(300, this, [=]{
+    QTimer::singleShot(400, Qt::PreciseTimer, this, [=]{
+        //fix bug:58167
+        setFocus(Qt::OtherFocusReason);
         setWindowOpacity(1);
     });
 }
