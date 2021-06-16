@@ -125,15 +125,13 @@ void UserdirManager::getUserdir()
     m_current_user_dir.insert("XDG_VIDEOS_DIR",settings->value(QString("XDG_VIDEOS_DIR")).toString().replace("$HOME",m_user_path) + "/");
 
     //XDG_TEMPLATES_DIR will be used by right click menu.
-    GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
+    //GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
     //fix non Chinese desktop enviroment templates empty issue, bug#42484
     //FIXME need system integration process
-    if (! QLocale::system().name().contains("zh"))
-    {
-        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString templateDir = homePath + "/模板/";
-        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
-    }
+    QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString templateDir = homePath + "/模板/";
+    GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
+
 }
 
 //rename the old paths to overwrire new one.
