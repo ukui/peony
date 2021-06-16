@@ -40,8 +40,14 @@ static void handleDuplicate(FileNode *node)
 
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
+    m_total_szie = 0;
+    m_current_offset = 0;
     m_source_uris = sourceUris;
     m_dest_dir_uri = destDirUri;
+
+    m_reporter = new FileNodeReporter;
+    connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
+
     m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
 
@@ -71,6 +77,7 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
     auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
                 p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
 
+//    qDebug() << "move: " << p_this->m_current_src_uri << "  ---  "  << destFileName << currnet << "/" << total << (float(currnet) / total);
     Q_EMIT p_this->FileProgressCallback(p_this->m_current_src_uri, destFileName, fileIconName, currnet, total);
     //format: move srcUri to destDirUri: curent_bytes(count) of total_bytes(count).
 }
@@ -90,17 +97,62 @@ void FileMoveOperation::move()
         return;
 
     QList<FileNode*> nodes;
+    QList<FileNode*> errNode;
+
+    GError *err = nullptr;
+    m_total_count = m_source_uris.count();
+    auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
+
+    // file move
     for (auto srcUri : m_source_uris) {
-        //FIXME: ignore the total size when using native move.
-        operationPreparedOne(srcUri, 0);
+        if (isCancelled())
+            return;
+
         auto node = new FileNode(srcUri, nullptr, nullptr);
-        nodes<<node;
+
+        auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
+        char *base_name = g_file_get_basename(srcFile.get()->get());
+        auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(), base_name));
+
+        g_file_move(srcFile.get()->get(),
+                    destFile.get()->get(),
+                    m_default_copy_flag,
+                    getCancellable().get()->get(),
+                    GFileProgressCallback(progress_callback), this, &err);
+        if (err) {
+            errNode << node;
+        } else {
+            node->setState(FileNode::Handled);
+        }
+
+        nodes << node;
     }
+
+    // file copy-delete
+    goffset *total_size = new goffset(0);
+    for (auto node : errNode) {
+        if (isCancelled())
+            return;
+
+        node->findChildrenRecursively();
+        node->computeTotalSize(total_size);
+    }
+    m_total_szie = *total_size;
+    operationPreparedOne("", m_total_szie);
+    delete total_size;
+
     operationPrepared();
 
-    auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
-    m_total_count = m_source_uris.count();
+    for (auto node : errNode) {
+        if (isCancelled())
+            return;
+        moveForceUseFallback(node);
+        fileSync(node->uri(), node->destUri());
+    }
 
+    operationStartSnyc();
+
+#if 0
     for (auto file : nodes) {
         if (isCancelled())
             return;
@@ -121,7 +173,7 @@ void FileMoveOperation::move()
         g_free(dest_uri);
         g_free(base_name);
 
-retry:
+//retry:
         GError *err = nullptr;
         g_file_move(srcFile.get()->get(),
                     destFile.get()->get(),
@@ -130,6 +182,11 @@ retry:
                     GFileProgressCallback(progress_callback),
                     this,
                     &err);
+        if (err) {
+            errNode << file;
+        } else {
+            file->setState(FileNode::Handled);
+        }
 
         if (err) {
             setHasError(true);
@@ -301,6 +358,7 @@ retry:
         operationProgressedOne(file->uri(), file->destUri(), 0);
         fileSync(file->uri(), file->destUri());
     }
+#endif
     //native move has not clear operation.
     operationProgressed();
 
@@ -917,13 +975,19 @@ void FileMoveOperation::moveForceUseFallback(FileNode* node)
     if (isCancelled() || nullptr == node)
         return;
 
+    operationPrepared();
+
     copyRecursively(node);
 
     if (isCancelled()) {
         Q_EMIT operationStartRollbacked();
     }
 
-    deleteRecursively(node);
+    if (!m_copy_move) {
+        deleteRecursively(node);
+    }
+
+    node->setState(FileNode::Handled);
 
     if (isCancelled()) {
         rollbackNodeRecursively(node);

@@ -534,7 +534,10 @@ void MainProgressBar::paintProgress(QPainter &painter)
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight).lighter(150)));
-    painter.drawRoundedRect(0, 0, value, m_fix_height, 1, 1);
+
+    if (value < 1) {
+        painter.drawRoundedRect(0, 0, value, m_fix_height, 1, 1);
+    }
 
     painter.restore();
 }
@@ -547,7 +550,7 @@ void MainProgressBar::cancelld()
 
 void MainProgressBar::updateValue(QString& name, QIcon& icon, double value)
 {
-    if (value >= 0 && value <= 1) {
+    if (value >= 0 && value < 1) {
         m_current_value = value;
     }
 
@@ -837,6 +840,7 @@ void ProgressBar::onFileOperationProgressedOne(const QString &uri, const QString
 void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, const QString& fIcon, const quint64& current, const quint64& total)
 {
     if (current >= m_total_size) {
+        qDebug() << "progress bar value error!";
         return;
     }
 
@@ -852,6 +856,9 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
     }
 
     double currentPercent = current * 1.0 / total;
+
+//    qDebug() << "progress bar: " << currentPercent;
+
     updateValue(currentPercent);
 
     Q_UNUSED(srcUri);
