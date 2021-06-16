@@ -142,7 +142,7 @@ private:
     // Then do the same thing
     float           m_sm_btn_x = 16;
     float           m_sm_btn_y = 150;
-    float           m_sm_btn_width = 210;
+    float           m_sm_btn_width = 216;
     float           m_sm_btn_height = 20;
 
     float           m_ck_btn_top = 385;
@@ -150,7 +150,7 @@ private:
 
     float           m_btn_top = 80;
     float           m_btn_width = 120;
-    float           m_btn_heigth = 36;
+    float           m_btn_heigth = 38;
     float           m_btn_ok_margin_left = 434;
     float           m_btn_cancel_margin_left = 298;
 
