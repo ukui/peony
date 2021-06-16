@@ -26,6 +26,7 @@
 #include "volume-manager.h"
 #include "ui_format_dialog.h"
 #include "side-bar-abstract-item.h"
+#include "linux-pwd-helper.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -48,6 +49,9 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
        auto targetUri = FileUtils::getTargetUri(fm_uris);
+       if (targetUri.isEmpty()) {
+           targetUri = fm_uris;
+       }
        GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
        GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
@@ -86,7 +90,11 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        auto mount = VolumeManager::getMountFromUri(targetUri);
        //fix name not show complete in bottom issue, bug#36887
        ui->lineEdit_device_name->setFixedHeight(40);
-       ui->lineEdit_device_name->setText(mount->name());
+       if (mount.get()) {
+            ui->lineEdit_device_name->setText(mount->name());
+       } else {
+            ui->lineEdit_device_name->setText(LinuxPWDHelper::getCurrentUser().fullName());
+       }
 
        ui->progressBar_process->setValue(0);
 
