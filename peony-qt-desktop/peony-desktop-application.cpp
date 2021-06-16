@@ -175,6 +175,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
     setApplicationName(tr("peony-qt-desktop"));
+    setWindowIcon(QIcon::fromTheme("system-file-manager"));
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
