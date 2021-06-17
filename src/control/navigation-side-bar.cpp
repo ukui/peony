@@ -304,6 +304,10 @@ void NavigationSideBar::resizeEvent(QResizeEvent *e)
 
 void NavigationSideBar::dropEvent(QDropEvent *e)
 {
+    //fix invalid index cause crash issue
+    if (! indexAt(e->pos()).isValid())
+        return;
+
     QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
 
     if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
