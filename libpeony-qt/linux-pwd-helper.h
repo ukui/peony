@@ -48,13 +48,13 @@ public:
         return m_gid;
     }
 
-    const QString fullName() {
+    const QString fullName() const {
         return m_full_name;
     }
-    const QString homeDir() {
+    const QString homeDir() const {
         return m_home_dir;
     }
-    const QString shellDir() {
+    const QString shellDir() const {
         return m_shell_dir;
     }
 
