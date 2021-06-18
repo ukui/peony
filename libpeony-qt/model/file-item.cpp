@@ -188,7 +188,7 @@ void FileItem::findChildrenAsync()
                 {
                     //check bookmark and delete
                     BookMarkManager::getInstance()->removeBookMark(this->uri());
-                    m_model->setRootUri("computer:///");
+                    m_model->sendPathChangeRequest("computer:///");
                 }
                 else
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
@@ -341,7 +341,7 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->setRootUri("computer:///");
+                m_model->sendPathChangeRequest("computer:///");
             });
             //qDebug()<<"startMonitor";
 
@@ -458,7 +458,7 @@ void FileItem::findChildrenAsync()
             });
 
             connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->setRootUri("computer:///");
+                m_model->sendPathChangeRequest("computer:///");
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
