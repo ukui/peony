@@ -127,12 +127,12 @@ void UserdirManager::getUserdir()
     GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
     //fix non Chinese desktop enviroment templates empty issue, bug#42484
     //FIXME need system integration process
-    if (! QLocale::system().name().contains("zh"))
-    {
-        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString templateDir = homePath + "/模板/";
-        GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
-    }
+    //if (! QLocale::system().name().contains("zh"))
+    //{
+    QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString templateDir = homePath + "/模板/";
+    GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
+    //}
 }
 
 //rename the old paths to overwrire new one.
