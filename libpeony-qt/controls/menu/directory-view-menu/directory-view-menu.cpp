@@ -456,7 +456,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                     g_object_unref(gtk_file);
                 }
                 subMenu->addSeparator();
+            } else {
+                qWarning()<<"the template dir is empty";
             }
+        } else {
+            qWarning()<<"the template dir is not exsit";
         }
 
         QList<QAction *> actions;
