@@ -236,9 +236,10 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     case ModifiedDate: {
         switch (role) {
         case Qt::DisplayRole:
+            //can not sort, comment this
             //trash files show delete Date
-            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
-                return QVariant(item->m_info->deletionDate());
+//            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
+//                return QVariant(item->m_info->deletionDate());
             return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
@@ -285,9 +286,10 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
         case FileName:
             return tr("File Name");
         case ModifiedDate:
+            //can not sort, comment this
             //trash files show delete Date
-            if (m_root_uri.startsWith("trash:///"))
-                return tr("Delete Date");
+//            if (m_root_uri.startsWith("trash:///"))
+//                return tr("Delete Date");
             return tr("Modified Date");
         case FileType:
             return tr("File Type");
