@@ -40,13 +40,6 @@ QIcon GenericThumbnailer::generateThumbnail(const QUrl &url, bool shadow, const 
     if (!file.exists())
         return icon;
 
-    //skip svg
-    if (url.path().endsWith(".svg")) {
-        if (file.size() < 1024*1024*8)
-            icon.addFile(url.path());
-        return icon;
-    }
-
     QImage img(url.path());
 
     if (img.rect().size().width() > 128) {
@@ -94,13 +87,6 @@ QIcon GenericThumbnailer::generateThumbnail(const QString &path, bool shadow, co
     QFile file(path);
     if (!file.exists())
         return icon;
-
-    //skip svg
-    if (path.endsWith(".svg")) {
-        if (file.size() < 1024*1024*8)
-            icon.addFile(path);
-        return icon;
-    }
 
     QImage img(path);
     if (img.rect().size().width() > 128) {
