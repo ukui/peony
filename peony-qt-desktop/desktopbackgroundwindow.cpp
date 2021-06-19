@@ -6,11 +6,17 @@
 #include <QScreen>
 #include <QPainter>
 #include <QVariantAnimation>
+#include <QTimeLine>
 
 static int desktop_window_id = 0;
+static QTimeLine *gTimeLine = nullptr;
 
 DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *parent) : QMainWindow(parent)
 {
+    if (!gTimeLine) {
+        gTimeLine = new QTimeLine(100);
+    }
+    connect(gTimeLine, &QTimeLine::finished, this, &DesktopBackgroundWindow::updateWindowGeometry);
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -19,7 +25,8 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     m_screen = screen;
     m_id = desktop_window_id;
     desktop_window_id++;
-    setWindowGeometry(screen->geometry());
+    move(screen->geometry().topLeft());
+    setFixedSize(screen->geometry().size());
     setContentsMargins(0, 0, 0, 0);
     connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect&>::of(&DesktopBackgroundWindow::setWindowGeometry));
 
@@ -98,6 +105,16 @@ QScreen *DesktopBackgroundWindow::screen() const
 
 void DesktopBackgroundWindow::setWindowGeometry(const QRect &geometry)
 {
+    if (gTimeLine->state() != QTimeLine::Running) {
+        gTimeLine->start();
+    } else {
+        gTimeLine->setCurrentTime(0);
+    }
+}
+
+void DesktopBackgroundWindow::updateWindowGeometry()
+{
+    auto geometry = m_screen->geometry();
     move(geometry.topLeft());
     setFixedSize(geometry.size());
 }
