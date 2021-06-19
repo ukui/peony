@@ -515,6 +515,17 @@ bool PeonyDesktopApplication::relocateIconViewInternal()
         for (auto screen : qApp->screens()) {
             qCritical()<<"current screen"<<screen->name()<<screen->geometry();
         }
+
+        for (auto window : m_bg_windows) {
+            if (window->screen() == qApp->primaryScreen()) {
+                getIconView()->setFixedSize(qApp->primaryScreen()->geometry().size());
+                getIconView()->setParent(window);
+                getIconView()->setVisible(true);
+                getIconView()->restoreItemsPosByMetaInfo();
+                KWindowSystem::raiseWindow(window->winId());
+                break;
+            }
+        }
     }
     return synced;
 }
