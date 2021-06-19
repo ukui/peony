@@ -66,7 +66,7 @@ int PrimaryManager::getScreenGeometry(QString methodName)
                                DBUS_PATH,
                                DBUS_INTERFACE,
                                methodName);
-    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+    QDBusMessage response = QDBusConnection::sessionBus().call(message, QDBus::Block, 3000);
     if (response.type() == QDBusMessage::ReplyMessage)
     {
         if(response.arguments().isEmpty() == false) {
@@ -75,19 +75,19 @@ int PrimaryManager::getScreenGeometry(QString methodName)
             qDebug() << value;
         }
     } else {
-        qDebug()<<methodName<<"called failed";
+        qCritical()<<methodName<<"called failed";
     }
     return res;
 }
 
 QString PrimaryManager::getScreenName(QString methodName)
 {
-    QString res = 0;
+    QString res = nullptr;
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_NAME,
                                DBUS_PATH,
                                DBUS_INTERFACE,
                                methodName);
-    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+    QDBusMessage response = QDBusConnection::sessionBus().call(message, QDBus::Block, 3000);
     if (response.type() == QDBusMessage::ReplyMessage)
     {
         if(response.arguments().isEmpty() == false) {
@@ -96,7 +96,7 @@ QString PrimaryManager::getScreenName(QString methodName)
             qDebug() << value;
         }
     } else {
-        qDebug()<<methodName<<"called failed";
+        qCritical()<<methodName<<"called failed";
     }
     return res;
 }
