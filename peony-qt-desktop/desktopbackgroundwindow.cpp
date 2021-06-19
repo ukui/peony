@@ -19,9 +19,9 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     m_screen = screen;
     m_id = desktop_window_id;
     desktop_window_id++;
-    setGeometry(screen->geometry());
+    setWindowGeometry(screen->geometry());
     setContentsMargins(0, 0, 0, 0);
-    connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect&>::of(&DesktopBackgroundWindow::setGeometry));
+    connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect&>::of(&DesktopBackgroundWindow::setWindowGeometry));
 
     auto manager = DesktopBackgroundManager::globalInstance();
     connect(manager, &DesktopBackgroundManager::screensUpdated, this, QOverload<>::of(&DesktopBackgroundWindow::update));
@@ -94,6 +94,12 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
 QScreen *DesktopBackgroundWindow::screen() const
 {
     return m_screen;
+}
+
+void DesktopBackgroundWindow::setWindowGeometry(const QRect &geometry)
+{
+    move(geometry.topLeft());
+    setFixedSize(geometry.size());
 }
 
 int DesktopBackgroundWindow::id() const

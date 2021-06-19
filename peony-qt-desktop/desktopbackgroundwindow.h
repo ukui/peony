@@ -13,6 +13,9 @@ public:
 
     QScreen *screen() const;
 
+public Q_SLOTS:
+    void setWindowGeometry(const QRect &geometry);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 
