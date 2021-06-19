@@ -200,6 +200,8 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         }
     }
 
+    this->notDir();
+
     if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
@@ -214,9 +216,6 @@ void PropertiesWindow::init()
     this->setContentsMargins(0, 18, 0, 0);
     //only show close button
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowMinMaxButtonsHint & ~Qt::WindowSystemMenuHint);
-
-    //不能更改执行顺序 - Cannot change execution order
-    this->notDir();
 
     this->setWindowTitleTextAndIcon();
 
@@ -284,23 +283,34 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
 void PropertiesWindow::notDir()
 {
     //FIXME:请尝试使用非阻塞方式获取 FIleInfo - Please try to obtain FIleInfo in a non-blocking way
-    quint64 index = 0;
+    bool first = true;
+    QStringList targetUris;
     for (QString uri : m_uris) {
         auto fileInfo = FileInfo::fromUri(uri);
         FileInfoJob *fileInfoJob = new FileInfoJob(fileInfo);
         fileInfoJob->setAutoDelete();
         fileInfoJob->querySync();
 
-        if (index == 0) {
+        if (first) {
+            //使用第一个文件信息确认所在目录等基本信息。
+            //在最近文件夹中多选状态下，文件所在位置将会不准确，因为最近文件夹中的文件来自于不同的位置。
             m_fileInfo = fileInfo;
-            index ++;
+            first = false;
         }
 
-        if (fileInfo.get()->isDir()) {
+        if (fileInfo.get()->isDir() && m_notDir) {
             m_notDir = false;
-            break;
+        }
+
+        if (uri.startsWith("recent://")) {
+            if (fileInfo->targetUri() != "") {
+                targetUris.append(fileInfo->targetUri());
+            }
         }
     }
+
+    if (targetUris.count() > 0)
+        m_uris = targetUris;
 }
 
 void PropertiesWindow::show()

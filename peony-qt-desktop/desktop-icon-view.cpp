@@ -478,14 +478,29 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
     return false;
 }
 
+static bool meetSpecialConditions(const QStringList& selectedUris)
+{
+    /* The desktop home directory, computer, and trash do not allow operations such as copying, cutting,
+     * deleting, renaming, moving, or using shortcut keys for corresponding operations.add by 2021/06/17 */
+    static QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    if (selectedUris.contains("computer:///")
+       ||selectedUris.contains("trash:///")
+       ||selectedUris.contains(homeUri)){
+        return true;
+    }
+
+    return false;
+}
+
 void DesktopIconView::initShoutCut()
 {
     QAction *copyAction = new QAction(this);
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris)){
+            ClipboardUtils::setClipboardFiles(selectedUris, false);}
     });
     addAction(copyAction);
 
@@ -493,7 +508,7 @@ void DesktopIconView::initShoutCut()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris))
         {
             ClipboardUtils::setClipboardFiles(selectedUris, true);
             this->update();
@@ -505,7 +520,7 @@ void DesktopIconView::initShoutCut()
     pasteAction->setShortcut(QKeySequence::Paste);
     connect(pasteAction, &QAction::triggered, [=]() {
         auto clipUris = ClipboardUtils::getClipboardFilesUris();
-        if (ClipboardUtils::isClipboardHasFiles()) {
+        if (ClipboardUtils::isClipboardHasFiles() && !meetSpecialConditions(this->getSelections())) {
             ClipboardUtils::pasteClipboardFiles(this->getDirectoryUri());
         }
     });
@@ -515,9 +530,10 @@ void DesktopIconView::initShoutCut()
     auto trashAction = new QAction(this);
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = getSelections();
-        if (! selectedUris.isEmpty())
+        auto selectedUris = getSelections();      
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris)){
            FileOperationUtils::trash(selectedUris, true);
+        }
     });
     addAction(trashAction);
 
@@ -558,9 +574,9 @@ void DesktopIconView::initShoutCut()
     QAction *renameAction = new QAction(this);
     renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
     connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = this->getSelections();
-        if (selections.count() == 1) {
-            this->editUri(selections.first());
+        auto selections = this->getSelections();        
+        if (selections.count() == 1 && !meetSpecialConditions(selections)) {
+            this->editUri(selections.first());           
         }
     });
     addAction(renameAction);
@@ -568,9 +584,12 @@ void DesktopIconView::initShoutCut()
     QAction *removeAction = new QAction(this);
     removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << this->getSelections();
-        clearAllIndexWidgets();
-        FileOperationUtils::executeRemoveActionWithDialog(this->getSelections());
+        auto selectedUris = this->getSelections();
+        if (!meetSpecialConditions(selectedUris)){
+            qDebug() << "delete" << selectedUris;
+            clearAllIndexWidgets();
+            FileOperationUtils::executeRemoveActionWithDialog(selectedUris);
+        }
     });
     addAction(removeAction);
 
