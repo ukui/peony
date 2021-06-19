@@ -735,7 +735,7 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     QList<QAction *> l;
 
     //fix select mutiple file in trash path show empty issue
-    if (m_selections.count() >1 && m_is_trash)
+    if (m_selections.count() > 1 && (m_is_trash || m_is_recent))
         return l;
 
     //favorite is should not show property
