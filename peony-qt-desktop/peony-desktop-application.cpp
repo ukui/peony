@@ -325,12 +325,8 @@ void PeonyDesktopApplication::relocateIconView()
     //FIXME:
     if (screensMonitor) {
 //        getIconView()->setVisible(false);
-        int x = screensMonitor->getScreenGeometry("x");
-        int y = screensMonitor->getScreenGeometry("y");
         int width = screensMonitor->getScreenGeometry("width");
-        int height = screensMonitor->getScreenGeometry("height");
-        QRect geometry = QRect(x, y, width, height);
-        if (geometry.isEmpty()) {
+        if (width == 0) {
             qCritical()<<"can not get primary screen info from ukui-settings daemon";
             for (auto window : m_bg_windows) {
                 if (window->screen() == qApp->primaryScreen()) {
