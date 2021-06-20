@@ -96,12 +96,12 @@ int main(int argc, char *argv[])
     if (a.isSecondary())
         return 0;
 
-    WaylandOutputManager waylandOutputManager;
-    QThread waylandThread;
-    waylandOutputManager.moveToThread(&waylandThread);
-    QObject::connect(&waylandThread, &QThread::started, &waylandOutputManager, &WaylandOutputManager::run);
-    QObject::connect(&a, &PeonyDesktopApplication::requestSetUKUIOutputEnable, &waylandOutputManager, &WaylandOutputManager::setUKUIOutputEnable);
-    waylandThread.start();
+//    WaylandOutputManager waylandOutputManager;
+//    QThread waylandThread;
+//    waylandOutputManager.moveToThread(&waylandThread);
+//    QObject::connect(&waylandThread, &QThread::started, &waylandOutputManager, &WaylandOutputManager::run);
+//    QObject::connect(&a, &PeonyDesktopApplication::requestSetUKUIOutputEnable, &waylandOutputManager, &WaylandOutputManager::setUKUIOutputEnable);
+//    waylandThread.start();
 
     QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
                                                           "/org/gnome/SessionManager",
