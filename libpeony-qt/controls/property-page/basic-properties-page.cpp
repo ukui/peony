@@ -138,8 +138,7 @@ void BasicPropertiesPage::addSeparator()
 
 void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
-    auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
-    if (m_openWithLayout && recommendActions.count() >= 1) {
+    if (m_openWithLayout) {
         m_defaultOpenListWidget = OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(), parent);
         m_openWithLayout->setContentsMargins(0,0,16,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
@@ -352,7 +351,7 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
         m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
         layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
-//        break;
+        break;
     case BP_MultipleFIle:
     case BP_Folder:
         m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
