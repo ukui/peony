@@ -42,7 +42,6 @@ class PeonyDbusService;
 
 class DesktopIconView : public QListView, public DirectoryViewIface
 {
-    friend class DesktopWindow;
     friend class DesktopIndexWidget;
     friend class DesktopIconViewDelegate;
     friend class DesktopItemModel;
@@ -190,6 +189,8 @@ public Q_SLOTS:
      */
     void resolutionChange();
     void setEditFlag(bool edit);
+
+    void restoreItemsPosByMetaInfo();
 
 protected:
     void mousePressEvent(QMouseEvent *e);

@@ -59,11 +59,13 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
        //add the rom size value into  rom_size combox
        //fix system Udisk calculate size wrong issue
-       QString m_volume_name, m_unix_device, m_display_name;
+       QString m_volume_name, m_unix_device, m_display_name,m_fs_type;
        FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
        bool hasSetRomSize = false;
-       //U disk or other mobile device
-       if (! m_unix_device.isEmpty() && ! m_uris.startsWith("computer:///WDC"))
+       m_fs_type = FileUtils::getFileSystemType(m_uris);
+       //U disk or other mobile device, only use in iso system install device
+       if (! m_unix_device.isEmpty() && m_fs_type.startsWith("iso")
+           && ! m_uris.startsWith("computer:///WDC"))
        {
           char dev_name[256] ={0};
           strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));

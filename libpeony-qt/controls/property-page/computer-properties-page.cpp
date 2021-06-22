@@ -37,10 +37,10 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QProcess>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 #include <glib.h>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusInterface>
 
 using namespace Peony;
 

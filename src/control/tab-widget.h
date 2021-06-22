@@ -77,6 +77,7 @@ public:
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
+    /* Function:Get all file information under the current path */
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentAllFileInfos();
 
     const QStringList getBackList();
@@ -183,6 +184,7 @@ public Q_SLOTS:
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
+    void enableSearchBar(bool enable);
 
 protected:
     void changeCurrentIndex(int index);

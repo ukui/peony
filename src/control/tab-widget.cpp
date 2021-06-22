@@ -404,7 +404,10 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        Q_EMIT this->updateSearch(target_path);
+        /* get search key */
+        MainWindow *mainWindow = dynamic_cast<MainWindow *>(this->topLevelWidget());
+        QString key=mainWindow->getLastSearchKey();
+        Q_EMIT this->updateSearch(target_path,key);
     }
 }
 
@@ -653,6 +656,35 @@ void TabWidget::handleZoomLevel(int zoomLevel)
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     }
 }
+#include"windows/FMWindowIface.h"
+void TabWidget::enableSearchBar(bool enable)
+{
+    //qDebug() << "enable:" <<enable;
+    m_search_path->setEnabled(enable);
+    //m_search_close->setEnabled(enable);  
+    m_search_title->setEnabled(enable);
+    m_search_bar->setEnabled(enable);
+    if (m_search_bar_count >0)
+    {
+        //already had a list,just set to show
+        for(int i=0; i<m_search_bar_list.count(); i++)
+        {
+            m_conditions_list[i]->setEnabled(enable);
+            m_link_label_list[i]->setEnabled(enable);
+            if (m_conditions_list[i]->currentIndex()%4 < 3)
+                m_classify_list[i]->setEnabled(enable);
+            else
+                m_input_list[i]->setEnabled(enable);
+            m_search_bar_list[i]->setEnabled(enable);
+            m_add_button_list[i]->setEnabled(enable);
+            /* When there is only one filter item,remove button set disable */
+            if(m_search_bar_count==1)
+                m_remove_button_list[0]->setEnabled(false);
+            else
+                m_remove_button_list[i]->setEnabled(enable);
+        }
+    }
+}
 
 void TabWidget::updateSearchBar(bool showSearch)
 {
@@ -692,6 +724,8 @@ void TabWidget::updateSearchBar(bool showSearch)
         clearConditions();
         updateFilter();
     }
+
+    enableSearchBar(false);
 }
 
 void TabWidget::updateButtons()

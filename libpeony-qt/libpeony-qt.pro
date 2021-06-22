@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets gui concurrent xml KWindowSystem
+QT       += core widgets gui concurrent xml KWindowSystem dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
@@ -17,6 +17,9 @@ CONFIG += link_pkgconfig no_keywords c++11 lrelease hide_symbols
 PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
 
 DEFINES += PEONYCORE_LIBRARY
+
+schemes.files += org.ukui.peony.settings.gschema.xml
+schemes.path = /usr/share/glib-2.0/schemas/
 
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
 DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
@@ -44,7 +47,8 @@ DESTDIR += $$PWD
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
-    INSTALLS += target
+    INSTALLS += target \
+                schemes
 
     # fixme:// format_dialog.h
     header.path = /usr/include/peony-qt

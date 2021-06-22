@@ -53,6 +53,7 @@ private:
     // PropertiesWindowTabIface interface
 public:
     void saveAllChange();
+    QString getFileSystemType(QString uri);
 };
 
 }

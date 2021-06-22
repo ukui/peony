@@ -156,7 +156,8 @@ QIcon VideoThumbnail::generateThumbnail()
            <<"-ss"<<pos              /* seeks in this position*/
            <<"-vframes"<<"1"         /* Num Frames */
            <<"-f"<<"image2"          /* file format.  */
-           <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
+          // <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
+           <<"-s"<<"640x640"         /*<<"-vf"<<scal*/
            <<fileThumbnail; /*output file Name */
         qDebug()<<"the ffmpeg cmd: " << list;
 

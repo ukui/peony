@@ -404,6 +404,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         //enumerate template dir
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        qWarning()<<"tempalte Path is"<<templatePath;
         if(!templatePath.isEmpty())
         {
             QDir templateDir(templatePath);
@@ -411,6 +412,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             if (!templates.isEmpty()) {
                 for (auto t : templates) {
                     QFileInfo qinfo(templateDir, t);
+                    qWarning()<<"template entry is"<<qinfo.filePath();
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
                     std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
@@ -457,10 +459,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                 }
                 subMenu->addSeparator();
             } else {
-                qWarning()<<"the template dir is empty";
+                qWarning()<<"template entries is empty";
             }
         } else {
-            qWarning()<<"the template dir is not exsit";
+            qWarning()<<"template path is empty";
         }
 
         QList<QAction *> actions;
@@ -736,6 +738,10 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     if (m_selections.count() > 1 && (m_is_trash || m_is_recent))
         return l;
 
+    //favorite is should not show property
+    if (m_selections.isEmpty() && m_directory == "favorite:///")
+        return l;
+
     if (! m_is_search) {
         //包含network的情况下，不显示属性选项
         if (m_is_network) {
@@ -758,9 +764,29 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
                 p->setAttribute(Qt::WA_DeleteOnClose);
                 p->show();
             } else {
-                PropertiesWindow *p = new PropertiesWindow(m_selections);
-                p->setAttribute(Qt::WA_DeleteOnClose);
-                p->show();
+                QStringList selectUriList;
+                if (m_selections.first().contains("favorite:///")) {
+                    for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
+                        if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                        || m_selections.at(uriIndex) == "favorite:///?schema=recent") {
+                            QStringList urisList;
+                            urisList << FileUtils::getTargetUri(m_selections.at(uriIndex));
+                            PropertiesWindow *p = new PropertiesWindow(urisList);
+                            p->setAttribute(Qt::WA_DeleteOnClose);
+                            p->show();
+                        } else {
+                            selectUriList<< m_selections.at(uriIndex);
+                        }
+                    }
+                }else {
+                    selectUriList = m_selections;
+                }
+
+                if (selectUriList.count() > 0) {
+                    PropertiesWindow *p = new PropertiesWindow(selectUriList);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                }
             }
         });
     } else if (m_selections.count() == 1) {

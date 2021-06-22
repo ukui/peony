@@ -147,6 +147,13 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         switch (index.column()) {
         case 0: {
             auto item = m_proxy_model->itemFromIndex(index);
+            auto targetUri = FileUtils::getTargetUri(item->uri());
+            if (targetUri == "" && item->uri().endsWith(".drive") && item->displayName().contains("DVD"))
+            {
+                qDebug() << "empty drive"<<item->uri();
+                QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
+                break;
+            }
             //some side bar item doesn't have a uri.
             //do not emit signal with a null uri to window.
             if (!item->uri().isNull())

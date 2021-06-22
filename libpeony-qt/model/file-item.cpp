@@ -190,9 +190,9 @@ void FileItem::findChildrenAsync()
                     BookMarkManager::getInstance()->removeBookMark(this->uri());
                     m_model->sendPathChangeRequest("computer:///");
                 }
-                else
+                else {
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
-
+                }
                 auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {

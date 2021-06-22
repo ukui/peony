@@ -133,6 +133,7 @@ public Q_SLOTS:
 private:
     explicit FileOperationManager(QObject *parent = nullptr);
     ~FileOperationManager();
+    static void systemSleep (GDBusConnection* connection, const gchar* senderName, const gchar* objectPath, const gchar* interfaceName, const gchar* signalName, GVariant* parameters, gpointer udata);
 
 private:
     QThreadPool *m_thread_pool;

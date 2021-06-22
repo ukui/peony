@@ -50,6 +50,7 @@ public:
     static PropertiesWindowPluginManager* getInstance();
 
     void release();
+    void setOpenFromDesktop();
 
     void setOpenFromDesktop();
     void setOpenFromPeony();

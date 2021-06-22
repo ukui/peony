@@ -910,6 +910,7 @@ void MainWindow::updateSearch(const QString &uri, const QString &key, bool updat
 {
     qDebug() << "updateSearch:" <<uri <<key <<updateKey;
     bool needUpdate = false;
+    m_tab->enableSearchBar(key.length() != 0);
     if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
     {
        //qDebug() << "updateSearch:" <<uri;
@@ -997,7 +998,8 @@ void MainWindow::setShowHidden()
     if (!getCurrentPage()) {
         return;
     }
-    m_show_hidden_file = !m_show_hidden_file;
+
+    m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
@@ -1065,6 +1067,11 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
 {
     if (currentViewSupportZoom())
         m_tab->m_status_bar->m_slider->setValue(zoomLevel);
+}
+
+QString MainWindow::getLastSearchKey()
+{
+    return m_last_key;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)

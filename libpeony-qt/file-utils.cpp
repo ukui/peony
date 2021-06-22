@@ -33,6 +33,8 @@
 #include <QIcon>
 #include <sys/stat.h>
 #include <udisks/udisks.h>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 using namespace Peony;
 
@@ -501,7 +503,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             url = QUrl::fromLocalFile(absPath);
             uris << url.toDisplayString();
         } else {
-            uris << args;
+            uris << url.toDisplayString();
         }
     }
 
@@ -818,4 +820,56 @@ double FileUtils::getDeviceSize(const gchar * device_name)
     g_object_unref(block);
 
     return volume_size;
+}
+
+quint64 FileUtils::getFileSystemSize(QString uri)
+{
+    QString unixDevice,dbusPath;
+    quint64 total = 0;
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return total;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return total;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Filesystem",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        total = blockInterface.property("Size").toULongLong();
+
+    return total;
+}
+
+QString FileUtils::getFileSystemType(QString uri)
+{
+    QString unixDevice,dbusPath;
+    QString fsType = "";
+
+    unixDevice = getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return fsType;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return fsType;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Block",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        fsType = blockInterface.property("IdType").toString();
+
+    //if need diff FAT16 and FAT32, should use IdVersion
+//    if(fsType == "" && blockInterface.isValid())
+//        fsType = blockInterface.property("IdVersion").toString();
+
+    return fsType;
 }

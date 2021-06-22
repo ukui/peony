@@ -147,6 +147,7 @@ public Q_SLOTS:
     void editUris(const QStringList &uris);
 
     void setCurrentViewZoomLevel(int zoomLevel);
+    QString getLastSearchKey();
 
 protected:
     void resizeEvent(QResizeEvent *e);

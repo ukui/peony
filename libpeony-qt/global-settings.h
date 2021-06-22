@@ -30,7 +30,7 @@
 #include "peony-core_global.h"
 
 #define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE      "show-hidden"
+#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
 #define SORT_ORDER                  "sort-order"
@@ -53,7 +53,7 @@
 #define FONT_SETTINGS                "org.ukui.style"
 
 //difference between Community version and Commercial version
-#define COMMERCIAL_VERSION          false
+#define COMMERCIAL_VERSION          true
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
@@ -97,6 +97,13 @@ public Q_SLOTS:
     QString getSystemTimeFormat();
 
     /*!
+     * \brief 通过GSetting保存设置
+     * \param key
+     * \param value
+     */
+    void setGSettingValue(const QString &key, const QVariant &value);
+
+    /*!
      * \brief forceSync
      * \param key
      * \details
@@ -114,6 +121,7 @@ private:
 
     QGSettings*                 m_gsettings = nullptr;
     QGSettings*                 m_control_center_plugin = nullptr;
+    QGSettings*                 m_peony_gsettings  = nullptr;
 
     QMutex                      m_mutex;
 

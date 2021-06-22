@@ -119,7 +119,7 @@ void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
         QStyleOptionViewItem opt;
         m_file_name = QUrl(name).toDisplayString();
         m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
-                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480).toHtmlEscaped()));
+                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 300).toHtmlEscaped()));
     }
 }
 
@@ -273,21 +273,14 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 {
     m_error = &error;
 
+    QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
-        QString htmlString = QString("<style>"
-                                     "  p{font-size:14px;line-height:100%;}"
-                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                     "</style>"
-                                     "<p class='bold'>%1</p>")
-                .arg(m_error->errorStr.toHtmlEscaped());
+        QString htmlString = QString("<p>%1</p>")
+                .arg(opt.fontMetrics.elidedText(m_error->errorStr.toHtmlEscaped(), Qt::ElideMiddle, 480).toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
-        QString htmlString = QString("<style>"
-                                     "  p{font-size:14px;line-height:100%;}"
-                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                     "</style>"
-                                     "<p>%1</p>")
-                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
+        QString htmlString = QString("<p>%1</p>")
+                .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
         m_text->setText(htmlString);
     }
 
@@ -397,21 +390,14 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
 {
     m_error = &error;
 
+    QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
-        QString htmlString = QString("<style>"
-                                     "  p{font-size:14px;line-height:100%;}"
-                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                     "</style>"
-                                     "<p class='bold'>%1</p>")
-                .arg(m_error->errorStr.toHtmlEscaped());
+        QString htmlString = QString("<p>%1</p>")
+                .arg(opt.fontMetrics.elidedText(m_error->errorStr.toHtmlEscaped(), Qt::ElideMiddle, 480).toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
-        QString htmlString = QString("<style>"
-                                     "  p{font-size:14px;line-height:100%;}"
-                                     "  .bold{text-align: left;font-size:13px;font-wight:500;}"
-                                     "</style>"
-                                     "<p>%1</p>")
-                .arg(tr("Make sure the disk is not full or write protected and that the file is not protected"));
+        QString htmlString = QString("<p>%1</p>")
+                .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
         m_text->setText(htmlString);
     }
 

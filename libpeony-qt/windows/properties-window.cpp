@@ -172,6 +172,7 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
     m_uris = uris;
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
+    setWindowOpacity(0);
 
     if (qApp->property("showProperties").isValid() && qApp->property("showProperties").toBool()) {
         PropertiesWindowPluginManager::getInstance()->setOpenFromDesktop();
@@ -229,6 +230,12 @@ void PropertiesWindow::init()
     this->initStatusBar();
 
     this->initTabPage(m_uris);
+
+    QTimer::singleShot(400, Qt::PreciseTimer, this, [=]{
+        //fix bug:58167
+        setFocus(Qt::OtherFocusReason);
+        setWindowOpacity(1);
+    });
 }
 
 /*!
@@ -535,6 +542,10 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter,
                            const QWidget *widget) const
 {
+    /**
+     * FIX:需要修复颜色不能跟随主题的问题
+     * \brief
+     */
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移

@@ -128,6 +128,7 @@ void FileOperation::fileSync(QString srcFile, QString destDir)
     }
 
     if (needSync) {
+        Q_EMIT operationStartSnyc();
         auto path = g_file_get_path(destGfile);
         qDebug() << "sync -- src: " << srcFile << "  ===  " << destDir << "  ===  " << destFile << "  path:" << path;
         if (path) {

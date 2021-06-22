@@ -303,14 +303,8 @@ fallback_retry:
             except.title = tr("File copy error");
             except.srcUri = m_current_src_uri;
             except.errorCode = err->code;
-            except.errorStr = str_error;
+            except.errorStr = str_error.toUtf8().constData();
             except.destDirUri = m_current_dest_dir_uri;
-
-            //
-            if (err->code == G_IO_ERROR_PERMISSION_DENIED) {
-                except.errorStr = tr("Cannot opening file, permission denied!");
-            }
-
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
                     except.dlgType = ED_CONFLICT;

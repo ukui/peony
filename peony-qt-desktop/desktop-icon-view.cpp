@@ -40,7 +40,6 @@
 #include "file-operation-utils.h"
 
 #include "desktop-menu.h"
-#include "desktop-window.h"
 
 #include "file-item-model.h"
 #include "file-info-job.h"
@@ -180,21 +179,21 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         }
     });
 
-    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
-        connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
-            for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-                if (it.value()) {
-                    disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-                }
-                m_screens[it.key()] = false;
-            }
+//    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
+//        connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
+//            for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
+//                if (it.value()) {
+//                    disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+//                }
+//                m_screens[it.key()] = false;
+//            }
 
-            m_screens[screen] = true;
-            connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-            setGeometry(screen->geometry());
-    //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
-        });
-    }
+//            m_screens[screen] = true;
+//            connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
+//            setGeometry(screen->geometry());
+//    //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
+//        });
+//    }
 
     for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
@@ -206,19 +205,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     m_proxy_model->setSourceModel(m_model);
 
     connect(m_model, &QAbstractItemModel::rowsRemoved, this, [=](){
-        for (auto uri : getAllFileUris()) {
-            auto pos = getFileMetaInfoPos(uri);
-            if (pos.x() >= 0)
-                updateItemPosByUri(uri, pos);
-        }
-    });
-
-    connect(m_proxy_model, &QAbstractItemModel::rowsRemoved, this, [=](){
-        auto itemsNeedRelayout = m_model->m_items_need_relayout;
-        if (!itemsNeedRelayout.isEmpty()) {
-            this->relayoutExsitingItems(itemsNeedRelayout);
-        }
-
         for (auto uri : getAllFileUris()) {
             auto pos = getFileMetaInfoPos(uri);
             if (pos.x() >= 0)
@@ -323,7 +309,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             }
 
             // check icon is out of screen
-            auto geo = getScreenArea(qApp->primaryScreen());
+            auto geo = viewport()->rect();
             if (geo.width() != 0 && geo.height() != 0) {
                 for (auto rec : m_item_rect_hash.values()) {
                     if (!geo.contains(rec)) {
@@ -333,7 +319,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 }
             }
         });
-
 
         return;
     });
@@ -356,7 +341,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             }
         }
 
-        auto geo = getScreenArea(qApp->primaryScreen());
+        auto geo = viewport()->rect();
         if (geo.width() != 0 && geo.height() != 0) {
             QModelIndex index = m_proxy_model->mapToSource(m_model->indexFromUri(uri));
             QRect indexRect = QListView::visualRect(index);
@@ -383,13 +368,20 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         });
     });
 
+    connect(m_proxy_model, &DesktopItemProxyModel::showHiddenFile, this, [=]() {
+        QTimer::singleShot(100, this, [=]() {
+            resetAllItemPositionInfos();
+            refresh();
+        });
+    });
+
     connect(this, &QListView::iconSizeChanged, this, [=]() {
         //qDebug()<<"save=============";
         this->setSortType(GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt());
 
         QTimer::singleShot(100, this, [=]() {
             bool isFull = false;
-            auto geo = getScreenArea(qApp->primaryScreen());
+            auto geo = viewport()->rect();
             this->saveAllItemPosistionInfos();
             for (int i = 0; i < m_proxy_model->rowCount(); i++) {
                 auto index = m_proxy_model->index(i, 0);
@@ -423,28 +415,25 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         //panel monitor
         QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
         connect(panelSetting, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "panelposition" || key == "panelsize") {
+            if (key == "panelposition" || key == "panelsize")
+            {
                 int position = panelSetting->get("panelposition").toInt();
                 int margins = panelSetting->get("panelsize").toInt();
                 switch (position) {
                 case 1: {
                     setViewportMargins(0, margins, 0, 0);
-                    m_panel_margin = QMargins(0, margins, 0, 0);
                     break;
                 }
                 case 2: {
                     setViewportMargins(margins, 0, 0, 0);
-                    m_panel_margin = QMargins(margins, 0, 0, 0);
                     break;
                 }
                 case 3: {
                     setViewportMargins(0, 0, margins, 0);
-                    m_panel_margin = QMargins(0, 0, margins, 0);
                     break;
                 }
                 default: {
                     setViewportMargins(0, 0, 0, margins);
-                    m_panel_margin = QMargins(0, 0, 0, margins);
                     break;
                 }
                 }
@@ -677,7 +666,6 @@ void DesktopIconView::initShoutCut()
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
     connect(showHiddenAction, &QAction::triggered, this, [=]() {
-        //qDebug() << "show hidden";
         this->setShowHidden();
     });
 
@@ -716,7 +704,7 @@ void DesktopIconView::initMenu()
                 auto action = menu.addAction(tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
                     //go to control center set background
-                    DesktopWindow::gotoSetBackground();
+                    PeonyDesktopApplication::gotoSetBackground();
                 });
             }
             menu.exec(QCursor::pos());
@@ -733,8 +721,7 @@ void DesktopIconView::initMenu()
 
 void DesktopIconView::setShowHidden()
 {
-    m_show_hidden = ! m_show_hidden;
-    qDebug() << "DesktopIconView::setShowHidden:" <<m_show_hidden;
+    m_show_hidden = !GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     m_proxy_model->setShowHidden(m_show_hidden);
     //fix show hidden file desktop icons overlapped issue
     QTimer::singleShot(100, this, [=]() {
@@ -755,7 +742,7 @@ void DesktopIconView::resolutionChange()
     float iconHeigth = 0;
 
     // icon size
-    QSize icon = QListView::gridSize();
+    QSize icon = gridSize();
     iconWidth = icon.width();
     iconHeigth = icon.height();
 
@@ -1139,7 +1126,7 @@ void DesktopIconView::setSortType(int sortType)
     m_proxy_model->sort(0, m_proxy_model->sortOrder());
     saveAllItemPosistionInfos();
     bool isFull = false;
-    auto geo = getScreenArea(qApp->primaryScreen());
+    auto geo = viewport()->rect();
     if (geo.width() != 0 && geo.height() != 0) {
         for (int i = 0; i < m_proxy_model->rowCount(); i++) {
             auto index = m_proxy_model->index(i, 0);
@@ -1378,6 +1365,7 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
 {
+    m_model->relayoutAddedItems();
     QListView::rowsInserted(parent, start, end);
     for (auto uri : getAllFileUris()) {
         auto pos = getFileMetaInfoPos(uri);
@@ -1421,6 +1409,7 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
+    m_model->relayoutAddedItems();
     QListView::rowsAboutToBeRemoved(parent, start, end);
 //    QTimer::singleShot(1, this, [=](){
 //        for (auto uri : getAllFileUris()) {
@@ -1429,7 +1418,6 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 //                updateItemPosByUri(uri, pos);
 //        }
 //    });
-    m_model->relayoutAddedItems();
 
     for (int row = start; row <= end; row++) {
         auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
@@ -1664,6 +1652,16 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
 void DesktopIconView::setEditFlag(bool edit)
 {
     m_is_edit = edit;
+}
+
+void DesktopIconView::restoreItemsPosByMetaInfo()
+{
+    for (auto uri : getAllFileUris()) {
+        auto pos = getFileMetaInfoPos(uri);
+        if (pos.x() >= 0) {
+            updateItemPosByUri(uri, pos);
+        }
+    }
 }
 
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
@@ -2076,7 +2074,6 @@ void DesktopIconView::refresh()
 QRect DesktopIconView::visualRect(const QModelIndex &index) const
 {
     auto rect = QListView::visualRect(index);
-
     QPoint p(10, 5);
 
     switch (zoomLevel()) {
@@ -2092,7 +2089,6 @@ QRect DesktopIconView::visualRect(const QModelIndex &index) const
     default:
         break;
     }
-
     rect.moveTo(rect.topLeft() + p);
     return rect;
 }
@@ -2107,46 +2103,6 @@ int DesktopIconView::updateBWList()
     setSortType(sortType);
     return 0;
 }
-
-QRect DesktopIconView::getScreenArea(QScreen *screen)
-{
-    if (!screen) return QRect(0, 0, 0, 0);
-
-    if (m_panel_margin.isNull()) {
-        if (QGSettings::isSchemaInstalled(PANEL_SETTINGS)) {
-            QGSettings *panelSetting = new QGSettings(PANEL_SETTINGS, QByteArray(), this);
-            int pos = panelSetting->get("panelposition").toInt();
-            int size = panelSetting->get("panelsize").toInt();
-
-            switch (pos) {
-            case 1: {
-                m_panel_margin = QMargins(0, size, 0, 0);
-                break;
-            }
-            case 2: {
-                m_panel_margin = QMargins(size, 0, 0, 0);
-                break;
-            }
-            case 3: {
-                m_panel_margin = QMargins(0, 0, size, 0);
-                break;
-            }
-            default: {
-                m_panel_margin = QMargins(0, 0, 0, size);
-                break;
-            }
-            }
-            panelSetting->deleteLater();
-        }
-    }
-
-    QRect geo = screen->geometry();
-
-    geo.adjust(m_panel_margin.left(), m_panel_margin.top(), -m_panel_margin.right(), -m_panel_margin.bottom());
-
-    return geo;
-}
-
 
 static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)
 {
