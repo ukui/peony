@@ -1597,6 +1597,11 @@ void DesktopIconView::setEditFlag(bool edit)
     m_is_edit = edit;
 }
 
+bool DesktopIconView::getEditFlag()
+{
+    return m_is_edit;
+}
+
 void DesktopIconView::restoreItemsPosByMetaInfo()
 {
     for (auto uri : getAllFileUris()) {
@@ -2002,7 +2007,7 @@ void DesktopIconView::refresh()
     this->setCursor(QCursor(Qt::WaitCursor));
 //    if (m_refresh_timer.isActive())
 //        return;
-
+    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     if (!m_model)
         return;
 

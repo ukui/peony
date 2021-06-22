@@ -126,7 +126,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     }
 
     //fix bug#46785, select one file cut has no effect issue
-    if (bCutFile)
+    if (bCutFile && !getView()->getEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
     auto iconSizeExpected = view->iconSize();
