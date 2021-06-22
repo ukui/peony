@@ -33,8 +33,8 @@ using namespace Peony;
 
 FileCopy::FileCopy (QString srcUri, QString destUri, GFileCopyFlags flags, GCancellable* cancel, GFileProgressCallback cb, gpointer pcd, GError** error, QObject* obj) : QObject (obj)
 {
-    mSrcUri = srcUri;
-    mDestUri = destUri;
+    mSrcUri = FileUtils::urlDecode(srcUri);
+    mDestUri = FileUtils::urlDecode(destUri);
     QString destUrit = nullptr;
 
     mCopyFlags = flags;
