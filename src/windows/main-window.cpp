@@ -975,6 +975,7 @@ void MainWindow::refresh()
 {
     locationChangeStart();
     m_tab->refresh();
+    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     //goToUri(getCurrentUri(), false, true);
 }
 

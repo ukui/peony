@@ -577,6 +577,11 @@ QRect IconView::visualRect(const QModelIndex &index) const
     return rect;
 }
 
+bool IconView::getDelegateEditFlag()
+{
+    return m_delegate_editing;
+}
+
 int IconView::getSortType()
 {
     int type = m_sort_filter_proxy_model->sortColumn();
