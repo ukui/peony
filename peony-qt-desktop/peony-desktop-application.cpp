@@ -215,20 +215,23 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
             if (drives) {
                 for (GList* i = drives; nullptr != i; i = i->next) {
                     GDrive * d = static_cast<GDrive*>(i->data);
-                    GList* volumes = g_drive_get_volumes(d);
-                    if (volumes) {
-                        for (GList* j = volumes; nullptr != j; j = j->next) {
-                            GVolume* v = static_cast<GVolume*>(j->data);
-                            g_autofree char* uuid = g_volume_get_uuid(v);
-                            if (0 != strcmp("2691-6AB8", uuid)) {
-                                g_volume_mount(v, G_MOUNT_MOUNT_NONE, nullptr, nullptr, volume_mount_cb, nullptr);
+                    if (G_IS_DRIVE(d)) {
+                        GList* volumes = g_drive_get_volumes(d);
+                        if (volumes) {
+                            for (GList* j = volumes; nullptr != j; j = j->next) {
+                                GVolume* v = static_cast<GVolume*>(j->data);
+                                if (G_IS_VOLUME(v)) {
+                                    g_autofree char* uuid = g_volume_get_uuid(v);
+                                    if (0 != g_strcmp0("2691-6AB8", uuid)) {
+                                        g_volume_mount(v, G_MOUNT_MOUNT_NONE, nullptr, nullptr, volume_mount_cb, nullptr);
+                                    }
+                                    g_object_unref(v);
+                                }
                             }
-
-                            g_object_unref(v);
+                            g_list_free(volumes);
                         }
-                        g_list_free(volumes);
+                        g_object_unref(d);
                     }
-                    g_object_unref(d);
                 }
                 g_list_free(drives);
             }
