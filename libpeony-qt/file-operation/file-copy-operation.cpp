@@ -59,7 +59,7 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
 
     m_conflict_files.clear();
     m_source_uris = sourceUris;
-    m_dest_dir_uri = destDirUri;
+    m_dest_dir_uri = FileUtils::urlDecode(destDirUri);
     m_reporter = new FileNodeReporter;
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
 
@@ -506,7 +506,7 @@ void FileCopyOperation::run()
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         qDebug() << "copy uri:" << uri;
-        FileNode *node = new FileNode(uri, nullptr, m_reporter);
+        FileNode *node = new FileNode(FileUtils::urlDecode(uri), nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
         nodes << node;

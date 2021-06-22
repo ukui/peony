@@ -105,6 +105,13 @@ QString FileUtils::urlEncode(const QString& url)
     return encodeUrl;
 }
 
+QString FileUtils::urlDecode(const QString &url)
+{
+    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
+
+    return decodeUrl;
+}
+
 QString FileUtils::handleDuplicateName(const QString& uri)
 {
     QString handledName = nullptr;
