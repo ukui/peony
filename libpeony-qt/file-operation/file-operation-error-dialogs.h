@@ -143,7 +143,7 @@ private:
     float           m_sm_btn_x = 16;
     float           m_sm_btn_y = 150;
     float           m_sm_btn_width = 216;
-    float           m_sm_btn_height = 20;
+    float           m_sm_btn_height = 24;
 
     float           m_ck_btn_top = 385;
     float           m_ck_btn_heigth = 18;
