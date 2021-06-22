@@ -209,8 +209,6 @@ public:
     Qt::DropActions supportedDragActions() const override;
     void sendPathChangeRequest(const QString &uri);
 
-    void sendPathChangeRequest(const QString &uri);
-
 Q_SIGNALS:
     /*!
      * \brief findChildrenStarted
@@ -242,8 +240,6 @@ Q_SIGNALS:
 
     void selectRequest(const QStringList &uris);
     void changePathRequest(const QString &uri, bool addHistory, bool forceUpdate);
-
-     void changePathRequest(const QString &uri, bool addHistory, bool forceUpdate);
 
 public Q_SLOTS:
     /*!

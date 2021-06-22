@@ -48,14 +48,14 @@ int PeonyJsonOperation::loadConfigFile(BWListInfo *bwListInfo)
     //1、judge file exsit?
     QFileInfo file(m_configFile);
     if (!file.exists()){
-        qWarning("config file %s do not exist", m_configFile);
+//        qWarning("config file %s do not exist", m_configFile);
         return -EEXIST;
     }
 
     //2、read json file
     QFile jsonFile(m_configFile);
     if (!jsonFile.open(QIODevice::ReadOnly)){
-        qWarning("open file %s failed, errno[%d]", m_configFile, errno);
+//        qWarning("open file %s failed, errno[%d]", m_configFile, errno);
         return -errno;
     }
     QByteArray jsonCtxt = jsonFile.readAll();
@@ -70,7 +70,7 @@ int PeonyJsonOperation::loadConfigFile(BWListInfo *bwListInfo)
     QJsonParseError jsonerror;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonCtxt, &jsonerror);
     if (jsonDoc.isNull() || jsonerror.error != QJsonParseError::NoError){
-        qWarning("json load file %s failed, errno[%d]", m_configFile, jsonerror.error);
+//        qWarning("json load file %s failed, errno[%d]", m_configFile, jsonerror.error);
         return -EINVAL;
     }
 
@@ -115,7 +115,7 @@ int PeonyJsonOperation::getBWListInfo(QJsonDocument &jsonDoc, BWListInfo *bwList
     } else if (BW_LIST_NORMAL == model){
         bwListInfo->setBWListModel(model);
     } else {
-        qWarning("the mode %s is undefined", model);
+//        qWarning("the mode %s is undefined", model);
         return -EINVAL;
     }
 
