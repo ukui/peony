@@ -341,6 +341,16 @@ void PeonyDesktopApplication::relocateIconView()
                 m_primaryScreenSettingsTimeLine->start();
             }
         }
+    } else {
+        //getIconView()->setParent(nullptr);
+        for (auto window : m_bg_windows) {
+            if (window->screen() == qApp->primaryScreen()) {
+                window->setCentralWidget(getIconView());
+                getIconView()->setVisible(true);
+                KWindowSystem::raiseWindow(window->winId());
+                break;
+            }
+        }
     }
 }
 
@@ -578,7 +588,9 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
 
 void PeonyDesktopApplication::setupDesktop()
 {
+    bool isUKUIWayland = false;
     if (qgetenv("DESKTOP_SESSION") == QString("ukui-wayland")) {
+        isUKUIWayland = true;
         screensMonitor = new PrimaryManager;
         connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, &PeonyDesktopApplication::relocateIconView);
         m_primaryScreenSettingsTimeLine = new QTimeLine(100, screensMonitor);
@@ -596,6 +608,10 @@ void PeonyDesktopApplication::setupDesktop()
     }
     relocateIconView();
     connect(qApp, &QApplication::screenAdded, this, &PeonyDesktopApplication::addBgWindow);
+
+    if (!isUKUIWayland) {
+        connect(qApp, &QApplication::primaryScreenChanged, this, &PeonyDesktopApplication::relocateIconView);
+    }
 }
 
 void PeonyDesktopApplication::setupBgAndDesktop()

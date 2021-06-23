@@ -136,69 +136,6 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     auto zoomLevel = this->zoomLevel();
     setDefaultZoomLevel(zoomLevel);
 
-//#if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
-//    QTimer::singleShot(500, this, [=](){
-//#else
-//    QTimer::singleShot(500, [=](){
-//#endif
-//        connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [=](const QItemSelection &selection, const QItemSelection &deselection){
-//            //qDebug()<<"selection changed";
-//            m_real_do_edit = false;
-//            this->setIndexWidget(m_last_index, nullptr);
-//            auto currentSelections = this->selectionModel()->selection().indexes();
-
-//            if (currentSelections.count() == 1) {
-//                //qDebug()<<"set index widget";
-//                m_last_index = currentSelections.first();
-//                auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
-//                this->setIndexWidget(m_last_index, new DesktopIndexWidget(delegate, viewOptions(), m_last_index, this));
-//            } else {
-//                m_last_index = QModelIndex();
-//                for (auto index : deselection.indexes()) {
-//                    this->setIndexWidget(index, nullptr);
-//                }
-//            }
-//        });
-//    });
-
-    auto screens = qApp->screens();
-    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
-        connect(qApp->primaryScreen(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-    }
-    connect(qApp, &QGuiApplication::screenAdded, [=] (QScreen* screen) {
-        m_screens[screen] = false;
-        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
-        }
-    });
-
-    connect(qApp, &QGuiApplication::screenRemoved, [=] (QScreen* screen) {
-        m_screens.remove(screen);
-        for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-            m_screens[screen] = (screen == qApp->primaryScreen()) ? true : false;
-        }
-    });
-
-//    if (QString(qgetenv("DESKTOP_SESSION")) != "ukui-wayland") {
-//        connect(qApp, &QGuiApplication::primaryScreenChanged, [=] (QScreen* screen) {
-//            for (auto it = m_screens.constBegin(); it != m_screens.constEnd(); ++it) {
-//                if (it.value()) {
-//                    disconnect(it.key(), &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-//                }
-//                m_screens[it.key()] = false;
-//            }
-
-//            m_screens[screen] = true;
-//            connect(screen, &QScreen::geometryChanged, this, QOverload<const QRect &>::of(&DesktopIconView::setGeometry));
-//            setGeometry(screen->geometry());
-//    //        qDebug() << "name: " << screen->name() << " --- " << screen->availableGeometry();
-//        });
-//    }
-
-    for (auto i = screens.constBegin(); i != screens.constEnd(); ++i) {
-        m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
-    }
-
     m_model = new DesktopItemModel(this);
     m_proxy_model = new DesktopItemProxyModel(m_model);
 
