@@ -196,9 +196,41 @@ retry:
 
 void FileTrashOperation::forceDelete(QString uri)
 {
-    auto deleteFile = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-    g_file_delete(deleteFile.get()->get(), nullptr, nullptr);
+    qDebug() << "force delete:" << uri;
+    FileNode *node = new FileNode(uri, nullptr, nullptr);
+    node->findChildrenRecursively();
+    deleteRecursively(node);
+
+    if (node)  delete node;
 }
+
+
+void FileTrashOperation::deleteRecursively(FileNode *node)
+{
+    if (isCancelled())
+        return;
+
+    g_autoptr(GFile) file = g_file_new_for_uri(node->uri().toUtf8().constData());
+    if (node->isFolder()) {
+        for (auto child : *(node->children())) {
+            deleteRecursively(child);
+        }
+        GError *err = nullptr;
+        g_file_delete(file, getCancellable().get()->get(), &err);
+        if (err) {
+            qDebug() << "force delete folder:" << node->uri() << " error: " << err->message;
+            g_error_free(err);
+        }
+    } else {
+        GError *err = nullptr;
+        g_file_delete(file, getCancellable().get()->get(), &err);
+        if (err) {
+            qDebug() << "force delete file:" << node->uri() << " error: " << err->message;
+            g_error_free(err);
+        }
+    }
+}
+
 
 void FileTrashOperation::setErrorMessage(GError** err)
 {
