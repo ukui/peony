@@ -734,6 +734,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             //qDebug() << "Reverse select";
             m_view->invertSelections();
         });
+
+        if (m_is_search && m_selections.count() >0)
+        {
+            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
+            connect(l.last(), &QAction::triggered, [=]() {
+                ClipboardUtils::setClipboardFiles(m_selections, false);
+            });
+        }
     }
 
     return l;
