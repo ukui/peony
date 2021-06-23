@@ -616,19 +616,36 @@ void MainWindow::setShortCuts()
         auto *copyAction = new QAction(this);
         copyAction->setShortcut(QKeySequence::Copy);
         connect(copyAction, &QAction::triggered, [=]() {
+            bool is_recent = false;
             if (!this->getCurrentSelections().isEmpty())
             {
                 if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                     return ;
                 }
                 if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                    return ;
+                    is_recent = true;
                 }
                 if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
                     return ;
                 }
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+            else
+                return;
+
+            QStringList selections;
+            if (is_recent)
+            {
+                for(auto uri:this->getCurrentSelections())
+                {
+                    uri = Peony::FileUtils::getTargetUri(uri);
+                    selections << uri;
+                }
+            }
+            else{
+                selections = this->getCurrentSelections();
+            }
+
+            Peony::ClipboardUtils::setClipboardFiles(selections, false);
         });
         addAction(copyAction);
 
