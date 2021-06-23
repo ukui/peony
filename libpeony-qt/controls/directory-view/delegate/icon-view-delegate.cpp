@@ -306,11 +306,14 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
     if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        QStringList sl = edit->toPlainText().split(".");
-        sl.pop_front();
-        int pos = sl.join(".").length();
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, pos + 1);
-        //qDebug()<<cursor.position();
+        int n = 1;
+        if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
+            n = 2;
+        while(n){
+            cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            --n;
+        }
     }
     //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);
