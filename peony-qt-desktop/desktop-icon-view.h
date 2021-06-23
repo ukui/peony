@@ -68,6 +68,7 @@ public:
     void initDoubleClick();
 
     void openFileByUri(QString uri);
+    void restoreItemsPosByMetaInfo();
 
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {
         Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)
