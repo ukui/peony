@@ -147,6 +147,10 @@ void DirectoryViewMenu::fillActions()
         }
     }
 
+    //netwotk items not show operation menu
+    if (m_is_network)
+        return;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
