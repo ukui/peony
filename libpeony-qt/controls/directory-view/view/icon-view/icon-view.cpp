@@ -383,6 +383,30 @@ void IconView::wheelEvent(QWheelEvent *e)
 
 void IconView::updateGeometries()
 {
+#if QT_VERSION_CHECK(5, 15, 0)
+    //try fix #55341
+    int verticalValue = verticalOffset();
+
+    QListView::updateGeometries();
+
+    if (!model() || model()->columnCount() == 0 || model()->rowCount() == 0) {
+        return;
+    }
+
+    int itemCount = model()->rowCount();
+    QRegion itemRegion;
+    for (int row = 0; row < itemCount; row++) {
+        auto index = model()->index(row, 0);
+        itemRegion += visualRect(index);
+    }
+    if (itemRegion.boundingRect().bottom() + gridSize().height() < viewport()->height()) {
+        verticalScrollBar()->setRange(0, 0);
+    } else {
+        int vertiacalMax = verticalScrollBar()->maximum();
+        verticalScrollBar()->setMaximum(vertiacalMax + gridSize().height());
+        verticalScrollBar()->setValue(verticalValue);
+    }
+#else
     horizontalScrollBar()->setRange(0, 0);
     if (!model()) {
         verticalScrollBar()->setRange(0, 0);
@@ -407,12 +431,13 @@ void IconView::updateGeometries()
         verticalScrollBar()->setPageStep(viewport()->height());
         verticalScrollBar()->setRange(0, itemRegion.boundingRect().bottom() - viewport()->height() + gridSize().height());
     }
+#endif
 }
 
 void IconView::focusInEvent(QFocusEvent *e)
 {
     QListView::focusInEvent(e);
-    if (e->reason() == Qt::TabFocus) {
+    if (e->reason() == Qt::TabFocusReason) {
         if (selectedIndexes().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
