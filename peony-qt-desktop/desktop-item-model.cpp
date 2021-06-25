@@ -116,6 +116,9 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
 
         if (!exsited) {
+            if (!m_renaming_file_pos.first.isEmpty() && uri != m_renaming_file_pos.first && uri.contains(m_renaming_file_pos.first)) {
+                return;
+            }
             m_items_need_relayout.append(uri);
             m_items_need_relayout.removeOne(m_renaming_file_pos.first);
             m_items_need_relayout.removeOne(m_renaming_file_pos.first + ".desktop");
@@ -373,7 +376,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         if (info.get()->m_type == FileOperationInfo::Rename) {
             m_renaming_operation_info = info;
             auto renamingUri = info.get()->m_src_uris.first();
-            m_renaming_file_pos.first = info.get()->target();
+            m_renaming_file_pos.first = renamingUri;
             m_renaming_file_pos.second = PeonyDesktopApplication::getIconView()->getFileMetaInfoPos(renamingUri);
         }
     });
