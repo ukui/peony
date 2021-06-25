@@ -25,6 +25,7 @@
 #include "file-utils.h"
 #include <gio/gdesktopappinfo.h>
 #include <glib/gprintf.h>
+#include <global-settings.h>
 #include <QUrl>
 
 #include <QProcess>
@@ -75,15 +76,19 @@ void FileRenameOperation::run()
         Q_EMIT operationFinished();
         return;
     } else if (m_new_name.startsWith(".")) {
-        FileOperationError except;
-        except.srcUri = m_uri;
-        except.errorType = ET_GIO;
-        except.op = FileOpRename;
-        except.dlgType = ED_WARNING;
-        except.title = tr("File Rename warning");
-        except.errorStr = tr("The file \"%1\" will be hidden!").arg(m_new_name);
+        auto showHidden = GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+        if (! showHidden)
+        {
+            FileOperationError except;
+            except.srcUri = m_uri;
+            except.errorType = ET_GIO;
+            except.op = FileOpRename;
+            except.dlgType = ED_WARNING;
+            except.title = tr("File Rename warning");
+            except.errorStr = tr("The file \"%1\" will be hidden!").arg(m_new_name);
 
-        Q_EMIT errored(except);
+            Q_EMIT errored(except);
+        }
     }
 
     auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
