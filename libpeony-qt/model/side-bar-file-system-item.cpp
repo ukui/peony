@@ -445,19 +445,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
             return;
         }
 
-        auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
-                                                                                               "Do you want to unmount forcely?").arg(err->message),
-                                           QMessageBox::Yes, QMessageBox::No);
-        if (button == QMessageBox::Yes) {
-            QString *string = new QString;
-            *string = *targetUri;
-            g_file_unmount_mountable_with_operation(file,
-                                                    G_MOUNT_UNMOUNT_FORCE,
-                                                    nullptr,
-                                                    nullptr,
-                                                    GAsyncReadyCallback(unmount_force_cb),
-                                                    string);
-        }
+        QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n").arg(err->message), QMessageBox::Yes);
         g_error_free(err);
     } else {
         VolumeManager::getInstance()->fileUnmounted(*targetUri);
@@ -596,13 +584,8 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
     qDebug()<<successed;
     if (err) {
         qDebug()<<err->message;
-        /*fix #18957*/
-        QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message));
-        QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
-        QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
+        QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message), QMessageBox::Ok);
         warningBox.exec();
-        if(warningBox.clickedButton() == ensureBtn)
-            p_this->realEject(G_MOUNT_UNMOUNT_FORCE);
 
         g_error_free(err);
     } else {
@@ -650,12 +633,8 @@ void SideBarFileSystemItem::ejectDevicebyDrive(GObject* object,GAsyncResult* res
         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
             errorMsg = QObject::tr("Unable to eject %1").arg(pThis->m_display_name);
 
-            QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),errorMsg);
-            QPushButton *cancelBtn = (warningBox.addButton(QObject::tr("Cancel"),QMessageBox::RejectRole));
-            QPushButton *ensureBtn = (warningBox.addButton(QObject::tr("Eject Anyway"),QMessageBox::YesRole));
+            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), errorMsg, QMessageBox::Ok);
             warningBox.exec();
-            if(warningBox.clickedButton() == ensureBtn)
-                pThis->eject(G_MOUNT_UNMOUNT_FORCE);
 
             g_error_free(error);
         }
