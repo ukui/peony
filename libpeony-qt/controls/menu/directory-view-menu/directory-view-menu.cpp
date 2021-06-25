@@ -309,6 +309,13 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
