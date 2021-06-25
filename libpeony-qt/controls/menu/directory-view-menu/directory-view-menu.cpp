@@ -821,9 +821,9 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
         auto mount = VolumeManager::getMountFromUri(info->targetUri());
         //fix bug#52491, CDROM and DVD can format issue
         if (nullptr != mount) {
-            if (!uri.startsWith("burn:///") && !(uri.startsWith("file:///media") && uri.endsWith("CDROM"))
-                    && !(uri.startsWith("file:///media") && (uri.contains("DVD") || uri.contains("CDROM")))
-                    && info->isVolume() && info->canUnmount()) {
+            QString unixDevice = FileUtils::getUnixDevice(info->uri());
+            if (! unixDevice.isNull() && ! unixDevice.contains("/dev/sr")
+                && info->isVolume() && info->canUnmount()) {
                 l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=] () {
                     // FIXME:// refactory Format_Dialog
                     Format_Dialog* fd  = new Format_Dialog(info->uri(), nullptr, m_view);
