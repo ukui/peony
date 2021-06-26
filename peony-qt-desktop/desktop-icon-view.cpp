@@ -85,6 +85,7 @@ using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 #define PANEL_SETTINGS "org.ukui.panel.settings"
+#define UKUI_STYLE_SETTINGS "org.ukui.style"
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
@@ -451,6 +452,18 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
             }
             if (initialized)
                 resolutionChange();
+        });
+    }
+
+    // try fixing #63358
+    if (QGSettings::isSchemaInstalled(UKUI_STYLE_SETTINGS)) {
+        auto styleSettings = new QGSettings(UKUI_STYLE_SETTINGS, QByteArray(), this);
+        connect(styleSettings, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "iconThemeName") {
+                QTimer::singleShot(1000, viewport(), [=]{
+                    viewport()->update();
+                });
+            }
         });
     }
 }
