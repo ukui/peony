@@ -785,7 +785,8 @@ void ListView::editUri(const QString &uri)
     setState(QTreeView::NoState);
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_proxy_model->indexFromUri(origin), nullptr);
-    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
+    //注释该行以修复bug:#60474
+//    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
     edit(m_proxy_model->indexFromUri(origin));
 }
 
