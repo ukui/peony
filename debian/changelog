@@ -1,4 +1,15 @@
-peony (3.2.2+0624hw) v101.hw; urgency=medium
+peony (3.2.2+0626hw1) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:62285-9A0,61937-9A0,63438-9A0
+      55341-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：U盘文件操作, 桌面图标, 图标视图.
+
+ -- Yue Lan <lanyue@kylinos.cn>  Sat, 26 Jun 2021 17:16:50 +0800
+
+peony (3.2.2+0626hw) v101.hw; urgency=medium
 
   * 9A0主版本更新
     - Bug号:62397-9A0,60759-9A0,52422-9A0.
