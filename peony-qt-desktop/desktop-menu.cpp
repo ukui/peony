@@ -175,7 +175,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 if (recommendActions.count() == 0)
                 {
                     auto action = FileLaunchManager::getDefaultAction(m_selections.first());
-                    if (action != NULL)
+                    if (action != NULL && action->data().toString().length() > 0)
                         recommendActions.append(action);
                 }
                 for (auto action : recommendActions) {
