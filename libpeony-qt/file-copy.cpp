@@ -191,6 +191,15 @@ void FileCopy::run ()
         goto out;
     }
 
+    // copy file attribute
+    // It is possible that some file systems do not support file attributes
+    g_file_copy_attributes(srcFile, destFile, G_FILE_COPY_ALL_METADATA, nullptr, &error);
+    if (nullptr != error) {
+        qWarning() << "copy attribute error:" << error->code << "  ---  " << error->message;
+        g_error_free(error);
+        error = nullptr;
+    }
+
     if (!readIO || !writeIO) {
         error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Error opening source or destination file!").toUtf8().constData());
         detailError(&error);
@@ -259,24 +268,24 @@ void FileCopy::run ()
     }
 
     // finally set some metaData, not used!
-    if (mCopyFlags & G_FILE_COPY_ALL_METADATA && FINISHED == mStatus && FileUtils::isFileExsit(mDestUri)) {
-        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
-        if (nullptr != error) {
-            detailError(&error);
-            goto finish;
-        }
+//    if (mCopyFlags & G_FILE_COPY_ALL_METADATA && FINISHED == mStatus && FileUtils::isFileExsit(mDestUri)) {
+//        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
+//        if (nullptr != error) {
+//            detailError(&error);
+//            goto finish;
+//        }
 
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC));
-    }
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC));
+//    }
 
-finish:
+//finish:
     // if copy sucessed, flush all data
     if (FINISHED == mStatus) {
         g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, &error);
