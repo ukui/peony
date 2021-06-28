@@ -735,12 +735,26 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
         }
     } else if ((pos.x() >= m_close_x) && (pos.x() <= m_close_x_r)
                && (pos.y() >= m_close_y) && (pos.y() <= m_close_y_b)) {
-        QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
+        /**
+         * @note
+         * fix: During the process of copying a file,
+         * click the Cancel button in the small progress bar,
+         * wait until the copy is finished and then click "OK" in the pop-up box,
+         * which will cause the file manager to crash.
+         *
+         * Therefore, remove the uncheck pop-up
+         *
+         * @todo
+         * Pause the file operation before confirming the popbox
+         */
+        /*QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
                            tr("Are you sure want to cancel the current selected file operation"),
-                           QMessageBox::Ok | QMessageBox::Cancel);
+                           QMessageBox::Ok | QMessageBox::Cancel, this);
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
-        if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
+        if (QMessageBox::Ok == msgBox.exec() && */
+        //
+        if(!m_is_stopping) {
             if (m_has_finished) return;
             m_is_stopping = true;
             Q_EMIT cancelled();
