@@ -222,6 +222,7 @@ public Q_SLOTS:
     void updateValue (QString&, QIcon&, double);
 
 private:
+    bool m_sync = false;
     // can modify
     // header
     QString m_title;
