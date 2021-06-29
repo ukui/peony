@@ -651,6 +651,14 @@ void IconView::editUris(const QStringList uris)
     //implement batch rename.
 }
 
+void IconView::selectAll()
+{
+    // fix: #62397
+    for (int i = 0; i < model()->rowCount(); i++) {
+        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
+    }
+}
+
 void IconView::clearIndexWidget()
 {
     for (int i = 0; i < m_sort_filter_proxy_model->rowCount(); i++) {
