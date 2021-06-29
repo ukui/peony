@@ -91,6 +91,9 @@ QString SideBarFileSystemItem::displayName()
     if (!m_volume_name.isEmpty()) {
         displayName += m_volume_name;
     }
+    //fix data block not localized issue, link to bug#63470
+    if (displayName.toLower() == "data")
+        displayName = tr("data");
     if (!m_unix_device.isEmpty() && !m_uri.contains("root.link")) {
         displayName += QString(" (%1)").arg(m_unix_device);
     }
