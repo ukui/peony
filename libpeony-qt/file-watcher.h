@@ -85,6 +85,8 @@ public:
         return m_support_monitor;
     }
 
+    void creatorMonitor();
+
 Q_SIGNALS:
     void locationChanged(const QString &oldUri, const QString &newUri);
     void directoryDeleted(const QString &uri);
@@ -92,7 +94,7 @@ Q_SIGNALS:
     void fileCreated(const QString &uri);
     void fileDeleted(const QString &uri);
     void fileChanged(const QString &uri);
-
+    void fileRenamed(const QString &oldUri, const QString &newUri);
     /*!
      * \brief requestUpdateDirectory
      * \note

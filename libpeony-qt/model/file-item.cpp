@@ -109,6 +109,8 @@ const QString FileItem::uri()
     return m_info->uri();
 }
 
+#include"file-operation-manager.h"
+
 QVector<FileItem*> *FileItem::findChildrenSync()
 {
     Q_EMIT m_model->findChildrenStarted();
@@ -324,6 +326,11 @@ void FileItem::findChildrenAsync()
                     infoJob->queryAsync();
                 }
             });
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
+                qDebug()<<"***oldUri***newUri***"<<oldUri<<newUri;
+                Q_EMIT this->renamed(oldUri, newUri);
+                this->onRenamed(oldUri, newUri);
+            });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
             });
@@ -441,6 +448,9 @@ void FileItem::findChildrenAsync()
                     });
                     infoJob->queryAsync();
                 }
+            });
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {               
+                this->onRenamed(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
@@ -603,11 +613,14 @@ void FileItem::onDeleted(const QString &thisUri)
 void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"renamed";
-    Q_UNUSED(oldUri);
-    if (m_parent) {
-        FileItem *newRootItem = new FileItem(FileInfo::fromUri(newUri), nullptr, m_model);
-        m_model->setRootItem(newRootItem);
+
+    FileItem *child = getChildFromUri(oldUri);
+    if (child) {
+       int index = m_children->indexOf(child);
+        m_children->at(index)->m_info= FileInfo::fromUri(newUri);
+        child->updateInfoAsync();
     }
+
 }
 
 void FileItem::onUpdateDirectoryRequest()

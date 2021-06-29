@@ -47,6 +47,7 @@ QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    setDynamicSortFilter(false);
     //enable number sort, like 100 is after 99
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
