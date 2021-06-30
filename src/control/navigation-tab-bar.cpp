@@ -200,7 +200,7 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     if (count() == 1) {
         fixedX = lastTabRect.right();
     }
-    m_float_button->move(fixedX, fixedY);
+    m_float_button->move(fixedX, fixedY + 1);
     setFixedHeight(lastTabRect.height());
     m_float_button->raise();
 

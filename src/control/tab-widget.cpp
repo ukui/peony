@@ -132,7 +132,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         addPageButton->setVisible(!visible);
         addPageButton->raise();
         if (!visible)
-            addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 4);
+            addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 3);
     });
 
     connect(addPageButton, &QPushButton::clicked, this, [=](){
@@ -1275,7 +1275,7 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(2, 4, m_tab_bar_bg->width(), m_tab_bar->height());
+    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width(), m_tab_bar->height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
