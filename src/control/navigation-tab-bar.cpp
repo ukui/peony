@@ -65,6 +65,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setMovable(true);
     setExpanding(false);
     setTabsClosable(true);
+    setUsesScrollButtons(true);
     X11WindowManager::getInstance()->registerWidget(this);
 
     connect(this, &QTabBar::currentChanged, this, [=](int index) {
@@ -360,6 +361,7 @@ TabBarStyle *TabBarStyle::getStyle()
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
     switch (metric) {
+    case PM_TabBarScrollButtonWidth:
     case PM_TabBarTabShiftVertical:
     case PM_TabBarBaseHeight:
         return 0;
@@ -368,4 +370,16 @@ int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
+}
+
+QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_TabBarScrollLeftButton:
+    case SE_TabBarScrollRightButton:
+        return QRect();
+    default:
+        break;
+    }
+    return QProxyStyle::subElementRect(element, option, widget);
 }
