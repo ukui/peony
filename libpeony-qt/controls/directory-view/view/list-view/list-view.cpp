@@ -856,7 +856,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     m_view->bindModel(model, proxyModel);
     connect(m_model, &FileItemModel::selectRequest, this, &DirectoryViewWidget::updateWindowSelectionRequest);
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
-    connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
+    //connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);

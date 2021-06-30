@@ -62,7 +62,7 @@ void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
         disconnect(sourceModel());
     QSortFilterProxyModel::setSourceModel(model);
     FileItemModel *file_item_model = static_cast<FileItemModel*>(model);
-    connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
+    //connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
 }
 
 FileItem *FileItemProxyFilterSortModel::itemFromIndex(const QModelIndex &proxyIndex)

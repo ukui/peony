@@ -288,7 +288,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
             //fix rename file back to default sort order
             //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
-            model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
+            //model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
         });
     });
 
