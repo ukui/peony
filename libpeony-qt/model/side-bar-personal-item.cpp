@@ -74,7 +74,13 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
                 m_model);
         m_children->append(musicItem);
 
-        m_model->insertRows(0, 5, firstColumnIndex());
+        QString filesafeUri = "filesafe:///";
+        SideBarPersonalItem *filesafeItem = new SideBarPersonalItem(filesafeUri,
+                this,
+                m_model);
+        m_children->append(filesafeItem);
+
+        m_model->insertRows(0, 6, firstColumnIndex());
         return;
     }
     m_uri = uri;

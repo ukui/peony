@@ -43,6 +43,9 @@
 
 #include <QUrl>
 
+#include <Operation.h>
+#include <OperationFactory.h>
+
 #ifndef PEONY_FIND_NEXT_FILES_BATCH_SIZE
 #define PEONY_FIND_NEXT_FILES_BATCH_SIZE 100
 #endif
@@ -373,6 +376,23 @@ void FileEnumerator::handleError(GError *err)
         //processed in file-item, comment to fix duplicated prompt
         //QMessageBox::critical(nullptr, tr("Error"), tr("Did not find target path, do you move or deleted it?"));
         break;
+    }
+    case 66666:
+    {
+        Box::COperationFactory oprFactory;
+        Box::COperation *opr = oprFactory.construct_operation(Box::COperationFactory::ReleaseCryptBoxOprInPeony);
+
+        opr->set_boxName(QString(err->message));
+        int a = opr->exec_operation();
+        qDebug()<<"resule is "<<a;
+
+        if(a != 0){
+            this->prepared(nullptr, "filesafe:///");
+            break;
+        } else {
+            this->prepared(nullptr, QString("filesafe:///%1").arg(QString(err->message)).toUtf8().data());
+            break;
+        }
     }
     default:
         Q_EMIT prepared(GErrorWrapper::wrapFrom(g_error_copy(err)), nullptr, true);
