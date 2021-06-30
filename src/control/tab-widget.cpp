@@ -133,6 +133,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         addPageButton->raise();
         if (!visible)
             addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 3);
+        // check again for invalid tab bar size.
+        updateTabBarGeometry();
     });
 
     connect(addPageButton, &QPushButton::clicked, this, [=](){

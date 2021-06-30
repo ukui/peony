@@ -51,6 +51,8 @@ static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 {
+    setFocusPolicy(Qt::StrongFocus);
+
     setAcceptDrops(true);
     m_drag_timer.setInterval(750);
     m_drag_timer.setSingleShot(true);
@@ -149,6 +151,7 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
+    setFocus();
     if (uri.isEmpty())
         return;
     m_info = Peony::FileInfo::fromUri(uri);
