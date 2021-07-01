@@ -111,6 +111,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     previewButtons->setMovable(false);
     previewButtons->setAttribute(Qt::WA_TranslucentBackground);
     previewButtons->setAutoFillBackground(false);
+    previewButtons->setObjectName("previewButtons");
+    previewButtons->setStyle(TabBarStyle::getStyle());
     m_tool_bar = previewButtons;
    // previewButtons->setFixedSize(QSize(40, 40));
     previewButtons->setIconSize(QSize(16,16));

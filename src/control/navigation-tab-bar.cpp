@@ -361,3 +361,11 @@ void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyl
         QProxyStyle::drawComplexControl(control, option, painter, widget);
     }
 }
+
+void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget && widget->objectName() == "previewButtons") {
+        return;
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
+}
