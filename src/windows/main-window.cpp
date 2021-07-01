@@ -346,6 +346,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -375,6 +380,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
             QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
@@ -761,6 +771,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         //if select only one item, let view to process
         if (selections.count() > 1)
         {
+            QString currentUri = this->getCurrentUri();
+            if(currentUri == "filesafe:///") {
+                return ;
+            }
+
             QStringList files;
             QStringList dirs;
             for (auto uri : selections) {
