@@ -108,6 +108,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_tab_bar_bg = new QWidget(this);
     m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QToolBar *previewButtons = new QToolBar(this);
+    previewButtons->setMovable(false);
+    previewButtons->setAttribute(Qt::WA_TranslucentBackground);
+    previewButtons->setAutoFillBackground(false);
     m_tool_bar = previewButtons;
    // previewButtons->setFixedSize(QSize(40, 40));
     previewButtons->setIconSize(QSize(16,16));
@@ -119,26 +122,17 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     t->addWidget(spacer);
     auto addPageButton = new QToolButton(this);
+    m_add_page_button = addPageButton;
     addPageButton->setObjectName("addPageButton");
     addPageButton->setProperty("isWindowButton", 1);
     addPageButton->setStyle(TabBarStyle::getStyle());
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     spacer->setVisible(false);
-    addPageButton->setVisible(false);
     addPageButton->setFixedSize(m_tab_bar->height() + 2, m_tab_bar->height() + 2);
     addPageButton->setProperty("useIconHighlightEffect", 2);
 //    addPageButton->setProperty("iconHighlightEffectMode", 1);
 //    addPageButton->setProperty("fillIconSymbolicColor", true);
 
-    connect(m_tab_bar, &NavigationTabBar::floatButtonVisibleChanged, addPageButton, [=](bool visible, int yoffset){
-        spacer->setVisible(!visible);
-        addPageButton->setVisible(!visible);
-        addPageButton->raise();
-        if (!visible)
-            addPageButton->move(m_tab_bar->width() + qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing), yoffset + 3);
-        // check again for invalid tab bar size.
-        updateTabBarGeometry();
-    });
 
     connect(addPageButton, &QPushButton::clicked, this, [=](){
         m_tab_bar->addPageRequest(m_tab_bar->tabData(m_tab_bar->currentIndex()).toString(), true);
@@ -172,23 +166,23 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     }
     previewButtons->addActions(group->actions());
     for (auto action : group->actions()) {
-//        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-//        button->setFixedSize(26, 26);
-//        button->setIconSize(QSize(16, 16));
-//        button->setProperty("useIconHighlightEffect", true);
-//        button->setProperty("iconHighlightEffectMode", 1);
-//        button->setProperty("fillIconSymbolicColor", true);
+        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+        button->setFixedSize(26, 26);
+        button->setIconSize(QSize(16, 16));
+        button->setProperty("useIconHighlightEffect", true);
+        button->setProperty("iconHighlightEffectMode", 1);
+        button->setProperty("fillIconSymbolicColor", true);
 
         //use theme buttons
-        auto button = new QPushButton(this);
-        button->setFixedSize(QSize(26, 26));
-        button->setIconSize(QSize(16, 16));
-        button->setFlat(true);
-        button->setProperty("isWindowButton", 1);
-        button->setProperty("useIconHighlightEffect", 2);
-        button->setProperty("isIcon", true);
+//        auto button = new QPushButton(this);
+//        button->setFixedSize(QSize(26, 26));
+//        button->setIconSize(QSize(16, 16));
+//        button->setFlat(true);
+//        button->setProperty("isWindowButton", 1);
+//        button->setProperty("useIconHighlightEffect", 2);
+//        button->setProperty("isIcon", true);
     }
-    t->addWidget(previewButtons);
+    m_tool_bar->setFixedWidth(m_tool_bar->sizeHint().width());
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout();
@@ -1234,6 +1228,8 @@ void TabWidget::removeTab(int index)
     widget->deleteLater();
     if (m_stack->count() > 0)
         Q_EMIT activePageChanged();
+
+    updateTabBarGeometry();
 }
 
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
@@ -1280,7 +1276,17 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width(), m_tab_bar->height());
+    int minRightPadding = m_tool_bar->width() + m_add_page_button->width() + 12;
+
+    int tabBarWidth = qMin(m_tab_bar->sizeHint().width() + 4, m_tab_bar_bg->width() - minRightPadding - 5);
+
+    m_add_page_button->move(tabBarWidth + 8, 5);
+    m_add_page_button->raise();
+
+    m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 5, 6);
+    m_tool_bar->raise();
+
+    m_tab_bar->setGeometry(2, 2, tabBarWidth, m_tab_bar->sizeHint().height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
