@@ -45,13 +45,14 @@ static void handleDuplicate(FileNode *node)
 
 FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
-    QUrl destDirUrl = destDirUri;
-    QUrl firstSrcUrl = sourceUris.first();
+    QUrl destDirUrl = Peony::FileUtils::urlEncode(destDirUri);
+    QUrl firstSrcUrl = Peony::FileUtils::urlEncode(sourceUris.first());
+
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
     } else {
         auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
-        QUrl lastPasteDirectoryUrl = lastPasteDirectoryUri;
+        QUrl lastPasteDirectoryUrl = Peony::FileUtils::urlEncode(lastPasteDirectoryUri);
         if (destDirUrl == lastPasteDirectoryUrl) {
             m_is_duplicated_copy = true;
         }
@@ -106,7 +107,7 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
     if (total_num_bytes < current_num_bytes)
         return;
 
-    QUrl url(p_this->m_current_src_uri);
+    QUrl url(Peony::FileUtils::urlEncode(p_this->m_current_src_uri));
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
     auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
@@ -126,7 +127,7 @@ void FileCopyOperation::copyRecursively(FileNode *node)
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
-    QUrl destFileUrl = destFileUri;
+    QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
     node->setDestUri(destFileUri);
     QString srcUri = node->uri();
     qDebug()<<"dest file uri:"<<destFileUri;
@@ -505,7 +506,7 @@ void FileCopyOperation::run()
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         qDebug() << "copy uri:" << uri;
-        FileNode *node = new FileNode(FileUtils::urlDecode(uri), nullptr, m_reporter);
+        FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
         nodes << node;

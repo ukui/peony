@@ -41,7 +41,7 @@ static void handleDuplicate(FileNode *node)
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
-    m_dest_dir_uri = FileUtils::urlDecode(destDirUri);
+    m_dest_dir_uri = FileUtils::urlEncode(destDirUri);
     m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
 
@@ -93,7 +93,7 @@ void FileMoveOperation::move()
     for (auto srcUri : m_source_uris) {
         //FIXME: ignore the total size when using native move.
         operationPreparedOne(srcUri, 0);
-        auto node = new FileNode(FileUtils::urlDecode(srcUri), nullptr, nullptr);
+        auto node = new FileNode(FileUtils::urlEncode(srcUri), nullptr, nullptr);
         nodes<<node;
     }
     operationPrepared();
@@ -873,7 +873,7 @@ void FileMoveOperation::moveForceUseFallback()
 
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
-        FileNode *node = new FileNode(FileUtils::urlDecode(uri), nullptr, m_reporter);
+        FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
         nodes<<node;

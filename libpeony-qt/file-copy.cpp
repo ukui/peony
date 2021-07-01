@@ -107,8 +107,8 @@ void FileCopy::run ()
     GFileType               srcFileType = G_FILE_TYPE_UNKNOWN;
     GFileType               destFileType = G_FILE_TYPE_UNKNOWN;
 
-    srcFile = g_file_new_for_uri(mSrcUri.toUtf8());
-    destFile = g_file_new_for_uri(mDestUri.toUtf8());
+    srcFile = g_file_new_for_uri(FileUtils::urlEncode(mSrcUri).toUtf8());
+    destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
 
     // it's impossible
     if (nullptr == srcFile || nullptr == destFile) {
@@ -129,7 +129,7 @@ void FileCopy::run ()
     if (G_FILE_TYPE_DIRECTORY == destFileType) {
         mDestUri = mDestUri + "/" + mSrcUri.split("/").last();
         g_object_unref(destFile);
-        destFile = g_file_new_for_uri(mDestUri.toUtf8());
+        destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
         if (nullptr == destFile) {
             error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
             detailError(&error);
@@ -147,16 +147,15 @@ void FileCopy::run ()
             }
         } else if (mCopyFlags & G_FILE_COPY_BACKUP) {
             do {
-                g_autofree gchar* decodeUri = g_uri_unescape_string(mDestUri.toUtf8(), ":/");
                 QStringList newUrl = mDestUri.split("/");
                 newUrl.pop_back();
-                newUrl.append(FileUtils::handleDuplicateName(decodeUri));
+                newUrl.append(FileUtils::handleDuplicateName(FileUtils::urlDecode(mDestUri)));
                 mDestUri = newUrl.join("/");
             } while (FileUtils::isFileExsit(mDestUri));
             if (nullptr != destFile) {
                 g_object_unref(destFile);
             }
-            destFile = g_file_new_for_uri(mDestUri.toUtf8());
+            destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
         } else {
             error = g_error_new (1, G_IO_ERROR_EXISTS, "%s", QString(tr("The dest file \"%1\" has existed!")).arg(mDestUri).toUtf8().constData());
             detailError(&error);
