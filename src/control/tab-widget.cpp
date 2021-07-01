@@ -119,13 +119,16 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     t->addWidget(spacer);
     auto addPageButton = new QToolButton(this);
+    addPageButton->setObjectName("addPageButton");
+    addPageButton->setProperty("isWindowButton", 1);
+    addPageButton->setStyle(TabBarStyle::getStyle());
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     spacer->setVisible(false);
     addPageButton->setVisible(false);
     addPageButton->setFixedSize(m_tab_bar->height() + 2, m_tab_bar->height() + 2);
-    addPageButton->setProperty("useIconHighlightEffect", true);
-    addPageButton->setProperty("iconHighlightEffectMode", 1);
-    addPageButton->setProperty("fillIconSymbolicColor", true);
+    addPageButton->setProperty("useIconHighlightEffect", 2);
+//    addPageButton->setProperty("iconHighlightEffectMode", 1);
+//    addPageButton->setProperty("fillIconSymbolicColor", true);
 
     connect(m_tab_bar, &NavigationTabBar::floatButtonVisibleChanged, addPageButton, [=](bool visible, int yoffset){
         spacer->setVisible(!visible);

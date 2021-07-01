@@ -42,6 +42,9 @@
 #include <QApplication>
 #include <QWindow>
 
+#include <QPainter>
+#include <QPainterPath>
+
 #include "FMWindowIface.h"
 #include "main-window.h"
 #include "file-info.h"
@@ -87,9 +90,11 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     });
 
     QToolButton *addPageButton = new QToolButton(this);
-    addPageButton->setProperty("useIconHighlightEffect", true);
-    addPageButton->setProperty("iconHighlightEffectMode", 1);
-    addPageButton->setProperty("fillIconSymbolicColor", true);
+    addPageButton->setObjectName("addPageButton");
+    addPageButton->setProperty("isWindowButton", 1);
+    addPageButton->setProperty("useIconHighlightEffect", 2);
+//    addPageButton->setProperty("iconHighlightEffectMode", 1);
+//    addPageButton->setProperty("fillIconSymbolicColor", true);
     addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
     addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
     connect(addPageButton, &QToolButton::clicked, this, [=]() {
@@ -200,9 +205,9 @@ void NavigationTabBar::relayoutFloatButton(bool insterted)
     //qDebug()<<"relayout";
     auto lastTabRect = tabRect(count() - 1);
     fixedY = lastTabRect.center().y() - m_float_button->height()/2;
-    int fixedX = qMin(this->width() - qApp->style()->pixelMetric(QStyle::PM_TabBarScrollButtonWidth)*2 - m_float_button->width(), lastTabRect.right());
+    int fixedX = qMin(this->width() - qApp->style()->pixelMetric(QStyle::PM_TabBarScrollButtonWidth)*2 - m_float_button->width(), lastTabRect.right() + 8);
     if (count() == 1) {
-        fixedX = lastTabRect.right();
+        fixedX = lastTabRect.right() + 8;
     }
     m_float_button->move(fixedX, fixedY + 1);
     setFixedHeight(lastTabRect.height());
@@ -385,4 +390,19 @@ QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption
         break;
     }
     return QProxyStyle::subElementRect(element, option, widget);
+}
+
+void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget && widget->objectName() == "addPageButton") {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addEllipse(widget->rect().adjusted(2, 2, -2, -2));
+        painter->setClipPath(path);
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+        painter->restore();
+    } else {
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+    }
 }
