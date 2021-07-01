@@ -132,7 +132,7 @@ void FileDeleteOperation::run()
 
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
-        FileNode *node = new FileNode(uri, nullptr, m_reporter);
+        FileNode *node = new FileNode(FileUtils::urlEncode(uri), nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
         nodes<<node;
