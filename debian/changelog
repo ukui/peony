@@ -1,3 +1,15 @@
+peony (3.2.2+0702) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:51801-9A0,62397-9A0,
+      63470-9A0,57473-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：复制文件显示，文件拖动，分区显示，
+      发送文件，左侧标签页显示.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 02 Jul 2021 15:28:35 +0800
+
 peony (3.2.2+0628hw) v101.hw; urgency=medium
 
   * 990主版本更新
