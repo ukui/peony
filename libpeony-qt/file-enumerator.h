@@ -28,6 +28,8 @@
 
 #include <memory>
 #include <gio/gio.h>
+#include <QMap>
+#include "custom-error-handler.h"
 
 class QTimer;
 
@@ -263,6 +265,18 @@ private:
      * getChildren()
      */
     QList<std::shared_ptr<FileInfo>> m_cached_infos;
+
+    /*!
+     * \brief m_is_custom_error_handler_initialized
+     * \
+     */
+    bool m_is_custom_error_handler_initialized = false;
+    /*!
+     * \brief m_custom_error_handlers
+     * handling custom error occurred in custom vfs.
+     * \see VFSPluginIface::customErrorHandler().
+     */
+    QMap<int, CustomErrorHandler *> m_custom_error_handlers;
 };
 
 }
