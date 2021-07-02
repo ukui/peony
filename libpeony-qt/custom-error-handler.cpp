@@ -35,7 +35,7 @@ QList<int> CustomErrorHandler::errorCodeSupportHandling()
     return QList<int>();
 }
 
-void CustomErrorHandler::handleCustomError()
+void CustomErrorHandler::handleCustomError(int errorCode)
 {
     QMessageBox::StandardButton button = QMessageBox::question(0, 0, tr("Is Error Handled?"));
     if (button == QMessageBox::Yes) {
