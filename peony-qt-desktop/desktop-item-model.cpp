@@ -101,9 +101,13 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
+    // monitor desktop
+    QString desktopFile = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+
+    qWarning() << "desktopfile:" << desktopFile;
+    m_desktop_watcher = std::make_shared<FileWatcher>("file://" + desktopFile, this);
     m_desktop_watcher->setMonitorChildrenChange(true);
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
         auto info = FileInfo::fromUri(uri);
@@ -261,7 +265,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
         m_items_need_relayout.removeOne(uri);
         auto view = PeonyDesktopApplication::getIconView();
         view->removeItemRect(uri);
@@ -281,7 +285,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
         auto view = PeonyDesktopApplication::getIconView();
         auto itemRectHash = view->getCurrentItemRects();
 
@@ -533,6 +537,8 @@ void DesktopItemModel::onEnumerateFinished()
 
                 //qDebug()<<"startMornitor";
                 m_trash_watcher->startMonitor();
+
+                qWarning() << "desktopfile:" << m_desktop_watcher->currentUri() << " >>>> " << QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
                 if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
                     m_desktop_watcher->stopMonitor();
                     m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));

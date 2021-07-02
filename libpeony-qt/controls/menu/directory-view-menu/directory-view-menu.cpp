@@ -704,12 +704,23 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     }
                 });
             }
-            else if (m_is_recent)
+            else if (m_is_recent && m_selections.count() >0)
             {
                 //fix recent files can not be deleted issue
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::remove(m_selections);
+                });
+
+                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    QStringList selections;
+                    for(auto uri:m_selections)
+                    {
+                        uri = FileUtils::getTargetUri(uri);
+                        selections << uri;
+                    }
+                    ClipboardUtils::setClipboardFiles(selections, false);
                 });
             }
 
@@ -736,6 +747,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             //qDebug() << "Reverse select";
             m_view->invertSelections();
         });
+
+        if (m_is_search && m_selections.count() >0)
+        {
+            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
+            connect(l.last(), &QAction::triggered, [=]() {
+                ClipboardUtils::setClipboardFiles(m_selections, false);
+            });
+        }
     }
 
     return l;

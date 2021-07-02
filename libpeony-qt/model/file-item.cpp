@@ -150,7 +150,7 @@ void FileItem::findChildrenAsync()
     });
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
-            Peony::AudioPlayManager::getInstance()->playWarningAudio();
+            //Peony::AudioPlayManager::getInstance()->playWarningAudio();
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
             return;
@@ -180,7 +180,7 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<"file item error:" <<err->message()<<enumerator->getEnumerateUri();
-            Peony::AudioPlayManager::getInstance()->playWarningAudio();
+            //Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //fix goto removed path in case device is ejected

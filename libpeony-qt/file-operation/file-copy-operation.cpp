@@ -45,13 +45,14 @@ static void handleDuplicate(FileNode *node)
 
 FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
-    QUrl destDirUrl = destDirUri;
-    QUrl firstSrcUrl = sourceUris.first();
+    QUrl destDirUrl = Peony::FileUtils::urlEncode(destDirUri);
+    QUrl firstSrcUrl = Peony::FileUtils::urlEncode(sourceUris.first());
+
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
     } else {
         auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
-        QUrl lastPasteDirectoryUrl = lastPasteDirectoryUri;
+        QUrl lastPasteDirectoryUrl = Peony::FileUtils::urlEncode(lastPasteDirectoryUri);
         if (destDirUrl == lastPasteDirectoryUrl) {
             m_is_duplicated_copy = true;
         }
@@ -59,7 +60,7 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
 
     m_conflict_files.clear();
     m_source_uris = sourceUris;
-    m_dest_dir_uri = destDirUri;
+    m_dest_dir_uri = FileUtils::urlEncode(destDirUri);
     m_reporter = new FileNodeReporter;
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
 
@@ -106,7 +107,7 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
     if (total_num_bytes < current_num_bytes)
         return;
 
-    QUrl url(p_this->m_current_src_uri);
+    QUrl url(Peony::FileUtils::urlEncode(p_this->m_current_src_uri));
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
     auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
@@ -126,7 +127,7 @@ void FileCopyOperation::copyRecursively(FileNode *node)
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
-    QUrl destFileUrl = destFileUri;
+    QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
     node->setDestUri(destFileUri);
     QString srcUri = node->uri();
     qDebug()<<"dest file uri:"<<destFileUri;
@@ -249,22 +250,12 @@ fallback_retry:
         }
     } else {
         GError *err = nullptr;
-//        GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
-//        g_file_copy(sourceFile.get()->get(),
-//                    destFile.get()->get(),
-//                    m_default_copy_flag,
-//                    getCancellable().get()->get(),
-//                    GFileProgressCallback(progress_callback),
-//                    this,
-//                    &err);
-
 
         FileCopy fileCopy (node->uri(), destFileUri, m_default_copy_flag,
                            getCancellable().get()->get(),
                            GFileProgressCallback(progress_callback),
                            this,
                            &err);
-        if (m_is_pause) fileCopy.pause();
         fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
         fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
         fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
@@ -296,15 +287,20 @@ fallback_retry:
 
             FileOperationError except;
             auto errWrapperPtr = GErrorWrapper::wrapFrom(err);
-            QString str_error = QObject::tr("Error when getting information for file : No target file found");
             int handle_type = prehandle(err);
             except.errorType = ET_GIO;
             except.op = FileOpCopy;
             except.title = tr("File copy error");
             except.srcUri = m_current_src_uri;
             except.errorCode = err->code;
-            except.errorStr = str_error.toUtf8().constData();
+            except.errorStr = err->message;
             except.destDirUri = m_current_dest_dir_uri;
+
+            //
+            if (err->code == G_IO_ERROR_PERMISSION_DENIED) {
+                except.errorStr = tr("Cannot opening file, permission denied!");
+            }
+
             if (handle_type == Other) {
                 if (G_IO_ERROR_EXISTS == err->code) {
                     except.dlgType = ED_CONFLICT;
@@ -334,47 +330,33 @@ fallback_retry:
                 break;
             }
             case OverWriteOne: {
-//                FileCopy fileCopy(sourceFile.get()->get(),
-//                            destFile.get()->get(),
-//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-//                            getCancellable().get()->get(),
-//                            GFileProgressCallback(progress_callback),
-//                            this,
-//                            nullptr);
                 FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
                                    (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
                                    getCancellable().get()->get(),
                                    GFileProgressCallback(progress_callback),
                                    this,
                                    nullptr);
-                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
-                if (m_is_pause) fileCopy.pause();
-                fileCopy.run();
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationPause, &fileOverWriteOneCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationResume, &fileOverWriteOneCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationCancel, &fileOverWriteOneCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileOverWriteOneCopy.pause();
+                fileOverWriteOneCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 break;
             }
             case OverWriteAll: {
-//                g_file_copy(sourceFile.get()->get(),
-//                            destFile.get()->get(),
-//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-//                            getCancellable().get()->get(),
-//                            GFileProgressCallback(progress_callback),
-//                            this,
-//                            nullptr);
                 FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
                                    (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
                                    getCancellable().get()->get(),
                                    GFileProgressCallback(progress_callback),
                                    this,
                                    nullptr);
-                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
-                if (m_is_pause) fileCopy.pause();
-                fileCopy.run();
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationPause, &fileOverWriteOneCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationResume, &fileOverWriteOneCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileOverWriteOneCopy.connect(this, &FileOperation::operationCancel, &fileOverWriteOneCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileOverWriteOneCopy.pause();
+                fileOverWriteOneCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
