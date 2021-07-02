@@ -1,3 +1,10 @@
+peony (3.0.3-2+0701) v101; urgency=medium
+
+   * Fix: change log path from /tmp to ~/.config 
+     to track desktop icon not show bug.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 01 Jul 2021 16:58:35 +0800
+
 peony (3.0.3-2+0527) v101; urgency=medium
 
    * Fix: double click response with title bar
