@@ -201,6 +201,7 @@ protected:
 
 private:
     NavigationTabBar *m_tab_bar;
+    QToolButton *m_add_page_button;
 
     QWidget *m_tab_bar_bg;
 

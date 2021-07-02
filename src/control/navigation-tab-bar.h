@@ -45,7 +45,6 @@ Q_SIGNALS:
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
-    void floatButtonVisibleChanged(bool visible, int yoffset);
 
 public Q_SLOTS:
     void addPage(const QString &uri = nullptr, bool jumpToNewTab = false);
@@ -55,7 +54,6 @@ public Q_SLOTS:
 protected:
     void tabRemoved(int index) override;
     void tabInserted(int index) override;
-    void relayoutFloatButton(bool insterted);
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
@@ -69,8 +67,6 @@ protected:
     void resizeEvent(QResizeEvent *e) override;
 
 private:
-    QToolButton *m_float_button;
-
     QTimer m_drag_timer;
     bool m_start_drag = false;
     QPoint m_press_pos;
@@ -90,6 +86,9 @@ class TabBarStyle : public QProxyStyle
     TabBarStyle() {}
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
+    QRect subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const override;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
 };
 
 #endif // NAVIGATIONTABBAR_H
