@@ -40,7 +40,7 @@ public:
      * \return a list of error code the handler supported.
      */
     virtual QList<int> errorCodeSupportHandling();
-    virtual void handleCustomError(int errorCode);
+    virtual void handleCustomError(const QString &uri, int errorCode);
 
 Q_SIGNALS:
     /*!
