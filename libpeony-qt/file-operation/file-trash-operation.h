@@ -25,6 +25,7 @@
 
 #include "peony-core_global.h"
 #include "file-operation.h"
+#include "file-node.h"
 
 namespace Peony {
 
@@ -42,6 +43,7 @@ public:
 private:
     void forceDelete (QString uri);
     void setErrorMessage (GError** err);
+    void deleteRecursively(FileNode *node);
 
 private:
     QStringList m_src_uris;

@@ -189,6 +189,7 @@ public Q_SLOTS:
      */
     void resolutionChange();
     void setEditFlag(bool edit);
+    bool getEditFlag();
 
     void restoreItemsPosByMetaInfo();
 

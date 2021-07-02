@@ -171,6 +171,13 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->data().toString().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));

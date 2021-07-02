@@ -126,7 +126,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     }
 
     //fix bug#46785, select one file cut has no effect issue
-    if (bCutFile)
+    if (bCutFile && !getView()->getEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
     auto iconSizeExpected = view->iconSize();
@@ -387,12 +387,14 @@ void DesktopIconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
     if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        QStringList sl = edit->toPlainText().split(".");
-        sl.pop_front();
-        int pos = sl.join(".").length();
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, pos + 1);
-//        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-        //qDebug()<<cursor.position();
+        int n = 1;
+        if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
+            n = 2;
+        while(n){
+            cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            --n;
+        }
     }
     //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);

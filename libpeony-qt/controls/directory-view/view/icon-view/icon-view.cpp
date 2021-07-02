@@ -383,6 +383,30 @@ void IconView::wheelEvent(QWheelEvent *e)
 
 void IconView::updateGeometries()
 {
+#if QT_VERSION_CHECK(5, 15, 0)
+    //try fix #55341
+    int verticalValue = verticalOffset();
+
+    QListView::updateGeometries();
+
+    if (!model() || model()->columnCount() == 0 || model()->rowCount() == 0) {
+        return;
+    }
+
+    int itemCount = model()->rowCount();
+    QRegion itemRegion;
+    for (int row = 0; row < itemCount; row++) {
+        auto index = model()->index(row, 0);
+        itemRegion += visualRect(index);
+    }
+    if (itemRegion.boundingRect().bottom() + gridSize().height() < viewport()->height()) {
+        verticalScrollBar()->setRange(0, 0);
+    } else {
+        int vertiacalMax = verticalScrollBar()->maximum();
+        verticalScrollBar()->setMaximum(vertiacalMax + gridSize().height());
+        verticalScrollBar()->setValue(verticalValue);
+    }
+#else
     horizontalScrollBar()->setRange(0, 0);
     if (!model()) {
         verticalScrollBar()->setRange(0, 0);
@@ -407,12 +431,13 @@ void IconView::updateGeometries()
         verticalScrollBar()->setPageStep(viewport()->height());
         verticalScrollBar()->setRange(0, itemRegion.boundingRect().bottom() - viewport()->height() + gridSize().height());
     }
+#endif
 }
 
 void IconView::focusInEvent(QFocusEvent *e)
 {
     QListView::focusInEvent(e);
-    if (e->reason() == Qt::TabFocus) {
+    if (e->reason() == Qt::TabFocusReason) {
         if (selectedIndexes().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
@@ -577,6 +602,11 @@ QRect IconView::visualRect(const QModelIndex &index) const
     return rect;
 }
 
+bool IconView::getDelegateEditFlag()
+{
+    return m_delegate_editing;
+}
+
 int IconView::getSortType()
 {
     int type = m_sort_filter_proxy_model->sortColumn();
@@ -619,6 +649,14 @@ void IconView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+void IconView::selectAll()
+{
+    // fix: #62397
+    for (int i = 0; i < model()->rowCount(); i++) {
+        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
+    }
 }
 
 void IconView::clearIndexWidget()

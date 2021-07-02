@@ -113,6 +113,8 @@ void FileMoveOperation::move()
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         char *base_name = g_file_get_basename(srcFile.get()->get());
         auto destFile = wrapGFile(g_file_resolve_relative_path(destDir.get()->get(), base_name));
+        g_autofree char* destUri = g_file_get_uri(destFile.get()->get());
+        node->setDestUri(destUri);
 
         g_file_move(srcFile.get()->get(),
                     destFile.get()->get(),

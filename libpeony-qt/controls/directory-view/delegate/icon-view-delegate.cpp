@@ -195,7 +195,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     //fix bug#46785, select one file cut has no effect issue
-    if (bCutFile)
+    if (bCutFile && !getView()->getDelegateEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
     // draw color symbols
@@ -272,13 +272,14 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
+        Q_EMIT isEditing(false);
     });
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         // NOTE: resort view after edit closed.
         // it's because if we not, the viewport might
         // not be updated in some cases.
-        Q_EMIT isEditing(false);
+        Q_EMIT isEditing(false);     
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=]() {
 #else
@@ -306,11 +307,14 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
     if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        QStringList sl = edit->toPlainText().split(".");
-        sl.pop_front();
-        int pos = sl.join(".").length();
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, pos + 1);
-        //qDebug()<<cursor.position();
+        int n = 1;
+        if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
+            n = 2;
+        while(n){
+            cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            --n;
+        }
     }
     //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);

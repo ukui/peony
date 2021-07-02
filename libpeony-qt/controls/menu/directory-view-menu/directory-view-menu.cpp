@@ -147,6 +147,10 @@ void DirectoryViewMenu::fillActions()
         }
     }
 
+    //netwotk items not show operation menu
+    if (m_is_network)
+        return;
+
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
@@ -305,6 +309,13 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->data().toString().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -817,9 +828,9 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
         auto mount = VolumeManager::getMountFromUri(info->targetUri());
         //fix bug#52491, CDROM and DVD can format issue
         if (nullptr != mount) {
-            if (!uri.startsWith("burn:///") && !(uri.startsWith("file:///media") && uri.endsWith("CDROM"))
-                    && !(uri.startsWith("file:///media") && (uri.contains("DVD") || uri.contains("CDROM")))
-                    && info->isVolume() && info->canUnmount()) {
+            QString unixDevice = FileUtils::getUnixDevice(info->uri());
+            if (! unixDevice.isNull() && ! unixDevice.contains("/dev/sr")
+                && info->isVolume() && info->canUnmount()) {
                 l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=] () {
                     // FIXME:// refactory Format_Dialog
                     Format_Dialog* fd  = new Format_Dialog(info->uri(), nullptr, m_view);

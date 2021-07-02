@@ -546,6 +546,9 @@ void FileItem::onChildAdded(const QString &uri)
 
 void FileItem::onChildRemoved(const QString &uri)
 {
+    // fix #62925
+    m_waiting_add_queue.removeOne(uri);
+
     FileItem *child = getChildFromUri(uri);
     if (child) {
         int index = m_children->indexOf(child);

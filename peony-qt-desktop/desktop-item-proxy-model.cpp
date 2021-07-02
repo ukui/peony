@@ -87,6 +87,8 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
         return false;
 
     auto sourceIndex = sourceModel()->index(source_row, 0, source_parent);
+    if (sourceIndex.data().toString().isEmpty())
+        return false;
     auto uri = sourceIndex.data(Qt::UserRole).toString();
     auto info = FileInfo::fromUri(uri);
     //qDebug()<<"fiter"<<uri<<info->displayName();

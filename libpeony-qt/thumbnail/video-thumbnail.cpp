@@ -165,10 +165,12 @@ QIcon VideoThumbnail::generateThumbnail()
         p.start("ffmpeg",list);
 
         if (!p.waitForStarted()) {
+            qWarning()<<"start get video image failed.";
             return thumbnailImage;
         }
 
-        if (!p.waitForFinished()) {
+        if (!p.waitForFinished(40000)) {
+            qWarning()<<"wait video image too long time.";
             return thumbnailImage;
         }
 
