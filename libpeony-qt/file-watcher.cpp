@@ -35,7 +35,8 @@
 
 using namespace Peony;
 
-FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
+FileWatcher::FileWatcher(QString uri, QObject *parent,bool isWatchMovesFlag)
+    : QObject(parent),m_isWatchMovesFlag(isWatchMovesFlag)
 {
     if (uri.startsWith("thumbnail://"))
         return;
@@ -163,8 +164,9 @@ void FileWatcher::creatorMonitor()
     }
 
     GError *err2 = nullptr;
+    GFileMonitorFlags flag = m_isWatchMovesFlag?G_FILE_MONITOR_WATCH_MOVES:G_FILE_MONITOR_NONE;
     m_dir_monitor = g_file_monitor_directory(m_file,
-                    G_FILE_MONITOR_WATCH_MOVES,
+                    flag,
                     m_cancellable,
                     &err2);
     if (err2) {

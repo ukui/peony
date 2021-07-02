@@ -257,15 +257,7 @@ end:
                     }
                 }
             });
-            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
-                for (auto item : *m_children) {
-                    if (item->uri() == oldUri) {
-                        qDebug()<<"***oldUri***newUri***"<<oldUri<<newUri;
-                        m_display_name=newUri;
-                    }
-                }
 
-            });
             this->startWatcher();
             //m_model->setData(lastColumnIndex(), QVariant(QIcon::fromTheme("media-eject-symbolic")), Qt::DecorationRole);
         });

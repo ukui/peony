@@ -286,7 +286,7 @@ void FileItem::findChildrenAsync()
             enumerator->cancel();
             delete enumerator;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(),nullptr,true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children
@@ -410,7 +410,7 @@ void FileItem::findChildrenAsync()
             if (!m_model||!m_children||!m_info)
                 return;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(),nullptr,true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children

@@ -50,7 +50,7 @@ class PEONYCORESHARED_EXPORT FileWatcher : public QObject
 {
     Q_OBJECT
 public:
-    explicit FileWatcher(QString uri = nullptr, QObject *parent = nullptr);
+    explicit FileWatcher(QString uri = nullptr, QObject *parent = nullptr,bool isWatchMovesFlag=false);
     ~FileWatcher();
     /*!
      * \brief setMonitorChildrenChange
@@ -150,6 +150,10 @@ private:
     gulong m_dir_handle = 0;
 
     bool m_support_monitor = true;
+
+    /* 文件和文件夹重名用先delete再create的方式(即GFileMonitorFlags使用G_FILE_MONITOR_NONE)时该标志值为false，
+    文件和文件夹重名用rename的方式(即GFileMonitorFlags使用G_FILE_MONITOR_WATCH_MOVES)时该标志值为true */
+    bool m_isWatchMovesFlag = false;
 };
 
 }
