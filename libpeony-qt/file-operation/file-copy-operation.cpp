@@ -347,13 +347,14 @@ fallback_retry:
                                    GFileProgressCallback(progress_callback),
                                    this,
                                    nullptr);
-                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
-                if (m_is_pause) fileCopy.pause();
-                fileCopy.run();
+                fileCopy.connect(this, &FileOperation::operationPause, &fileOverWriteOneCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileOverWriteOneCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileOverWriteOneCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileOverWriteOneCopy.pause();
+                fileOverWriteOneCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
+                m_is_duplicated_copy = false;
                 break;
             }
             case OverWriteAll: {
@@ -370,14 +371,15 @@ fallback_retry:
                                    GFileProgressCallback(progress_callback),
                                    this,
                                    nullptr);
-                fileCopy.connect(this, &FileOperation::operationPause, &fileCopy, &FileCopy::pause, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationResume, &fileCopy, &FileCopy::resume, Qt::DirectConnection);
-                fileCopy.connect(this, &FileOperation::operationCancel, &fileCopy, &FileCopy::cancel, Qt::DirectConnection);
-                if (m_is_pause) fileCopy.pause();
-                fileCopy.run();
+                fileCopy.connect(this, &FileOperation::operationPause, &fileOverWriteOneCopy, &FileCopy::pause, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationResume, &fileOverWriteOneCopy, &FileCopy::resume, Qt::DirectConnection);
+                fileCopy.connect(this, &FileOperation::operationCancel, &fileOverWriteOneCopy, &FileCopy::cancel, Qt::DirectConnection);
+                if (m_is_pause) fileOverWriteOneCopy.pause();
+                fileOverWriteOneCopy.run();
                 node->setState(FileNode::Handled);
                 node->setErrorResponse(OverWriteOne);
                 m_prehandle_hash.insert(err->code, OverWriteOne);
+                m_is_duplicated_copy = false;
                 break;
             }
             case BackupOne: {
