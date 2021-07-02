@@ -325,7 +325,6 @@ void FileEnumerator::handleError(GError *err)
         // enter custom error handler.
         auto customErrorHandler = m_custom_error_handlers.value(err->code);
         customErrorHandler->handleCustomError(getEnumerateUri(), err->code);
-        g_error_free(err);
         return;
     }
 
