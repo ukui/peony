@@ -143,6 +143,10 @@ default_sort:
             return leftItem->m_info->fileType() < rightItem->m_info->fileType();
         }
         case FileItemModel::ModifiedDate: {
+            //delete time sort in trash, fix bug#63093
+            if (leftItem->uri().startsWith("trash://"))
+                return leftItem->m_info->deletionDate() < rightItem->m_info->deletionDate();
+
             return leftItem->m_info->modifiedTime() < rightItem->m_info->modifiedTime();
         }
         default:
