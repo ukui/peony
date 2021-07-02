@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/custom-error-handler.h \
     $$PWD/peony-core_global.h           \
     $$PWD/file-info.h                   \
     $$PWD/file-info-job.h               \
@@ -21,6 +22,7 @@ HEADERS += \
     $$PWD/sync-thread.h
 
 SOURCES += \
+    $$PWD/custom-error-handler.cpp \
     $$PWD/file-info.cpp                 \
     $$PWD/file-info-job.cpp             \
     $$PWD/file-info-manager.cpp         \
