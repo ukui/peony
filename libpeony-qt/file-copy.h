@@ -75,6 +75,7 @@ private Q_SLOTS:
 private:
     void updateProgress () const;
     void detailError (GError** error);
+    void sync(const GFile* destFile);
 
 private:
     QMutex                          mPause;

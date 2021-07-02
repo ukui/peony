@@ -29,8 +29,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-#include <QUrl>
 #include <QTimer>
+#include "file-utils.h"
 
 #include <QVector4D>
 
@@ -554,7 +554,7 @@ void MainProgressBar::updateValue(QString& name, QIcon& icon, double value)
         m_current_value = value;
     }
 
-    m_file_name = name;
+    m_file_name = Peony::FileUtils::urlDecode(name);
     m_icon = icon;
 
     update();
@@ -828,8 +828,7 @@ void ProgressBar::onElementFoundOne(const QString &uri, const qint64 &size)
 {
     ++m_total_count;
     m_total_size += size;
-    QUrl url = uri;
-    m_src_uri = url.toDisplayString();
+    m_src_uri = Peony::FileUtils::urlDecode(uri);
     //char* format_size = g_format_size (quint64(m_total_size));
     //Calculated by 1024 bytes
     char* format_size = strtok(g_format_size_full(quint64(m_total_size),G_FORMAT_SIZE_IEC_UNITS),"iB");
@@ -858,11 +857,9 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
         return;
     }
 
-    QUrl srcUrl = srcUri;
-    m_src_uri = srcUrl.toDisplayString();
+    m_src_uri = Peony::FileUtils::urlDecode(srcUri);
     if (nullptr != destUri) {
-        QUrl destUrl = destUri;
-        m_dest_uri = destUrl.toDisplayString();
+        m_dest_uri = Peony::FileUtils::urlDecode(destUri);
     }
 
     if (fIcon != getIcon().name()) {

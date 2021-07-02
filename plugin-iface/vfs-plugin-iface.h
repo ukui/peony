@@ -2,11 +2,12 @@
 #define VFSPLUGINIFACE_H
 
 #include "plugin-iface.h"
+#include "peony-core_global.h"
 
 #define VFSPluginInterface_iid "org.ukui.peony-qt.plugin-iface.VFSPluginInterface"
 
 namespace Peony {
-class VFSPluginIface : public PluginInterface {
+class PEONYCORESHARED_EXPORT VFSPluginIface : public PluginInterface {
 public:
     virtual ~VFSPluginIface() {}
 

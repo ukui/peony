@@ -120,7 +120,7 @@ protected:
     bool isValid();
     void move();
     void moveForceUseFallback();
-    void moveForceUseFallback(FileNode *node);
+    void moveForceUseFallback(FileNode* node);
 
     /*!
      * \brief prehandle

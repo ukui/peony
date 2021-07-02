@@ -110,13 +110,14 @@ void FileOperation::fileSync(QString srcFile, QString destDir)
     } else {
         destFile = destDir + "/" + srcFile.split("/").back();
     }
+    bool needSync = true;
 
-    if (!FileUtils::isFileExsit(destFile)) {
-        qDebug() << "file:" << destFile << " is not existed!";
-        return;
-    }
+//    if (!FileUtils::isFileExsit(destFile)) {
+//        qDebug() << "file:" << destFile << " is not existed!";
+//        return;
+//    }
 
-    bool needSync = false;
+//    bool needSync = false;
     GFile* srcGfile = g_file_new_for_uri(srcFile.toUtf8().constData());
     GFile* destGfile = g_file_new_for_uri(destFile.toUtf8().constData());
     GMount* srcMount = g_file_find_enclosing_mount(srcGfile, nullptr, nullptr);
@@ -130,16 +131,16 @@ void FileOperation::fileSync(QString srcFile, QString destDir)
     if (needSync) {
         Q_EMIT operationStartSnyc();
         auto path = g_file_get_path(destGfile);
-        qDebug() << "sync -- src: " << srcFile << "  ===  " << destDir << "  ===  " << destFile << "  path:" << path;
+        qDebug() << "DJ- sync -- src: " << srcFile << "  ===  " << destDir << "  ===  " << destFile << "  path:" << path;
         if (path) {
             QProcess p;
             auto shellPath = g_shell_quote(path);
-            qDebug() << "start execute: " << QString("sync -f %1").arg(shellPath);
+            qDebug() << "DJ- start execute: " << QString("sync -f %1").arg(shellPath);
             p.start(QString("sync -f %1").arg(shellPath));
+            qDebug() << "DJ- execute: " << QString("sync -f %1  ok!!!").arg(shellPath);
             g_free(path);
             g_free(shellPath);
             p.waitForFinished(-1);
-            qDebug() << "execute: " << QString("sync -f %1  ok!!!").arg(shellPath);
         }
     }
 

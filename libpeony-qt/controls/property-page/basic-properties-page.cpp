@@ -355,7 +355,7 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     case BP_MultipleFIle:
     case BP_Folder:
         m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
+        layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeCreatedLabel);
     default:
         break;
     }
