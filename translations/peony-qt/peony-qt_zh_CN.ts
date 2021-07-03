@@ -153,8 +153,9 @@
 <context>
     <name>MainWindow</name>
     <message>
+        <location filename="../../src/windows/main-window.cpp" line="655"/>
         <source>File Manager</source>
-        <translation type="vanished">文件管理器</translation>
+        <translation>文件管理器</translation>
     </message>
     <message>
         <location filename="../../src/windows/main-window.cpp" line="297"/>
@@ -167,12 +168,17 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1367"/>
+        <location filename="../../src/windows/main-window.cpp" line="653"/>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="1372"/>
         <source>Tips info</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1368"/>
+        <location filename="../../src/windows/main-window.cpp" line="1373"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收箱中没有文件需要清除。</translation>
     </message>
@@ -193,7 +199,7 @@
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="663"/>
+        <location filename="../../src/windows/main-window.cpp" line="668"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
