@@ -75,6 +75,7 @@ private Q_SLOTS:
 private:
     void updateProgress () const;
     void detailError (GError** error);
+    void sync(const GFile* destFile);
 
 private:
     QMutex                          mPause;
@@ -91,7 +92,6 @@ private:
     goffset                         mOffset = 0;                // 记录当前进度
     goffset                         mTotalSize = 0;             // 记录当前进度
     enum Status                     mStatus = INVALID;          // 记录运行状态
-
 };
 };
 
