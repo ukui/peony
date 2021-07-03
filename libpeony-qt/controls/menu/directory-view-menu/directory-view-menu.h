@@ -84,6 +84,7 @@ private:
     bool m_is_favorite = false;
     bool m_can_delete = true;           // if contains computer:/// trash:/// recent:/// and desktop path
     bool m_is_kydroid = false;
+    bool m_is_filesafe = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 

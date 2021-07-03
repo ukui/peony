@@ -263,6 +263,14 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     } else {
         layout1->setContentsMargins(22,16,16,16);
     }
+
+    QString fileUri = uris.at(0);
+    if(fileUri.startsWith("filesafe:///") && (fileUri.remove("filesafe:///").indexOf("/") == -1)) {
+        disconnect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::chooseFileIcon);
+        m_moveButton->setVisible(false);
+        m_displayNameEdit->setReadOnly(true);
+    }
+
     //add floor1 to context
     m_layout->addWidget(floor1);
 }
