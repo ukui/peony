@@ -16,8 +16,6 @@ QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitia
 CONFIG += link_pkgconfig no_keywords c++11 lrelease hide_symbols
 PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
 
-LIBS += -lboxmanage
-
 DEFINES += PEONYCORE_LIBRARY
 
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
