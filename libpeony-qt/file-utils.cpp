@@ -101,10 +101,32 @@ GFileWrapperPtr FileUtils::resolveRelativePath(const GFileWrapperPtr &dir, const
 
 QString FileUtils::urlEncode(const QString& url)
 {
-    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
-    g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl, ":/", true);
+    QString decodeUrl = urlDecode(url);
+
+    if (!decodeUrl.isEmpty()) {
+        g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl.toUtf8().constData(), ":/", true);
+        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+        return encodeUrl;
+    }
+
+    g_autofree gchar* encodeUrl = g_uri_escape_string (url.toUtf8().constData(), ":/", true);
+
+    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
 
     return encodeUrl;
+}
+
+QString FileUtils::urlDecode(const QString &url)
+{
+    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
+    if (!decodeUrl) {
+        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
+        return url;
+    }
+
+    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
+
+    return decodeUrl;
 }
 
 QString FileUtils::handleDuplicateName(const QString& uri)
@@ -503,7 +525,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             url = QUrl::fromLocalFile(absPath);
             uris << url.toDisplayString();
         } else {
-            uris << url.toDisplayString();
+            uris << path;
         }
     }
 
