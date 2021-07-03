@@ -211,76 +211,72 @@ fallback_retry:
         }
     } else {
 retry:
+        GError* err = nullptr;
         FileOperationError except;
         except.srcUri = m_uri;
-        except.destDirUri = FileUtils::getFileUri(newFile);
-        except.isCritical = true;
         except.errorType = ET_GIO;
         except.op = FileOpRename;
+        except.dlgType = ED_WARNING;
         except.title = tr("Rename file error");
-        GError* err = nullptr;
-        if (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
-            err = g_error_new(0, G_IO_ERROR_EXISTS, "");
-            ExceptionResponse resp = prehandle(err);
-            if (Other == resp) {
-                except.dlgType = ED_CONFLICT;
-                except.errorCode = G_IO_ERROR_EXISTS;
-                Q_EMIT errored(except);
-                resp = except.respCode;
-            }
+        except.destDirUri = FileUtils::getFileUri(newFile);
+        qDebug() << "rename: " << g_file_get_uri(newFile.get()->get());
+        g_autofree char* newName = g_file_get_basename(newFile.get()->get());
 
-            switch (resp) {
-            case BackupAll:
-                setAutoBackup();
-            case BackupOne:{
-                while (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
-                    QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
-                    newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
-                    getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
-                }
-                break;
-            }
-            case OverWriteAll:
-                setAutoOverwrite();
-            case OverWriteOne:
-                g_file_delete(newFile.get()->get(), nullptr, nullptr);
-                break;
-            case IgnoreAll:
-                setAutoIgnore();
-            case IgnoreOne:
-                break;
-            case Cancel:
-                cancel();
-                goto cancel;
-            default:
-                break;
-            }
-        }
-
-        char* newName = g_file_get_basename(newFile.get()->get());
         g_file_set_display_name(file.get()->get(), newName, nullptr, &err);
 
-        if (nullptr != newName) g_free(newName);
-
         if (err) {
-            except.errorType = ET_GIO;
             except.errorCode = err->code;
             except.errorStr = err->message;
-            auto responseType = Invalid;
-            if (G_IO_ERROR_EXISTS != err->code) {
-                except.dlgType = ED_WARNING;
+            qDebug() << err->message;
+
+            if (G_IO_ERROR_EXISTS == err->code) {
+                ExceptionResponse resp = prehandle(err);
+                if (Other == resp) {
+                    except.dlgType = ED_CONFLICT;
+                    except.errorCode = G_IO_ERROR_EXISTS;
+                }
                 Q_EMIT errored(except);
-                responseType = except.respCode;
+                resp = except.respCode;
+                switch (resp) {
+                case BackupAll:
+                    setAutoBackup();
+                case BackupOne:{
+                    while (FileUtils::isFileExsit(g_file_get_uri(newFile.get()->get()))) {
+                        QString fileUri = handleDuplicate(FileUtils::getFileUri(newFile));
+                        newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
+                        getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
+                    }
+                    break;
+                }
+                case OverWriteAll:
+                    setAutoOverwrite();
+                case OverWriteOne:
+                    g_file_delete(newFile.get()->get(), nullptr, nullptr);
+                    break;
+                case IgnoreAll:
+                    setAutoIgnore();
+                case IgnoreOne:
+                    break;
+                case Cancel:
+                    cancel();
+                    goto cancel;
+                default:
+                    break;
+                }
+            } else {
+                Q_EMIT errored(except);
+                switch (except.respCode) {
+                case Retry:
+                    goto retry;
+                case Cancel:
+                    cancel();
+                    break;
+                default:
+                    break;
+                }
             }
-            switch (responseType) {
-            case Retry:
-                goto retry;
-            case Cancel:
-                cancel();
-                break;
-            default:
-                break;
-            }
+
+            g_error_free(err);
         }
     }
 

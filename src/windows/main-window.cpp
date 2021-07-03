@@ -722,8 +722,13 @@ void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
     //FIXME: replace BLOCKING api in ui thread.
-    auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
+    auto curUri = getCurrentUri();
+    auto show = Peony::FileUtils::getFileDisplayName(curUri);
     QString title = show;// + "-" + tr("File Manager");
+    if (curUri.startsWith("search:///"))
+        title = tr("Search");
+    if (title.length() <= 0)
+        title = tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
     setWindowTitle(title);
 }

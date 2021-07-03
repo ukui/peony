@@ -44,9 +44,9 @@ void FileTrashOperation::run()
             break;
 retry:
         GError *err = nullptr;
-        auto srcFile = wrapGFile(g_file_new_for_uri(src.toUtf8().constData()));
+        auto srcFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(src).toUtf8().constData()));
         //
-        FileInfoJob fileInfoJob (src);
+        FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
         if (fileInfoJob.querySync()) {
             FileInfo* fileInfo = fileInfoJob.getInfo().get();
             if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
