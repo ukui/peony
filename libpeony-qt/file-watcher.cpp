@@ -35,8 +35,8 @@
 
 using namespace Peony;
 
-FileWatcher::FileWatcher(QString uri, QObject *parent,bool isWatchMovesFlag)
-    : QObject(parent),m_isWatchMovesFlag(isWatchMovesFlag)
+FileWatcher::FileWatcher(QString uri, QObject *parent, bool isWatchMovesFlag)
+    : QObject(parent), m_isWatchMovesFlag(isWatchMovesFlag)
 {
     if (uri.startsWith("thumbnail://"))
         return;
@@ -303,7 +303,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     }
 
     case G_FILE_MONITOR_EVENT_RENAMED: {
-        char * old_uri = g_file_get_uri (file);
+        char *old_uri = g_file_get_uri (file);
         char *new_uri = g_file_get_uri(other_file);
         Q_EMIT p_this->fileRenamed(old_uri,new_uri);     
         qDebug()<<"***oldUri***newUri***"<<old_uri<<" "<<new_uri;

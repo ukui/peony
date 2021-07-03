@@ -286,7 +286,7 @@ void FileItem::findChildrenAsync()
             enumerator->cancel();
             delete enumerator;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(),nullptr,true);
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(), nullptr, true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children
@@ -327,7 +327,6 @@ void FileItem::findChildrenAsync()
                 }
             });
             connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
-                qDebug()<<"***oldUri***newUri***"<<oldUri<<newUri;
                 Q_EMIT this->renamed(oldUri, newUri);
                 this->onRenamed(oldUri, newUri);
             });
@@ -410,7 +409,7 @@ void FileItem::findChildrenAsync()
             if (!m_model||!m_children||!m_info)
                 return;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(),nullptr,true);
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(), nullptr, true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children

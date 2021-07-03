@@ -50,7 +50,7 @@ class PEONYCORESHARED_EXPORT FileWatcher : public QObject
 {
     Q_OBJECT
 public:
-    explicit FileWatcher(QString uri = nullptr, QObject *parent = nullptr,bool isWatchMovesFlag=false);
+    explicit FileWatcher(QString uri = nullptr, QObject *parent = nullptr, bool isWatchMovesFlag=false);
     ~FileWatcher();
     /*!
      * \brief setMonitorChildrenChange
