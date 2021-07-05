@@ -63,8 +63,7 @@ data.path = /usr/share/applications
 data.files += ../data/peony.desktop \
               ../data/peony-computer.desktop \
               ../data/peony-home.desktop \
-              ../data/peony-trash.desktop \
-              ../data/peony-desktop.desktop
+              ../data/peony-trash.desktop
 INSTALLS += data
 
 RESOURCES += \
