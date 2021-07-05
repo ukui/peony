@@ -313,7 +313,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 if (recommendActions.count() == 0)
                 {
                     auto action = FileLaunchManager::getDefaultAction(m_selections.first());
-                    if (action != NULL && action->data().toString().length() > 0)
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
                         recommendActions.append(action);
                 }
                 for (auto action : recommendActions) {
