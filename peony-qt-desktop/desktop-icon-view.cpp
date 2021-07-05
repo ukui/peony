@@ -1753,8 +1753,27 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug() << "DesktopIconView dropEvent" <<action;
+    auto index = indexAt(e->pos());
+    if (index.isValid() || m_ctrl_key_pressed)
+    {
+        qDebug() <<"DesktopIconView index copyAction:";
+        auto urls = e->mimeData()->urls();
+        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QStringList uris;
+        for (auto url : urls)
+        {
+            if (url.toString() == "computer:///")
+                uris << "computer:///";
+            else
+                uris << url.path();
+        }
+
+        //fix can drag copy home folder issue, link to bug#64824
+        if (uris.contains(homePath) || uris.contains("computer:///"))
+            return;
+    }
+
     if (this == e->source() && !m_ctrl_key_pressed) {
-        auto index = indexAt(e->pos());
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
@@ -1913,6 +1932,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         }
         return;
     }
+
     m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position
 }
