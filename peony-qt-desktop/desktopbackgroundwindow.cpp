@@ -34,9 +34,8 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     connect(manager, &DesktopBackgroundManager::screensUpdated, this, QOverload<>::of(&DesktopBackgroundWindow::update));
 
     connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
-        qWarning()<<pos;
-        auto fixedPos = PeonyDesktopApplication::getIconView()->mapFromGlobal(pos);
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(fixedPos);
+        qInfo()<<pos;
+        auto index = PeonyDesktopApplication::getIconView()->indexAt(pos);
         if (!index.isValid()) {
             PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
