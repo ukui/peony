@@ -44,6 +44,7 @@ public:
         RESTART,
         CANCEL,
         RUNNING,
+        RESUME,
         FINISHED,
         ERROR
     };
