@@ -857,7 +857,6 @@ void MainWindow::updateWindowIcon()
    }
 }
 
-#include"volume-manager.h"
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
     QUrl url(uri);
