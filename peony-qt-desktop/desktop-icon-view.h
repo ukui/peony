@@ -194,6 +194,9 @@ public Q_SLOTS:
     bool getEditFlag();
 
 protected:
+    int verticalOffset() const override;
+    int horizontalOffset() const override;
+
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
