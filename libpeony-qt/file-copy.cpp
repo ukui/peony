@@ -60,7 +60,7 @@ void FileCopy::pause ()
 
 void FileCopy::resume ()
 {
-    mStatus = RUNNING;
+    mStatus = RESUME;
     mPause.unlock();
 }
 
@@ -315,6 +315,13 @@ void FileCopy::run ()
         } else if (FINISHED == mStatus) {
             qDebug() << "copy file finish!";
             break;
+        } else if (PAUSE == mStatus) {
+            if (mPause.tryLock(3000)) {
+                if (RESUME == mStatus) {
+                    mPause.unlock();
+                }
+                mStatus = RUNNING;
+            }
         } else {
             mStatus = RUNNING;
         }
