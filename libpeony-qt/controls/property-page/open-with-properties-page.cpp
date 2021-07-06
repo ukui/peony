@@ -25,7 +25,6 @@
 #include "file-launch-manager.h"
 #include "global-settings.h"
 
-#include <QLabel>
 #include <QPushButton>
 #include <QFrame>
 #include <QDebug>
@@ -98,9 +97,9 @@ void OpenWithPropertiesPage::initFloorOne()
     defaultOpenLabel->setText(tr("Default open with:"));
     layout1->addWidget(defaultOpenLabel);
 
-    QListWidget *listWidget = OpenWithPropertiesPage::createDefaultLaunchListWidget(m_fileInfo->uri(),floor1);
-    listWidget->setMinimumHeight(45);
-    layout1->addWidget(listWidget);
+    m_defaultOpenWithWidget = OpenWithPropertiesPage::createDefaultOpenWithWidget(m_fileInfo->uri(), floor1);
+    m_defaultOpenWithWidget->setMinimumHeight(45);
+    layout1->addWidget(m_defaultOpenWithWidget);
 
     m_layout->addWidget(floor1);
 }
@@ -162,7 +161,9 @@ void OpenWithPropertiesPage::initFloorThree()
 
     connect(allOpenLabel, &QLabel::linkActivated, this, [=]() {
         AllFileLaunchDialog dialog(m_fileInfo.get()->uri());
-        dialog.exec();
+        if (QDialog::Accepted == dialog.exec()) {
+            m_defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(m_fileInfo->uri()));
+        }
     });
 
     layout3->addWidget(allOpenLabel);
@@ -240,26 +241,13 @@ NewFileLaunchDialog::~NewFileLaunchDialog()
     }
 }
 
-QListWidget *OpenWithPropertiesPage::createDefaultLaunchListWidget(const QString &uri, QWidget *parent)
+DefaultOpenWithWidget* OpenWithPropertiesPage::createDefaultOpenWithWidget(const QString &uri, QWidget *parent)
 {
-    //default open action
-    QListWidget *defaultListWidget = new QListWidget(parent);
-    defaultListWidget->setIconSize(QSize(28,28));
-    defaultListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    defaultListWidget->setFrameShape(QListWidget::NoFrame);
-    defaultListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    defaultListWidget->setMinimumHeight(32);
-    defaultListWidget->setMaximumHeight(32);
-    //defaultListWidget->setEnabled(false);
+    DefaultOpenWithWidget* defaultOpenWithWidget = new DefaultOpenWithWidget(parent);
 
-    auto defaultLaunchAction = FileLaunchManager::getDefaultAction(uri);
-    if (defaultLaunchAction) {
-        auto item = new QListWidgetItem(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon() : QIcon::fromTheme("application-x-desktop"),
-                                        defaultLaunchAction->text(),
-                                        defaultListWidget);
-        defaultListWidget->addItem(item);
-    }
-    return defaultListWidget;
+    defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(uri));
+
+    return defaultOpenWithWidget;
 }
 
 LaunchHashList::LaunchHashList(const QString &uri, QWidget *parent)
@@ -374,5 +362,83 @@ AllFileLaunchDialog::~AllFileLaunchDialog()
     if (m_launchHashList) {
         delete m_launchHashList;
         m_launchHashList = nullptr;
+    }
+}
+
+//默认打开方式组件
+DefaultOpenWithWidget::DefaultOpenWithWidget(QWidget *parent) : QWidget(parent)
+{
+    m_appIconLabel = new QLabel(this);
+    m_appNameLabel = new QLabel(this);
+
+    m_appIconLabel->setMaximumWidth(32);
+
+    m_layout = new QHBoxLayout(this);
+    m_layout->setContentsMargins(0, 0, 0, 0);
+    m_layout->setAlignment(Qt::AlignVCenter);
+
+    m_layout->addWidget(m_appIconLabel, 1);
+    m_layout->addWidget(m_appNameLabel, 9);
+}
+
+void DefaultOpenWithWidget::setAppName(QString appName)
+{
+    if (appName.isNull()) {
+        this->m_appNameLabel->setText(tr("No default app"));
+    } else {
+        this->m_appNameLabel->setText(appName);
+        this->m_appNameLabel->setToolTip(appName);
+    }
+}
+
+void DefaultOpenWithWidget::setAppIcon(QIcon appIcon)
+{
+    if (appIcon.isNull()) {
+        this->m_appIconLabel->setPixmap(QIcon::fromTheme("application-x-desktop").pixmap(24, 24));
+    } else {
+        this->m_appIconLabel->setPixmap(appIcon.pixmap(24, 24));
+    }
+}
+
+void DefaultOpenWithWidget::resizeEvent(QResizeEvent *event)
+{
+    //m_appIconLabel->maximumWidth() = 32px;
+    int width = this->width() - m_appIconLabel->maximumWidth();
+
+    if (m_appNameLabel->fontMetrics().width(m_appNameLabel->text()) > width) {
+        m_appNameLabel->setText(m_appNameLabel->fontMetrics().elidedText(m_appNameLabel->text(), Qt::ElideRight, width));
+    }
+
+    QWidget::resizeEvent(event);
+}
+
+FileLaunchAction* DefaultOpenWithWidget::getLaunchAction()
+{
+    return m_launchAction;
+}
+
+void DefaultOpenWithWidget::setLaunchAction(FileLaunchAction* launchAction)
+{
+    if (m_launchAction) {
+        delete m_launchAction;
+        m_launchAction = nullptr;
+    }
+
+    if (launchAction) {
+        this->m_launchAction = launchAction;
+
+        this->setAppIcon(m_launchAction->icon());
+        this->setAppName(m_launchAction->text());
+    } else {
+        this->setAppIcon(QIcon());
+        this->setAppName(QString());
+    }
+}
+
+DefaultOpenWithWidget::~DefaultOpenWithWidget()
+{
+    if (m_launchAction) {
+        delete m_launchAction;
+        m_launchAction = nullptr;
     }
 }
