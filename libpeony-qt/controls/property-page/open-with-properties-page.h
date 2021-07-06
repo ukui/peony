@@ -35,6 +35,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QtConcurrent>
+#include <QLabel>
 
 namespace Peony {
 
@@ -85,25 +86,56 @@ private:
     LaunchHashList *m_launchHashList = nullptr;
 };
 
+//默认打开方式组件
+class DefaultOpenWithWidget : public QWidget
+{
+Q_OBJECT
+
+private:
+    FileLaunchAction* m_launchAction = nullptr;
+    QLabel*           m_appNameLabel = nullptr;
+    QLabel*           m_appIconLabel = nullptr;
+    QHBoxLayout*      m_layout       = nullptr;
+
+public:
+    explicit DefaultOpenWithWidget(QWidget *parent = nullptr);
+    ~DefaultOpenWithWidget() override;
+
+    /**
+     * \brief 设置应用图标
+     * \param appIcon
+     */
+    void setAppIcon(QIcon appIcon);
+
+    /**
+     * \brief 设置应用名称
+     * \param appName
+     */
+    void setAppName(QString appName);
+
+    /*!
+     * \brief 获取当前打开方式
+     */
+    FileLaunchAction* getLaunchAction();
+
+    void setLaunchAction(FileLaunchAction* launchAction);
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+};
+
 //open with page
 class OpenWithPropertiesPage : public PropertiesWindowTabIface
 {
     Q_OBJECT
 public:
     /*!
-     * \brief 创建默认打开方式的listWidget
+     * \brief 创建默认打开方式的Widget
      * \param uri
      * \param parent
      * \return
      */
-    static QListWidget *createDefaultLaunchListWidget(const QString &uri, QWidget *parent = nullptr);
-    /*!
-     * \brief 创建该文件的全部打开方式listWidget
-     * \param uri
-     * \param parent
-     * \return
-     */
-    static QListWidget *createAllLaunchListWidget(const QString &uri, QWidget *parent = nullptr);
+    static DefaultOpenWithWidget* createDefaultOpenWithWidget(const QString &uri, QWidget *parent = nullptr);
 
 public:
     void initFloorOne();
@@ -134,6 +166,9 @@ private:
     //新的打开方式
     FileLaunchAction *m_newAction      = nullptr;
     LaunchHashList   *m_launchHashList = nullptr;
+    //默认打开方式
+    DefaultOpenWithWidget* m_defaultOpenWithWidget = nullptr;
+
 };
 
 
