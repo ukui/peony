@@ -127,6 +127,17 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->setHorizontalHeaderLabels(l);
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
 
+    //开启手动设置宽度 - Enable manual width setting
+    m_table->horizontalHeader()->setMinimumSectionSize(30);
+
+    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+
+    m_table->setColumnWidth(0, 150);
+
     m_layout->addWidget(m_table);
 }
 
@@ -286,16 +297,13 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 //更新表格选中情况
                 p_this->updateCheckBox();
 
-                QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
-                table->setItem(0, 0, nullptr);
+                QTableWidgetItem* itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, itemR0C0);
 
-                QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
-                table->setItem(1, 0, nullptr);
+                QTableWidgetItem* itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
                 table->setItem(1, 0, itemR1C0);
 
-                QTableWidgetItem *itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
-                table->setItem(2, 0, nullptr);
+                QTableWidgetItem* itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
                 table->setItem(2, 0, itemR2C0);
 
                 auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
