@@ -592,7 +592,10 @@ void FileItem::onDeleted(const QString &thisUri)
             tmpItem = tmpItem->m_parent;
         }
         if (!tmpUri.isNull()) {
-            m_model->setRootUri(tmpUri);
+            if(tmpUri.startsWith("file:///media"))
+                m_model->sendPathChangeRequest("computer:///");
+            else
+                m_model->setRootUri(tmpUri);
         } else {
             m_model->setRootUri("file:///");
         }

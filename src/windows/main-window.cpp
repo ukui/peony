@@ -900,16 +900,6 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
 
-    /* Jump to the computer directory after the U disk is ejected. modified by 2021-07-05 */
-      //start
-      Peony::VolumeManager* vm = Peony::VolumeManager::getInstance();
-      connect(vm,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume)
-      {
-          QString uri="computer:///";
-          m_tab->goToUri(uri, addHistory, force);
-          m_header_bar->setLocation(uri);
-      });//end
-
     m_label_box->clearSelection();
     Q_EMIT m_label_box->leftClickOnBlank();
 }
