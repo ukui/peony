@@ -291,6 +291,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         button->setIcon(icon);
     }
 
+	button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
     if (!url.fileName().isEmpty()) {
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
@@ -306,6 +307,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             //fix bug#47597, show as root.link issue
             QString text = tr("File System");
             button->setText(text);
+	        button->setStyleSheet("QToolButton{padding-left: 15px; padding-right: 15px}");
         } else {
             button->setText(displayName);
         }
