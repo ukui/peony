@@ -147,14 +147,14 @@ void DirectoryViewMenu::fillActions()
         }
     }
 
-    //netwotk items not show operation menu
-    if (m_is_network)
-        return;
-
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
         addSeparator();
+
+    //netwotk items not show operation menu
+    if (m_is_network)
+        return;
 
     if (! m_is_kydroid){
         //create template actions
@@ -302,8 +302,14 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
-                    FileLaunchManager::openAsync(uri, false, false);
+                    if (m_is_network)
+                        m_top_window->goToUri(uri, true);
+                    else
+                        FileLaunchManager::openAsync(uri, false, false);
                 });
+
+                if (m_is_network)
+                    return l;
                 auto openWithAction = addAction(tr("Open with..."));
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
