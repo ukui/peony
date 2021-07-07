@@ -212,5 +212,5 @@ void QtLocalPeer::receiveConnection()
     socket->waitForDisconnected(1000); // make sure client reads ack
     delete socket;
     socket = nullptr;
-    emit messageReceived(message); //### (might take a long time to return)
+    Q_EMIT messageReceived(message); //### (might take a long time to return)
 }
