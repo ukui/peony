@@ -1,3 +1,27 @@
+peony (3.2.2+0707) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：62906.
+    - 需求号：6935。
+    - 其他改动说明：集成版本桌面自启动问题。
+    - 影响域：路径显示，桌面启动。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 07 Jul 2021 17:38:18 +0800
+
+peony (3.2.2+0705) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：64860，53504.
+    - 需求号：task#33292。
+    - 其他改动说明：集成版本桌面自启动问题。
+    - 影响域：桌面应用快捷方式文件复制。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 05 Jul 2021 17:08:18 +0800
+
 peony (3.2.2+0702) v101; urgency=medium
 
   * 0710版本更新
