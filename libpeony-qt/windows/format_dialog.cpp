@@ -507,26 +507,26 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 
 void Format_Dialog::format_ok_dialog()
 {
-    QMessageBox::about(m_parent,tr("qmesg_notify"),tr("Format operation has been finished successfully."));
-};
+    QMessageBox::about(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Format operation has been finished successfully."));
+}
 
 
 void Format_Dialog::format_err_dialog()
 {
-      QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
-};
+      QMessageBox::warning(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
+}
 
 bool Format_Dialog::format_makesure_dialog(){
 
     QMessageBox message_format;
 
-    message_format.setText(tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+    message_format.setText(QObject::tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
 
-    message_format.setWindowTitle(tr("format"));
+    message_format.setWindowTitle(QObject::tr("format"));
 
-    QPushButton *okButton = message_format.addButton(tr("begin format"),QMessageBox::YesRole);
+    QPushButton *okButton = message_format.addButton(QObject::tr("begin format"),QMessageBox::YesRole);
 
-    QPushButton *cancelButton = message_format.addButton(tr("close"),QMessageBox::NoRole);
+    QPushButton *cancelButton = message_format.addButton(QObject::tr("close"),QMessageBox::NoRole);
 
     message_format.exec();
 
