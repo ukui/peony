@@ -162,6 +162,7 @@ QRect caculateVirtualDesktopGeometry() {
 
 PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const QString &applicationName) : QtSingleApplication (applicationName, argc, argv)
 {
+    qDebug()<<"peony desktop constructor start";
     setApplicationVersion(QString("v%1").arg(VERSION));
     //setApplicationDisplayName(tr("Peony-Qt Desktop"));
 
@@ -209,6 +210,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         */
 
         // auto mount local driver
+        qDebug()<<"auto mount local volumes";
         GVolumeMonitor* vm = g_volume_monitor_get ();
         if (vm) {
             GList* drives = g_volume_monitor_get_connected_drives(vm);
@@ -245,9 +247,11 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     connect(this, &SingleApplication::screenRemoved, this, &PeonyDesktopApplication::screenRemovedProcess);
 
     //parse cmd
+    qDebug()<<"parse cmd";
     auto message = this->arguments().join(' ').toUtf8();
     parseCmd(message, !isRunning());
 
+    qDebug()<<"monitor volumes change";
     auto volumeManager = Peony::VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::mountAdded,this,[=](const std::shared_ptr<Peony::Mount> &mount){
         // auto open dir for inserted dvd.
@@ -260,7 +264,8 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
     // 获取max_size初始值
-    caculateVirtualDesktopGeometry();
+    //caculateVirtualDesktopGeometry();
+    qDebug()<<"peony desktop application constructor end";
 }
 
 Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
