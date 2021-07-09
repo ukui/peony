@@ -221,7 +221,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
 
     //process special name . or .. or only space
-    if (text == "." || text == ".." || text.trimmed() == "" || text.contains("\\"))
+    if (text == "." || text == ".." || text.trimmed() == "")
         return;
 
     if (! index.isValid())
