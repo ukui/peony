@@ -488,8 +488,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -500,8 +500,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
