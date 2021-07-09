@@ -442,12 +442,13 @@ void DesktopItemModel::refreshInternal()
         //FIXME: replace BLOCKING api in ui thread.
 
         if (findProgram("xdg-user-dirs-update")) {
-            while (!FileUtils::isFileExsit(desktopUri)) {
+            do {
                 QProcess p;
                 p.setProgram("xdg-user-dirs-update");
                 p.start();
                 p.waitForFinished();
-            }
+                desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            } while (!FileUtils::isFileExsit(desktopUri));
         }
 
         QTimer::singleShot(1000, this, [=](){
