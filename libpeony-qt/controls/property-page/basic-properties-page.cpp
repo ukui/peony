@@ -541,7 +541,12 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
         for (QString uri : m_uris) {
             QUrl url(uri);
             //某些带空格的文件名称会导致命令错误，加上引号解决此问题。
-            QString path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
+            QString path;
+            if(uri == "filesafe:///") {
+                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/box";
+            } else {
+                path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
+            }
 
             QProcess process;
             process.start("du -s " + path);

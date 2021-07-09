@@ -148,7 +148,6 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
-
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();
     for (auto id : ids) {
@@ -166,7 +165,8 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
-    if (0 != QString::compare(m_uri, "computer:///")) {
+    if ((0 != QString::compare(m_uri, "computer:///")) &&
+        (0 != QString::compare(m_uri, "filesafe:///"))) {
         l.last()->setEnabled(m_item->isMounted());
     }
 
