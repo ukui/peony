@@ -1,4 +1,64 @@
-peony (3.2.2+0702) v101.hw; urgency=medium
+peony (3.2.2+0708hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号:62282-990,64031-990,56009-990.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：计算机视图，手机中拷贝文件，
+      文件拖动，格式化界面，U盘弹出，路径显示.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 08 Jul 2021 19:12:35 +0800
+
+peony (3.2.2+0708hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:65228-9A0,60944-9A0,
+      65379-9A0,65383-9A0,65170-9A0,
+      65073-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：计算机视图，文件复制，文件选中，
+      桌面重命名文件显示，文件打开方式，网络
+      项属性.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 08 Jul 2021 15:18:35 +0800
+
+peony (3.2.2+0707hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:59176-9A0,64949-9A0,64911-9A0,
+      59726-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：大文件拷贝，文件打开，文件替换，
+      格式化界面显示，背景切换，取消文件粘贴.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 06 Jul 2021 17:03:35 +0800
+
+peony (3.2.2+0705hw) v101.hw; urgency=medium
+
+  * 990主版本更新
+    - Bug号:51801-9A0. 
+    - 需求号：无。
+    - 其他修改说明：无。
+    - 影响域：重命名显示，第三方应用，
+      长名字文件复制，手机拷贝文件.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 05 Jul 2021 20:00:35 +0800
+
+peony (3.2.2+0705hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:64669-9A0,51801-9A0,
+      62931-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：文件打开，桌面文件粘贴，
+      拖动文件，文件复制.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 05 Jul 2021 19:18:35 +0800
+
+peony (3.2.2+0702hw) v101.hw; urgency=medium
 
   * 9A0主版本更新
     - Bug号:51801-9A0,62397-9A0,
