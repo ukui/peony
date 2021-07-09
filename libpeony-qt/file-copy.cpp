@@ -357,10 +357,10 @@ out:
     }
 
     if (nullptr != srcFileInfo) {
-        g_object_unref(srcFile);
+        g_object_unref(srcFileInfo);
     }
 
     if (nullptr != destFileInfo) {
-        g_object_unref(destFile);
+        g_object_unref(destFileInfo);
     }
 }
