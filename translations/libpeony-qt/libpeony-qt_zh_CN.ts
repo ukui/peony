@@ -2357,7 +2357,7 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="72"/>
         <source>Invalid file name %1%2%3 .</source>
-        <translation>文件名  %1%2%3 不合法。</translation>
+        <translation>文件名 %1%2%3 不合法。</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="88"/>
