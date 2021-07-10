@@ -298,8 +298,7 @@ void FileItem::findChildrenAsync()
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 //check bookmark and delete
                 auto info = FileInfo::fromUri(uri);
-                if (info->isDir())
-                {
+                if (info->isDir()) {
                     BookMarkManager::getInstance()->removeBookMark(uri);
                 }
                 //remove the crosponding child
@@ -448,8 +447,9 @@ void FileItem::findChildrenAsync()
                     infoJob->queryAsync();
                 }
             });
-            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {               
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
                 this->onRenamed(oldUri, newUri);
+                BookMarkManager::getInstance()->bookmarkChanged(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));

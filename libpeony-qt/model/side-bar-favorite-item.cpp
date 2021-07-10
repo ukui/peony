@@ -51,12 +51,30 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         //top dir don't show icon
         m_icon_name = "";
 
-        SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
         QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        SideBarFavoriteItem *desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
-        SideBarFavoriteItem *trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
-        m_children->append(recentItem);
+        QString videoUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+        QString pictureUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+        QString downloadUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+        QString musicUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+        QString docUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+        auto homeItem = new SideBarFavoriteItem(homeUri, this, m_model);
+        auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
+        auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
+        auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
+        auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
+        auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
+        auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
+        auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
+
+        m_children->append(homeItem);
         m_children->append(desktopItem);
+        m_children->append(docItem);
+        m_children->append(musicItem);
+        m_children->append(downloadItem);
+        m_children->append(pictureItem);
+        m_children->append(videoItem);
         m_children->append(trashItem);
 
         if (FileUtils::isFileExsit("file:///data/usershare")) {
@@ -111,8 +129,6 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
             const char* displayName = g_file_info_get_attribute_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
             if (nullptr != displayName) {
                 m_display_name = displayName;
-
-                qDebug() << "DJ-" << uri << "  --  " << m_display_name;
             }
             g_object_unref(fileInfo);
         }
@@ -120,12 +136,12 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     }
 
     if (m_display_name.isEmpty() || "" == m_display_name) {
-        m_display_name = FileUtils::getFileDisplayName(uri);
+        m_display_name = FileUtils::getFileDisplayName(m_uri);
     }
 
-    m_icon_name = FileUtils::getFileIconName(uri);
+    m_icon_name = FileUtils::getFileIconName(m_uri);
 
-    m_info = FileInfo::fromUri(uri);
+    m_info = FileInfo::fromUri(m_uri);
     auto infoJob = new FileInfoJob(m_info);
     infoJob->setAutoDelete();
     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
@@ -186,19 +202,40 @@ void SideBarFavoriteItem::syncBookMark()
     }
     connect(bookmark, &BookMarkManager::bookMarkAdded, this, [=](const QString &uri, bool successed) {
         if (successed) {
-            auto item = new SideBarFavoriteItem(uri, this, m_model);
+            auto item = new SideBarFavoriteItem(FileUtils::urlDecode(uri), this, m_model);
             *m_children<<item;
             m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
         }
     });
-    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=](const QString &uri, bool successed) {
+    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=] (const QString &uri, bool successed) {
+        QString delUri = getTargetUri(uri);
         if (successed) {
             for (auto item : *m_children) {
-                if (item->uri() == uri) {
+                QString itemUri = getTargetUri(item->uri());
+                if (delUri == itemUri) {
                     m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
                     m_children->removeOne(item);
                 }
             }
         }
     });
+}
+
+QString SideBarFavoriteItem::getTargetUri(const QString &uri)
+{
+    QString sguri = uri;
+    if (uri.startsWith("favorite://")) {
+        g_autoptr(GFile) turi = g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData());
+        if (turi) {
+            g_autoptr(GFileInfo) turiInfo = g_file_query_info(turi, "standard::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+            if (turiInfo) {
+                g_autofree char* tturi = g_file_info_get_attribute_as_string(turiInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+                if (tturi) {
+                    sguri = tturi;
+                }
+            }
+        }
+    }
+
+    return FileUtils::urlDecode(sguri);
 }

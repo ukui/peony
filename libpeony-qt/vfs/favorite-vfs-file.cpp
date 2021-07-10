@@ -134,7 +134,7 @@ char* vfs_favorite_file_get_uri(GFile *file)
 
     auto vfsfile = VFS_FAVORITES_FILE (file);
 
-    return g_strdup(vfsfile->priv->uri);
+    return g_strdup(Peony::FileUtils::urlDecode(vfsfile->priv->uri).toUtf8().constData());
 }
 
 gboolean vfs_favorite_file_is_native(GFile *file)
@@ -170,12 +170,13 @@ GFileEnumerator* vfs_favorite_file_enumerate_children_internal(GFile *file, cons
     return nullptr;
 }
 
-GFile* vfs_favorite_file_new_for_uri(const char *uri)
+GFile* vfs_favorite_file_new_for_uri(const char* turi)
 {
     auto vfsfile = VFS_FAVORITES_FILE(g_object_new(VFS_TYPE_FAVORITE_FILE, nullptr));
 
     QString quri;
-    QString urii1 = QString(uri).replace("favorite://", "");
+    QString uri = Peony::FileUtils::urlDecode(turi);
+    QString urii1 = uri.replace("favorite://", "");
     QStringList path1 = urii1.split("/");
     QStringList path2;
     QString path3;
@@ -202,7 +203,7 @@ GFile* vfs_favorite_file_new_for_uri(const char *uri)
         quri = "favorite:///" + path2.join("/") + schemaInfo;
     }
 
-    vfsfile->priv->uri = g_strdup(quri.toUtf8().constData());
+    vfsfile->priv->uri = g_strdup(Peony::FileUtils::urlEncode(quri).toUtf8().constData());
 
     return G_FILE(vfsfile);
 }
@@ -240,7 +241,7 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
 
     GFileInfo* info = nullptr;
     QString trueUri = nullptr;
-    QUrl url(vfsfile->priv->uri);
+    QUrl url(vfs_favorite_file_get_uri(file));
 
     if ("favorite:///" != url.toString()) {
         QStringList querys = url.query().split("&");
