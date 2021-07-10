@@ -189,7 +189,7 @@ void FileItem::findChildrenAsync()
                 if (this->uri().startsWith("file:///media"))
                 {
                     //check bookmark and delete
-                    BookMarkManager::getInstance()->removeBookMark(this->uri());
+                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(this->uri()));
                     m_model->sendPathChangeRequest("computer:///");
                 }
                 else
@@ -300,7 +300,7 @@ void FileItem::findChildrenAsync()
                 auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
-                    BookMarkManager::getInstance()->removeBookMark(uri);
+                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(uri));
                 }
                 //remove the crosponding child
                 //tell the model update
@@ -424,7 +424,7 @@ void FileItem::findChildrenAsync()
                 auto info = FileInfo::fromUri(uri);
                 if (info->isDir())
                 {
-                    BookMarkManager::getInstance()->removeBookMark(uri);
+                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(uri));
                 }
                 //remove the crosponding child
                 //tell the model update
@@ -740,4 +740,11 @@ bool FileItem::shouldShow()
         return false;
     }
     return true;
+}
+
+QString FileItem::uri2FavoriteUri(const QString &sourceUri)
+{
+    QUrl url = sourceUri;
+    QString favoriteUri = "favorite://" + url.path() + "?schema=" + url.scheme();
+    return favoriteUri;
 }
