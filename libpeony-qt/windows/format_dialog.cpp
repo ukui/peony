@@ -41,6 +41,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     ui(new Ui::Format_Dialog)
 {
        ui->setupUi(this);
+       setFixedSize(this->width(), this->height());
 
        fm_uris = m_uris;
        fm_item = m_item;
