@@ -44,6 +44,7 @@ public:
         RESTART,
         CANCEL,
         RUNNING,
+        RESUME,
         FINISHED,
         ERROR
     };
@@ -92,7 +93,6 @@ private:
     goffset                         mOffset = 0;                // 记录当前进度
     goffset                         mTotalSize = 0;             // 记录当前进度
     enum Status                     mStatus = INVALID;          // 记录运行状态
-
 };
 };
 

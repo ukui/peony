@@ -165,7 +165,7 @@ void DesktopBackgroundManager::switchBackground()
         return;
 
     auto path = m_backgroundSettings->get("pictureFilename").toString();
-    if (! QFile::exists(path))
+    if (! QFile::exists(path) && !path.isEmpty())
         path = getAccountBackground();
     if (path.isEmpty()) {
         m_usePureColor = true;
@@ -191,6 +191,7 @@ void DesktopBackgroundManager::switchBackground()
             m_animation->start();
             m_current_bg_path = path;
         }
+        updateScreens();
     }
 
     //if background picture changed, update it

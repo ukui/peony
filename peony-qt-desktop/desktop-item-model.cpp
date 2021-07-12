@@ -380,14 +380,28 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         if (info.get()->m_type == FileOperationInfo::Rename) {
             m_renaming_operation_info = info;
             auto renamingUri = info.get()->m_src_uris.first();
+            if (!renamingUri.endsWith(".desktop")) {
+                m_renaming_operation_info = nullptr;
+                return;
+            }
             m_renaming_file_pos.first = renamingUri;
             m_renaming_file_pos.second = PeonyDesktopApplication::getIconView()->getFileMetaInfoPos(renamingUri);
+        } else {
+            m_renaming_file_pos.first = nullptr;
+            m_renaming_file_pos.second = QPoint();
+            m_renaming_operation_info = nullptr;
         }
     });
     connect(FileOperationManager::getInstance(), &FileOperationManager::operationFinished, this, [=](std::shared_ptr<FileOperationInfo> info){
         if (info.get()->m_type == FileOperationInfo::Rename) {
             if (!info.get()->m_has_error) {
                 auto renamingUri = info.get()->target();
+                if (!renamingUri.endsWith(".desktop")) {
+                    m_renaming_operation_info = nullptr;
+                    m_renaming_file_pos.first = nullptr;
+                    m_renaming_file_pos.second = QPoint();
+                    return;
+                }
                 m_renaming_file_pos.first = renamingUri;
                 m_items_need_relayout.removeOne(renamingUri);
                 m_items_need_relayout.removeOne(renamingUri + ".desktop");
@@ -396,6 +410,14 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             } else {
                 // restore/relayout?
             }
+            m_renaming_operation_info = nullptr;
+            QTimer::singleShot(100, this, [=]{
+                m_renaming_file_pos.first = nullptr;
+                m_renaming_file_pos.second = QPoint();
+            });
+        } else {
+            m_renaming_file_pos.first = nullptr;
+            m_renaming_file_pos.second = QPoint();
             m_renaming_operation_info = nullptr;
         }
     });

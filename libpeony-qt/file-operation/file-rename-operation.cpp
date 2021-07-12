@@ -69,7 +69,7 @@ void FileRenameOperation::run()
         except.op = FileOpRename;
         except.dlgType = ED_WARNING;
         except.title = tr("File Rename error");
-        except.errorStr = tr("Invalid file name \"%1\" ").arg(m_new_name);
+        except.errorStr = tr("Invalid file name %1%2%3 .").arg("\“").arg(m_new_name).arg("\”");
 
         Q_EMIT errored(except);
 
@@ -85,7 +85,7 @@ void FileRenameOperation::run()
             except.op = FileOpRename;
             except.dlgType = ED_WARNING;
             except.title = tr("File Rename warning");
-            except.errorStr = tr("The file \"%1\" will be hidden!").arg(m_new_name);
+            except.errorStr = tr("The file %1%2%3 will be hidden!").arg("\“").arg(m_new_name).arg("\”");
 
             Q_EMIT errored(except);
         }

@@ -306,7 +306,9 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
-    if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+    bool isDesktopFile = index.data(Qt::UserRole).toString().endsWith(".desktop");
+    bool isSoftLink = FileUtils::getFileIsSymbolicLink(index.data(Qt::UserRole).toString());
+    if (!isDesktopFile && !isSoftLink && !isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
         int n = 1;
         if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
             n = 2;
@@ -347,7 +349,7 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     if (newName.isNull())
         return;
     //process special name . or .. or only space
-    if (newName == "." || newName == ".." || newName.trimmed() == "" || newName.contains("\\"))
+    if (newName == "." || newName == ".." || newName.trimmed() == "")
         newName = "";
     //comment new name != suffix check to fix feedback issue
     if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {

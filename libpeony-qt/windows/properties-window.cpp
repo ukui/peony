@@ -214,7 +214,7 @@ void PropertiesWindow::init()
 {
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setContentsMargins(0, 18, 0, 0);
+    this->setContentsMargins(0, 10, 0, 0);
     //only show close button
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowMinMaxButtonsHint & ~Qt::WindowSystemMenuHint);
 
@@ -525,6 +525,8 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
     setMovable(false);
     setContentsMargins(0, 0, 0, 0);
 
+    //监听悬浮事件
+    this->tabBar()->setAttribute(Qt::WA_Hover, true);
     auto manager = PropertiesWindowPluginManager::getInstance();
     auto names = manager->getFactoryNames();
     for (auto name : names) {
@@ -550,13 +552,13 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
             QRect rect = tab->rect;
-            //为了更柔和的显示上边框 压低1px
-            rect.setTop(1);
+            //顶部下移8px
+            rect.setTop(rect.y() + 8);
             //底部上移8px
-            rect.setBottom(rect.height() - 8);
+            rect.setBottom((rect.y() + rect.height()) - 8);
             //左侧移动4px
             rect.setLeft(rect.x() + 4);
-            //右侧被挤压，导致圆角不规整，所以移动2px
+            //右侧移动2px
             rect.setRight((rect.x() + rect.width()) - 2);
 
             const QPalette &palette = widget->palette();
@@ -568,6 +570,19 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->save();
                 painter->setPen(palette.color(QPalette::Highlight));
                 painter->setBrush(palette.brush(QPalette::Highlight));
+
+                painter->drawRect(rect);
+                //FIX:圆角矩形绘制问题
+                //painter->drawRoundRect(rect,10,17);
+                painter->restore();
+
+                //选中时文字颜色 - Text color when selected
+                painter->setPen(palette.color(QPalette::BrightText));
+            } else if (tab->state & QStyle::State_MouseOver) {
+                painter->save();
+                QColor color = palette.color(QPalette::Highlight).lighter(140);
+                painter->setPen(color);
+                painter->setBrush(color);
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
                 painter->drawRoundedRect(rect,4,4);

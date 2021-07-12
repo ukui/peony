@@ -37,7 +37,7 @@ namespace Peony {
  * \todo
  * add error reprot GUI.
  */
-class FileLaunchAction : public QAction
+class PEONYCORESHARED_EXPORT FileLaunchAction : public QAction
 {
     Q_OBJECT
 public:

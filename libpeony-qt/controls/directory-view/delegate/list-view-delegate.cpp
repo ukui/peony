@@ -187,7 +187,9 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
-    if (!isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+    bool isDesktopFile = index.data(Qt::UserRole).toString().endsWith(".desktop");
+    bool isSoftLink = FileUtils::getFileIsSymbolicLink(index.data(Qt::UserRole).toString());
+    if (!isDesktopFile && !isSoftLink && !isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
         int n = 1;
         if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
             n = 2;
@@ -220,7 +222,7 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
 
     //process special name . or .. or only space
-    if (text == "." || text == ".." || text.trimmed() == "" || text.contains("\\"))
+    if (text == "." || text == ".." || text.trimmed() == "")
         return;
 
     if (! index.isValid())

@@ -147,14 +147,14 @@ void DirectoryViewMenu::fillActions()
         }
     }
 
-    //netwotk items not show operation menu
-    if (m_is_network)
-        return;
-
     //add open actions
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
         addSeparator();
+
+    //netwotk items not show operation menu
+    if (m_is_network)
+        return;
 
     if (! m_is_kydroid){
         //create template actions
@@ -302,8 +302,14 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
-                    FileLaunchManager::openAsync(uri, false, false);
+                    if (m_is_network)
+                        m_top_window->goToUri(uri, true);
+                    else
+                        FileLaunchManager::openAsync(uri, false, false);
                 });
+
+                if (m_is_network)
+                    return l;
                 auto openWithAction = addAction(tr("Open with..."));
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
@@ -313,7 +319,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 if (recommendActions.count() == 0)
                 {
                     auto action = FileLaunchManager::getDefaultAction(m_selections.first());
-                    if (action != NULL && action->data().toString().length() > 0)
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
                         recommendActions.append(action);
                 }
                 for (auto action : recommendActions) {
@@ -482,8 +488,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -494,8 +500,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;

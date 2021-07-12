@@ -525,7 +525,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             url = QUrl::fromLocalFile(absPath);
             uris << url.toDisplayString();
         } else {
-            uris << url.toDisplayString();
+            uris << path;
         }
     }
 

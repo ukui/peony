@@ -86,6 +86,10 @@ void BasicPropertiesPage::init()
 //        delete m_futureWatcher;
 //        m_futureWatcher = nullptr;
 //    }
+    //Time Modified: （是左侧显示最长的字符串）
+    m_labelWidth = fontMetrics().width(tr("Time Modified:")) + 5;
+    m_labelWidth = m_labelWidth < 90 ? 90 : m_labelWidth;
+
     //check file type and search fileinfo
     FileType fileType = this->checkFileType(m_uris);
     //单个文件才能换icon
@@ -139,26 +143,21 @@ void BasicPropertiesPage::addSeparator()
 void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
     if (m_openWithLayout) {
-        m_defaultOpenListWidget = OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(), parent);
+        m_defaultOpenWithWidget = OpenWithPropertiesPage::createDefaultOpenWithWidget(m_info->uri(), parent);
         m_openWithLayout->setContentsMargins(0,0,16,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
-        m_openWithLayout->addWidget(m_defaultOpenListWidget);
+        m_openWithLayout->addWidget(m_defaultOpenWithWidget);
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
         moreAppButton->setText(tr("Change"));
-        moreAppButton->setMinimumSize(70,30);
+        moreAppButton->setMinimumSize((moreAppButton->fontMetrics().width(tr("Change")) + 5), 30);
         m_openWithLayout->addWidget(moreAppButton);
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
             NewFileLaunchDialog dialog(m_info.get()->uri());
             if (QDialog::Accepted == dialog.exec()) {
-                QListWidgetItem *m_listItem = m_defaultOpenListWidget->item(0);
-                auto defaultLaunchAction = FileLaunchManager::getDefaultAction(m_info.get()->uri());
-                if (defaultLaunchAction) {
-                    m_listItem->setIcon(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon() : QIcon::fromTheme("application-x-desktop"));
-                    m_listItem->setText(defaultLaunchAction->text());
-                }
+                m_defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(m_info->uri()));
             }
         });
     }
@@ -246,7 +245,8 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
         m_moveButton->setText(tr("move"));
         m_moveButton->setMinimumSize(70,32);
-        m_moveButton->setMaximumWidth(70);
+        //暂时使用设置最大高度的方式解决与输入框自适应不一致问题
+        m_moveButton->setMaximumSize(70, 38);
 
         form3->addRow(m_moveButton);
         //home目录不支持移动和重命名
@@ -294,16 +294,16 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     switch (fileType) {
     case BP_Folder:
         m_folderContainLabel = this->createFixedLabel(0,32,floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Include:"),floor2),m_folderContainLabel);
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Include:"),floor2),m_folderContainLabel);
         break;
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Open with:"),floor2),m_openWithLayout);
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Open with:"),floor2),m_openWithLayout);
         this->addOpenWithLayout(floor2);
         break;
     case BP_Application:
         m_descrptionLabel = this->createFixedLabel(0,32,floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Description:"),floor2),m_descrptionLabel);
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Description:"),floor2),m_descrptionLabel);
         m_descrptionLabel->setText(m_info.get()->displayName());
         break;
     case BP_MultipleFIle:
@@ -312,8 +312,8 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         break;
     }
 
-    layout2->addRow(this->createFixedLabel(90,32,tr("Size:"),floor2),m_fileSizeLabel);
-    layout2->addRow(this->createFixedLabel(90,32,tr("Space Useage:"),floor2),m_fileTotalSizeLabel);
+    layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Size:"),floor2),m_fileSizeLabel);
+    layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Space Useage:"),floor2),m_fileTotalSizeLabel);
 
     this->countFilesAsync(uris);
 
@@ -349,13 +349,13 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     case BP_Application:
         m_timeModifiedLabel = this->createFixedLabel(0,32,floor3);
         m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Access:"),floor3), m_timeAccessLabel);
         break;
     case BP_MultipleFIle:
     case BP_Folder:
         m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeCreatedLabel);
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Modified:"),floor3), m_timeCreatedLabel);
     default:
         break;
     }
@@ -396,7 +396,7 @@ void BasicPropertiesPage::initFloorFour()
     m_readOnly->setDisabled(!m_info->canRename());
     m_hidden->setDisabled(!m_info->canRename());
 
-    layout4->addRow(this->createFixedLabel(90,32,tr("Property:"),floor4),hBoxLayout);
+    layout4->addRow(this->createFixedLabel(m_labelWidth,32,tr("Property:"),floor4),hBoxLayout);
 
     //确认被修改
     connect(m_readOnly,&QCheckBox::stateChanged,this,&BasicPropertiesPage::thisPageChanged);

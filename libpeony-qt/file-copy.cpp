@@ -24,12 +24,12 @@
 
 #include <cstring>
 #include <QString>
-#include <unistd.h>
 #include <QProcess>
 #include "file-info.h"
 #include "file-info-job.h"
 
 #define BUF_SIZE        1024000
+#define SYNC_INTERVAL   10
 
 using namespace Peony;
 
@@ -60,7 +60,7 @@ void FileCopy::pause ()
 
 void FileCopy::resume ()
 {
-    mStatus = RUNNING;
+    mStatus = RESUME;
     mPause.unlock();
 }
 
@@ -118,10 +118,10 @@ void FileCopy::updateProgress () const
 
 void FileCopy::run ()
 {
+    int                     syncTim = 0;
     GError*                 error = nullptr;
     gssize                  readSize = 0;
     gssize                  writeSize = 0;
-    char                    buf[BUF_SIZE] = {0};
     GFileInputStream*       readIO = nullptr;
     GFileOutputStream*      writeIO = nullptr;
     GFile*                  srcFile = nullptr;
@@ -130,6 +130,7 @@ void FileCopy::run ()
     GFileInfo*              destFileInfo = nullptr;
     GFileType               srcFileType = G_FILE_TYPE_UNKNOWN;
     GFileType               destFileType = G_FILE_TYPE_UNKNOWN;
+    g_autofree gchar*       buf = (char*)g_malloc0(sizeof (char) * BUF_SIZE);
 
     srcFile = g_file_new_for_uri(FileUtils::urlEncode(mSrcUri).toUtf8());
     destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
@@ -177,7 +178,6 @@ void FileCopy::run ()
         } else if (mCopyFlags & G_FILE_COPY_BACKUP) {
             qDebug() << "mDestUri: " << mDestUri << " is exists! G_FILE_COPY_BACKUP";
             do {
-                g_autofree gchar* decodeUri = g_uri_unescape_string(mDestUri.toUtf8(), ":/");
                 QStringList newUrl = mDestUri.split("/");
                 newUrl.pop_back();
                 newUrl.append(FileUtils::handleDuplicateName(FileUtils::urlDecode(mDestUri)));
@@ -217,7 +217,8 @@ void FileCopy::run ()
     // write io stream
     writeIO = g_file_create(destFile, G_FILE_CREATE_REPLACE_DESTINATION, mCancel ? mCancel : nullptr, &error);
     if (nullptr != error) {
-        if (G_IO_ERROR_NOT_SUPPORTED == error->code) {
+        // it's impossible for 'buf' is null
+        if (!buf || G_IO_ERROR_NOT_SUPPORTED == error->code) {
             qWarning() << "g_file_copy " << error->code << " -- " << error->message;
             g_error_free(error);
             error = nullptr;
@@ -257,20 +258,15 @@ void FileCopy::run ()
                 continue;
             }
 
-            memset(buf, 0, sizeof(buf));
-            if (writeIO) {
-                g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, &error);
-                if (error) {
-                    qWarning() << "error:" << error->code << " -- " << error->message;
-                    detailError(&error);
-                    mStatus = ERROR;
-                    break;
-                }
+            memset(buf, 0, BUF_SIZE);
+            if (++syncTim > SYNC_INTERVAL) {
+                syncTim = 0;
+                sync(destFile);
             }
 
             mPause.lock();
             // read data
-            readSize = g_input_stream_read(G_INPUT_STREAM(readIO), buf, sizeof(buf) - 1, mCancel ? mCancel : nullptr, &error);
+            readSize = g_input_stream_read(G_INPUT_STREAM(readIO), buf, BUF_SIZE - 1, mCancel ? mCancel : nullptr, &error);
             if (0 == readSize && nullptr == error) {
                 mStatus = FINISHED;
                 mPause.unlock();
@@ -319,6 +315,13 @@ void FileCopy::run ()
         } else if (FINISHED == mStatus) {
             qDebug() << "copy file finish!";
             break;
+        } else if (PAUSE == mStatus) {
+            if (mPause.tryLock(3000)) {
+                if (RESUME == mStatus) {
+                    mPause.unlock();
+                }
+                mStatus = RUNNING;
+            }
         } else {
             mStatus = RUNNING;
         }
@@ -327,9 +330,7 @@ void FileCopy::run ()
 out:
     // if copy sucessed, flush all data
     if (FINISHED == mStatus && g_file_query_exists(destFile, nullptr)) {
-        g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, &error);
         detailError(&error);
-
         sync(destFile);
     }
 
@@ -356,10 +357,10 @@ out:
     }
 
     if (nullptr != srcFileInfo) {
-        g_object_unref(srcFile);
+        g_object_unref(srcFileInfo);
     }
 
     if (nullptr != destFileInfo) {
-        g_object_unref(destFile);
+        g_object_unref(destFileInfo);
     }
 }
