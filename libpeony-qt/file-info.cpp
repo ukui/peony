@@ -256,6 +256,9 @@ const QString FileInfo::displayName()
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
+    if (m_uri == "file:///data")
+        return tr("data");
+
     if((nullptr != m_display_name)
             && (!isMountPoint
                 || unixDevice.isEmpty()  /*@m_uri is like "computer:///xxx"*/

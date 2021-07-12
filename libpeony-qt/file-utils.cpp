@@ -294,6 +294,8 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
     auto fileInfo = FileInfo::fromUri(uri);
+    if (uri == "file:///data")
+        return QObject::tr("data");
     return fileInfo.get()->displayName();
 }
 
