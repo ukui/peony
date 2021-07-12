@@ -429,7 +429,7 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
     if (newName.isNull())
         return;
     //process special name . or .. or only space
-    if (newName == "." || newName == ".." || newName.trimmed() == "" || newName.contains("\\"))
+    if (newName == "." || newName == ".." || newName.trimmed() == "")
         newName = "";
     //comment new name != suffix check to fix feedback issue
     if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {
