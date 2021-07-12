@@ -346,6 +346,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -375,6 +380,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
             QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
@@ -712,8 +722,13 @@ void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
     //FIXME: replace BLOCKING api in ui thread.
-    auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
+    auto curUri = getCurrentUri();
+    auto show = Peony::FileUtils::getFileDisplayName(curUri);
     QString title = show;// + "-" + tr("File Manager");
+    if (curUri.startsWith("search:///"))
+        title = tr("Search");
+    if (title.length() <= 0)
+        title = tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
     setWindowTitle(title);
 }
@@ -761,6 +776,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         //if select only one item, let view to process
         if (selections.count() > 1)
         {
+            QString currentUri = this->getCurrentUri();
+            if(currentUri == "filesafe:///") {
+                return ;
+            }
+
             QStringList files;
             QStringList dirs;
             for (auto uri : selections) {

@@ -590,6 +590,15 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->restore();
                 //选中时文字颜色 - Text color when selected
                 painter->setPen(palette.color(QPalette::BrightText));
+            } else if (tab->state & QStyle::State_MouseOver) {
+                painter->save();
+                QColor color = palette.color(QPalette::Highlight).lighter(140);
+                painter->setPen(color);
+                painter->setBrush(color);
+
+                painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                painter->drawRoundedRect(rect, 4, 4);
+                painter->restore();
             }
 
             painter->drawText(rect, tab->text, QTextOption(Qt::AlignCenter));
@@ -615,9 +624,8 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
         //宽度统一加上30px
         barSize.setWidth(fontWidth + 30);
 
-        int fontHeight = tab->fontMetrics.height();
-        //高度统一加上18px
-        barSize.setHeight(fontHeight + 18);
+        //46 - 8 - 8 = 30;
+        barSize.setHeight(46);
     }
 
     return barSize;

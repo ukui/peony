@@ -428,6 +428,24 @@ DesktopItemModel::~DesktopItemModel()
 
 }
 
+bool findProgram(const QString &program)
+{
+    QFileInfo fi(program);
+    if (!program.isEmpty() && fi.isExecutable()) {
+        return true;
+    }
+
+    const QStringList paths = QFile::decodeName(qgetenv("PATH")).split(':');
+    for(const QString &dir : paths) {
+        QFileInfo fi= QFileInfo(dir + QDir::separator() + program);
+        if (fi.isExecutable()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void DesktopItemModel::refreshInternal()
 {
     m_items_need_relayout.clear();
@@ -442,10 +460,22 @@ void DesktopItemModel::refreshInternal()
     m_files.clear();
 
     auto desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+
     //FIXME: replace BLOCKING api in ui thread.
     if (!FileUtils::isFileExsit(desktopUri)) {
         // try get correct desktop path delay.
         //FIXME: replace BLOCKING api in ui thread.
+
+        if (findProgram("xdg-user-dirs-update")) {
+            do {
+                QProcess p;
+                p.setProgram("xdg-user-dirs-update");
+                p.start();
+                p.waitForFinished();
+                desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            } while (!FileUtils::isFileExsit(desktopUri));
+        }
+
         QTimer::singleShot(1000, this, [=](){
             if (!FileUtils::isFileExsit(desktopUri)) {
                 endResetModel();

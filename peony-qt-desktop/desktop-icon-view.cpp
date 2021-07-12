@@ -1609,6 +1609,16 @@ bool DesktopIconView::getEditFlag()
     return m_is_edit;
 }
 
+int DesktopIconView::verticalOffset() const
+{
+    return 0;
+}
+
+int DesktopIconView::horizontalOffset() const
+{
+    return 0;
+}
+
 void DesktopIconView::restoreItemsPosByMetaInfo()
 {
     for (auto uri : getAllFileUris()) {

@@ -372,6 +372,12 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
+
+        QString one = selections.first();
+        if(one.startsWith("filesafe:///") && one.remove("filesafe:///").indexOf("/") == -1) {
+            return ;
+        }
+
         bool hasStandardPath = FileUtils::containsStandardPath(selections);
         if (selections.count() == 1 && !hasStandardPath) {
             m_view->editUri(selections.first());

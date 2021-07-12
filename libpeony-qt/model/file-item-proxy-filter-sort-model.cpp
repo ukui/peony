@@ -47,6 +47,7 @@ QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    setDynamicSortFilter(false);
     //enable number sort, like 100 is after 99
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
@@ -67,7 +68,7 @@ void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
         disconnect(sourceModel());
     QSortFilterProxyModel::setSourceModel(model);
     FileItemModel *file_item_model = static_cast<FileItemModel*>(model);
-    connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
+    //connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
 }
 
 FileItem *FileItemProxyFilterSortModel::itemFromIndex(const QModelIndex &proxyIndex)
@@ -149,6 +150,10 @@ default_sort:
             return leftItem->m_info->fileType() < rightItem->m_info->fileType();
         }
         case FileItemModel::ModifiedDate: {
+            //delete time sort in trash, fix bug#63093
+            if (leftItem->uri().startsWith("trash://"))
+                return leftItem->m_info->deletionDate() < rightItem->m_info->deletionDate();
+
             return leftItem->m_info->modifiedTime() < rightItem->m_info->modifiedTime();
         }
         default:

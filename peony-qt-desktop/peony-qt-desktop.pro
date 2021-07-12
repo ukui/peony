@@ -83,8 +83,9 @@ target.path = /usr/bin
 #QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt-desktop
 QM_FILES_INSTALL_PATH = /usr/share/peony-qt-desktop
 
-data.path = /etc/xdg/autostart
-data.files += ../data/peony-desktop.desktop
+desktop_data.path = /etc/xdg/autostart
+desktop_data.files += ../data/peony-desktop.desktop
+INSTALLS += desktop_data
 
 DISTFILES +=
 

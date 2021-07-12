@@ -135,6 +135,10 @@ void DirectoryViewMenu::fillActions()
         m_is_ftp = true;
     }
 
+    if(m_directory == "filesafe:///") {
+        m_is_filesafe = true;
+    }
+
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
@@ -241,7 +245,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid)
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -631,7 +635,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         bool hasStandardPath = FileUtils::containsStandardPath(m_selections);
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent && !m_is_filesafe) {
             if (!m_is_favorite) {
                 //code from lixiang for kydroid menu
                 if (m_is_kydroid) {
@@ -662,7 +666,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             if (m_is_kydroid)
                 return l;
 
-            if (!hasStandardPath && !m_is_recent && !m_is_favorite)
+            if (!hasStandardPath && !m_is_recent && !m_is_favorite && !m_is_filesafe)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -671,28 +675,28 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
 
-            if (!m_is_recent && !m_is_favorite && !hasStandardPath) {
+            if (!m_is_recent && !m_is_favorite && !hasStandardPath && !m_is_filesafe) {
                 l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::trash(m_selections, true);
                 });
             }
 
-            if (m_is_favorite && m_can_delete) {
+            if (m_is_favorite && m_can_delete && !m_is_filesafe) {
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::executeRemoveActionWithDialog(m_selections);
                 });
             }
 
-            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent && !m_is_favorite) {
+            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent && !m_is_favorite && !m_is_filesafe) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite && !m_is_kydroid)
+            if (!m_is_recent && !m_is_favorite && !m_is_kydroid && !m_is_filesafe)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
                 l<<pasteAction;
@@ -976,11 +980,25 @@ const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
 
         for (auto id : pluginIds) {
             auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
-            auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
-            l<<actions;
-            for (auto action : actions) {
-                action->setParent(this);
-                addAction(action);
+
+            if(m_is_filesafe) {
+                if(plugin->name() == tr("Peony-Qt filesafe menu Extension")) {
+                    auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
+                    l<<actions;
+                    for (auto action : actions) {
+                        action->setParent(this);
+                        addAction(action);
+                    }
+                }
+            } else {
+                if(plugin->name() != tr("Peony-Qt filesafe menu Extension")) {
+                    auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
+                    l<<actions;
+                    for (auto action : actions) {
+                        action->setParent(this);
+                        addAction(action);
+                    }
+                }
             }
         }
     }
