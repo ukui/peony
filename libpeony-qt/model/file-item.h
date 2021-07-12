@@ -93,6 +93,9 @@ public:
     bool hasChildren();
     bool shouldShow();
 
+private:
+    QString uri2FavoriteUri(const QString &sourceUri);
+
 Q_SIGNALS:
     void cancelFindChildren();
     void childAdded(const QString &uri);
