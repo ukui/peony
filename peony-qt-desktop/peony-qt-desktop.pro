@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
+include(../3rd-parties/qtsingleapplication/qtsingleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra wayland-client
