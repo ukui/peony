@@ -256,7 +256,7 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
     QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
         QString htmlString = QString("<p>%1</p>")
-                .arg(opt.fontMetrics.elidedText(m_error->errorStr.toHtmlEscaped(), Qt::ElideMiddle, 480).toHtmlEscaped());
+                .arg(opt.fontMetrics.elidedText(m_error->errorStr/*.toHtmlEscaped()*/, Qt::ElideMiddle, 480).toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
