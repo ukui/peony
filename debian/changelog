@@ -1,3 +1,39 @@
+peony (3.2.2+0713) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：43678, 43948, 66432.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：格式化显示，samba连接创建文件。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 13 Jul 2021 10:24:18 +0800
+
+peony (3.2.2+0709) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：58199, 58255.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：光盘属性显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 09 Jul 2021 16:28:18 +0800
+
+peony (3.2.2+0708) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：43678, 65830.
+    - 需求号：6935。
+    - 其他改动说明：无。
+    - 影响域：桌面显示，格式化提示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 08 Jul 2021 16:18:18 +0800
+
 peony (3.2.2+0707) v101; urgency=medium
 
   * 0710版本更新
