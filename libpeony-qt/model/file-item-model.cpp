@@ -214,6 +214,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignHCenter | Qt::AlignBaseline);
         }
         case Qt::DisplayRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole: {
@@ -225,6 +231,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(icon);
         }
         case Qt::ToolTipRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         default:

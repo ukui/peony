@@ -256,8 +256,10 @@ const QString FileInfo::displayName()
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
-    if (m_uri == "file:///data")
+    if(m_uri == "file:///DATA")
+    {
         return tr("data");
+    }
 
     if((nullptr != m_display_name)
             && (!isMountPoint
