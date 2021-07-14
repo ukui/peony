@@ -58,6 +58,7 @@ public:
     BLOCKING static bool getFileIsSymbolicLink(const QString &uri);
     BLOCKING static QStringList getChildrenUris(const QString &directoryUri);
 
+    NO_BLOCKING static QString handleDesktopFileName(const QString& uri, const QString& displayName);
     NO_BLOCKING static QString getNonSuffixedBaseNameFromUri(const QString &uri);
     BLOCKING static QString getFileDisplayName(const QString &uri);
     BLOCKING static QString getFileIconName(const QString &uri, bool checkValid = true);
