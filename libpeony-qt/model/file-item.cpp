@@ -448,7 +448,7 @@ void FileItem::findChildrenAsync()
                     infoJob->queryAsync();
                 }
             });
-            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {               
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
                 this->onRenamed(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
@@ -496,6 +496,13 @@ bool FileItem::hasChildren()
 
 FileItem *FileItem::getChildFromUri(QString uri)
 {
+    // optimize
+    auto index = m_model->indexFromUri(uri);
+    if (index.isValid()) {
+        return m_model->itemFromIndex(index);
+    }
+    return nullptr;
+    /*
     for (auto item : *m_children) {
         QUrl itemUrl = item->uri();
         QUrl url = uri;
@@ -504,6 +511,7 @@ FileItem *FileItem::getChildFromUri(QString uri)
             return item;
     }
     return nullptr;
+    */
 }
 
 void FileItem::onChildAdded(const QString &uri)
@@ -530,17 +538,23 @@ void FileItem::onChildAdded(const QString &uri)
     infoJob->setAutoDelete();
     m_waiting_add_queue.append(uri);
     infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
-        auto item = new FileItem(info, this, m_model);
-        m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
-        m_children->append(item);
-        m_model->endInsertRows();
-        qDebug() <<"successfully added child:" <<uri;
         m_waiting_add_queue.removeOne(uri);
-        //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
-        //Q_EMIT m_model->updated();
-        QTimer::singleShot(1000, this, [=](){
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-        });
+        auto item = getChildFromUri(uri);
+        // add exsited checkment. link to: #66999
+        if (!item) {
+            item = new FileItem(info, this, m_model);
+            m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
+            m_children->append(item);
+            m_model->endInsertRows();
+            qDebug() <<"successfully added child:" <<uri;
+            //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+            //Q_EMIT m_model->updated();
+            QTimer::singleShot(1000, this, [=](){
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+            });
+        } else {
+            qInfo()<<"file"<<uri<<"has arealy in file item model";
+        }
     });
     infoJob->queryAsync();
 
