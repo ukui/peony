@@ -62,7 +62,7 @@ void CreateTemplateOperation::run()
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
         GError *err = nullptr;
-        GFileOutputStream *newFile = g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
+        GFileOutputStream *newFile = g_file_create(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_target_uri).toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
             FileOperationError except;
             if (err->code == G_IO_ERROR_EXISTS) {
@@ -90,7 +90,7 @@ retry_create_empty_file:
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFolder");
 retry_create_empty_folder:
         GError *err = nullptr;
-        g_file_make_directory(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+        g_file_make_directory(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_target_uri).toUtf8())).get()->get(),
                               nullptr,
                               &err);
         if (err) {
@@ -119,7 +119,7 @@ retry_create_empty_folder:
 retry_create_template:
         qDebug() << "create tmp";
         GError *err = nullptr;
-        g_file_copy(wrapGFile(g_file_new_for_uri(m_src_uri.toUtf8())).get()->get(),
+        g_file_copy(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8())).get()->get(),
                     wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
                     GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS),
                     nullptr,
@@ -164,7 +164,7 @@ retry_create_template:
 
     // judge if the operation should sync.
     bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(m_src_uri.toUtf8().constData());
+    GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8().constData());
     GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
     if (src_first_mount) {
         needSync = g_mount_can_unmount(src_first_mount);
@@ -175,7 +175,7 @@ retry_create_template:
     }
     g_object_unref(src_first_file);
 
-    GFile *dest_dir_file = g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData());
+    GFile *dest_dir_file = g_file_new_for_uri(FileUtils::urlEncode(m_dest_dir_uri).toUtf8().constData());
     GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
     if (src_first_mount) {
         needSync = g_mount_can_unmount(dest_dir_mount);

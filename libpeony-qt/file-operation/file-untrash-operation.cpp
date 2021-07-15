@@ -48,7 +48,7 @@ void FileUntrashOperation::cacheOriginalUri()
         if (isCancelled())
             break;
 
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+        auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData()));
         auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                                   G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
                                   G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -209,8 +209,8 @@ int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
     int ret = 0;
     GError *err = nullptr;
 
-    auto file = wrapGFile(g_file_new_for_uri(srcFile.toUtf8().constData()));
-    auto originFile = wrapGFile(g_file_new_for_uri(destFile.toUtf8().constData()));
+    auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(srcFile).toUtf8().constData()));
+    auto originFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(destFile).toUtf8().constData()));
 
     g_file_copy(file.get()->get(),
                 originFile.get()->get(),
@@ -247,7 +247,7 @@ int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &destPath)
             //如果目录不存在，则创建
             GError *err = nullptr;
 
-            auto originFile = wrapGFile(g_file_new_for_uri(destPath.toUtf8().constData()));
+            auto originFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(destPath).toUtf8().constData()));
             g_file_make_directory(originFile.get()->get(),
                                   getCancellable().get()->get(),
                                   &err);
@@ -292,7 +292,7 @@ int FileUntrashOperation::deleteFileProcess(FileNode *fileNode)
     QString destFile = nullptr;
 
     QString srcFile = fileNode->uri();
-    GFile *file = g_file_new_for_uri(srcFile.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(FileUtils::urlEncode(srcFile).toUtf8().constData());
 
     g_file_delete(file,
                   getCancellable().get()->get(),
@@ -383,8 +383,8 @@ void FileUntrashOperation::run()
             }
         }
 
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-        auto destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
+        auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData()));
+        auto destFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(originUri).toUtf8().constData()));
 
 retry:
         if (isCancelled())
