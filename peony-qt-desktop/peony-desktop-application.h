@@ -25,6 +25,7 @@
 #define PEONYDESKTOPAPPLICATION_H
 
 #include "singleapplication.h"
+#include "qtsingleapplication.h"
 #include "volume-manager.h"
 
 #include <QScreen>
@@ -40,11 +41,11 @@ using namespace Peony;
 
 class QTimeLine;
 
-class PeonyDesktopApplication : public SingleApplication
+class PeonyDesktopApplication : public QtSingleApplication
 {
     Q_OBJECT
 public:
-    explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
+    explicit PeonyDesktopApplication(int &argc, char *argv[], const QString &applicationName = "peony-qt-desktop");
 
     static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
@@ -57,7 +58,7 @@ Q_SIGNALS:
     void requestSetUKUIOutputEnable(bool enable);
 
 protected Q_SLOTS:
-    void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
+    void parseCmd(QString msg, bool isPrimary);
     bool isPrimaryScreen(QScreen *screen);
     bool relocateIconViewInternal();
 

@@ -193,6 +193,29 @@ QString FileUtils::handleDuplicateName(const QString& uri)
     return handledName;
 }
 
+QString FileUtils::handleDesktopFileName(const QString& uri, const QString& displayName)
+{
+    QString name = QUrl(uri).toDisplayString().split("/").last();
+    QRegExp regExpNum("\\(\\d+\\)");
+    auto showName = displayName;
+
+    QStringList matchList;
+    int pos=0;
+    while((pos=regExpNum.indexIn(name,pos))!=-1)
+    {
+       pos+=regExpNum.matchedLength();
+       QString result=regExpNum.cap(0);
+       matchList<<result;
+    }
+
+    for(auto match : matchList)
+    {
+        showName = showName + match;
+    }
+
+    return showName;
+}
+
 bool FileUtils::getFileHasChildren(const GFileWrapperPtr &file)
 {
     GFileType type = g_file_query_file_type(file.get()->get(),
