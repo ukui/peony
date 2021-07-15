@@ -242,15 +242,16 @@ QStringList FileUtils::getChildrenUris(const QString &directoryUri)
         auto child = g_file_enumerator_get_child(e, child_info);
 
         auto uri = g_file_get_uri(child);
-        auto path = g_file_get_path(child);
-        QString urlString = uri;
-        QUrl url = urlString;
-        if (path && !url.isLocalFile()) {
-            urlString = QString("file://%1").arg(path);
-            g_free(path);
-        } else {
-            urlString = uri;
-        }
+        QString urlString = FileUtils::urlEncode(uri);
+        // BUG: 65889
+//        auto path = g_file_get_path(child);
+//        QUrl url = urlString;
+//        if (path && !url.isLocalFile()) {
+//            urlString = QString("file://%1").arg(path);
+//            g_free(path);
+//        } else {
+//            urlString = uri;
+//        }
 
         uris<<urlString;
         g_free(uri);
