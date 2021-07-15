@@ -187,22 +187,24 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                 quint64 used  = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
                 quint64 free  = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
-                char *deviceName = g_volume_get_identifier(volume->getGVolume(), G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-                QString unixDeviceName;
-                if(deviceName) {
-                    unixDeviceName = QString(deviceName);
-                    g_free(deviceName);
-                }
-                //光盘
-                if (unixDeviceName.startsWith("/dev/sr")) {
-                    DataCDROM *cdrom = new DataCDROM(unixDeviceName);
-                    if (cdrom) {
-                        cdrom->getCDROMInfo();
-                        usedSpace = used;
-                        totalSpace = cdrom->getCDROMCapacity();
-                        availableSpace = totalSpace - usedSpace;
-                        delete cdrom;
-                        cdrom = nullptr;
+                if (nullptr != volume) {
+                    char *deviceName = g_volume_get_identifier(G_VOLUME(volume->getGVolume()), G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+                    QString unixDeviceName;
+                    if(deviceName) {
+                        unixDeviceName = QString(deviceName);
+                        g_free(deviceName);
+                    }
+                    //光盘
+                    if (!unixDeviceName.isNull() && !unixDeviceName.isEmpty() && unixDeviceName.startsWith("/dev/sr")) {
+                        DataCDROM *cdrom = new DataCDROM(unixDeviceName);
+                        if (cdrom) {
+                            cdrom->getCDROMInfo();
+                            usedSpace = used;
+                            totalSpace = cdrom->getCDROMCapacity();
+                            availableSpace = totalSpace - usedSpace;
+                            delete cdrom;
+                            cdrom = nullptr;
+                        }
                     }
                 }
 
