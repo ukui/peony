@@ -119,13 +119,13 @@ void FileCopy::run ()
 
     // impossible
     srcFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
-    if (G_FILE_TYPE_UNKNOWN == srcFileType || G_FILE_TYPE_DIRECTORY == srcFileType) {
+    if (G_FILE_TYPE_DIRECTORY == srcFileType) {
         error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
         detailError(&error);
         goto out;
     }
 
-    destFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
+    destFileType = g_file_query_file_type(destFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
     if (G_FILE_TYPE_DIRECTORY == destFileType) {
         mDestUri = mDestUri + "/" + mSrcUri.split("/").last();
         g_object_unref(destFile);
