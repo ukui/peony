@@ -1,3 +1,14 @@
+peony (3.2.2+0716hw) v101.hw; urgency=medium
+
+  * 9A0主版本更新
+    - Bug号:66330-9A0,66396-9A0.
+    - 需求号：无。
+    - 其他修改说明：无.
+    - 影响域：计算机视图显示，DATA分区显示，
+     大容量文件夹拷贝崩溃问题.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 16 Jul 2021 15:48:35 +0800
+
 peony (3.2.2+0714hw) v101.hw; urgency=medium
 
   * 9A0主版本更新
