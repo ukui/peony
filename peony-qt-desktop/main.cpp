@@ -44,11 +44,12 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
     QByteArray localMsg = msg.toLocal8Bit();
     QByteArray currentTime = QTime::currentTime().toString().toLocal8Bit();
 
-    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/peony-qt-desktop.log";
+    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/peony-desktop.log";
     bool showDebug = true;
-    if (!QFile::exists(logFilePath)) {
-        showDebug = false;
-    }
+    //屏蔽代码，自动生成日志，无需手动创建
+//    if (!QFile::exists(logFilePath)) {
+//        showDebug = false;
+//    }
     FILE *log_file = nullptr;
 
     if (showDebug) {
