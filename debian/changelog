@@ -1,3 +1,39 @@
+peony (3.2.2+0716) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：61906.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：移动应用中拷贝文件。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 16 Jul 2021 14:36:18 +0800
+
+peony (3.2.2+0715) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：66999.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：下载文件显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 15 Jul 2021 19:41:18 +0800
+
+peony (3.2.2+0714) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：53504.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：应用的desktop文件复制显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 14 Jul 2021 14:18:18 +0800
+
 peony (3.2.2+0713) v101; urgency=medium
 
   * 0710版本更新
