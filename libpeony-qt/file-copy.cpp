@@ -236,15 +236,6 @@ void FileCopy::run ()
         goto out;
     }
 
-    // copy file attribute
-    // It is possible that some file systems do not support file attributes
-    g_file_copy_attributes(srcFile, destFile, G_FILE_COPY_ALL_METADATA, nullptr, &error);
-    if (nullptr != error) {
-        qWarning() << "copy attribute error:" << error->code << "  ---  " << error->message;
-        g_error_free(error);
-        error = nullptr;
-    }
-
     if (!readIO || !writeIO) {
         error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Error opening source or destination file!").toUtf8().constData());
         detailError(&error);
@@ -328,9 +319,18 @@ void FileCopy::run ()
     }
 
 out:
+
     // if copy sucessed, flush all data
     if (FINISHED == mStatus && g_file_query_exists(destFile, nullptr)) {
-        detailError(&error);
+        // copy file attribute
+        // It is possible that some file systems do not support file attributes
+        g_file_copy_attributes(srcFile, destFile, G_FILE_COPY_ALL_METADATA, nullptr, &error);
+        if (nullptr != error) {
+            qWarning() << "copy attribute error:" << error->code << "  ---  " << error->message;
+            g_error_free(error);
+            error = nullptr;
+        }
+
         sync(destFile);
     }
 
