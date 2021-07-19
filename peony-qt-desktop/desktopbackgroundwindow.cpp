@@ -104,6 +104,7 @@ QScreen *DesktopBackgroundWindow::screen() const
 
 void DesktopBackgroundWindow::setWindowGeometry(const QRect &geometry)
 {
+    qInfo()<<"bg window geometry changed"<<screen()->name()<<geometry<<screen()->geometry();
     if (gTimeLine->state() != QTimeLine::Running) {
         gTimeLine->start();
     } else {

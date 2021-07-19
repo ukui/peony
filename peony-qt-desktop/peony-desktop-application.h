@@ -60,7 +60,6 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void parseCmd(QString msg, bool isPrimary);
     bool isPrimaryScreen(QScreen *screen);
-    bool relocateIconViewInternal();
 
 public Q_SLOTS:
     void layoutDirectionChangedProcess(Qt::LayoutDirection direction);

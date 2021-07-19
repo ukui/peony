@@ -30,7 +30,6 @@
 
 #include "desktop-icon-view.h"
 
-#include "primary-manager.h"
 #include "plasma-shell-manager.h"
 #include "desktop-menu.h"
 
@@ -77,7 +76,6 @@ static bool has_daemon = false;
 static bool has_background = false;
 static QRect max_size = QRect(0, 0, 0, 0);
 static Peony::DesktopIconView *desktop_icon_view = nullptr;
-static PrimaryManager *screensMonitor = nullptr;
 /*!
  * \brief virtualDesktopWindow
  * \deprecated
@@ -134,14 +132,6 @@ QRect caculateVirtualDesktopGeometry() {
     QRegion screensRegion;
     for (auto screen : qApp->screens()) {
         screensRegion += screen->geometry();
-    }
-
-    if (screensMonitor) {
-        int x = screensMonitor->getScreenGeometry("x");
-        int y = screensMonitor->getScreenGeometry("y");
-        int width = screensMonitor->getScreenGeometry("width");
-        int height = screensMonitor->getScreenGeometry("height");
-        screensRegion += QRect(x, y, width, height);
     }
 
     auto rect = screensRegion.boundingRect();
@@ -330,24 +320,10 @@ void PeonyDesktopApplication::gotoSetBackground()
 
 void PeonyDesktopApplication::relocateIconView()
 {
-    //FIXME:
-    if (screensMonitor) {
-//        getIconView()->setVisible(false);
-        int width = screensMonitor->getScreenGeometry("width");
-        if (width == 0) {
-            qCritical()<<"can not get primary screen info from ukui-settings daemon";
-            for (auto window : m_bg_windows) {
-                if (window->screen() == qApp->primaryScreen()) {
-                    getIconView()->setFixedSize(qApp->primaryScreen()->size());
-                    getIconView()->setParent(window);
-                }
-            }
-        } else {
-            if (m_primaryScreenSettingsTimeLine->state() == QTimeLine::Running) {
-                m_primaryScreenSettingsTimeLine->setCurrentTime(0);
-            } else {
-                m_primaryScreenSettingsTimeLine->start();
-            }
+    for (auto window : m_bg_windows) {
+        if (window->screen() == qApp->primaryScreen()) {
+            window->setCentralWidget(PeonyDesktopApplication::getIconView());
+            break;
         }
     }
 }
@@ -469,10 +445,7 @@ void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection 
 
 void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
-    if (screensMonitor)
-        return;
-    getIconView()->setGeometry(screen->availableGeometry());
-    getIconView()->raise();
+
 }
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
@@ -491,46 +464,6 @@ bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
         return true;
 
     return false;
-}
-
-bool PeonyDesktopApplication::relocateIconViewInternal()
-{
-    int x = screensMonitor->getScreenGeometry("x");
-    int y = screensMonitor->getScreenGeometry("y");
-    int width = screensMonitor->getScreenGeometry("width");
-    int height = screensMonitor->getScreenGeometry("height");
-    QRect geometry = QRect(x, y, width, height);
-    bool synced = false;
-    for (auto window : m_bg_windows) {
-        if (window->screen()->geometry() == geometry) {
-            getIconView()->setFixedSize(geometry.size());
-            getIconView()->setParent(window);
-            getIconView()->setVisible(true);
-            getIconView()->restoreItemsPosByMetaInfo();
-            KWindowSystem::raiseWindow(window->winId());
-            synced = true;
-            break;
-        }
-    }
-    if (!synced) {
-        qCritical()<<"can not set primary screen info from ukui-settings daemon";
-        qCritical()<<"current geometry:"<<geometry;
-        for (auto screen : qApp->screens()) {
-            qCritical()<<"current screen"<<screen->name()<<screen->geometry();
-        }
-
-        for (auto window : m_bg_windows) {
-            if (window->screen() == qApp->primaryScreen()) {
-                getIconView()->setFixedSize(qApp->primaryScreen()->geometry().size());
-                getIconView()->setParent(window);
-                getIconView()->setVisible(true);
-                getIconView()->restoreItemsPosByMetaInfo();
-                KWindowSystem::raiseWindow(window->winId());
-                break;
-            }
-        }
-    }
-    return synced;
 }
 
 void PeonyDesktopApplication::changeBgProcess(const QString& bgPath)
@@ -555,29 +488,12 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
 
     // recheck primary screen info. new screen might become
     // primary screen.
-    if (screensMonitor) {
-        int x = screensMonitor->getScreenGeometry("x");
-        int y = screensMonitor->getScreenGeometry("y");
-        int width = screensMonitor->getScreenGeometry("width");
-        int height = screensMonitor->getScreenGeometry("height");
-        QRect geometry = QRect(x, y, width, height);
-        if (!geometry.isEmpty()) {
-            if (screen->geometry() == geometry) {
-                getIconView()->setFixedSize(geometry.size());
-                getIconView()->setParent(window);
-                getIconView()->setVisible(true);
-                getIconView()->restoreItemsPosByMetaInfo();
-                KWindowSystem::raiseWindow(window->winId());
-            }
-        }
-    }
 
     window->show();
     connect(screen, &QScreen::destroyed, this, [=](){
         if (getIconView()->parent() == window) {
             getIconView()->setParent(nullptr);
         }
-        relocateIconView();
         m_bg_windows.removeOne(window);
         window->deleteLater();
     });
@@ -585,24 +501,13 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
 
 void PeonyDesktopApplication::setupDesktop()
 {
-    if (qgetenv("DESKTOP_SESSION") == QString("ukui-wayland")) {
-        screensMonitor = new PrimaryManager;
-        connect(screensMonitor, &PrimaryManager::priScreenChangedSignal, this, &PeonyDesktopApplication::relocateIconView);
-        m_primaryScreenSettingsTimeLine = new QTimeLine(100, screensMonitor);
-        connect(m_primaryScreenSettingsTimeLine, &QTimeLine::finished, this, [=]{
-            bool synced = relocateIconViewInternal();
-
-            if (!synced) {
-                QTimer::singleShot(1000, this, &PeonyDesktopApplication::relocateIconView);
-            }
-        });
-    }
     DesktopBackgroundManager::globalInstance();
     for (auto screen : qApp->screens()) {
         addBgWindow(screen);
     }
     relocateIconView();
     connect(qApp, &QApplication::screenAdded, this, &PeonyDesktopApplication::addBgWindow);
+    connect(this, &PeonyDesktopApplication::primaryScreenChanged, this, &PeonyDesktopApplication::relocateIconView);
 }
 
 void PeonyDesktopApplication::setupBgAndDesktop()
