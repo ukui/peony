@@ -198,12 +198,12 @@ p, li { white-space: pre-wrap; }
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1481"/>
+        <location filename="../../src/windows/main-window.cpp" line="1482"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1482"/>
+        <location filename="../../src/windows/main-window.cpp" line="1483"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -212,12 +212,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1471"/>
+        <location filename="../../src/windows/main-window.cpp" line="1472"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1472"/>
+        <location filename="../../src/windows/main-window.cpp" line="1473"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="410"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>

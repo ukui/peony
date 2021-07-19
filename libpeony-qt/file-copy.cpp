@@ -283,7 +283,7 @@ void FileCopy::run ()
             if (readSize != writeSize) {
                 // it's impossible
                 qDebug() << "read file: " << mSrcUri << "  --- write file: " << mDestUri << " size not inconsistent";
-                error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Reading and Writing files are inconsistent!").toUtf8().constData());
+                error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("The read and write file sizes do not match. Please confirm that the device controls are insufficient!").toUtf8().constData());
                 detailError(&error);
                 mStatus = ERROR;
                 continue;
