@@ -1,3 +1,15 @@
+peony (3.2.2+0720) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：67016, 67435.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：U盘卸载, FTP连接属性。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 19 Jul 2021 16:22:18 +0800
+
 peony (3.2.2+0716) v101; urgency=medium
 
   * 0610-2版本更新
