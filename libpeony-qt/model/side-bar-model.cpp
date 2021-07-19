@@ -25,6 +25,7 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-file-system-item.h"
 #include "side-bar-separator-item.h"
+#include "side-bar-net-work-item.h"
 
 #include "file-info.h"
 #include "file-info-job.h"
@@ -92,7 +93,9 @@ SideBarModel::SideBarModel(QObject *parent)
     m_root_children->append(computerItem);
     //computerItem->findChildren();
 
-    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+//    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+    SideBarNetWorkItem *networkItem = new SideBarNetWorkItem("network:///", "network-workgroup-symbolic",
+                                                             tr("Network"), nullptr, this);
     m_root_children->append(networkItem);
 
     endResetModel();
