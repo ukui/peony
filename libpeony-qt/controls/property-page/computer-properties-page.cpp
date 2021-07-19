@@ -122,31 +122,13 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
             quint64 available = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
-            // char *total_format = g_format_size(total);
-            // char *used_format = g_format_size(used);
-            // char *available_format = g_format_size(available);
-            //Calculated by 1024 bytes
-            char *total_format =g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS);
-            char *used_format = g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS);
-            char *available_format = g_format_size_full(available,G_FORMAT_SIZE_IEC_UNITS);
-
-            QString total_format_string(total_format);
-            QString used_format_string(used_format);
-            QString available_format_string(available_format);
-            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
-            total_format_string.replace("iB", "B");
-            used_format_string.replace("iB", "B");
-            available_format_string.replace("iB", "B");
-
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format_string, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format_string, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(formatCapacityString(total), this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(formatCapacityString(used), this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(formatCapacityString(available), this));
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
-            g_free(total_format);
-            g_free(used_format);
-            g_free(available_format);
+
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
@@ -219,41 +201,6 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                 }
             }
 
-            //char *total_format = g_format_size(total);
-            //char *used_format = g_format_size(used);
-            //char *available_format = g_format_size(available);
-            //Calculated by 1024 bytes
-            char *total_format = g_format_size_full(totalSpace,G_FORMAT_SIZE_IEC_UNITS);
-            char *used_format  = g_format_size_full(usedSpace,G_FORMAT_SIZE_IEC_UNITS);
-            char *available_format = g_format_size_full(availableSpace,G_FORMAT_SIZE_IEC_UNITS);
-
-            QString total_format_string(total_format);
-            QString used_format_string(used_format);
-            QString available_format_string(available_format);
-            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
-            total_format_string.replace("iB", "B");
-            used_format_string.replace("iB", "B");
-            available_format_string.replace("iB", "B");
-            //fix system Udisk calculate size wrong issue
-            //comment to fix caculate volume capacity wrong issue,bug#51957
-//            QString m_volume_name, m_unix_device, m_display_name, sizeInfo;
-//            FileUtils::queryVolumeInfo(uri, m_volume_name, m_unix_device, m_display_name);
-//            bool bMobileDevice = false;
-//            //U disk or other mobile device
-//            if (! m_unix_device.isEmpty() && ! uri.startsWith("computer:///WDC"))
-//            {
-//               char dev_name[256] ={0};
-//               strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
-//               auto size = FileUtils::getDeviceSize(dev_name);
-//               if (size > 0)
-//               {
-//                   sizeInfo = QString::number(size, 'f', 1);
-//                   qDebug() << "size:" <<size;
-//                   sizeInfo += "G";
-//                   bMobileDevice = true;
-//               }
-//            }
-
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             //use dubs to get file system type, fix ntfs show as fuse issue
             QString type = getFileSystemType(uri);
@@ -264,14 +211,14 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                 m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
             else */
 
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format_string, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format_string, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(available_format_string, this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(formatCapacityString(totalSpace), this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(formatCapacityString(usedSpace), this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(formatCapacityString(availableSpace), this));
             m_layout->addRow(tr("Type: "), new QLabel(type, this));
 
             auto progressBar = new QProgressBar(this);
             auto value = double(usedSpace*1.0/totalSpace)*100;
-            progressBar->setValue(int(value < 1 ? 1 : value));
+            progressBar->setValue(int((value > 0 && value < 1 ) ? 1 : value));
             m_layout->addRow(progressBar);
             m_layout->setAlignment(progressBar, Qt::AlignBottom);
 
@@ -285,9 +232,6 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                 m_layout->addRow(new QLabel(tr("Open with: \t")), pushbutton);
             }
 
-            g_free(total_format);
-            g_free(used_format);
-            g_free(available_format);
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
@@ -364,4 +308,22 @@ std::shared_ptr<Volume> ComputerPropertiesPage::EnumerateOneVolumeByTargetUri(QS
     }
 
     return volume;
+}
+
+QString ComputerPropertiesPage::formatCapacityString(quint64 capacityNum)
+{
+    char *strGB = g_format_size_full(capacityNum, G_FORMAT_SIZE_DEFAULT);
+    char *strGiB = g_format_size_full(capacityNum, G_FORMAT_SIZE_IEC_UNITS);
+
+    QString formatString("");
+    formatString = QString("%1%2%3%4").arg(strGB).arg(" (").arg(strGiB).arg(")");
+
+//    QString format_string(strGiB);
+    //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+//    format_string.replace("iB", "B");
+
+    g_free(strGB);
+    g_free(strGiB);
+
+    return formatString;
 }
