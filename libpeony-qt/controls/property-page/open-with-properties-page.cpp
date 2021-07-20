@@ -386,6 +386,8 @@ void DefaultOpenWithWidget::setAppName(QString appName)
 {
     if (appName.isNull()) {
         this->m_appNameLabel->setText(tr("No default app"));
+        this->m_appIconLabel->setFixedWidth(0);
+        this->m_layout->setSpacing(0);
     } else {
         this->m_appNameLabel->setText(appName);
         this->m_appNameLabel->setToolTip(appName);
