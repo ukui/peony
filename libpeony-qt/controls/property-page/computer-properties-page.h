@@ -54,6 +54,13 @@ protected:
      * \return 具有给定targetUri的卷，如果不存在则返回 nullptr
      */
     static std::shared_ptr<Volume> EnumerateOneVolumeByTargetUri(QString targetUri);
+
+    /**
+     * \brief 统一格式化容量字符串
+     * \param capacityNum
+     * \return
+     */
+    QString formatCapacityString(quint64 capacityNum);
 private:
     QString m_uri;
     QFormLayout *m_layout;
