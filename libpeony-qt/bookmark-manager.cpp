@@ -21,6 +21,8 @@
  */
 
 #include "bookmark-manager.h"
+#include "file-utils.h"
+#include "file-watcher.h"
 
 #include <QtConcurrent>
 #include <glib.h>
@@ -50,16 +52,22 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
 
         if (m_mutex.tryLock(1000)) {
             for (int i = 0; i < urist.count(); ++i) {
-                GFile* file = g_file_new_for_uri (urist.at(i).toUtf8());
-                char* uri = g_file_get_uri(file);
-
-                if (0 != strcmp ("favorite:///", uri) && g_file_query_exists(file, nullptr)) {
-                    m_uris << uri;
+                QString turi = urist.at(i);
+                if (turi.startsWith("favorite://") && "favorite:///" != turi) {
+                    g_autoptr(GFile) file = g_file_new_for_uri (turi.toUtf8().constData());
+                    if (file) {
+                        g_autoptr(GFileInfo) fileInfo = g_file_query_info(file, "standard::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+                        if (fileInfo) {
+                            const char* targetUri = g_file_info_get_attribute_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+                            if (targetUri) {
+                                m_uris << turi;
+                                qDebug() << "loading new file ..." << turi;
+                            }
+                        }
+                    }
                 }
-
-                if (nullptr != uri)  g_free (uri);
-                if (nullptr != file) g_object_unref (file);
             }
+
             m_uris.removeDuplicates();
             m_book_mark->setValue("uris", m_uris);
             m_book_mark->sync();
@@ -69,6 +77,12 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
         //m_uris<<"computer:///";
         //qDebug()<<"====================ok============\n\n\n\n"<<m_uris;
         Q_EMIT this->urisLoaded();
+    });
+
+    connect(this, &BookMarkManager::bookmarkChanged, this, [=] (const QString& oldUri, const QString& newUri) {
+        qDebug() << "DDJJ-- change:" << oldUri << "  --  " << newUri;
+        removeBookMark(oldUri);
+        addBookMark(newUri);
     });
 }
 
@@ -85,11 +99,19 @@ void BookMarkManager::addBookMark(const QString &uri)
         while (!this->isLoaded()) {
             g_usleep(100);
         }
-        QUrl url = uri;
+        QUrl url = FileUtils::urlDecode(uri);
         QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
         //desktop uri is fixed in favorite item
         QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        if (url.path() == desktopPath)
+        QString videoPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+        QString picturePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+        QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+        QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+        QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (url.path() == desktopPath || url.path() == videoPath
+            || url.path() == picturePath || url.path() == downloadPath
+            || url.path() == musicPath || url.path() == docPath || url.path() == homePath)
             return;
         if (m_mutex.tryLock(1000)) {
             bool successed = !m_uris.contains(origin_path);
@@ -112,26 +134,29 @@ void BookMarkManager::addBookMark(const QString &uri)
 
 void BookMarkManager::removeBookMark(const QString &uri)
 {
+    qDebug() << "DJ- remove book mark";
     QtConcurrent::run([=]() {
         while (!this->isLoaded()) {
             g_usleep(100);
         }
+        QString duri = FileUtils::urlDecode(uri);
 
         if (m_mutex.tryLock(1000)) {
-            bool successed = m_uris.contains(uri);
+            bool successed = m_uris.contains(duri);
             if (successed) {
-                m_uris.removeOne(uri);
+                m_uris.removeOne(duri);
                 m_uris.removeDuplicates();
                 m_book_mark->setValue("uris", m_uris);
                 m_book_mark->sync();
-                qDebug()<<"removeBookMark"<<uri;
-                Q_EMIT this->bookMarkRemoved(uri, true);
+                qDebug()<<"removeBookMark"<<duri;
+                Q_EMIT this->bookMarkRemoved(duri, true);
             } else {
-                Q_EMIT this->bookMarkRemoved(uri, false);
+                Q_EMIT this->bookMarkRemoved(duri, true);
             }
             m_mutex.unlock();
         } else {
-            Q_EMIT this->bookMarkRemoved(uri, false);
+            Q_EMIT this->bookMarkRemoved(duri, false);
         }
     });
 }
+

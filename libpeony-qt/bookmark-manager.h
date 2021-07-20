@@ -54,6 +54,7 @@ Q_SIGNALS:
     void urisLoaded();
     void bookMarkAdded(const QString &uri, bool successed);
     void bookMarkRemoved(const QString &uri, bool successed);
+    void bookmarkChanged(const QString oldUri, const QString newUri);
 
 public Q_SLOTS:
     void addBookMark(const QString &uri);

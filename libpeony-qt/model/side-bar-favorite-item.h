@@ -74,6 +74,7 @@ public Q_SLOTS:
 
 private:
     void syncBookMark();
+    QString getTargetUri(const QString& uri);
 
     SideBarFavoriteItem *m_parent = nullptr;
 
