@@ -302,9 +302,18 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         this->addOpenWithLayout(floor2);
         break;
     case BP_Application:
+    {
         m_descrptionLabel = this->createFixedLabel(0,32,floor2);
         layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Description:"),floor2),m_descrptionLabel);
-        m_descrptionLabel->setText(m_info.get()->displayName());
+        //fix bug#53504, not show duplicated name issue
+        QString displayName = m_info.get()->displayName();
+        if (m_info->isDesktopFile())
+        {
+            displayName = FileUtils::handleDesktopFileName(m_info->uri(), displayName);
+        }
+        m_descrptionLabel->setText(displayName);
+    }
+
         break;
     case BP_MultipleFIle:
         m_fileTypeLabel->setText(tr("Select multiple files"));
@@ -917,6 +926,11 @@ void FileNameThread::run()
         fileInfoJob->setAutoDelete();
         fileInfoJob->querySync();
         fileName = fileInfo.get()->displayName();
+        //fix bug#53504, not show duplicated name issue
+        if (fileInfo->isDesktopFile())
+        {
+            fileName = FileUtils::handleDesktopFileName(fileInfo->uri(), fileName);
+        }
     } else {
         QStringList stringList;
         for (auto uri : m_uris) {
