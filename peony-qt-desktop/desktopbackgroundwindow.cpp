@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QVariantAnimation>
 #include <QTimeLine>
+#include <KWindowSystem>
 
 static int desktop_window_id = 0;
 static QTimeLine *gTimeLine = nullptr;
@@ -117,6 +118,11 @@ void DesktopBackgroundWindow::updateWindowGeometry()
     auto geometry = m_screen->geometry();
     move(geometry.topLeft());
     setFixedSize(geometry.size());
+
+    // raise primary window to make sure icon view is visible.
+    if (centralWidget()) {
+        KWindowSystem::raiseWindow(this->winId());
+    }
 }
 
 int DesktopBackgroundWindow::id() const
