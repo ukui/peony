@@ -46,6 +46,7 @@ public:
         FavoriteItem,
         PersonalItem,
         FileSystemItem,
+        NetWorkItem,
         SeparatorItem,
         VFSItem,
         SingleItem
