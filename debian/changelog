@@ -1,4 +1,23 @@
-peony (3.2.2+0721) v101; urgency=medium
+peony (3.2.2+0722) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#53504:桌面上存在无限数量的同一文件，且名称属性一致.
+     - bug#67831:新建用户切换到新用户，花屏，壁纸不显示。
+     - bug#34619:注销重新登录后，桌面隐藏文件图标重叠。
+     - bug#34965:窗口缩小后，标签“向右”按钮无效。
+     - bug#41057:调整过任务栏后，再向桌面添加文件图标会重叠。
+     - bug#68146:在文件管理器中格式化U盘，弹出的提示未汉化。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - desktop副本文件显示，桌面显示，窗口操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 21 Jul 2021 09:46:18 +0800
+
+peony (3.2.2+0721-1) v101; urgency=medium
 
   * 0610-2版本更新
     * BUG号：
@@ -6,15 +25,13 @@ peony (3.2.2+0721) v101; urgency=medium
      - bug#67435:右键点击侧边栏FTP服务器地址的属性文管闪退。
      - bug#67635:中文环境下格式化U盘，提示框为英文显示。
      - bug#48962:弹出U盘后切换至计算机，弹出错误提示。
-    * 需求号：
-     - task#40072: 光盘容量显示不正确。
-     - task#42983:左侧导航栏布局不合理，进行重构显示。
-    * 其他改动说明：无。
+    * 需求号：无
+    * 其他改动说明：还原需求修改代码。
     - 影响域：U盘格式化, FTP连接属性，光盘容量显示。
 
   * New upstream release.
 
- -- MeihongHe <hemeihong@kylinos.cn>  Tue, 20 Jul 2021 14:52:18 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 20 Jul 2021 16:46:18 +0800
 
 peony (3.2.2+0720) v101; urgency=medium
 
