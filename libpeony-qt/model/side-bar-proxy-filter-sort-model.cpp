@@ -70,6 +70,9 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             auto targetUri = FileUtils::getTargetUri(item->uri());
             if (targetUri == "")
                 targetUri = item->uri();
+            //maybe info is not updated, so should add a existed checkment. link to: #67016.
+            if (!FileUtils::isFileExsit(targetUri))
+                return false;
             if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
                 return false;
 
