@@ -31,10 +31,12 @@
 #include <QObject>
 #include <QMessageBox>
 #include <KWindowSystem>
+#include <QCloseEvent>
 
 using namespace  Peony;
 static bool b_finished = false;
 static bool b_failed = false;
+static bool b_canClose = true;
 
 Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
     QDialog(parent),
@@ -46,6 +48,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        fm_uris = m_uris;
        fm_item = m_item;
        m_parent = parent;
+       b_canClose = true;
 
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
@@ -429,6 +432,7 @@ gboolean Format_Dialog::is_iso(const gchar *device_path){
  */
 void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 {
+    b_canClose = false;
 
     if(is_iso(data->device_name)==FALSE) {     
         ensure_format_cb (data);
@@ -499,6 +503,8 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
         data->dl->format_err_dialog();  
     }
 
+    b_canClose = true;
+
     data->dl->my_time->stop();
     data->dl->close();
 
@@ -509,12 +515,14 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 void Format_Dialog::format_ok_dialog()
 {
     QMessageBox::about(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Format operation has been finished successfully."));
+    ui->pushButton_close->setEnabled(true);
 }
 
 
 void Format_Dialog::format_err_dialog()
 {
       QMessageBox::warning(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
+      ui->pushButton_close->setEnabled(true);
 }
 
 bool Format_Dialog::format_makesure_dialog(){
@@ -540,7 +548,6 @@ bool Format_Dialog::format_makesure_dialog(){
 
     return true;
 }
-
 
 /* ensure_format_cb ,function ensure to do format
  *
@@ -710,4 +717,17 @@ void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_t
 Format_Dialog::~Format_Dialog()
 {
     delete ui;
+    b_canClose = true;
 }
+
+void Format_Dialog::closeEvent(QCloseEvent *e)
+{
+    if (!b_canClose) {
+
+        QMessageBox::warning(nullptr, tr("Formatting. Do not close this window"), tr("Formatting. Do not close this window"), QMessageBox::Ok);
+
+        e->ignore();
+        return;
+    }
+}
+

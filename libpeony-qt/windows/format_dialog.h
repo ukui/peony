@@ -106,6 +106,8 @@ public:
 
     double m_simulate_progress = 0;
 
+    void closeEvent(QCloseEvent* );
+
 Q_SIGNALS:
      void ensure_format(bool flags);
 
@@ -115,9 +117,7 @@ public Q_SLOTS:
     void colseFormat(bool);
 
     void formatloop();
-
 private:
-
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 
