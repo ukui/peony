@@ -57,7 +57,7 @@ FileLinkOperation::~FileLinkOperation()
 void FileLinkOperation::run()
 {
     operationStarted();
-    auto destFile = wrapGFile(g_file_new_for_uri(m_dest_uri.toUtf8().constData()));
+    auto destFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_dest_uri).toUtf8().constData()));
     GError *err = nullptr;
 
 retry:

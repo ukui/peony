@@ -172,7 +172,7 @@ retry:
 
     // judge if the operation should sync.
     bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(m_src_uris.first().toUtf8().constData());
+    GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uris.first()).toUtf8().constData());
     GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
     if (src_first_mount) {
         needSync = g_mount_can_unmount(src_first_mount);
@@ -210,7 +210,7 @@ void FileTrashOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    g_autoptr(GFile) file = g_file_new_for_uri(node->uri().toUtf8().constData());
+    g_autoptr(GFile) file = g_file_new_for_uri(FileUtils::urlEncode(node->uri()).toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);

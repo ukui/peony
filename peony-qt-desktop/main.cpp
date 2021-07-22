@@ -92,8 +92,9 @@ int main(int argc, char *argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
 
-    PeonyDesktopApplication a(argc, argv);
-    if (a.isSecondary())
+    QString id = "peony-qt-desktop" + qgetenv("DISPLAY");
+    PeonyDesktopApplication a(argc, argv, id);
+    if (a.isRunning())
         return 0;
 
 //    WaylandOutputManager waylandOutputManager;

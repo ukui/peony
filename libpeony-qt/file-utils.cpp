@@ -193,6 +193,29 @@ QString FileUtils::handleDuplicateName(const QString& uri)
     return handledName;
 }
 
+QString FileUtils::handleDesktopFileName(const QString& uri, const QString& displayName)
+{
+    QString name = QUrl(uri).toDisplayString().split("/").last();
+    QRegExp regExpNum("\\(\\d+\\)");
+    auto showName = displayName;
+
+    QStringList matchList;
+    int pos=0;
+    while((pos=regExpNum.indexIn(name,pos))!=-1)
+    {
+       pos+=regExpNum.matchedLength();
+       QString result=regExpNum.cap(0);
+       matchList<<result;
+    }
+
+    for(auto match : matchList)
+    {
+        showName = showName + match;
+    }
+
+    return showName;
+}
+
 bool FileUtils::getFileHasChildren(const GFileWrapperPtr &file)
 {
     GFileType type = g_file_query_file_type(file.get()->get(),
@@ -242,15 +265,16 @@ QStringList FileUtils::getChildrenUris(const QString &directoryUri)
         auto child = g_file_enumerator_get_child(e, child_info);
 
         auto uri = g_file_get_uri(child);
-        auto path = g_file_get_path(child);
-        QString urlString = uri;
-        QUrl url = urlString;
-        if (path && !url.isLocalFile()) {
-            urlString = QString("file://%1").arg(path);
-            g_free(path);
-        } else {
-            urlString = uri;
-        }
+        QString urlString = FileUtils::urlEncode(uri);
+        // BUG: 65889
+//        auto path = g_file_get_path(child);
+//        QUrl url = urlString;
+//        if (path && !url.isLocalFile()) {
+//            urlString = QString("file://%1").arg(path);
+//            g_free(path);
+//        } else {
+//            urlString = uri;
+//        }
 
         uris<<urlString;
         g_free(uri);
@@ -294,6 +318,8 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
     auto fileInfo = FileInfo::fromUri(uri);
+    if (uri == "file:///data")
+        return QObject::tr("data");
     return fileInfo.get()->displayName();
 }
 

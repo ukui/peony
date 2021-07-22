@@ -199,7 +199,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_trash_label = Label;
     QPushButton *clearAll = new QPushButton(tr("Clear"), trashButtons);
     clearAll->setFixedWidth(TRASH_BUTTON_WIDTH);
-    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT + 10);/* Fix the bug:62841,the font of the clear button is not displayed completely */
     m_clear_button = clearAll;
     QPushButton *recover = new QPushButton(tr("Recover"), trashButtons);
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);

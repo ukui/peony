@@ -371,7 +371,8 @@ DefaultOpenWithWidget::DefaultOpenWithWidget(QWidget *parent) : QWidget(parent)
     m_appIconLabel = new QLabel(this);
     m_appNameLabel = new QLabel(this);
 
-    m_appIconLabel->setMaximumWidth(32);
+    //设置绝对宽度解决在一定概率下因为图标过大导致appName只剩 ‘...’ 问题
+    m_appIconLabel->setFixedWidth(32);
 
     m_layout = new QHBoxLayout(this);
     m_layout->setContentsMargins(0, 0, 0, 0);
@@ -385,6 +386,8 @@ void DefaultOpenWithWidget::setAppName(QString appName)
 {
     if (appName.isNull()) {
         this->m_appNameLabel->setText(tr("No default app"));
+        this->m_appIconLabel->setFixedWidth(0);
+        this->m_layout->setSpacing(0);
     } else {
         this->m_appNameLabel->setText(appName);
         this->m_appNameLabel->setToolTip(appName);
