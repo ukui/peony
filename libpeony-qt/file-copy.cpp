@@ -311,7 +311,7 @@ void FileCopy::run ()
         }
     }
 
-
+out:
     // if copy sucessed, flush all data
     if (FINISHED == mStatus && g_file_query_exists(destFile, nullptr)) {
         // copy file attribute
