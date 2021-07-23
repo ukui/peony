@@ -561,9 +561,8 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->setPen(palette.color(QPalette::Highlight));
                 painter->setBrush(palette.brush(QPalette::Highlight));
 
-                painter->drawRect(rect);
-                //FIX:圆角矩形绘制问题
-                //painter->drawRoundRect(rect,10,17);
+                painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                painter->drawRoundedRect(rect, 4, 4);
                 painter->restore();
 
                 //选中时文字颜色 - Text color when selected
