@@ -30,7 +30,7 @@
 
 #include <QMessageBox>
 #include <QPushButton>
-
+#include <QDir>
 #include <QUrl>
 #include <QProcess>
 #include <recent-vfs-manager.h>
@@ -518,8 +518,11 @@ void FileLaunchAction::execFile()
 {
     QUrl url = m_uri;
     char *quote = g_shell_quote(url.path().toUtf8());
+    QString newDir = m_uri.section('/',0,m_uri.count('/')-1);
     GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NONE, nullptr);
+    QDir::setCurrent(QUrl(newDir).path());
     g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    QDir::setCurrent(QDir::homePath());
     g_object_unref(app_info);
     g_free(quote);
 }
@@ -528,8 +531,11 @@ void FileLaunchAction::execFileInterm()
 {
     QUrl url = m_uri;
     char *quote = g_shell_quote(url.path().toUtf8());
+    QString newDir = m_uri.section('/',0,m_uri.count('/')-1);
     GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NEEDS_TERMINAL, nullptr);
+    QDir::setCurrent(QUrl(newDir).path());
     g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    QDir::setCurrent(QDir::homePath());
     g_object_unref(app_info);
     g_free(quote);
 }
