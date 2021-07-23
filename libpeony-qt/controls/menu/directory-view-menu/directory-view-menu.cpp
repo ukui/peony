@@ -687,8 +687,8 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     if (! info->canDelete())
                         canDelete = false;
                 }
-
-                if (canTrash)
+                //fix bug#67932, file can not trash, use delete forever
+                if (canTrash && ! m_selections.first().startsWith("file:///data/usershare"))
                 {
                     l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                     connect(l.last(), &QAction::triggered, [=]() {
