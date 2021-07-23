@@ -595,6 +595,16 @@ void DesktopItemModel::relayoutAddedItems()
     PeonyDesktopApplication::getIconView()->relayoutExsitingItems(m_items_need_relayout);
 }
 
+bool DesktopItemModel::acceptDropAction() const
+{
+    return m_accept_drop_action;
+}
+
+void DesktopItemModel::setAcceptDropAction(bool acceptDropAction)
+{
+    m_accept_drop_action = acceptDropAction;
+}
+
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)
 {
     for (auto info : m_files) {
@@ -679,6 +689,8 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
 
 bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    if (!acceptDropAction())
+        return false;
     //qDebug()<<row<<column;
     //qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
     //judge the drop dest uri.
