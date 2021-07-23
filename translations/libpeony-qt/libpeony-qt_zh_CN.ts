@@ -191,6 +191,11 @@
         <source>format_err</source>
         <translation type="vanished">格式化失败!</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="727"/>
+        <source>Formatting. Do not close this window</source>
+        <translation>正在格式化，请不要关闭此窗口。</translation>
+    </message>
 </context>
 <context>
     <name>MainProgressBar</name>
@@ -730,7 +735,8 @@
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="226"/>
         <source>Kylin Burner</source>
-        <translation type="unfinished">刻录</translation>
+        <translatorcomment>刻录</translatorcomment>
+        <translation>刻录</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/computer-properties-page.cpp" line="232"/>
@@ -973,54 +979,54 @@
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="227"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="228"/>
         <source>Width:</source>
         <translation>宽度：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="230"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="231"/>
         <source>Height:</source>
         <translation>高度：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="237"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="239"/>
         <source>Owner</source>
         <translation>拥有者</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="238"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="240"/>
         <source>Owner:</source>
         <translation>拥有者：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="240"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="242"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="241"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="243"/>
         <source>Computer:</source>
         <translation>计算机：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="282"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="284"/>
         <source>%1 (this computer)</source>
         <translation>%1 (这台电脑)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="289"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="291"/>
         <source>Unknown</source>
         <translation>未知的分区</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="318"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="319"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="320"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="321"/>
         <source>Can&apos;t get remote file information</source>
         <translation>不能获取远程文件信息</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="328"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="329"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="330"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="331"/>
         <source>%1 px</source>
         <translation>%1 像素</translation>
     </message>
@@ -1535,8 +1541,13 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/file-copy.cpp" line="286"/>
+        <source>Please confirm that the device controls are insufficient!</source>
+        <translatorcomment>请确认移动设备剩余空间是否充足</translatorcomment>
+        <translation>请确认移动设备剩余空间是否充足</translation>
+    </message>
+    <message>
         <source>The read and write file sizes do not match. Please confirm that the device controls are insufficient!</source>
-        <translation>读取与写入文件大小不一致，请确认设备控制是否不足！</translation>
+        <translation type="vanished">读取与写入文件大小不一致，请确认设备控制是否不足！</translation>
     </message>
     <message>
         <source>Reading and Writing files are inconsistent!</source>
