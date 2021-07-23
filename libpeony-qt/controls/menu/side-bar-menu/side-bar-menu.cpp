@@ -85,6 +85,11 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
     } else if (m_item->firstColumnIndex().row() < 3) {
         l.last()->setEnabled(false);
     }
+    else if (m_uri == "file:///data/usershare" || m_uri == "kmre://" || m_uri == "kydroid://")
+    {
+        //fix bug#68431, can not delete option issue
+        l.last()->setEnabled(false);
+    }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
