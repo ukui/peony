@@ -221,7 +221,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="504"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="517"/>
         <source>Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -244,26 +244,27 @@
         <translation type="vanished">Çöp Kutusuna Taşı</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="526"/>
         <source>Delete forever</source>
-        <translation type="vanished">Kalıcı olarak sil</translation>
+        <translation>Kalıcı olarak sil</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="517"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="534"/>
         <source>Rename</source>
         <translation type="unfinished">Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="524"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="541"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="530"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="547"/>
         <source>Refresh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="544"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="561"/>
         <source>Properties</source>
         <translation type="unfinished">Özellikler</translation>
     </message>

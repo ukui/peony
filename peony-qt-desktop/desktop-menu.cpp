@@ -501,16 +501,33 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
 
             if (!m_selections.contains("trash:///")) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::trash(m_selections, true);
-                });
-                //comment delete forever right menu option,reference to mac and Windows
-                //add delete forever option
-//                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-//                connect(l.last(), &QAction::triggered, [=]() {
-//                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-//                });
+                bool canTrash = true;
+                bool canDelete = true;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (! info->canTrash())
+                        canTrash = false;
+
+                    if (! info->canDelete())
+                        canDelete = false;
+                }
+
+                if (canTrash)
+                {
+                    l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::trash(m_selections, true);
+                    });
+                }
+                else if(canDelete)
+                {
+                    //comment delete forever right menu option,reference to mac and Windows
+                    //add delete forever option
+                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    });
+                }
             }
 
             if (m_selections.count() == 1) {
