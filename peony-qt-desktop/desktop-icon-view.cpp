@@ -1796,7 +1796,10 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
         } else {
+            // do not trigger file operation, link to: #66345
+            m_model->setAcceptDropAction(false);
             QListView::dropEvent(e);
+            m_model->setAcceptDropAction(true);
         }
 
         QRegion dirtyRegion;
