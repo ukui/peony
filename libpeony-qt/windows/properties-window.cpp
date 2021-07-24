@@ -32,6 +32,7 @@
 #include "open-with-properties-page-factory.h"
 #include "details-properties-page-factory.h"
 #include "thumbnail-manager.h"
+#include "file-utils.h"
 
 #include <QToolBar>
 #include <QPushButton>
@@ -164,7 +165,11 @@ const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100, 32);
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow(parent)
 {
-    m_uris = uris;
+    //将uri编码统一解码,解决uri的不一致问题。from bug:53504
+    for (QString uri : uris) {
+        m_uris.append(FileUtils::urlDecode(uri));
+    }
+//    m_uris = uris;
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
     setWindowOpacity(0);
