@@ -77,12 +77,14 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
 const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
+
     l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete Symbolic"), [=]() {
         BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
+
     if (!m_item->firstColumnIndex().parent().isValid()) {
         l.last()->setEnabled(false);
-    } else if (m_item->firstColumnIndex().row() < 3) {
+    } else if (m_item->firstColumnIndex().row() < 10) {
         l.last()->setEnabled(false);
     }
 

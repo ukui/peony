@@ -139,13 +139,27 @@ void DirectoryViewMenu::fillActions()
         m_is_filesafe = true;
     }
 
+    QString homeUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString musicUri = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString videoUri = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString docUri = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString pictureUri = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString downloadUri = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
         qDebug() << desktop;
         if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                || m_selections.at(uriIndex) == "favorite:///?schema=kmre"
                 || m_selections.at(uriIndex) == "favorite:///?schema=recent"
-                || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file") {
+                || m_selections.at(uriIndex) == "favorite:///data/usershare?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + homeUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + musicUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + videoUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + docUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + pictureUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + downloadUri + "?schema=file") {
             m_can_delete = false;
             break;
         }
