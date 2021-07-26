@@ -212,19 +212,20 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     if (fileType == BP_MultipleFIle || !m_info->canRename())
         m_displayNameEdit->setReadOnly(true);
 
-    //new thread get fileName
-    FileNameThread *l_thread = new FileNameThread(uris);
-    l_thread->start();
+    //选中多个文件时，使用另外的线程获取文件名称并拼接
+    if (fileType == BP_MultipleFIle) {
+        FileNameThread *getNameThread = new FileNameThread(uris);
+        getNameThread->start();
 
-    connect(l_thread,&FileNameThread::fileNameReady,this,[=](QString fileName){
-        m_displayNameEdit->setText(fileName);
-        delete l_thread;
-    });
+        connect(getNameThread, &FileNameThread::fileNameReady, this, [=](QString fileName) {
+            m_displayNameEdit->setText(fileName);
+            delete getNameThread;
+        });
+    }
 
     connect(m_displayNameEdit, &QLineEdit::textChanged, [=]() {
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+        if (!isHandledName()) {
             this->thisPageChanged();
-//            FileOperationUtils::rename(m_info->uri(), m_displayNameEdit->text(), true);
         }
     });
 
@@ -488,7 +489,12 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info.get()->uri());
 
     m_iconButton->setIcon(thumbnail.isNull() ? icon : thumbnail);
-    m_displayNameEdit->setText(m_info.get()->displayName());
+    //fix bug#53504, not show duplicated name issue.
+    QString fileName = m_info->displayName();
+    if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
+        fileName = FileUtils::handleDesktopFileName(m_info->uri(), fileName);
+    }
+    m_displayNameEdit->setText(fileName);
 
     if (thumbnail.isNull()) {
         ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
@@ -654,6 +660,8 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
+    m_watcher->stopMonitor();
+    m_thumbnail_watcher->stopMonitor();
     //未发生修改
     if (!this->m_thisPageChanged)
         return;
@@ -683,8 +691,8 @@ void BasicPropertiesPage::saveAllChange()
         if (m_info->canExecute())
             mod |= S_IXUSR;
 
-        //.desktop文件给予可执行
-        if (m_info.get()->isDesktopFile() || m_info.get()->displayName().endsWith(".desktop")) {
+        //.desktop文件给予可执行,.desktop文件原本可执行才给可执行权限
+        if (((m_info.get()->isDesktopFile()) || m_info.get()->displayName().endsWith(".desktop")) && m_info->canExecute()) {
             //FIX:可执行范围 目前只给拥有者执行权限
             mod |= S_IXUSR;
             //mod |= S_IXGRP;
@@ -703,10 +711,8 @@ void BasicPropertiesPage::saveAllChange()
         if (newName.startsWith("."))
             newName = newName.mid(1,-1);
 
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
-                newName = m_displayNameEdit->text();
-            }
+        if (!isHandledName()) {
+            newName = m_displayNameEdit->text();
         }
 
         bool isHidden = m_info.get()->displayName().startsWith(".");
@@ -725,10 +731,8 @@ void BasicPropertiesPage::saveAllChange()
     }
 
     if (!existHiddenOpt) {
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
-                FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
-            }
+        if (!isHandledName()) {
+            FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
         }
     }
 
@@ -923,6 +927,26 @@ QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeigh
     if (minHeight != 0)
         label->setMinimumHeight(minHeight);
     return label;
+}
+
+bool BasicPropertiesPage::isHandledName()
+{
+    QString fileName(m_info->displayName());
+
+    if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
+        //是否做过处理
+        if (fileName != FileUtils::handleDesktopFileName(m_info->uri(), fileName)) {
+            return true;
+        }
+    }
+
+    if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+        if (fileName != m_displayNameEdit->text()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void FileNameThread::run()
