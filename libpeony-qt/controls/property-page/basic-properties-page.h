@@ -123,6 +123,11 @@ protected:
     void chooseFileIcon();
     void changeFileIcon();
     void moveFile();
+    /**
+     * \brief
+     * \return 如果对文件名做过处理，返回true
+     */
+    bool isHandledName();
     void setSysTimeFormat(QString format) {
         this->m_systemTimeFormat = format;
     }
