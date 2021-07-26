@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/linux-pwd-helper.h            \
     $$PWD/file-meta-info.h              \
     $$PWD/bookmark-manager.h            \
-    $$PWD/sync-thread.h
+    $$PWD/sync-thread.h                 \
+    $$PWD/volumeManager.h
 
 SOURCES += \
     $$PWD/file-info.cpp                 \
@@ -37,7 +38,8 @@ SOURCES += \
     $$PWD/linux-pwd-helper.cpp          \
     $$PWD/file-meta-info.cpp            \
     $$PWD/bookmark-manager.cpp          \
-    $$PWD/sync-thread.cpp
+    $$PWD/sync-thread.cpp               \
+    $$PWD/volumeManager.cpp
 
 FORMS += \
     $$PWD/connect-server-dialog.ui
