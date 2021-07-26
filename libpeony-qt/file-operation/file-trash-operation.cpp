@@ -160,6 +160,8 @@ retry:
                 case IgnoreAll:
                     response = IgnoreAll;
                     break;
+                case ForceAll:
+                    response = ForceAll;
                 case Force:
                     forceDelete(src);
                     break;
