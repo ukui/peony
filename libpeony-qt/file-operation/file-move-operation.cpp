@@ -60,7 +60,19 @@ FileMoveOperation::~FileMoveOperation()
 void FileMoveOperation::setCopyMove(bool copyMove)
 {
     m_copy_move = copyMove;
-    m_info.get()->m_type = copyMove? FileOperationInfo::Copy: FileOperationInfo::Move;
+}
+
+void FileMoveOperation::setAction(Qt::DropAction action)
+{
+    m_move_action = action;
+    switch (action) {
+    case Qt::CopyAction: {
+        m_info.get()->m_type = FileOperationInfo::Copy;
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void FileMoveOperation::progress_callback(goffset current_num_bytes,
@@ -945,10 +957,13 @@ void FileMoveOperation::moveForceUseFallback()
     }
     operationProgressed();
 
-    if (!m_copy_move) {
+    if (m_move_action == Qt::TargetMoveAction) {
+        m_info.get()->m_type = FileOperationInfo::Move;
         for (auto node : nodes) {
             deleteRecursively(node);
         }
+    } else {
+        m_info.get()->m_type = FileOperationInfo::Copy;
     }
 
     if (isCancelled())
