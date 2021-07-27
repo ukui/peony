@@ -1531,30 +1531,35 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileCopy</name>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="141"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="150"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="162"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="145"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="154"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="166"/>
         <source>Error in source or destination file path!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="192"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="196"/>
         <source>The dest file &quot;%1&quot; has existed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="240"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="245"/>
         <source>Error opening source or destination file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="286"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="291"/>
         <source>Please confirm that the device controls are insufficient!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="299"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="304"/>
         <source>operation cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="344"/>
+        <source>File opening failure</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2702,37 +2707,37 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::PropertiesWindow</name>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="248"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="253"/>
         <source>Trash</source>
         <translation>Çöp</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="252"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="257"/>
         <source>Recent</source>
         <translation>En son</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="260"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="265"/>
         <source>Selected</source>
         <translation>Seçilen</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="260"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="265"/>
         <source> %1 Files</source>
         <translation> %1 Dosyalar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="270"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="275"/>
         <source>Properties</source>
         <translation>Özellikler</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="366"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="371"/>
         <source>Ok</source>
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="367"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="372"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
