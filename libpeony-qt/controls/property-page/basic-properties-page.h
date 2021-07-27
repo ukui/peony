@@ -125,9 +125,9 @@ protected:
     void moveFile();
     /**
      * \brief
-     * \return 如果对文件名做过处理，返回true
+     * \return 如果对名称进行了修改，返回true
      */
-    bool isHandledName();
+    bool isNameChanged();
     void setSysTimeFormat(QString format) {
         this->m_systemTimeFormat = format;
     }

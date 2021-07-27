@@ -197,6 +197,9 @@ QString FileUtils::handleDesktopFileName(const QString& uri, const QString& disp
     QRegExp regExpNum("\\(\\d+\\)");
     auto showName = displayName;
 
+    if (!name.contains(QObject::tr("duplicate")))
+        return displayName;
+
     QStringList matchList;
     int pos=0;
     while((pos=regExpNum.indexIn(name,pos))!=-1)

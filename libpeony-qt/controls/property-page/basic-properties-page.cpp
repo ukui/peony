@@ -224,7 +224,7 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     }
 
     connect(m_displayNameEdit, &QLineEdit::textChanged, [=]() {
-        if (!isHandledName()) {
+        if (isNameChanged()) {
             this->thisPageChanged();
         }
     });
@@ -716,7 +716,7 @@ void BasicPropertiesPage::saveAllChange()
         if (newName.startsWith("."))
             newName = newName.mid(1,-1);
 
-        if (!isHandledName()) {
+        if (isNameChanged()) {
             newName = m_displayNameEdit->text();
         }
 
@@ -736,7 +736,7 @@ void BasicPropertiesPage::saveAllChange()
     }
 
     if (!existHiddenOpt) {
-        if (!isHandledName()) {
+        if (isNameChanged()) {
             FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
         }
     }
@@ -934,24 +934,31 @@ QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeigh
     return label;
 }
 
-bool BasicPropertiesPage::isHandledName()
+bool BasicPropertiesPage::isNameChanged()
 {
-    QString fileName(m_info->displayName());
-
-    if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
-        //是否做过处理
-        if (fileName != FileUtils::handleDesktopFileName(m_info->uri(), fileName)) {
-            return true;
-        }
-    }
-
     if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-        if (fileName != m_displayNameEdit->text()) {
-            return false;
+        QString fileName(m_info->displayName());
+        //桌面文件
+        if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
+            //做过处理的名称
+            QString handledName = FileUtils::handleDesktopFileName(m_info->uri(), fileName);
+            if (fileName != handledName) {
+                //用户是否手动修改
+                if (handledName != m_displayNameEdit->text())
+                    return true;
+                else
+                    return false;
+            }
         }
+        //文件名称被修改过
+        if (fileName != m_displayNameEdit->text())
+            return true;
+        else
+            return false;
+
     }
 
-    return true;
+    return false;
 }
 
 void FileNameThread::run()
