@@ -192,14 +192,7 @@ FileOperation *FileOperationUtils::moveWithAction(const QStringList &srcUris, co
         }
 
         auto moveOp = new FileMoveOperation(srcUris, destDir);
-        switch (action) {
-        case Qt::CopyAction: {
-            moveOp->setCopyMove(true);
-            break;
-        }
-        default:
-            break;
-        }
+        moveOp->setAction(action);
 
         op = moveOp;
         fileOpMgr->startOperation(moveOp, addHistory);
