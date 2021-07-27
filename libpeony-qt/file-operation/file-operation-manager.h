@@ -211,6 +211,9 @@ public:
     QString m_newname = nullptr;
 
     bool m_has_error = false;
+
+    //using for distiguist move action.
+    Qt::DropAction m_drop_action = Qt::IgnoreAction;
 };
 
 }
