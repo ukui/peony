@@ -423,6 +423,10 @@ void ListView::dropEvent(QDropEvent *e)
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     e->setDropAction(action);
+    if (e->keyboardModifiers() & Qt::ShiftModifier) {
+        action = Qt::TargetMoveAction;
+    }
+
     auto proxy_index = indexAt(e->pos());
     auto index = m_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();
