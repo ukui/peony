@@ -321,6 +321,8 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
     }
     case FileOperationInfo::Move: {
         op = new FileMoveOperation(info->m_src_uris, info->m_dest_dir_uri);
+        auto moveOp = qobject_cast<FileMoveOperation *>(op);
+        moveOp->setAction(info->m_drop_action);
         break;
     }
     case FileOperationInfo::Rename: {
@@ -632,6 +634,10 @@ void FileOperationInfo::UntrashOppositeInfoConstruct()
 std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperationInfo *info) {
 
     auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+    if (info->m_drop_action == Qt::TargetMoveAction) {
+        oppositeInfo->m_drop_action = Qt::TargetMoveAction;
+        oppositeInfo->m_type = FileOperationInfo::Move;
+    }
     QMap<QString, QString> oppsiteMap;
     for (auto key : m_node_map.keys()) {
         auto value = m_node_map.value(key);

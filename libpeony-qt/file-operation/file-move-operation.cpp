@@ -59,13 +59,17 @@ void FileMoveOperation::setCopyMove(bool copyMove)
 void FileMoveOperation::setAction(Qt::DropAction action)
 {
     m_move_action = action;
+    m_info.get()->m_drop_action = action;
     switch (action) {
     case Qt::CopyAction: {
         m_info.get()->m_type = FileOperationInfo::Copy;
+        m_info.get()->m_opposite_type = FileOperationInfo::Delete;
         break;
     }
-    default:
+    default: {
+        m_info.get()->m_type = FileOperationInfo::Move;
         break;
+    }
     }
 }
 
@@ -907,6 +911,7 @@ void FileMoveOperation::moveForceUseFallback()
         }
     } else {
         m_info.get()->m_type = FileOperationInfo::Copy;
+        m_info.get()->m_opposite_type = FileOperationInfo::Delete;
     }
 
     if (isCancelled())
