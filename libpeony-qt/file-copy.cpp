@@ -37,6 +37,9 @@ FileCopy::FileCopy (QString srcUri, QString destUri, GFileCopyFlags flags, GCanc
 {
     mSrcUri = FileUtils::urlEncode(srcUri);
     mDestUri = FileUtils::urlEncode(destUri);
+
+    qDebug() << "src: " << mSrcUri << "  ~~~~~~~~~~  dest: " << mDestUri;
+
     QString destUrit = nullptr;
 
     mCopyFlags = flags;
@@ -79,6 +82,7 @@ void FileCopy::detailError (GError** error)
     }
 
     g_set_error(mError, (*error)->domain, (*error)->code, "%s", (*error)->message);
+    qDebug() << "set error code: " << (*error)->code << " -- mess:" << (*error)->message;
     g_error_free(*error);
 
     *error = nullptr;
@@ -188,7 +192,7 @@ void FileCopy::run ()
             }
             destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
         } else {
-            qDebug() << "mDestUri: " << mDestUri << " is exists! return";
+            qWarning() << "file-copy mDestUri: " << mDestUri << " is exists! return";
             error = g_error_new (1, G_IO_ERROR_EXISTS, "%s", QString(tr("The dest file \"%1\" has existed!")).arg(mDestUri).toUtf8().constData());
             detailError(&error);
             goto out;
@@ -209,8 +213,8 @@ void FileCopy::run ()
     // read io stream
     readIO = g_file_read(srcFile, mCancel ? mCancel : nullptr, &error);
     if (nullptr != error) {
+        qDebug() << "read source file error! -- " << mSrcUri << "  -  " << error->code << " -- " << error->message;
         detailError(&error);
-        qDebug() << "read source file error!";
         goto out;
     }
 
@@ -226,6 +230,7 @@ void FileCopy::run ()
             if (error) {
                 qWarning() << "g_file_copy error:" << error->code << " -- " << error->message;
                 detailError(&error);
+                mStatus = ERROR;
             } else {
                 mStatus = FINISHED;
             }
@@ -263,7 +268,7 @@ void FileCopy::run ()
                 mPause.unlock();
                 continue;
             } else if (nullptr != error) {
-                qDebug() << "read srcfile: " << mSrcUri << " error: " << error->message;
+                qDebug() << "read srcfile: " << mSrcUri << error->code << " --  error: " << error->message;
                 detailError(&error);
                 mStatus = ERROR;
                 mPause.unlock();
@@ -319,7 +324,6 @@ void FileCopy::run ()
     }
 
 out:
-
     // if copy sucessed, flush all data
     if (FINISHED == mStatus && g_file_query_exists(destFile, nullptr)) {
         // copy file attribute
@@ -330,8 +334,16 @@ out:
             g_error_free(error);
             error = nullptr;
         }
-
         sync(destFile);
+    } else {
+        // some special detail for mtp
+        if (mSrcUri.startsWith("mtp:///") || mDestUri.startsWith("mtp:///")) {
+            if (mError) {
+                g_error_free(*mError);
+                *mError = nullptr;
+                g_set_error(mError, 1, G_IO_ERROR_NOT_SUPPORTED, "%s", tr("File opening failure").toUtf8().constData());
+            }
+        }
     }
 
     if (nullptr != readIO) {
