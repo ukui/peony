@@ -67,6 +67,19 @@ public:
      * updated signal when the file's info is updated.
      */
     static std::shared_ptr<FileInfo> queryFileInfo(const QString &uri);
+
+    /*!
+     * \brief move
+     * \param srcUris
+     * \param destUri
+     * \param addHistory
+     * \param action
+     * Qt::MoveAction for default, it might cause a copy move while move a file to another file system.
+     * Qt::CopyAction for copy, same as copy().
+     * Qt::TargetMoveAction for force moving, delete source anyway.
+     * \return
+     */
+    static FileOperation *moveWithAction(const QStringList &srcUris, const QString &destUri, bool addHistory, Qt::DropAction action = Qt::MoveAction);
 private:
     FileOperationUtils();
 };
