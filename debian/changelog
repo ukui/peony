@@ -1,4 +1,19 @@
 
+peony (3.2.2+0726) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69031:打开文件管理器直接按F2, 文件管理器闪退.
+     - bug#69038:回收站中删除文件，全部应用按钮无效。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件删除，快捷键操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 26 Jul 2021 16:58:18 +0800
+
 peony (3.2.2+0723) v101; urgency=medium
 
   * 0610-2版本更新
