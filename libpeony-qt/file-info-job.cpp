@@ -382,6 +382,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     {
        QString deletionDate = g_file_info_get_attribute_as_string(new_info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
        info->m_deletion_date = deletionDate.replace("T", " ");
+       auto date = g_file_info_get_deletion_date(new_info);
+       info->m_deletion_date_uint64 = g_date_time_to_unix(date);
+       g_date_time_unref(date);
     }
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);

@@ -540,7 +540,7 @@ void FileOperationInfo::oppositeInfoConstruct(Type type)
         }
         case Trash: {
             m_opposite_type = Untrash;
-            commonOppositeInfoConstruct();
+            trashOppositeInfoConstruct();
             break;
         }
         case Untrash: {
@@ -627,6 +627,14 @@ void FileOperationInfo::UntrashOppositeInfoConstruct()
     m_dest_uris = m_dest_dir_uris;
     m_src_dir_uri = "trash:///";
     return;
+}
+
+void FileOperationInfo::trashOppositeInfoConstruct()
+{
+    // note that this function is unreliable.
+    // the info would be updated while FileTrashOperation::run()
+    // again.
+    commonOppositeInfoConstruct();
 }
 
 std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperationInfo *info) {
