@@ -549,7 +549,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             url = QUrl::fromLocalFile(absPath);
             uris << url.toDisplayString();
         } else {
-            uris << args;
+            uris << QString(url.toEncoded());
         }
     }
 
