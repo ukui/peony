@@ -1,3 +1,17 @@
+peony (3.2.2+0727) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#53504:桌面上存在无限数量的同一文件，且名称属性一致.
+     - bug#69348:格式化2.0U盘，弹出无法挂载文件后闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件属性，U盘格式化。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 28 Jul 2021 10:36:18 +0800
 
 peony (3.2.2+0726) v101; urgency=medium
 
