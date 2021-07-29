@@ -320,6 +320,8 @@ public:
 
     const QString customIcon();
 
+    quint64 getDeletionDateUInt64();
+
     //const QIcon thumbnail() {return m_thumbnail;}
     //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
 
@@ -347,6 +349,7 @@ private:
     guint64 m_size = 0;
     guint64 m_modified_time = 0;
     guint64 m_access_time = 0;
+    guint64 m_deletion_date_uint64 = 0;
 
     /*!
      * \deprecated

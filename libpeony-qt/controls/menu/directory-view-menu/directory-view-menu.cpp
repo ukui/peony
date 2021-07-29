@@ -398,7 +398,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (!m_is_favorite && m_selections.isEmpty()) {
+    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
@@ -677,14 +677,37 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
 
+            bool hasDeleteForever = false;
             if (!m_is_recent && !m_is_favorite && !hasStandardPath && !m_is_filesafe) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::trash(m_selections, true);
-                });
+                bool canTrash = true;
+                bool canDelete = true;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (! info->canTrash())
+                        canTrash = false;
+
+                    if (! info->canDelete())
+                        canDelete = false;
+                }
+                //fix bug#67932, file can not trash, use delete forever
+                if (canTrash && ! m_selections.first().startsWith("file:///data/usershare"))
+                {
+                    l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::trash(m_selections, true);
+                    });
+                }
+                else if(m_can_delete && canDelete)
+                {
+                    hasDeleteForever = true;
+                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    });
+                }
             }
 
-            if (m_is_favorite && m_can_delete && !m_is_filesafe) {
+            if (m_is_favorite && m_can_delete && !m_is_filesafe && !hasDeleteForever) {
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::executeRemoveActionWithDialog(m_selections);

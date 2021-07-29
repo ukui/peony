@@ -1,3 +1,86 @@
+peony (3.2.2+0729) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69555:连接远程服务器多次后，文件管理器应用
+       卡死，点击无反应.
+     - bug#69014:删除/data/useshare目录下文件，无法放
+       入回收站。
+     - bug#48982:data分区中删除的文件无法放入回收站。
+     - bug#70014:第一个插入的硬盘图标会被识别为U盘，再
+       插入U盘会显示硬盘图标。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 侧边栏属性，文件删除，移动设备图标显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 29 Jul 2021 18:56:18 +0800
+
+peony (3.2.2+0728) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69348:格式化2.0U盘，弹出无法挂载文件后闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件属性，U盘格式化。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 28 Jul 2021 10:36:18 +0800
+
+peony (3.2.2+0727) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#53504:桌面上存在无限数量的同一文件，且名称属性一致.
+     - bug#69348:格式化2.0U盘，弹出无法挂载文件后闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件属性，U盘格式化。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 28 Jul 2021 10:36:18 +0800
+
+peony (3.2.2+0726) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69031:打开文件管理器直接按F2, 文件管理器闪退.
+     - bug#69038:回收站中删除文件，全部应用按钮无效。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件删除，快捷键操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 26 Jul 2021 16:58:18 +0800
+
+peony (3.2.2+0723) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#67932:data盘中文件无法删除到回收站.
+     - bug#63093:回收站没有按照删除日期进行倒序排序。
+     - bug#65521:手机通过USB设备传输文件，拷贝到桌面报错。
+     - bug#68431:收藏夹中移动应用右键删除无反应也无提示。
+     - bug#66442:脚本里执行pwd显示目录非脚本所在目录。
+     - bug#68788:在/tmp目录下搜索core文件，关闭筛选闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件删除，回收站排序，手机文件拷贝。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 23 Jul 2021 16:58:18 +0800
+
 peony (3.2.2+0722) v101; urgency=medium
 
   * 0610-2版本更新

@@ -85,6 +85,11 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
     } else if (m_item->firstColumnIndex().row() < 3) {
         l.last()->setEnabled(false);
     }
+    else if (m_uri == "file:///data/usershare" || m_uri == "kmre://" || m_uri == "kydroid://")
+    {
+        //fix bug#68431, can not delete option issue
+        l.last()->setEnabled(false);
+    }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
@@ -148,7 +153,6 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
-
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();
     for (auto id : ids) {
@@ -166,7 +170,8 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
-    if (0 != QString::compare(m_uri, "computer:///")) {
+    if ((0 != QString::compare(m_uri, "computer:///")) &&
+        (0 != QString::compare(m_uri, "filesafe:///"))) {
         l.last()->setEnabled(m_item->isMounted());
     }
 

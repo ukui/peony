@@ -176,6 +176,7 @@ public:
     void LinkOppositeInfoConstruct();
     void RenameOppositeInfoConstruct();
     void UntrashOppositeInfoConstruct();
+    void trashOppositeInfoConstruct();
 
     Type operationType() {
         return m_type;

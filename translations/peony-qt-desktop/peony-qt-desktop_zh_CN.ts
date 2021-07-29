@@ -225,7 +225,7 @@
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="504"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="517"/>
         <source>Delete to trash</source>
         <translation>删除到回收站</translation>
     </message>
@@ -256,26 +256,27 @@
         <translation type="vanished">删除到回收站(&amp;D)</translation>
     </message>
     <message>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="526"/>
         <source>Delete forever</source>
-        <translation type="vanished">永久删除</translation>
+        <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="517"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="534"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="524"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="541"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="530"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="547"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="544"/>
+        <location filename="../../peony-qt-desktop/desktop-menu.cpp" line="561"/>
         <source>Properties</source>
         <translation>属性</translation>
     </message>

@@ -208,6 +208,11 @@ const QString FileInfo::customIcon()
     return m_meta_info.get()->getMetaInfoString("custom-icon");
 }
 
+quint64 FileInfo::getDeletionDateUInt64()
+{
+    return m_deletion_date_uint64;
+}
+
 const QString FileInfo::unixDeviceFile()
 {
     GFile* file;

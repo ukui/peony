@@ -22,10 +22,14 @@
 
 #include "file-trash-operation.h"
 #include "file-operation-manager.h"
+#include "file-enumerator.h"
 
 #include <QProcess>
 #include <file-info-job.h>
 #include <file-info.h>
+#include <QDateTime>
+
+#define TRASH_TIME "trash-time"
 
 using namespace Peony;
 
@@ -42,6 +46,10 @@ void FileTrashOperation::run()
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
+
+        // cache file info
+        m_src_infos<<FileInfo::fromUri(src);
+
 retry:
         GError *err = nullptr;
         auto srcFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(src).toUtf8().constData()));
@@ -160,6 +168,8 @@ retry:
                 case IgnoreAll:
                     response = IgnoreAll;
                     break;
+                case ForceAll:
+                    response = ForceAll;
                 case Force:
                     forceDelete(src);
                     break;
@@ -167,27 +177,55 @@ retry:
                     break;
                 }
             }
+        } else {
+            // fileinfo关联删除时间
+            quint64 time = QDateTime::currentSecsSinceEpoch();
+            auto info = FileInfo::fromUri(src);
+            info.get()->setProperty(TRASH_TIME, time);
         }
     }
 
     // judge if the operation should sync.
-    bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uris.first()).toUtf8().constData());
-    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
-    if (src_first_mount) {
-        needSync = g_mount_can_unmount(src_first_mount);
-        g_object_unref(src_first_mount);
-    } else {
-        // maybe a vfs file.
-        needSync = true;
-    }
-    g_object_unref(src_first_file);
+//    bool needSync = false;
+//    GFile *src_first_file = g_file_new_for_uri(m_src_uris.first().toUtf8().constData());
+//    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+//    if (src_first_mount) {
+//        needSync = g_mount_can_unmount(src_first_mount);
+//        g_object_unref(src_first_mount);
+//    } else {
+//        // maybe a vfs file.
+//        needSync = true;
+//    }
+//    g_object_unref(src_first_file);
 
-    if (needSync) {
-        operationStartSnyc();
-        QProcess p;
-        p.start("sync");
-        p.waitForFinished(-1);
+//    if (needSync) {
+//        operationStartSnyc();
+//        QProcess p;
+//        p.start("sync");
+//        p.waitForFinished(-1);
+//    }
+
+    // fix dest uris in trash in FileOperationInfo
+    // fileinfo关联被删除的时间，然后枚举trash中displayname相同的文件，对比时间差最近的文件作为待恢复的文件
+    QStringList destUris;
+    FileEnumerator e;
+    e.setEnumerateDirectory("trash:///");
+    e.enumerateSync();
+    for (auto trashFileInfo : e.getChildren()) {
+        FileInfoJob trashInfoJob(trashFileInfo);
+        trashInfoJob.querySync();
+        for (auto info : m_src_infos) {
+            if (info.get()->displayName() == trashFileInfo.get()->displayName()) {
+                // allow 5 seconds deviation
+                if (qAbs(trashFileInfo.get()->getDeletionDateUInt64() - info.get()->property(TRASH_TIME).toUInt()) < 5) {
+                    destUris<<trashFileInfo.get()->uri();
+                }
+            }
+        }
+    }
+    if (!destUris.isEmpty()) {
+        m_info.get()->m_dest_uris.clear();
+        m_info.get()->m_dest_uris<<destUris;
     }
 
     Q_EMIT operationFinished();

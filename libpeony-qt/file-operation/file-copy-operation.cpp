@@ -595,6 +595,12 @@ void FileCopyOperation::run()
     QList<FileNode*> nodes;
     for (auto uri : m_source_uris) {
         qDebug() << "copy uri:" << uri;
+
+        QString szTempUri = uri;
+        if(szTempUri.startsWith("filesafe:///") && szTempUri.remove("filesafe:///").indexOf("/") == -1) {
+            continue;
+        }
+
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
