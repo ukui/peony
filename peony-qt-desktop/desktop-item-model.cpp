@@ -631,6 +631,16 @@ void DesktopItemModel::relayoutAddedItems()
     PeonyDesktopApplication::getIconView()->relayoutExsitingItems(m_items_need_relayout);
 }
 
+bool DesktopItemModel::acceptDropAction() const
+{
+    return m_accept_drop_action;
+}
+
+void DesktopItemModel::setAcceptDropAction(bool acceptDropAction)
+{
+    m_accept_drop_action = acceptDropAction;
+}
+
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)
 {
     for (auto info : m_files) {
@@ -715,6 +725,8 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
 
 bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    if (!acceptDropAction())
+        return false;
     //qDebug()<<row<<column;
     //qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
     //judge the drop dest uri.
@@ -789,23 +801,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
-        switch (action) {
-        case Qt::MoveAction: {
-            qDebug() << "DesktopItemModel moveOp";
-            FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-            moveOp->setCopyMove(true);
-            fileOpMgr->startOperation(moveOp, addHistory);
-            break;
-        }
-        case Qt::CopyAction: {
-            qDebug() << "DesktopItemModel copyOp";
-            FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
-            fileOpMgr->startOperation(copyOp);
-            break;
-        }
-        default:
-            break;
-        }
+        FileOperationUtils::moveWithAction(srcUris, destDirUri, action);
     }
 
     //NOTE:

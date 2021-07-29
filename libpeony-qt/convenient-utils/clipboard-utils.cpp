@@ -185,6 +185,7 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     if (isClipboardFilesBeCut()) {
         qDebug()<<uris;
         auto moveOp = new FileMoveOperation(uris, targetDirUri);
+        moveOp->setAction(Qt::TargetMoveAction);
         op = moveOp;
         fileOpMgr->startOperation(moveOp, true);
         QApplication::clipboard()->clear();

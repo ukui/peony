@@ -173,6 +173,35 @@ std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
     return info;
 }
 
+FileOperation *FileOperationUtils::moveWithAction(const QStringList &srcUris, const QString &destUri, bool addHistory, Qt::DropAction action)
+{
+    FileOperation *op;
+    QString destDir = nullptr;
+    auto fileOpMgr = FileOperationManager::getInstance();
+    if (destUri != "trash:///") {
+        if (true == destUri.startsWith("computer:///")) {
+            destDir = FileUtils::getTargetUri(destUri);
+            if (nullptr == destDir){
+                qWarning()<<"get target uri failed, from uri:"
+                          <<destUri;
+                destDir = destUri;
+            }
+        }
+        else {
+            destDir = destUri;
+        }
+
+        auto moveOp = new FileMoveOperation(srcUris, destDir);
+        moveOp->setAction(action);
+
+        op = moveOp;
+        fileOpMgr->startOperation(moveOp, addHistory);
+    } else {
+        op = FileOperationUtils::trash(srcUris, true);
+    }
+    return op;
+}
+
 FileOperation *FileOperationUtils::restore(const QString &uriInTrash)
 {
     QStringList uris;

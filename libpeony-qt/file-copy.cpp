@@ -79,6 +79,7 @@ void FileCopy::detailError (GError** error)
     }
 
     g_set_error(mError, (*error)->domain, (*error)->code, "%s", (*error)->message);
+    qDebug() << "set error code: " << (*error)->code << " -- mess:" << (*error)->message;
     g_error_free(*error);
 
     *error = nullptr;
@@ -203,7 +204,6 @@ void FileCopy::run ()
     readIO = g_file_read(srcFile, mCancel ? mCancel : nullptr, &error);
     if (nullptr != error) {
         detailError(&error);
-        qDebug() << "read source file error!";
         goto out;
     }
 
@@ -219,6 +219,7 @@ void FileCopy::run ()
             if (error) {
                 qWarning() << "g_file_copy error:" << error->code << " -- " << error->message;
                 detailError(&error);
+                mStatus = ERROR;
             } else {
                 mStatus = FINISHED;
             }
@@ -256,7 +257,7 @@ void FileCopy::run ()
                 mPause.unlock();
                 continue;
             } else if (nullptr != error) {
-                qDebug() << "read srcfile: " << mSrcUri << " error: " << error->message;
+                qDebug() << "read srcfile: " << mSrcUri << error->code << " --  error: " << error->message;
                 detailError(&error);
                 mStatus = ERROR;
                 mPause.unlock();
@@ -276,7 +277,7 @@ void FileCopy::run ()
             if (readSize != writeSize) {
                 // it's impossible
                 qDebug() << "read file: " << mSrcUri << "  --- write file: " << mDestUri << " size not inconsistent";
-                error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("The read and write file sizes do not match. Please confirm that the device controls are insufficient!").toUtf8().constData());
+                error = g_error_new (1, G_IO_ERROR_FAILED,"%s", tr("Please confirm that the device controls are insufficient!").toUtf8().constData());
                 detailError(&error);
                 mStatus = ERROR;
                 continue;
@@ -322,8 +323,16 @@ out:
             g_error_free(error);
             error = nullptr;
         }
-
         sync(destFile);
+    } else {
+        // some special detail for mtp
+        if (mSrcUri.startsWith("mtp:///") || mDestUri.startsWith("mtp:///")) {
+            if (mError) {
+                g_error_free(*mError);
+                *mError = nullptr;
+                g_set_error(mError, 1, G_IO_ERROR_NOT_SUPPORTED, "%s", tr("File opening failure").toUtf8().constData());
+            }
+        }
     }
 
     if (nullptr != readIO) {

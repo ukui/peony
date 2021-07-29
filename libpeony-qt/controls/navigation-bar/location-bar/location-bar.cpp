@@ -272,7 +272,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     auto displayName = FileUtils::getFileDisplayName(uri);
     button->setToolTip(displayName);
-    m_buttons.insert(uri, button);
+    m_buttons.insert(QUrl(uri).toEncoded(), button);
     if (m_current_uri.startsWith("search://")) {
         QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);

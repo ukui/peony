@@ -134,7 +134,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     int y_delta = iconSizeExpected.height() - iconRect.height();
     opt.rect.translate(0, y_delta);
 
-    int maxTextHight = opt.rect.height() - iconSizeExpected.height() - 10;
+    int maxTextHight = opt.rect.height() - iconSizeExpected.height() + 10;
     if (maxTextHight < 0) {
         maxTextHight = 0;
     }

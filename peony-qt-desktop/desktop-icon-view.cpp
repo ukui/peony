@@ -1769,6 +1769,9 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    if (e->keyboardModifiers() & Qt::ShiftModifier) {
+        action = Qt::TargetMoveAction;
+    }
     qDebug() << "DesktopIconView dropEvent" <<action;
     auto index = indexAt(e->pos());
     if (index.isValid() || m_ctrl_key_pressed)
@@ -1813,7 +1816,10 @@ void DesktopIconView::dropEvent(QDropEvent *e)
 
             m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
         } else {
+            // do not trigger file operation, link to: #66345
+            m_model->setAcceptDropAction(false);
             QListView::dropEvent(e);
+            m_model->setAcceptDropAction(true);
         }
 
         QRegion dirtyRegion;
