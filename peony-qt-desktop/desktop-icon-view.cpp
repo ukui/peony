@@ -85,6 +85,7 @@ using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 #define PANEL_SETTINGS "org.ukui.panel.settings"
+#define UKUI_STYLE_SETTINGS "org.ukui.style"
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
@@ -453,6 +454,18 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 resolutionChange();
         });
     }
+
+    // try fixing #63358
+    if (QGSettings::isSchemaInstalled(UKUI_STYLE_SETTINGS)) {
+        auto styleSettings = new QGSettings(UKUI_STYLE_SETTINGS, QByteArray(), this);
+        connect(styleSettings, &QGSettings::changed, this, [=](const QString &key){
+            if (key == "iconThemeName") {
+                QTimer::singleShot(1000, viewport(), [=]{
+                    viewport()->update();
+                });
+            }
+        });
+    }
 }
 
 DesktopIconView::~DesktopIconView()
@@ -478,14 +491,29 @@ bool DesktopIconView::eventFilter(QObject *obj, QEvent *e)
     return false;
 }
 
+static bool meetSpecialConditions(const QStringList& selectedUris)
+{
+    /* The desktop home directory, computer, and trash do not allow operations such as copying, cutting,
+     * deleting, renaming, moving, or using shortcut keys for corresponding operations.add by 2021/06/17 */
+    static QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    if (selectedUris.contains("computer:///")
+       ||selectedUris.contains("trash:///")
+       ||selectedUris.contains(homeUri)){
+        return true;
+    }
+
+    return false;
+}
+
 void DesktopIconView::initShoutCut()
 {
     QAction *copyAction = new QAction(this);
     copyAction->setShortcut(QKeySequence::Copy);
     connect(copyAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
-            ClipboardUtils::setClipboardFiles(selectedUris, false);
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris)){
+            ClipboardUtils::setClipboardFiles(selectedUris, false);}
     });
     addAction(copyAction);
 
@@ -493,7 +521,7 @@ void DesktopIconView::initShoutCut()
     cutAction->setShortcut(QKeySequence::Cut);
     connect(cutAction, &QAction::triggered, [=]() {
         auto selectedUris = this->getSelections();
-        if (!selectedUris.isEmpty())
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris))
         {
             ClipboardUtils::setClipboardFiles(selectedUris, true);
             this->update();
@@ -505,7 +533,7 @@ void DesktopIconView::initShoutCut()
     pasteAction->setShortcut(QKeySequence::Paste);
     connect(pasteAction, &QAction::triggered, [=]() {
         auto clipUris = ClipboardUtils::getClipboardFilesUris();
-        if (ClipboardUtils::isClipboardHasFiles()) {
+        if (ClipboardUtils::isClipboardHasFiles() && !meetSpecialConditions(this->getSelections())) {
             ClipboardUtils::pasteClipboardFiles(this->getDirectoryUri());
         }
     });
@@ -515,9 +543,10 @@ void DesktopIconView::initShoutCut()
     auto trashAction = new QAction(this);
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = getSelections();
-        if (! selectedUris.isEmpty())
+        auto selectedUris = getSelections();      
+        if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris)){
            FileOperationUtils::trash(selectedUris, true);
+        }
     });
     addAction(trashAction);
 
@@ -558,9 +587,9 @@ void DesktopIconView::initShoutCut()
     QAction *renameAction = new QAction(this);
     renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
     connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = this->getSelections();
-        if (selections.count() == 1) {
-            this->editUri(selections.first());
+        auto selections = this->getSelections();        
+        if (selections.count() == 1 && !meetSpecialConditions(selections)) {
+            this->editUri(selections.first());           
         }
     });
     addAction(renameAction);
@@ -568,9 +597,12 @@ void DesktopIconView::initShoutCut()
     QAction *removeAction = new QAction(this);
     removeAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Delete));
     connect(removeAction, &QAction::triggered, [=]() {
-        qDebug() << "delete" << this->getSelections();
-        clearAllIndexWidgets();
-        FileOperationUtils::executeRemoveActionWithDialog(this->getSelections());
+        auto selectedUris = this->getSelections();
+        if (!meetSpecialConditions(selectedUris)){
+            qDebug() << "delete" << selectedUris;
+            clearAllIndexWidgets();
+            FileOperationUtils::executeRemoveActionWithDialog(selectedUris);
+        }
     });
     addAction(removeAction);
 
@@ -1388,6 +1420,14 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
             fakeList<<uri;
             relayoutExsitingItems(fakeList);
         }
+
+        if (uri == m_model->m_renaming_file_pos.first || uri == m_model->m_renaming_file_pos.first + ".desktop") {
+            updateItemPosByUri(uri, m_model->m_renaming_file_pos.second);
+        } else if (m_model->m_renaming_operation_info.get()) {
+            if (m_model->m_renaming_operation_info.get()->target() == uri) {
+                updateItemPosByUri(uri, m_model->m_renaming_file_pos.second);
+            }
+        }
     }
     clearAllIndexWidgets();
 }
@@ -1639,6 +1679,31 @@ void DesktopIconView::setEditFlag(bool edit)
     m_is_edit = edit;
 }
 
+bool DesktopIconView::getEditFlag()
+{
+    return m_is_edit;
+}
+
+int DesktopIconView::verticalOffset() const
+{
+    return 0;
+}
+
+int DesktopIconView::horizontalOffset() const
+{
+    return 0;
+}
+
+void DesktopIconView::restoreItemsPosByMetaInfo()
+{
+    for (auto uri : getAllFileUris()) {
+        auto pos = getFileMetaInfoPos(uri);
+        if (pos.x() >= 0) {
+            updateItemPosByUri(uri, pos);
+        }
+    }
+}
+
 void DesktopIconView::mousePressEvent(QMouseEvent *e)
 {
     m_press_pos = e->pos();
@@ -1779,9 +1844,31 @@ void DesktopIconView::dropEvent(QDropEvent *e)
     }
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
+    if (e->keyboardModifiers() & Qt::ShiftModifier) {
+        action = Qt::TargetMoveAction;
+    }
     qDebug() << "DesktopIconView dropEvent" <<action;
+    auto index = indexAt(e->pos());
+    if (index.isValid() || m_ctrl_key_pressed)
+    {
+        qDebug() <<"DesktopIconView index copyAction:";
+        auto urls = e->mimeData()->urls();
+        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QStringList uris;
+        for (auto url : urls)
+        {
+            if (url.toString() == "computer:///")
+                uris << "computer:///";
+            else
+                uris << url.path();
+        }
+
+        //fix can drag copy home folder issue, link to bug#64824
+        if (uris.contains(homePath) || uris.contains("computer:///"))
+            return;
+    }
+
     if (this == e->source() && !m_ctrl_key_pressed) {
-        auto index = indexAt(e->pos());
         qDebug() <<"DesktopIconView index:" <<index <<index.isValid();
         bool bmoved = false;
         if (index.isValid()) {
@@ -1940,6 +2027,7 @@ void DesktopIconView::dropEvent(QDropEvent *e)
         }
         return;
     }
+
     m_model->dropMimeData(e->mimeData(), action, -1, -1, this->indexAt(e->pos()));
     //FIXME: save item position
 }
@@ -1948,7 +2036,7 @@ void DesktopIconView::startDrag(Qt::DropActions supportedActions)
 {
     auto indexes = selectedIndexes();
     if (indexes.count() > 0) {
-        auto pos = mapFromGlobal(QCursor::pos());
+        auto pos = m_press_pos;
         qreal scale = 1.0;
         QWidget *window = this->window();
         if (window) {
@@ -2034,7 +2122,7 @@ void DesktopIconView::refresh()
     this->setCursor(QCursor(Qt::WaitCursor));
 //    if (m_refresh_timer.isActive())
 //        return;
-
+    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     if (!m_model)
         return;
 

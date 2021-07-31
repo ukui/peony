@@ -96,6 +96,8 @@ public:
 
     QRect visualRect(const QModelIndex &index) const override;
 
+    bool getDelegateEditFlag();
+
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);
 

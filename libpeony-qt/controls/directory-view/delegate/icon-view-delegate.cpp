@@ -195,7 +195,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     //fix bug#46785, select one file cut has no effect issue
-    if (bCutFile)
+    if (bCutFile && !getView()->getDelegateEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
     // draw color symbols
@@ -272,13 +272,14 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
+        Q_EMIT isEditing(false);
     });
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         // NOTE: resort view after edit closed.
         // it's because if we not, the viewport might
         // not be updated in some cases.
-        Q_EMIT isEditing(false);
+        Q_EMIT isEditing(false);     
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=]() {
 #else
@@ -287,7 +288,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
             //fix rename file back to default sort order
             //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
-            model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
+            //model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
         });
     });
 

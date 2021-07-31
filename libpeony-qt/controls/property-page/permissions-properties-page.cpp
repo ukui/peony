@@ -137,13 +137,13 @@ void PermissionsPropertiesPage::initTableWidget()
     //开启手动设置宽度 - Enable manual width setting
     m_table->horizontalHeader()->setMinimumSectionSize(30);
 
-    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
 
-    m_table->setColumnWidth(0, 200);
+    m_table->setColumnWidth(0, 150);
 
     m_layout->addWidget(m_table);
 }
@@ -305,13 +305,16 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 p_this->updateCheckBox();
 
                 table->setItem(0, 0, nullptr);
-                table->setCellWidget(0, 0, createCellWidget(table, QIcon::fromTheme("emblem-personal"), userNameDisplayString));
+                QTableWidgetItem* itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
+                table->setItem(0, 0, itemR0C0);
 
                 table->setItem(1, 0, nullptr);
-                table->setCellWidget(1, 0, createCellWidget(table, QIcon::fromTheme("emblem-people"), groupName));
+                QTableWidgetItem* itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
+                table->setItem(1, 0, itemR1C0);
 
                 table->setItem(2, 0, nullptr);
-                table->setCellWidget(2, 0, createCellWidget(table, QIcon::fromTheme("emblem-people"), tr("Others")));
+                QTableWidgetItem* itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
+                table->setItem(2, 0, itemR2C0);
 
                 auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
                 itemR0C1->setTextAlignment(Qt::AlignCenter);

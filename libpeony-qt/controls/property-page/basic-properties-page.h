@@ -123,6 +123,11 @@ protected:
     void chooseFileIcon();
     void changeFileIcon();
     void moveFile();
+    /**
+     * \brief
+     * \return 如果对名称进行了修改，返回true
+     */
+    bool isNameChanged();
     void setSysTimeFormat(QString format) {
         this->m_systemTimeFormat = format;
     }
@@ -147,6 +152,7 @@ private:
     void updateCountInfo(bool isDone = false);
 
     qint64 m_fileDoneCount     = 0;
+    qint64 m_labelWidth        = 0;  //左侧label宽度
 
     //floor1
     QPushButton *m_iconButton       = nullptr;    //文件图标
@@ -171,8 +177,8 @@ private:
     quint64 m_folderContainFolders = 0;      //文件夹下文件夹数量
 
     //file , zip
-    QHBoxLayout        *m_openWithLayout   = nullptr;    //文件打开方式
-    QListWidget        *m_defaultOpenListWidget = nullptr;
+    QHBoxLayout           *m_openWithLayout        = nullptr;    //文件打开方式
+    DefaultOpenWithWidget *m_defaultOpenWithWidget = nullptr;
 
     //application
     QLabel *m_descrptionLabel = nullptr;       //应用程序描述

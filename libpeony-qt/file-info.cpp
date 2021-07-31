@@ -208,6 +208,11 @@ const QString FileInfo::customIcon()
     return m_meta_info.get()->getMetaInfoString("custom-icon");
 }
 
+quint64 FileInfo::getDeletionDateUInt64()
+{
+    return m_deletion_date_uint64;
+}
+
 const QString FileInfo::unixDeviceFile()
 {
     GFile* file;
@@ -255,6 +260,11 @@ const QString FileInfo::displayName()
 
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
+
+    if(m_uri == "file:///DATA")
+    {
+        return tr("data");
+    }
 
     if((nullptr != m_display_name)
             && (!isMountPoint

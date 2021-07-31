@@ -321,6 +321,8 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
     }
     case FileOperationInfo::Move: {
         op = new FileMoveOperation(info->m_src_uris, info->m_dest_dir_uri);
+        auto moveOp = qobject_cast<FileMoveOperation *>(op);
+        moveOp->setAction(info->m_drop_action);
         break;
     }
     case FileOperationInfo::Rename: {
@@ -328,9 +330,7 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
             op = new FileRenameOperation(info->m_src_uris.isEmpty()? nullptr: info->m_src_uris.at(0),
                                          info->m_dest_dir_uri);
         } else {
-            auto destUri = info->m_node_map.first();
-            QUrl url = destUri;
-            op = new FileRenameOperation(info->m_node_map.firstKey(), url.fileName());
+            op = new FileRenameOperation(info->m_node_map.firstKey(), info.get()->m_newname);
         }
         break;
     }
@@ -542,7 +542,7 @@ void FileOperationInfo::oppositeInfoConstruct(Type type)
         }
         case Trash: {
             m_opposite_type = Untrash;
-            commonOppositeInfoConstruct();
+            trashOppositeInfoConstruct();
             break;
         }
         case Untrash: {
@@ -631,9 +631,21 @@ void FileOperationInfo::UntrashOppositeInfoConstruct()
     return;
 }
 
+void FileOperationInfo::trashOppositeInfoConstruct()
+{
+    // note that this function is unreliable.
+    // the info would be updated while FileTrashOperation::run()
+    // again.
+    commonOppositeInfoConstruct();
+}
+
 std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperationInfo *info) {
 
     auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+    if (info->m_drop_action == Qt::TargetMoveAction) {
+        oppositeInfo->m_drop_action = Qt::TargetMoveAction;
+        oppositeInfo->m_type = FileOperationInfo::Move;
+    }
     QMap<QString, QString> oppsiteMap;
     for (auto key : m_node_map.keys()) {
         auto value = m_node_map.value(key);

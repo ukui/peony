@@ -149,6 +149,7 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
     setApplicationName(tr("peony-qt-desktop"));
+    setWindowIcon(QIcon::fromTheme("system-file-manager"));
 
     if (this->isPrimary()) {
         qDebug()<<"isPrimary screen";
@@ -590,7 +591,7 @@ void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data)
             for(n = 0; guessType[n]; ++n){
                 if(g_content_type_is_a(guessType[n],"x-content/win32-software"))
                     openFolder = false;
-                if(!strcmp(guessType[n],"x-content/bootable-media") && !strstr(unixDevice,"/dev/sr"))
+                if(unixDevice && !strcmp(guessType[n],"x-content/bootable-media") && !strstr(unixDevice,"/dev/sr"))
                     openFolder = false;
                 if(!strcmp(guessType[n],"x-content/blank-dvd") || !strcmp(guessType[n],"x-content/blank-cd"))
                     openFolder = false;

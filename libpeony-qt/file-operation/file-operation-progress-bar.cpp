@@ -29,8 +29,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-#include <QUrl>
 #include <QTimer>
+#include "file-utils.h"
 
 #include <QVector4D>
 
@@ -77,8 +77,7 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
     m_list_widget->setItemWidget(li, proc);
     (*m_progress_list)[proc] = li;
     (*m_widget_list)[li] = proc;
-    li->setSizeHint(QSize(m_main_progressbar->width(), m_progress_item_height));
-
+    li->setSizeHint(QSize(m_list_widget->width(), m_progress_item_height));
     li->setFlags(Qt::NoItemFlags);
 
     proc->connect(proc, &ProgressBar::finished, this, &FileOperationProgressBar::removeFileOperation);
@@ -163,6 +162,8 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     m_list_widget = new QListWidget(nullptr);
 
     m_list_widget->setFrameShape(QListWidget::NoFrame);
+    m_list_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    m_list_widget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     m_main_layout->addWidget(m_main_progressbar);
     m_main_layout->addWidget(m_other_progressbar);
@@ -281,9 +282,11 @@ void FileOperationProgressBar::mainProgressChange(QListWidgetItem *item)
 
     m_current_main->connect(m_main_progressbar, &MainProgressBar::pause, this, [=] () {
         m_current_main->setPause();
+        m_main_progressbar->setPause();
     });
     m_current_main->connect(m_main_progressbar, &MainProgressBar::start, this, [=] () {
         m_current_main->setResume();
+        m_main_progressbar->setResume();
     });
 
     update();
@@ -310,6 +313,9 @@ MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
 
 void MainProgressBar::initPrarm()
 {
+    m_sync = false;
+    m_show = false;
+    m_pause = false;
     m_stopping = false;
     m_current_value = 0.0;
     m_file_name = tr("starting ...");
@@ -472,13 +478,17 @@ void MainProgressBar::paintContent(QPainter &painter)
     if (m_stopping) {
         painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
-        painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
-    }
-
-    if (m_pause) {
-        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
-    } else {
-        painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+        if (m_sync) {
+            painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
+            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+        } else {
+            painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
+            if (m_pause) {
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            } else {
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            }
+        }
     }
 
     // paint percentage
@@ -516,7 +526,7 @@ void MainProgressBar::updateValue(QString& name, QIcon& icon, double value)
         m_current_value = value;
     }
 
-    m_file_name = name;
+    m_file_name = Peony::FileUtils::urlDecode(name);
     m_icon = icon;
 
     update();
@@ -597,6 +607,7 @@ ProgressBar::ProgressBar(QWidget *parent) : QWidget(parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_dest_uri = tr("starting ...");
     connect(this, &ProgressBar::cancelled, this, &ProgressBar::onCancelled);
+    connect(this, &ProgressBar::destroyed, this, [=] () {m_has_finished = true;});
 }
 
 void ProgressBar::setIcon(const QString& icon)
@@ -635,20 +646,16 @@ bool ProgressBar::isPause()
 
 void ProgressBar::setPause()
 {
-    if (!m_pause) {
-        m_pause = true;
-        Q_EMIT pause();
-        update();
-    }
+    m_pause = true;
+    Q_EMIT pause();
+    update();
 }
 
 void ProgressBar::setResume()
 {
-    if (m_pause) {
-        m_pause = false;
-        Q_EMIT resume();
-        update();
-    }
+    m_pause = false;
+    Q_EMIT resume();
+    update();
 }
 
 ProgressBar::~ProgressBar()
@@ -728,12 +735,27 @@ void ProgressBar::mouseReleaseEvent(QMouseEvent *event)
         }
     } else if ((pos.x() >= m_close_x) && (pos.x() <= m_close_x_r)
                && (pos.y() >= m_close_y) && (pos.y() <= m_close_y_b)) {
-        QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
+        /**
+         * @note
+         * fix: During the process of copying a file,
+         * click the Cancel button in the small progress bar,
+         * wait until the copy is finished and then click "OK" in the pop-up box,
+         * which will cause the file manager to crash.
+         *
+         * Therefore, remove the uncheck pop-up
+         *
+         * @todo
+         * Pause the file operation before confirming the popbox
+         */
+        /*QMessageBox msgBox(QMessageBox::Warning, tr("cancel file operation"),
                            tr("Are you sure want to cancel the current selected file operation"),
-                           QMessageBox::Ok | QMessageBox::Cancel);
+                           QMessageBox::Ok | QMessageBox::Cancel, this);
         msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
         msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
-        if (QMessageBox::Ok == msgBox.exec() && ! m_is_stopping) {
+        if (QMessageBox::Ok == msgBox.exec() && */
+        //
+        if(!m_is_stopping) {
+            if (m_has_finished) return;
             m_is_stopping = true;
             Q_EMIT cancelled();
             if (m_current_value <= 0) {
@@ -755,7 +777,8 @@ void ProgressBar::onCancelled()
 
 void ProgressBar::updateValue(double value)
 {
-    if (value >= 0 && value <= 1) {
+    if (value >= 0 && value < 1) {
+        m_sync = false;
         m_current_value = value;
     }
 
@@ -767,8 +790,7 @@ void ProgressBar::onElementFoundOne(const QString &uri, const qint64 &size)
 {
     ++m_total_count;
     m_total_size += size;
-    QUrl url = uri;
-    m_src_uri = url.toDisplayString();
+    m_src_uri = Peony::FileUtils::urlDecode(uri);
     //char* format_size = g_format_size (quint64(m_total_size));
     //Calculated by 1024 bytes
     char* format_size = strtok(g_format_size_full(quint64(m_total_size),G_FORMAT_SIZE_IEC_UNITS),"iB");
@@ -796,11 +818,9 @@ void ProgressBar::updateProgress(const QString &srcUri, const QString &destUri, 
         return;
     }
 
-    QUrl srcUrl = srcUri;
-    m_src_uri = srcUrl.toDisplayString();
+    m_src_uri = Peony::FileUtils::urlDecode(srcUri);
     if (nullptr != destUri) {
-        QUrl destUrl = destUri;
-        m_dest_uri = destUrl.toDisplayString();
+        m_dest_uri = Peony::FileUtils::urlDecode(destUri);
     }
 
     if (fIcon != getIcon().name()) {

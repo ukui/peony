@@ -135,6 +135,10 @@ void DirectoryViewMenu::fillActions()
         m_is_ftp = true;
     }
 
+    if(m_directory == "filesafe:///") {
+        m_is_filesafe = true;
+    }
+
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
@@ -151,6 +155,10 @@ void DirectoryViewMenu::fillActions()
     auto openActions = constructOpenOpActions();
     if (!openActions.isEmpty())
         addSeparator();
+
+    //netwotk items not show operation menu
+    if (m_is_network)
+        return;
 
     if (! m_is_kydroid){
         //create template actions
@@ -237,7 +245,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid)
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -298,13 +306,28 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
-                    FileLaunchManager::openAsync(uri, false, false);
+                    if (m_is_network)
+                        m_top_window->goToUri(uri, true);
+                    else
+                        FileLaunchManager::openAsync(uri, false, false);
                 });
+
+                if (m_is_network)
+                    return l;
                 auto openWithAction = addAction(tr("Open with..."));
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
-                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                auto targetUri = FileUtils::getTargetUri(m_selections.first());
+                auto recommendActions = FileLaunchManager::getRecommendActions(targetUri);
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -375,7 +398,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (!m_is_favorite && m_selections.isEmpty()) {
+    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
@@ -456,7 +479,11 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                     g_object_unref(gtk_file);
                 }
                 subMenu->addSeparator();
+            } else {
+                qWarning()<<"the template dir is empty";
             }
+        } else {
+            qWarning()<<"the template dir is not exsit";
         }
 
         QList<QAction *> actions;
@@ -465,8 +492,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
             CreateTemplateOperation op(m_directory);
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -477,8 +504,8 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
             CreateTemplateOperation op(m_directory, CreateTemplateOperation::EmptyFolder, tr("New Folder"));
-            Peony::FileOperationErrorDialogConflict dlg;
-            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogConflict::handle);
+            Peony::FileOperationErrorDialogWarning dlg;
+            connect(&op, &Peony::FileOperation::errored, &dlg, &Peony::FileOperationErrorDialogWarning::handle);
             op.run();
             auto targetUri = op.target();
             qDebug()<<"target:"<<targetUri;
@@ -608,7 +635,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
         QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         bool hasStandardPath = FileUtils::containsStandardPath(m_selections);
         //qDebug() << "constructFileOpActions hasStandardPath:" <<hasStandardPath;
-        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent) {
+        if (!m_selections.isEmpty() && !m_selections.contains(homeUri) && !m_is_recent && !m_is_filesafe) {
             if (!m_is_favorite) {
                 //code from lixiang for kydroid menu
                 if (m_is_kydroid) {
@@ -639,7 +666,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             if (m_is_kydroid)
                 return l;
 
-            if (!hasStandardPath && !m_is_recent && !m_is_favorite)
+            if (!hasStandardPath && !m_is_recent && !m_is_favorite && !m_is_filesafe)
             {
                 l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
                 connect(l.last(), &QAction::triggered, [=]() {
@@ -648,28 +675,51 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
 
-            if (!m_is_recent && !m_is_favorite && !hasStandardPath) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::trash(m_selections, true);
-                });
+            bool hasDeleteForever = false;
+            if (!m_is_recent && !m_is_favorite && !hasStandardPath && !m_is_filesafe) {
+                bool canTrash = true;
+                bool canDelete = true;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (! info->canTrash())
+                        canTrash = false;
+
+                    if (! info->canDelete())
+                        canDelete = false;
+                }
+                //fix bug#67932, file can not trash, use delete forever
+                if (canTrash && ! m_selections.first().startsWith("file:///data/usershare"))
+                {
+                    l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::trash(m_selections, true);
+                    });
+                }
+                else if(m_can_delete && canDelete)
+                {
+                    hasDeleteForever = true;
+                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    });
+                }
             }
 
-            if (m_is_favorite && m_can_delete) {
+            if (m_is_favorite && m_can_delete && !m_is_filesafe && !hasDeleteForever) {
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::executeRemoveActionWithDialog(m_selections);
                 });
             }
 
-            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent && !m_is_favorite) {
+            if (m_selections.count() == 1 && ! hasStandardPath && !m_is_recent && !m_is_favorite && !m_is_filesafe) {
                 l<<addAction(QIcon::fromTheme("document-edit-symbolic"), tr("Rename"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     m_view->editUri(m_selections.first());
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite && !m_is_kydroid)
+            if (!m_is_recent && !m_is_favorite && !m_is_kydroid && !m_is_filesafe)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
                 l<<pasteAction;
@@ -687,12 +737,23 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     }
                 });
             }
-            else if (m_is_recent)
+            else if (m_is_recent && m_selections.count() >0)
             {
                 //fix recent files can not be deleted issue
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::remove(m_selections);
+                });
+
+                l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    QStringList selections;
+                    for(auto uri:m_selections)
+                    {
+                        uri = FileUtils::getTargetUri(uri);
+                        selections << uri;
+                    }
+                    ClipboardUtils::setClipboardFiles(selections, false);
                 });
             }
 
@@ -719,6 +780,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             //qDebug() << "Reverse select";
             m_view->invertSelections();
         });
+
+        if (m_is_search && m_selections.count() >0)
+        {
+            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
+            connect(l.last(), &QAction::triggered, [=]() {
+                ClipboardUtils::setClipboardFiles(m_selections, false);
+            });
+        }
     }
 
     return l;
@@ -729,7 +798,7 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     QList<QAction *> l;
 
     //fix select mutiple file in trash path show empty issue
-    if (m_selections.count() >1 && m_is_trash)
+    if (m_selections.count() > 1 && (m_is_trash || m_is_recent))
         return l;
 
     if (! m_is_search) {
@@ -787,9 +856,9 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
         auto mount = VolumeManager::getMountFromUri(info->targetUri());
         //fix bug#52491, CDROM and DVD can format issue
         if (nullptr != mount) {
-            if (!uri.startsWith("burn:///") && !(uri.startsWith("file:///media") && uri.endsWith("CDROM"))
-                    && !(uri.startsWith("file:///media") && (uri.contains("DVD") || uri.contains("CDROM")))
-                    && info->isVolume() && info->canUnmount()) {
+            QString unixDevice = FileUtils::getUnixDevice(info->uri());
+            if (! unixDevice.isNull() && ! unixDevice.contains("/dev/sr")
+                && info->isVolume() && info->canUnmount()) {
                 l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=] () {
                     // FIXME:// refactory Format_Dialog
                     Format_Dialog* fd  = new Format_Dialog(info->uri(), nullptr, m_view);
@@ -910,11 +979,25 @@ const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
 
         for (auto id : pluginIds) {
             auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
-            auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
-            l<<actions;
-            for (auto action : actions) {
-                action->setParent(this);
-                addAction(action);
+
+            if(m_is_filesafe) {
+                if(plugin->name() == tr("Peony-Qt filesafe menu Extension")) {
+                    auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
+                    l<<actions;
+                    for (auto action : actions) {
+                        action->setParent(this);
+                        addAction(action);
+                    }
+                }
+            } else {
+                if(plugin->name() != tr("Peony-Qt filesafe menu Extension")) {
+                    auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
+                    l<<actions;
+                    for (auto action : actions) {
+                        action->setParent(this);
+                        addAction(action);
+                    }
+                }
             }
         }
     }

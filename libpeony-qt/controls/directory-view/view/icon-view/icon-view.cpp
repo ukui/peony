@@ -260,6 +260,9 @@ void IconView::dropEvent(QDropEvent *e)
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     e->setDropAction(action);
+    if (e->keyboardModifiers() & Qt::ShiftModifier) {
+        action = Qt::TargetMoveAction;
+    }
     auto proxy_index = indexAt(e->pos());
     auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();
@@ -417,13 +420,15 @@ void IconView::focusInEvent(QFocusEvent *e)
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
             scrollTo(selectedIndexes().first(), QListView::PositionAtCenter);
-            auto selections = selectedIndexes();
+            //auto selections = selectedIndexes();
             clearSelection();
-            QTimer::singleShot(100, this, [=](){
-                for (auto index : selections) {
-                    selectionModel()->select(index, QItemSelectionModel::Select);
-                }
-            });
+            //added for tab key to focus button issue
+            //comment to fix crash bug#68788
+//            QTimer::singleShot(100, this, [=](){
+//                for (auto index : selections) {
+//                    selectionModel()->select(index, QItemSelectionModel::Select);
+//                }
+//            });
         }
     }
 }
@@ -517,7 +522,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
     }
 
     //connect(m_model, &FileItemModel::dataChanged, this, &IconView::clearIndexWidget);
-    connect(m_model, &FileItemModel::updated, this, &IconView::resort);
+    //connect(m_model, &FileItemModel::updated, this, &IconView::resort);
 
     connect(m_model, &FileItemModel::findChildrenFinished,
             this, &IconView::reportViewDirectoryChanged);
@@ -575,6 +580,11 @@ QRect IconView::visualRect(const QModelIndex &index) const
     auto size = itemDelegate()->sizeHint(QStyleOptionViewItem(), index);
     rect.setSize(size);
     return rect;
+}
+
+bool IconView::getDelegateEditFlag()
+{
+    return m_delegate_editing;
 }
 
 int IconView::getSortType()
@@ -666,7 +676,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     //connect(m_model, &FileItemModel::dataChanged, m_view, &IconView::clearIndexWidget);
-    connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
+    //connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
 
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);

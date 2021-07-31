@@ -42,6 +42,9 @@
 #include <QApplication>
 #include <QWindow>
 
+#include <QPainter>
+#include <QPainterPath>
+
 #include "FMWindowIface.h"
 #include "main-window.h"
 #include "file-info.h"
@@ -51,6 +54,8 @@ static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 {
+    setFocusPolicy(Qt::StrongFocus);
+
     setAcceptDrops(true);
     m_drag_timer.setInterval(750);
     m_drag_timer.setSingleShot(true);
@@ -65,6 +70,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     setMovable(true);
     setExpanding(false);
     setTabsClosable(true);
+    setUsesScrollButtons(true);
     X11WindowManager::getInstance()->registerWidget(this);
 
     connect(this, &QTabBar::currentChanged, this, [=](int index) {
@@ -82,19 +88,6 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     connect(this, &QTabBar::tabBarDoubleClicked, this, [=](int index) {
         //qDebug()<<"tab bar double clicked"<<index;
     });
-
-    QToolButton *addPageButton = new QToolButton(this);
-    addPageButton->setProperty("useIconHighlightEffect", true);
-    addPageButton->setProperty("iconHighlightEffectMode", 1);
-    addPageButton->setProperty("fillIconSymbolicColor", true);
-    addPageButton->setFixedSize(QSize(this->height() + 2, this->height() + 2));
-    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    connect(addPageButton, &QToolButton::clicked, this, [=]() {
-        auto uri = tabData(currentIndex()).toString();
-        Q_EMIT addPageRequest(uri, true);
-    });
-
-    m_float_button = addPageButton;
 
 //    connect(this, &QTabBar::tabCloseRequested, this, [=](int index){
 //        removeTab(index);
@@ -138,7 +131,6 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
         setTabText(index, displayName);
         setTabIcon(index, QIcon::fromTheme(iconName));
         setTabData(index, uri);
-        relayoutFloatButton(false);
 
         Q_EMIT this->locationUpdated(uri);
     });
@@ -148,6 +140,7 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
+    setFocus();
     if (uri.isEmpty())
         return;
     m_info = Peony::FileInfo::fromUri(uri);
@@ -176,40 +169,12 @@ void NavigationTabBar::tabRemoved(int index)
     if (count() == 0) {
         Q_EMIT closeWindowRequest();
     }
-    relayoutFloatButton(false);
 }
 
 void NavigationTabBar::tabInserted(int index)
 {
     //qDebug()<<"tab inserted"<<index;
     QTabBar::tabInserted(index);
-    relayoutFloatButton(true);
-}
-
-void NavigationTabBar::relayoutFloatButton(bool insterted)
-{
-    int fixedY = 0;
-    if (count() == 0) {
-        m_float_button->move(0, fixedY);
-        return;
-    }
-    //qDebug()<<"relayout";
-    auto lastTabRect = tabRect(count() - 1);
-    fixedY = lastTabRect.center().y() - m_float_button->height()/2;
-    int fixedX = qMin(this->width() - qApp->style()->pixelMetric(QStyle::PM_TabBarScrollButtonWidth)*2 - m_float_button->width(), lastTabRect.right());
-    if (count() == 1) {
-        fixedX = lastTabRect.right();
-    }
-    m_float_button->move(fixedX, fixedY);
-    setFixedHeight(lastTabRect.height());
-    m_float_button->raise();
-
-    bool floaltButtonVisible = false;
-    if (lastTabRect.right() + m_float_button->width() * 2 < this->width()) {
-        floaltButtonVisible = true;
-    }
-    m_float_button->setVisible(floaltButtonVisible);
-    Q_EMIT floatButtonVisibleChanged(floaltButtonVisible, fixedY);
 }
 
 void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
@@ -346,7 +311,6 @@ void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
 void NavigationTabBar::resizeEvent(QResizeEvent *e)
 {
     QTabBar::resizeEvent(e);
-    relayoutFloatButton(false);
 }
 
 TabBarStyle *TabBarStyle::getStyle()
@@ -360,6 +324,7 @@ TabBarStyle *TabBarStyle::getStyle()
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
     switch (metric) {
+    case PM_TabBarScrollButtonWidth:
     case PM_TabBarTabShiftVertical:
     case PM_TabBarBaseHeight:
         return 0;
@@ -368,4 +333,39 @@ int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
+}
+
+QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_TabBarScrollLeftButton:
+    case SE_TabBarScrollRightButton:
+        return QRect();
+    default:
+        break;
+    }
+    return QProxyStyle::subElementRect(element, option, widget);
+}
+
+void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget && widget->objectName() == "addPageButton") {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addEllipse(widget->rect().adjusted(2, 2, -2, -2));
+        painter->setClipPath(path);
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+        painter->restore();
+    } else {
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+    }
+}
+
+void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget && widget->objectName() == "previewButtons") {
+        return;
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
 }

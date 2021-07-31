@@ -42,6 +42,7 @@ namespace Peony {
 
 class FileOperationInfo;
 class FileWatcher;
+class FileOperation;
 
 /*!
  * \brief The FileOperationManager class
@@ -174,6 +175,7 @@ public:
     void LinkOppositeInfoConstruct();
     void RenameOppositeInfoConstruct();
     void UntrashOppositeInfoConstruct();
+    void trashOppositeInfoConstruct();
 
     Type operationType() {
         return m_type;
@@ -208,6 +210,11 @@ public:
     //Rename
     QString m_oldname = nullptr;
     QString m_newname = nullptr;
+
+    bool m_has_error = false;
+
+    //using for distiguist move action.
+    Qt::DropAction m_drop_action = Qt::IgnoreAction;
 };
 
 }

@@ -26,6 +26,7 @@
 #include "volume-manager.h"
 #include "ui_format_dialog.h"
 #include "side-bar-abstract-item.h"
+#include "linux-pwd-helper.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -48,6 +49,9 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
        auto targetUri = FileUtils::getTargetUri(fm_uris);
+       if (targetUri.isEmpty()) {
+           targetUri = fm_uris;
+       }
        GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
        GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
@@ -84,7 +88,11 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        auto mount = VolumeManager::getMountFromUri(targetUri);
        //fix name not show complete in bottom issue, bug#36887
        ui->lineEdit_device_name->setFixedHeight(40);
-       ui->lineEdit_device_name->setText(mount->name());
+       if (mount.get()) {
+            ui->lineEdit_device_name->setText(mount->name());
+       } else {
+            ui->lineEdit_device_name->setText(LinuxPWDHelper::getCurrentUser().fullName());
+       }
 
        ui->progressBar_process->setValue(0);
 
@@ -497,26 +505,26 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 
 void Format_Dialog::format_ok_dialog()
 {
-    QMessageBox::about(m_parent,tr("qmesg_notify"),tr("Format operation has been finished successfully."));
-};
+    QMessageBox::about(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Format operation has been finished successfully."));
+}
 
 
 void Format_Dialog::format_err_dialog()
 {
-      QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
-};
+      QMessageBox::warning(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
+}
 
 bool Format_Dialog::format_makesure_dialog(){
 
     QMessageBox message_format;
 
-    message_format.setText(tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+    message_format.setText(QObject::tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
 
-    message_format.setWindowTitle(tr("format"));
+    message_format.setWindowTitle(QObject::tr("format"));
 
-    QPushButton *okButton = message_format.addButton(tr("begin format"),QMessageBox::YesRole);
+    QPushButton *okButton = message_format.addButton(QObject::tr("begin format"),QMessageBox::YesRole);
 
-    QPushButton *cancelButton = message_format.addButton(tr("close"),QMessageBox::NoRole);
+    QPushButton *cancelButton = message_format.addButton(QObject::tr("close"),QMessageBox::NoRole);
 
     message_format.exec();
 

@@ -31,7 +31,7 @@
 
 namespace Peony {
 
-class VFSPluginManager : public QObject
+class PEONYCORESHARED_EXPORT VFSPluginManager : public QObject
 {
     Q_OBJECT
 public:

@@ -33,8 +33,8 @@ using namespace Peony;
 
 FileCopy::FileCopy (QString srcUri, QString destUri, GFileCopyFlags flags, GCancellable* cancel, GFileProgressCallback cb, gpointer pcd, GError** error, QObject* obj) : QObject (obj)
 {
-    mSrcUri = srcUri;
-    mDestUri = destUri;
+    mSrcUri = FileUtils::urlDecode(srcUri);
+    mDestUri = FileUtils::urlDecode(destUri);
     QString destUrit = nullptr;
 
     mCopyFlags = flags;
@@ -107,8 +107,8 @@ void FileCopy::run ()
     GFileType               srcFileType = G_FILE_TYPE_UNKNOWN;
     GFileType               destFileType = G_FILE_TYPE_UNKNOWN;
 
-    srcFile = g_file_new_for_uri(mSrcUri.toUtf8());
-    destFile = g_file_new_for_uri(mDestUri.toUtf8());
+    srcFile = g_file_new_for_uri(FileUtils::urlEncode(mSrcUri).toUtf8());
+    destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
 
     // it's impossible
     if (nullptr == srcFile || nullptr == destFile) {
@@ -119,17 +119,17 @@ void FileCopy::run ()
 
     // impossible
     srcFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
-    if (G_FILE_TYPE_UNKNOWN == srcFileType || G_FILE_TYPE_DIRECTORY == srcFileType) {
+    if (G_FILE_TYPE_DIRECTORY == srcFileType) {
         error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
         detailError(&error);
         goto out;
     }
 
-    destFileType = g_file_query_file_type(srcFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
+    destFileType = g_file_query_file_type(destFile, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
     if (G_FILE_TYPE_DIRECTORY == destFileType) {
         mDestUri = mDestUri + "/" + mSrcUri.split("/").last();
         g_object_unref(destFile);
-        destFile = g_file_new_for_uri(mDestUri.toUtf8());
+        destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
         if (nullptr == destFile) {
             error = g_error_new (1, G_IO_ERROR_INVALID_ARGUMENT,"%s", tr("Error in source or destination file path!").toUtf8().constData());
             detailError(&error);
@@ -147,16 +147,15 @@ void FileCopy::run ()
             }
         } else if (mCopyFlags & G_FILE_COPY_BACKUP) {
             do {
-                g_autofree gchar* decodeUri = g_uri_unescape_string(mDestUri.toUtf8(), ":/");
                 QStringList newUrl = mDestUri.split("/");
                 newUrl.pop_back();
-                newUrl.append(FileUtils::handleDuplicateName(decodeUri));
+                newUrl.append(FileUtils::handleDuplicateName(FileUtils::urlDecode(mDestUri)));
                 mDestUri = newUrl.join("/");
             } while (FileUtils::isFileExsit(mDestUri));
             if (nullptr != destFile) {
                 g_object_unref(destFile);
             }
-            destFile = g_file_new_for_uri(mDestUri.toUtf8());
+            destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
         } else {
             error = g_error_new (1, G_IO_ERROR_EXISTS, "%s", QString(tr("The dest file \"%1\" has existed!")).arg(mDestUri).toUtf8().constData());
             detailError(&error);
@@ -189,6 +188,15 @@ void FileCopy::run ()
         detailError(&error);
         qDebug() << "create dest file error!" << mDestUri << " == " << g_file_get_uri(destFile);
         goto out;
+    }
+
+    // copy file attribute
+    // It is possible that some file systems do not support file attributes
+    g_file_copy_attributes(srcFile, destFile, G_FILE_COPY_ALL_METADATA, nullptr, &error);
+    if (nullptr != error) {
+        qWarning() << "copy attribute error:" << error->code << "  ---  " << error->message;
+        g_error_free(error);
+        error = nullptr;
     }
 
     if (!readIO || !writeIO) {
@@ -259,24 +267,24 @@ void FileCopy::run ()
     }
 
     // finally set some metaData, not used!
-    if (mCopyFlags & G_FILE_COPY_ALL_METADATA && FINISHED == mStatus && FileUtils::isFileExsit(mDestUri)) {
-        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
-        if (nullptr != error) {
-            detailError(&error);
-            goto finish;
-        }
+//    if (mCopyFlags & G_FILE_COPY_ALL_METADATA && FINISHED == mStatus && FileUtils::isFileExsit(mDestUri)) {
+//        destFileInfo = g_file_query_info(destFile, "time::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
+//        if (nullptr != error) {
+//            detailError(&error);
+//            goto finish;
+//        }
 
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED));
-        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC));
-    }
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_ACCESS_USEC));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED));
+//        g_file_info_set_attribute_uint64(destFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC, g_file_info_get_attribute_uint64(srcFileInfo, G_FILE_ATTRIBUTE_TIME_CREATED_USEC));
+//    }
 
-finish:
+//finish:
     // if copy sucessed, flush all data
     if (FINISHED == mStatus) {
         g_output_stream_flush(G_OUTPUT_STREAM(writeIO), nullptr, &error);

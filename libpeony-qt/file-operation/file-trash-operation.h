@@ -25,6 +25,8 @@
 
 #include "peony-core_global.h"
 #include "file-operation.h"
+#include "file-node.h"
+#include "file-info.h"
 
 namespace Peony {
 
@@ -42,10 +44,14 @@ public:
 private:
     void forceDelete (QString uri);
     void setErrorMessage (GError** err);
+    void deleteRecursively(FileNode *node);
 
 private:
     QStringList m_src_uris;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
+
+    // record source file infos before trashed, only used in native fs
+    QList<std::shared_ptr<FileInfo>> m_src_infos;
 };
 
 }

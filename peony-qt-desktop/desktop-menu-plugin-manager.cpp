@@ -33,6 +33,8 @@
 #include <QProxyStyle>
 
 #include <QDebug>
+#include "vfs-plugin-iface.h"
+#include "vfs-plugin-manager.h"
 
 using namespace Peony;
 
@@ -90,6 +92,12 @@ void DesktopMenuPluginManager::loadAsync()
             if (!plugin)
                 continue;
 
+            auto p = dynamic_cast<VFSPluginIface *>(plugin);
+            if (p) {
+                VFSPluginManager::getInstance()->registerPlugin(p);
+                continue;
+            }
+
             MenuPluginInterface *piface = dynamic_cast<MenuPluginInterface*>(plugin);
             if (!piface)
                 continue;
@@ -107,7 +115,6 @@ DesktopMenuPluginManager *DesktopMenuPluginManager::getInstance()
         if (!m_is_loading) {
             m_is_loading = true;
             global_instance = new DesktopMenuPluginManager;
-            global_instance->loadAsync();
         }
     }
     return global_instance;

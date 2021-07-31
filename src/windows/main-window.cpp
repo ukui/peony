@@ -346,6 +346,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -375,6 +380,11 @@ void MainWindow::setShortCuts()
                 return;
 
             auto uris = this->getCurrentSelections();
+
+            if(currentUri == "filesafe:///" && uris.count() > 1) {
+                return ;
+            }
+
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
             QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
@@ -616,19 +626,36 @@ void MainWindow::setShortCuts()
         auto *copyAction = new QAction(this);
         copyAction->setShortcut(QKeySequence::Copy);
         connect(copyAction, &QAction::triggered, [=]() {
+            bool is_recent = false;
             if (!this->getCurrentSelections().isEmpty())
             {
                 if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
                     return ;
                 }
                 if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                    return ;
+                    is_recent = true;
                 }
                 if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
                     return ;
                 }
             }
-            Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+            else
+                return;
+
+            QStringList selections;
+            if (is_recent)
+            {
+                for(auto uri:this->getCurrentSelections())
+                {
+                    uri = Peony::FileUtils::getTargetUri(uri);
+                    selections << uri;
+                }
+            }
+            else{
+                selections = this->getCurrentSelections();
+            }
+
+            Peony::ClipboardUtils::setClipboardFiles(selections, false);
         });
         addAction(copyAction);
 
@@ -695,8 +722,13 @@ void MainWindow::updateTabPageTitle()
 {
     m_tab->updateTabPageTitle();
     //FIXME: replace BLOCKING api in ui thread.
-    auto show = Peony::FileUtils::getFileDisplayName(getCurrentUri());
+    auto curUri = getCurrentUri();
+    auto show = Peony::FileUtils::getFileDisplayName(curUri);
     QString title = show;// + "-" + tr("File Manager");
+    if (curUri.startsWith("search:///"))
+        title = tr("Search");
+    if (title.length() <= 0)
+        title = tr("File Manager");
     //qDebug() << "updateTabPageTitle:" <<title;
     setWindowTitle(title);
 }
@@ -744,6 +776,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         //if select only one item, let view to process
         if (selections.count() > 1)
         {
+            QString currentUri = this->getCurrentUri();
+            if(currentUri == "filesafe:///") {
+                return ;
+            }
+
             QStringList files;
             QStringList dirs;
             for (auto uri : selections) {
@@ -975,6 +1012,7 @@ void MainWindow::refresh()
 {
     locationChangeStart();
     m_tab->refresh();
+    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     //goToUri(getCurrentUri(), false, true);
 }
 

@@ -102,8 +102,6 @@ private:
     QPixmap m_bg_font_pixmap;
     QPixmap m_bg_back_pixmap;
 
-    QPixmap m_bg_font_cache_pixmap;
-    QPixmap m_bg_back_cache_pixmap;
 
     QGraphicsOpacityEffect *m_opacity_effect;
 

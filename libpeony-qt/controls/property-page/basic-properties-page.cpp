@@ -86,6 +86,10 @@ void BasicPropertiesPage::init()
 //        delete m_futureWatcher;
 //        m_futureWatcher = nullptr;
 //    }
+    //Time Modified: （是左侧显示最长的字符串）
+    m_labelWidth = fontMetrics().width(tr("Time Modified:")) + 5;
+    m_labelWidth = m_labelWidth < 90 ? 90 : m_labelWidth;
+
     //check file type and search fileinfo
     FileType fileType = this->checkFileType(m_uris);
     //单个文件才能换icon
@@ -138,28 +142,22 @@ void BasicPropertiesPage::addSeparator()
 
 void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
-    auto recommendActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
-    if (m_openWithLayout && recommendActions.count() >= 1) {
-        m_defaultOpenListWidget = OpenWithPropertiesPage::createDefaultLaunchListWidget(m_info->uri(), parent);
+    if (m_openWithLayout) {
+        m_defaultOpenWithWidget = OpenWithPropertiesPage::createDefaultOpenWithWidget(m_info->uri(), parent);
         m_openWithLayout->setContentsMargins(0,0,16,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
-        m_openWithLayout->addWidget(m_defaultOpenListWidget);
+        m_openWithLayout->addWidget(m_defaultOpenWithWidget);
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
         moreAppButton->setText(tr("Change"));
-        moreAppButton->setMinimumSize(70,30);
+        moreAppButton->setMinimumSize((moreAppButton->fontMetrics().width(tr("Change")) + 5), 30);
         m_openWithLayout->addWidget(moreAppButton);
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
             NewFileLaunchDialog dialog(m_info.get()->uri());
             if (QDialog::Accepted == dialog.exec()) {
-                QListWidgetItem *m_listItem = m_defaultOpenListWidget->item(0);
-                auto defaultLaunchAction = FileLaunchManager::getDefaultAction(m_info.get()->uri());
-                if (defaultLaunchAction) {
-                    m_listItem->setIcon(!defaultLaunchAction->icon().isNull()? defaultLaunchAction->icon() : QIcon::fromTheme("application-x-desktop"));
-                    m_listItem->setText(defaultLaunchAction->text());
-                }
+                m_defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(m_info->uri()));
             }
         });
     }
@@ -214,19 +212,20 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     if (fileType == BP_MultipleFIle || !m_info->canRename())
         m_displayNameEdit->setReadOnly(true);
 
-    //new thread get fileName
-    FileNameThread *l_thread = new FileNameThread(uris);
-    l_thread->start();
+    //选中多个文件时，使用另外的线程获取文件名称并拼接
+    if (fileType == BP_MultipleFIle) {
+        FileNameThread *getNameThread = new FileNameThread(uris);
+        getNameThread->start();
 
-    connect(l_thread,&FileNameThread::fileNameReady,this,[=](QString fileName){
-        m_displayNameEdit->setText(fileName);
-        delete l_thread;
-    });
+        connect(getNameThread, &FileNameThread::fileNameReady, this, [=](QString fileName) {
+            m_displayNameEdit->setText(fileName);
+            delete getNameThread;
+        });
+    }
 
     connect(m_displayNameEdit, &QLineEdit::textChanged, [=]() {
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+        if (isNameChanged()) {
             this->thisPageChanged();
-//            FileOperationUtils::rename(m_info->uri(), m_displayNameEdit->text(), true);
         }
     });
 
@@ -247,7 +246,8 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
 
         m_moveButton->setText(tr("move"));
         m_moveButton->setMinimumSize(70,32);
-        m_moveButton->setMaximumWidth(70);
+        //暂时使用设置最大高度的方式解决与输入框自适应不一致问题
+        m_moveButton->setMaximumSize(70, 38);
 
         form3->addRow(m_moveButton);
         //home目录不支持移动和重命名
@@ -264,6 +264,14 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     } else {
         layout1->setContentsMargins(22,16,16,16);
     }
+
+    QString fileUri = uris.at(0);
+    if(fileUri.startsWith("filesafe:///") && (fileUri.remove("filesafe:///").indexOf("/") == -1)) {
+        disconnect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::chooseFileIcon);
+        m_moveButton->setVisible(false);
+        m_displayNameEdit->setReadOnly(true);
+    }
+
     //add floor1 to context
     m_layout->addWidget(floor1);
 }
@@ -295,17 +303,26 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
     switch (fileType) {
     case BP_Folder:
         m_folderContainLabel = this->createFixedLabel(0,32,floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Include:"),floor2),m_folderContainLabel);
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Include:"),floor2),m_folderContainLabel);
         break;
     case BP_File:
         m_openWithLayout = new QHBoxLayout(floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Open with:"),floor2),m_openWithLayout);
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Open with:"),floor2),m_openWithLayout);
         this->addOpenWithLayout(floor2);
         break;
     case BP_Application:
+    {
         m_descrptionLabel = this->createFixedLabel(0,32,floor2);
-        layout2->addRow(this->createFixedLabel(90,32,tr("Description:"),floor2),m_descrptionLabel);
-        m_descrptionLabel->setText(m_info.get()->displayName());
+        layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Description:"),floor2),m_descrptionLabel);
+        //fix bug#53504, not show duplicated name issue
+        QString displayName = m_info.get()->displayName();
+        if (m_info->isDesktopFile())
+        {
+            displayName = FileUtils::handleDesktopFileName(m_info->uri(), displayName);
+        }
+        m_descrptionLabel->setText(displayName);
+    }
+
         break;
     case BP_MultipleFIle:
         m_fileTypeLabel->setText(tr("Select multiple files"));
@@ -313,8 +330,8 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         break;
     }
 
-    layout2->addRow(this->createFixedLabel(90,32,tr("Size:"),floor2),m_fileSizeLabel);
-    layout2->addRow(this->createFixedLabel(90,32,tr("Space Useage:"),floor2),m_fileTotalSizeLabel);
+    layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Size:"),floor2),m_fileSizeLabel);
+    layout2->addRow(this->createFixedLabel(m_labelWidth,32,tr("Space Useage:"),floor2),m_fileTotalSizeLabel);
 
     this->countFilesAsync(uris);
 
@@ -350,13 +367,13 @@ void BasicPropertiesPage::initFloorThree(BasicPropertiesPage::FileType fileType)
     case BP_Application:
         m_timeModifiedLabel = this->createFixedLabel(0,32,floor3);
         m_timeAccessLabel   = this->createFixedLabel(0,32,floor3);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Access:"),floor3), m_timeAccessLabel);
-//        break;
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Modified:"),floor3), m_timeModifiedLabel);
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Access:"),floor3), m_timeAccessLabel);
+        break;
     case BP_MultipleFIle:
     case BP_Folder:
         m_timeCreatedLabel  = this->createFixedLabel(0,32,floor3);
-        layout3->addRow(this->createFixedLabel(90,32,tr("Time Created:"),floor3), m_timeCreatedLabel);
+        layout3->addRow(this->createFixedLabel(m_labelWidth,32,tr("Time Modified:"),floor3), m_timeCreatedLabel);
     default:
         break;
     }
@@ -397,7 +414,7 @@ void BasicPropertiesPage::initFloorFour()
     m_readOnly->setDisabled(!m_info->canRename());
     m_hidden->setDisabled(!m_info->canRename());
 
-    layout4->addRow(this->createFixedLabel(90,32,tr("Property:"),floor4),hBoxLayout);
+    layout4->addRow(this->createFixedLabel(m_labelWidth,32,tr("Property:"),floor4),hBoxLayout);
 
     //确认被修改
     connect(m_readOnly,&QCheckBox::stateChanged,this,&BasicPropertiesPage::thisPageChanged);
@@ -472,7 +489,12 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(m_info.get()->uri());
 
     m_iconButton->setIcon(thumbnail.isNull() ? icon : thumbnail);
-    m_displayNameEdit->setText(m_info.get()->displayName());
+    //fix bug#53504, not show duplicated name issue.
+    QString fileName = m_info->displayName();
+    if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
+        fileName = FileUtils::handleDesktopFileName(m_info->uri(), fileName);
+    }
+    m_displayNameEdit->setText(fileName);
 
     if (thumbnail.isNull()) {
         ThumbnailManager::getInstance()->createThumbnail(m_info.get()->uri(), m_thumbnail_watcher);
@@ -529,6 +551,45 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
             m_folderContainFolders--;
         }
         this->updateCountInfo(true);
+
+        //使用du -s 命令查看文件实际占用的磁盘空间。
+        for (QString uri : m_uris) {
+            QUrl url(uri);
+            //某些带空格的文件名称会导致命令错误，加上引号解决此问题。
+            QString path;
+            if(uri == "filesafe:///") {
+                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/box";
+            } else {
+                path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
+            }
+
+            QProcess process;
+            process.start("du -s " + path);
+            process.waitForFinished();
+            QString result = process.readAllStandardOutput();
+            //du -s xxx 输出格式：4	xxx  (大小单位为KB)
+            m_fileTotalSizeCount += result.split(QRegExp("\\s+")).first().toLong();
+        }
+        //转换为 xx Bytes
+        m_fileTotalSizeCount *= CELL1K;
+
+        if (m_fileTotalSizeCount == 0) {
+            quint64 a = 0;
+            quint64 b = 0;
+            a = m_fileSizeCount % CELL4K;
+            b = m_fileSizeCount / CELL4K;
+            quint64 cell4k = (a == 0) ? b : (b + 1);
+            m_fileTotalSizeCount = cell4k * CELL4K;
+        }
+        //gio格式化工具
+        char *fileTotalSizeFormat = g_format_size_full(m_fileTotalSizeCount,G_FORMAT_SIZE_IEC_UNITS);
+        QString fileTotalSizeFormatString(fileTotalSizeFormat);
+        fileTotalSizeFormatString.replace("iB", "B");
+
+        QString fileTotalSizeText(tr("%1 (%2 Bytes)").arg(fileTotalSizeFormatString).arg(m_fileTotalSizeCount));
+        g_free(fileTotalSizeFormat);
+
+        m_fileTotalSizeLabel->setText(fileTotalSizeText);
     });
 
     QThreadPool::globalInstance()->start(m_countOp);
@@ -604,6 +665,8 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
+    m_watcher->stopMonitor();
+    m_thumbnail_watcher->stopMonitor();
     //未发生修改
     if (!this->m_thisPageChanged)
         return;
@@ -633,8 +696,8 @@ void BasicPropertiesPage::saveAllChange()
         if (m_info->canExecute())
             mod |= S_IXUSR;
 
-        //.desktop文件给予可执行
-        if (m_info.get()->isDesktopFile() || m_info.get()->displayName().endsWith(".desktop")) {
+        //.desktop文件给予可执行,.desktop文件原本可执行才给可执行权限
+        if (((m_info.get()->isDesktopFile()) || m_info.get()->displayName().endsWith(".desktop")) && m_info->canExecute()) {
             //FIX:可执行范围 目前只给拥有者执行权限
             mod |= S_IXUSR;
             //mod |= S_IXGRP;
@@ -653,10 +716,8 @@ void BasicPropertiesPage::saveAllChange()
         if (newName.startsWith("."))
             newName = newName.mid(1,-1);
 
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
-                newName = m_displayNameEdit->text();
-            }
+        if (isNameChanged()) {
+            newName = m_displayNameEdit->text();
         }
 
         bool isHidden = m_info.get()->displayName().startsWith(".");
@@ -675,10 +736,8 @@ void BasicPropertiesPage::saveAllChange()
     }
 
     if (!existHiddenOpt) {
-        if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
-            if (m_info.get()->displayName() != m_displayNameEdit->text()) {
-                FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
-            }
+        if (isNameChanged()) {
+            FileOperationUtils::rename(m_info.get()->uri(), m_displayNameEdit->text(), true);
         }
     }
 
@@ -716,46 +775,26 @@ void BasicPropertiesPage::changeFileIcon()
 void BasicPropertiesPage::updateCountInfo(bool isDone)
 {
     if (isDone) {
-        //FIXME:多选文件情况下，文件占用空间大小不准确
-        //FIXME: In the case of multiple selection of files, the space occupied by the files is not accurate
-        qint64 a = m_fileSizeCount % CELL4K;
-        qint64 b = m_fileSizeCount / CELL4K;
-        qint64 cell4k = (a == 0) ? b : (b + 1);
-        m_fileTotalSizeCount = cell4k * CELL4K;
-
         QString fileSizeText;
-        QString fileTotalSizeText;
 
-        qreal fileSizeKMGB = 0.0;
-
-        // 1024 KB
-        b = m_fileSizeCount / CELL1K;
-        if (b < CELL1K) {
-            if (b < 1) {
-                fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
-            } else {
-                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1K;;
-                fileSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-            }
-            fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1K;
-            fileTotalSizeText = tr("%1 KB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
+        quint64 a = 0;
+        a = m_fileSizeCount / CELL1K;
+        //小于1KB
+        if (a < 1) {
+            fileSizeText = tr("%1 Bytes").arg(m_fileSizeCount);
         } else {
-            //1024 MB
-            fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1M;
-            if (fileSizeKMGB < CELL1K) {
-                fileSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1M;
-                fileTotalSizeText = tr("%1 MB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
-            } else {
-                fileSizeKMGB = (qreal)m_fileSizeCount / (qreal)CELL1G;
-                fileSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileSizeCount);
-                fileSizeKMGB = (qreal)m_fileTotalSizeCount / (qreal)CELL1G;
-                fileTotalSizeText = tr("%1 GB (%2 Bytes)").arg(QString::number(fileSizeKMGB,'f',2)).arg(m_fileTotalSizeCount);
-            }
+            char *fileSizeFormat = g_format_size_full(m_fileSizeCount,G_FORMAT_SIZE_IEC_UNITS);
+            QString fileSizeFormatString(fileSizeFormat);
+            //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+            fileSizeFormatString.replace("iB", "B");
+
+            fileSizeText = tr("%1 (%2 Bytes)").arg(fileSizeFormatString).arg(m_fileSizeCount);
+            g_free(fileSizeFormat);
         }
 
         m_fileSizeLabel->setText(fileSizeText);
-        m_fileTotalSizeLabel ->setText(fileTotalSizeText);
+        //在为完成统计前，先显示文件大小而不是占用空间大小
+        m_fileTotalSizeLabel->setText(fileSizeText);
 
         if(m_folderContainLabel)
             m_folderContainLabel->setText(tr("%1 files, %2 folders").arg(m_folderContainFiles).arg(m_folderContainFolders));
@@ -895,6 +934,33 @@ QLabel *BasicPropertiesPage::createFixedLabel(quint64 minWidth, quint64 minHeigh
     return label;
 }
 
+bool BasicPropertiesPage::isNameChanged()
+{
+    if (!m_displayNameEdit->isReadOnly() && !m_displayNameEdit->text().isEmpty()) {
+        QString fileName(m_info->displayName());
+        //桌面文件
+        if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
+            //做过处理的名称
+            QString handledName = FileUtils::handleDesktopFileName(m_info->uri(), fileName);
+            if (fileName != handledName) {
+                //用户是否手动修改
+                if (handledName != m_displayNameEdit->text())
+                    return true;
+                else
+                    return false;
+            }
+        }
+        //文件名称被修改过
+        if (fileName != m_displayNameEdit->text())
+            return true;
+        else
+            return false;
+
+    }
+
+    return false;
+}
+
 void FileNameThread::run()
 {
     QString fileName = "";
@@ -904,6 +970,11 @@ void FileNameThread::run()
         fileInfoJob->setAutoDelete();
         fileInfoJob->querySync();
         fileName = fileInfo.get()->displayName();
+        //fix bug#53504, not show duplicated name issue
+        if (fileInfo->isDesktopFile())
+        {
+            fileName = FileUtils::handleDesktopFileName(fileInfo->uri(), fileName);
+        }
     } else {
         QStringList stringList;
         for (auto uri : m_uris) {

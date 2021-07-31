@@ -67,6 +67,7 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
+    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::updateWindowLocationRequest);
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
         refresh();
     });
@@ -370,8 +371,13 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
+
         bool hasStandardPath = FileUtils::containsStandardPath(selections);
         if (selections.count() == 1 && !hasStandardPath) {
+            QString one = selections.first();
+            if(one.startsWith("filesafe:///") && one.remove("filesafe:///").indexOf("/") == -1) {
+                return ;
+            }
             m_view->editUri(selections.first());
         }
     });

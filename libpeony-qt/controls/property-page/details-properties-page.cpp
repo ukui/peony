@@ -222,16 +222,18 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
 
     //判断文件类型
     if (m_fileInfo->isImageFile()) {
-        //image info
-        m_imageWidthLabel = this->createFixedLabel(0,0,"",m_tableWidget);
-        this->addRow(tr("Width:"),m_imageWidthLabel);
+        if (m_fileInfo->canRead()) {
+            //image info
+            m_imageWidthLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
+            this->addRow(tr("Width:"), m_imageWidthLabel);
 
-        m_imageHeightLabel = this->createFixedLabel(0,0,"",m_tableWidget);
-        this->addRow(tr("Height:"),m_imageHeightLabel);
+            m_imageHeightLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
+            this->addRow(tr("Height:"), m_imageHeightLabel);
 
-        m_imageDepthLabel = this->createFixedLabel(0,0,"",m_tableWidget);
-        //FIXME:缺少图片位深
+            m_imageDepthLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
+            //FIXME:缺少图片位深
 //        this->addRow(tr("Depth:"),m_imageDepthLabel);
+        }
     }
 
     m_ownerLabel = this->createFixedLabel(0,0,tr("Owner"),m_tableWidget);

@@ -443,7 +443,9 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
             break;
     }
 
-    if (QDialog::Rejected == ret) {
+    if (QDialog::Accepted == ret && m_error->op == FileOpTrash && G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode) {
+        error.respCode = m_sm_ck->isChecked() ? error.respCode = ForceAll : error.respCode = Force;
+    } else if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
 }

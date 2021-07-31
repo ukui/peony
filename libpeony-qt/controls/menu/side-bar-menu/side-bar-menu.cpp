@@ -85,6 +85,11 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
     } else if (m_item->firstColumnIndex().row() < 3) {
         l.last()->setEnabled(false);
     }
+    else if (m_uri == "file:///data/usershare" || m_uri == "kmre://" || m_uri == "kydroid://")
+    {
+        //fix bug#68431, can not delete option issue
+        l.last()->setEnabled(false);
+    }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
@@ -148,7 +153,6 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
-
     auto mgr = MenuPluginManager::getInstance();
     auto ids = mgr->getPluginIds();
     for (auto id : ids) {
@@ -166,7 +170,8 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
         w->show();
     });
-    if (0 != QString::compare(m_uri, "computer:///")) {
+    if ((0 != QString::compare(m_uri, "computer:///")) &&
+        (0 != QString::compare(m_uri, "filesafe:///"))) {
         l.last()->setEnabled(m_item->isMounted());
     }
 
@@ -177,12 +182,11 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      */
     auto targetUri = FileUtils::getTargetUri(m_uri);
     auto mount = VolumeManager::getMountFromUri(targetUri);
+    QString unixDevice = FileUtils::getUnixDevice(m_uri);
     //qDebug() << "targetUri:"<<targetUri<<m_uri;
     //fix erasable optical disk can be format issue, bug#32415
     //fix bug#52491, CDROM and DVD can format issue
-    if(! m_uri.startsWith("burn:///") && !m_uri.endsWith(".mount")
-       && !(m_uri.startsWith("file:///media") && m_uri.endsWith("CDROM"))
-       && !(targetUri.startsWith("file:///media") && (m_uri.contains("DVD") || m_uri.contains("CDROM")))
+    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
        && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);

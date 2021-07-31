@@ -171,6 +171,13 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -298,7 +305,11 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                     g_object_unref(gtk_file);
                 }
                 subMenu->addSeparator();
+            } else {
+                qWarning()<<"the template dir is empty";
             }
+        } else {
+            qWarning()<<"the template dir is not exsit";
         }
 
         QList<QAction *> actions;
@@ -490,16 +501,33 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             });
 
             if (!m_selections.contains("trash:///")) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::trash(m_selections, true);
-                });
-                //comment delete forever right menu option,reference to mac and Windows
-                //add delete forever option
-//                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-//                connect(l.last(), &QAction::triggered, [=]() {
-//                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-//                });
+                bool canTrash = true;
+                bool canDelete = true;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (! info->canTrash())
+                        canTrash = false;
+
+                    if (! info->canDelete())
+                        canDelete = false;
+                }
+
+                if (canTrash)
+                {
+                    l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::trash(m_selections, true);
+                    });
+                }
+                else if(canDelete)
+                {
+                    //comment delete forever right menu option,reference to mac and Windows
+                    //add delete forever option
+                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    });
+                }
             }
 
             if (m_selections.count() == 1) {

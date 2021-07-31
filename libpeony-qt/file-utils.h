@@ -45,6 +45,7 @@ public:
     NO_BLOCKING static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
     NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
     NO_BLOCKING static QString urlEncode(const QString& url);
+    NO_BLOCKING static QString urlDecode(const QString& url);
 
 
     /**
@@ -57,6 +58,7 @@ public:
     BLOCKING static bool getFileIsSymbolicLink(const QString &uri);
     BLOCKING static QStringList getChildrenUris(const QString &directoryUri);
 
+    NO_BLOCKING static QString handleDesktopFileName(const QString& uri, const QString& displayName);
     NO_BLOCKING static QString getNonSuffixedBaseNameFromUri(const QString &uri);
     BLOCKING static QString getFileDisplayName(const QString &uri);
     BLOCKING static QString getFileIconName(const QString &uri, bool checkValid = true);

@@ -68,6 +68,7 @@ public:
     void initDoubleClick();
 
     void openFileByUri(QString uri);
+    void restoreItemsPosByMetaInfo();
 
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {
         Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)
@@ -190,8 +191,12 @@ public Q_SLOTS:
      */
     void resolutionChange();
     void setEditFlag(bool edit);
+    bool getEditFlag();
 
 protected:
+    int verticalOffset() const override;
+    int horizontalOffset() const override;
+
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);

@@ -216,6 +216,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignHCenter | Qt::AlignBaseline);
         }
         case Qt::DisplayRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole: {
@@ -227,6 +233,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(icon);
         }
         case Qt::ToolTipRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         default:
@@ -558,16 +570,12 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     }
 
     qDebug() << "dropMimeData:" <<action<<destDirUri;
-    auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
-    switch (action) {
-    case Qt::MoveAction: {
-        qDebug() << "model move uris:" << srcUris;
-        auto op = FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
-        connect(op, &FileOperation::operationFinished, this, [=](){
-            auto opInfo = op->getOperationInfo();
-            auto targetUris = opInfo.get()->dests();
-            Q_EMIT this->selectRequest(targetUris);
+    auto op = FileOperationUtils::moveWithAction(srcUris, destDirUri, addHistory, action);
+    connect(op, &FileOperation::operationFinished, this, [=](){
+        auto opInfo = op->getOperationInfo();
+        auto targetUris = opInfo.get()->dests();
+        Q_EMIT this->selectRequest(targetUris);
 //            auto selectionModel = new QItemSelectionModel(this);
 //            selectionModel->clearSelection();
 //            QTimer::singleShot(1000, selectionModel, [=](){
@@ -577,35 +585,15 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 //                }
 //                selectionModel->deleteLater();
 //            });
-        }, Qt::BlockingQueuedConnection);
-        break;
-    }
-    case Qt::CopyAction: {
-        qDebug() << "model copy uris:" << srcUris;
-        FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
-        connect(copyOp, &FileOperation::operationFinished, this, [=](){
-            auto opInfo = copyOp->getOperationInfo();
-            auto targetUris = opInfo.get()->dests();
-            Q_EMIT this->selectRequest(targetUris);
-//            auto selectionModel = new QItemSelectionModel(this);
-//            selectionModel->clearSelection();
-//            QTimer::singleShot(1000, selectionModel, [=](){
-//                for (auto destUri : targetUris) {
-//                    auto index = indexFromUri(destUri);
-//                    selectionModel->select(index, QItemSelectionModel::Select);
-//                }
-//                selectionModel->deleteLater();
-//            });
-        }, Qt::BlockingQueuedConnection);
-        fileOpMgr->startOperation(copyOp);
-        break;
-    }
-    default:
-        break;
-    }
+    }, Qt::BlockingQueuedConnection);
 
     //NOTE:
     //we have to handle the dnd with file operation, so do not
     //use QAbstractModel::dropMimeData() here;
     return true;
+}
+
+void FileItemModel::sendPathChangeRequest(const QString &uri)
+{
+    Q_EMIT this->changePathRequest(uri, true, true);
 }

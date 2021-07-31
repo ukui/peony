@@ -423,6 +423,10 @@ void ListView::dropEvent(QDropEvent *e)
 
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     e->setDropAction(action);
+    if (e->keyboardModifiers() & Qt::ShiftModifier) {
+        action = Qt::TargetMoveAction;
+    }
+
     auto proxy_index = indexAt(e->pos());
     auto index = m_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();
@@ -785,7 +789,8 @@ void ListView::editUri(const QString &uri)
     setState(QTreeView::NoState);
     auto origin = FileUtils::getOriginalUri(uri);
     setIndexWidget(m_proxy_model->indexFromUri(origin), nullptr);
-    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
+    //注释该行以修复bug:#60474
+//    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
     edit(m_proxy_model->indexFromUri(origin));
 }
 
@@ -855,7 +860,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     m_view->bindModel(model, proxyModel);
     connect(m_model, &FileItemModel::selectRequest, this, &DirectoryViewWidget::updateWindowSelectionRequest);
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
-    connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
+    //connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &DirectoryViewWidget::viewSelectionChanged);

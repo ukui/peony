@@ -99,10 +99,32 @@ GFileWrapperPtr FileUtils::resolveRelativePath(const GFileWrapperPtr &dir, const
 
 QString FileUtils::urlEncode(const QString& url)
 {
-    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
-    g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl, ":/", true);
+    QString decodeUrl = urlDecode(url);
+
+    if (!decodeUrl.isEmpty()) {
+        g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl.toUtf8().constData(), ":/", true);
+        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+        return encodeUrl;
+    }
+
+    g_autofree gchar* encodeUrl = g_uri_escape_string (url.toUtf8().constData(), ":/", true);
+
+    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
 
     return encodeUrl;
+}
+
+QString FileUtils::urlDecode(const QString &url)
+{
+    g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
+    if (!decodeUrl) {
+        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
+        return url;
+    }
+
+    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
+
+    return decodeUrl;
 }
 
 QString FileUtils::handleDuplicateName(const QString& uri)
@@ -167,6 +189,32 @@ QString FileUtils::handleDuplicateName(const QString& uri)
     }
 
     return handledName;
+}
+
+QString FileUtils::handleDesktopFileName(const QString& uri, const QString& displayName)
+{
+    QString name = QUrl(uri).toDisplayString().split("/").last();
+    QRegExp regExpNum("\\(\\d+\\)");
+    auto showName = displayName;
+
+    if (!name.contains(QObject::tr("duplicate")))
+        return displayName;
+
+    QStringList matchList;
+    int pos=0;
+    while((pos=regExpNum.indexIn(name,pos))!=-1)
+    {
+       pos+=regExpNum.matchedLength();
+       QString result=regExpNum.cap(0);
+       matchList<<result;
+    }
+
+    for(auto match : matchList)
+    {
+        showName = showName + match;
+    }
+
+    return showName;
 }
 
 bool FileUtils::getFileHasChildren(const GFileWrapperPtr &file)
@@ -480,7 +528,7 @@ bool FileUtils::isFileExsit(const QString &uri)
 {
     //FIXME: replace BLOCKING api in ui thread.
     bool exist = false;
-    GFile *file = g_file_new_for_uri(uri.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData());
     exist = g_file_query_exists(file, nullptr);
     g_object_unref(file);
     return exist;
@@ -501,7 +549,7 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
             url = QUrl::fromLocalFile(absPath);
             uris << url.toDisplayString();
         } else {
-            uris << args;
+            uris << QString(url.toEncoded());
         }
     }
 
