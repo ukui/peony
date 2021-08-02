@@ -79,7 +79,6 @@ void FileCopy::detailError (GError** error)
     }
 
     g_set_error(mError, (*error)->domain, (*error)->code, "%s", (*error)->message);
-    qDebug() << "set error code: " << (*error)->code << " -- mess:" << (*error)->message;
     g_error_free(*error);
 
     *error = nullptr;
@@ -257,7 +256,6 @@ void FileCopy::run ()
                 mPause.unlock();
                 continue;
             } else if (nullptr != error) {
-                qDebug() << "read srcfile: " << mSrcUri << error->code << " --  error: " << error->message;
                 detailError(&error);
                 mStatus = ERROR;
                 mPause.unlock();
