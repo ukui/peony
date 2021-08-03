@@ -170,9 +170,20 @@ const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100, 32);
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow(parent)
 {
+    if (uris.count() == 0) {
+        m_destroyThis = true;
+        return;
+    }
+
     //将uri编码统一解码,解决uri的不一致问题。from bug:53504
     for (QString uri : uris) {
-        m_uris.append(FileUtils::urlDecode(uri));
+        if (uri.startsWith("network://")) {
+            m_destroyThis = true;
+            return;
+        }
+        //fix bug:70565,将已被编码的字符串解码后从新编码，保证在属性窗口中的编码中特殊字符为%xx形式。
+        //编码时排除'()',防止 FileUtils::handleDesktopFileName 方法匹配不到(),避免出现bug:53504.
+        m_uris.append(FileUtils::urlDecode(uri).toUtf8().toPercentEncoding(":/()"));
     }
 //    m_uris = uris;
     m_uris.removeDuplicates();
@@ -192,18 +203,6 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
             gotoAboutComputer();
         });
         m_uris.removeAt(m_uris.indexOf("computer:///"));
-    }
-
-    if (m_uris.count() == 0) {
-        m_destroyThis = true;
-        return;
-    }
-
-    for (QString uri : m_uris) {
-        if (uri.startsWith("network://")) {
-            m_destroyThis = true;
-            return;
-        }
     }
 
     this->notDir();
