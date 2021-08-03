@@ -50,7 +50,7 @@ void AboutDialog::initUI()
 	QTextCursor textCursor;
 	QTextBlockFormat blockFormat;
 //	QString addressLabel = tr("Offical Website: ");
-    QString supportLabel = tr("Service & Support: ");
+//    QString supportLabel = tr("Service & Support: ");
 //	QString phoneLabel = tr("Hot Service: ");
 
 //    font18.setPointSize(18);
@@ -76,7 +76,7 @@ void AboutDialog::initUI()
     ui->closeBtn->setProperty("isWindowButton", 2);
     ui->closeBtn->setProperty("useIconHighlightEffect", 0x2);
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
-	
+
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
 
 //    ui->nameLabel->setFont(font18);
@@ -99,10 +99,37 @@ void AboutDialog::initUI()
 	textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
 
-    ui->openlinkLabel->setText(supportLabel + "<a href=\"mailto://support@kylinos.cn\" style=\"color:#595959;\">support@kylinos.cn</a><br/>");
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        m_gSettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        connect(m_gSettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "styleName") {
+                setSupportText();
+            }
+        });
+    }
+    this->setSupportText();
     ui->openlinkLabel->setOpenExternalLinks(true);
 //    ui->openlinkLabel->setStyleSheet("color:#595959;");
 	textCursor.setBlockFormat(blockFormat);
+}
+
+void AboutDialog::setSupportText()
+{
+    QString text = tr("Service & Support: ") + "<a href=\"mailto://support@kylinos.cn\" style=\"color:"
+                   + convertRGB16HexStr(palette().color(QPalette::ButtonText))
+                   + ";\">support@kylinos.cn</a><br/>";
+    ui->openlinkLabel->setText(text);
+}
+
+QString AboutDialog::convertRGB16HexStr(const QColor &color)
+{
+    if (color == Qt::transparent)
+        return "#000000";//透明则显示黑色
+    QString red = QString("%1").arg(color.red(),2,16,QChar('0'));
+    QString green = QString("%1").arg(color.green(),2,16,QChar('0'));
+    QString blue = QString("%1").arg(color.blue(),2,16,QChar('0'));
+    QString hexStr = "#" + red + green + blue;
+    return hexStr;
 }
 
 QString AboutDialog::getCurrentVersion()
