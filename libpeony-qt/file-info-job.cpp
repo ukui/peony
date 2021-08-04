@@ -356,8 +356,10 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     }
 
     if (info->m_size) {
-        char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
-        info->m_file_size = size_full;
+//        char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
+        //列表视图显示改为GB - List view display changed to GB
+        char *size_full = g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS);
+        info->m_file_size = QString(size_full).replace("iB", "B");;
         g_free(size_full);
     } else {
         info->m_file_size = nullptr;
