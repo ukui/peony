@@ -100,6 +100,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &QTabBar::tabCloseRequested, this, &TabWidget::removeTab);
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
+    connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, [this]{
+        updateTabBarGeometry();
+    });
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
 
@@ -663,7 +666,7 @@ void TabWidget::enableSearchBar(bool enable)
 {
     //qDebug() << "enable:" <<enable;
     m_search_path->setEnabled(enable);
-    //m_search_close->setEnabled(enable);  
+    //m_search_close->setEnabled(enable);
     m_search_title->setEnabled(enable);
     m_search_bar->setEnabled(enable);
     if (m_search_bar_count >0)
