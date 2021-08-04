@@ -28,6 +28,7 @@
 #include "directory-view-widget.h"
 
 #include "file-info.h"
+#include "file-info-job.h"
 #include "file-launch-manager.h"
 #include "search-vfs-uri-parser.h"
 #include "properties-window.h"
@@ -397,7 +398,21 @@ void TabWidget::searchChildUpdate()
 
 void TabWidget::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
+    // use window modal dialog, fix #56549
+    QFileDialog f(this->topLevelWidget());
+    f.setWindowTitle(tr("Select Path"));
+    f.setDirectoryUrl(QUrl(getCurrentUri()));
+    f.setWindowModality(Qt::WindowModal);
+    f.setAcceptMode(QFileDialog::AcceptOpen);
+    f.setOption(QFileDialog::ShowDirsOnly);
+    f.setFileMode(QFileDialog::DirectoryOnly);
+    auto result = f.exec();
+    if (result != QDialog::Accepted) {
+        return;
+    }
+
+    QString target_path = f.directoryUrl().toString();
+//    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://") && target_path != "")
@@ -767,6 +782,13 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         curUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
+    }
+    auto info = Peony::FileInfo::fromUri(curUri);
+    m_search_button_info = info;
+    if (info.get()->isEmptyInfo()) {
+        // TODO: use async method.
+        Peony::FileInfoJob j(info);
+        j.querySync();
     }
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
