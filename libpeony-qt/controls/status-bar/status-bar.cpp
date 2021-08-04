@@ -80,7 +80,10 @@ void StatusBar::update()
         }
         //auto format_size = g_format_size(size);
         //Calculated by 1024 bytes
-        auto format_size = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
+        auto format_size_GIB = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
+        QString format_size(format_size_GIB);
+        //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+        format_size.replace("iB", "B");
 
         if (selections.count() == 1) {
             if (directoryCount == 1)
@@ -101,7 +104,7 @@ void StatusBar::update()
 
         m_label->setText(tr("%1 selected").arg(selections.count()) + directoriesString + filesString);
         //showMessage(tr("%1 files selected ").arg(selections.count()));
-        g_free(format_size);
+        g_free(format_size_GIB);
     } else {
         m_label->setText(m_window->getCurrentUri());
         //showMessage(m_window->getCurrentUri());

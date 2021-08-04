@@ -313,17 +313,17 @@ std::shared_ptr<Volume> ComputerPropertiesPage::EnumerateOneVolumeByTargetUri(QS
 
 QString ComputerPropertiesPage::formatCapacityString(quint64 capacityNum)
 {
-    char *strGB = g_format_size_full(capacityNum, G_FORMAT_SIZE_DEFAULT);
+//    char *strGB = g_format_size_full(capacityNum, G_FORMAT_SIZE_DEFAULT);
     char *strGiB = g_format_size_full(capacityNum, G_FORMAT_SIZE_IEC_UNITS);
 
-    QString formatString("");
-    formatString = QString("%1%2%3%4").arg(strGB).arg(" (").arg(strGiB).arg(")");
+//    QString formatString("");
+//    formatString = QString("%1%2%3%4").arg(strGB).arg(" (").arg(strGiB).arg(")");
 
-//    QString format_string(strGiB);
+    QString formatString(strGiB);
     //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
-//    format_string.replace("iB", "B");
+    formatString.replace("iB", "B");
 
-    g_free(strGB);
+//    g_free(strGB);
     g_free(strGiB);
 
     return formatString;
