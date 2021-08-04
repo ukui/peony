@@ -27,6 +27,7 @@
 #include <QDialog>
 #include <QPoint>
 #include <QMouseEvent>
+#include <QGSettings>
 
 namespace Ui {
 class AboutDialog;
@@ -48,6 +49,10 @@ private Q_SLOTS:
 
 private:
     Ui::AboutDialog *ui;
+    QGSettings *m_gSettings;
+    void setSupportText();
+    //颜色转换
+    QString convertRGB16HexStr(const QColor &color);
 };
 
 #endif // ABOUTDIALOG_H
