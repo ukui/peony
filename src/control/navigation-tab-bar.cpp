@@ -165,7 +165,12 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 void NavigationTabBar::tabRemoved(int index)
 {
     //qDebug()<<"tab removed"<<index;
+    QString uri = tabData(index).toString();
+
     QTabBar::tabRemoved(index);
+
+    Q_EMIT pageRemoved(uri);
+
     if (count() == 0) {
         Q_EMIT closeWindowRequest();
     }

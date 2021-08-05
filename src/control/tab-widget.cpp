@@ -99,6 +99,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &QTabBar::currentChanged, this, &TabWidget::changeCurrentIndex);
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
     connect(m_tab_bar, &QTabBar::tabCloseRequested, this, &TabWidget::removeTab);
+    connect(m_tab_bar, &NavigationTabBar::pageRemoved, this, [this]{
+        updateTabBarGeometry();
+    });
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, [this]{
@@ -1291,7 +1294,7 @@ void TabWidget::removeTab(int index)
     if (m_stack->count() > 0)
         Q_EMIT activePageChanged();
 
-    updateTabBarGeometry();
+    //updateTabBarGeometry();
 }
 
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)

@@ -42,6 +42,7 @@ public:
 
 Q_SIGNALS:
     void pageAdded(const QString &uri);
+    void pageRemoved(const QString &uri);
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
