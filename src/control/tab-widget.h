@@ -266,6 +266,8 @@ private:
     QStringList m_file_size_list = {tr("all"),tr("empty(0K)"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-128M)"), tr("big(128M-1G)"),tr("large(1-4G)"),tr("great(>4G)")};
 
     bool m_first_add_page = true;
+
+    std::shared_ptr<Peony::FileInfo> m_search_button_info;
 };
 
 class PreviewPageContainer : public QStackedWidget
