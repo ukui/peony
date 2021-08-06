@@ -47,6 +47,7 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
     auto userShareManager = UserShareInfoManager::getInstance();
     connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
     connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
+    connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
 }
 
 QString SideBarNetWorkItem::uri()
@@ -157,6 +158,28 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
         m_children->removeOne(item);
     }
     return;
+}
+
+void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
+{
+   if(add){
+       SideBarNetWorkItem *item = new SideBarNetWorkItem(server,
+                                                         "network-workgroup-symbolic",
+                                                         server,
+                                                         this,
+                                                         m_model, this);
+
+       m_children->append(item);
+       m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+    }
+   else{
+       for (auto item : *m_children){
+           if(item->uri()!= server)
+               continue;
+           m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+           m_children->removeOne(item);
+   }
+    }
 }
 
 SharedDirectoryInfoThread::SharedDirectoryInfoThread(QVector<SideBarAbstractItem *> *children, SideBarModel *model,

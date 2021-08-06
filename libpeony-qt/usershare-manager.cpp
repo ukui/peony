@@ -1,7 +1,5 @@
 
 #include "usershare-manager.h"
-//#include "share-properties-page-plugin.h"
-//#include <glib.h>
 
 #include <QDebug>
 #include <QProcess>

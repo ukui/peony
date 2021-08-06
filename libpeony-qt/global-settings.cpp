@@ -204,6 +204,11 @@ void GlobalSettings::forceSync(const QString &key)
     }
 }
 
+void GlobalSettings::slot_updateRemoteServer(const QString& server, bool add)
+{
+    Q_EMIT signal_updateRemoteServer(server, add);
+}
+
 void GlobalSettings::setTimeFormat(const QString &value)
 {
     if (value == "12"){

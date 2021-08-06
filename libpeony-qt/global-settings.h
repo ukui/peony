@@ -87,6 +87,7 @@ public:
 
 Q_SIGNALS:
     void valueChanged(const QString &key);
+    void signal_updateRemoteServer(const QString& server, bool add);
 
 public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
@@ -104,6 +105,7 @@ public Q_SLOTS:
      * keep same. this may be used in out progress, such as peony-qt-desktop.
      */
     void forceSync(const QString &key = nullptr);
+    void slot_updateRemoteServer(const QString& server, bool add);
 
 private:
     explicit GlobalSettings(QObject *parent = nullptr);

@@ -109,6 +109,7 @@ public:
 public Q_SLOTS:
     void slot_addSharedFolder(const ShareInfo& shareInfo, bool successed);
     void slot_deleteSharedFolder(const QString& originalPath, bool successed);
+    void slot_updateRemoteServer(const QString& server, bool add);
 
 private:
     QString m_uri;

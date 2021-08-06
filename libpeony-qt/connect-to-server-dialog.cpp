@@ -71,6 +71,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     m_ip_edit->setFixedWidth(194);
     m_port_label->setFixedHeight(36);
     m_port_editor->setFixedHeight(36);
+    m_port_editor->setFixedWidth(65);
     m_remote_type_label->setFixedHeight(36);
     m_remote_type_edit->setFixedHeight(36);
     m_remote_type_edit->addItems(*m_remote_type);
@@ -137,8 +138,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     }
 
     connect(m_btn_add, &QPushButton::clicked, this, [=] (bool checked) {
-        addUri(uri());
-
+        addUri(uri());        
         Q_UNUSED(checked);
     });
 
@@ -160,7 +160,6 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
             m_favorite_list->setCurrentItem(m_favorite_widgets[*(m_favorite_uri.begin())]);
         }
         m_favorite_list->update();
-
         Q_UNUSED(checked);
     });
 
@@ -204,6 +203,7 @@ void ConnectServerDialog::syncUri()
 {
     GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.values()));
     GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
+
 }
 
 void ConnectServerDialog::setUri(QString uri)
@@ -242,6 +242,7 @@ void ConnectServerDialog::addUri(QString uri)
         m_favorite_list->setCurrentItem(item);
 
         syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(url.toDisplayString(), true);
     }
 }
 
@@ -259,6 +260,7 @@ void ConnectServerDialog::removeUri(QString uri)
     if (m_favorite_uri.contains(removeUrl)) {
         m_favorite_uri.remove(removeUrl);
         syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(removeUrl,false);
     }
 
     if (m_favorite_widgets.contains(removeUrl)) {
