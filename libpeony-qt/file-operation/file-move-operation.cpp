@@ -155,6 +155,14 @@ void FileMoveOperation::move()
 
     operationPrepared();
 
+    if (!errNode.isEmpty()) {
+        if (m_move_action == Qt::TargetMoveAction) {
+            m_info.get()->m_type = FileOperationInfo::Move;
+        } else {
+            m_info.get()->m_type = FileOperationInfo::Copy;
+            m_info.get()->m_opposite_type = FileOperationInfo::Delete;
+        }
+    }
     for (auto node : errNode) {
         if (isCancelled())
             return;
@@ -393,30 +401,6 @@ void FileMoveOperation::move()
         delete file;
     }
     nodes.clear();
-}
-
-void FileMoveOperation::moveForceUseFallback(FileNode* node)
-{
-    if (isCancelled() || nullptr == node)
-        return;
-
-    operationPrepared();
-
-    copyRecursively(node);
-
-    if (isCancelled()) {
-        Q_EMIT operationStartRollbacked();
-    }
-
-    if (!m_copy_move) {
-        deleteRecursively(node);
-    }
-
-    node->setState(FileNode::Handled);
-
-    if (isCancelled()) {
-        rollbackNodeRecursively(node);
-    }
 }
 
 void FileMoveOperation::rollbackNodeRecursively(FileNode *node)
@@ -983,6 +967,30 @@ void FileMoveOperation::moveForceUseFallback()
     }
 
     nodes.clear();
+}
+
+void FileMoveOperation::moveForceUseFallback(FileNode* node)
+{
+    if (isCancelled() || nullptr == node)
+        return;
+
+    operationPrepared();
+
+    copyRecursively(node);
+
+    if (isCancelled()) {
+        Q_EMIT operationStartRollbacked();
+    }
+
+    if (m_move_action == Qt::TargetMoveAction) {
+        deleteRecursively(node);
+    }
+
+    node->setState(FileNode::Handled);
+
+    if (isCancelled()) {
+        rollbackNodeRecursively(node);
+    }
 }
 
 bool FileMoveOperation::isValid()
