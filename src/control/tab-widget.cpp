@@ -748,7 +748,8 @@ void TabWidget::updateSearchBar(bool showSearch)
         updateFilter();
     }
 
-    enableSearchBar(false);
+    //9X0 changes, set default as true, fix bug#70916
+    enableSearchBar(true);
 }
 
 void TabWidget::updateButtons()

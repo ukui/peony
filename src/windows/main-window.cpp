@@ -947,7 +947,8 @@ void MainWindow::updateSearch(const QString &uri, const QString &key, bool updat
 {
     qDebug() << "updateSearch:" <<uri <<key <<updateKey;
     bool needUpdate = false;
-    m_tab->enableSearchBar(key.length() != 0);
+    //coment 9X0 changes, fix bug#70916
+    //m_tab->enableSearchBar(key.length() != 0);
     if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
     {
        //qDebug() << "updateSearch:" <<uri;
