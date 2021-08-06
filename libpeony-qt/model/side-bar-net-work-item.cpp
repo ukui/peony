@@ -25,6 +25,7 @@
 #include "global-settings.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "connect-to-server-dialog.h"
 
 #include <QDebug>
 #include <QProcess>
@@ -43,7 +44,9 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
         m_displayName(displayName),
         m_parentItem(parentItem)
 {
-
+    auto userShareManager = UserShareInfoManager::getInstance();
+    connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
+    connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
 }
 
 QString SideBarNetWorkItem::uri()
@@ -91,14 +94,14 @@ void SideBarNetWorkItem::findChildren()
     //只有根节点才设置子节点
     if (m_parentItem == nullptr) {
         clearChildren();
+        findRemoteServers();
 
         //获取共享文件夹很慢，所以使用单独的线程处理 - Obtaining shared folders is slow, so use a separate thread for processing
         SharedDirectoryInfoThread *thread = new SharedDirectoryInfoThread(m_children, m_model, this);
 
         connect(thread, &SharedDirectoryInfoThread::querySharedInfoFinish, this, [=]() {
             delete thread;
-            findRemoteServers();
-            m_model->insertRows(0, m_children->count(), firstColumnIndex());
+            m_model->insertRows(0, m_children->count(), this->firstColumnIndex());
         });
 
         thread->start();
@@ -119,10 +122,41 @@ void SideBarNetWorkItem::findRemoteServers()
                                                                   this,
                                                                   m_model, this);
 
-                m_children->append(item);
+                m_children->append(item);                
             }
         }
     }
+}
+
+void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool successed)
+{
+    if (!successed)
+        return;
+
+    if (!shareInfo.originalPath.isEmpty()) {
+        SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + shareInfo.originalPath,
+                                                          "inode-directory",
+                                                          shareInfo.name,
+                                                          this,
+                                                          m_model, this);
+
+        m_children->append(item);
+        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+    }
+    return;
+}
+
+void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bool successed)
+{
+    if(!successed)
+        return;
+    for (auto item : *m_children){
+        if(item->uri()!="file://" + originalPath)
+            continue;
+        m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+        m_children->removeOne(item);
+    }
+    return;
 }
 
 SharedDirectoryInfoThread::SharedDirectoryInfoThread(QVector<SideBarAbstractItem *> *children, SideBarModel *model,

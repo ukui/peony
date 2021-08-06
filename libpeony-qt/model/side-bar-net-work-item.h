@@ -25,6 +25,7 @@
 
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
+#include "usershare-manager.h"
 
 #include <QModelIndex>
 #include <QThread>
@@ -105,13 +106,16 @@ public:
 
     void findRemoteServers();
 
+public Q_SLOTS:
+    void slot_addSharedFolder(const ShareInfo& shareInfo, bool successed);
+    void slot_deleteSharedFolder(const QString& originalPath, bool successed);
+
 private:
     QString m_uri;
     QString m_iconName;
     QString m_displayName;
 
     SideBarAbstractItem *m_parentItem  = nullptr;
-
 };
 
 class SharedDirectoryInfoThread : public QThread {

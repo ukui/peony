@@ -19,7 +19,8 @@ HEADERS += \
     $$PWD/file-meta-info.h              \
     $$PWD/bookmark-manager.h            \
     $$PWD/sync-thread.h                 \
-    $$PWD/volumeManager.h
+    $$PWD/volumeManager.h               \
+    $$PWD/usershare-manager.h
 
 SOURCES += \
     $$PWD/file-info.cpp                 \
@@ -39,7 +40,8 @@ SOURCES += \
     $$PWD/file-meta-info.cpp            \
     $$PWD/bookmark-manager.cpp          \
     $$PWD/sync-thread.cpp               \
-    $$PWD/volumeManager.cpp
+    $$PWD/volumeManager.cpp		\
+    $$PWD/usershare-manager.cpp
 
 FORMS += \
     $$PWD/connect-server-dialog.ui
