@@ -26,9 +26,9 @@
 
 using namespace Peony;
 
-SideBarAbstractItem::SideBarAbstractItem(SideBarModel *model, QObject *parent) : QObject(parent)
+SideBarAbstractItem::SideBarAbstractItem(SideBarModel *model, QObject *parent) :
+    QObject(parent),m_model(model)
 {
-    m_model = model;
     m_children = new QVector<SideBarAbstractItem*>();
 
     connect(this, &SideBarAbstractItem::queryInfoFinished, m_model, [=](){

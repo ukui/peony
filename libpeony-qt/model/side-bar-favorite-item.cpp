@@ -36,91 +36,19 @@ using namespace Peony;
 
 bool kydroidInstall = false;
 QString kydroidPath = "kydroid:///";
+static const char* localFileSystemPath = "file://";
 
-SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
-        SideBarFavoriteItem *parentItem,
-        SideBarModel *model,
-        QObject *parent) : SideBarAbstractItem (model, parent)
+SideBarFavoriteItem::SideBarFavoriteItem(QString uri,SideBarFavoriteItem *parentItem,
+                                         SideBarModel *model, QObject *parent) :
+    SideBarAbstractItem (model, parent),m_parent(parentItem),m_uri(uri)
+
 {
-    m_parent = parentItem;
     m_is_root_child = m_parent == nullptr;
     if (m_is_root_child) {
-        m_uri = "favorite:///";
-        m_display_name = tr("Favorite");
-        //m_icon_name = "emblem-favorite";
-        //top dir don't show icon
-        m_icon_name = "";
-
-        QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        QString videoUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-        QString pictureUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-        QString downloadUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QString musicUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-        QString docUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-        QString homeUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-
-        auto homeItem = new SideBarFavoriteItem(homeUri, this, m_model);
-        auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
-        auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
-        auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
-        auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
-        auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
-        auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
-        auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
-
-        m_children->append(homeItem);
-        m_children->append(desktopItem);
-        m_children->append(docItem);
-        m_children->append(musicItem);
-        m_children->append(downloadItem);
-        m_children->append(pictureItem);
-        m_children->append(videoItem);
-        m_children->append(trashItem);
-
-        if (FileUtils::isFileExsit("file:///data/usershare")) {
-            m_children->append(new SideBarFavoriteItem("favorite:///data/usershare?schema=file", this, m_model));
-        }
-
-        // check kydroid is install
-        if (FileUtils::isFileExsit("file:///var/lib/kydroid") || FileUtils::isFileExsit("file:///var/lib/kmre")) {
-            GVfs* vfs = g_vfs_get_default();
-            if (vfs) {
-                const gchar* const* schemas = g_vfs_get_supported_uri_schemes (vfs);
-                if (schemas) {
-                    int i = 0;
-                    for (; schemas[i] != NULL; ++i) {
-                        if (0 == strcmp(schemas[i], "kydroid")) {
-                            kydroidInstall = true;
-                            kydroidPath = "kydroid:///";
-                            break;
-                        }
-                        else if(0 == strcmp(schemas[i], "kmre"))
-                        {
-                            kydroidInstall = true;
-                            kydroidPath = "kmre:///";
-                            break;
-                        }
-                    }
-                }
-            }
-            if (kydroidInstall)
-                m_children->append(new SideBarFavoriteItem(kydroidPath, this, m_model));
-        }
-
-        m_model->insertRows(0, m_children->count(), firstColumnIndex());
-        //TODO: support custom bookmarks.
-        auto bookmark = BookMarkManager::getInstance();
-        if (bookmark->isLoaded()) {
-            syncBookMark();
-        } else {
-            connect(bookmark, &BookMarkManager::urisLoaded, this, [=]() {
-                syncBookMark();
-                disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
-            });
-        }
+        initChildren();
         return;
     }
-    m_uri = uri;
+
     //FIXME: replace BLOCKING api in ui thread.
     GFile* file = g_file_new_for_uri(m_uri.toUtf8().constData());
     if (nullptr != file) {
@@ -148,6 +76,80 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         Q_EMIT this->queryInfoFinished();
     });
     infoJob->queryAsync();
+}
+
+void SideBarFavoriteItem::initChildren()
+{
+    m_uri = "favorite:///";
+    m_display_name = tr("Favorite");
+
+    QString desktopUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString videoUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString pictureUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString downloadUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QString musicUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString docUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString homeUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    auto homeItem = new SideBarFavoriteItem(homeUri, this, m_model);
+    auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
+    auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
+    auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
+    auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
+    auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
+    auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
+    auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
+
+    m_children->append(homeItem);
+    m_children->append(desktopItem);
+    m_children->append(docItem);
+    m_children->append(musicItem);
+    m_children->append(downloadItem);
+    m_children->append(pictureItem);
+    m_children->append(videoItem);
+    m_children->append(trashItem);
+
+    if (FileUtils::isFileExsit("file:///data/usershare")) {
+        m_children->append(new SideBarFavoriteItem("favorite:///data/usershare?schema=file", this, m_model));
+    }
+
+    // check kydroid is install
+    if (FileUtils::isFileExsit("file:///var/lib/kydroid") || FileUtils::isFileExsit("file:///var/lib/kmre")) {
+        GVfs* vfs = g_vfs_get_default();
+        if (vfs) {
+            const gchar* const* schemas = g_vfs_get_supported_uri_schemes (vfs);
+            if (schemas) {
+                int i = 0;
+                for (; schemas[i] != NULL; ++i) {
+                    if (0 == strcmp(schemas[i], "kydroid")) {
+                        kydroidInstall = true;
+                        kydroidPath = "kydroid:///";
+                        break;
+                    }
+                    else if(0 == strcmp(schemas[i], "kmre"))
+                    {
+                        kydroidInstall = true;
+                        kydroidPath = "kmre:///";
+                        break;
+                    }
+                }
+            }
+        }
+        if (kydroidInstall)
+            m_children->append(new SideBarFavoriteItem(kydroidPath, this, m_model));
+    }
+
+    m_model->insertRows(0, m_children->count(), firstColumnIndex());
+    //TODO: support custom bookmarks.
+    auto bookmark = BookMarkManager::getInstance();
+    if (bookmark->isLoaded()) {
+        syncBookMark();
+    } else {
+        connect(bookmark, &BookMarkManager::urisLoaded, this, [=]() {
+            syncBookMark();
+            disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
+        });
+    }
 }
 
 SideBarAbstractItem::Type SideBarFavoriteItem::type() {
@@ -189,6 +191,8 @@ QModelIndex SideBarFavoriteItem::lastColumnIndex()
     //TODO: bind with model
     return m_model->lastColumnIndex(this);
 }
+
+
 
 void SideBarFavoriteItem::syncBookMark()
 {
