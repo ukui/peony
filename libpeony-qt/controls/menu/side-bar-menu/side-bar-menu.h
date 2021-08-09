@@ -41,7 +41,7 @@ protected:
     const QList<QAction *> constructFavoriteActions();
     const QList<QAction *> constructPersonalActions();
     const QList<QAction *> constructFileSystemItemActions();
-
+    const QList<QAction *> constructNetWorkItemActions();
 private:
     SideBarAbstractItem *m_item;
     SideBar *m_side_bar;

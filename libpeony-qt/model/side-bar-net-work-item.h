@@ -59,20 +59,11 @@ public:
 
     bool hasChildren() override;
 
-    bool isRemoveable() override
-    {
-        return false;
-    }
+    bool isRemoveable() override;
 
-    bool isEjectable() override
-    {
-        return false;
-    }
+    bool isEjectable() override;
 
-    bool isMountable() override
-    {
-        return false;
-    }
+    bool isMountable() override;
 
     bool isMounted() override
     {

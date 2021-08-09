@@ -129,8 +129,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
     }
 
-    if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
-        setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
+    if (m_cache.value(REMOTE_SERVER_REMOTE_IP).isNull()) {
+        setValue(REMOTE_SERVER_REMOTE_IP, QVariant(QList<QString>()));
     }
 }
 

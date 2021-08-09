@@ -155,8 +155,15 @@ void SideBarFileSystemItem::findChildren()
                 if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
                     isEmpty = false;
                 }
-                //skip the independent files
-                if (!(info->isDir() || info->isVolume())) {
+
+                auto targetUri = FileUtils::getTargetUri(info->uri());
+
+                //skip the independent files and remote server
+                bool bRemoteServer=false;
+                if(targetUri.startsWith("ftp://")||targetUri.startsWith("sftp://")||targetUri.startsWith("samba://"))
+                    bRemoteServer=true;
+
+                if (!(info->isDir() || info->isVolume())||bRemoteServer) {
                     real_children_count--;
                     continue;
                 }
@@ -167,7 +174,7 @@ void SideBarFileSystemItem::findChildren()
                                                                         this);
                 //check is mounted.
                 //FIXME: replace BLOCKING api in ui thread.
-                auto targetUri = FileUtils::getTargetUri(info->uri());
+
                 bool isUmountable = FileUtils::isFileUnmountable(info->uri());
                 item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
                 m_children->append(item);
