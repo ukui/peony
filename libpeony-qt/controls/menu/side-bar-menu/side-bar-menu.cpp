@@ -66,6 +66,9 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
         constructFileSystemItemActions();
         break;
     }
+    case SideBarAbstractItem::NetWorkItem: {
+        break;
+    }
     default: {
         auto action = addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         action->setEnabled(false);
