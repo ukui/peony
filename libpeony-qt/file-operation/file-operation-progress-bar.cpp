@@ -91,6 +91,10 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
 
     showMore();
 
+    if (m_progress_size > 0 && !isHidden()) {
+        setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    }
+
     return proc;
 }
 
@@ -132,9 +136,12 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     progress->deleteLater();
     delete li;
 
+    showMore();
+
     if (m_progress_size <= 0) {
         m_progress_size = 0;
         m_current_main = nullptr;
+        setWindowState(Qt::WindowNoState);
         hide();
     }
 
@@ -146,6 +153,8 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
     m_current_main = nullptr;
     setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
+
+    setWindowOpacity(0.9999);
 
     setProperty("useCustomShadow", true);
     setProperty("customShadowDarkness", 0.5);
