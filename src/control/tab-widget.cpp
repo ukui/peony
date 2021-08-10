@@ -521,9 +521,10 @@ void TabWidget::addNewConditionBar()
         classifyCombox->hide();
         linkLabel->setText(tr("contains"));
         //adjust label width to language
+        //use 1.5 rate width to fix big size font issue, link to bug#58824
         QLocale locale;
         if (locale.language() == QLocale::Chinese)
-            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+            linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
         else
             linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
@@ -542,9 +543,10 @@ void TabWidget::addNewConditionBar()
             inputBox->show();
             linkLabel->setText(tr("contains"));
             //adjust label width to language
+            //use 1.5 rate width to fix big size font issue, link to bug#58824
             QLocale locale;
             if (locale.language() == QLocale::Chinese)
-                linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+                linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
             else
                 linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         }
