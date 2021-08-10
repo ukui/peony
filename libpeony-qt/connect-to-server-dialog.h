@@ -85,6 +85,7 @@ private:
     QMap<QString, QListWidgetItem*> m_favorite_widgets;
 };
 
+
 class PEONYCORESHARED_EXPORT ConnectServerLogin : public QDialog
 {
     friend class MountOperation;
@@ -98,6 +99,9 @@ public:
     QString password();
     bool anonymous();
     bool savePassword();
+
+public Q_SLOTS:
+    void slot_syncRemoteServer();
 
 private:
     float           m_widget_margin         = 24;
@@ -123,6 +127,9 @@ private:
     QPushButton*    m_btn_cancel            = nullptr;
     QPushButton*    m_btn_ok                = nullptr;
     QHBoxLayout*    m_btn_layout            = nullptr;
+
+    QString m_remoteIP;
 };
+
 };
 #endif // CONNECTTOSERVERDIALOG_H

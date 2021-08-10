@@ -25,6 +25,7 @@
 #include "global-settings.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "connect-to-server-dialog.h"
 
 #include <QDebug>
 #include <QProcess>
@@ -43,7 +44,10 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
         m_displayName(displayName),
         m_parentItem(parentItem)
 {
-
+    auto userShareManager = UserShareInfoManager::getInstance();
+    connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
+    connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
+    connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
 }
 
 QString SideBarNetWorkItem::uri()
@@ -66,6 +70,64 @@ bool SideBarNetWorkItem::hasChildren()
     return (m_parentItem == nullptr);
 }
 
+bool SideBarNetWorkItem::isRemoveable()
+{
+    if (!m_uri.startsWith("file://")) {
+        //FIXME: replace BLOCKING api in ui thread.
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        bool removable = info->canEject() || info->canStop();
+        if (!removable && !info.get()->unixDeviceFile().isEmpty()) {
+            // check if drive is removable
+            auto targetUri = info.get()->targetUri();
+            auto targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
+            auto mount = g_file_find_enclosing_mount(targetFile, nullptr, nullptr);
+            g_object_unref(targetFile);
+            if (mount) {
+                auto drive = g_mount_get_drive(mount);
+                if (drive) {
+                    removable = g_drive_is_removable(drive);
+                    g_object_unref(drive);
+                }
+                g_object_unref(mount);
+            }
+            return removable;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool SideBarNetWorkItem::isEjectable()
+{
+    if (!m_uri.startsWith("file://")){
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        return isRemoveable();
+      }
+    return false;
+}
+
+bool SideBarNetWorkItem::isMountable()
+{
+    if (!m_uri.startsWith("file://")){
+        auto info = FileInfo::fromUri(m_uri);
+        if (info->displayName().isEmpty()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        return info->canMount() || info->canUnmount();
+    }
+  return false;
+}
+
 QModelIndex SideBarNetWorkItem::firstColumnIndex()
 {
     return m_model->firstColumnIndex(this);
@@ -85,31 +147,31 @@ void SideBarNetWorkItem::findChildrenAsync()
 {
     findChildren();
 }
-
+#include "file-enumerator.h"
+#include "file-utils.h"
 void SideBarNetWorkItem::findChildren()
 {
     //只有根节点才设置子节点
     if (m_parentItem == nullptr) {
         clearChildren();
-
         //获取共享文件夹很慢，所以使用单独的线程处理 - Obtaining shared folders is slow, so use a separate thread for processing
         SharedDirectoryInfoThread *thread = new SharedDirectoryInfoThread(m_children, m_model, this);
 
         connect(thread, &SharedDirectoryInfoThread::querySharedInfoFinish, this, [=]() {
             delete thread;
-            findRemoteServers();
             m_model->insertRows(0, m_children->count(), firstColumnIndex());
         });
-
+        findRemoteServers();
         thread->start();
     }
+
 }
 
 void SideBarNetWorkItem::findRemoteServers()
 {
     if (m_parentItem == nullptr) {
         //获取连接过的服务器
-        QStringList remoteServerList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_IP).toStringList();
+        QStringList remoteServerList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
 
         for (const QString& remoteServer : remoteServerList) {
             if (!remoteServer.isEmpty()) {
@@ -122,6 +184,59 @@ void SideBarNetWorkItem::findRemoteServers()
                 m_children->append(item);
             }
         }
+    }
+}
+
+void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool successed)
+{
+    if (!successed)
+        return;
+
+    if (!shareInfo.originalPath.isEmpty()) {
+        SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + shareInfo.originalPath,
+                                                          "inode-directory",
+                                                          shareInfo.name,
+                                                          this,
+                                                          m_model, this);
+
+        m_children->append(item);
+        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+    }
+    return;
+}
+
+void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bool successed)
+{
+    if(!successed)
+        return;
+    for (auto item : *m_children){
+        if(item->uri()!="file://" + originalPath)
+            continue;
+        m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+        m_children->removeOne(item);
+    }
+    return;
+}
+
+void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
+{
+   if(add){
+       SideBarNetWorkItem *item = new SideBarNetWorkItem(server,
+                                                         "network-workgroup-symbolic",
+                                                         server,
+                                                         this,
+                                                         m_model, this);
+
+       m_children->append(item);
+       m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+    }
+   else{
+       for (auto item : *m_children){
+           if(item->uri()!= server)
+               continue;
+           m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+           m_children->removeOne(item);
+   }
     }
 }
 

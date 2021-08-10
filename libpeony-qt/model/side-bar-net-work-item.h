@@ -25,6 +25,7 @@
 
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
+#include "usershare-manager.h"
 
 #include <QModelIndex>
 #include <QThread>
@@ -58,20 +59,11 @@ public:
 
     bool hasChildren() override;
 
-    bool isRemoveable() override
-    {
-        return false;
-    }
+    bool isRemoveable() override;
 
-    bool isEjectable() override
-    {
-        return false;
-    }
+    bool isEjectable() override;
 
-    bool isMountable() override
-    {
-        return false;
-    }
+    bool isMountable() override;
 
     bool isMounted() override
     {
@@ -105,13 +97,17 @@ public:
 
     void findRemoteServers();
 
+public Q_SLOTS:
+    void slot_addSharedFolder(const ShareInfo& shareInfo, bool successed);
+    void slot_deleteSharedFolder(const QString& originalPath, bool successed);
+    void slot_updateRemoteServer(const QString& server, bool add);
+
 private:
     QString m_uri;
     QString m_iconName;
     QString m_displayName;
 
     SideBarAbstractItem *m_parentItem  = nullptr;
-
 };
 
 class SharedDirectoryInfoThread : public QThread {

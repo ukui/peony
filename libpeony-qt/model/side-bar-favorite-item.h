@@ -61,6 +61,9 @@ public:
         return m_parent;
     }
 
+private:
+    void initChildren();
+
 public Q_SLOTS:
     void eject(GMountUnmountFlags ejectFlag) override {}
     void unmount() override {}
@@ -74,13 +77,14 @@ public Q_SLOTS:
 
 private:
     void syncBookMark();
+    QString getTargetUri(const QString& uri);
 
     SideBarFavoriteItem *m_parent = nullptr;
 
     bool m_is_root_child = false;
-    QString m_uri = nullptr;
-    QString m_display_name = nullptr;
-    QString m_icon_name = nullptr;
+    QString m_uri;
+    QString m_display_name;
+    QString m_icon_name;
 };
 
 }

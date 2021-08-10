@@ -67,6 +67,7 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
         break;
     }
     case SideBarAbstractItem::NetWorkItem: {
+        constructNetWorkItemActions();
         break;
     }
     default: {
@@ -80,12 +81,14 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
 const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
+
     l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete Symbolic"), [=]() {
         BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
+
     if (!m_item->firstColumnIndex().parent().isValid()) {
         l.last()->setEnabled(false);
-    } else if (m_item->firstColumnIndex().row() < 3) {
+    } else if (m_item->firstColumnIndex().row() < 10) {
         l.last()->setEnabled(false);
     }
     else if (m_uri == "file:///data/usershare" || m_uri == "kmre://" || m_uri == "kydroid://")
@@ -200,5 +203,50 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
           l.last()->setEnabled(false);
     }
     return l;
+}
+
+const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
+{
+    QList<QAction *> l;
+
+    auto info = FileInfo::fromUri(m_uri);
+    if (info->displayName().isEmpty()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
+
+    if (!m_uri.startsWith("file://")) {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
+            m_item->unmount();
+        });
+        bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
+        bool isMounted = isUmountable;
+        auto targetUri = FileUtils::getTargetUri(m_item->uri());
+        if (!targetUri.isEmpty()) {
+            if (targetUri == "burn:///") {
+                isMounted = false;
+            } else {
+                isMounted = (targetUri != "file:///") || isUmountable;
+            }
+        }
+
+        l.last()->setEnabled(isMounted);
+    }
+
+    if (m_item->isRemoveable()&&!m_uri.startsWith("file://")) {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
+            m_item->eject(G_MOUNT_UNMOUNT_NONE);
+        });
+
+        l.last()->setEnabled(m_item->isMounted());
+    }
+
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
+        PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+        w->show();
+    });
+
+    return l;
+
 }
 

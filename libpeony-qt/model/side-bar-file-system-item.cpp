@@ -49,22 +49,17 @@ void notifyUser(QString notifyContent);
 SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
                                              SideBarFileSystemItem *parentItem,
                                              SideBarModel *model,
-                                             QObject *parent) : SideBarAbstractItem (model, parent)
+                                             QObject *parent) :
+    SideBarAbstractItem (model, parent),
+    m_uri(uri),m_parent(parentItem)
 {
-    m_parent = parentItem;
-
     if (parentItem == nullptr) {
         m_is_root_child = true;
         m_uri = "computer:///";
-        m_display_name = tr("Computer");
-        //m_icon_name = "computer";
-        //top dir don't show icon
+        m_display_name = tr("Computer");        
         m_icon_name = "";
-
-        //m_watcher->setMonitorChildrenChange();
-        //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
-    } else {
-        m_uri = uri;
+    }
+    else {
         m_info = FileInfo::fromUri(uri);
         auto infoJob = new FileInfoJob(m_info);
         infoJob->setAutoDelete();
@@ -78,6 +73,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
             FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
             Q_EMIT this->queryInfoFinished();
         });
+
         infoJob->queryAsync();
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
@@ -162,8 +158,15 @@ void SideBarFileSystemItem::findChildren()
                 if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
                     isEmpty = false;
                 }
-                //skip the independent files
-                if (!(info->isDir() || info->isVolume())) {
+
+                auto targetUri = FileUtils::getTargetUri(info->uri());
+
+                //skip the independent files and remote server
+                bool bRemoteServer=false;
+                if(targetUri.startsWith("ftp://")||targetUri.startsWith("sftp://")||targetUri.startsWith("samba://"))
+                    bRemoteServer=true;
+
+                if (!(info->isDir() || info->isVolume())||bRemoteServer) {
                     real_children_count--;
                     continue;
                 }
@@ -174,7 +177,7 @@ void SideBarFileSystemItem::findChildren()
                                                                         this);
                 //check is mounted.
                 //FIXME: replace BLOCKING api in ui thread.
-                auto targetUri = FileUtils::getTargetUri(info->uri());
+
                 bool isUmountable = FileUtils::isFileUnmountable(info->uri());
                 item->m_is_mounted = (!targetUri.isEmpty() && (targetUri != "file:///")) || isUmountable;
                 m_children->append(item);

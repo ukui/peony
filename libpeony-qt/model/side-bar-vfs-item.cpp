@@ -29,10 +29,11 @@
 
 using namespace Peony;
 
-SideBarVFSItem::SideBarVFSItem(VFSPluginIface *plugin, SideBarModel *model, QObject *parent) : SideBarAbstractItem(model, parent)
+SideBarVFSItem::SideBarVFSItem(VFSPluginIface *plugin, SideBarModel *model, QObject *parent) :
+    SideBarAbstractItem(model, parent),
+    m_plugin(plugin)
 {
-    m_plugin = plugin;
-    m_model = model;
+
 }
 
 QString SideBarVFSItem::uri()

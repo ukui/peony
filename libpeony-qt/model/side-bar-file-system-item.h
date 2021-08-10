@@ -100,9 +100,9 @@ private:
     SideBarFileSystemItem *m_parent = nullptr;
 
     bool m_is_root_child = false;
-    QString m_uri = nullptr;
-    QString m_display_name = nullptr;
-    QString m_icon_name = nullptr;
+    QString m_uri;
+    QString m_display_name;
+    QString m_icon_name;
 
     bool m_is_removeable = false;
     bool m_is_ejectable = false;

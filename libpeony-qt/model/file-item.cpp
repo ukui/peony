@@ -450,6 +450,7 @@ void FileItem::findChildrenAsync()
             });
             connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
                 this->onRenamed(oldUri, newUri);
+                BookMarkManager::getInstance()->bookmarkChanged(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
