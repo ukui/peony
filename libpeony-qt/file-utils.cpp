@@ -195,6 +195,9 @@ QString FileUtils::handleDuplicateName(const QString& uri)
 
 QString FileUtils::handleDesktopFileName(const QString& uri, const QString& displayName)
 {
+    //no need self handle, add return to fix bug#72642
+    return displayName;
+
     QString name = QUrl(uri).toDisplayString().split("/").last();
     QRegExp regExpNum("\\(\\d+\\)");
     auto showName = displayName;
