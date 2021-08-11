@@ -40,7 +40,6 @@ MountOperation::MountOperation(QString uri, QObject *parent) : QObject(parent)
     m_volume = g_file_new_for_uri(uri.toUtf8().constData());
     m_op = g_mount_operation_new();
     m_cancellable = g_cancellable_new();
-    //connect(this,&MountOperation::finished,m_dlg,&ConnectServerLogin::slot_syncRemoteServer);
 }
 
 MountOperation::~MountOperation()
@@ -118,7 +117,7 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
     } else{
-        //p_this->m_dlg->slot_syncRemoteServer();
+        p_this->m_dlg->slot_syncRemoteServer();
         p_this->finished(nullptr);
     }
 

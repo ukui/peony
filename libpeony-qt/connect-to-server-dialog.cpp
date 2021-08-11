@@ -150,6 +150,8 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
             m_port_editor->setEditText("445");
         } else if ("ftp" == type.toLower()) {
             m_port_editor->setEditText("21");
+        }else if ("sftp" == type.toLower()) {
+            m_port_editor->setEditText("22");
         }
     });
     Q_EMIT m_remote_type_edit->currentTextChanged("ftp");
@@ -371,8 +373,6 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     });
 
     connect(m_btn_cancel, &QPushButton::clicked, [=] () {
-
-        slot_syncRemoteServer();
         close();
     });
 
