@@ -14,8 +14,7 @@ class PEONYCORESHARED_EXPORT SyncThread : public QObject
 public:
     explicit SyncThread(QString uri, QObject *parent = nullptr);
 
-private:
-    void notifyUser(QString notifyContent);
+    static void notifyUser(QString notifyContent);
 
 Q_SIGNALS:
     void syncFinished();

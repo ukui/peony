@@ -59,16 +59,19 @@ public:
 
     bool hasChildren() override;
 
-    bool isRemoveable() override;
+    bool isRemoveable() override
+    {
+        return true;
+    }
 
-    bool isEjectable() override;
-
-    bool isMountable() override;
-
-    bool isMounted() override
+    bool isEjectable() override
     {
         return false;
     }
+
+    bool isMountable() override;
+
+    bool isMounted() override;
 
     QModelIndex firstColumnIndex() override;
 
@@ -83,11 +86,12 @@ public:
 
     void eject(GMountUnmountFlags ejectFlag) override {};
 
-    void unmount() override {};
+    void unmount() override;
+    void realUnmount();
 
     void format() override {};
 
-    void ejectOrUnmount() override {};
+    void ejectOrUnmount() override;
 
     void findChildren() override;
 

@@ -32,19 +32,16 @@
 #include "gobject-template.h"
 #include "linux-pwd-helper.h"
 #include "side-bar-separator-item.h"
+#include <udisks/udisks.h>
+#include <sys/stat.h>
 
 #include <QIcon>
 #include <QThread>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QUrl>
-#include <udisks/udisks.h>
-#include <sys/stat.h>
-#include <libnotify/notify.h>
 
 using namespace Peony;
-
-void notifyUser(QString notifyContent);
 
 SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
                                              SideBarFileSystemItem *parentItem,
@@ -377,7 +374,7 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
     connect(syncThread,&SyncThread::syncFinished,this,[=](){
         realEject(ejectFlag);
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
-        notifyUser(unmountNotify);
+        SyncThread::notifyUser(unmountNotify);
         syncThread->disconnect(this);
         syncThread->deleteLater();
         currentThread->disconnect(SIGNAL(started()));
@@ -431,7 +428,7 @@ static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) 
     } else {
         VolumeManager::getInstance()->fileUnmounted(*targetUri);
         unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
-        notifyUser(unmountNotify);
+        SyncThread::notifyUser(unmountNotify);
     }
     delete targetUri;
 }
@@ -458,7 +455,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     } else {
         VolumeManager::getInstance()->fileUnmounted(*targetUri);
         unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
-        notifyUser(unmountNotify);
+        SyncThread::notifyUser(unmountNotify);
     }
     delete targetUri;
 
@@ -603,7 +600,7 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
             g_free(uri);
 
         ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
-        notifyUser(ejectNotify);
+        SyncThread::notifyUser(ejectNotify);
         // remove item anyway
         /*int index = p_this->parent()->m_children->indexOf(p_this);
         p_this->m_model->beginRemoveRows(p_this->parent()->firstColumnIndex(), index, index);
@@ -647,18 +644,4 @@ void SideBarFileSystemItem::ejectDevicebyDrive(GObject* object,GAsyncResult* res
             g_error_free(error);
         }
     }
-}
-
-void notifyUser(QString notifyContent)
-{
-    NotifyNotification* notify;
-
-    notify_init(QObject::tr("PeonyNotify").toUtf8().constData());
-    notify  = notify_notification_new(QObject::tr("File Manager").toUtf8().constData(),
-                                      notifyContent.toUtf8().constData(),
-                                      "system-file-manager");
-    notify_notification_show(notify,nullptr);
-
-    notify_uninit();
-    g_object_unref(G_OBJECT(notify));
 }
