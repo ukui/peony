@@ -191,11 +191,16 @@ FileOperation *FileOperationUtils::moveWithAction(const QStringList &srcUris, co
             destDir = destUri;
         }
 
-        auto moveOp = new FileMoveOperation(srcUris, destDir);
-        moveOp->setAction(action);
+        if (action == Qt::CopyAction) {
+            // fix 71411
+            op = new FileCopyOperation(srcUris, destDir);
+        } else {
+            auto moveOp = new FileMoveOperation(srcUris, destDir);
+            moveOp->setAction(action);
+            op = moveOp;
+        }
 
-        op = moveOp;
-        fileOpMgr->startOperation(moveOp, addHistory);
+        fileOpMgr->startOperation(op, addHistory);
     } else {
         op = FileOperationUtils::trash(srcUris, true);
     }
