@@ -440,10 +440,11 @@ void FileItem::findChildrenAsync()
                     infoJob->setAutoDelete();
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
-                        auto info = FileInfo::fromUri(uri);
-                        if (info->isDesktopFile()) {
-                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
-                        }
+                        //comment to fix endless loop and can not rename issue, related to bug#72642
+//                        auto info = FileInfo::fromUri(uri);
+//                        if (info->isDesktopFile()) {
+//                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+//                        }
                     });
                     infoJob->queryAsync();
                 }
