@@ -631,13 +631,32 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"renamed";
 
-    FileItem *child = getChildFromUri(oldUri);
-    if (child) {
-       int index = m_children->indexOf(child);
-        m_children->at(index)->m_info= FileInfo::fromUri(newUri);
-        child->updateInfoAsync();
+    // note that some times new file has arealy in directory view,
+    // and there is no delete event triggered. for example. copy
+    // a .desktop file in current view. in this case there might
+    // be an outdated tmp file left.
+    //
+    // to avoid that we add an existing checkment, and handle old
+    // file with different situation.
+    auto newChild = getChildFromUri(newUri);
+    if (newChild) {
+        qDebug()<<"new child has arealy in view";
+        newChild->updateInfoAsync();
     }
 
+    FileItem *child = getChildFromUri(oldUri);
+    if (child) {
+        if (!newChild) {
+            int index = m_children->indexOf(child);
+            m_children->at(index)->m_info= FileInfo::fromUri(newUri);
+            child->updateInfoAsync();
+        } else {
+            m_model->beginRemoveRows(this->firstColumnIndex(), m_children->indexOf(child), m_children->indexOf(child));
+            m_children->removeOne(child);
+            child->deleteLater();
+            m_model->endRemoveRows();
+        }
+    }
 }
 
 void FileItem::onUpdateDirectoryRequest()
