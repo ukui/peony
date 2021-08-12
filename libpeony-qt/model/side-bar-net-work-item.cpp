@@ -112,12 +112,10 @@ QModelIndex SideBarNetWorkItem::lastColumnIndex()
     return m_model->lastColumnIndex(this);
 }
 
-static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
+static void unmount_finished(GMount *mount, GAsyncResult *result)
 {
-    auto targetUri = static_cast<QString *>(udata);
-    GError *err = nullptr;
-    QString unmountNotify;
-    g_file_unmount_mountable_with_operation_finish (file, result, &err);
+    GError *err = nullptr;   
+    g_mount_unmount_with_operation_finish(mount, result, &err);
     if (err) {
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
             g_error_free(err);
@@ -131,24 +129,24 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 
         QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n").arg(err->message), QMessageBox::Yes);
         g_error_free(err);
+
     } else {
-        VolumeManager::getInstance()->fileUnmounted(*targetUri);
-        unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        /* 卸载完成信息提示 */
+        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         SyncThread::notifyUser(unmountNotify);
     }
-    delete targetUri;
+
 }
 
 void SideBarNetWorkItem::realUnmount()
 {
-    auto mount = VolumeManager::getMountFromUri(this->uri().toUtf8().constData());
-    QString *targetUri = new QString;
-    *targetUri = this->uri();
-    g_mount_unmount(mount->getGMount(),
+    auto mount = VolumeManager::getMountFromUri(this->uri().toUtf8().constData());  
+    g_mount_unmount_with_operation(mount->getGMount(),
                     G_MOUNT_UNMOUNT_NONE,
                     nullptr,
+                    nullptr,
                     GAsyncReadyCallback(unmount_finished),
-                    targetUri);
+                    nullptr);
 }
 
 void SideBarNetWorkItem::ejectOrUnmount()
