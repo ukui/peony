@@ -133,10 +133,11 @@ default_sort:
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
 
-                if(startWithChinese(leftDisplayName)&&!startWithChinese(rightDisplayName))
-                    return true;
-                else if(!startWithChinese(leftDisplayName)&&startWithChinese(rightDisplayName))
+                //fix chinese first sort wrong issue, link to bug#70836
+                if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
                     return false;
+                else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                    return true;
                 else
                     return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
