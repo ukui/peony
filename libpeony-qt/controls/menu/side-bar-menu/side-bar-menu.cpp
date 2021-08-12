@@ -209,11 +209,6 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
 {
     QList<QAction *> l;
 
-    auto info = FileInfo::fromUri(m_uri);
-    if (info->displayName().isEmpty()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
     /* 共享文件夹无右键菜单'卸载' */
     if (!m_uri.startsWith("file://")) {
         l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {

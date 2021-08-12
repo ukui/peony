@@ -84,12 +84,8 @@ bool SideBarNetWorkItem::hasChildren()
 
 bool SideBarNetWorkItem::isMountable()
 {
+    /* 远程服务器返回true */
     if (!m_uri.startsWith("file://")&& m_uri!="network:///"){
-        auto info = FileInfo::fromUri(m_uri);
-        if (info->displayName().isEmpty()) {
-            FileInfoJob j(info);
-            j.querySync();
-        }
         return true;
     }
     return false;
