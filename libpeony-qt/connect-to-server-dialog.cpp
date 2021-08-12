@@ -282,19 +282,9 @@ void ConnectServerDialog::removeUri(QString uri)
     }
 }
 
-ConnectServerLogin::ConnectServerLogin(QString type, QString remoteIP, int port, QWidget *parent)
-    : QDialog(parent),m_type(type),m_remoteIP(remoteIP),m_port(port)
+ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent)
+    : QDialog(parent),m_remoteIP(remoteIP)
 {
-    if(-1==m_port)
-    {
-        if(ftpTypeStr==m_type.toLower()){
-            m_port = ftpDefaultPortStr.toInt();
-        }else if(sftpTypeStr==m_type.toLower()){
-             m_port = sftpDefaultPortStr.toInt();
-        }else if(sambaTypeStr==m_type.toLower()){
-            m_port = sambaDefaultPortStr.toInt();
-        }
-    }
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("The login user"));
@@ -426,11 +416,24 @@ bool ConnectServerLogin::savePassword()
     return m_reg_usr_combox->isChecked();
 }
 
-void ConnectServerLogin::slot_syncRemoteServer()
+void ConnectServerLogin::syncRemoteServer(const QUrl& url)
 {
     if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
         QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
-        QString remoteUri= m_type.append("://").append(m_remoteIP).append(":").append(QString::number(m_port));
+
+        QString portStr = QString::number(url.port());
+        QString type = url.scheme();
+        if(portStr.toInt()< 0)
+        {
+            if(ftpTypeStr==type.toLower()){
+                portStr = ftpDefaultPortStr;
+            }else if(sftpTypeStr==type.toLower()){
+                portStr = sftpDefaultPortStr;
+            }else if(sambaTypeStr==type.toLower()){
+                portStr = sambaDefaultPortStr;
+            }
+        }
+        QString remoteUri= type.append("://").append(url.host()).append(":").append(portStr);
 
         if(!uriList.contains(remoteUri)){
             uriList.append(remoteUri);

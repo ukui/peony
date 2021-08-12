@@ -72,7 +72,7 @@ void MountOperation::start()
     gchar* urit = g_file_get_uri(m_volume);
     QUrl uri = QUrl(urit);
     if (uri.scheme() != "mtp") {
-        ConnectServerLogin* dlg = new ConnectServerLogin(uri.scheme(),uri.host(),uri.port());
+        ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
         m_dlg = dlg;
         //block ui
         auto code = dlg->exec();
@@ -115,7 +115,8 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
     } else{
-        p_this->m_dlg->slot_syncRemoteServer();
+        QUrl url = QUrl(g_file_get_uri(volume));
+        p_this->m_dlg->syncRemoteServer(url);
         p_this->finished(nullptr);
     }
 
