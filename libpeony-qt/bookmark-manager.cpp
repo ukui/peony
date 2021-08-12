@@ -80,7 +80,6 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
     });
 
     connect(this, &BookMarkManager::bookmarkChanged, this, [=] (const QString& oldUri, const QString& newUri) {
-        qDebug() << "DDJJ-- change:" << oldUri << "  --  " << newUri;
         removeBookMark(oldUri);
         addBookMark(newUri);
     });
@@ -108,10 +107,9 @@ void BookMarkManager::addBookMark(const QString &uri)
         QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
         QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-        QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (url.path() == desktopPath || url.path() == videoPath
             || url.path() == picturePath || url.path() == downloadPath
-            || url.path() == musicPath || url.path() == docPath || url.path() == homePath)
+            || url.path() == musicPath || url.path() == docPath)
             return;
         if (m_mutex.tryLock(1000)) {
             bool successed = !m_uris.contains(origin_path);
