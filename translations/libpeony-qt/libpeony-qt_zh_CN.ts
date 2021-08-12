@@ -1078,7 +1078,7 @@
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="250"/>
         <source>Add to bookmark</source>
-        <translation>添加到收藏夹</translation>
+        <translation>添加到快速访问</translation>
     </message>
     <message>
         <source>&amp;Open &quot;%1&quot;</source>
@@ -2890,7 +2890,7 @@ Do you want to delete the link file?</source>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-favorite-item.cpp" line="49"/>
         <source>Favorite</source>
-        <translation>收藏夹</translation>
+        <translation>快速访问</translation>
     </message>
 </context>
 <context>
@@ -3487,12 +3487,12 @@ Do you want to unmount forcely?</source>
     <message>
         <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="273"/>
         <source>favorite</source>
-        <translation>收藏夹</translation>
+        <translation>快速访问</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="288"/>
         <source>Share Data</source>
-        <translation>本地共享</translation>
+        <translation>本机共享</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/vfs/favorite-vfs-file.cpp" line="346"/>
@@ -3537,7 +3537,7 @@ Do you want to unmount forcely?</source>
     <message>
         <location filename="../../libpeony-qt/vfs/favorite-vfs-register.h" line="43"/>
         <source>Default favorite vfs of peony</source>
-        <translation>文件管理器虚拟文件系统默认收藏夹</translation>
+        <translation>文件管理器虚拟文件系统默认快速访问</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/details-properties-page-factory.h" line="38"/>
