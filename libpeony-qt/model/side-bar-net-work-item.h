@@ -34,6 +34,8 @@ namespace Peony {
 
 class SideBarModel;
 class SharedDirectorInfoThread;
+class FileWatcher;
+
 class PEONYCORESHARED_EXPORT SideBarNetWorkItem : public SideBarAbstractItem
 {
     Q_OBJECT
@@ -106,12 +108,18 @@ public Q_SLOTS:
     void slot_deleteSharedFolder(const QString& originalPath, bool successed);
     void slot_updateRemoteServer(const QString& server, bool add);
 
+protected:
+    void initWatcher();
+    void startWatcher();
+    void stopWatcher();
+
 private:
     QString m_uri;
     QString m_iconName;
     QString m_displayName;
 
     SideBarAbstractItem *m_parentItem  = nullptr;
+    std::shared_ptr<FileWatcher> m_watcher = nullptr;
 };
 
 class SharedDirectoryInfoThread : public QThread {

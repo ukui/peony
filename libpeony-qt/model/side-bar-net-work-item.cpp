@@ -33,6 +33,7 @@
 #include "libnotify/notification.h"
 #include <sys/stat.h>
 #include <libnotify/notify.h>
+#include "file-watcher.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -58,6 +59,7 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
     connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
     connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
     connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
+
 }
 
 QString SideBarNetWorkItem::uri()
@@ -171,6 +173,7 @@ void SideBarNetWorkItem::unmount()
 
 void SideBarNetWorkItem::clearChildren()
 {
+    stopWatcher();
     SideBarAbstractItem::clearChildren();
 }
 
@@ -178,8 +181,9 @@ void SideBarNetWorkItem::findChildrenAsync()
 {
     findChildren();
 }
-#include "file-enumerator.h"
+
 #include "file-utils.h"
+#include <QUrl>
 void SideBarNetWorkItem::findChildren()
 {
     //只有根节点才设置子节点
@@ -196,6 +200,17 @@ void SideBarNetWorkItem::findChildren()
         thread->start();
     }
 
+    /* 计算机视图卸载时，侧边栏item状态也要响应 */
+    this->initWatcher();
+    this->m_watcher->setMonitorChildrenChange();
+    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
+        for (auto item : *m_children) {
+            if(QUrl(item->uri()).host()==QUrl(uri).host())
+                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+        }
+    });
+
+    this->startWatcher();
 }
 
 void SideBarNetWorkItem::findRemoteServers()
@@ -268,7 +283,27 @@ void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
            m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
            m_children->removeOne(item);
    }
+   }
+}
+
+void SideBarNetWorkItem::initWatcher()
+{
+    /* 监听计算机视图的卸载信号 */
+    if (!m_watcher) {
+        m_watcher = std::make_shared<FileWatcher>("computer:///");
     }
+}
+
+void SideBarNetWorkItem::startWatcher()
+{initWatcher();
+    m_watcher->startMonitor();
+
+}
+
+void SideBarNetWorkItem::stopWatcher()
+{
+    initWatcher();
+    m_watcher->stopMonitor();
 }
 
 SharedDirectoryInfoThread::SharedDirectoryInfoThread(QVector<SideBarAbstractItem *> *children, SideBarModel *model,
