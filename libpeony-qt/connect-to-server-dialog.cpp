@@ -32,8 +32,12 @@
 #include <QButtonGroup>
 
 using namespace Peony;
-
-
+static const QString ftpTypeStr="ftp";
+static const QString sftpTypeStr="sftp";
+static const QString sambaTypeStr="samba";
+static const QString ftpDefaultPortStr="21";
+static const QString sftpDefaultPortStr="22";
+static const QString sambaDefaultPortStr="445";
 ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 {
     setFixedSize(m_widget_size);
@@ -56,13 +60,13 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
     m_main_layout->addSpacing(12);
 
-    m_remote_type->append("ftp");
-    m_remote_type->append("sftp");
-    m_remote_type->append("samba");
+    m_remote_type->append(ftpTypeStr);
+    m_remote_type->append(sftpTypeStr);
+    m_remote_type->append(sambaTypeStr);
     m_remote_port->append("20");
-    m_remote_port->append("21");
-    m_remote_port->append("22");
-    m_remote_port->append("445");
+    m_remote_port->append(ftpDefaultPortStr);
+    m_remote_port->append(sftpDefaultPortStr);
+    m_remote_port->append(sambaDefaultPortStr);
     m_ip_label->setText(tr("ip"));
     m_port_editor->setEditable(true);
     m_port_label->setText(tr("port"));
@@ -146,15 +150,15 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     });
 
     connect(m_remote_type_edit, &QComboBox::currentTextChanged, this, [=] (const QString& type) {
-        if ("samba" == type.toLower()) {
-            m_port_editor->setEditText("445");
-        } else if ("ftp" == type.toLower()) {
-            m_port_editor->setEditText("21");
-        }else if ("sftp" == type.toLower()) {
-            m_port_editor->setEditText("22");
+        if (sambaTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sambaDefaultPortStr);
+        } else if (ftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(ftpDefaultPortStr);
+        }else if (sftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sftpDefaultPortStr);
         }
     });
-    Q_EMIT m_remote_type_edit->currentTextChanged("ftp");
+    Q_EMIT m_remote_type_edit->currentTextChanged(ftpTypeStr);
 
     connect(m_btn_del, &QPushButton::clicked, this, [=] (bool checked) {
         removeUri(uri());
@@ -190,11 +194,11 @@ QString ConnectServerDialog::uri()
 {
     QString uuri = "";
 
-    if (m_remote_type_edit->currentText() == "samba") {
+    if (m_remote_type_edit->currentText() == sambaTypeStr) {
         uuri = "smb://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
-    } else if (m_remote_type_edit->currentText() == "ftp") {
+    } else if (m_remote_type_edit->currentText() == ftpTypeStr) {
         uuri = "ftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
-    }else if (m_remote_type_edit->currentText() == "sftp") {
+    }else if (m_remote_type_edit->currentText() == sftpTypeStr) {
         uuri = "sftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
     }
 
@@ -220,7 +224,7 @@ void ConnectServerDialog::setUri(QString uri)
     QString     schema = rl.scheme();
 
     if ("smb" == schema) {
-        m_remote_type_edit->setCurrentText("samba");
+        m_remote_type_edit->setCurrentText(sambaTypeStr);
     } else {
         m_remote_type_edit->setCurrentText(rl.scheme());
     }
@@ -278,8 +282,19 @@ void ConnectServerDialog::removeUri(QString uri)
     }
 }
 
-ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDialog(parent),m_remoteIP(remoteIP)
+ConnectServerLogin::ConnectServerLogin(QString type, QString remoteIP, int port, QWidget *parent)
+    : QDialog(parent),m_type(type),m_remoteIP(remoteIP),m_port(port)
 {
+    if(-1==m_port)
+    {
+        if(ftpTypeStr==m_type.toLower()){
+            m_port = ftpDefaultPortStr.toInt();
+        }else if(sftpTypeStr==m_type.toLower()){
+             m_port = sftpDefaultPortStr.toInt();
+        }else if(sambaTypeStr==m_type.toLower()){
+            m_port = sambaDefaultPortStr.toInt();
+        }
+    }
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
     setWindowTitle(tr("The login user"));
@@ -415,13 +430,14 @@ void ConnectServerLogin::slot_syncRemoteServer()
 {
     if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
         QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
+        QString remoteUri= m_type.append("://").append(m_remoteIP).append(":").append(QString::number(m_port));
 
-        if(!uriList.contains(m_remoteIP)){
-            uriList.append(m_remoteIP);
+        if(!uriList.contains(remoteUri)){
+            uriList.append(remoteUri);
 
             GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP,uriList);
             GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
-            GlobalSettings::getInstance()->slot_updateRemoteServer(m_remoteIP, true);
+            GlobalSettings::getInstance()->slot_updateRemoteServer(remoteUri, true);
         }
     }
 }

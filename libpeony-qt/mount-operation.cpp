@@ -71,10 +71,8 @@ void MountOperation::start()
 {
     gchar* urit = g_file_get_uri(m_volume);
     QUrl uri = QUrl(urit);
-    QString remoteServer=uri.toDisplayString();
-    remoteServer.chop(1);/* 去掉最后字符‘/’ */
     if (uri.scheme() != "mtp") {
-        ConnectServerLogin* dlg = new ConnectServerLogin(remoteServer);
+        ConnectServerLogin* dlg = new ConnectServerLogin(uri.scheme(),uri.host(),uri.port());
         m_dlg = dlg;
         //block ui
         auto code = dlg->exec();

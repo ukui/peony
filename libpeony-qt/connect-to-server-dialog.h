@@ -91,7 +91,7 @@ class PEONYCORESHARED_EXPORT ConnectServerLogin : public QDialog
     friend class MountOperation;
     Q_OBJECT
 public:
-    explicit ConnectServerLogin(QString remoteIP, QWidget* parent = nullptr);
+    explicit ConnectServerLogin(QString type, QString remoteIP, int port=-1, QWidget* parent = nullptr);
     ~ConnectServerLogin();
 
     QString user();
@@ -128,7 +128,9 @@ private:
     QPushButton*    m_btn_ok                = nullptr;
     QHBoxLayout*    m_btn_layout            = nullptr;
 
+    QString m_type;
     QString m_remoteIP;
+    int m_port;
 };
 
 };
