@@ -82,8 +82,9 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_Hover);
     setMouseTracking(true);
 
-    setStyleSheet("padding-right: 15;"
-                  "margin-left: 2");
+    //comment to fix button text show incomplete issue, link to bug#72080
+//    setStyleSheet("padding-right: 15;"
+//                  "margin-left: 2");
     m_styled_edit = new QLineEdit;
     qDebug()<<sizePolicy();
     //connect(this, &LocationBar::groupChangedRequest, this, &LocationBar::setRootUri);
@@ -291,7 +292,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         button->setIcon(icon);
     }
 
-	button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
+    //comment to fix button text show incomplete issue, link to bug#72080
+    //button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
     if (!url.fileName().isEmpty()) {
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
@@ -307,7 +309,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             //fix bug#47597, show as root.link issue
             QString text = tr("File System");
             button->setText(text);
-	        button->setStyleSheet("QToolButton{padding-left: 15px; padding-right: 15px}");
+            //comment to fix button text show incomplete issue, link to bug#72080
+            //button->setStyleSheet("QToolButton{padding-left: 15px; padding-right: 15px}");
         } else {
             button->setText(displayName);
         }
@@ -419,7 +422,7 @@ void LocationBar::paintEvent(QPaintEvent *e)
     fopt.initFrom(this);
     fopt.state |= QStyle::State_HasFocus;
     //fopt.state.setFlag(QStyle::State_HasFocus);
-    fopt.rect.adjust(-2, 0, 0, 0);
+    fopt.rect.adjust(0, 0, 0, 0);
     fopt.palette.setColor(QPalette::Highlight, fopt.palette.button().color());
     fopt.palette.setColor(QPalette::Base, fopt.palette.window().color());
 
