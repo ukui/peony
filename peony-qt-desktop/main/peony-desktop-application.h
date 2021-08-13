@@ -28,9 +28,12 @@
 #include "singleapplication.h"
 #include "desktop-window.h"
 #include "volume-manager.h"
+#include "window-manager.h"
+#include "desktop-manager.h"
 
 #include <QScreen>
 #include <QWindow>
+#include <QPropertyAnimation>
 
 using namespace Peony;
 
@@ -40,11 +43,18 @@ class PeonyDesktopApplication : public SingleApplication
 public:
     explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
 
+    void initManager();
     static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
     static void showGuide(const QString &appName = "");
 
     static qint64 peony_desktop_start_time;
+
+    QRect createRectForAnimation(QRect &screenRect, QRect &currentRect, AnimationType animationType, bool isExit);
+
+    QPropertyAnimation *createPropertyAnimation(AnimationType animationType, DesktopWidgetBase *object, QRect &startRect, QRect &endRect);
+
+    PropertyName getPropertyNameByAnimation(AnimationType animationType);
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
@@ -61,9 +71,21 @@ public Q_SLOTS:
     void changeBgProcess(const QString& bgPath);
     void checkWindowProcess();
 
+    void changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation);
+
 private:
     bool m_first_parse = true;
     QList<Peony::DesktopWindow*> m_window_list;
+
+    bool m_isTabletMode = false;
+    bool m_startMenuActivated = false;
+
+    //当前主屏幕或者主屏切换后的上一个主屏幕。
+    QScreen *m_primaryScreen = nullptr;
+    //窗口管理器
+    Peony::WindowManager *m_windowManager = nullptr;
+    //桌面管理器
+    Peony::DesktopManager *m_desktopManager = nullptr;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H

@@ -30,10 +30,14 @@
 
 #include "desktop-icon-view.h"
 #include "peony-log.h"
+#include "global-settings.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QTimer>
+#include <QGraphicsEffect>
+#include <QPushButton>
+#include <QStatusBar>
 
 #include <QProcess>
 #include <QFile>
@@ -304,11 +308,14 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         }
 
         if (parser.isSet(desktopOption)) {
+            //TODO 2021.08.07 判断当前系统类型，桌面模式加载桌面图标模式，平板模式加载平板模式桌面
             if (!has_desktop) {
+                //第一次启动桌面时，加载管理器
+                this->initManager();
                 PEONY_DESKTOP_LOG_WARN("has parameter w");
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
-                getIconView();
+//                getIconView();
                 for(auto screen : this->screens())
                 {
                     addWindow(screen);
@@ -337,29 +344,42 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     }
 }
 
-void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimay)
+void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimary)
 {
     Peony::DesktopWindow *window;
-    if (checkPrimay) {
-        bool is_primary = isPrimaryScreen(screen);
-        window = new Peony::DesktopWindow(screen, is_primary);
-        if (is_primary)
+    if (checkPrimary) {
+        bool isPrimary = isPrimaryScreen(screen);
+        window = m_windowManager->createWindowForScreen(screen, isPrimary);
+        if (isPrimary)
         {
-            window->setCentralWidget(desktop_icon_view);
+            DesktopWidgetBase *desktop = nullptr;
+            //通过系统类型获取桌面
+            bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+            m_isTabletMode = tabletMode;
+            qDebug() << "===当前桌面模式：" << m_isTabletMode;
+            if(tabletMode) {
+                //平板模式
+                desktop = m_desktopManager->getDesktopByType(DesktopType::Tablet);
+            } else {
+                //桌面模式
+                desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop);
+            }
+            window->setWindowDesktop(desktop);
             window->updateView();
+//            m_windowManager->updateWindowView(screen);
+            m_primaryScreen = screen;
+            connect(desktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
             //connect(window, &Peony::DesktopWindow::changeBg, this, &PeonyDesktopApplication::changeBgProcess);
         }
     } else {
-        window = new Peony::DesktopWindow(screen, false);
+        window = m_windowManager->createWindowForScreen(screen, false);
     }
 
     connect(window, &Peony::DesktopWindow::checkWindow, this, &PeonyDesktopApplication::checkWindowProcess);
     //window->showFullScreen();
-    m_window_list<<window;
+    //m_window_list<<window;
 
-    for (auto window : m_window_list) {
-        window->updateWinGeometry();
-    }
+    m_windowManager->updateAllWindowGeometry();
 }
 
 void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection direction)
@@ -379,31 +399,45 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 
     bool need_exchange = false;
     QScreen *preMainScreen = nullptr;
-    Peony::DesktopWindow *rawPrimaryWindow = nullptr;
-    Peony::DesktopWindow *currentPrimayWindow = nullptr;
-    for(auto win : m_window_list)
-    {
-        if (win->centralWidget())
-            rawPrimaryWindow = win;
+    Peony::DesktopWindow *rawPrimaryWindow = m_windowManager->getWindowByScreen(m_primaryScreen);
+    Peony::DesktopWindow *currentPrimaryWindow = m_windowManager->getWindowByScreen(screen);
+//    for(auto win : m_window_list)
+//    {
+//        if (win->centralWidget())
+//            rawPrimaryWindow = win;
+//
+//        if (win->getScreen() == screen)
+//            currentPrimayWindow = win;
+//        //need exchange window screen
+////        if (win->getView() && win->getScreen() != screen)
+////        {
+////            preMainScreen = win->getScreen();
+////            need_exchange = true;
+////            break;
+////        }
+//    }
 
-        if (win->getScreen() == screen)
-            currentPrimayWindow = win;
-        //need exchange window screen
-//        if (win->getView() && win->getScreen() != screen)
-//        {
-//            preMainScreen = win->getScreen();
-//            need_exchange = true;
-//            break;
-//        }
-    }
+    if (rawPrimaryWindow && currentPrimaryWindow) {
+        //TODO 主屏幕切换时，将桌面交换，并且将背景图片也进行交换（当每个窗口能单独设置背景时），将能交换的属性都交换
+        m_primaryScreen = screen;
 
-    if (rawPrimaryWindow && currentPrimayWindow) {
-        currentPrimayWindow->setCentralWidget(getIconView());
-        //desktop_icon_view->show();
-        currentPrimayWindow->updateView();
+        //主桌面
+        DesktopWidgetBase *primaryDesktop = rawPrimaryWindow->getCurrentDesktop();
+        //副桌面
+        DesktopWidgetBase *secondaryDesktop = currentPrimaryWindow->getCurrentDesktop();
+
+        rawPrimaryWindow->setWindowDesktop(secondaryDesktop);
+        currentPrimaryWindow->setWindowDesktop(primaryDesktop);
+
+        rawPrimaryWindow->updateView();
+        currentPrimaryWindow->updateView();
         PEONY_DESKTOP_LOG_WARN("current primay win hide and show");
-        currentPrimayWindow->hide();
-        currentPrimayWindow->show();
+
+        rawPrimaryWindow->hide();
+        currentPrimaryWindow->hide();
+
+        rawPrimaryWindow->show();
+        currentPrimaryWindow->show();
     }
     return;
 
@@ -436,9 +470,10 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
-    if (screen != nullptr)
-        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
-    else {
+    if (screen != nullptr) {
+        qDebug() << "screenAdded" << screen->name() << screen << m_windowManager->getWindowNumber()
+                 << screen->availableSize();
+    } else {
         return;
     }
 
@@ -451,18 +486,11 @@ void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
     //if (screen != nullptr)
     //qDebug()<<"screenRemoved"<<screen->name()<<screen->serialNumber();
 
-    //window manage
-    for(auto win :m_window_list)
-    {
-        //screen not changed
-        if (win->getScreen() == screen)
-        {
-            qDebug()<<"remove window";
-            PEONY_DESKTOP_LOG_WARN("screen remove process");
-            m_window_list.removeOne(win);
-            win->deleteLater();
-        }
+    if (screen == m_primaryScreen) {
+        //TODO 主屏被移除,将桌面移动到别的屏幕
     }
+
+    m_windowManager->removeWindowByScreen(screen);
 }
 
 bool PeonyDesktopApplication::isPrimaryScreen(QScreen *screen)
@@ -594,4 +622,253 @@ void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::
     //if it is possible, we stop it's drive after eject successfully.
    // if(gdrive && g_drive_can_stop(gdrive))
    //     g_drive_stop(gdrive,G_MOUNT_UNMOUNT_NONE,NULL,NULL,NULL,NULL);
-};
+}
+
+void PeonyDesktopApplication::initManager()
+{
+    m_windowManager =WindowManager::getInstance(this);
+    m_desktopManager = DesktopManager::getInstance(true,this);
+}
+
+void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
+{
+    //NOTE 只在主屏幕上切换桌面
+    qDebug() << "=====开始切换桌面";
+    //TODO 在切换过程中不准打开开始菜单
+    //桌面模式打开开始菜单
+    //桌面模式切换平板模式
+    //桌面模式切换学习中心
+
+    //平板模式切换桌面模式
+    //平板模式切换学习中心
+
+    //学习中心切换平板模式
+    //学习中心切换桌面模式
+
+    DesktopWindow *primaryWindow = m_windowManager->getWindowByScreen(m_primaryScreen);
+    if (!primaryWindow) {
+        qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window not found!";
+        return;
+    }
+
+    DesktopWidgetBase *currentDesktop = primaryWindow->getCurrentDesktop();
+
+    if (!currentDesktop) {
+        qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window desktop not found!";
+        return;
+    }
+
+    //TODO 检测这两个桌面的类型是否相同，相同则 return
+
+    //获取一个桌面并指定父窗口
+    DesktopWidgetBase *nextDesktop = m_desktopManager->getDesktopByType(targetType, primaryWindow);
+
+    if (!nextDesktop) {
+        qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
+        return;
+    }
+
+    if (nextDesktop->isActivated()) {
+        qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
+        return;
+    }
+
+    connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+
+    QRect primaryScreenRect = m_primaryScreen->geometry();
+    QRect currentDesktopStartRect = currentDesktop->geometry();
+
+    QRect currentDesktopEndRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect, currentDesktop->getExitAnimationType(), true);
+    QRect nextDesktopStartRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect, targetAnimation, false);
+
+    qDebug() << "currentDesktopStartRect:" << currentDesktopStartRect << "primaryScreenRect:" << primaryScreenRect;
+    qDebug() << "currentDesktopEndRect:" << currentDesktopEndRect << "nextDesktopStartRect:" << nextDesktopStartRect;
+    qDebug() << "===不同动画类型：：currentDesktop" << currentDesktop->getExitAnimationType() << targetAnimation;
+    //消失动画
+    QPropertyAnimation *exitAnimation = this->createPropertyAnimation(currentDesktop->getExitAnimationType(), currentDesktop, currentDesktopStartRect, currentDesktopEndRect);
+
+    //出现动画
+    QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop, nextDesktopStartRect, primaryScreenRect);
+
+    connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
+        delete exitAnimation;
+        currentDesktop->setActivated(false);
+    });
+
+    //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
+    connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
+        delete showAnimation;
+        if (m_isTabletMode) {
+            //平板模式没有开始菜单
+            m_startMenuActivated = true;
+
+        } else if (targetType == DesktopType::Tablet) {
+            //激活开始菜单
+            m_startMenuActivated = true;
+
+        } else {
+            m_startMenuActivated = false;
+        }
+        primaryWindow->setWindowDesktop(nextDesktop);
+
+        m_windowManager->updateAllWindowGeometry();
+    });
+
+    if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {
+        //透明度动画的开始位置就在屏幕上
+        nextDesktop->setGeometry(primaryScreenRect);
+    } else {
+        nextDesktop->setGeometry(nextDesktopStartRect);
+//        nextDesktop->setHidden(false);
+    }
+    qDebug() << "nextDesktop->setGeometry" << nextDesktop->geometry() << "windowOpacity:" << nextDesktop->windowOpacity();
+
+//    nextDesktop->show();
+
+    exitAnimation->start();
+    showAnimation->start();
+}
+
+QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &currentDesktopRect, AnimationType animationType, bool isExit)
+{
+    QRect nextRect;
+    if (isExit) {
+        switch (animationType) {
+            case AnimationType::LeftToRight:
+                nextRect = QRect(screenRect.width(), 0, screenRect.width(), screenRect.height());
+                break;
+            case AnimationType::RightToLeft:
+                nextRect = QRect(-screenRect.width(), 0, screenRect.width(), screenRect.height());
+                break;
+            case AnimationType::CenterToEdge:
+                nextRect = screenRect;
+                break;
+            case AnimationType::EdgeToCenter: {
+                //rect的高度为窗口高度的四分之一
+                quint32 x = double(screenRect.width() * 1.0 * 0.375);
+                quint32 y = double(screenRect.height() * 1.0 * 0.375);
+                quint32 w = screenRect.width() * 0.25;
+                quint32 h = screenRect.height() * 0.25;
+                nextRect = QRect(x, y, w, h);
+                break;
+            }
+            case AnimationType::OpacityFull:
+            case AnimationType::OpacityLess:
+            default:
+                nextRect = screenRect;
+                break;
+        }
+    } else {
+        switch (animationType) {
+            case AnimationType::LeftToRight:
+                nextRect = QRect((currentDesktopRect.x() - screenRect.width()), 0, screenRect.width(), screenRect.height());
+                break;
+            case AnimationType::RightToLeft:
+                nextRect = QRect((currentDesktopRect.x() + screenRect.width()), 0, screenRect.width(), screenRect.height());
+                break;
+            case AnimationType::CenterToEdge: {
+                //起点rect的高度为窗口高度的四分之一
+                quint32 x = double(screenRect.width() * 1.0 * 0.375);
+                quint32 y = double(screenRect.height() * 1.0 * 0.375);
+                quint32 w = screenRect.width() * 0.25;
+                quint32 h = screenRect.height() * 0.25;
+                nextRect = QRect(x, y, w, h);
+                break;
+            }
+            case AnimationType::EdgeToCenter:
+                nextRect = screenRect;
+                break;
+            case AnimationType::OpacityFull:
+            case AnimationType::OpacityLess:
+            default:
+                nextRect = screenRect;
+                break;
+        }
+    }
+
+    return nextRect;
+}
+
+QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationType animationType, DesktopWidgetBase *object, QRect &startRect, QRect &endRect)
+{
+    //动画时间 xx ms
+    quint32 duration = 1500;
+
+    PropertyName propertyName = this->getPropertyNameByAnimation(animationType);
+    //TODO 添加并实现其他动画类型 ...
+
+    QPropertyAnimation *animation = nullptr;
+
+    switch (propertyName) {
+        case PropertyName::Pos: {
+            animation = new QPropertyAnimation(object, "pos");
+
+            animation->setStartValue(QPoint(startRect.x(), startRect.y()));
+            animation->setEndValue(QPoint(endRect.x(), endRect.y()));
+            animation->setDuration(duration);
+            animation->setEasingCurve(QEasingCurve::Linear);
+            break;
+        }
+        case PropertyName::Geometry: {
+            animation = new QPropertyAnimation(object, "geometry");
+
+            animation->setStartValue(startRect);
+            animation->setEndValue(endRect);
+            animation->setDuration(duration);
+            animation->setEasingCurve(QEasingCurve::Linear);
+            break;
+        }
+        case PropertyName::WindowOpacity: {
+            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(object);
+
+            animation = new QPropertyAnimation(opacityEffect, "opacity");
+
+            if (animationType == AnimationType::OpacityFull) {
+                opacityEffect->setOpacity(0);
+                object->setWindowOpacity(0);
+                animation->setStartValue(0);
+                animation->setEndValue(1);
+
+            } else if (animationType == AnimationType::OpacityLess) {
+                opacityEffect->setOpacity(1);
+                object->setWindowOpacity(1.0);
+                animation->setStartValue(1);
+                animation->setEndValue(0);
+            }
+
+            object->setGraphicsEffect(opacityEffect);
+            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setDuration(duration);
+
+            qDebug() << "===windowOpacity:" << object->windowOpacity();
+
+            break;
+        }
+        default:
+            break;
+    }
+
+    qDebug() << "===createPropertyAnimation：" << animation->propertyName();
+    return animation;
+}
+
+PropertyName PeonyDesktopApplication::getPropertyNameByAnimation(AnimationType animationType)
+{
+    //出现动画类型
+    switch (animationType) {
+        case AnimationType::LeftToRight:
+        case AnimationType::RightToLeft:
+            return PropertyName::Pos;
+
+        case AnimationType::EdgeToCenter:
+        case AnimationType::CenterToEdge:
+            return PropertyName::Geometry;
+
+        case AnimationType::OpacityFull:
+        case AnimationType::OpacityLess:
+            return PropertyName::WindowOpacity;
+
+        default:
+            return PropertyName::Pos;
+    }
+}

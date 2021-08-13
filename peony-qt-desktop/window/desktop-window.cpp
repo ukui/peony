@@ -102,6 +102,7 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_opacity->setStartValue(double(0));
     m_opacity->setEndValue(double(1));
 
+    //TODO 删除判断 20210810
     bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
     m_tabletmode = tabletMode;
     PEONY_DESKTOP_LOG_WARN("tablet mode value %s", m_tabletmode? "true":"false");
@@ -164,53 +165,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
 #endif
 
     setGeometry(screen->geometry());
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
-
-    // menu
-    connect(this, &QMainWindow::customContextMenuRequested, [=](const QPoint &pos) {
-        // FIXME: use other menu
-        qDebug() << "menu request in desktop window";
-        auto contentMargins = contentsMargins();
-//        auto fixedPos = pos - QPoint(contentMargins.left(), contentMargins.top());
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(QCursor::pos());
-//        auto selectcount = PeonyDesktopApplication::getIconView()->getSelections().count();
-        if (!index.isValid()||!centralWidget()) {
-            PeonyDesktopApplication::getIconView()->clearSelection();
-        } else {
-            if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
-                PeonyDesktopApplication::getIconView()->clearSelection();
-                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
-            }
-        }
-
-//        if (index.isValid()) {
-//            //! \note 针对mdm禁用后的快捷方式不弹出右键
-//            auto model = static_cast<DesktopItemModel*>(PeonyDesktopApplication::getIconView()->model());
-//            auto info = FileInfo::fromUri(model->data(index, DesktopItemModel::Role::UriRole).toString());
-//            if (info->isExecDisable())
-//                return;
-//        }
-
-        QTimer::singleShot(1, [=]() {
-            DesktopMenu menu(PeonyDesktopApplication::getIconView());
-            if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
-                auto action = menu.addAction(tr("set background"));
-                connect(action, &QAction::triggered, [=]() {
-                    //go to control center set background
-                    gotoSetBackground();
-                });
-            }
-            menu.exec(QCursor::pos());
-            auto urisToEdit = menu.urisToEdit();
-            if (urisToEdit.count() == 1) {
-                QTimer::singleShot(
-                100, this, [=]() {
-                    PeonyDesktopApplication::getIconView()->editUri(urisToEdit.first());
-                });
-            }
-        });
-    });
 
     setBg(getCurrentBgPath());
 
@@ -801,4 +755,28 @@ void DesktopWindow::updateScreenVisible()
 
     PEONY_DESKTOP_LOG_WARN("update screen %s visible end", m_screen->name().toUtf8().constData());
     return;
+}
+
+void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
+{
+    //TODO 尝试实现不同窗口设置不同背景 20210810
+    if (m_currentDesktop) {
+        m_currentDesktop->setParent(nullptr);
+        //取消掉上一个桌面的信号链接
+        disconnect(m_currentDesktop, &DesktopWidgetBase::gotoSetBackground, this, &DesktopWindow::gotoSetThisBackground);
+    }
+
+    m_currentDesktop = desktop;
+    m_currentDesktop->setParent(this);
+
+    this->setCentralWidget(m_currentDesktop);
+
+    m_currentDesktop->initDesktop(geometry());
+    m_currentDesktop->setActivated(true);
+
+    connect(m_currentDesktop, &DesktopWidgetBase::gotoSetBackground, this, &DesktopWindow::gotoSetThisBackground);
+
+    qDebug() << "===update all window!";
+    this->updateWinGeometry();
+    this->updateView();
 }

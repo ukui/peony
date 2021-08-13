@@ -86,6 +86,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 {
     //m_refresh_timer.setInterval(500);
     //m_refresh_timer.setSingleShot(true);
+    qDebug() << "创建桌面图标视图";
     PEONY_DESKTOP_LOG_WARN("create desktop icon view begin");
     installEventFilter(this);
 
@@ -164,7 +165,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         m_screens[*i] = (*i == qApp->primaryScreen()) ? true : false;
     }
 
-    m_model = new DesktopItemModel(this);
+    m_model = new DesktopItemModel(this, this);
     m_proxy_model = new DesktopItemProxyModel(m_model);
 
     m_proxy_model->setSourceModel(m_model);

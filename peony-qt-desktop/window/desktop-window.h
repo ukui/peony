@@ -24,9 +24,12 @@
 #ifndef DESKTOP_WINDOW_H
 #define DESKTOP_WINDOW_H
 
+#include "desktop-manager.h"
+
 #include <QMainWindow>
 #include <QTimer>
 #include <QStackedLayout>
+#include <QDebug>
 
 class QVariantAnimation;
 class QLabel;
@@ -65,11 +68,22 @@ public:
         return m_screen;
     }
     void setScreen(QScreen *screen);
-    DesktopIconView *getView() {
-        return m_view;
-    }
 
     static void gotoSetBackground();
+
+    void gotoSetThisBackground() {
+        DesktopWindow::gotoSetBackground();
+    }
+
+    /**
+     * \brief 初始化桌面环境，添加view组件
+     */
+    void setWindowDesktop(DesktopWidgetBase *desktop);
+
+    DesktopWidgetBase *getCurrentDesktop() {
+        qDebug() << "===DesktopWidgetBase *getCurrentDesktop:" << m_currentDesktop->geometry();
+        return m_currentDesktop;
+    }
 
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
@@ -108,8 +122,6 @@ private:
     QString m_current_bg_path;
     QString m_picture_option;
 
-    DesktopIconView *m_view;
-
     QPixmap m_bg_font_pixmap;
     QPixmap m_bg_back_pixmap;
 
@@ -136,6 +148,8 @@ private:
     QTimer *m_boot_timer;
 
     QVariantAnimation *m_opacity = nullptr;
+
+    DesktopWidgetBase *m_currentDesktop = nullptr;
 };
 
 }

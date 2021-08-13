@@ -62,9 +62,10 @@ using namespace Peony;
 
 static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2);
 
-DesktopItemModel::DesktopItemModel(QObject *parent)
+DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
     : QAbstractListModel(parent)
 {
+    m_view = view;
     QString userPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     m_userName = userPath.section("/", -1, -1);
 
@@ -145,7 +146,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             job->querySync();
             // locate new item =====
 
-            auto view = PeonyDesktopApplication::getIconView();
+            auto view = m_view;
             auto itemRectHash = view->getCurrentItemRects();
             auto grid = view->gridSize();
             auto viewRect = view->rect();
@@ -282,7 +283,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             m_items_need_relayout.clear();
         }
         m_new_file_info_query_queue.removeOne(uri);
-        auto view = PeonyDesktopApplication::getIconView();
+        auto view = m_view;
         view->removeItemRect(uri);
 
         auto itemRectHash = view->getCurrentItemRects();
@@ -301,7 +302,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     });
 
     this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
-        auto view = PeonyDesktopApplication::getIconView();
+        auto view = m_view;
         auto itemRectHash = view->getCurrentItemRects();
 
         for (auto info : m_files) {
@@ -503,7 +504,7 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
 
 void DesktopItemModel::onEnumerateFinished()
 {
-    auto view = PeonyDesktopApplication::getIconView();
+    auto view = m_view;
     view->desktopViewItemClear();
 
     beginRemoveRows(QModelIndex(), 0, m_files.count() - 1);
@@ -810,7 +811,7 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
     g_object_unref(file);
 
-    auto view = PeonyDesktopApplication::getIconView();
+    auto view = m_view;
     view->viewport()->update(view->viewport()->rect());
 }
 
