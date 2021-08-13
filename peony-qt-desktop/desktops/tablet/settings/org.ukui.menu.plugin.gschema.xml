@@ -1,0 +1,23 @@
+<schemalist>
+	<schema gettext-domain="ukui-settings-menu" id="org.ukui.menu.plugin" path="/org/ukui/menu/plugin/">
+        <key type="b" name="focusmode">
+            <default>false</default>
+            <summary>Activation of this plugin</summary>
+            <description>
+                Whether this plugin would be activated or not.
+            </description>
+        </key>
+        <key type="b" name="note">
+            <default>false</default>
+            <summary>Activation of this plugin.</summary>
+            <description>Whether this plugin would be activated or not.</description>
+    </key>
+	    <key type="b" name="clock">
+            <default>false</default>
+            <summary>Activation of this plugin.</summary>
+            <description>Whether this plugin would be activated or not.</description>
+        </key>
+
+    </schema>
+</schemalist>
+               

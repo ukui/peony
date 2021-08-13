@@ -436,7 +436,7 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         rawPrimaryWindow->hide();
         currentPrimaryWindow->hide();
 
-        rawPrimaryWindow->show();
+        //rawPrimaryWindow->show();
         currentPrimaryWindow->show();
     }
     return;
