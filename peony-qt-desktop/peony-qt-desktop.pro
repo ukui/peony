@@ -29,6 +29,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
+
+#导入模块
+include($$PWD/main/main.pri)
+include($$PWD/window/window.pri)
+include($$PWD/menu/menu.pri)
+include($$PWD/interface/interface.pri)
+include($$PWD/desktops/desktops.pri)
+
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
@@ -41,39 +49,9 @@ TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
 
 SOURCES += \
-    desktop-screen.cpp \
-    main.cpp \
-    desktop-window.cpp \
-    peony-desktop-application.cpp \
-    fm-dbus-service.cpp \
-    desktop-item-model.cpp \
-    desktop-icon-view.cpp \
-    desktop-icon-view-delegate.cpp \
-    desktop-index-widget.cpp \
-    desktop-menu.cpp \
-    desktop-menu-plugin-manager.cpp \
-    desktop-item-proxy-model.cpp \
-    peony-json-operation.cpp \
-    bw-list-info.cpp \
-    peony-dbus-service.cpp \
-    user-dir-manager.cpp
+    main.cpp
 
-HEADERS += \
-    desktop-screen.h \
-    desktop-window.h \
-    peony-desktop-application.h \
-    fm-dbus-service.h \
-    desktop-item-model.h \
-    desktop-icon-view.h \
-    desktop-icon-view-delegate.h \
-    desktop-index-widget.h \
-    desktop-menu.h \
-    desktop-menu-plugin-manager.h \
-    desktop-item-proxy-model.h \
-    peony-json-operation.h \
-    bw-list-info.h \
-    peony-dbus-service.h \
-    user-dir-manager.h
+HEADERS += 
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
@@ -87,4 +65,4 @@ data.files += ../data/peony-desktop.desktop
 DISTFILES +=
 
 RESOURCES += \
-    peony-qt-desktop-style.qrc
+    $$PWD/resources/peony-qt-desktop-style.qrc
