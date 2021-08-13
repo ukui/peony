@@ -27,6 +27,7 @@
 #include <QQueue>
 #include <memory>
 #include "user-dir-manager.h"
+#include "desktop-icon-view.h"
 
 namespace Peony {
 
@@ -45,7 +46,7 @@ public:
     };
     Q_ENUM(Role)
 
-    explicit DesktopItemModel(QObject *parent = nullptr);
+    explicit DesktopItemModel(DesktopIconView *view, QObject *parent = nullptr);
     ~DesktopItemModel() override;
 
     const QModelIndex indexFromUri(const QString &uri);
@@ -105,6 +106,8 @@ private:
     QStringList m_items_need_relayout;
     UserdirManager * m_dir_manager;
     QString m_userName;
+
+    DesktopIconView *m_view = nullptr;
 };
 
 }
