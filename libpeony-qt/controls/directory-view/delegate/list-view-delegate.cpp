@@ -247,7 +247,8 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         auto uri = info->target();
         QTimer::singleShot(100, view, [=](){
             view->setSelections(QStringList()<<uri);
-            view->scrollToSelection(uri);
+            //after rename will nor sort immediately, comment to fix bug#60482
+            //view->scrollToSelection(uri);
             view->setFocus();
         });
     }, Qt::BlockingQueuedConnection);
