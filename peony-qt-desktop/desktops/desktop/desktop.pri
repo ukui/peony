@@ -1,0 +1,7 @@
+INCLUDEPATH += $$PWD
+
+HEADERS += \
+    
+
+SOURCES += \
+    
