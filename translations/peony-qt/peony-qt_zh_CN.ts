@@ -204,12 +204,12 @@ p, li { white-space: pre-wrap; }
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1522"/>
+        <location filename="../../src/windows/main-window.cpp" line="1523"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1523"/>
+        <location filename="../../src/windows/main-window.cpp" line="1524"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -218,12 +218,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1512"/>
+        <location filename="../../src/windows/main-window.cpp" line="1513"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1513"/>
+        <location filename="../../src/windows/main-window.cpp" line="1514"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -586,12 +586,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation> %1 个项目 </translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="135"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="138"/>
         <source> selected %1 items    %2</source>
         <translation> 选中 %1 个项目    %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="137"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="140"/>
         <source> selected %1 items</source>
         <translation> 选中 %1 个项目</translation>
     </message>
@@ -599,29 +599,34 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="196"/>
+        <location filename="../../src/control/tab-widget.cpp" line="203"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="200"/>
+        <location filename="../../src/control/tab-widget.cpp" line="207"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="204"/>
+        <location filename="../../src/control/tab-widget.cpp" line="211"/>
         <source>Recover</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="296"/>
+        <location filename="../../src/control/tab-widget.cpp" line="303"/>
         <source>Close Filter.</source>
         <translation>关闭筛选。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="308"/>
+        <location filename="../../src/control/tab-widget.cpp" line="315"/>
         <source>Filter</source>
         <translation>筛选</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="409"/>
+        <source>Select Path</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Close advance search.</source>
@@ -632,12 +637,12 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="317"/>
+        <location filename="../../src/control/tab-widget.cpp" line="324"/>
         <source>Choose other path to search.</source>
         <translation>选择其他搜索路径。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="326"/>
+        <location filename="../../src/control/tab-widget.cpp" line="333"/>
         <source>Search recursively</source>
         <translation>递归搜索</translation>
     </message>
@@ -650,18 +655,17 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="400"/>
         <source>Select path</source>
-        <translation>选择路径</translation>
+        <translation type="vanished">选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="438"/>
-        <location filename="../../src/control/tab-widget.cpp" line="535"/>
+        <location filename="../../src/control/tab-widget.cpp" line="459"/>
+        <location filename="../../src/control/tab-widget.cpp" line="558"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="456"/>
+        <location filename="../../src/control/tab-widget.cpp" line="477"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -670,8 +674,8 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="501"/>
         <location filename="../../src/control/tab-widget.cpp" line="522"/>
+        <location filename="../../src/control/tab-widget.cpp" line="544"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>

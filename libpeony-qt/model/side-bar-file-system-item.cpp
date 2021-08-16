@@ -443,17 +443,18 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     QString unmountNotify;
     g_file_unmount_mountable_with_operation_finish (file, result, &err);
     if (err) {
-        if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+        if(! strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Not authorized to perform operation."),QMessageBox::Ok);
             g_error_free(err);
             return;
         }
         if(strstr(err->message,"umount: ")){
-            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Ok);
             g_error_free(err);
             return;
         }
 
-        QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n").arg(err->message), QMessageBox::Yes);
+        QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n").arg(err->message), QMessageBox::Ok);
         g_error_free(err);
     } else {
         VolumeManager::getInstance()->fileUnmounted(*targetUri);
@@ -592,6 +593,12 @@ GAsyncReadyCallback SideBarFileSystemItem::eject_cb(GFile *file, GAsyncResult *r
     qDebug()<<successed;
     if (err) {
         qDebug()<<err->message;
+        if(! strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."),QMessageBox::Ok);
+            g_error_free(err);
+            return nullptr;
+        }
+
         QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"),QString(err->message), QMessageBox::Ok);
         warningBox.exec();
 
