@@ -12,6 +12,7 @@ include(../common.pri)
 
 TARGET = peony
 TEMPLATE = lib
+CONFIG += create_pc create_prl no_install_prl
 QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitialized -Werror=unused-label
 CONFIG += link_pkgconfig no_keywords c++11 lrelease hide_symbols
 PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
@@ -47,6 +48,14 @@ DESTDIR += $$PWD
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
+
+    QMAKE_PKGCONFIG_NAME = peony
+    QMAKE_PKGCONFIG_DESCRIPTION = Peony Header files
+    QMAKE_PKGCONFIG_VERSION = $$VERSION
+    QMAKE_PKGCONFIG_LIBDIR = $$target.path
+    QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+    QMAKE_PKGCONFIG_INCDIR = /usr/include/peony-qt
+
     INSTALLS += target \
                 schemes
 
@@ -63,9 +72,9 @@ unix {
 
 #    QMAKE_EXTRA_TARGETS += header header2
 
-    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
-    pcfile.files = development-files/peony.pc
-    INSTALLS += pcfile
+#    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
+#    pcfile.files = development-files/peony.pc
+#    INSTALLS += pcfile
 
     #QM_FILES_RESOURCE_PREFIX = ../translations/libpeony-qt
     QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
@@ -76,3 +85,4 @@ HEADERS += \
 
 SOURCES += \
     file-copy.cpp
+
