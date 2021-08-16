@@ -271,7 +271,6 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 
     connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
         this->setModelData(edit, nullptr, index);
-        edit->deleteLater();
         Q_EMIT isEditing(false);
     });
 
