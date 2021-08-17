@@ -672,14 +672,21 @@ void FileItem::onUpdateDirectoryRequest()
         QStringList rawUris;
         QStringList removedUris;
         QStringList addedUris;
+        QVector<FileItem*> removeFileItem ;
 
         for (auto child : *m_model->m_root_item->m_children) {
             rawUris<<child->uri();
             if (!currentUris.contains(child->uri())) {
                 removedUris<<child->uri();
-                m_model->m_root_item->onChildRemoved(child->uri());
+                removeFileItem.append(child);
+                //m_model->m_root_item->onChildRemoved(child->uri());
             }
         }
+
+        for (auto item : removeFileItem ) {
+            m_model->m_root_item->onChildRemoved(item->uri());
+        }
+
 
         for (auto uri : currentUris) {
             if (!rawUris.contains(uri)) {
