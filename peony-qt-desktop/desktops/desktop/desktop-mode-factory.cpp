@@ -61,12 +61,12 @@ DesktopWidgetBase *DesktopModeFactory::createNewDesktop(QWidget *parent)
 
 bool DesktopModeFactory::closeFactory()
 {
-    if (g_desktopModeFactory) {
-        g_desktopModeFactory->deleteLater();
-    }
-
     if (g_desktopMode) {
         g_desktopMode->deleteLater();
+    }
+
+    if (g_desktopModeFactory) {
+        g_desktopModeFactory->deleteLater();
     }
 
     return true;

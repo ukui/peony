@@ -50,11 +50,24 @@ public:
 
     static qint64 peony_desktop_start_time;
 
+    /**
+     * @brief 处理键盘按键事件。
+     */
+    void initKeyProcess();
+
+    void initGSettings();
+
+    void updateGSettingValues();
+
     QRect createRectForAnimation(QRect &screenRect, QRect &currentRect, AnimationType animationType, bool isExit);
 
     QPropertyAnimation *createPropertyAnimation(AnimationType animationType, DesktopWidgetBase *object, QRect &startRect, QRect &endRect);
 
     PropertyName getPropertyNameByAnimation(AnimationType animationType);
+
+private:
+    //切换桌面专用函数，请勿乱调
+    Peony::DesktopWidgetBase *getNextDesktop(DesktopType targetType, DesktopWindow *parentWindow);
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
@@ -74,11 +87,16 @@ public Q_SLOTS:
     void changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation);
 
 private:
-    bool m_first_parse = true;
-    QList<Peony::DesktopWindow*> m_window_list;
+    bool m_firstParse = true;
+
+    QGSettings *m_tabletModeGSettings = nullptr;
 
     bool m_isTabletMode = false;
     bool m_startMenuActivated = false;
+
+    QMutex m_mutex;
+    //打开开始菜单后，将当前桌面暂时保存，以便在关闭开始菜单后进行显示
+    Peony::DesktopWidgetBase *m_lastDesktop = nullptr;
 
     //当前主屏幕或者主屏切换后的上一个主屏幕。
     QScreen *m_primaryScreen = nullptr;

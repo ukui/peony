@@ -85,7 +85,6 @@
 
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
-#define FALLBACK_COLOR "primary-color"
 #define FONT_SETTINGS "org.ukui.style"
 
 using namespace Peony;
@@ -102,15 +101,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     m_opacity->setStartValue(double(0));
     m_opacity->setEndValue(double(1));
 
-    //TODO 删除判断 20210810
-    bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-    m_tabletmode = tabletMode;
-    PEONY_DESKTOP_LOG_WARN("tablet mode value %s", m_tabletmode? "true":"false");
-    if(tabletMode){
-        PEONY_DESKTOP_LOG_WARN("hide the desktop");
-        this->hide();
-    }
-
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
 
 
@@ -121,10 +111,6 @@ DesktopWindow::DesktopWindow(QScreen *screen, bool is_primary, QWidget *parent)
     connect(qApp, &QApplication::paletteChanged, this, &DesktopWindow::updateScreenVisible);
 
     connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
-            //PEONY_DESKTOP_LOG_WARN("screen %s value changed update view(%d %d %d %d)",
-            //                       m_screen->name().toUtf8().constData(),
-            //                       m_screen->geometry().top(), m_screen->geometry().left(),
-            //                       m_screen->geometry().height(), m_screen->geometry().width());
             if (PEONY_BOOT_START == m_boot_stage) {
                 if (!m_boot_timer->isActive()) {
                     m_boot_timer->start(500);
@@ -321,13 +307,6 @@ void DesktopWindow::gotoSetBackground()
 
 void DesktopWindow::paintEvent(QPaintEvent *e)
 {
-    qDebug()<<"painevent..........................";
-   // PEONY_DESKTOP_LOG_WARN("paint %s back groud begin", m_screen->name().toUtf8().constData());
-   // PEONY_DESKTOP_LOG_WARN("paint rect(left:%d top:%d widh:%d height:%d)",
-   //                        this->rect().left(), this->rect().top(), this->rect().width(), this->rect().height());
-   // PEONY_DESKTOP_LOG_WARN("pait screen (top:%d  left:%d height:%d width:%d)",
-   //                        m_screen->geometry().top(), m_screen->geometry().left(),
-   //                        m_screen->geometry().height(), m_screen->geometry().width());
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     if (m_opacity->state() == QVariantAnimation::Running) {
@@ -715,41 +694,32 @@ void DesktopWindow::updateWinGeometry() {
 
 void DesktopWindow::updateScreenVisible()
 {
-    m_tabletmode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-
-    PEONY_DESKTOP_LOG_WARN("update screen %s visible begin", m_screen->name().toUtf8().constData());
-    if (true == m_tabletmode) {
-        //pad mode desktop should hide, pla
-        PEONY_DESKTOP_LOG_WARN("mode is tablet, so update screen visible hide");
-        hide();
+    //PC mode desktop will show,
+    if (m_screen == qApp->primaryScreen()) {
+        //primary screen must be show
+        if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
+            PEONY_DESKTOP_LOG_WARN("primery screen update screen visible show");
+            show();
+        }
     } else {
-        //PC mode desktop will show,
-        if (m_screen == qApp->primaryScreen()) {
-            //primary screen must be show
-            if (auto view = qobject_cast<DesktopIconView *>(centralWidget())) {
-                PEONY_DESKTOP_LOG_WARN("primery screen update screen visible show");
-                show();
-            }
-        } else {
-            // if desktop is mirror mode the slave screen will hide, or show empty desktop.
-            if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
-                int loop = 15;
-                while (loop--) {
-                    ::usleep(10000);
-                    if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
-                        PEONY_DESKTOP_LOG_WARN("check the screen is mirror");
-                        continue;
-                    } else {
-                        PEONY_DESKTOP_LOG_WARN("check the screen is not mirror");
-                        return;
-                    }
+        // if desktop is mirror mode the slave screen will hide, or show empty desktop.
+        if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
+            int loop = 15;
+            while (loop--) {
+                ::usleep(10000);
+                if (m_screen->geometry() == qApp->primaryScreen()->geometry()) {
+                    PEONY_DESKTOP_LOG_WARN("check the screen is mirror");
+                    continue;
+                } else {
+                    PEONY_DESKTOP_LOG_WARN("check the screen is not mirror");
+                    return;
                 }
-                hide();
-                PEONY_DESKTOP_LOG_WARN("update screen visible mirror hide");
-            } else {
-                PEONY_DESKTOP_LOG_WARN("update screen visible second show");
-                show();
             }
+            hide();
+            PEONY_DESKTOP_LOG_WARN("update screen visible mirror hide");
+        } else {
+            PEONY_DESKTOP_LOG_WARN("update screen visible second show");
+            show();
         }
     }
 

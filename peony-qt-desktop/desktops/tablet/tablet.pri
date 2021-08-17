@@ -18,12 +18,12 @@ SOURCES += \
         $$PWD/src/MainViewWidget/directorychangedthread.cpp \
         $$PWD/src/Style/style.cpp \
         $$PWD/src/UtilityFunction/thumbnail.cpp \
-        $$PWD/src/UtilityFunction/timewidget.cpp \
         $$PWD/src/XEventMonitor/xeventmonitor.cpp\
         $$PWD/src/RightClickMenu/rightclickmenu.cpp \
         $$PWD/src/UtilityFunction/utility.cpp \
         $$PWD/src/UtilityFunction/toolbox.cpp \
-        $$PWD/src/UtilityFunction/pluginwidget.cpp
+        $$PWD/src/UtilityFunction/pluginwidget.cpp \
+        $$PWD/src/UtilityFunction/tablet-plugin-widget.cpp
 
 
 HEADERS += \
@@ -38,12 +38,12 @@ HEADERS += \
         $$PWD/src/MainViewWidget/directorychangedthread.h \
         $$PWD/src/UtilityFunction/AbstractInterface.h \
         $$PWD/src/UtilityFunction/thumbnail.h \
-        $$PWD/src/UtilityFunction/timewidget.h \
         $$PWD/src/XEventMonitor/xeventmonitor.h\
         $$PWD/src/RightClickMenu/rightclickmenu.h \
         $$PWD/src/UtilityFunction/utility.h \
         $$PWD/src/UtilityFunction/toolbox.h \
-        $$PWD/src/UtilityFunction/pluginwidget.h
+        $$PWD/src/UtilityFunction/pluginwidget.h \
+        $$PWD/src/UtilityFunction/tablet-plugin-widget.h
 
 RESOURCES += \
     $$PWD/img.qrc
