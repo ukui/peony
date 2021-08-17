@@ -159,17 +159,19 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
-    auto mgr = MenuPluginManager::getInstance();
-    auto ids = mgr->getPluginIds();
-    for (auto id : ids) {
-        auto factory = mgr->getPlugin(id);
-        //qDebug()<<id;
-        auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
-        addActions(tmp);
-        for (auto action : tmp) {
-            action->setParent(this);
+    if(0 != QString::compare("filesafe:///")) {
+        auto mgr = MenuPluginManager::getInstance();
+        auto ids = mgr->getPluginIds();
+        for (auto id : ids) {
+            auto factory = mgr->getPlugin(id);
+            //qDebug()<<id;
+            auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
+            addActions(tmp);
+            for (auto action : tmp) {
+                action->setParent(this);
+            }
+            l<<tmp;
         }
-        l<<tmp;
     }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
