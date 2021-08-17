@@ -26,7 +26,8 @@ DEFINES += QAPPLICATION_CLASS=QApplication
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
-LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
+#LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
+LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11
 
 TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_tr.ts \

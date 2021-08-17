@@ -25,7 +25,7 @@
 
 #include <QDBusMessage>
 #include <QDBusConnection>
-#include <ukui-log4qt.h>
+//#include <ukui-log4qt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <QTime>
@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
 {
     //qputenv("QT_QPA_PLATFORM", "wayland");
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
-    initUkuiLog4qt("peony-desktop");
-//    qInstallMessageHandler(messageOutput);
+//    initUkuiLog4qt("peony-desktop");
+    qInstallMessageHandler(messageOutput);
     qDebug() << "desktop start time in main:" <<PeonyDesktopApplication::peony_desktop_start_time;
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
