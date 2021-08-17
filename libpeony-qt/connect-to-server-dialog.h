@@ -100,8 +100,7 @@ public:
     bool anonymous();
     bool savePassword();
 
-public Q_SLOTS:
-    void slot_syncRemoteServer();
+    void syncRemoteServer(const QUrl& url);
 
 private:
     float           m_widget_margin         = 24;
@@ -129,6 +128,7 @@ private:
     QHBoxLayout*    m_btn_layout            = nullptr;
 
     QString m_remoteIP;
+
 };
 
 };

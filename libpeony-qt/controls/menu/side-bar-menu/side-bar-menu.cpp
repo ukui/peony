@@ -209,35 +209,11 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
 {
     QList<QAction *> l;
 
-    auto info = FileInfo::fromUri(m_uri);
-    if (info->displayName().isEmpty()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
-
+    /* 共享文件夹无右键菜单'卸载' */
     if (!m_uri.startsWith("file://")) {
         l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
             m_item->unmount();
-        });
-        bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
-        bool isMounted = isUmountable;
-        auto targetUri = FileUtils::getTargetUri(m_item->uri());
-        if (!targetUri.isEmpty()) {
-            if (targetUri == "burn:///") {
-                isMounted = false;
-            } else {
-                isMounted = (targetUri != "file:///") || isUmountable;
-            }
-        }
-
-        l.last()->setEnabled(isMounted);
-    }
-
-    if (m_item->isRemoveable()&&!m_uri.startsWith("file://")) {
-        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
-            m_item->eject(G_MOUNT_UNMOUNT_NONE);
-        });
-
+        });       
         l.last()->setEnabled(m_item->isMounted());
     }
 

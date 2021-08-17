@@ -26,11 +26,22 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "connect-to-server-dialog.h"
+#include "sync-thread.h"
+#include "volume-manager.h"
+#include "gobject-template.h"
+#include "file-utils.h"
+#include "libnotify/notification.h"
+#include <sys/stat.h>
+#include <libnotify/notify.h>
+#include "file-watcher.h"
 
+#include <QMessageBox>
 #include <QDebug>
 #include <QProcess>
 
 using namespace Peony;
+
+void notifyUser(QString notifyContent);
 
 SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
                                        const QString &iconName,
@@ -48,6 +59,7 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
     connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
     connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
     connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
+
 }
 
 QString SideBarNetWorkItem::uri()
@@ -70,62 +82,20 @@ bool SideBarNetWorkItem::hasChildren()
     return (m_parentItem == nullptr);
 }
 
-bool SideBarNetWorkItem::isRemoveable()
-{
-    if (!m_uri.startsWith("file://")) {
-        //FIXME: replace BLOCKING api in ui thread.
-        auto info = FileInfo::fromUri(m_uri);
-        if (info->displayName().isEmpty()) {
-            FileInfoJob j(info);
-            j.querySync();
-        }
-        bool removable = info->canEject() || info->canStop();
-        if (!removable && !info.get()->unixDeviceFile().isEmpty()) {
-            // check if drive is removable
-            auto targetUri = info.get()->targetUri();
-            auto targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
-            auto mount = g_file_find_enclosing_mount(targetFile, nullptr, nullptr);
-            g_object_unref(targetFile);
-            if (mount) {
-                auto drive = g_mount_get_drive(mount);
-                if (drive) {
-                    removable = g_drive_is_removable(drive);
-                    g_object_unref(drive);
-                }
-                g_object_unref(mount);
-            }
-            return removable;
-        } else {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool SideBarNetWorkItem::isEjectable()
-{
-    if (!m_uri.startsWith("file://")){
-        auto info = FileInfo::fromUri(m_uri);
-        if (info->displayName().isEmpty()) {
-            FileInfoJob j(info);
-            j.querySync();
-        }
-        return isRemoveable();
-      }
-    return false;
-}
-
 bool SideBarNetWorkItem::isMountable()
 {
-    if (!m_uri.startsWith("file://")){
-        auto info = FileInfo::fromUri(m_uri);
-        if (info->displayName().isEmpty()) {
-            FileInfoJob j(info);
-            j.querySync();
-        }
-        return info->canMount() || info->canUnmount();
+    /* 远程服务器返回true */
+    if (!m_uri.startsWith("file://")&& m_uri!="network:///"){
+        return true;
     }
-  return false;
+    return false;
+}
+
+bool SideBarNetWorkItem::isMounted()
+{
+    if(FileUtils::isMountPoint(m_uri))
+        return true;
+    return false;
 }
 
 QModelIndex SideBarNetWorkItem::firstColumnIndex()
@@ -138,8 +108,66 @@ QModelIndex SideBarNetWorkItem::lastColumnIndex()
     return m_model->lastColumnIndex(this);
 }
 
+static void unmount_finished(GMount *mount, GAsyncResult *result)
+{
+    GError *err = nullptr;   
+    g_mount_unmount_with_operation_finish(mount, result, &err);
+    if (err) {
+        if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            g_error_free(err);
+            return;
+        }
+        if(strstr(err->message,"umount: ")){
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
+            g_error_free(err);
+            return;
+        }
+
+        QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n").arg(err->message), QMessageBox::Yes);
+        g_error_free(err);
+
+    } else {
+        /* 卸载完成信息提示 */
+        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        SyncThread::notifyUser(unmountNotify);
+    }
+
+}
+
+void SideBarNetWorkItem::realUnmount()
+{
+    auto mount = VolumeManager::getMountFromUri(this->uri().toUtf8().constData());  
+    g_mount_unmount_with_operation(mount->getGMount(),
+                    G_MOUNT_UNMOUNT_NONE,
+                    nullptr,
+                    nullptr,
+                    GAsyncReadyCallback(unmount_finished),
+                    nullptr);
+}
+
+void SideBarNetWorkItem::ejectOrUnmount()
+{
+    unmount();
+}
+
+void SideBarNetWorkItem::unmount()
+{
+    SyncThread *syncThread = new SyncThread(m_uri);
+    QThread* currentThread = new QThread();
+    syncThread->moveToThread(currentThread);
+    connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
+    connect(syncThread,&SyncThread::syncFinished,this,[=](){
+        realUnmount();
+        syncThread->disconnect(this);
+        syncThread->deleteLater();
+        currentThread->disconnect(SIGNAL(started()));
+    });
+    currentThread->start();
+}
+
 void SideBarNetWorkItem::clearChildren()
 {
+    stopWatcher();
     SideBarAbstractItem::clearChildren();
 }
 
@@ -147,8 +175,9 @@ void SideBarNetWorkItem::findChildrenAsync()
 {
     findChildren();
 }
-#include "file-enumerator.h"
+
 #include "file-utils.h"
+#include <QUrl>
 void SideBarNetWorkItem::findChildren()
 {
     //只有根节点才设置子节点
@@ -165,6 +194,17 @@ void SideBarNetWorkItem::findChildren()
         thread->start();
     }
 
+    /* 计算机视图卸载时，侧边栏item状态也要响应 */
+    this->initWatcher();
+    this->m_watcher->setMonitorChildrenChange();
+    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString &uri) {
+        for (auto item : *m_children) {
+            if(QUrl(item->uri()).host()==QUrl(uri).host())
+                m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+        }
+    });
+
+    this->startWatcher();
 }
 
 void SideBarNetWorkItem::findRemoteServers()
@@ -237,7 +277,27 @@ void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
            m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
            m_children->removeOne(item);
    }
+   }
+}
+
+void SideBarNetWorkItem::initWatcher()
+{
+    /* 监听计算机视图的卸载信号 */
+    if (!m_watcher) {
+        m_watcher = std::make_shared<FileWatcher>("computer:///");
     }
+}
+
+void SideBarNetWorkItem::startWatcher()
+{initWatcher();
+    m_watcher->startMonitor();
+
+}
+
+void SideBarNetWorkItem::stopWatcher()
+{
+    initWatcher();
+    m_watcher->stopMonitor();
 }
 
 SharedDirectoryInfoThread::SharedDirectoryInfoThread(QVector<SideBarAbstractItem *> *children, SideBarModel *model,
