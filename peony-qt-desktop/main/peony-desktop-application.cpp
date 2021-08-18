@@ -814,7 +814,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             animation->setStartValue(QPoint(startRect.x(), startRect.y()));
             animation->setEndValue(QPoint(endRect.x(), endRect.y()));
             animation->setDuration(duration);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             break;
         }
         case PropertyName::Geometry: {
@@ -823,7 +823,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             animation->setStartValue(startRect);
             animation->setEndValue(endRect);
             animation->setDuration(duration);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             break;
         }
         case PropertyName::WindowOpacity: {
@@ -845,7 +845,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             }
 
             object->setGraphicsEffect(opacityEffect);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             animation->setDuration(duration);
 
             qDebug() << "===windowOpacity:" << object->windowOpacity();

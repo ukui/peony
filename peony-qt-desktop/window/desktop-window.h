@@ -114,6 +114,19 @@ protected Q_SLOTS:
     void setBg(const QString &bgPath);
     void setBg(const QColor &color);
 
+    /**
+     * 对窗口当前桌面的移动请求进行响应。
+     * 通过解析动画类型和移动长度计算出桌面的下一个位置。
+     * @brief
+     * @param animationType
+     * @param moveLength
+     * @param duration 动画持续时间，如果为0，则代表不需要动画。单位 ms
+     */
+    void desktopMoveProcess(AnimationType animationType, quint32 moveLength, quint32 duration);
+
+    //回弹处理
+    void desktopReboundProcess();
+
 protected:
     void initShortcut();
     void initGSettings();

@@ -117,6 +117,18 @@ Q_SIGNALS:
      */
     void gotoSetBackground();
 
+    /**
+     * @brief 请求移动当前桌面，发出信号后，由接收者进行移动
+     * @param animationType
+     * @param moveLength
+     * @param duration 如果不需要动画，则设为0
+     */
+    void desktopMoveRequest(AnimationType animationType, quint32 moveLength, quint32 duration);
+
+    /**
+     * @brief 桌面移动后回弹到原点
+     */
+    void desktopReboundRequest();
 };
 
 }

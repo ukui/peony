@@ -739,6 +739,8 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
         m_currentDesktop->setParent(nullptr);
         //取消掉上一个桌面的信号链接
         disconnect(m_currentDesktop, &DesktopWidgetBase::gotoSetBackground, this, &DesktopWindow::gotoSetThisBackground);
+        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopWindow::desktopMoveProcess);
+        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopWindow::desktopReboundProcess);
     }
 
     m_currentDesktop = desktop;
@@ -750,8 +752,74 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     m_currentDesktop->setActivated(true);
 
     connect(m_currentDesktop, &DesktopWidgetBase::gotoSetBackground, this, &DesktopWindow::gotoSetThisBackground);
+    connect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopWindow::desktopMoveProcess);
+    connect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopWindow::desktopReboundProcess);
 
     qDebug() << "===update all window!";
     this->updateWinGeometry();
     this->updateView();
+}
+
+void DesktopWindow::desktopMoveProcess(AnimationType animationType, quint32 moveLength, quint32 duration)
+{
+    if (moveLength <= 0) {
+        return;
+    }
+
+    const QRect &currentRect = m_currentDesktop->geometry();
+    QRect nextRect;
+
+    switch (animationType) {
+        case AnimationType::LeftToRight:
+            nextRect = QRect(currentRect.x() + moveLength, 0, currentRect.width(), currentRect.height());
+            break;
+        case AnimationType::RightToLeft:
+            nextRect = QRect(currentRect.x() - moveLength, 0, currentRect.width(), currentRect.height());
+            break;
+        case AnimationType::CenterToEdge: {
+            nextRect = QRect(currentRect.x() - moveLength,
+                             currentRect.y() - moveLength,
+                             currentRect.width() + (moveLength * 2),
+                             currentRect.height() + (moveLength * 2));
+            break;
+        }
+        case AnimationType::EdgeToCenter: {
+            nextRect = QRect(currentRect.x() + moveLength,
+                             currentRect.y() + moveLength,
+                             currentRect.width() - (moveLength * 2),
+                             currentRect.height() - (moveLength * 2));
+            break;
+        }
+        case AnimationType::OpacityFull:
+        case AnimationType::OpacityLess:
+        default:
+            nextRect = currentRect;
+            break;
+    }
+
+    if (duration >= 50) {
+        QPropertyAnimation *animation = new QPropertyAnimation(m_currentDesktop, "geometry");
+        animation->setStartValue(currentRect);
+        animation->setEndValue(nextRect);
+        animation->setDuration(duration);
+        animation->setEasingCurve(QEasingCurve::InOutQuad);
+
+        connect(animation, &QPropertyAnimation::finished, this, [=] {
+            animation->deleteLater();
+        });
+    } else {
+        m_currentDesktop->setGeometry(nextRect);
+    }
+}
+
+void DesktopWindow::desktopReboundProcess()
+{
+    QPropertyAnimation *animation = new QPropertyAnimation(m_currentDesktop, "geometry");
+
+    animation->setStartValue(m_currentDesktop->geometry());
+    animation->setEndValue(geometry());
+    animation->setDuration(300);
+    animation->setEasingCurve(QEasingCurve::InOutCubic);
+
+    animation->start();
 }
