@@ -729,6 +729,11 @@ void DesktopWindow::updateScreenVisible()
 
 void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 {
+    if (!desktop) {
+        qWarning() << "[DesktopWindow::setWindowDesktop] Try to set up a desktop that does not exist !";
+        m_currentDesktop = nullptr;
+        return;
+    }
     //TODO 尝试实现不同窗口设置不同背景 20210810
     if (m_currentDesktop) {
         m_currentDesktop->setParent(nullptr);

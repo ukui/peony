@@ -44,7 +44,6 @@ public:
     explicit PeonyDesktopApplication(int &argc, char *argv[], const char *applicationName = "peony-qt-desktop");
 
     void initManager();
-    static Peony::DesktopIconView *getIconView();
     static bool userGuideDaemonRunning();
     static void showGuide(const QString &appName = "");
 
