@@ -3,6 +3,17 @@
 
 #include "desktop-widget-base.h"
 
+#include "src/Interface/ukuimenuinterface.h"
+#include "src/UtilityFunction/fulllistview.h"
+#include "src/UtilityFunction/fullcommonusewidget.h"
+#include "src/MainViewWidget/directorychangedthread.h"
+#include "src/UtilityFunction/toolbox.h"
+#include "src/UtilityFunction/tablet-plugin-widget.h"
+
+#include <QSettings>
+#include <QAction>
+#include <qgsettings.h>
+#include <QButtonGroup>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -14,23 +25,10 @@
 #include <QTimer>
 #include <QStandardItemModel>
 #include <QFrame>
-#include "src/Interface/ukuimenuinterface.h"
-#include "src/UtilityFunction/fulllistview.h"
-#include "src/UtilityFunction/fullcommonusewidget.h"
-#include "src/MainViewWidget/directorychangedthread.h"
-#include "src/UtilityFunction/timewidget.h"
-//#include "src/GroupListView/grouplistwidget.h"
-#include <QSettings>
-#include <QAction>
-#include <qgsettings.h>
-#include <QButtonGroup>
-#include "src/UtilityFunction/toolbox.h"
 #include <QVariantAnimation>
 #include <QEvent>
-//#include <QSpacerItem>
 #include <QKeyEvent>
 #include <QTimer>
-
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QParallelAnimationGroup>
@@ -49,6 +47,20 @@ public:
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
+    void initGSettings();
+
+    void initRightButton();
+    void initAllWidget();
+
+    void updateByDirection();
+
+    void screenHorizontal();
+    void buttonWidgetShow();
+    void collapse();
+    void spread();
+    void setToolsOpacityEffect(const qreal& num);
+    void showPCMenu();          //打开pc的开始菜单
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -56,70 +68,15 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
-private:
-    QPoint m_startPoint;
-    QPoint m_endPoint;
-    QPoint m_lastEndPoint;//上一次move事件鼠标停留的位置
-
-    bool m_leftKeyPressed = false;
-
-    bool m_isTabletMode;//平板模式标志
-    //左侧
-    TimeWidget *leftWidget=nullptr;
-
-    //翻页
-    QVariantAnimation *m_animation=nullptr;
-
-    //监控
-    QFileSystemWatcher* m_fileWatcher=nullptr;
-    QFileSystemWatcher* m_fileWatcher1=nullptr;
-    DirectoryChangedThread* m_directoryChangedThread=nullptr;
-
-    //背景
-    bool hideBackground=false;
-    int appRun=2;
-
-    //翻转
-    QGSettings* rotation=nullptr;
-    QString direction;
-    QGSettings* tabletMode=nullptr;
-    bool autoRotation=false;
-
-    int m_width=0;
-    int m_height=0;
-
-    //最右侧的button
-    QWidget* buttonWidget=nullptr;
-    QButtonGroup* buttonGroup=nullptr;
-    QVBoxLayout* vbox=nullptr;
-    QPushButton* button=nullptr;
-
-    /*pc*/
-    QGSettings* bg_effect = nullptr;
-    bool m_winFlag = false;
-    void paintEvent(QPaintEvent *event);
-
-    //工具框显示
-    ToolBox *toolBox=nullptr;
-
-    bool checkapplist();
-
-protected:
     void screenVertical();
     void keyPressEvent(QKeyEvent* event);
-    /*pc 功能*/
-    bool event(QEvent *event);
+
     bool appListFile();
     void centerToScreen(QWidget* widget);
 
-public:
-    void screenHorizontal();
-    void buttonWidgetShow();
-    FullCommonUseWidget* m_CommonUseWidget=nullptr;
-    void collapse();
-    void spread();
-    void setOpacityEffect(const qreal& num);
-    void showPCMenu();          //打开pc的开始菜单
+private:
+    bool checkAppList();
+    void paintEvent(QPaintEvent *event);
 
 public Q_SLOTS:
     void directoryChangedSlot();
@@ -165,6 +122,64 @@ public Q_SLOTS:
 Q_SIGNALS:
     void sendDirectoryPath(QString arg);
     void UpdateSignal();
+
+private:
+    QPoint m_startPoint;
+    QPoint m_endPoint;
+    QPoint m_lastEndPoint;//上一次move事件鼠标停留的位置
+
+    bool m_leftKeyPressed = false;
+    bool m_isTabletMode;//平板模式标志
+
+//    //主界面布局，横屏时为水平布局，竖屏时为垂直布局
+//    QBoxLayout *m_layout = nullptr;
+//
+//    //左侧的时间label，搜索框和小插件。
+//    TimeWidget *m_TimeWidget = nullptr;
+//
+//    //显示应用图标的主体容器
+//    FullCommonUseWidget* m_mainAppListContainer = nullptr;
+
+
+    FullCommonUseWidget* m_CommonUseWidget=nullptr;
+
+    //左侧
+    TabletPluginWidget *m_leftWidget=nullptr;
+
+    //翻页
+    QVariantAnimation *m_animation=nullptr;
+
+    //监控
+    QFileSystemWatcher* m_fileWatcher=nullptr;
+    QFileSystemWatcher* m_fileWatcher1=nullptr;
+    DirectoryChangedThread* m_directoryChangedThread=nullptr;
+
+    //背景
+    bool hideBackground=false;
+    int appRun=2;
+
+    //翻转
+    QGSettings* m_rotationGSettings = nullptr;
+    QString m_direction;
+    QGSettings* m_tabletModeGSettings = nullptr;
+    bool m_autoRotation=false;
+
+    int m_width=0;
+    int m_height=0;
+
+    //最右侧的button
+    QWidget* buttonWidget=nullptr;
+    QButtonGroup* buttonGroup=nullptr;
+    QVBoxLayout* vbox=nullptr;
+    QPushButton* button=nullptr;
+
+    /*pc*/
+    QGSettings* bg_effect = nullptr;
+    bool m_winFlag = false;
+
+    //工具框显示
+    ToolBox *toolBox=nullptr;
+
 };
 
 }

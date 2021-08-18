@@ -17,7 +17,6 @@
 #include <qgsettings.h>
 #include <iostream>
 #include "src/Style/style.h"
-#include "src/UtilityFunction/timewidget.h"
 
 #define TABLED_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
 #define TABLET_MODE                  "tablet-mode"
@@ -45,10 +44,8 @@ QT_END_NAMESPACE
 
 TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
+    this->m_exitAnimationType = AnimationType::OpacityLess;
 
-//    qDebug()<<"1、构造";
-    //this->resize(QApplication::primaryScreen()->geometry().width(),QApplication::primaryScreen()->geometry().height());
-    this->setAttribute(Qt::WA_TranslucentBackground, false);
     this->setAutoFillBackground(false);
     this->setFocusPolicy(Qt::StrongFocus);
     this->setProperty("useStyleWindowManager", false);
@@ -61,97 +58,13 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     //加入左右侧界面,不使用布局
     m_width = QApplication::primaryScreen()->geometry().width() + 3;
     m_height = QApplication::primaryScreen()->geometry().height() + 3;
+    this->initAllWidget();
 
-    //左侧时间控件
-    leftWidget = new TimeWidget(this);
-    toolBox = new ToolBox(this, 104, m_height);
-    toolBox->setGeometry(0, 0, 104, m_height);
-    toolBox->hide();
-    //最右侧翻页button
-    buttonWidget = new QWidget(this);
-    buttonGroup = new QButtonGroup;
-    vbox = new QVBoxLayout;
-    vbox->setAlignment(Qt::AlignHCenter);
-    vbox->setSpacing(0);
-    buttonWidget->setLayout(vbox);
-    vbox->setContentsMargins(0, 0, 0, 0);
+    this->initRightButton();
 
-    //特效模式,此处Gsetting不明确，需进一步确认
-    bg_effect = new QGSettings(QString("org.ukui.control-center.personalise").toLocal8Bit());
-    setOpacityEffect(bg_effect->get("transparency").toReal());
+    this->initGSettings();
 
-    connect(bg_effect, &QGSettings::changed, [this](const QString &key) {
-        if (key == "effect") {
-            if (bg_effect->get("effect").toBool()) {
-                setOpacityEffect(bg_effect->get("transparency").toReal());
-            } else {
-                setOpacityEffect(bg_effect->get("transparency").toReal());
-            }
-        }
-    });
-
-    //平板切换
-    rotation = new QGSettings(TABLED_ROTATION);
-    tabletMode = new QGSettings(TABLED_SCHEMA);
-    connect(tabletMode, &QGSettings::changed, [this](const QString &key) {
-
-        qDebug() << "tabletMode key" << key;
-        if (key == "tabletMode") {
-            autoRotation = tabletMode->get("auto-rotation").toBool(); //监测旋转按钮是否开启
-            direction = "normal";
-            rotation->set("xrandr-rotations", direction);
-            m_isTabletMode = tabletMode->get("tablet-mode").toBool();
-            hideOrShowMenu(m_isTabletMode);
-        }
-    });
-
-    //屏幕旋转
-    Style::IsWideScreen = false;
-    direction = rotation->get("xrandr-rt-rotations").toString();
-    //TODO 左侧时间组件的显示，进行修改 0812
-    if (direction == "left" || direction == "right") {
-        Style::ScreenRotation = true;
-        Style::initWidStyle();
-        leftWidget->setGeometry(QRect(0, 0, m_width, 300));
-        m_CommonUseWidget = new FullCommonUseWidget(this, m_width, m_height - 300);
-        m_CommonUseWidget->setGeometry(QRect(0,
-                                             leftWidget->y() + leftWidget->height(),
-                                             m_width - Style::ButtonWidgetWidth,
-                                             m_height - leftWidget->height()));
-        //最右侧翻页button
-        buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
-                                        0,
-                                        Style::ButtonWidgetWidth,
-                                        m_height));
-        m_CommonUseWidget->fillAppList();
-        leftWidget->show();
-        m_CommonUseWidget->show();
-        leftWidget->focusPlug->hide();
-        buttonWidgetShow();
-    } else {
-        Style::ScreenRotation = false;
-        Style::initWidStyle();
-//        toolBox->hide();
-        leftWidget->setGeometry(QRect(0, 0, 512, m_height));
-
-        m_CommonUseWidget = new FullCommonUseWidget(this, m_width - leftWidget->width() - Style::ButtonWidgetWidth,
-                                                    m_height);
-        m_CommonUseWidget->setGeometry(QRect(leftWidget->x() + leftWidget->width(),
-                                             0,
-                                             m_width - leftWidget->width() - Style::ButtonWidgetWidth,
-                                             m_height));
-
-        //最右侧翻页button
-        buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
-                                        0,
-                                        Style::ButtonWidgetWidth,
-                                        m_height));
-        m_CommonUseWidget->fillAppList();
-        leftWidget->show();
-        m_CommonUseWidget->show();
-        leftWidget->focusPlug->show();
-        buttonWidgetShow();
-    }
+    this->updateByDirection();
 
     //pc下鼠标功能
     XEventMonitor::instance()->start();
@@ -168,7 +81,6 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     m_fileWatcher->addPaths(QStringList() << QString("/usr/share/applications")
                                           << QString(QDir::homePath() + "/.local/share/applications/"));
     connect(m_fileWatcher, &QFileSystemWatcher::directoryChanged, this, &TabletMode::directoryChangedSlot);
-
 
     m_fileWatcher1 = new QFileSystemWatcher;
     bool ismonitor = m_fileWatcher1->addPath(QDir::homePath() + "/.config/ukui/desktop_applist");
@@ -215,9 +127,9 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     connect(m_CommonUseWidget, &FullCommonUseWidget::drawButtonWidgetAgain, this, &TabletMode::buttonWidgetShow);
 
     //页面收纳
-    connect(m_CommonUseWidget, &FullCommonUseWidget::pageCollapse, this, &TabletMode::collapse);
-    connect(m_CommonUseWidget, &FullCommonUseWidget::pageSpread, this, &TabletMode::spread);
-    connect(toolBox, &ToolBox::pageSpread, this, &TabletMode::spread);
+//    connect(m_CommonUseWidget, &FullCommonUseWidget::pageCollapse, this, &TabletMode::collapse);
+//    connect(m_CommonUseWidget, &FullCommonUseWidget::pageSpread, this, &TabletMode::spread);
+//    connect(toolBox, &ToolBox::pageSpread, this, &TabletMode::spread);
 
     /*界面隐藏信号*/
     connect(m_CommonUseWidget, &FullCommonUseWidget::sendHideMainWindowSignal, this,
@@ -241,15 +153,10 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     QDBusConnection::sessionBus().registerService("org.ukui.menu.tablet");
     QDBusConnection::sessionBus().registerObject("/tablet/menu", this, QDBusConnection::ExportAllSlots);
 
-    //初始化收纳状态，切换时更新
-    if (tabletMode->get(TABLET_MODE).toBool() && Style::ScreenRotation == false) {
-        spread();
-    } else if (!tabletMode->get(TABLET_MODE).toBool()) {
-        collapse();
-    }
     //TODO 将左侧组件设置为一直展开 0812
     //不论何时都展开，
     spread();
+
     //TODO 删除翻页动画，将页面改为两个不同的组件 0812
     //翻页动画
     m_animation = new QVariantAnimation(m_CommonUseWidget);
@@ -267,53 +174,11 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
         connect(gsetting, &QGSettings::changed, this, &TabletMode::winKeyReleaseSlot);
     }
 
-    if (checkapplist()) {
+    if (checkAppList()) {
         //qDebug()<<"==================";
         directoryChangedSlot();//初始加载时更新应用列表，检查有没有在ukui-menu没启时安装或卸载应用
     }
 
-}
-
-TabletMode::~TabletMode()
-{
-    XEventMonitor::instance()->quit();
-    if (leftWidget)
-        delete leftWidget;
-    if (toolBox)
-        delete toolBox;
-    if (buttonWidget)
-        delete buttonWidget;
-    if (buttonGroup)
-        delete buttonGroup;
-    if (vbox)
-        delete vbox;
-    if (tabletMode)
-        delete tabletMode;
-    if (rotation)
-        delete rotation;
-    if (m_CommonUseWidget)
-        delete m_CommonUseWidget;
-    if (m_fileWatcher)
-        delete m_fileWatcher;
-    if (m_fileWatcher1)
-        delete m_fileWatcher1;
-    if (m_directoryChangedThread)
-        delete m_directoryChangedThread;
-    if (m_animation)
-        delete m_animation;
-
-    leftWidget = nullptr;
-    toolBox = nullptr;
-    buttonWidget = nullptr;
-    buttonGroup = nullptr;
-    vbox = nullptr;
-    tabletMode = nullptr;
-    rotation = nullptr;
-    m_CommonUseWidget = nullptr;
-    m_fileWatcher = nullptr;
-    m_fileWatcher1 = nullptr;
-    m_directoryChangedThread = nullptr;
-    m_animation = nullptr;
 }
 
 void TabletMode::setActivated(bool activated)
@@ -352,6 +217,7 @@ void TabletMode::mouseReleaseEvent(QMouseEvent *event)
                  << geometry();
 
         if (moveWidth > minWidth) {
+            qDebug() << "===鼠标抬起事件 "<< geometry();
             m_exitAnimationType = AnimationType::OpacityLess;
             Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::OpacityFull);
         } else if (moveWidth >= 0) {
@@ -392,12 +258,12 @@ void TabletMode::mouseMoveEvent(QMouseEvent *event)
 
 void TabletMode::unSetEffect(std::string str)
 {
-    setOpacityEffect(1);
+    setToolsOpacityEffect(1);
 }
 
 void TabletMode::setEffect(std::string str)
 {
-    setOpacityEffect(0.7);
+    setToolsOpacityEffect(0.7);
 }
 
 void TabletMode::client_get(QString str)
@@ -406,10 +272,9 @@ void TabletMode::client_get(QString str)
 }
 
 //改变搜索框及工具栏透明度
-void TabletMode::setOpacityEffect(const qreal &num)
+void TabletMode::setToolsOpacityEffect(const qreal &num)
 {
-    leftWidget->setDownOpacityEffect(num); //全局搜索框透明度
-    toolBox->setToolOpacityEffect(num);//工具栏透明度
+    m_leftWidget->setSearchOpacityEffect(num); //全局搜索框透明度
 }
 
 //打开应用，开始菜单隐藏，背景改为黑色纯色；关闭应用，开始菜单显示，背景为壁纸
@@ -430,14 +295,15 @@ void TabletMode::desktopSwitch(int res)
 
 void TabletMode::hideOrShowMenu(bool res)
 {
+    return;
     //qDebug()<<"2、隐藏或显示";
     if (res) {
         this->setAttribute(Qt::WA_TranslucentBackground, false);
         this->setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, true);
         this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
-//        direction=rotation->get("xrandr-rotations").toString();
+//        m_direction=m_rotationGSettings->get("xrandr-rotations").toString();
         //    Style::IsWideScreen = false;
-        if ((direction == "left" || direction == "right") &&
+        if ((m_direction == "left" || m_direction == "right") &&
             (QApplication::primaryScreen()->geometry().width() < QApplication::primaryScreen()->geometry().height()))
             screenVertical();
         else
@@ -491,10 +357,10 @@ void TabletMode::requestDeleteAppSlot()
 void TabletMode::screenRotation()
 {
     //qDebug()<<"3、屏幕旋转";
-    leftWidget->hide();
+    m_leftWidget->hide();
     m_CommonUseWidget->hide();
     buttonWidget->hide();
-    toolBox->hide();
+//    toolBox->hide();
     m_width = QApplication::primaryScreen()->geometry().width() + 3;
     m_height = QApplication::primaryScreen()->geometry().height() + 3;
     int x = QApplication::primaryScreen()->geometry().x();
@@ -503,10 +369,10 @@ void TabletMode::screenRotation()
                       QApplication::primaryScreen()->geometry().width() + 3,
                       QApplication::primaryScreen()->geometry().height() + 3);
 
-    direction = rotation->get("xrandr-rotations").toString();
+    m_direction = m_rotationGSettings->get("xrandr-rotations").toString();
     if (hideBackground) {
         return;
-    } else if ((direction == "left" || direction == "right") &&
+    } else if ((m_direction == "left" || m_direction == "right") &&
                (QApplication::primaryScreen()->geometry().width() <
                 QApplication::primaryScreen()->geometry().height())) {
         screenVertical();
@@ -522,23 +388,23 @@ void TabletMode::screenVertical()
 //    Style::IsWideScreen=false;
     Style::nowpagenum = 1;
     Style::initWidStyle();
-    toolBox->hide();
-    leftWidget->setGeometry(QRect(0,
+//    toolBox->hide();
+    m_leftWidget->setGeometry(QRect(0,
                                   0,
                                   m_width,
                                   300));
 
     m_CommonUseWidget->setGeometry(QRect(0,
-                                         leftWidget->y() + leftWidget->height(),
+                                         m_leftWidget->y() + m_leftWidget->height(),
                                          m_width - Style::ButtonWidgetWidth,
-                                         m_height - leftWidget->height()));
+                                         m_height - m_leftWidget->height()));
     m_CommonUseWidget->repaintWid(1);
     buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
                                     0,
                                     Style::ButtonWidgetWidth,
                                     m_height));
-    leftWidget->show();
-    leftWidget->focusPlug->hide();
+    m_leftWidget->show();
+    m_leftWidget->getPluginWidget()->hide();
     m_CommonUseWidget->fillAppList();
     m_CommonUseWidget->show();
     buttonWidgetShow();
@@ -551,33 +417,21 @@ void TabletMode::screenHorizontal()
     Style::ScreenRotation = false;
     Style::nowpagenum = 1;
     Style::initWidStyle();
-    if (!Style::IsWideScreen) {
-        toolBox->hide();
-        leftWidget->setGeometry(QRect(0,
-                                      0,
-                                      512,
-                                      m_height));
-        m_CommonUseWidget->setGeometry(QRect(leftWidget->x() + leftWidget->width(),
-                                             0,
-                                             m_width - leftWidget->width() - Style::ButtonWidgetWidth,
-                                             m_height));
 
-        m_CommonUseWidget->repaintWid(0);
-        leftWidget->show();
-        leftWidget->focusPlug->show();
+    m_leftWidget->setGeometry(QRect(0,
+                                  0,
+                                  512,
+                                  m_height));
 
-    } else if (Style::IsWideScreen) {
-        leftWidget->hide();
-        m_CommonUseWidget->setGeometry(QRect(toolBox->x() + toolBox->width(),
-                                             0,
-                                             m_width - toolBox->width() - toolBox->x() - Style::ButtonWidgetWidth,
-                                             m_height));
-        m_CommonUseWidget->repaintWid(0);
-        leftWidget->hide();
-        leftWidget->focusPlug->hide();
-        toolBox->show();
+    m_CommonUseWidget->setGeometry(QRect(m_leftWidget->x() + m_leftWidget->width(),
+                                         0,
+                                         m_width - m_leftWidget->width() - Style::ButtonWidgetWidth,
+                                         m_height));
 
-    }
+    m_leftWidget->show();
+    m_leftWidget->getPluginWidget()->show();
+    m_CommonUseWidget->repaintWid(0);
+
     m_CommonUseWidget->fillAppList();
     m_CommonUseWidget->show();
     buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
@@ -603,7 +457,7 @@ void TabletMode::buttonWidgetShow()
         buttonGroup->removeButton(button);
         button->deleteLater();
     }
-    m_isTabletMode = tabletMode->get("tablet-mode").toBool();
+    m_isTabletMode = m_tabletModeGSettings->get("tablet-mode").toBool();
     for (int page = 1; page <= Style::appPage; page++) {
 
         button = new QPushButton;
@@ -638,7 +492,7 @@ void TabletMode::buttonClicked(QAbstractButton *button)
         return;
     int idd = buttonGroup->id(button);
     Style::nowpagenum = idd;
-    m_isTabletMode = tabletMode->get("tablet-mode").toBool();
+    m_isTabletMode = m_tabletModeGSettings->get("tablet-mode").toBool();
     for (int page = 1; page <= Style::appPage; page++) {
         if (idd == page) {
             buttonGroup->button(page)->setStyleSheet("QPushButton{border-image:url(:/img/click.svg);}"
@@ -670,7 +524,7 @@ void TabletMode::buttonClicked(QAbstractButton *button)
 
 void TabletMode::pageNumberChanged()
 {
-    m_isTabletMode = tabletMode->get("tablet-mode").toBool();
+    m_isTabletMode = m_tabletModeGSettings->get("tablet-mode").toBool();
     if (Style::appPage != 1) {
         for (int page = 1; page <= Style::appPage; page++) {
             if (Style::nowpagenum == page) {
@@ -692,21 +546,6 @@ void TabletMode::pageNumberChanged()
             }
         }
     }
-}
-
-/*pc 功能*/
-bool TabletMode::event(QEvent *event)
-{
-    if (event->type() == QEvent::ActivationChange) {
-        if (QApplication::activeWindow() != this) {
-            if (!tabletMode->get(TABLET_MODE).toBool()) {
-                //平板模式 下禁止win隐藏菜单
-                this->hide();
-            }
-        }
-    }
-
-    return QWidget::event(event);
 }
 
 void TabletMode::XkbEventsPress(const QString &keycode)
@@ -740,7 +579,7 @@ void TabletMode::XkbEventsRelease(const QString &keycode)
     } else if (m_winFlag && keycode == "Super_L")
         return;
 
-    if (tabletMode && tabletMode->get(TABLET_MODE).toBool()) {
+    if (m_tabletModeGSettings && m_tabletModeGSettings->get(TABLET_MODE).toBool()) {
         qWarning() << QTime::currentTime()
                    << " Now is tablet mode, and it is forbidden to hide or show the menu after 'win'.'Esc'";
         return;
@@ -790,9 +629,10 @@ void TabletMode::winKeyReleaseSlot(const QString &key)
  */
 void TabletMode::recvHideMainWindowSlot()
 {
-    if (!tabletMode->get(TABLET_MODE).toBool()) {
-        //平板模式 下禁止win隐藏菜单
-        this->hide();
+    //点击空白处时候，如果是在平板模式则不做处理
+    //在pc模式下时，关闭开始菜单
+    if (!m_isTabletMode) {
+        Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
     }
 }
 
@@ -833,25 +673,25 @@ void TabletMode::spread()
     Style::AppListViewLeftMargin = 52;
     Style::AppLeftSpace = 60;
 
-    if (toolBox->type == 1) {
-        leftWidget->focusPlug->button_1_click();
-        toolBox->type = -1;
+//    if (toolBox->type == 1) {
+//        m_leftWidget->focusPlug->button_1_click();
+//        toolBox->type = -1;
+//
+//    } else if (toolBox->type == 2) {
+//        m_leftWidget->focusPlug->button_2_click();
+//        toolBox->type = -1;
+//    }
 
-    } else if (toolBox->type == 2) {
-        leftWidget->focusPlug->button_2_click();
-        toolBox->type = -1;
-    }
-
-    leftWidget->show();
-    leftWidget->focusPlug->show();
+    m_leftWidget->show();
+    m_leftWidget->getPluginWidget()->show();
     m_CommonUseWidget->show();
-    toolBox->hide();
+//    toolBox->hide();
 
-    leftWidget->setGeometry(QRect(0, 0, 512, m_height));
+    m_leftWidget->setGeometry(QRect(0, 0, 512, m_height));
 
-    m_CommonUseWidget->setGeometry(QRect(leftWidget->x() + leftWidget->width(),
+    m_CommonUseWidget->setGeometry(QRect(m_leftWidget->x() + m_leftWidget->width(),
                                          0,
-                                         m_width - leftWidget->width() - leftWidget->x() - Style::ButtonWidgetWidth,
+                                         m_width - m_leftWidget->width() - m_leftWidget->x() - Style::ButtonWidgetWidth,
                                          m_height));
 
     m_CommonUseWidget->m_listView->setFixedSize(
@@ -922,9 +762,9 @@ void TabletMode::centerToScreen(QWidget *widget)
     widget->move(desk_x / 2 - x / 2 + desk_rect.left(), desk_y / 2 - y / 2 + desk_rect.top());
 }
 
-bool TabletMode::checkapplist()
+bool TabletMode::checkAppList()
 {
-    qDebug() << "TabletMode   checkapplist";
+    qDebug() << "TabletMode   checkAppList";
     QString path = QDir::homePath() + "/.config/ukui/ukui-menu.ini";
     QSettings *setting = new QSettings(path, QSettings::IniFormat);
     setting->beginGroup("application");
@@ -951,14 +791,14 @@ void TabletMode::recvStartMenuSlot()
 {
     if(this->isVisible())//wgx
     {
-        if (!tabletMode->get(TABLET_MODE).toBool())//平板模式 下禁止win隐藏菜单
+        if (!m_tabletModeGSettings->get(TABLET_MODE).toBool())//平板模式 下禁止win隐藏菜单
         {
 
             this->hide();
         }
     }
     else{
-        if (!tabletMode->get(TABLET_MODE).toBool())//平板模式 下禁止win隐藏菜单
+        if (!m_tabletModeGSettings->get(TABLET_MODE).toBool())//平板模式 下禁止win隐藏菜单
         {
             this->showPCMenu();
 //            this->raise();
@@ -966,4 +806,159 @@ void TabletMode::recvStartMenuSlot()
         }
 
     }
+}
+
+void TabletMode::initGSettings()
+{
+    //搜索框的特效,默认为不透明
+    setToolsOpacityEffect(1);
+    if (QGSettings::isSchemaInstalled(QString("org.ukui.control-center.personalise").toLocal8Bit())) {
+        bg_effect = new QGSettings(QString("org.ukui.control-center.personalise").toLocal8Bit());
+        setToolsOpacityEffect(bg_effect->get("transparency").toReal());
+
+        connect(bg_effect, &QGSettings::changed, [this](const QString &key) {
+            if (key == "effect") {
+                if (bg_effect->get("effect").toBool()) {
+                    setToolsOpacityEffect(bg_effect->get("transparency").toReal());
+                }
+            }
+        });
+    }
+
+    if (QGSettings::isSchemaInstalled(TABLED_ROTATION)) {
+        m_rotationGSettings = new QGSettings(TABLED_ROTATION);
+        m_direction = m_rotationGSettings->get("xrandrRotations").toString();
+
+        connect(m_rotationGSettings, &QGSettings::changed, [this](const QString &key) {
+            if (key == "xrandrRotations") {
+                m_direction = m_rotationGSettings->get(key).toString();
+            }
+        });
+    }
+
+    if (QGSettings::isSchemaInstalled(TABLED_SCHEMA)) {
+        m_tabletModeGSettings = new QGSettings(TABLED_SCHEMA);
+        m_isTabletMode = m_tabletModeGSettings->get("tabletMode").toBool();
+
+        connect(m_tabletModeGSettings, &QGSettings::changed, [this](const QString &key) {
+            if (key == "tabletMode") {
+                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
+                m_autoRotation = m_tabletModeGSettings->get("autoRotation").toBool(); //监测旋转按钮是否开启
+                m_direction = "normal";
+
+                if (m_rotationGSettings) {
+                    m_rotationGSettings->set("xrandrRotations", m_direction);
+                }
+            }
+        });
+    }
+}
+
+void TabletMode::initAllWidget()
+{
+    m_leftWidget = new TabletPluginWidget(this);
+}
+
+void TabletMode::initRightButton()
+{
+    //最右侧翻页button
+    buttonWidget = new QWidget(this);
+    buttonGroup = new QButtonGroup;
+    vbox = new QVBoxLayout;
+    vbox->setAlignment(Qt::AlignHCenter);
+    vbox->setSpacing(0);
+    buttonWidget->setLayout(vbox);
+    vbox->setContentsMargins(0, 0, 0, 0);
+}
+
+void TabletMode::updateByDirection()
+{
+    m_leftWidget->show();
+    m_direction = m_rotationGSettings->get("xrandr-rt-rotations").toString();
+    //TODO 左侧时间组件的显示，进行修改 0812
+    //屏幕旋转
+    Style::IsWideScreen = false;
+    if (m_direction == "left" || m_direction == "right") {
+        Style::ScreenRotation = true;
+        Style::initWidStyle();
+        m_leftWidget->setGeometry(QRect(0, 0, m_width, 300));
+        m_CommonUseWidget = new FullCommonUseWidget(this, m_width, m_height - 300);
+        m_CommonUseWidget->setGeometry(QRect(0,
+                                             m_leftWidget->y() + m_leftWidget->height(),
+                                             m_width - Style::ButtonWidgetWidth,
+                                             m_height - m_leftWidget->height()));
+        //最右侧翻页button
+        buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
+                                        0,
+                                        Style::ButtonWidgetWidth,
+                                        m_height));
+        m_CommonUseWidget->fillAppList();
+        m_CommonUseWidget->show();
+        m_leftWidget->getPluginWidget()->hide();
+        buttonWidgetShow();
+    } else {
+        Style::ScreenRotation = false;
+        Style::initWidStyle();
+//        toolBox->hide();
+        m_leftWidget->setGeometry(QRect(0, 0, 512, m_height));
+
+        m_CommonUseWidget = new FullCommonUseWidget(this, m_width - m_leftWidget->width() - Style::ButtonWidgetWidth,
+                                                    m_height);
+        m_CommonUseWidget->setGeometry(QRect(m_leftWidget->x() + m_leftWidget->width(),
+                                             0,
+                                             m_width - m_leftWidget->width() - Style::ButtonWidgetWidth,
+                                             m_height));
+
+        //最右侧翻页button
+        buttonWidget->setGeometry(QRect(m_CommonUseWidget->x() + m_CommonUseWidget->width(),
+                                        0,
+                                        Style::ButtonWidgetWidth,
+                                        m_height));
+        m_CommonUseWidget->fillAppList();
+        m_CommonUseWidget->show();
+        m_leftWidget->getPluginWidget()->show();
+        buttonWidgetShow();
+    }
+}
+
+TabletMode::~TabletMode()
+{
+    XEventMonitor::instance()->quit();
+    if (m_leftWidget)
+        delete m_leftWidget;
+    if (toolBox)
+        delete toolBox;
+    if (buttonWidget)
+        delete buttonWidget;
+    if (buttonGroup)
+        delete buttonGroup;
+    if (vbox)
+        delete vbox;
+    if (m_tabletModeGSettings)
+        delete m_tabletModeGSettings;
+    if (m_rotationGSettings)
+        delete m_rotationGSettings;
+    if (m_CommonUseWidget)
+        delete m_CommonUseWidget;
+    if (m_fileWatcher)
+        delete m_fileWatcher;
+    if (m_fileWatcher1)
+        delete m_fileWatcher1;
+    if (m_directoryChangedThread)
+        delete m_directoryChangedThread;
+    if (m_animation)
+        delete m_animation;
+
+    m_leftWidget = nullptr;
+    toolBox = nullptr;
+    buttonWidget = nullptr;
+    buttonGroup = nullptr;
+    vbox = nullptr;
+    m_tabletModeGSettings = nullptr;
+    m_rotationGSettings = nullptr;
+    m_CommonUseWidget = nullptr;
+    m_fileWatcher = nullptr;
+    m_fileWatcher1 = nullptr;
+    m_directoryChangedThread = nullptr;
+    m_animation = nullptr;
 }

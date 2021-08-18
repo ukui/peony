@@ -33,7 +33,7 @@ include(../3rd-parties/SingleApplication/singleapplication.pri)
 #导入模块
 include($$PWD/main/main.pri)
 include($$PWD/window/window.pri)
-include($$PWD/menu/menu.pri)
+include($$PWD/settings/settings.pri)
 include($$PWD/interface/interface.pri)
 include($$PWD/desktops/desktops.pri)
 
@@ -51,7 +51,7 @@ TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
 SOURCES += \
     main.cpp
 
-HEADERS += 
+HEADERS +=
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target

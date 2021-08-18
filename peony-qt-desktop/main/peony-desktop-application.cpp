@@ -30,7 +30,7 @@
 
 #include "desktop-icon-view.h"
 #include "peony-log.h"
-#include "global-settings.h"
+#include "desktop-global-settings.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -244,12 +244,19 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     QCommandLineOption desktopOption(QStringList()<<"w"<<"desktop-window", tr("Take over the desktop displaying"));
     parser.addOption(desktopOption);
 
+    QCommandLineOption startMenuOption(QStringList()<<"s"<<"start-menu", tr("Open start menu."));
+    parser.addOption(startMenuOption);
+
     if (isPrimary) {
         PEONY_DESKTOP_LOG_WARN("parse cmd: it is primary screen");
-        if (m_first_parse) {
+        if (m_firstParse) {
             auto helpOption = parser.addHelpOption();
             auto versionOption = parser.addVersionOption();
-            m_first_parse = false;
+            m_firstParse = false;
+            //第一次启动桌面时，加载管理器
+            this->initManager();
+            //初始化gsetting
+            this->initGSettings();
         }
 
         Q_UNUSED(id)
@@ -307,11 +314,11 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             has_daemon = true;
         }
 
+        this->updateGSettingValues();
+
         if (parser.isSet(desktopOption)) {
             //TODO 2021.08.07 判断当前系统类型，桌面模式加载桌面图标模式，平板模式加载平板模式桌面
             if (!has_desktop) {
-                //第一次启动桌面时，加载管理器
-                this->initManager();
                 PEONY_DESKTOP_LOG_WARN("has parameter w");
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
@@ -322,6 +329,14 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 }
             }
             has_desktop = true;
+        }
+
+        if (parser.isSet(startMenuOption)) {
+            if (!has_desktop) {
+                qWarning() << "[PeonyDesktopApplication::parseCmd] peony-qt-desktop is not running!";
+            } else {
+                this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
+            }
         }
 
         connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
@@ -354,10 +369,8 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimary)
         {
             DesktopWidgetBase *desktop = nullptr;
             //通过系统类型获取桌面
-            bool tabletMode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-            m_isTabletMode = tabletMode;
             qDebug() << "===当前桌面模式：" << m_isTabletMode;
-            if(tabletMode) {
+            if(m_isTabletMode) {
                 //平板模式
                 desktop = m_desktopManager->getDesktopByType(DesktopType::Tablet);
             } else {
@@ -440,13 +453,13 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimaryWindow->show();
     }
     return;
-
+    //TODO 安全删除以下代码 20210817
     //do not check window need exchange
     //cause we always put the desktop icon view into window
     //which in current primary screen.
     if (need_exchange)
     {
-        for(auto win : m_window_list)
+        for(auto win : m_windowManager->windowList())
         {
             //qDebug()<<"before screen info"<<win->getScreen()->name()<<win->getScreen()->geometry()<<win->geometry()<<preMainScreen->name();
             win->disconnectSignal();
@@ -514,7 +527,8 @@ void PeonyDesktopApplication::checkWindowProcess()
     //do not check windows, primary window should be handled to exchange in
     //primaryScreenChanged signal emitted.
     return;
-    for(auto win : m_window_list)
+    //TODO 安全删除以下代码 20210817
+    for(auto win : m_windowManager->windowList())
     {
         //fix duplicate screen cover main screen view problem
         if (win->getScreen() != this->primaryScreen())
@@ -626,12 +640,13 @@ void PeonyDesktopApplication::volumeRemovedProcess(const std::shared_ptr<Peony::
 
 void PeonyDesktopApplication::initManager()
 {
-    m_windowManager =WindowManager::getInstance(this);
+    m_windowManager = WindowManager::getInstance(this);
     m_desktopManager = DesktopManager::getInstance(true,this);
 }
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
+    this->updateGSettingValues();
     //NOTE 只在主屏幕上切换桌面
     qDebug() << "=====开始切换桌面";
     //TODO 在切换过程中不准打开开始菜单
@@ -661,7 +676,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     //TODO 检测这两个桌面的类型是否相同，相同则 return
 
     //获取一个桌面并指定父窗口
-    DesktopWidgetBase *nextDesktop = m_desktopManager->getDesktopByType(targetType, primaryWindow);
+    DesktopWidgetBase *nextDesktop = getNextDesktop(targetType, primaryWindow);
 
     if (!nextDesktop) {
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
@@ -672,23 +687,29 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
         return;
     }
-
-    connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+    //断开发送请求桌面的链接，防止频繁发送消息
+    disconnect(currentDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
 
     QRect primaryScreenRect = m_primaryScreen->geometry();
     QRect currentDesktopStartRect = currentDesktop->geometry();
 
-    QRect currentDesktopEndRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect, currentDesktop->getExitAnimationType(), true);
-    QRect nextDesktopStartRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect, targetAnimation, false);
+    QRect currentDesktopEndRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect,
+                                                               currentDesktop->getExitAnimationType(), true);
+    QRect nextDesktopStartRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect,
+                                                              targetAnimation, false);
 
     qDebug() << "currentDesktopStartRect:" << currentDesktopStartRect << "primaryScreenRect:" << primaryScreenRect;
     qDebug() << "currentDesktopEndRect:" << currentDesktopEndRect << "nextDesktopStartRect:" << nextDesktopStartRect;
     qDebug() << "===不同动画类型：：currentDesktop" << currentDesktop->getExitAnimationType() << targetAnimation;
     //消失动画
-    QPropertyAnimation *exitAnimation = this->createPropertyAnimation(currentDesktop->getExitAnimationType(), currentDesktop, currentDesktopStartRect, currentDesktopEndRect);
+    QPropertyAnimation *exitAnimation = this->createPropertyAnimation(currentDesktop->getExitAnimationType(),
+                                                                      currentDesktop,
+                                                                      currentDesktopStartRect,
+                                                                      currentDesktopEndRect);
 
     //出现动画
-    QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop, nextDesktopStartRect, primaryScreenRect);
+    QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop,
+                                                                      nextDesktopStartRect, primaryScreenRect);
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
         delete exitAnimation;
@@ -698,20 +719,10 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
     connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
         delete showAnimation;
-        if (m_isTabletMode) {
-            //平板模式没有开始菜单
-            m_startMenuActivated = true;
-
-        } else if (targetType == DesktopType::Tablet) {
-            //激活开始菜单
-            m_startMenuActivated = true;
-
-        } else {
-            m_startMenuActivated = false;
-        }
         primaryWindow->setWindowDesktop(nextDesktop);
 
         m_windowManager->updateAllWindowGeometry();
+        connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
     });
 
     if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {
@@ -722,8 +733,10 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 //        nextDesktop->setHidden(false);
     }
     qDebug() << "nextDesktop->setGeometry" << nextDesktop->geometry() << "windowOpacity:" << nextDesktop->windowOpacity();
+    qDebug() << "nextDesktop->setGeometry" << currentDesktop->geometry() << "windowOpacity:" << currentDesktop->windowOpacity();
 
-//    nextDesktop->show();
+    nextDesktop->show();
+    currentDesktop->setGeometry(currentDesktopStartRect);
 
     exitAnimation->start();
     showAnimation->start();
@@ -792,10 +805,11 @@ QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &
 QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationType animationType, DesktopWidgetBase *object, QRect &startRect, QRect &endRect)
 {
     //动画时间 xx ms
-    quint32 duration = 1500;
+    quint32 duration = 600;
 
     PropertyName propertyName = this->getPropertyNameByAnimation(animationType);
     //TODO 添加并实现其他动画类型 ...
+    //TODO 尝试改为更高级的动画框架实现
 
     QPropertyAnimation *animation = nullptr;
 
@@ -870,5 +884,83 @@ PropertyName PeonyDesktopApplication::getPropertyNameByAnimation(AnimationType a
 
         default:
             return PropertyName::Pos;
+    }
+}
+
+Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType targetType, DesktopWindow *parentWindow)
+{
+    m_mutex.lock();
+    //获取一个桌面并指定父窗口
+    DesktopWidgetBase *nextDesktop = m_desktopManager->getDesktopByType(targetType, parentWindow);
+
+    if (targetType == DesktopType::Tablet) {
+        if (m_isTabletMode) {
+            //当变化为平板模式时，开始菜单可能处于打开状态
+            if (m_startMenuActivated) {
+                //如果开始菜单已经打开，那么不进行平板切换，由平板模式自动适应
+                nextDesktop = nullptr;
+            } else {
+                //如果开始菜单没有打开，那么切换到平板模式，并将开始菜单也置 true
+                //注意：平板模式下，m_startMenuActivated=true,m_isTabletMode=true;
+                //m_isTabletMode 跟随GSetting自动变化，m_startMenuActivated由切换桌面模式时手动设置
+                m_startMenuActivated = true;
+            }
+
+        } else {
+            //开始菜单已经被激活，并且没有处于平板模式，那么关闭开始菜单
+            if (m_startMenuActivated) {
+                m_startMenuActivated = false;
+                if (m_lastDesktop) {
+                    nextDesktop = m_lastDesktop;
+                    //设置父级以防止动画无响应
+                    nextDesktop->setParent(parentWindow);
+                    m_lastDesktop = nullptr;
+                }
+            } else {
+                m_startMenuActivated = true;
+                m_lastDesktop = parentWindow->getCurrentDesktop();
+            }
+        }
+    } else {
+        //切换其他模式桌面时，将开始菜单标志位置 false
+        m_startMenuActivated = false;
+    }
+    m_mutex.unlock();
+
+    return nextDesktop;
+}
+
+void PeonyDesktopApplication::initKeyProcess()
+{
+
+}
+
+void PeonyDesktopApplication::initGSettings()
+{
+    m_isTabletMode = false; //默认值 false
+    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
+        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
+        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+
+        connect(m_tabletModeGSettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == TABLET_MODE) {
+                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
+
+                if (m_isTabletMode) {
+                    this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
+                } else {
+                    this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::OpacityFull);
+                }
+            }
+        });
+    }
+
+}
+
+void PeonyDesktopApplication::updateGSettingValues()
+{
+    if (m_tabletModeGSettings) {
+        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
+        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
     }
 }

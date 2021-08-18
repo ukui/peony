@@ -8,7 +8,7 @@ namespace Peony {
  * 如果需要添加新的桌面请添加对应的 mode
  */
 typedef enum {
-    Desktop = 0, //桌面模式
+    Desktop  = 0, //桌面模式
     Tablet, //平板模式
     StudyCenter //学习中心模式
 } DesktopType;
