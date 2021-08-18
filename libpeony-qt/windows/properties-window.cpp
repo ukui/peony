@@ -177,13 +177,19 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 
     //将uri编码统一解码,解决uri的不一致问题。from bug:53504
     for (QString uri : uris) {
+        uri = FileUtils::urlDecode(uri);
+
+        if (uri.startsWith("favorite://")) {
+            rebuildUriBySchema(uri);
+        }
+
         if (uri.startsWith("network://")) {
             m_destroyThis = true;
             return;
         }
         //fix bug:70565,将已被编码的字符串解码后从新编码，保证在属性窗口中的编码中特殊字符为%xx形式。
         //编码时排除'()',防止 FileUtils::handleDesktopFileName 方法匹配不到(),避免出现bug:53504.
-        m_uris.append(FileUtils::urlDecode(uri).toUtf8().toPercentEncoding(":/()"));
+        m_uris.append(uri.toUtf8().toPercentEncoding(":/()"));
     }
 //    m_uris = uris;
     m_uris.removeDuplicates();
@@ -520,6 +526,34 @@ void PropertiesWindow::saveAllChanged()
     }
 
     this->close();
+}
+
+QString PropertiesWindow::rebuildUriBySchema(QString &uri)
+{
+    QUrl url(uri);
+
+    if (!url.isValid()) {
+        return uri;
+    }
+    QMap<QString, QString> queryMap;
+    QStringList queryList = url.query().split("&");
+
+    for (QString str : queryList) {
+        QStringList query = str.split("=");
+        queryMap.insert(query.first(), query.last());
+    }
+
+    QString schema = queryMap.value("schema");
+
+    if (schema.isEmpty()) {
+        return uri;
+    }
+
+    uri.replace(0, QString("favorite").length(), schema);
+    //删除uri '?'及之后的信息
+    uri.remove(uri.lastIndexOf("?"), (url.query().length() + 1));
+
+    return uri;
 }
 
 //properties window
