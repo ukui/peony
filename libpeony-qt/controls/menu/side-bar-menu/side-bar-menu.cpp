@@ -159,7 +159,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
-    if(0 != QString::compare("filesafe:///")) {
+    if(0 != QString::compare(m_uri, "filesafe:///")) {
         auto mgr = MenuPluginManager::getInstance();
         auto ids = mgr->getPluginIds();
         for (auto id : ids) {
