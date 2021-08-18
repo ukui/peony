@@ -167,6 +167,16 @@ public:
      */
     void saveAllChanged();
 
+    /**
+     * @brief 收藏夹中的文件夹是以favorite:// 开头的，但是该uri的schema无法正常确定文件的位置，
+     * 所以在该uri最后附带了query列表 schema=xxx以说明该文件的实际schema。
+     * 该函数通过解析query列表获取正确的uri。
+     * 修改直接在引用的参数 uri上进行。
+     * @param uri
+     * @return
+     */
+    QString rebuildUriBySchema(QString &uri);
+
 protected:
     /**
      * 在窗口关闭时，将存储的窗口指针从openPropertiesWindows中删除
