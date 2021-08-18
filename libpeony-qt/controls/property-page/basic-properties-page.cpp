@@ -558,7 +558,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
             //某些带空格的文件名称会导致命令错误，加上引号解决此问题。
             QString path;
             if(uri == "filesafe:///") {
-                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/box";
+                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.box";
             } else {
                 path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
             }
