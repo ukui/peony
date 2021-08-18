@@ -55,8 +55,6 @@ unix {
     QMAKE_PKGCONFIG_LIBDIR = $$target.path
     QMAKE_PKGCONFIG_DESTDIR = pkgconfig
     QMAKE_PKGCONFIG_INCDIR = /usr/include/peony-qt
-    QMAKE_PKGCONFIG_CFLAGS += -I/usr/include/peony-qt/fileop -I/usr/include/peony-qt/model -I/usr/include/peony-qt/controls
-    QMAKE_PKGCONFIG_REQUIRES = Qt5Widgets Qt5Network glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
 
     INSTALLS += target \
                 schemes
