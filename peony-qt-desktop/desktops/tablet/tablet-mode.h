@@ -127,7 +127,7 @@ private:
     QPoint m_startPoint;
     QPoint m_endPoint;
     QPoint m_lastEndPoint;//上一次move事件鼠标停留的位置
-
+    quint64 m_minWidth = 500;
     bool m_leftKeyPressed = false;
     bool m_isTabletMode;//平板模式标志
 

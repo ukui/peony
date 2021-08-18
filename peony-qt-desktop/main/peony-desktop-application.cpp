@@ -66,7 +66,6 @@
 
 static bool has_desktop = false;
 static bool has_daemon = false;
-static Peony::DesktopIconView *desktop_icon_view = nullptr;
 
 //record of desktop start time
 qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
@@ -181,15 +180,6 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
         g_mount_guess_content_type(newMount,FALSE,NULL,guessContentTypeCallback,NULL);
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,&PeonyDesktopApplication::volumeRemovedProcess);
-}
-
-Peony::DesktopIconView *PeonyDesktopApplication::getIconView()
-{
-    if (!desktop_icon_view)
-        desktop_icon_view = new Peony::DesktopIconView;
-
-    PEONY_DESKTOP_LOG_WARN("create icon view");
-    return desktop_icon_view;
 }
 
 bool PeonyDesktopApplication::userGuideDaemonRunning()
@@ -322,7 +312,6 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 PEONY_DESKTOP_LOG_WARN("has parameter w");
                 //FIXME: load menu plugin
                 //FIXME: take over desktop displaying
-//                getIconView();
                 for(auto screen : this->screens())
                 {
                     addWindow(screen);
@@ -334,6 +323,11 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
         if (parser.isSet(startMenuOption)) {
             if (!has_desktop) {
                 qWarning() << "[PeonyDesktopApplication::parseCmd] peony-qt-desktop is not running!";
+                QTimer::singleShot(1, [=]() {
+                    PEONY_DESKTOP_LOG_WARN("peony desktop exited");
+                    qApp->quit();
+                });
+                return;
             } else {
                 this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
             }
@@ -820,7 +814,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             animation->setStartValue(QPoint(startRect.x(), startRect.y()));
             animation->setEndValue(QPoint(endRect.x(), endRect.y()));
             animation->setDuration(duration);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             break;
         }
         case PropertyName::Geometry: {
@@ -829,7 +823,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             animation->setStartValue(startRect);
             animation->setEndValue(endRect);
             animation->setDuration(duration);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             break;
         }
         case PropertyName::WindowOpacity: {
@@ -851,7 +845,7 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             }
 
             object->setGraphicsEffect(opacityEffect);
-            animation->setEasingCurve(QEasingCurve::Linear);
+            animation->setEasingCurve(QEasingCurve::InOutCubic);
             animation->setDuration(duration);
 
             qDebug() << "===windowOpacity:" << object->windowOpacity();
