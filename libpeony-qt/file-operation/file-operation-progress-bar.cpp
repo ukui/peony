@@ -66,6 +66,9 @@ void FileOperationProgressBar::removeAllProgressbar()
     m_list_widget->clear();
     m_progress_list->clear();
     m_progress_size = 0;
+
+    uninhibit();
+
     hide();
 }
 
@@ -85,6 +88,10 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
 
     if (nullptr == m_current_main) {
         mainProgressChange(li);
+    }
+
+    if (!isInhibit()) {
+        inhibit();
     }
 
     showMore();
@@ -136,12 +143,13 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
         m_current_main = nullptr;
         setWindowState(Qt::WindowNoState);
         hide();
+        uninhibit();
     }
 }
 
-bool FileOperationProgressBar::hasFileOperation()
+bool FileOperationProgressBar::isInhibit()
 {
-    return m_progress_size > 0;
+    return m_fds != nullptr;
 }
 
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
@@ -205,6 +213,7 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
 FileOperationProgressBar::~FileOperationProgressBar()
 {
     delete btn;
+    if (m_dbus_connection) g_object_unref(m_dbus_connection);
 }
 
 void FileOperationProgressBar::showMore()
@@ -231,6 +240,42 @@ void FileOperationProgressBar::showMore()
         setFixedSize(m_main_progressbar->width(), m_main_progressbar->height());
     }
     update();
+}
+
+bool FileOperationProgressBar::inhibit()
+{
+    g_autoptr(GError) error = NULL;
+    g_autoptr(GDBusConnection) pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    if (error) {
+        printf("error:%s\n", error->message);
+        return false;
+    }
+
+    uninhibit();
+
+    if (pconnection) {
+        g_autoptr(GVariantType) rtype = g_variant_type_new("(h)");
+
+        g_autoptr(GVariant) ret = g_dbus_connection_call_with_unix_fd_list_sync(pconnection, "org.freedesktop.login1", "/org/freedesktop/login1",
+                                                                      "org.freedesktop.login1.Manager", "Inhibit",
+                                                                      g_variant_new("(ssss)", "sleep", "peony", "file operation", "block"),
+                                                                      rtype, G_DBUS_CALL_FLAGS_NONE, G_MAXINT, NULL, &m_fds, NULL, &error);
+        if (error) {
+            printf("cannot block s4: %s\n", error->message);
+        }
+
+        Q_UNUSED(ret);
+    }
+
+    return true;
+}
+
+void FileOperationProgressBar::uninhibit()
+{
+    if (m_fds) {
+        g_object_unref(m_fds);
+        m_fds = nullptr;
+    }
 }
 
 void FileOperationProgressBar::mouseMoveEvent(QMouseEvent *event)

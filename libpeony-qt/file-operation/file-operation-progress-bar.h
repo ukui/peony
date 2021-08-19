@@ -26,6 +26,8 @@
 #include <QHBoxLayout>
 #include <QListWidget>
 
+#include <gio/gio.h>
+
 class ProgressBar;
 class OtherButton;
 class MainProgressBar;
@@ -40,12 +42,16 @@ public:
     ProgressBar* addFileOperation();
     void showProgress (ProgressBar& progress);
     void removeFileOperation(ProgressBar* progress);
-    bool hasFileOperation();
+    bool isInhibit();
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
     ~FileOperationProgressBar();
     void showMore ();
+
+    // s3 s4
+    bool inhibit ();
+    void uninhibit ();
 
 protected:
     void showWidgetList(bool show);
@@ -66,8 +72,11 @@ public:
     bool m_error = false;
 
 private:
+    GUnixFDList*            m_fds = nullptr;
+
     // layout
     QVBoxLayout* m_main_layout = nullptr;
+    GDBusConnection* m_dbus_connection = nullptr;
 
     // widget
     QListWidget* m_list_widget = nullptr;

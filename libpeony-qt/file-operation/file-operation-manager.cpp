@@ -49,6 +49,7 @@
 #include <QVector4D>
 
 #include <QDebug>
+#include <unistd.h>
 
 using namespace Peony;
 
@@ -76,13 +77,7 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
     // 休眠检测
     GDBusConnection* pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
     if (pconnection) {
-        g_dbus_connection_signal_subscribe(pconnection,
-                       "org.freedesktop.login1",
-                       "org.freedesktop.login1.Manager",
-                       "PrepareForSleep",
-                       "/org/freedesktop/login1", NULL,
-                       G_DBUS_SIGNAL_FLAGS_NONE,
-                       systemSleep, this, NULL);
+        g_dbus_connection_signal_subscribe(pconnection, "org.freedesktop.login1", "org.freedesktop.login1.Manager", "PrepareForSleep", "/org/freedesktop/login1", NULL, G_DBUS_SIGNAL_FLAGS_NONE, systemSleep, this, NULL);
     }
 }
 
@@ -686,28 +681,8 @@ void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar
     FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;
     if (pb) {
         Q_EMIT pb->pause();
-        if (pb->hasFileOperation()) {
-            g_autoptr(GDBusConnection) pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
-            if (pconnection) {
-                g_autoptr(GError) error = nullptr;
-                g_autoptr(GVariantType) rtype = g_variant_type_new("(h)");
-                g_dbus_connection_call_sync(pconnection,
-                                           "org.freedesktop.login1",
-                                            "/org/freedesktop/login1",
-                                            "org.freedesktop.login1.Manager",
-                                            "Inhibit",
-                                            g_variant_new("(ssss)", "sleep", "peony", "block", "block"),
-                                            rtype, G_DBUS_CALL_FLAGS_NONE, G_MAXINT, nullptr, &error);
-                if (error) {
-                    qWarning() << "cannot block S3/S4: " << error->message;
-                } else {
-                    QMessageBox::warning(nullptr,
-                                         tr("The system cannot hibernate or sleep"),
-                                         tr("The file operation is in progress. \
-                                        Ensure that the file operation is complete or canceled before hibernating or sleeping"),
-                                         QMessageBox::Ok);
-                }
-            }
+        if (pb->isInhibit()) {
+            QMessageBox::warning(nullptr, tr("The system cannot hibernate or sleep"), tr("The file operation is in progress. Ensure that the file operation is complete or canceled before hibernating or sleeping"), QMessageBox::Ok);
         }
     }
 
