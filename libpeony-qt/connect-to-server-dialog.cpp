@@ -429,7 +429,7 @@ void ConnectServerLogin::syncRemoteServer(const QUrl& url)
                 portStr = ftpDefaultPortStr;
             }else if(sftpTypeStr==type.toLower()){
                 portStr = sftpDefaultPortStr;
-            }else if(sambaTypeStr==type.toLower()){
+            }else if("smb"==type.toLower()){/* samba服务是smb */
                 portStr = sambaDefaultPortStr;
             }
         }

@@ -160,7 +160,7 @@ void SideBarFileSystemItem::findChildren()
 
                 //skip the independent files and remote server
                 bool bRemoteServer=false;
-                if(targetUri.startsWith("ftp://")||targetUri.startsWith("sftp://")||targetUri.startsWith("samba://"))
+                if(targetUri.startsWith("ftp://")||targetUri.startsWith("sftp://")||targetUri.startsWith("smb://"))
                     bRemoteServer=true;
 
                 if (!(info->isDir() || info->isVolume())||bRemoteServer) {
