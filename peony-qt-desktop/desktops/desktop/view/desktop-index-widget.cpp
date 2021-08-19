@@ -117,7 +117,20 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 
     // draw icon
     opt.text = nullptr;
+    p.save();
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setRenderHint(QPainter::SmoothPixmapTransform);
+    if(view->m_animation->state() == QAbstractAnimation::Running){
+        double currentValue = view->m_animation->currentValue().toDouble();
+        p.scale(currentValue, currentValue);
+        int offsetX = opt.decorationSize.width();
+        int offsetY = opt.decorationSize.height();
+        offsetX /= -2;
+        offsetY /= -2;
+        p.translate(offsetX*(currentValue - 1), offsetY*(currentValue - 1));
+    }
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, m_delegate->getView());
+    p.restore();
 
     p.save();
     p.translate(0, 5 + m_delegate->getView()->iconSize().height() + 5);

@@ -31,6 +31,7 @@
 #include <QTimer>
 
 #include <QMap>
+#include <QVariantAnimation>
 
 class QLabel;
 
@@ -251,6 +252,7 @@ private:
     QMap<QScreen*, bool> m_screens;
     PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
+    QVariantAnimation *m_animation = nullptr;
 };
 
 }

@@ -75,6 +75,7 @@
 #include <QToolTip>
 
 #include <QDebug>
+#include <QGraphicsDropShadowEffect>
 
 using namespace Peony;
 
@@ -259,6 +260,23 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     this->refresh();
 
     PEONY_DESKTOP_LOG_WARN("create desktop icon view end");
+
+    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect;
+    shadowEffect->setBlurRadius(20);
+    shadowEffect->setColor(QColor(63, 63, 63, 180));
+    shadowEffect->setOffset(0,0);
+    setGraphicsEffect(shadowEffect);
+
+    m_animation = new QVariantAnimation(this);
+    m_animation->setDuration(250);
+    m_animation->setKeyValueAt(0,1.0);
+    m_animation->setKeyValueAt(0.5,1.1);
+    m_animation->setKeyValueAt(1,1.0);
+    m_animation->setEndValue(1.0);
+
+    connect(m_animation,&QVariantAnimation::valueChanged,this,[=](){
+        viewport()->update();
+    });
 }
 
 DesktopIconView::~DesktopIconView()
@@ -1359,6 +1377,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
             setIndexWidget(m_last_index,
                            indexWidget);
             indexWidget->move(visualRect(m_last_index).topLeft());
+            m_animation->start();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
             for (auto uri : getAllFileUris()) {
                 auto pos = getFileMetaInfoPos(uri);
