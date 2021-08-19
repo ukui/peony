@@ -255,7 +255,8 @@ private:
     bool m_search_child_flag = false;
 
     //Button size macro definition
-    const int TRASH_BUTTON_HEIGHT = 28;
+    //change height to 36 to ensure max size font can show complete, link to bug#58824
+    const int TRASH_BUTTON_HEIGHT = 36;
     const int TRASH_BUTTON_WIDTH = 65;
 
     //advance search filter options
