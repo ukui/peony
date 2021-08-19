@@ -50,6 +50,8 @@
 
 #include <QHBoxLayout>
 #include <QToolButton>
+#include <QPainter>
+#include <QPainterPath>
 
 #include <QProxyStyle>
 #include <QStyleOptionToolButton>
@@ -58,6 +60,7 @@
 using namespace Peony;
 
 class LocationBarButtonStyle;
+class IndicatorToolButton;
 
 static LocationBarButtonStyle *buttonStyle = nullptr;
 
@@ -75,6 +78,16 @@ public:
     void polish(QWidget *widget) override;
     void unpolish(QWidget *widget) override;
     void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget = nullptr) const override;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+};
+
+class IndicatorToolButton : public QToolButton
+{
+public:
+    explicit IndicatorToolButton(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *) override;
 };
 
 LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
@@ -92,15 +105,16 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     m_layout = new QHBoxLayout;
     setLayout(m_layout);
 
-    m_indicator = new QToolButton(this);
+    m_indicator = new IndicatorToolButton(this);
+    m_indicator->setObjectName("peony_location_bar_indicator");
     m_indicator->setFocusPolicy(Qt::FocusPolicy(m_indicator->focusPolicy() & ~Qt::TabFocus));
     m_indicator->setAutoRaise(true);
-    m_indicator->setStyle(LocationBarButtonStyle::getStyle());
+    //m_indicator->setStyle(LocationBarButtonStyle::getStyle());
     m_indicator->setPopupMode(QToolButton::InstantPopup);
     m_indicator->setArrowType(Qt::RightArrow);
     m_indicator->setCheckable(true);
     m_indicator->setFixedSize(this->height() - 2, this->height() - 2);
-    m_indicator->move(-2, 1);
+    m_indicator->move(0, 1);
 
     m_indicator_menu = new QMenu(m_indicator);
     m_indicator->setMenu(m_indicator_menu);
@@ -143,7 +157,7 @@ void LocationBar::setRootUri(const QString &uri)
     //clear buttons
     clearButtons();
     if (m_current_uri.startsWith("search://")) {
-        m_indicator->setArrowType(Qt::NoArrow);
+        //m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
         return;
     }
@@ -210,7 +224,7 @@ void LocationBar::updateButtons()
     clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
-        m_indicator->setArrowType(Qt::NoArrow);
+        //m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
         return;
     }
@@ -472,7 +486,7 @@ void LocationBar::doLayout()
     bool indicatorVisible = visibleButtonCount < sizeHints.count();
     if (indicatorVisible) {
         m_indicator->setVisible(true);
-        offset += m_indicator->width();
+        offset += m_indicator->width() + 2;
     } else {
         m_indicator->setVisible(false);
     }
@@ -525,6 +539,9 @@ void LocationBar::doLayout()
 
 void LocationBarButtonStyle::polish(QWidget *widget)
 {
+    if (widget->objectName() == "peony_location_bar_indicator") {
+        return;
+    }
     QProxyStyle::polish(widget);
 
     widget->setProperty("useIconHighlightEffect", true);
@@ -548,7 +565,29 @@ void LocationBarButtonStyle::drawComplexControl(QStyle::ComplexControl control, 
             opt.rect.adjust(0, 1, 0, -1);
         else
             opt.rect.adjust(-2, 1, 2, -1);
+        if (widget && widget->objectName() == "peony_location_bar_indicator") {
+            opt.features.setFlag(QStyleOptionToolButton::HasMenu, false);
+            return QProxyStyle::drawComplexControl(control, &opt, painter);
+        }
         return QProxyStyle::drawComplexControl(control, &opt, painter, widget);
     }
     return QProxyStyle::drawComplexControl(control, option, painter, widget);
+}
+
+void LocationBarButtonStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    return QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+IndicatorToolButton::IndicatorToolButton(QWidget *parent) : QToolButton(parent)
+{
+
+}
+
+void IndicatorToolButton::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    QStyleOptionToolButton opt;
+    initStyleOption(&opt);
+    LocationBarButtonStyle::getStyle()->drawComplexControl(QStyle::CC_ToolButton, &opt, &p, this);
 }
