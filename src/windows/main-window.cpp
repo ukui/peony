@@ -342,14 +342,10 @@ void MainWindow::setShortCuts()
         connect(trashAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("search://")
-                    || currentUri.startsWith("favorite://"))
+                    || currentUri.startsWith("favorite://") || currentUri == "filesafe:///")
                 return;
 
             auto uris = this->getCurrentSelections();
-
-            if(currentUri == "filesafe:///" && uris.count() > 1) {
-                return ;
-            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
@@ -376,14 +372,10 @@ void MainWindow::setShortCuts()
         addAction(deleteAction);
         connect(deleteAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
-            if (currentUri.startsWith("search://"))
+            if (currentUri.startsWith("search://") || currentUri == "filesafe:///")
                 return;
 
             auto uris = this->getCurrentSelections();
-
-            if(currentUri == "filesafe:///" && uris.count() > 1) {
-                return ;
-            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
