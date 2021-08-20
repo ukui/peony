@@ -59,10 +59,13 @@ Q_SIGNALS:
 public Q_SLOTS:
     void addBookMark(const QString &uri);
     void removeBookMark(const QString &uri);
+    void renameBookmark(const QString oldUri, const QString newUri);
 
 private:
     explicit BookMarkManager(QObject *parent = nullptr);
     ~BookMarkManager();
+    void addBookMarkPrivate(const QString &uri);
+    void removeBookMarkPrivate(const QString &uri);
 
     QStringList m_uris;
     QSettings *m_book_mark = nullptr;

@@ -105,13 +105,13 @@ QString FileUtils::urlEncode(const QString& url)
 
     if (!decodeUrl.isEmpty()) {
         g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl.toUtf8().constData(), ":/", true);
-        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+//        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
         return encodeUrl;
     }
 
     g_autofree gchar* encodeUrl = g_uri_escape_string (url.toUtf8().constData(), ":/", true);
 
-    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+//    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
 
     return encodeUrl;
 }
@@ -120,11 +120,11 @@ QString FileUtils::urlDecode(const QString &url)
 {
     g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
     if (!decodeUrl) {
-        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
+//        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
         return url;
     }
 
-    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
+//    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
 
     return decodeUrl;
 }
