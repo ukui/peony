@@ -29,6 +29,7 @@
 
 #include <QModelIndex>
 #include <QThread>
+#include <QHash>
 
 namespace Peony {
 
@@ -102,6 +103,7 @@ public:
     void clearChildren() override;
 
     void findRemoteServers();
+    void querySharedFolders();
 
 public Q_SLOTS:
     void slot_addSharedFolder(const ShareInfo& shareInfo, bool successed);
@@ -125,7 +127,7 @@ private:
 class SharedDirectoryInfoThread : public QThread {
 Q_OBJECT
 public:
-    explicit SharedDirectoryInfoThread(QVector<SideBarAbstractItem*> *children, SideBarModel *model, SideBarNetWorkItem *parent);
+    explicit SharedDirectoryInfoThread();
 
 protected:
     void run() override;
@@ -140,12 +142,9 @@ protected:
     QString getShareInfo(QString arg1, QString arg2, QString arg3);
 
 Q_SIGNALS:
-    void querySharedInfoFinish();
+    void querySharedInfoFinish(QHash<QString,QString> sharedFolderInfoMap);
 
-private:
-    QVector<SideBarAbstractItem*>   *m_children = nullptr;
-    SideBarModel                    *m_model    = nullptr;
-    SideBarNetWorkItem              *m_parent   = nullptr;  /* 子item的父级 */
+
 };
 
 }
