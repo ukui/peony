@@ -336,12 +336,15 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 auto targetUri = FileUtils::getTargetUri(m_selections.first());
                 auto recommendActions = FileLaunchManager::getRecommendActions(targetUri);
                 //fix has default open app but no recommend actions issue, link to bug#61365
-                if (recommendActions.count() == 0)
-                {
-                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
-                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
-                        recommendActions.append(action);
-                }
+                //fix open options has two same app issue, linkto bug#74480
+                //存在数据异步问题，第一次查询应用数为0，添加了默认打开程序，后续获得信息后，
+                //再次添加了默认打开程序,导致应用显示重复
+//                if (recommendActions.count() == 0)
+//                {
+//                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+//                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
+//                        recommendActions.append(action);
+//                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
