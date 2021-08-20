@@ -132,14 +132,6 @@ public:
 protected:
     void run() override;
 
-    /**
-     * \brief 使用命令行获取共享目录信息
-     * \param arg1
-     * \param arg2
-     * \param arg3
-     * \return
-     */
-    QString getShareInfo(QString arg1, QString arg2, QString arg3);
 
 Q_SIGNALS:
     void querySharedInfoFinish(QHash<QString,QString> sharedFolderInfoMap);

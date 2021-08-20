@@ -328,33 +328,6 @@ SharedDirectoryInfoThread::SharedDirectoryInfoThread()
 
 }
 
-QString SharedDirectoryInfoThread::getShareInfo(QString arg1, QString arg2, QString arg3)
-{
-    QProcess proc;
-    proc.open();
-
-    QStringList args;
-    args.prepend(arg3);
-    args.prepend(arg2);
-    args.prepend(arg1);
-    args.prepend("/usr/bin/peony-share.sh");
-    args.prepend("pkexec");
-
-    proc.start("bash");
-    proc.waitForStarted();
-
-    QString cmd = args.join(" ");
-    proc.write(cmd.toUtf8() + "\n");
-    proc.waitForFinished(500);
-
-    QString result("");
-    result = proc.readAllStandardOutput();
-
-    proc.close();
-
-    return result;
-}
-
 void SharedDirectoryInfoThread::run()
 {
     /**
@@ -364,7 +337,14 @@ void SharedDirectoryInfoThread::run()
      *
      * 如果输出发生改变，视情况修改
      */
-    QString shareNames = getShareInfo("usershare", "list" , "");
+    QStringList args;
+    args.append("usershare");
+    args.append("list");
+    args.append("");
+    bool ret = false;
+
+    auto userShareManager = UserShareInfoManager::getInstance();
+    QString shareNames=userShareManager->exectueCommand(args,&ret);
 
     QHash<QString,QString> sharedFolderInfoMap;/* key:shareName,value: sharePath */
 
@@ -381,8 +361,9 @@ void SharedDirectoryInfoThread::run()
              *
              * 如果输出发生改变，视情况修改
              */
-            QString shareInfo = getShareInfo("usershare", "info" , shareName);
-            QString sharePath = shareInfo.split(QRegExp("\\s+")).at(1).split("=").at(1);
+
+            const Peony::ShareInfo* shareInfo = userShareManager->getShareInfo(shareName);
+            QString sharePath = shareInfo->originalPath;
             if (!sharePath.isEmpty())
                 sharedFolderInfoMap.insert(shareName,sharePath);
         }

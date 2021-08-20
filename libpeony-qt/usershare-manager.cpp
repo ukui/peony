@@ -55,7 +55,7 @@ static void parseShareInfo (ShareInfo& shareInfo, QString& content)
     }
 }
 
-static QString exectueCommand (QStringList& args, bool* retb /* out */)
+QString UserShareInfoManager::exectueCommand (QStringList& args, bool* retb /* out */)
 {
     QProcess proc;
     proc.open();
