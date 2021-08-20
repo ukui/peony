@@ -79,16 +79,65 @@ BookMarkManager::BookMarkManager(QObject *parent) : QObject(parent)
         Q_EMIT this->urisLoaded();
     });
 
-    connect(this, &BookMarkManager::bookmarkChanged, this, [=] (const QString& oldUri, const QString& newUri) {
-        removeBookMark(oldUri);
-        addBookMark(newUri);
-    });
+    connect(this, &BookMarkManager::bookmarkChanged, this, &BookMarkManager::renameBookmark);
+
 }
 
 BookMarkManager::~BookMarkManager()
 {
     if (m_book_mark) {
         m_book_mark->deleteLater();
+    }
+}
+
+void BookMarkManager::addBookMarkPrivate(const QString &uri)
+{
+    QUrl url = FileUtils::urlDecode(uri);
+    QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
+    qDebug() << "add bookmarket: " << uri;
+    //desktop uri is fixed in favorite item
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString videoPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString picturePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    if (url.path() == desktopPath || url.path() == videoPath
+        || url.path() == picturePath || url.path() == downloadPath
+        || url.path() == musicPath || url.path() == docPath)
+        return;
+
+
+    bool successed = !m_uris.contains(origin_path);
+    if (successed) {
+        m_uris<<origin_path;
+        m_uris.removeDuplicates();
+        m_book_mark->setValue("uris", m_uris);
+        m_book_mark->sync();
+        qDebug()<<"addBookMark"<<origin_path;
+        Q_EMIT this->bookMarkAdded(origin_path, true);
+    } else {
+        Q_EMIT this->bookMarkAdded(origin_path, false);
+    }
+}
+
+void BookMarkManager::removeBookMarkPrivate(const QString &uri)
+{
+    qDebug() << "remove book mark";
+    QString duri = FileUtils::urlDecode(uri);
+
+    qDebug() << "remove bookmark:" << uri;
+
+    bool successed = m_uris.contains(duri);
+    if (successed) {
+        m_uris.removeOne(duri);
+        m_uris.removeDuplicates();
+        m_book_mark->setValue("uris", m_uris);
+        m_book_mark->sync();
+        qDebug()<<"removeBookMark"<<duri;
+        Q_EMIT this->bookMarkRemoved(duri, true);
+    } else {
+        Q_EMIT this->bookMarkRemoved(duri, true);
     }
 }
 
@@ -99,62 +148,53 @@ void BookMarkManager::addBookMark(const QString &uri)
             g_usleep(100);
         }
         QUrl url = FileUtils::urlDecode(uri);
-        QString origin_path = "favorite://" + url.path() + "?schema=" + url.scheme();
-        //desktop uri is fixed in favorite item
-        QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        QString videoPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-        QString picturePath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-        QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-        QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-        if (url.path() == desktopPath || url.path() == videoPath
-            || url.path() == picturePath || url.path() == downloadPath
-            || url.path() == musicPath || url.path() == docPath)
-            return;
+        QString originPath = "favorite://" + url.path() + "?schema=" + url.scheme();
+
         if (m_mutex.tryLock(1000)) {
-            bool successed = !m_uris.contains(origin_path);
-            if (successed) {
-                m_uris<<origin_path;
-                m_uris.removeDuplicates();
-                m_book_mark->setValue("uris", m_uris);
-                m_book_mark->sync();
-                qDebug()<<"addBookMark"<<origin_path;
-                Q_EMIT this->bookMarkAdded(origin_path, true);
-            } else {
-                Q_EMIT this->bookMarkAdded(origin_path, false);
-            }
+            addBookMarkPrivate(uri);
             m_mutex.unlock();
         } else {
-            Q_EMIT this->bookMarkAdded(origin_path, false);
+            Q_EMIT this->bookMarkAdded(originPath, false);
         }
     });
 }
 
 void BookMarkManager::removeBookMark(const QString &uri)
 {
-    qDebug() << "DJ- remove book mark";
     QtConcurrent::run([=]() {
         while (!this->isLoaded()) {
             g_usleep(100);
         }
-        QString duri = FileUtils::urlDecode(uri);
 
+        QString duri = FileUtils::urlDecode(uri);
         if (m_mutex.tryLock(1000)) {
-            bool successed = m_uris.contains(duri);
-            if (successed) {
-                m_uris.removeOne(duri);
-                m_uris.removeDuplicates();
-                m_book_mark->setValue("uris", m_uris);
-                m_book_mark->sync();
-                qDebug()<<"removeBookMark"<<duri;
-                Q_EMIT this->bookMarkRemoved(duri, true);
-            } else {
-                Q_EMIT this->bookMarkRemoved(duri, true);
-            }
+            removeBookMarkPrivate(uri);
             m_mutex.unlock();
         } else {
             Q_EMIT this->bookMarkRemoved(duri, false);
         }
+    });
+}
+
+void BookMarkManager::renameBookmark(const QString oldUri, const QString newUri)
+{
+    qDebug() << "rename book mark -- old:" << oldUri << "  ==  new:" << newUri;
+    QtConcurrent::run([=]() {
+        while (!this->isLoaded()) {
+            g_usleep(100);
+        }
+
+        if (m_mutex.tryLock(1000)) {
+            QUrl url = FileUtils::urlDecode(oldUri);
+            QString originPath = "favorite://" + url.path() + "?schema=" + url.scheme();
+            bool successed = m_uris.contains(originPath);
+            if (successed) {
+                removeBookMarkPrivate(originPath);
+                addBookMark(newUri);
+            }
+            m_mutex.unlock();
+        }
+
     });
 }
 
