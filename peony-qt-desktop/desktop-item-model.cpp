@@ -808,6 +808,9 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
+        //krme files can not move to other place, default set as copy action
+        if (srcUris.first().startsWith("kmre:///") || srcUris.first().startsWith("kydroid:///"))
+            action = Qt::CopyAction;
         FileOperationUtils::moveWithAction(srcUris, destDirUri, true, action);
     }
 

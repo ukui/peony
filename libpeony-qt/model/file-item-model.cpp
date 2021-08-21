@@ -569,6 +569,9 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 
     qDebug() << "dropMimeData:" <<action<<destDirUri;
     bool addHistory = true;
+    //krme files can not move to other place, default set as copy action
+    if (srcUris.first().startsWith("kmre:///") || srcUris.first().startsWith("kydroid:///"))
+        action = Qt::CopyAction;
     auto op = FileOperationUtils::moveWithAction(srcUris, destDirUri, addHistory, action);
     connect(op, &FileOperation::operationFinished, this, [=](){
         auto opInfo = op->getOperationInfo();
