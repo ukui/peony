@@ -561,13 +561,11 @@ void LocationBarButtonStyle::drawComplexControl(QStyle::ComplexControl control, 
     if (control == QStyle::CC_ToolButton) {
         auto toolButton = qstyleoption_cast<const QStyleOptionToolButton *>(option);
         auto opt = *toolButton;
-        if (toolButton->arrowType == Qt::NoArrow)
-            opt.rect.adjust(0, 1, 0, -1);
-        else
-            opt.rect.adjust(-2, 1, 2, -1);
         if (widget && widget->objectName() == "peony_location_bar_indicator") {
             opt.features.setFlag(QStyleOptionToolButton::HasMenu, false);
             return QProxyStyle::drawComplexControl(control, &opt, painter);
+        } else {
+            opt.rect.adjust(1, 1, -1, -1);
         }
         return QProxyStyle::drawComplexControl(control, &opt, painter, widget);
     }
