@@ -743,6 +743,13 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     auto info = FileInfo::fromUri(destDirUri);
+    if (info.get()->isEmptyInfo()) {
+        // note that this case nearly won't happend.
+        // but there is a bug reported due to this.
+        // link to task #48798.
+        FileInfoJob j(info);
+        j.querySync();
+    }
     if (!info->isDir()  && ! destDirUri.startsWith("trash:///")) {
         return false;
     }
