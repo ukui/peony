@@ -59,7 +59,7 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
     connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
     connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
     connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
-
+    qRegisterMetaType<QHash<QString,QString> >("QHash<QString,QString>");
 }
 
 QString SideBarNetWorkItem::uri()
@@ -183,15 +183,8 @@ void SideBarNetWorkItem::findChildren()
     //只有根节点才设置子节点
     if (m_parentItem == nullptr) {
         clearChildren();
-        //获取共享文件夹很慢，所以使用单独的线程处理 - Obtaining shared folders is slow, so use a separate thread for processing
-        SharedDirectoryInfoThread *thread = new SharedDirectoryInfoThread(m_children, m_model, this);
-
-        connect(thread, &SharedDirectoryInfoThread::querySharedInfoFinish, this, [=]() {
-            delete thread;
-            m_model->insertRows(0, m_children->count(), firstColumnIndex());
-        });
         findRemoteServers();
-        thread->start();
+        querySharedFolders();
     }
 
     /* 计算机视图卸载时，侧边栏item状态也要响应 */
@@ -215,16 +208,46 @@ void SideBarNetWorkItem::findRemoteServers()
 
         for (const QString& remoteServer : remoteServerList) {
             if (!remoteServer.isEmpty()) {
+
                 SideBarNetWorkItem *item = new SideBarNetWorkItem(remoteServer,
                                                                   "network-workgroup-symbolic",
                                                                   remoteServer,
                                                                   this,
                                                                   m_model, this);
-
+                m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
+                m_model->endInsertRows();
             }
         }
     }
+}
+
+void SideBarNetWorkItem::querySharedFolders()
+{
+    if (m_parentItem != nullptr)
+        return;
+
+    //获取共享文件夹很慢，所以使用单独的线程处理 - Obtaining shared folders is slow, so use a separate thread for processing
+    SharedDirectoryInfoThread *thread = new SharedDirectoryInfoThread();
+
+    connect(thread, &SharedDirectoryInfoThread::querySharedInfoFinish, this, [=](QHash<QString,QString> sharedFolderInfoMap)
+    {
+        delete thread;
+        QHash<QString, QString>::iterator iter;
+        for(iter = sharedFolderInfoMap.begin();iter != sharedFolderInfoMap.end();iter++){
+            QString sharePath=iter.value();
+            QString shareName=iter.key();
+            if (!sharePath.isEmpty()) {
+                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"inode-directory",
+                                                                  shareName,this,m_model);
+                m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+                m_children->append(item);
+                m_model->endInsertRows();
+            }
+        }
+    });
+
+    thread->start();
 }
 
 void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool successed)
@@ -300,37 +323,9 @@ void SideBarNetWorkItem::stopWatcher()
     m_watcher->stopMonitor();
 }
 
-SharedDirectoryInfoThread::SharedDirectoryInfoThread(QVector<SideBarAbstractItem *> *children, SideBarModel *model,
-                                                   SideBarNetWorkItem *parent) :m_children(children), m_model(model), m_parent(parent)
+SharedDirectoryInfoThread::SharedDirectoryInfoThread()
 {
 
-}
-
-QString SharedDirectoryInfoThread::getShareInfo(QString arg1, QString arg2, QString arg3)
-{
-    QProcess proc;
-    proc.open();
-
-    QStringList args;
-    args.prepend(arg3);
-    args.prepend(arg2);
-    args.prepend(arg1);
-    args.prepend("/usr/bin/peony-share.sh");
-    args.prepend("pkexec");
-
-    proc.start("bash");
-    proc.waitForStarted();
-
-    QString cmd = args.join(" ");
-    proc.write(cmd.toUtf8() + "\n");
-    proc.waitForFinished(500);
-
-    QString result("");
-    result = proc.readAllStandardOutput();
-
-    proc.close();
-
-    return result;
 }
 
 void SharedDirectoryInfoThread::run()
@@ -342,7 +337,16 @@ void SharedDirectoryInfoThread::run()
      *
      * 如果输出发生改变，视情况修改
      */
-    QString shareNames = getShareInfo("usershare", "list" , "");
+    QStringList args;
+    args.append("usershare");
+    args.append("list");
+    args.append("");
+    bool ret = false;
+
+    auto userShareManager = UserShareInfoManager::getInstance();
+    QString shareNames=userShareManager->exectueCommand(args,&ret);
+
+    QHash<QString,QString> sharedFolderInfoMap;/* key:shareName,value: sharePath */
 
     for (QString shareName : shareNames.split(QRegExp("\\s+"))) {
         if (!shareName.isEmpty()) {
@@ -357,20 +361,13 @@ void SharedDirectoryInfoThread::run()
              *
              * 如果输出发生改变，视情况修改
              */
-            QString shareInfo = getShareInfo("usershare", "info" , shareName);
-            QString sharePath = shareInfo.split(QRegExp("\\s+")).at(1).split("=").at(1);
 
-            if (!sharePath.isEmpty()) {
-                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,
-                                                                  "inode-directory",
-                                                                  shareName,
-                                                                  m_parent,
-                                                                  m_model, m_parent);
-
-                m_children->append(item);
-            }
+            const Peony::ShareInfo* shareInfo = userShareManager->getShareInfo(shareName);
+            QString sharePath = shareInfo->originalPath;
+            if (!sharePath.isEmpty())
+                sharedFolderInfoMap.insert(shareName,sharePath);
         }
     }
 
-    Q_EMIT querySharedInfoFinish();
+    Q_EMIT querySharedInfoFinish(sharedFolderInfoMap);
 }
