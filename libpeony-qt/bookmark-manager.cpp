@@ -198,3 +198,30 @@ void BookMarkManager::renameBookmark(const QString oldUri, const QString newUri)
     });
 }
 
+void BookMarkManager::removeBookMark(const QStringList &uris)
+{
+    QtConcurrent::run([=]() {
+        while (!this->isLoaded()) {
+            g_usleep(100);
+        }
+
+        if (m_mutex.tryLock(1000)) {
+            for (auto uri : uris) {
+                QString duri = FileUtils::urlDecode(uri);
+                bool successed = m_uris.contains(duri);
+                if (successed) {
+                    m_uris.removeOne(duri);
+                    m_uris.removeDuplicates();
+                    qDebug()<<"removeBookMark"<<duri;
+                    Q_EMIT this->bookMarkRemoved(duri, true);
+                } else {
+                    Q_EMIT this->bookMarkRemoved(duri, true);
+                }
+            }
+            m_book_mark->setValue("uris", m_uris);
+            m_book_mark->sync();
+            m_mutex.unlock();
+        }
+    });
+}
+

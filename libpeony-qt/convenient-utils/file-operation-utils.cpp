@@ -274,7 +274,6 @@ static int getNumOfFileName(const QString &name)
         while ((pos = regExp.indexIn(name, pos)) != -1) {
             tmp = regExp.cap(0).toUtf8();
             pos += regExp.matchedLength();
-            qDebug()<<"pos"<<pos;
         }
         tmp.remove(0,1);
         tmp.chop(1);

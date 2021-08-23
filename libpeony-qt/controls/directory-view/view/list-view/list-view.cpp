@@ -695,13 +695,16 @@ const QStringList ListView::getSelections()
 void ListView::setSelections(const QStringList &uris)
 {
     clearSelection();
+    QItemSelection selection;
     for (auto uri: uris) {
         const QModelIndex index = m_proxy_model->indexFromUri(uri);
         if (index.isValid()) {
-            auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
-            selectionModel()->select(index, flags);
+            QItemSelection selectionToBeMerged(index, index);
+            selection.merge(selectionToBeMerged, QItemSelectionModel::Select);
         }
     }
+    auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
+    selectionModel()->select(selection, flags);
 }
 
 const QStringList ListView::getAllFileUris()

@@ -46,7 +46,16 @@
 
 #include <QApplication>
 
+#include <QTime>
+
 using namespace Peony;
+
+QString uri2FavoriteUri(const QString &sourceUri)
+{
+    QUrl url = sourceUri;
+    QString favoriteUri = "favorite://" + url.path() + "?schema=" + url.scheme();
+    return favoriteUri;
+}
 
 FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, FileItemModel *model, QObject *parent) : QObject(parent)
 {
@@ -57,6 +66,66 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_model = model;
 
     m_backend_enumerator = new FileEnumerator(this);
+
+    m_idle = new QTimer(this);
+    m_idle->setInterval(0);
+    m_idle->setSingleShot(true);
+    connect(m_idle, &QTimer::timeout, this, [=]{
+        if (m_uris_to_be_removed.isEmpty())
+            return;
+
+        QStringList favoriteUris;
+
+        if (m_uris_to_be_removed.count() < 10) {
+            // do normal remove
+            for (auto uri : m_uris_to_be_removed) {
+                for (int row = 0; row < m_children->count(); row++) {
+                    auto child = m_children->at(row);
+                    if (child->uri() == uri) {
+                        auto info = child->m_info;
+                        if (info->isDir())
+                        {
+                            favoriteUris.append(uri2FavoriteUri(uri));
+                        }
+                        m_model->beginRemoveRows(this->firstColumnIndex(), row, row);
+                        m_children->remove(row);
+                        delete child;
+                        m_model->endRemoveRows();
+                        break;
+                    }
+                }
+            }
+            BookMarkManager::getInstance()->removeBookMark(favoriteUris);
+            return;
+        }
+
+        // do reset model
+
+        int time0 = QTime::currentTime().msecsSinceStartOfDay();
+        qDebug()<<"execute deletion";
+        m_model->beginResetModel();
+        qDebug()<<"files deleted"<<m_uris_to_be_removed.count();
+        for (auto uri : m_uris_to_be_removed) {
+            for (int row = 0; row < m_children->count(); row++) {
+                auto child = m_children->at(row);
+                if (child->uri() == uri) {
+                    auto info = child->m_info;
+                    if (info->isDir())
+                    {
+                        favoriteUris.append(uri2FavoriteUri(uri));
+                    }
+                    m_children->remove(row);
+                    delete child;
+                    break;
+                }
+            }
+        }
+        m_model->endResetModel();
+        BookMarkManager::getInstance()->removeBookMark(favoriteUris);
+        int time1 = QTime::currentTime().msecsSinceStartOfDay();
+        qDebug()<<"excute deletion finished, cost"<<time1 - time0;
+        //ThumbnailManager::getInstance()->releaseThumbnail(m_uris_to_be_removed);
+    });
 
     m_thumbnail_watcher = std::make_shared<Peony::FileWatcher>("thumbnail://");
     connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
@@ -296,17 +365,7 @@ void FileItem::findChildrenAsync()
                 qDebug() << "inpositive Model onChildAdded:" <<uri;
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
-                //check bookmark and delete
-                auto info = FileInfo::fromUri(uri);
-                if (info->isDir())
-                {
-                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(uri));
-                }
-                //remove the crosponding child
-                //tell the model update
                 this->onChildRemoved(uri);
-                Q_EMIT this->childRemoved(uri);
-                ThumbnailManager::getInstance()->releaseThumbnail(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -420,18 +479,7 @@ void FileItem::findChildrenAsync()
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
-                //check bookmark and delete
-                auto info = FileInfo::fromUri(uri);
-                if (info->isDir())
-                {
-                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(uri));
-                }
-                //remove the crosponding child
-                //tell the model update
                 this->onChildRemoved(uri);
-                Q_EMIT this->childRemoved(uri);
-                qDebug() << "childRemoved:" <<uri;
-                ThumbnailManager::getInstance()->releaseThumbnail(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -518,6 +566,8 @@ FileItem *FileItem::getChildFromUri(QString uri)
 
 void FileItem::onChildAdded(const QString &uri)
 {
+    m_uris_to_be_removed.removeOne(uri);
+
     qDebug()<<"add child:" << uri;
     FileItem *child = getChildFromUri(uri);
     if (child) {
@@ -573,17 +623,11 @@ void FileItem::onChildRemoved(const QString &uri)
 {
     // fix #62925
     m_waiting_add_queue.removeOne(uri);
-
-    FileItem *child = getChildFromUri(uri);
-    if (child) {
-        int index = m_children->indexOf(child);
-        m_model->beginRemoveRows(this->firstColumnIndex(), index, index);
-        m_children->removeOne(child);
-        qDebug() <<"successfully removed child:" <<uri;
-        delete child;
-        m_model->endRemoveRows();
+    m_uris_to_be_removed.append(uri);
+    if (!m_idle->isActive()) {
+        m_idle->start();
     }
-    m_model->updated();
+    return;
 }
 
 void FileItem::onDeleted(const QString &thisUri)
@@ -728,6 +772,11 @@ void FileItem::updateInfoAsync()
     job->queryAsync();
 }
 
+void FileItem::removeChildren()
+{
+
+}
+
 void FileItem::clearChildren()
 {
     auto parent = firstColumnIndex();
@@ -771,11 +820,4 @@ bool FileItem::shouldShow()
         return false;
     }
     return true;
-}
-
-QString FileItem::uri2FavoriteUri(const QString &sourceUri)
-{
-    QUrl url = sourceUri;
-    QString favoriteUri = "favorite://" + url.path() + "?schema=" + url.scheme();
-    return favoriteUri;
 }

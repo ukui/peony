@@ -29,6 +29,8 @@
 #include <QObject>
 #include <QVector>
 
+class QTimer;
+
 namespace Peony {
 
 class FileInfo;
@@ -93,9 +95,6 @@ public:
     bool hasChildren();
     bool shouldShow();
 
-private:
-    QString uri2FavoriteUri(const QString &sourceUri);
-
 Q_SIGNALS:
     void cancelFindChildren();
     void childAdded(const QString &uri);
@@ -144,6 +143,8 @@ protected:
      */
     void updateInfoAsync();
 
+    void removeChildren();
+
 private:
     FileItem *m_parent = nullptr;
     std::shared_ptr<Peony::FileInfo> m_info;
@@ -158,6 +159,9 @@ private:
 
     QStringList m_ending_uris;
     QStringList m_waiting_add_queue;
+
+    QStringList m_uris_to_be_removed;
+    QTimer *m_idle = nullptr;
 
 
     /*!
