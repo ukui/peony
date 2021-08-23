@@ -91,7 +91,7 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
     } else if (m_item->firstColumnIndex().row() < 10) {
         l.last()->setEnabled(false);
     }
-    else if (m_uri == "file:///data/usershare" || m_uri == "kmre://" || m_uri == "kydroid://")
+    else if (m_uri == "file:///data/usershare" || m_uri == "kmre:///" || m_uri == "kydroid:///")
     {
         //fix bug#68431, can not delete option issue
         l.last()->setEnabled(false);
