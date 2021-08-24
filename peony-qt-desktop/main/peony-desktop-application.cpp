@@ -661,6 +661,8 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     }
 
     DesktopWidgetBase *currentDesktop = primaryWindow->getCurrentDesktop();
+    //保存原始效果以解决动画冲突问题
+    QGraphicsEffect *savedCurrentEffect = currentDesktop->graphicsEffect();
 
     if (!currentDesktop) {
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window desktop not found!";
@@ -671,6 +673,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     //获取一个桌面并指定父窗口
     DesktopWidgetBase *nextDesktop = getNextDesktop(targetType, primaryWindow);
+    QGraphicsEffect *savedNextEffect = nextDesktop->graphicsEffect();
 
     if (!nextDesktop) {
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
@@ -692,9 +695,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     QRect nextDesktopStartRect = this->createRectForAnimation(primaryScreenRect, currentDesktopStartRect,
                                                               targetAnimation, false);
 
-    qDebug() << "currentDesktopStartRect:" << currentDesktopStartRect << "primaryScreenRect:" << primaryScreenRect;
-    qDebug() << "currentDesktopEndRect:" << currentDesktopEndRect << "nextDesktopStartRect:" << nextDesktopStartRect;
-    qDebug() << "===不同动画类型：：currentDesktop" << currentDesktop->getExitAnimationType() << targetAnimation;
     //消失动画
     QPropertyAnimation *exitAnimation = this->createPropertyAnimation(currentDesktop->getExitAnimationType(),
                                                                       currentDesktop,
@@ -707,12 +707,14 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
         delete exitAnimation;
+        currentDesktop->setGraphicsEffect(savedCurrentEffect);
         currentDesktop->setActivated(false);
     });
 
     //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
     connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
         delete showAnimation;
+        nextDesktop->setGraphicsEffect(savedNextEffect);
         primaryWindow->setWindowDesktop(nextDesktop);
 
         m_windowManager->updateAllWindowGeometry();
@@ -726,8 +728,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         nextDesktop->setGeometry(nextDesktopStartRect);
 //        nextDesktop->setHidden(false);
     }
-    qDebug() << "nextDesktop->setGeometry" << nextDesktop->geometry() << "windowOpacity:" << nextDesktop->windowOpacity();
-    qDebug() << "nextDesktop->setGeometry" << currentDesktop->geometry() << "windowOpacity:" << currentDesktop->windowOpacity();
 
     nextDesktop->show();
     currentDesktop->setGeometry(currentDesktopStartRect);
