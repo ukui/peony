@@ -1,14 +1,27 @@
+peony (3.0.3-2+0819) v101; urgency=medium
+
+   * Bug号:无
+    - 需求号:
+      1.7305，桌面图标添加点击放大效果。
+    - 其它改动说明:
+      1.桌面整合原开始菜单代码，接管开始菜单和平板模式。
+      2.该版本为测试版本，在有桌面右键菜单中有接管选项。
+    - 影响域:
+      桌面,任务栏,平板模式桌面
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 19 Aug 2021 14:22:37 +0800
+
 peony (3.0.3-2+0716) v101; urgency=medium
 
    * Fix: change log path from ~/.config to /tmp
-     and auto create log file to track desktop 
+     and auto create log file to track desktop
      icon not show bug, related bug#63997.
 
  -- MeihongHe <hemeihong@kylinos.cn>  Fri, 16 Jul 2021 13:48:35 +0800
 
 peony (3.0.3-2+0701) v101; urgency=medium
 
-   * Fix: change log path from /tmp to ~/.config 
+   * Fix: change log path from /tmp to ~/.config
      to track desktop icon not show bug.
 
  -- MeihongHe <hemeihong@kylinos.cn>  Thu, 01 Jul 2021 16:58:35 +0800
@@ -86,7 +99,7 @@ peony (3.0.3-2+0325) v101; urgency=medium
   * Fix: Side bar will display 'usr_xxxxx' if some user default path been removed.
   * Fix: the expand screen is black,when drag expand screen. #38140
   * Fix: The Trash and Recent dates do not appear correctly after the Favorites interface switches to list view #41566
- 
+
  -- wangweinan <wangweinan@kylinos.cn>  Wed, 25 Mar 2021 09:29:31 +0800
 
 peony (3.0.3-2+0316) v101; urgency=medium
@@ -187,7 +200,7 @@ peony (3.0.3-2+0113) v101; urgency=medium
 
   * Fix if there is no item in item rect hash, skip items relocation
   * Fix default app order when add new user.
-  * Fix fonts app can not close, when it opens txt file failed. 
+  * Fix fonts app can not close, when it opens txt file failed.
   * Fix hidden cloud #30313
 
  -- wangweinan <wangweinan@kylinos.cn>  Thu, 13 Jan 2020 8:44:46 +0800
@@ -313,7 +326,7 @@ peony (3.0.3-1+1016) v101; urgency=medium
 peony (3.0.3-1+0924) v101; urgency=medium
 
   *Fixed bugs about roundcorner and shadow effect.
-  *Hide desktop when tablet mode is actived. 
+  *Hide desktop when tablet mode is actived.
   *Make sidebar expand button resized with sidebar itself.
 
  -- zhangpengfei <zhangpengfei@kylinos.cn>  Thu, 24 Sep 2020 09:44:46 +0800
