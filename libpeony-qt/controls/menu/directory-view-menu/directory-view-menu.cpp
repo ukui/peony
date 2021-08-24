@@ -754,6 +754,10 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                             iface->setCurrentSelectionUris(targetUirs);
                         }, Qt::BlockingQueuedConnection);
                     }
+                    else{
+                        //fix paste file in old path not update issue, link to bug#71627
+                        m_top_window->getCurrentPage()->getView()->repaintView();
+                    }
                 });
             }
             else if (m_is_recent && m_selections.count() >0)

@@ -180,7 +180,14 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
         return op;
     }
 
-    //auto uris = getClipboardFilesUris();
+    auto parentPath = FileUtils::getParentUri(uris.first());
+    //paste file in old path, return op
+    if (FileUtils::isSamePath(parentPath, targetDirUri) && isClipboardFilesBeCut())
+    {
+        clearClipboard();
+        return op;
+    }
+
     auto fileOpMgr = FileOperationManager::getInstance();
     if (isClipboardFilesBeCut()) {
         qDebug()<<uris;

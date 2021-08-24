@@ -672,6 +672,10 @@ void MainWindow::setShortCuts()
                         setCurrentSelectionUris(targetUirs);
                     }, Qt::BlockingQueuedConnection);
                 }
+                else{
+                    //fix paste file in old path not update issue, link to bug#71627
+                    this->getCurrentPage()->getView()->repaintView();
+                }
             }
         });
         addAction(pasteAction);
