@@ -286,6 +286,9 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     m_text->adjustSize();
     m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+    if (m_error->op && FileOpRenameToHideFile == m_error->op) {
+        delete m_cancel;
+    }
 
     int ret = exec();
 

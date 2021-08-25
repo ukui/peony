@@ -80,6 +80,7 @@ typedef enum{
     FileOpDelete,   //file or dir delete forever
     FileOpCount,    //file or dir file count
     FileOpCreateTemp, //create file or dir
+    FileOpRenameToHideFile, // file or dir rename to a hide file
     FileOpNum,
 }FileOpsType;
 
