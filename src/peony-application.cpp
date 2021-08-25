@@ -277,7 +277,7 @@ QString PeonyApplication::getUriMessage(QStringList& strList)
     QStringList args;
 
     for (auto uri = strList.constBegin(); uri != strList.constEnd(); ++uri) {
-        if ((*uri).startsWith("-") || (*uri).startsWith("--") || (*uri).startsWith("%")
+        if ("peony" == (*uri) || (*uri).startsWith("-") || (*uri).startsWith("--") || (*uri).startsWith("%")
                 || (*uri).startsWith("/usr/") || (*uri).startsWith("/bin/") || (*uri).startsWith("/sbin/")) {
             args << *uri;
         } else if ((*uri).startsWith("/")) {
@@ -400,7 +400,6 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             arguments.removeOne("%U");
             arguments.removeOne("%U&");
             QStringList uris = Peony::FileUtils::toDisplayUris(arguments);
-
             if (!uris.isEmpty()) {
                 auto window = new MainWindow(uris.first());
                 uris.removeAt(0);

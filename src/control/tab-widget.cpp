@@ -28,6 +28,7 @@
 #include "directory-view-widget.h"
 
 #include "file-info.h"
+#include "file-utils.h"
 #include "file-info-job.h"
 #include "file-launch-manager.h"
 #include "search-vfs-uri-parser.h"
@@ -986,8 +987,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        QString rootDir = info.get()->uri();
+        if (!info.get()->isDir()) {
+            rootDir = Peony::FileUtils::getParentUri(rootDir);
+        }
+
         auto enumerator = new Peony::FileEnumerator;
-        enumerator->setEnumerateDirectory(info.get()->uri());
+        enumerator->setEnumerateDirectory(rootDir);
         enumerator->setAutoDelete();
         connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed){
             if (!successed) {
@@ -1043,14 +1049,24 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
             //process open symbolic link
             auto realUri = uri;
-            if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+            if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://")) {
                 realUri = "file://" + info->symlinkTarget();
+            } else if (!info->isDir()) {
+                realUri = Peony::FileUtils::getParentUri(uri);
+            }
 
             //m_stack->addWidget(viewContainer);
             viewContainer->goToUri(realUri, false, true);
 
+            if (!info->isDir() && Peony::FileUtils::isFileExsit(uri)) {
+                QTimer::singleShot(500, [=] {
+                    viewContainer->getView()->setSelections(QStringList() << uri);
+                });
+            }
+
             bindContainerSignal(viewContainer);
             updateTrashBarVisible(uri);
+
 
             if (zoomLevel > 0)
                 viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
