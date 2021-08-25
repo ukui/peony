@@ -285,7 +285,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_IN: {
         char *uri = g_file_get_uri(file);
         QString createdFileUri = uri;       
-         qDebug()<<"***create uri***"<<createdFileUri;
+        //qDebug()<<"***create uri***"<<createdFileUri;
         g_free(uri);
 
         Q_EMIT p_this->fileCreated(createdFileUri);
@@ -295,7 +295,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_OUT: {
         char *uri = g_file_get_uri(file);
         QString deletedFileUri = uri;
-        qDebug()<<"***delete uri***"<<deletedFileUri;
+        //qDebug()<<"***delete uri***"<<deletedFileUri;
         g_free(uri);
 
         Q_EMIT p_this->fileDeleted(deletedFileUri);

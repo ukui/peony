@@ -433,6 +433,15 @@ void ThumbnailManager::releaseThumbnail(const QString &uri)
     m_semaphore->release();
 }
 
+void ThumbnailManager::releaseThumbnail(const QStringList &uris)
+{
+    m_semaphore->acquire();
+    for (auto uri : uris) {
+        m_hash.remove(uri);
+    }
+    m_semaphore->release();
+}
+
 const QIcon ThumbnailManager::tryGetThumbnail(const QString &uri)
 {
     m_semaphore->acquire();

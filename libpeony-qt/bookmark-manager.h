@@ -60,6 +60,7 @@ public Q_SLOTS:
     void addBookMark(const QString &uri);
     void removeBookMark(const QString &uri);
     void renameBookmark(const QString oldUri, const QString newUri);
+    void removeBookMark(const QStringList &uris);
 
 private:
     explicit BookMarkManager(QObject *parent = nullptr);

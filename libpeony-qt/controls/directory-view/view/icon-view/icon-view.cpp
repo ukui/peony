@@ -124,12 +124,16 @@ DirectoryViewProxyIface *IconView::getProxy()
 void IconView::setSelections(const QStringList &uris)
 {
     clearSelection();
+    QItemSelection selection;
     for (auto uri: uris) {
         const QModelIndex index = m_sort_filter_proxy_model->indexFromUri(uri);
         if (index.isValid()) {
-            selectionModel()->select(index, QItemSelectionModel::Select);
+            QItemSelection selectionToBeMerged(index, index);
+            selection.merge(selectionToBeMerged, QItemSelectionModel::Select);
         }
     }
+
+    selectionModel()->select(selection, QItemSelectionModel::Select);
 }
 
 const QStringList IconView::getSelections()
@@ -659,9 +663,12 @@ void IconView::editUris(const QStringList uris)
 void IconView::selectAll()
 {
     // fix: #62397
-    for (int i = 0; i < model()->rowCount(); i++) {
-        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
-    }
+//    for (int i = 0; i < model()->rowCount(); i++) {
+//        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
+//    }
+    // optimize selectAll(). do not trigger selection changed signal to many times.
+    QItemSelection selection(model()->index(0, 0), model()->index(model()->rowCount() - 1, 0));
+    selectionModel()->select(selection, QItemSelectionModel::Select);
 }
 
 void IconView::clearIndexWidget()
