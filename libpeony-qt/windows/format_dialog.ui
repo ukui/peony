@@ -56,12 +56,17 @@
    </property>
    <item>
     <property name="text">
-     <string>ntfs</string>
+     <string>vfat/fat32</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>vfat</string>
+     <string>exfat</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>ntfs</string>
     </property>
    </item>
    <item>

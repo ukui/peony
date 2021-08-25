@@ -186,9 +186,14 @@ void Format_Dialog::acceptFormat(bool)
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
     int full_clean = 0;
 
+    QString romType = ui->comboBox_system->currentText();
+    if (QString("vfat/fat32") == romType) {
+        romType = "vfat";
+    }
+
     //get values from ui
     //strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
-    strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
+    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
     strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
 
     //disable name and rom size list
@@ -570,7 +575,7 @@ void Format_Dialog::ensure_format_cb (CreateformatData *data){
 
     if (g_strcmp0 (data->format_type, "vfat") != 0 &&
             g_strcmp0 (data->format_type, "ntfs") != 0 &&
-            g_strcmp0 (data->format_type, "exfat") != 0){
+            g_strcmp0 (data->format_type, "exfat") != 0) {
         g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
                                g_variant_new_boolean (TRUE));
     }
@@ -621,7 +626,7 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
 
         if (g_strcmp0 (data->format_type, "vfat") != 0 &&
                 g_strcmp0 (data->format_type, "ntfs") != 0 &&
-                g_strcmp0 (data->format_type, "exfat") != 0){
+                g_strcmp0 (data->format_type, "exfat") != 0) {
             g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
                                    g_variant_new_boolean (TRUE));
         }
