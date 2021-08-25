@@ -122,14 +122,20 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
 
 
-        bool bigIcon = index.data(Qt::UserRole).value<bool>();
+        //bool bigIcon = index.data(Qt::UserRole).value<bool>();
+        bool bigIcon = index.data(Qt::UserRole+2).toBool();
 
         if(bigIcon)
         {
-            iconRect = QRect(rect.x()+Style::AppLeftSpace-3 ,
-                           rect.y()+Style::AppTopSpace-3,
-                           Style::AppListIconSize+12,
-                           Style::AppListIconSize+12);
+//            iconRect = QRect(rect.x()+Style::AppLeftSpace-3 ,
+//                           rect.y()+Style::AppTopSpace-3,
+//                           Style::AppListIconSize+12,
+//                           Style::AppListIconSize+12);
+            qDebug() << "void FullItemDelegate::paint BIGICON";//284
+            iconRect = QRect(rect.x()+Style::AppLeftSpace - 6 ,//94
+                           rect.y()+Style::AppTopSpace - 6,//60
+                           Style::AppListIconSize + 12,//96
+                           Style::AppListIconSize + 12);
             textRect = QRect(rect.x(),
                            iconRect.bottom()-3,
                            rect.width(),
@@ -188,17 +194,27 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             if(bigIcon)
             {
                 pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);//wgx
-
-
+                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<pixmap.size();
             }else {
                 pixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize),QIcon::Disabled,QIcon::Off);//wgx
             }
         icon = QIcon(pixmap);
         }
+        else
+        {
+            QPixmap mPixmap;
+            if(bigIcon)
+            {
+                mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
+                mPixmap = mPixmap.scaled(108,108);
+                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
+            }else {
+                mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
+            }
+        icon = QIcon(mPixmap);
+        }
 
 //        qDebug()<<"iconRect"<<iconRect;
-
-
         icon.paint(painter,iconRect);
  
         //文本换行
