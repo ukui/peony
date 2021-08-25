@@ -82,6 +82,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QObject>
+#include <QGraphicsBlurEffect>
 
 #define BACKGROUND_SETTINGS "org.mate.background"
 #define PICTRUE "picture-filename"
@@ -822,4 +823,31 @@ void DesktopWindow::desktopReboundProcess()
     animation->setEasingCurve(QEasingCurve::InOutCubic);
 
     animation->start();
+}
+
+void DesktopWindow::blurBackground(bool blur)
+{
+    if (blur) {
+        if (!m_lastEffectWidget) {
+            m_lastEffectWidget = new QWidget(this);
+            m_lastEffectWidget->resize(1,1);
+            m_lastEffectWidget->setVisible(false);
+            m_lastEffectWidget->hide();
+            m_lastEffectWidget->setGraphicsEffect(this->graphicsEffect());
+            //kwin临时模糊效果
+            QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect(this);
+            blurEffect->setBlurRadius(30);
+
+            this->setGraphicsEffect(blurEffect);
+            this->m_currentDesktop->setHidden(true);
+        }
+    } else {
+        if (m_lastEffectWidget) {
+            this->setGraphicsEffect(m_lastEffectWidget->graphicsEffect());
+            this->m_currentDesktop->setHidden(false);
+
+            delete m_lastEffectWidget;
+            m_lastEffectWidget = nullptr;
+        }
+    }
 }
