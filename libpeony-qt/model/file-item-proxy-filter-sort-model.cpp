@@ -194,6 +194,13 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
             return false;
 
+        //not show system orgin lost+found and sec_storage_data folder in DATA, fix bug#67084
+        if (targetUri.endsWith("DATA/lost+found") || targetUri.endsWith("DATA/sec_storage_data"))
+        {
+            if (! item->m_info->canWrite() && ! item->m_info->canExecute())
+               return false;
+        }
+
         //FIXME use display name to hide 839 MB disk
         if (item->m_info->displayName().contains("839 MB"))
             return false;
