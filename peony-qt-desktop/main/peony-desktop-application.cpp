@@ -961,15 +961,16 @@ void PeonyDesktopApplication::initGSettings()
     PeonyDesktopDbusService *desktopDbusService = new PeonyDesktopDbusService(this);
 
     connect(desktopDbusService, &Peony::PeonyDesktopDbusService::blurBackGroundSignal, this, [=](quint32 status) {
-        updateGSettingValues();
-        if (m_isTabletMode) {
-            if (m_windowManager) {
-                DesktopWindow *window = m_windowManager->getWindowByScreen(m_primaryScreen);
-                if (status == 1) {
+        if (m_windowManager) {
+            DesktopWindow *window = m_windowManager->getWindowByScreen(m_primaryScreen);
+            if (status == 1) {
+                //当需要模糊时才进行判断，否则取消模糊效果
+                updateGSettingValues();
+                if (m_isTabletMode) {
                     window->blurBackground(true);
-                } else {
-                    window->blurBackground(false);
                 }
+            } else {
+                window->blurBackground(false);
             }
         }
     });
@@ -979,7 +980,6 @@ void PeonyDesktopApplication::initGSettings()
 void PeonyDesktopApplication::updateGSettingValues()
 {
     if (m_tabletModeGSettings) {
-        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
         m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
     }
 }
