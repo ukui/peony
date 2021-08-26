@@ -18,18 +18,16 @@
 
 #ifndef FULLLISTVIEW_H
 #define FULLLISTVIEW_H
-#include <QListView>
 #include "src/Interface/ukuimenuinterface.h"
-#include "src/RightClickMenu/rightclickmenu.h"
-//#include "src/GroupListView/grouplistview.h"
-//#include "src/GroupListView/grouplistwidget.h"
+#include "fullitemdelegate.h"
+#include "src/Style/style.h"
+#include "thumbnail.h"
+
+#include <QListView>
 #include <QEvent>
 #include <QScrollBar>
 #include <QToolTip>
 #include <QStandardItemModel>
-#include "fullitemdelegate.h"
-#include "src/Style/style.h"
-#include "thumbnail.h"
 #include <QAbstractListModel>
 #include <QLabel>
 #include <QGridLayout>
@@ -70,7 +68,6 @@ protected:
 
 private:
     QVariantAnimation *m_animation=nullptr; //翻页动画
-    RightClickMenu* menu=nullptr;//右键菜单
     FullItemDelegate* m_delegate=nullptr;
     QStringList data;
     UkuiMenuInterface* pUkuiMenuInterface=nullptr;
@@ -121,7 +118,6 @@ private:
 
 private Q_SLOTS:
     void onClicked(QModelIndex index);//点击item
-    void rightClickedSlot(const QPoint &pos);//右键菜单
     bool uninstall(QString desktopfp);
 
 Q_SIGNALS:
