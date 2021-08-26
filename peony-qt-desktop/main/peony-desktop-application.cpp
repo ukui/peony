@@ -31,6 +31,7 @@
 #include "desktop-icon-view.h"
 #include "peony-log.h"
 #include "desktop-global-settings.h"
+#include "peony-desktop-dbus-service.h"
 
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -638,6 +639,16 @@ void PeonyDesktopApplication::initManager()
     m_desktopManager = DesktopManager::getInstance(true,this);
 }
 
+QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
+{
+    QWidget *saveEffectWidget = new QWidget(target);
+    saveEffectWidget->resize(1,1);
+    saveEffectWidget->setVisible(false);
+    saveEffectWidget->hide();
+    saveEffectWidget->setGraphicsEffect(target->graphicsEffect());
+    return saveEffectWidget;
+}
+
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
     this->updateGSettingValues();
@@ -661,8 +672,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     }
 
     DesktopWidgetBase *currentDesktop = primaryWindow->getCurrentDesktop();
-    //保存原始效果以解决动画冲突问题
-    QGraphicsEffect *savedCurrentEffect = currentDesktop->graphicsEffect();
 
     if (!currentDesktop) {
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window desktop not found!";
@@ -673,7 +682,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     //获取一个桌面并指定父窗口
     DesktopWidgetBase *nextDesktop = getNextDesktop(targetType, primaryWindow);
-    QGraphicsEffect *savedNextEffect = nextDesktop->graphicsEffect();
 
     if (!nextDesktop) {
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
@@ -684,6 +692,10 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
         return;
     }
+    //保存原始效果以解决动画冲突问题
+    QWidget *currentEffectBackup = saveEffectWidget(currentDesktop);
+    QWidget *nextEffectBackup    = saveEffectWidget(nextDesktop);
+
     //断开发送请求桌面的链接，防止频繁发送消息
     disconnect(currentDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
 
@@ -707,18 +719,20 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
         delete exitAnimation;
-        currentDesktop->setGraphicsEffect(savedCurrentEffect);
+        currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
         currentDesktop->setActivated(false);
+        delete currentEffectBackup;
     });
 
     //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
     connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
         delete showAnimation;
-        nextDesktop->setGraphicsEffect(savedNextEffect);
+        nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
         primaryWindow->setWindowDesktop(nextDesktop);
 
         m_windowManager->updateAllWindowGeometry();
         connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+        delete nextEffectBackup;
     });
 
     if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {
@@ -728,9 +742,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         nextDesktop->setGeometry(nextDesktopStartRect);
 //        nextDesktop->setHidden(false);
     }
-
-    nextDesktop->show();
-    currentDesktop->setGeometry(currentDesktopStartRect);
 
     exitAnimation->start();
     showAnimation->start();
@@ -848,8 +859,6 @@ QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationTy
             animation->setEasingCurve(QEasingCurve::InOutCubic);
             animation->setDuration(duration);
 
-            qDebug() << "===windowOpacity:" << object->windowOpacity();
-
             break;
         }
         default:
@@ -948,6 +957,22 @@ void PeonyDesktopApplication::initGSettings()
             }
         });
     }
+
+    PeonyDesktopDbusService *desktopDbusService = new PeonyDesktopDbusService(this);
+
+    connect(desktopDbusService, &Peony::PeonyDesktopDbusService::blurBackGroundSignal, this, [=](quint32 status) {
+        updateGSettingValues();
+        if (m_isTabletMode) {
+            if (m_windowManager) {
+                DesktopWindow *window = m_windowManager->getWindowByScreen(m_primaryScreen);
+                if (status == 1) {
+                    window->blurBackground(true);
+                } else {
+                    window->blurBackground(false);
+                }
+            }
+        }
+    });
 
 }
 

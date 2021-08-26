@@ -67,6 +67,12 @@ public:
 private:
     //切换桌面专用函数，请勿乱调
     Peony::DesktopWidgetBase *getNextDesktop(DesktopType targetType, DesktopWindow *parentWindow);
+    /**
+     * @brief 将target组件的Effect(GraphicsEffect)暂时保存下来，以便在动画结束后恢复
+     * @param target
+     * @return
+     */
+    QWidget *saveEffectWidget(QWidget *target);
 
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
