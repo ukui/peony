@@ -91,6 +91,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     PEONY_DESKTOP_LOG_WARN("create desktop icon view begin");
     installEventFilter(this);
 
+    //解决桌面可以拖动的问题
+    setProperty("notUseSlideListView", true);
+
     initShoutCut();
     //initMenu();
     initDoubleClick();

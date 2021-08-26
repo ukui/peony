@@ -1,5 +1,8 @@
 INCLUDEPATH += $$PWD
 
+include($$PWD/data/data.pri)
+include($$PWD/config/config.pri)
+
 HEADERS += \
     $$PWD/tablet-mode.h \
     $$PWD/tablet-mode-factory.h
@@ -43,9 +46,3 @@ HEADERS += \
 
 RESOURCES += \
     $$PWD/img.qrc
-
-#menusysapplist.files += $$PWD/menusysapplist.ini
-#menusysapplist.path = /usr/bin/
-
-DISTFILES += \
-    $$PWD/menusysapplist.ini

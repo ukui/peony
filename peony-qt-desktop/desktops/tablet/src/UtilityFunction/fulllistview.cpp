@@ -337,62 +337,7 @@ bool FullListView::uninstall(QString desktopfp)//判断是否可以卸载
 //    }
     return 1;
 }
-/*右键*/
-void FullListView::rightClickedSlot(const QPoint &pos)
-{
-    Q_UNUSED(pos)
-//    qDebug()<<"right"<<right_pressedpos;
-    if(tabletMode->get(TABLET_MODE).toBool())
-    {
-        right_iconClick = false;
-        return;
-    }
-    this->model()->setData(this->indexAt(right_pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole + 2);
-    if(!(this->selectionModel()->selectedIndexes().isEmpty()))//选中的item不为空
-    {
-//        qDebug()<<"moduel"<<module;
-        QModelIndex index=this->currentIndex();
-        QVariant var = listmodel->data(index, Qt::DisplayRole);
-        QString desktopfp=var.value<QString>();
-//        qDebug()<<" "<<desktopfp;
-        bool isinstall = uninstall(desktopfp);//判断是否为安装的应用可卸载
-        int ret = menu->showAppBtnMenu(desktopfp,isinstall);
-        //int ret=menu->showAppBtnMenu(desktopfp);
-        if(module > 0)
-        {
-            switch (ret) {
-            case 6:
-                Q_EMIT sendHideMainWindowSignal();
-                break;
-            case 7:
-                Q_EMIT sendHideMainWindowSignal();
-                break;
-            default:
-                break;
-            }
-        }
-        else{
-            switch (ret) {
-            case 1:
-                Q_EMIT sendUpdateAppListSignal();
-                break;
-            case 2:
-                Q_EMIT sendUpdateAppListSignal();
-                break;
-            case 6:
-                Q_EMIT sendHideMainWindowSignal();
-                break;
-            case 7:
-                Q_EMIT sendHideMainWindowSignal();
-                break;
-            default:
-                break;
-            }
-        }
-        right_iconClick=false;
-        this->selectionModel()->clear();
-    }
-}
+
 void FullListView::mousePressEvent(QMouseEvent *event)
 {
     if (m_animation->state() == QVariantAnimation::Running)
