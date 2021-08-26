@@ -101,10 +101,6 @@ public Q_SLOTS:
      */
     void recvStartMenuSlot();
     /**
-     * @brief Monitor win-key-release key value.
-     */
-    void winKeyReleaseSlot(const QString &key);
-    /**
      * @brief Load the full screen window
      */
     void recvHideMainWindowSlot();//接收隐藏主窗口信号

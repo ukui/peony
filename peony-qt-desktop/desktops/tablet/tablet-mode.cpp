@@ -1,38 +1,23 @@
 #include "tablet-mode.h"
+#include "src/Style/style.h"
+#include "desktop-global-settings.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QVBoxLayout>
 #include <QPushButton>
-
 #include <QDebug>
 #include <QDesktopWidget>
-#include <QScreen>
 #include <QRect>
-#include <QDebug>
 #include <QDateTime>
 #include <QIcon>
-#include <QSvgRenderer>
 #include <qgsettings.h>
 #include <iostream>
-#include "src/Style/style.h"
-
-#define TABLED_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
-#define TABLET_MODE                  "tablet-mode"
-
-#define TABLED_ROTATION "org.ukui.SettingsDaemon.plugins.xrandr"
-
-#include <QCoreApplication>
 #include <QDBusConnection>
 #include <QtDBus>
 #include <QSettings>
 #include <QDir>
-/**/
-#include <QtX11Extras/QX11Info>
-#include "src/XEventMonitor/xeventmonitor.h"
 #include <QKeyEvent>
-#include <QPropertyAnimation>
 
 using namespace Peony;
 
@@ -65,15 +50,6 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     this->initGSettings();
 
     this->updateByDirection();
-
-    //pc下鼠标功能
-    XEventMonitor::instance()->start();
-    connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
-            this, SLOT(XkbEventsRelease(QString)));
-    connect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),
-            this, SLOT(XkbEventsPress(QString)));
-    //监控.desktop文件目录
-    //监控安装应用与卸载应用列表
 
     bool isfile = appListFile();//判断监控看、路径是否存在
     m_fileWatcher = new QFileSystemWatcher;
@@ -149,9 +125,6 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
     connect(QApplication::desktop(), &QDesktopWidget::screenCountChanged, this, [=] {
         centerToScreen(this);
     });
-    QDBusConnection::sessionBus().unregisterService("org.ukui.menu.tablet");
-    QDBusConnection::sessionBus().registerService("org.ukui.menu.tablet");
-    QDBusConnection::sessionBus().registerObject("/tablet/menu", this, QDBusConnection::ExportAllSlots);
 
     //TODO 将左侧组件设置为一直展开 0812
     //不论何时都展开，
@@ -168,11 +141,6 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
             value > m_CommonUseWidget->m_listView->verticalScrollBar()->maximum())
             m_animation->stop();
     });
-    //绘画管理器打开后，win键功能释放
-    if (QGSettings::isSchemaInstalled(QString("org.ukui.session").toLocal8Bit())) {
-        QGSettings *gsetting = new QGSettings(QString("org.ukui.session").toLocal8Bit());
-        connect(gsetting, &QGSettings::changed, this, &TabletMode::winKeyReleaseSlot);
-    }
 
     if (checkAppList()) {
         //qDebug()<<"==================";
@@ -588,27 +556,6 @@ void TabletMode::XkbEventsRelease(const QString &keycode)
     }
 }
 
-void TabletMode::winKeyReleaseSlot(const QString &key)
-{
-    if (key == "winKeyRelease" || key == "win-key-release") {
-        QGSettings gsetting(QString("org.ukui.session").toLocal8Bit());
-        if (gsetting.get(QString("win-key-release")).toBool()) {
-            disconnect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
-                       this, SLOT(XkbEventsRelease(QString)));
-
-            disconnect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),
-                       this, SLOT(XkbEventsPress(QString)));
-
-        } else {
-            connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
-                    this, SLOT(XkbEventsRelease(QString)));
-
-            connect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),
-                    this, SLOT(XkbEventsPress(QString)));
-        }
-    }
-}
-
 /**
  * 隐藏窗口
  */
@@ -810,8 +757,8 @@ void TabletMode::initGSettings()
         });
     }
 
-    if (QGSettings::isSchemaInstalled(TABLED_ROTATION)) {
-        m_rotationGSettings = new QGSettings(TABLED_ROTATION);
+    if (QGSettings::isSchemaInstalled(TABLED_ROTATION_SCHEMA)) {
+        m_rotationGSettings = new QGSettings(TABLED_ROTATION_SCHEMA);
         m_direction = m_rotationGSettings->get("xrandrRotations").toString();
 
         connect(m_rotationGSettings, &QGSettings::changed, [this](const QString &key) {
@@ -821,12 +768,12 @@ void TabletMode::initGSettings()
         });
     }
 
-    if (QGSettings::isSchemaInstalled(TABLED_SCHEMA)) {
-        m_tabletModeGSettings = new QGSettings(TABLED_SCHEMA);
-        m_isTabletMode = m_tabletModeGSettings->get("tabletMode").toBool();
+    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
+        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
+        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
 
         connect(m_tabletModeGSettings, &QGSettings::changed, [this](const QString &key) {
-            if (key == "tabletMode") {
+            if (key == TABLET_MODE) {
                 m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
                 m_autoRotation = m_tabletModeGSettings->get("autoRotation").toBool(); //监测旋转按钮是否开启
                 m_direction = "normal";
@@ -908,7 +855,6 @@ void TabletMode::updateByDirection()
 
 TabletMode::~TabletMode()
 {
-    XEventMonitor::instance()->quit();
     if (m_leftWidget)
         delete m_leftWidget;
     if (toolBox)

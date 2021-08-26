@@ -18,8 +18,6 @@ SOURCES += \
         $$PWD/src/MainViewWidget/directorychangedthread.cpp \
         $$PWD/src/Style/style.cpp \
         $$PWD/src/UtilityFunction/thumbnail.cpp \
-        $$PWD/src/XEventMonitor/xeventmonitor.cpp\
-        $$PWD/src/RightClickMenu/rightclickmenu.cpp \
         $$PWD/src/UtilityFunction/utility.cpp \
         $$PWD/src/UtilityFunction/toolbox.cpp \
         $$PWD/src/UtilityFunction/pluginwidget.cpp \
@@ -38,8 +36,6 @@ HEADERS += \
         $$PWD/src/MainViewWidget/directorychangedthread.h \
         $$PWD/src/UtilityFunction/AbstractInterface.h \
         $$PWD/src/UtilityFunction/thumbnail.h \
-        $$PWD/src/XEventMonitor/xeventmonitor.h\
-        $$PWD/src/RightClickMenu/rightclickmenu.h \
         $$PWD/src/UtilityFunction/utility.h \
         $$PWD/src/UtilityFunction/toolbox.h \
         $$PWD/src/UtilityFunction/pluginwidget.h \
@@ -48,11 +44,8 @@ HEADERS += \
 RESOURCES += \
     $$PWD/img.qrc
 
-gschema.path = /usr/share/glib-2.0/schemas
-gschema.files += $$PWD/settings/org.ukui.menu.plugin.gschema.xml
-menusysapplist.files += $$PWD/menusysapplist.ini
-menusysapplist.path = /usr/bin/
+#menusysapplist.files += $$PWD/menusysapplist.ini
+#menusysapplist.path = /usr/bin/
 
 DISTFILES += \
-    $$PWD/menusysapplist.ini \
-    $$PWD/settings/org.ukui.menu.plugin.gschema.xml
+    $$PWD/menusysapplist.ini

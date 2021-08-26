@@ -4,9 +4,12 @@
 
 #ifndef PEONY_DESKTOP_GLOBAL_SETTINGS_H
 #define PEONY_DESKTOP_GLOBAL_SETTINGS_H
-
+//schemas
+#define TABLED_ROTATION_SCHEMA "org.ukui.SettingsDaemon.plugins.xrandr"
 #define TABLET_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
-#define TABLET_MODE   "tabletMode"
+
+//keys
+#define TABLET_MODE "tabletMode"
 
 #include <QObject>
 

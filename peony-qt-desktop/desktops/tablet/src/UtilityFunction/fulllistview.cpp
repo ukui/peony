@@ -43,7 +43,6 @@ FullListView::FullListView(QWidget *parent, int module):
     this->module=module;
     initWidget();
     pUkuiMenuInterface=new UkuiMenuInterface;
-    menu=new RightClickMenu;
     //应用列表
     QString path=QDir::homePath()+"/.config/ukui/ukui-menu.ini";
     setting=new QSettings(path,QSettings::IniFormat);
@@ -73,8 +72,6 @@ FullListView::~FullListView()
 {
     if(pUkuiMenuInterface)
         delete pUkuiMenuInterface;
-    if(menu)
-        delete menu;
     if(setting)
         delete setting;
     if(disableSetting)
@@ -91,7 +88,6 @@ FullListView::~FullListView()
         delete m_delegate;
 
     pUkuiMenuInterface=nullptr;
-    menu=nullptr;
     setting=nullptr;
     disableSetting=nullptr;//        else
     //        {
@@ -135,7 +131,6 @@ void FullListView::initWidget()
     this->setMovement(QListView::Snap);
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
     this->setGridSize(QSize(Style::AppListItemSizeWidth,Style::AppListItemSizeHeight));
-    connect(this,&FullListView::customContextMenuRequested,this,&FullListView::rightClickedSlot);
     m_animation = new QVariantAnimation(verticalScrollBar());
     m_animation->setEasingCurve(QEasingCurve::Linear);
     connect(m_animation, &QVariantAnimation::valueChanged, this, [=](const QVariant variant) {

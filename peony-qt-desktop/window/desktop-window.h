@@ -85,6 +85,8 @@ public:
         return m_currentDesktop;
     }
 
+    void blurBackground(bool blur);
+
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
     void checkWindow();
@@ -132,6 +134,8 @@ protected:
     void initGSettings();
 
 private:
+    //kwin临时背景模糊
+    QWidget *m_lastEffectWidget = nullptr;
     QString m_current_bg_path;
     QString m_picture_option;
 
