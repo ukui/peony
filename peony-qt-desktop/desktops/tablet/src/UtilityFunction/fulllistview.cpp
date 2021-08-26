@@ -27,12 +27,19 @@
 #include <QSettings>
 #include <qabstractitemview.h>
 #include <qlistview.h>
+#include <QGraphicsDropShadowEffect>
 #define TABLED_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
 #define TABLET_MODE                  "tablet-mode"
 /*初始化*/
 FullListView::FullListView(QWidget *parent, int module):
     QListView(parent)
 {
+    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
+    shadowEffect->setBlurRadius(15);
+    shadowEffect->setColor(QColor(63, 63, 63, 180));
+    shadowEffect->setOffset(0,0);
+    this->setGraphicsEffect(shadowEffect);
+
     this->module=module;
     initWidget();
     pUkuiMenuInterface=new UkuiMenuInterface;
@@ -82,7 +89,19 @@ FullListView::~FullListView()
 
     pUkuiMenuInterface=nullptr;
     setting=nullptr;
-    disableSetting=nullptr;
+    disableSetting=nullptr;//        else
+    //        {
+    //            QPixmap mPixmap;
+    //            if(bigIcon)
+    //            {
+    //                mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
+    //                mPixmap = mPixmap.scaled(108,108);
+    //                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
+    //            }else {
+    //                mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
+    //            }
+    //        icon = QIcon(mPixmap);
+    //        }
     tabletMode=nullptr;
     m_animation=nullptr;
     time=nullptr;
@@ -135,7 +154,19 @@ void FullListView::addData(QStringList data)
     this->setModel(listmodel);
     Q_FOREACH(QString desktopfp,data)
     {
-        QStandardItem* item=new QStandardItem;
+        QStandardItem* item=new QStandardItem;//        else
+        //        {
+        //            QPixmap mPixmap;
+        //            if(bigIcon)
+        //            {
+        //                mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
+        //                mPixmap = mPixmap.scaled(108,108);
+        //                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
+        //            }else {
+        //                mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
+        //            }
+        //        icon = QIcon(mPixmap);
+        //        }
         item->setData(QVariant::fromValue<QString>(desktopfp),Qt::DisplayRole);
         item->setData(QVariant::fromValue<bool>(0),Qt::UserRole);
         bool appDis=appDisable(desktopfp);
@@ -306,7 +337,62 @@ bool FullListView::uninstall(QString desktopfp)//判断是否可以卸载
 //    }
     return 1;
 }
-
+/*右键*/
+void FullListView::rightClickedSlot(const QPoint &pos)
+{
+    Q_UNUSED(pos)
+//    qDebug()<<"right"<<right_pressedpos;
+    if(tabletMode->get(TABLET_MODE).toBool())
+    {
+        right_iconClick = false;
+        return;
+    }
+    this->model()->setData(this->indexAt(right_pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole + 2);
+    if(!(this->selectionModel()->selectedIndexes().isEmpty()))//选中的item不为空
+    {
+//        qDebug()<<"moduel"<<module;
+        QModelIndex index=this->currentIndex();
+        QVariant var = listmodel->data(index, Qt::DisplayRole);
+        QString desktopfp=var.value<QString>();
+//        qDebug()<<" "<<desktopfp;
+        bool isinstall = uninstall(desktopfp);//判断是否为安装的应用可卸载
+        int ret = menu->showAppBtnMenu(desktopfp,isinstall);
+        //int ret=menu->showAppBtnMenu(desktopfp);
+        if(module > 0)
+        {
+            switch (ret) {
+            case 6:
+                Q_EMIT sendHideMainWindowSignal();
+                break;
+            case 7:
+                Q_EMIT sendHideMainWindowSignal();
+                break;
+            default:
+                break;
+            }
+        }
+        else{
+            switch (ret) {
+            case 1:
+                Q_EMIT sendUpdateAppListSignal();
+                break;
+            case 2:
+                Q_EMIT sendUpdateAppListSignal();
+                break;
+            case 6:
+                Q_EMIT sendHideMainWindowSignal();
+                break;
+            case 7:
+                Q_EMIT sendHideMainWindowSignal();
+                break;
+            default:
+                break;
+            }
+        }
+        right_iconClick=false;
+        this->selectionModel()->clear();
+    }
+}
 void FullListView::mousePressEvent(QMouseEvent *event)
 {
     if (m_animation->state() == QVariantAnimation::Running)
@@ -322,10 +408,15 @@ void FullListView::mousePressEvent(QMouseEvent *event)
             pressApp = listmodel->data(this->indexAt(pressedpos), Qt::DisplayRole);
             iconClick = true;
             startPos=event->pos();
-            this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole);
+            qDebug() << "void FullListView::mousePressEvent(QMouseEvent *event) pressedPos" << pressedpos;
+            listmodel->setData(this->indexAt(pressedpos),1,Qt::UserRole+2);
+            repaint();
+            //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole);
         }else{
             iconClick=false;
-            this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+            qDebug() << "void FullListView::mousePressEvent(QMouseEvent *event) pressedPos 1111" << pressedpos;
+            listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole+2);
+            //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
             pressedpos = moveing_pressedpos = event->pos();
             press_time = event->timestamp();
 
@@ -343,12 +434,15 @@ void FullListView::mousePressEvent(QMouseEvent *event)
             right_pressedpos=pressedpos;
             //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole);
             this->selectionModel()->setCurrentIndex(this->indexAt(event->pos()),QItemSelectionModel::SelectCurrent);
+            listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole + 2);
         }else{
             right_iconClick=false;
             //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+            listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole + 2);
         }
 
     }
+    event->accept();
 }
 void FullListView::mouseMoveEvent(QMouseEvent *event)
 {
@@ -507,7 +601,7 @@ void FullListView::dropEvent(QDropEvent *event)
             insertApplication(startPos,dropPos);
         }
     }
-    this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+    this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole + 2);
 }
 void FullListView::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -521,7 +615,15 @@ void FullListView::mouseReleaseEvent(QMouseEvent *e)
 //            qDebug()<<"left";
             if(qAbs(releasepos.x()-pressedpos.x())<=5&&qAbs(releasepos.y()-pressedpos.y())<=5&&this->indexAt(releasepos)==this->indexAt(pressedpos))
             {
-                this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+                //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+                QEventLoop loop1;
+                QTimer::singleShot(200, &loop1, SLOT(quit()));
+                loop1.exec();
+                listmodel->setData(this->indexAt(pressedpos),0,Qt::UserRole+2);
+                QEventLoop loop;
+                QTimer::singleShot(200, &loop, SLOT(quit()));
+                loop.exec();
+
                 Q_EMIT onClicked(this->indexAt(e->pos()));
                 //if(desktopfn=="kylin-screenshot.desktop")
                 //        {
@@ -627,7 +729,8 @@ void FullListView::mouseReleaseEvent(QMouseEvent *e)
             //return ;
         }
     }
-    this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+    //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+    listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole+2);
     iconClick=false;//是否点钟图标
     right_iconClick=false;//是否右键点中图标
     theDragRow = -1;
