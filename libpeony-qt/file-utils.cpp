@@ -740,6 +740,9 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
  * @unixDeviceName  a device name. eg: /dev/sdb
  */
 void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &unixDeviceName){
+    if (unixDeviceName.isEmpty())
+        return;
+
     GVolumeMonitor *vm = g_volume_monitor_get();
     GList *volumes = g_volume_monitor_get_volumes(vm);
     GList *l = volumes;
