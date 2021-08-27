@@ -98,12 +98,6 @@ void DesktopMode::initMenu()
                     //go to control center set background
                     Q_EMIT gotoSetBackground();
                 });
-                //测试代码，删除即可
-                auto action1 = menu.addAction(tr("go to other desktop"));
-                connect(action1, &QAction::triggered, [=]() {
-                    m_exitAnimationType = AnimationType::OpacityLess;
-                    Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
-                });
             }
             menu.exec(QCursor::pos());
             auto urisToEdit = menu.urisToEdit();
