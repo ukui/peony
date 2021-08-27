@@ -135,6 +135,10 @@ void DirectoryViewMenu::fillActions()
         m_is_ftp = true;
     }
 
+    if (m_directory.startsWith("filesafe:///")){
+        m_is_filebox_file = true;
+    }
+
     if(m_directory == "filesafe:///") {
         m_is_filesafe = true;
     }
@@ -707,7 +711,8 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                         canDelete = false;
                 }
 
-                if (canTrash)
+                //fix unencrypted box file can delete to trash issue, link to bug#72948
+                if (canTrash && ! m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                     connect(l.last(), &QAction::triggered, [=]() {
