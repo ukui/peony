@@ -254,7 +254,8 @@ const QString FileInfo::unixDeviceFile()
 
 const QString FileInfo::displayName()
 {
-    QDir mountDir;
+    if (isEmptyInfo())
+        return nullptr;
     bool isMountPoint;
     QString unixDevice,deviceName;
 

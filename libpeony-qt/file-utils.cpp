@@ -446,7 +446,7 @@ bool FileUtils::isMountPoint(const QString &uri)
     }
 
     if (nullptr != mounts) {
-        g_list_free(mounts);
+        g_list_free_full(mounts, g_object_unref);
     }
 
     if (nullptr != file) {
@@ -731,6 +731,7 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
     }
 
     name = QTextCodec::codecForName("GBK")->toUnicode(dest);
+    //name = QTextCodec::codecForLocale()->toUnicode(dest);
     return name;
 }
 
@@ -739,6 +740,23 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
  * @unixDeviceName  a device name. eg: /dev/sdb
  */
 void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &unixDeviceName){
+    GVolumeMonitor *vm = g_volume_monitor_get();
+    GList *volumes = g_volume_monitor_get_volumes(vm);
+    GList *l = volumes;
+    while (l) {
+        GVolume *volume = static_cast<GVolume *>(l->data);
+        g_autofree char *volume_unix_dev = g_volume_get_identifier(volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (unixDeviceName == volume_unix_dev) {
+            g_autofree char *volume_name = g_volume_get_name(volume);
+            volumeName = volume_name;
+            break;
+        }
+        l = l->next;
+    }
+    g_list_free_full(volumes, g_object_unref);
+    g_object_unref(vm);
+    return;
+
     QFileInfoList diskList;
     QFileInfo diskLabel;
     QDir diskDir;
@@ -773,7 +791,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         if(tmpName == volumeName || !tmpName.contains(rx)){      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
             volumeName = tmpName;
             return;
-        }else{
+        } else {
             finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;
