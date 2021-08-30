@@ -681,9 +681,6 @@ void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar
     FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;
     if (pb) {
         Q_EMIT pb->pause();
-        if (pb->isInhibit()) {
-            QMessageBox::warning(nullptr, tr("The system cannot hibernate or sleep"), tr("The file operation is in progress. Ensure that the file operation is complete or canceled before hibernating or sleeping"), QMessageBox::Ok);
-        }
     }
 
     Q_UNUSED(connection)
