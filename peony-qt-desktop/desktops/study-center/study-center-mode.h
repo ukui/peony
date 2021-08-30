@@ -5,17 +5,23 @@
 
 namespace Peony {
 
+class TabletAppManager;
+
 class StudyCenterMode : public DesktopWidgetBase
 {
 Q_OBJECT
 public:
     StudyCenterMode();
 
-    ~StudyCenterMode() override;
+    ~StudyCenterMode();
 
-    void setActivated(bool activated) override;
+    void setActivated(bool activated);
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
+private:
+    void initUi();
+    TabletAppManager* m_tableAppMangager=nullptr;
+
 };
 
 }
