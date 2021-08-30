@@ -41,9 +41,7 @@ public:
     FullListView(QWidget *parent,int module);
     ~FullListView();
 
-    void addData(QStringList data);//字母排序模块添加数据
     void updateData(QStringList data);
-    void insertData(QString desktopfp);
     bool appDisable(QString desktopfp);//判断是否是禁用的应用
     bool isDraging(){return m_isDraging;}
     QStandardItemModel* listmodel=nullptr;
@@ -53,9 +51,7 @@ protected:
    void initWidget();
    void mouseReleaseEvent(QMouseEvent *e);
    void mousePressEvent(QMouseEvent *event);
-   void wheelEvent(QWheelEvent *e);
    void mouseMoveEvent(QMouseEvent *event);
-   void paintGroupItem(const QModelIndex &index,QString group);
 
    void dropEvent(QDropEvent *event);
    void dragEnterEvent(QDragEnterEvent *event) override;
@@ -67,7 +63,6 @@ protected:
 
 
 private:
-    QVariantAnimation *m_animation=nullptr; //翻页动画
     FullItemDelegate* m_delegate=nullptr;
     QStringList data;
     UkuiMenuInterface* pUkuiMenuInterface=nullptr;
@@ -79,12 +74,13 @@ private:
     int pageNum;//null
 
 
-    /*鼠标事件的参数变量*/
-    int dist;//翻页的鼠标移动长度
 
     QPoint  pressedpos; //鼠标按下的位置
+    QPoint  pressedGlobalPos; //鼠标按下的位置
     QPoint  releasepos;  //鼠标释放的位置
+    QPoint  releaseGlobalPos;  //鼠标释放的位置
     QPoint  moveing_pressedpos;// 鼠标移动的位置
+    QPoint  m_lastPressPoint;// 鼠标移动的位置
     QPoint  right_pressedpos;// 右键点击的位置
 
 
@@ -109,7 +105,6 @@ private:
 
 
     //鼠标滚轮灵密度限制
-    QTimer *time;
     bool flat=true;
 
     QGSettings *tabletMode=nullptr;
@@ -118,16 +113,17 @@ private:
 
 private Q_SLOTS:
     void onClicked(QModelIndex index);//点击item
-    bool uninstall(QString desktopfp);
 
 Q_SIGNALS:
     void sendItemClickedSignal(QString arg);//发送item点击信号
     void sendGroupClickSignal(QString desktopfn);//发送组合框点击信号
     void sendHideMainWindowSignal();//界面隐藏信号
     void sendUpdateAppListSignal();//界面更新信号
-    void pagenumchanged();//页面数改变信号
+    void pagenumchanged(qint32 signal);//页面数改变信号
     void pageCollapse(); //左滑页面收纳
     void pageSpread(); //右滑页面展开
+
+    void moveRequest(qint32 length);
 
 };
 

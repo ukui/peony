@@ -131,7 +131,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //                           rect.y()+Style::AppTopSpace-3,
 //                           Style::AppListIconSize+12,
 //                           Style::AppListIconSize+12);
-            qDebug() << "void FullItemDelegate::paint BIGICON";//284
             iconRect = QRect(rect.x()+Style::AppLeftSpace - 6 ,//94
                            rect.y()+Style::AppTopSpace - 6,//60
                            Style::AppListIconSize + 12,//96
@@ -147,14 +146,17 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 
         }else{
-            iconRect = QRect(rect.x()+Style::AppLeftSpace ,
-                           rect.y()+Style::AppTopSpace,
-                           Style::AppListIconSize,
-                           Style::AppListIconSize);
+            Style::AppLeftSpace = (rect.width() - Style::AppListIconSize) / 2;
+            Style::AppTopSpace = (rect.height() - Style::AppListIconSize) / 2;
+
+            iconRect = QRect(rect.x() + Style::AppLeftSpace,
+                             rect.y() + Style::AppTopSpace,
+                             Style::AppListIconSize,
+                             Style::AppListIconSize);
             textRect = QRect(rect.x(),
-                           iconRect.bottom(),
-                           rect.width(),
-                           rect.height()-iconRect.height()-Style::AppTopSpace-30);
+                             iconRect.bottom() + 5,
+                             rect.width(),
+                             Style::AppTopSpace - 5);
 
         }
 
@@ -216,7 +218,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 //        qDebug()<<"iconRect"<<iconRect;
         icon.paint(painter,iconRect);
- 
+
         //文本换行
         QColor shadow=Qt::black;
         shadow.setAlpha(127);
@@ -226,11 +228,10 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         textLineRect.setRight(textRect.right()+1);
         textLineRect.setTop(textRect.top()+1);
         textLineRect.setBottom(textRect.bottom()+1);
-        painter->drawText(textLineRect,Qt::TextWordWrap | Qt::AlignCenter,appname);
+        painter->drawText(textLineRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop,appname);
 
         painter->setPen(QPen(Qt::white));
-        painter->drawText(textRect,Qt::TextWordWrap | Qt::AlignCenter, appname);
-
+        painter->drawText(textRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
 
         painter->restore();
 

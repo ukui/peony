@@ -91,7 +91,6 @@ public:
     static int appNum;
     static int appPage;
     static int nowpagenum;
-    static int appRows; //app的总行数
     static bool ScreenRotation;
 
     static int AppListItemSizeWidth;
@@ -103,6 +102,8 @@ public:
 
     static int LeftWidgetWidth;
 
+    static int AppListViewHeight;
+    static int AppListViewWidth;
     static int AppListViewTopMargin;
     static int AppListViewLeftMargin;
     static int AppListViewBottomMargin;
@@ -119,6 +120,7 @@ public:
     static int TimeWidgetLeft;
 
     static int ButtonWidgetWidth;
+    static int ButtonWidgetHeight;
 
     //扩展的开始菜单应用列表
     static int ToolWidgetLeft;

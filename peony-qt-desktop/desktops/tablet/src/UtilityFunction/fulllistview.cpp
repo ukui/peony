@@ -25,6 +25,7 @@
 #include <src/Style/style.h>
 #include <QDrag>
 #include <QSettings>
+#include <QScreen>
 #include <qabstractitemview.h>
 #include <qlistview.h>
 #include <QGraphicsDropShadowEffect>
@@ -57,15 +58,6 @@ FullListView::FullListView(QWidget *parent, int module):
 
     tabletMode=new QGSettings(TABLED_SCHEMA);
     setDragEnabled(true);
-    //翻页灵敏度时间调节
-    time=new QTimer(this);
-    connect(time,&QTimer::timeout,[=](){
-        if(flat==false)
-        {
-            flat=true;
-            time->stop();
-        }
-    });
 }
 
 FullListView::~FullListView()
@@ -78,10 +70,6 @@ FullListView::~FullListView()
         delete disableSetting;
     if(tabletMode)
         delete tabletMode;
-    if(m_animation)
-        delete m_animation;
-    if(time)
-        delete time;
     if(listmodel)
         delete listmodel;
     if(m_delegate) //can
@@ -89,22 +77,8 @@ FullListView::~FullListView()
 
     pUkuiMenuInterface=nullptr;
     setting=nullptr;
-    disableSetting=nullptr;//        else
-    //        {
-    //            QPixmap mPixmap;
-    //            if(bigIcon)
-    //            {
-    //                mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
-    //                mPixmap = mPixmap.scaled(108,108);
-    //                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
-    //            }else {
-    //                mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
-    //            }
-    //        icon = QIcon(mPixmap);
-    //        }
+    disableSetting=nullptr;
     tabletMode=nullptr;
-    m_animation=nullptr;
-    time=nullptr;
     listmodel=nullptr;
     m_delegate=nullptr;
 
@@ -131,66 +105,17 @@ void FullListView::initWidget()
     this->setMovement(QListView::Snap);
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
     this->setGridSize(QSize(Style::AppListItemSizeWidth,Style::AppListItemSizeHeight));
-    m_animation = new QVariantAnimation(verticalScrollBar());
-    m_animation->setEasingCurve(QEasingCurve::Linear);
-    connect(m_animation, &QVariantAnimation::valueChanged, this, [=](const QVariant variant) {
-        int value = variant.toInt();
-        this->verticalScrollBar()->setValue(value);
-//        qDebug()<<__FUNCTION__<<verticalScrollBar()->value()<<value<<"动画"<<verticalScrollBar()->minimum()<<verticalScrollBar()->maximum();
-        if (value < this->verticalScrollBar()->minimum() || value > this->verticalScrollBar()->maximum())
-            m_animation->stop();
-    });
-
 }
-//添加数据
-void FullListView::addData(QStringList data)
+
+void FullListView::updateData(QStringList data)
 {
     if (listmodel) {
         listmodel->clear();
     } else {
         listmodel = new QStandardItemModel(this);
+        this->setModel(listmodel);
     }
 
-    this->setModel(listmodel);
-    Q_FOREACH(QString desktopfp,data)
-    {
-        QStandardItem* item=new QStandardItem;//        else
-        //        {
-        //            QPixmap mPixmap;
-        //            if(bigIcon)
-        //            {
-        //                mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
-        //                mPixmap = mPixmap.scaled(108,108);
-        //                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
-        //            }else {
-        //                mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
-        //            }
-        //        icon = QIcon(mPixmap);
-        //        }
-        item->setData(QVariant::fromValue<QString>(desktopfp),Qt::DisplayRole);
-        item->setData(QVariant::fromValue<bool>(0),Qt::UserRole);
-        bool appDis=appDisable(desktopfp);
-        item->setData(QVariant::fromValue<bool>(appDis),Qt::UserRole+1);
-        listmodel->appendRow(item);
-    }
-    //空白位置补位
-    qDebug() << "+++++++++++++(appPage,appColumn,appLine,appNum) = (" << Style::appPage
-             << "," << Style::appColumn << "," << Style::appLine << "," << Style::appNum << ")";
-    for(int i=0;i<Style::appPage* Style::appColumn* Style::appLine-Style::appNum;i++)//
-    {
-        QStandardItem* items=new QStandardItem;
-        items->setEnabled(false);
-        items->setBackground(Qt::NoBrush);
-        listmodel->appendRow(items);
-    }
-    m_delegate= new FullItemDelegate(this,module);
-    this->setItemDelegate(m_delegate);
-}
-
-
-void FullListView::updateData(QStringList data)
-{
-    listmodel->clear();
     Q_FOREACH(QString desktopfp,data)
     {
         QStandardItem* item=new QStandardItem;
@@ -200,13 +125,13 @@ void FullListView::updateData(QStringList data)
         item->setData(QVariant::fromValue<bool>(appDis),Qt::UserRole+1);
         listmodel->appendRow(item);
     }
-    for(int i=0;i<Style::appPage* Style::appColumn* Style::appLine-Style::appNum;i++)//
-    {
-        QStandardItem* items=new QStandardItem;
-        items->setEnabled(false);
-        items->setBackground(Qt::NoBrush);
-        listmodel->appendRow(items);
-    }
+//    for(int i=0;i<Style::appPage* Style::appColumn* Style::appLine-Style::appNum;i++)//
+//    {
+//        QStandardItem* items=new QStandardItem;
+//        items->setEnabled(false);
+//        items->setBackground(Qt::NoBrush);
+//        listmodel->appendRow(items);
+//    }
     m_delegate= new FullItemDelegate(this,module);
     this->setItemDelegate(m_delegate);
 
@@ -247,14 +172,6 @@ bool FullListView::appDisable(QString desktopfp)//判断是否是禁用应用(�
     }
     return 0;
 }
-void FullListView::insertData(QString desktopfp)
-{
-//    QStandardItem* item=new QStandardItem;
-//    item->setData(QVariant::fromValue<QString>(desktopfp),Qt::DisplayRole);
-//    item->setData(QVariant::fromValue<bool>(0),Qt::UserRole);
-//    listmodel->appendRow(item);
-
-}
 /*点击执行*/
 void FullListView::onClicked(QModelIndex index)
 {
@@ -283,66 +200,11 @@ void FullListView::onClicked(QModelIndex index)
         }
     }
 }
-bool FullListView::uninstall(QString desktopfp)//判断是否可以卸载
-{
-
-    qDebug()<<"fulllistview"<<desktopfp;
-    syssetting->beginGroup("ukui-menu-sysapplist");
-    QStringList sysapplist=syssetting->allKeys();
-    syssetting->sync();
-    syssetting->endGroup();
-
-    QString appstr = desktopfp.section(' ', 0, 0);
-    QStringList strlist = appstr.split('/');
-    appstr = strlist[strlist.size()-1];
-    if(sysapplist.contains(appstr))
-    {
-        qDebug()<<"默认应用";
-        return 0;
-    }
-
-
-
-//    qDebug()<<"uninstall"<<desktopfp;
-//    QString path = QDir::homePath()+"/.config/ukui/desktop_applist";
-//    //判断路径是否为空
-//    if(path.isEmpty() == false)
-//    {
-//        //指定文件路径
-//        QFile file(path);
-//        //检查文件打开情况
-//        bool isOk = file.open(QIODevice::ReadOnly |QIODevice::Text);
-//        if(isOk == true)
-//        {
-//            QString appstr = desktopfp.section(' ', 0, 0);
-//            QStringList strlist = appstr.split('/');
-//            appstr = strlist[strlist.size()-1];
-//            //appstr.chop(8);
-//            qDebug()<<"11111111appstr"<<appstr;
-//            //读文件 内容放到字节组
-//            QByteArray array = file.readAll();
-//            QString str = QString(array);
-//            qDebug()<<"11111111str"<<str;
-//            //显示到界面文本框
-//            QStringList list = str.split("\n");
-//            if(list.contains(appstr))
-//            {
-//                qDebug()<<"1111111true";
-//                file.close();
-//                return 1;
-//            }
-//        }
-//        //文件关闭
-//        file.close();
-//    }
-    return 1;
-}
 
 void FullListView::mousePressEvent(QMouseEvent *event)
 {
-    if (m_animation->state() == QVariantAnimation::Running)
-        return;
     pressedpos = event->pos();
+    pressedGlobalPos = event->globalPos();
     if(event->button() == Qt::LeftButton) {//左键
         if((this->indexAt(event->pos()).isValid())&&(pressedpos.x() % Style::AppListItemSizeWidth >= Style::AppLeftSpace &
            pressedpos.x() % Style::AppListItemSizeWidth <= Style::AppLeftSpace+ Style::AppListIconSize &
@@ -364,7 +226,7 @@ void FullListView::mousePressEvent(QMouseEvent *event)
             //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
             pressedpos = moveing_pressedpos = event->pos();
             press_time = event->timestamp();
-
+            m_lastPressPoint = event->globalPos();
         }
     } else if(event->button() == Qt::RightButton) {//右键
 
@@ -391,8 +253,6 @@ void FullListView::mousePressEvent(QMouseEvent *event)
 }
 void FullListView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_animation->state() == QVariantAnimation::Running)
-        return;
     if(event->buttons()&Qt::LeftButton & this->indexAt(event->pos()).isValid())
     {
         if(iconClick)
@@ -433,45 +293,10 @@ void FullListView::mouseMoveEvent(QMouseEvent *event)
         }
     }
     if (event->buttons() & Qt::LeftButton && iconClick!=true) {
-        int distance = (event->pos() - moveing_pressedpos).y();
-        int x_distance = (event->pos() - moveing_pressedpos).x();
-        //qDebug()<<"x:y"<<distance<<x_distance;
-        if(qAbs(x_distance)>=qAbs(distance))
-        {
-            return;
-        }
-        //qDebug()<<"y:max"<<verticalScrollBar()->value() - distance<<verticalScrollBar()->maximum()<<verticalScrollBar()->value();
+        int x_distance = event->globalPos().x() - m_lastPressPoint.x();
+        Q_EMIT moveRequest(x_distance);
 
-        int dis = Style::appLine*(Style::AppListItemSizeHeight);
-//        qDebug()<<dis;
-
-        if(distance>0)
-        {
-            qDebug()<<"11111";//上翻页
-            if((verticalScrollBar()->value() - distance) <= verticalScrollBar()->minimum())
-            {
-                verticalScrollBar()->setValue(verticalScrollBar()->minimum());
-            }
-            else
-            {
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - distance);
-            }
-
-        }else{
-            qDebug()<<"22222";//下翻页
-            qDebug()<<"verticalScrollBar()->value()"<<verticalScrollBar()->value()<<verticalScrollBar()->maximum()-dis;
-            if((verticalScrollBar()->value() - distance) >= verticalScrollBar()->maximum())
-            {
-                verticalScrollBar()->setValue(verticalScrollBar()->maximum());
-            }
-            else
-            {
-                verticalScrollBar()->setValue(verticalScrollBar()->value() - distance);
-            }
-        }
-//        if(verticalScrollBar()->value()>=verticalScrollBar()->maximum()-dis)
-//            return ;
-//        verticalScrollBar()->setValue(verticalScrollBar()->value() - distance);
+        m_lastPressPoint = event->globalPos();
         moveing_pressedpos = event->pos();
     }
      event->accept();
@@ -487,36 +312,22 @@ void FullListView::dragMoveEvent(QDragMoveEvent *event)
     {
 //        qDebug()<<"flat"<<flat;
         flat=false;
-        time->start(500);
         if(event->pos().y() >= (Style::AppListItemSizeHeight*Style::appLine - 50) || event->pos().y() <= Style::AppListItemSizeHeight)
         {
             if(Style::nowpagenum != 1 && event->pos().y() <= 50)
             {
-                 Style::nowpagenum = Style::nowpagenum-1;
-                 Q_EMIT pagenumchanged();
+//                 Style::nowpagenum = Style::nowpagenum-1;
+                 Q_EMIT pagenumchanged(-1);
                  this->verticalScrollBar()->setValue((Style::nowpagenum-1)*Style::appLine*(Style::AppListItemSizeHeight));//dis
             }
             if(Style::nowpagenum != Style::appPage && event->pos().y() >= (Style::AppListItemSizeHeight*Style::appLine - 50))
             {
-                 Style::nowpagenum =Style::nowpagenum+1;
-                 Q_EMIT pagenumchanged();
+//                 Style::nowpagenum =Style::nowpagenum+1;
+                 Q_EMIT pagenumchanged(1);
                  this->verticalScrollBar()->setValue((Style::nowpagenum-1)*Style::appLine*(Style::AppListItemSizeHeight));//dis
             }
         }
     }
-
-
-//    if(moveing_pressedpos.x() % Style::AppListItemSizeWidth >= Style::AppLeftSpace &
-//            moveing_pressedpos.x() % Style::AppListItemSizeWidth <= Style::AppLeftSpace+ Style::AppListIconSize &
-//            moveing_pressedpos.y() % Style::AppListItemSizeHeight >= Style::AppTopSpace &
-//            moveing_pressedpos.y() % Style::AppListItemSizeHeight <= Style::AppTopSpace+ Style::AppListIconSize)
-//    {
-//        this->model()->setData(this->indexAt(moveing_pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
-//    }
-//    else
-//    {
-//        this->model()->setData(this->indexAt(moveing_pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
-//    }
 }
 void FullListView::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -550,21 +361,17 @@ void FullListView::dropEvent(QDropEvent *event)
 }
 void FullListView::mouseReleaseEvent(QMouseEvent *e)
 {
-    if (m_animation->state() == QVariantAnimation::Running)
-        return;
-    releasepos=e->pos();//释放的位置坐标
-    if(iconClick)
-    {
-        if(e->button()==Qt::LeftButton)
-        {
+    releasepos = e->pos();//释放的位置坐标
+    if (iconClick) {
+        if (e->button() == Qt::LeftButton) {
 //            qDebug()<<"left";
-            if(qAbs(releasepos.x()-pressedpos.x())<=5&&qAbs(releasepos.y()-pressedpos.y())<=5&&this->indexAt(releasepos)==this->indexAt(pressedpos))
-            {
+            if (qAbs(releasepos.x() - pressedpos.x()) <= 5 && qAbs(releasepos.y() - pressedpos.y()) <= 5 &&
+                this->indexAt(releasepos) == this->indexAt(pressedpos)) {
                 //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
                 QEventLoop loop1;
                 QTimer::singleShot(200, &loop1, SLOT(quit()));
                 loop1.exec();
-                listmodel->setData(this->indexAt(pressedpos),0,Qt::UserRole+2);
+                listmodel->setData(this->indexAt(pressedpos), 0, Qt::UserRole + 2);
                 QEventLoop loop;
                 QTimer::singleShot(200, &loop, SLOT(quit()));
                 loop.exec();
@@ -578,155 +385,33 @@ void FullListView::mouseReleaseEvent(QMouseEvent *e)
                 //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
             }
         }
-    }
-    else
-    {
-        if(e->button()==Qt::LeftButton)
-        {
-//            qDebug() << "元素高" << Style::AppListItemSizeHeight << "每页应用行数" << Style::appLine << "页数" << Style::appPage;
-//            verticalScrollBar()->setMaximum(Style::AppListItemSizeHeight * Style::appLine * (Style::appPage - 1));
-
-            qDebug() << "滚动条最大值" << verticalScrollBar()->maximum();
-//            qDebug()<<"else";
-            dist =releasepos.y()-pressedpos.y();
-            int dist_y = releasepos.y() - pressedpos.y();
-            int dist_x = releasepos.x() - pressedpos.x();
-            int dis = Style::appLine * (Style::AppListItemSizeHeight);
-            //int dis = this->height() - Style::AppTopSpace;
-            int ll = this->verticalScrollBar()->maximum();
-            if(((pressedpos-releasepos).manhattanLength() <= QApplication::startDragDistance() || pressedpos==releasepos) && (!tabletMode->get(TABLET_MODE).toBool())/*qAbs(releasepos.x()-pressedpos.x())<=5&&qAbs(releasepos.y()-pressedpos.y())*/)
-            {
-                 qDebug()<<"sendHideMainWindowSignal";
-                 Q_EMIT sendHideMainWindowSignal();
-                //this->hide();
-            }else{
-                int pag = verticalScrollBar()->value() / dis;
-                qDebug() << "翻页前滚动条值" << verticalScrollBar()->value() << "页面高度" << dis;
-                if (2 * qAbs(dist_y) >= qAbs(dist_x)) {//翻页处理
-                     ulong disttime = e->timestamp() - press_time;
-                     qDebug()<<dist_x<<dist_y<<dis<<pag<<verticalScrollBar()->value()<<disttime<<__FUNCTION__<<this->rect()<<Style::AppListItemSizeHeight<<Style::appLine;
-                    if (qAbs(dist_y) >= 80) {//翻页 (disttime < 400 && qAbs(dist_y) >= 80) ||
-                        if ((dist_y >=80)/*&&(Style::nowpagenum!=1)*/) {//下翻
-                         //   m_animation->stop();
-                            if((pag * dis) !=  verticalScrollBar()->value())
-                            {
-                                m_animation->setStartValue(verticalScrollBar()->value());
-                                m_animation->setEndValue(pag * dis);
-                                m_animation->setDuration(350);
-                                m_animation->start();
-                            }
-                            Style::nowpagenum = pag + 1;
-                            Q_EMIT pagenumchanged();
-
-                        } else if((dist_y <=-80)/*&&Style::nowpagenum!=Style::appPage*/) {//上翻
-                        //    m_animation->stop();
-                            if(((pag + 1) * dis) != verticalScrollBar()->value())
-                            {
-                                m_animation->setStartValue(verticalScrollBar()->value());
-                                m_animation->setEndValue((pag + 1) * dis);
-    //                            if(verticalScrollBar()->value()==verticalScrollBar()->maximum())
-    //                                m_animation->setEndValue(pag*dis);
-                                m_animation->setDuration(350);
-                                m_animation->start();
-                            }
-                            Style::nowpagenum = pag + 2;
-                            if(Style::nowpagenum > Style::appPage)
-                            {
-                                Style::nowpagenum = Style::appPage;
-                            }
-                            Q_EMIT pagenumchanged();
-
-                        }
-                    }
-                    else
-                    {//归位
-                        m_animation->setStartValue(verticalScrollBar()->value());
-                        m_animation->setEndValue((Style::nowpagenum - 1) * dis);
-                        m_animation->setDuration(150);
-                        m_animation->start();
-                    }
-
-                } else {//专注模式处理
-                    if(dist_x<=-50 && Style::ScreenRotation==false) //向左翻
-                    {
-                        Q_EMIT pageCollapse();
-
-                    } else if(dist_x>=50 && Style::ScreenRotation==false) //向右翻
-                    {
-                        Q_EMIT pageSpread();
-                    }
-                    else
-                    {
-                        m_animation->setStartValue(verticalScrollBar()->value());
-                        m_animation->setEndValue((Style::nowpagenum - 1) * dis);
-                        m_animation->setDuration(150);
-                        m_animation->start();
-                    }
+    } else {
+        releaseGlobalPos = e->globalPos();//释放的位置坐标
+        if (e->button() == Qt::LeftButton) {
+            int dist_x = releaseGlobalPos.x() - pressedGlobalPos.x();
+            if (qAbs(dist_x) >= QApplication::primaryScreen()->geometry().width() * 0.165) {
+                if (dist_x > 0) {
+                    //向右滑
+                    Q_EMIT pagenumchanged(-1);
+                } else {
+                    //向左滑
+                    Q_EMIT pagenumchanged(1);
                 }
+            } else {
+                //回弹动画
+                Q_EMIT pagenumchanged(0);
             }
+
             e->accept();
-        }
-        if(right_iconClick)
-        {
-//            qDebug()<<""<<right_iconClick;
-            this->selectionModel()->setCurrentIndex(this->indexAt(right_pressedpos),QItemSelectionModel::SelectCurrent);
-            Q_EMIT customContextMenuRequested(right_pressedpos);
-            //return ;
         }
     }
     //this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
-    listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole+2);
-    iconClick=false;//是否点钟图标
-    right_iconClick=false;//是否右键点中图标
+    listmodel->setData(this->indexAt(pressedpos), QVariant::fromValue<bool>(0), Qt::UserRole + 2);
+    iconClick = false;//是否点钟图标
+    right_iconClick = false;//是否右键点中图标
     theDragRow = -1;
     this->setCursor(Qt::ArrowCursor);
 }
-void FullListView::wheelEvent(QWheelEvent *e)
-{
-    if (m_animation->state() == QVariantAnimation::Running)
-        return;
-
-//    qDebug()<<event->angleDelta()<<event->delta()<<event->pixelDelta()<<event->angleDelta();
-    int dis = Style::appLine*(Style::AppListItemSizeHeight);
-//    int dis1 = this->height();
-    int pag; verticalScrollBar()->value() / dis;
-//    qDebug()<<Style::appLine<<Style::AppListItemSizeHeight<<dis<<pag<<verticalScrollBar()->value();
-    if (qAbs(e->angleDelta().y()) > qAbs(e->angleDelta().x())) {
-        if ((e->angleDelta().y() >= 120) ) { //上翻
-            verticalScrollBar()->setValue(verticalScrollBar()->value()-80);
-            pag = verticalScrollBar()->value() / dis;
-            if(verticalScrollBar()->value() != pag * dis)
-            {
-                m_animation->setStartValue(verticalScrollBar()->value());
-                m_animation->setEndValue(pag * dis);
-//                if (verticalScrollBar()->value() == verticalScrollBar()->maximum())
-//                    m_animation->setEndValue(pag  * dis);
-                m_animation->setDuration(350);
-                m_animation->start();
-            }
-            Style::nowpagenum = pag + 1;
-            Q_EMIT pagenumchanged();
-        } else if ((e->angleDelta().y() <= -120) ) { //下翻
-            verticalScrollBar()->setValue(verticalScrollBar()->value()+80);
-            pag = verticalScrollBar()->value() / dis;
-            if(verticalScrollBar()->value() != (pag + 1) * dis)
-            {
-                m_animation->setStartValue(verticalScrollBar()->value());
-                m_animation->setEndValue((pag + 1) * dis);
-    //            if(verticalScrollBar()->value()==verticalScrollBar()->maximum())
-    //                m_animation->setEndValue(pag*dis);
-                m_animation->setDuration(350);
-                m_animation->start();
-            }
-            Style::nowpagenum = pag + 2;
-            Q_EMIT pagenumchanged();
-        }
-        e->accept();
-    }
-
-}
-
-
 
 //拖拽移动的时候，如果不是应用的话，就交换位置
 void FullListView::insertApplication(QPoint pressedpos,QPoint releasepos)
@@ -826,7 +511,6 @@ void FullListView::insertApplication(QPoint pressedpos,QPoint releasepos)
      Q_EMIT sendUpdateAppListSignal();
 //     qDebug() << "sendUpdateAppListSignal---------------------";
 }
-
 
 //拖拽移动的时候，如果是应用，就组成组合框
 void FullListView::mergeApplication(QPoint pressedpos,QPoint releasepos)

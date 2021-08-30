@@ -48,6 +48,7 @@ public:
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
     void initGSettings();
+    void updateGSettings();
 
     void initRightButton();
     void initAllWidget();
@@ -55,24 +56,20 @@ public:
     void updateByDirection();
 
     void screenHorizontal();
-    void buttonWidgetShow();
-    void collapse();
-    void spread();
+    void updatePageButton();
+    void moveWindow(qint32 length);
     void setToolsOpacityEffect(const qreal& num);
-    void showPCMenu();          //打开pc的开始菜单
+    void exitAnimationFinished(qint32 signal);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    void mouseMoveEvent(QMouseEvent *event) override;
-
     void screenVertical();
-    void keyPressEvent(QKeyEvent* event);
+    void showAllWidgets();
 
     bool appListFile();
     void centerToScreen(QWidget* widget);
+
+    void changePage(qint32 signal);
+    void returnRawPoint();
 
 private:
     bool checkAppList();
@@ -84,22 +81,9 @@ public Q_SLOTS:
     void requestDeleteAppSlot();
     void screenRotation();
     void buttonClicked(QAbstractButton *button);
-    void pageNumberChanged();
-    void desktopSwitch(int res); //receive the dbus signal for application run or close
-    void hideOrShowMenu(bool res); //hide or show start menu
+    void pageNumberChanged(qint32 signal);
 
     void client_get(QString str);
-
-    /**/
-    /**
-     * @brief Monitor win key events
-     */
-    void XkbEventsPress(const QString &keycode);
-    void XkbEventsRelease(const QString &keycode);
-    /**
-     * @brief Open the start menu by signaling
-     */
-    void recvStartMenuSlot();
     /**
      * @brief Load the full screen window
      */
@@ -120,11 +104,7 @@ Q_SIGNALS:
     void UpdateSignal();
 
 private:
-    QPoint m_startPoint;
-    QPoint m_endPoint;
-    QPoint m_lastEndPoint;//上一次move事件鼠标停留的位置
-    quint64 m_minWidth = 500;
-    bool m_leftKeyPressed = false;
+    QMutex m_mutex;
     bool m_isTabletMode;//平板模式标志
 
 //    //主界面布局，横屏时为水平布局，竖屏时为垂直布局
@@ -137,13 +117,13 @@ private:
 //    FullCommonUseWidget* m_mainAppListContainer = nullptr;
 
 
-    FullCommonUseWidget* m_CommonUseWidget=nullptr;
+    FullCommonUseWidget *m_appViewContainer = nullptr;
 
-    //左侧
-    TabletPluginWidget *m_leftWidget=nullptr;
+    //小插件容器
+    TabletPluginWidget *m_pluginBoxWidget = nullptr;
 
     //翻页
-    QVariantAnimation *m_animation=nullptr;
+    QVariantAnimation *m_exitAnimation=nullptr;
 
     //监控
     QFileSystemWatcher* m_fileWatcher=nullptr;
@@ -165,8 +145,10 @@ private:
 
     //最右侧的button
     QWidget* buttonWidget=nullptr;
-    QButtonGroup* buttonGroup=nullptr;
+    QWidget *m_pageButtonWidget = nullptr;
+    QButtonGroup* m_buttonGroup=nullptr;
     QVBoxLayout* vbox=nullptr;
+    QHBoxLayout* m_buttonLayout=nullptr;
     QPushButton* button=nullptr;
 
     /*pc*/

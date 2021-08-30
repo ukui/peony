@@ -27,8 +27,6 @@ public:
      */
     void updateListView(QString desktopfp);
 
-    void deleteAppListView();
-
     /**
      * @brief fill application list
      */
@@ -39,10 +37,17 @@ public:
      */
     void repaintWid(int type);
 
-    FullListView* m_listView=nullptr;
-    void setStyleTable(int appnum);
+    void updateStyleValue();
 
+    /**
+     * @brief
+     * @param isVertical 是否垂直屏幕模式
+     */
+    void updatePageData();
 
+    void updatePageList();
+
+    void insertPageToLayout();
 
 private:
     UkuiMenuInterface* m_ukuiMenuInterface=nullptr;
@@ -54,6 +59,8 @@ private:
     int m_width=0;
     int m_height=0;
     QSettings* settt;
+    QHBoxLayout *m_mainLayout = nullptr;
+    QList<FullListView*> m_pageList;
 protected:
     /**
      * @brief Initializes UI
@@ -81,12 +88,13 @@ Q_SIGNALS:
      */
     void sendHideMainWindowSignal();
     void sendSortApplistSignal();
-    void pagenumchanged(); //翻页信号
+    void pagenumchanged(qint32 signal); //翻页信号
     void sendUpdateAppListSignal(); //更新应用顺序信号
     void sendGroupClickSignal(QString desktopfn); //点击应用组信号
     void drawButtonWidgetAgain(); //重画按钮信号
     void pageCollapse(); //左滑页面收纳
     void pageSpread(); //右滑页面展开
+    void moveRequest(qint32 length); //右滑页面展开
 };
 
 #endif // FullCommonUseWidget_H
