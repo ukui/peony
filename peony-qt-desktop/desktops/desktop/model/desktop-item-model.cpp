@@ -284,6 +284,12 @@ DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
             Q_EMIT this->requestLayoutNewItem(info->uri());
             Q_EMIT this->fileCreated(uri);
         }
+        else{
+            //file content changed, need update fileinfo, fix bug#76908
+            auto job = new FileInfoJob(info);
+            job->setAutoDelete();
+            job->querySync();
+        }
     });
 
     m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
