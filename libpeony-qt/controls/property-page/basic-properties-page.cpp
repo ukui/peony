@@ -266,11 +266,14 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     }
 
     QString fileUri = uris.at(0);
+    //filesafe插件中保护箱下目录不能移动——fix bug 76864
+    //fix show properties in filesafe path crash issue, link to bug#74350
+    if(fileUri.startsWith("filesafe:///") && m_moveButton) {
+        m_moveButton->setVisible(false);
+    }
+
     if(fileUri.startsWith("filesafe:///") && (fileUri.remove("filesafe:///").indexOf("/") == -1)) {
         disconnect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::chooseFileIcon);
-        //fix show properties in filesafe path crash issue, link to bug#74350
-        if (m_moveButton)
-            m_moveButton->setVisible(false);
         m_displayNameEdit->setReadOnly(true);
     }
 
