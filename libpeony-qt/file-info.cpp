@@ -198,6 +198,13 @@ const QString FileInfo::symlinkTarget()
 {
     if (m_symlink_target == ".")
         return "";
+
+    //fix soft link use relative path issue, link to bug#73529
+    if (! m_symlink_target.startsWith("/"))
+    {
+        QString parentUri = FileUtils::getParentUri(m_uri);
+        m_symlink_target = QUrl(parentUri).path() + "/" + m_symlink_target;
+    }
     return m_symlink_target;
 }
 
