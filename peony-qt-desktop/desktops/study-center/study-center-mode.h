@@ -11,7 +11,7 @@ class StudyCenterMode : public DesktopWidgetBase
 {
 Q_OBJECT
 public:
-    StudyCenterMode();
+    explicit StudyCenterMode(QWidget *parent = nullptr);
 
     ~StudyCenterMode();
 

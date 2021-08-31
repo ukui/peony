@@ -1,6 +1,7 @@
 #include "desktop-manager.h"
 #include "desktop-mode-factory.h"
 #include "tablet-mode-factory.h"
+#include "study-center-factory.h"
 
 #include <QDebug>
 
@@ -24,6 +25,7 @@ DesktopManager::DesktopManager(bool enablePreloading, QObject *parent) : QObject
     //注册组件，添加新的组件后，需要手动添加到此处
     registerPlugin(DesktopModeFactory::getInstance());
     registerPlugin(TabletModeFactory::getInstance());
+    registerPlugin(StudyCenterFactory::getInstance());
 
     //预加载全部桌面，加快切换桌面时的速度
     if (m_enablePreloading) {

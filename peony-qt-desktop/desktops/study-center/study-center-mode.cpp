@@ -19,7 +19,7 @@ using namespace Peony;
 #define STUDY_CENTER_SYN               "Synchronized"
 #define STUDY_CENTER_STATISTICS        "Statistics"
 
-StudyCenterMode::StudyCenterMode()
+StudyCenterMode::StudyCenterMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
     initUi();
 }
