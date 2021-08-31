@@ -150,14 +150,10 @@ retry_create_template:
         }
         // change file's modify time and access time after copy templete file;
         time_t now_time = time(NULL);
-        struct utimbuf tm = {now_time, now_time};
-
-        if (m_target_uri.startsWith("file://")) {
-            utime (m_target_uri.toStdString().c_str() + 6, &tm);
-        } else if (m_target_uri.startsWith("/")) {
-            utime (m_target_uri.toStdString().c_str(), &tm);
-        }
-
+        g_file_set_attribute_uint64(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+                                    G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                                    (guint64)now_time,
+                                    G_FILE_QUERY_INFO_NONE, nullptr, &err);
         break;
     }
     }
