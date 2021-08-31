@@ -53,7 +53,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
     if (parentItem == nullptr) {
         m_is_root_child = true;
         m_uri = "computer:///";
-        m_display_name = tr("Computer");        
+        m_display_name = tr("Computer");
         m_icon_name = "";
     }
     else {
@@ -372,18 +372,19 @@ void SideBarFileSystemItem::eject(GMountUnmountFlags ejectFlag)
     syncThread->moveToThread(currentThread);
     connect(currentThread,&QThread::started,syncThread,&SyncThread::parentStartedSlot);
     connect(syncThread,&SyncThread::syncFinished,this,[=](){
-        realEject(ejectFlag);
-        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
-        SyncThread::notifyUser(unmountNotify);
-        syncThread->disconnect(this);
-        syncThread->deleteLater();
-        currentThread->disconnect(SIGNAL(started()));
-        //currentThread->deleteLater();
+        if (realEject(ejectFlag)) {
+            QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+            SyncThread::notifyUser(unmountNotify);
+            syncThread->disconnect(this);
+            syncThread->deleteLater();
+            currentThread->disconnect(SIGNAL(started()));
+            //currentThread->deleteLater();
+        }
     });
     currentThread->start();
 }
 
-void SideBarFileSystemItem::realEject(GMountUnmountFlags ejectFlag)
+bool SideBarFileSystemItem::realEject(GMountUnmountFlags ejectFlag)
 {
     //FIXME: replace BLOCKING api in ui thread.
     VolumeManager *volumeManager;
@@ -395,29 +396,30 @@ void SideBarFileSystemItem::realEject(GMountUnmountFlags ejectFlag)
 
     volumeManager = VolumeManager::getInstance();
     drive = volumeManager->getDriveFromUri(target);
-    if(!drive)
+    if (!drive)
         drive = volumeManager->getDriveFromSystemByPath(m_unix_device);
 
-    if(!drive)
-        return;
+    if (!drive)
+        return false;
 
     gdrive = drive->getGDrive();
 
-    if(g_drive_can_eject(gdrive)){//for udisk or DVD.
+    if (g_drive_can_eject(gdrive)) {//for udisk or DVD.
         g_file_eject_mountable_with_operation(file.get()->get(),
                                               ejectFlag,
                                               nullptr,
                                               nullptr,
                                               GAsyncReadyCallback(eject_cb),
                                               this);
-    }else if(g_drive_can_stop(gdrive) || g_drive_is_removable(gdrive)){//for mobile harddisk.
-        g_drive_stop(gdrive,ejectFlag,NULL,NULL,
-                     GAsyncReadyCallback(ejectDevicebyDrive),
-                     this);
+    } else if (g_drive_can_stop(gdrive) || g_drive_is_removable(gdrive)) {//for mobile harddisk.
+        g_drive_stop(gdrive,ejectFlag,NULL,NULL, GAsyncReadyCallback(ejectDevicebyDrive), this);
     }
+
+    return (gdrive && g_drive_can_eject(gdrive)) ? false : true;
 }
 
-static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata) {
+static void unmount_force_cb(GFile* file, GAsyncResult* result, gpointer udata)
+{
     auto targetUri = static_cast<QString *>(udata);
     QString unmountNotify;
     GError *err = nullptr;
