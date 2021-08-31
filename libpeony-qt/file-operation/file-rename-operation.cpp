@@ -246,13 +246,13 @@ retry:
                         newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
                         getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
                     }
-                    break;
+                    goto retry;
                 }
                 case OverWriteAll:
                     setAutoOverwrite();
                 case OverWriteOne:
                     g_file_delete(newFile.get()->get(), nullptr, nullptr);
-                    break;
+                    goto retry;
                 case IgnoreAll:
                     setAutoIgnore();
                 case IgnoreOne:
