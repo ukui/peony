@@ -78,10 +78,12 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
 
         if (m_uris_to_be_removed.count() < 10) {
             // do normal remove
-            for (auto uri : m_uris_to_be_removed) {
+            for (QString uri : m_uris_to_be_removed) {
+                g_autoptr (GFile) left  = g_file_new_for_uri(uri.toUtf8().constData());
                 for (int row = 0; row < m_children->count(); row++) {
                     auto child = m_children->at(row);
-                    if (child->uri() == uri) {
+                    g_autoptr (GFile) right = g_file_new_for_uri(child->uri().toUtf8().constData());
+                    if (g_file_equal(left, right)) {
                         auto info = child->m_info;
                         if (info->isDir())
                         {
@@ -105,10 +107,12 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         qDebug()<<"execute deletion";
         m_model->beginResetModel();
         qDebug()<<"files deleted"<<m_uris_to_be_removed.count();
-        for (auto uri : m_uris_to_be_removed) {
+        for (QString uri : m_uris_to_be_removed) {
+            g_autoptr (GFile) left  = g_file_new_for_uri(uri.toUtf8().constData());
             for (int row = 0; row < m_children->count(); row++) {
                 auto child = m_children->at(row);
-                if (child->uri() == uri) {
+                g_autoptr (GFile) right = g_file_new_for_uri(child->uri().toUtf8().constData());
+                if (g_file_equal(left, right)) {
                     auto info = child->m_info;
                     if (info->isDir())
                     {
