@@ -39,17 +39,21 @@ StudyDirectoryWidget::StudyDirectoryWidget(QStringList &strListTitleStyle, QMap<
 
 StudyDirectoryWidget::~StudyDirectoryWidget()
 {
-    if(nullptr != m_scrollArea)
-    {
-        delete m_scrollArea;
-    }
     if(nullptr != m_scrollAreaWidLayout)
     {
         delete m_scrollAreaWidLayout;
+        m_scrollAreaWidLayout=nullptr;
     }
+    if(nullptr != m_scrollArea)
+    {
+        delete m_scrollArea;
+        m_scrollArea=nullptr;
+    }
+
     if(nullptr != m_mainLayout)
     {
         delete m_mainLayout;
+        m_mainLayout=nullptr;
     }
 }
 
@@ -86,8 +90,8 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
                                              "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
                                              );
     QWidget* scrollAreaWid=new QWidget;
+    scrollAreaWid->setMinimumSize(this->width()-40,this->height()-60);
     m_scrollArea->setWidget(scrollAreaWid);
-    m_scrollArea->setFixedSize(this->width(),this->height());
     m_scrollArea->setWidgetResizable(true);
     m_scrollAreaWidLayout = new QVBoxLayout;
     m_scrollAreaWidLayout->setContentsMargins(0,0,0,0);
@@ -95,6 +99,8 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     scrollAreaWid->setLayout(m_scrollAreaWidLayout);
 
     m_mainLayout->addWidget(m_scrollArea);
+    m_mainLayout->setMargin(20);
+    m_mainLayout->setSpacing(20);
 //    connect(m_scrollArea->verticalScrollBar(),SIGNAL(valueChanged(int)),
 //            this,SLOT(valueChangedSlot(int)));
 
@@ -147,6 +153,7 @@ void StudyDirectoryWidget::initAppListWidget()
         listView->setMovement(QListView::Static);
     //    this->setUpdatesEnabled(true);
         listView->setFlow(QListView::LeftToRight);
+        listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
         QStandardItemModel* listmodel=new QStandardItemModel;
         listView->setModel(listmodel);
@@ -185,11 +192,11 @@ void StudyDirectoryWidget::initAppListWidget()
 /**
  * 执行应用程序
  */
-void StudyDirectoryWidget::execApplication(QModelIndex appname)
+void StudyDirectoryWidget::execApplication(QModelIndex app)
 {
-  //  Q_EMIT sendHideMainWindowSignal();
-    QString strAppName = appname.data().toString();
-    QString execpath = getExecPath(strAppName);
+    //  Q_EMIT sendHideMainWindowSignal();
+    TABLETAPP tabletApp = app.data(Qt::DisplayRole).value<TABLETAPP>();
+    QString execpath=tabletApp.execCommand;
     //移除启动参数%u或者%U
     if(execpath.contains("%"))
     {
@@ -228,14 +235,6 @@ void StudyDirectoryWidget::execApplication(QModelIndex appname)
 
 }
 
-/**
- * 获取exe路径
- */
-QString StudyDirectoryWidget::getExecPath(QString &strAppName)
-{
-
-    return QString("lll");
-}
 
 /**
  * 更新应用列表
@@ -311,4 +310,93 @@ QString StudyDirectoryWidget::getExecPath(QString &strAppName)
 //        m_strListData.append(desktopfp);
 //    }
 //}
+/**
+ * 设置scrollarea所填充控件大小
+ */
+void StudyDirectoryWidget::resizeScrollAreaControls()
+{
+//    int row = 0;
+//    int temp = 0;
+//    temp = this->width()-40/Style::;
+//   QMap<QString, QList<TabletAppEntity*>> m_studyCenterDataMap;
+//    if(1 == m_iMode)
+//    {
+//        for(int i = 0; i < m_studyCenterDataMap.size(); ++i)
+//        {
+//            int temp2 = m_studyCenterDataMap[i].size()%temp;
+//            row += (temp2==0? m_studyCenterDataMap[i].size()/temp:m_studyCenterDataMap[i].size()/temp+1);
+//        }
+//        row*Style::
+//    }
+//    for()
+//    {
+//        //应用界面
+//        QLayoutItem* widItem=m_scrollAreaWidLayout->itemAt(row*2+1);
+//        QWidget* wid=widItem->widget();
+//        QListView* listview=qobject_cast<QListView*>(wid);
+//        listview->adjustSize();
+//        int dividend=(m_scrollArea->width()-5)/this->width();
 
+//        int rowcount=0;
+//        if(listview->model()->rowCount()%dividend>0)
+//        {
+//            rowcount=listview->model()->rowCount()/dividend+1;
+//        }
+//        else
+//        {
+//            rowcount=listview->model()->rowCount()/dividend;
+
+//        }
+
+//        listview->setFixedSize(m_scrollArea->width()-5+1,listview->gridSize().height()*rowcount);
+//        row++;
+//    }
+//    m_scrollArea->widget()->adjustSize();
+}
+//void StudyDirectoryWidget::valueChangedSlot(int value)
+//{
+//    int index=0;
+//    while(index<=m_letterList.count()-1)
+//    {
+//        int min=m_scrollAreaWidLayout->itemAt(2*index)->widget()->y();
+//        int max=0;
+//        if(index==m_letterList.count()-1)
+//            max=m_scrollAreaWid->height();
+//        else
+//            max=m_scrollAreaWidLayout->itemAt(2*(index+1))->widget()->y();
+
+//        if(value>=min && value <max)
+//        {
+//            Q_FOREACH (QAbstractButton* button, m_buttonList) {
+//                LetterClassifyButton* letterbtn=qobject_cast<LetterClassifyButton*>(button);
+//                if(index==m_buttonList.indexOf(button))
+//                {
+//                    letterbtn->setChecked(true);
+//                }
+//                else
+//                {
+//                    letterbtn->setChecked(false);
+//                }
+//            }
+//            break;
+//        }
+//        else
+//            index++;
+//    }
+
+////    //向下滚动
+////    if((m_buttonList.at(index)->pos().y()+m_buttonList.at(index)->height()+m_letterListScrollArea->widget()->pos().y()) >= m_letterListScrollArea->height())
+////    {
+////        int val=m_letterListScrollArea->verticalScrollBar()->sliderPosition()+m_buttonList.at(index)->height();
+////        m_letterListScrollArea->verticalScrollBar()->setSliderPosition(val);
+////    }
+
+////    //向上滚动
+////    if((m_buttonList.at(index)->pos().y()+m_letterListScrollArea->widget()->pos().y()) <= 0)
+////    {
+
+////        int val=m_letterListScrollArea->verticalScrollBar()->value()-m_buttonList.at(index)->height();
+////        m_letterListScrollArea->verticalScrollBar()->setSliderPosition(val);
+////    }
+
+//}

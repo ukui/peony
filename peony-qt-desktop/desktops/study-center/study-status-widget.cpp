@@ -1,19 +1,26 @@
 #include "study-status-widget.h"
+#include <unistd.h>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QStringList>
 #include <iterator>
+#include <QDebug>
+#include <QPainter>
+#include <QDBusInterface>
+#include <QStandardPaths>
+//#include <QObject>
 //#include <QListView>
 //#include <QStandardItemModel>
 #include "progress-widget.h"
 //#include "progress-item-delegate.h"
-//#include <QDBusMessage>
+
 #include "../../tablet/data/tablet-app-manager.h"
 
-StudyStatusWidget::StudyStatusWidget(QWidget *parent) :
+StudyStatusWidget::StudyStatusWidget(QList<TABLETAPP> appList, QWidget *parent) :
     QWidget(parent)
 {
+    m_appList= appList;
     initWidget();
 }
 
@@ -23,31 +30,36 @@ StudyStatusWidget::~StudyStatusWidget()
     if(nullptr != m_todayTimeLabel)
     {
         delete m_todayTimeLabel;
+        m_todayTimeLabel = nullptr;
     }
     if(nullptr != m_weekTimeLabel)
     {
         delete m_weekTimeLabel;
+        m_weekTimeLabel = nullptr;
     }
     if(nullptr != m_monthTimeLabel)
     {
         delete m_monthTimeLabel;
+        m_monthTimeLabel = nullptr;
     }
-    if(nullptr != m_timeGridLayout)
+    if(nullptr != m_progressGridLayout)
     {
-        delete m_timeGridLayout;
+        delete m_progressGridLayout;
+        m_progressGridLayout = nullptr;
     }
     if(nullptr != m_mainVboxLayout)
     {
         delete m_mainVboxLayout;
+        m_mainVboxLayout = nullptr;
     }
-    QMap<QString, ProgressWidget*>::iterator ite = m_progressMap.begin();
-    for(;ite != m_progressMap.end(); ite++)
-    {
-        if(nullptr != *ite)
-        {
-            delete *ite;
-        }
-    }
+//    QMap<QString, ProgressWidget*>::iterator ite = m_progressMap.begin();
+//    for(;ite != m_progressMap.end(); ite++)
+//    {
+//        if(nullptr != *ite)
+//        {
+//            delete *ite;
+//        }
+//    }
 }
 void StudyStatusWidget::initWidget()
 {
@@ -57,6 +69,9 @@ void StudyStatusWidget::initWidget()
 //    this->setFixedSize(iWidth+200, iHeight+40);
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
+    this->setStyleSheet("border:0px;background:transparent;\
+                        background-color:rgba(255, 255, 255);\
+                        border-radius:15px;");
      //widget->setWindowOpacity(0.9);
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -73,6 +88,20 @@ void StudyStatusWidget::initWidget()
 //    titleLabel->setPalette(pa);
     titleLabel->setStyleSheet("color:#9370DB");
     titleLabel->setText("学情中心");
+
+    QWidget*  userInfoWidget = new QWidget(this);
+    QHBoxLayout* userInfoLayout = new QHBoxLayout(userInfoWidget);
+
+    m_userIconLabel = new QLabel(this);
+   // m_userIconLabel->setFixedSize(40, 40);
+
+    m_userNameLabel = new QLabel();
+    m_userNameLabel->setFont(ft);
+    userInfoLayout->addWidget(m_userIconLabel);
+    userInfoLayout->addWidget(m_userNameLabel);
+   // userInfoLayout->addSpacing(10);
+    userInfoLayout->setAlignment(Qt::AlignRight);
+    userInfoWidget->setLayout(userInfoLayout);
 
     QLabel* todayTitleLabel = new QLabel;
     //todayTitleLabel->setFixedSize();
@@ -108,12 +137,14 @@ void StudyStatusWidget::initWidget()
     m_monthTimeLabel->setStyleSheet("color:#1C1C1C");
 
     QGridLayout* timeGridLayout = new QGridLayout;
-    timeGridLayout->addWidget(todayTitleLabel,0,0);
-    timeGridLayout->addWidget(weekTitleLabel,0,1);
-    timeGridLayout->addWidget(monthTitleLabel,0,2);
-    timeGridLayout->addWidget(m_todayTimeLabel,1,0);
-    timeGridLayout->addWidget(m_weekTimeLabel,1,1);
-    timeGridLayout->addWidget(m_monthTimeLabel,1,2);
+    timeGridLayout->addWidget(titleLabel,0,0,1,1);
+    timeGridLayout->addWidget(userInfoWidget,0,2,1,1);
+    timeGridLayout->addWidget(todayTitleLabel,1,0);
+    timeGridLayout->addWidget(weekTitleLabel,1,1);
+    timeGridLayout->addWidget(monthTitleLabel,1,2);
+    timeGridLayout->addWidget(m_todayTimeLabel,2,0);
+    timeGridLayout->addWidget(m_weekTimeLabel,2,1);
+    timeGridLayout->addWidget(m_monthTimeLabel,2,2);
 
 //    timeGridLayout->setColumnStretch(0,1);
 //    timeGridLayout->setColumnStretch(0,1);
@@ -142,21 +173,17 @@ void StudyStatusWidget::initWidget()
     timeTitleLabel->setStyleSheet("color:#9C9C9C");
     m_mainVboxLayout->addWidget(timeTitleLabel);
 
-    QStringList strAppList;
-    strAppList<<"课程中心"<<"英语精准练习"<<"语文精准练习"<<"数学精准练习";
-
-    m_timeGridLayout = new QGridLayout;
-    long int iTime = 0;
-    for(int i = 0 ; i < strAppList.size(); ++i)
+    m_progressGridLayout = new QGridLayout;
+    for(int i = 0 ; i < m_appList.size(); ++i)
     {
-        ProgressWidget* progress = new ProgressWidget(strAppList.at(i),iTime);
+        ProgressWidget* progress = new ProgressWidget(m_appList[i]);
         //progress->setFixedSize(this->width()-15*2,50);
-        m_progressMap.insert(strAppList.at(i), progress);
-        m_timeGridLayout->addWidget(progress,i/2 ,i%2);
+        m_progressGridLayout->addWidget(progress,i/2 ,i%2);
+
     }
     // gridLayout->setMargin(80);
-    //m_timeGridLayout->setSpacing(20);
-    m_mainVboxLayout->addLayout(m_timeGridLayout);
+    //m_progressGridLayout->setSpacing(20);
+    m_mainVboxLayout->addLayout(m_progressGridLayout);
     m_mainVboxLayout->setMargin(30);
 //    m_showProgressView = new QListView ;
 //    QStandardItemModel* listmodel=new QStandardItemModel;
@@ -176,6 +203,8 @@ void StudyStatusWidget::initWidget()
 //    m_showProgressView->setItemDelegate(delegate);
     //m_mainVboxLayout->addWidget(m_showProgressView);
     this->setLayout(m_mainVboxLayout);
+
+    initUserInfo();
     /*BUS类型	SESSION BUS
     DBUS名称	com.ukui.app.info
     OBJECT路径	/com/ukui/app/info/time
@@ -185,20 +214,8 @@ void StudyStatusWidget::initWidget()
 //    QDBusConnection::sessionBus().connect("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface","GetDayUseTime",this,SLOT(setAppTimeSlot(QStringList)));
 //    QDBusConnection::sessionBus().connect("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface","GetWeekUseTime",this,SLOT(setAppTimeSlot(QStringList)));
 //    QDBusConnection::sessionBus().connect("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface","GetMonthUseTime",this,SLOT(setAppTimeSlot(QStringList)));
-//   a QDBusConnection::sessionBus().connect("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface","GetWeekCumulativeTime",this,SLOT(setAppTimeSlot(QStringList)));
-    QString strTime;
-    QString strName;
-    strName = "GetDayUseTime";
-    strTime =getStudyTime(strName, strAppList);
-    m_todayTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+//    QDBusConnection::sessionBus().connect("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface","GetWeekCumulativeTime",this,SLOT(setAppTimeSlot(QStringList)));
 
-    strName = "GetWeekUseTime";
-    strTime =getStudyTime(strName, strAppList);
-    m_weekTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
-
-    strName = "GetMonthUseTime";
-    strTime =getStudyTime(strName, strAppList);
-    m_monthTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
 
     // m_mainVboxLayout->addWidget(new QWidget());
 //    m_gridLayout = new QGridLayout;
@@ -237,31 +254,79 @@ void StudyStatusWidget::initWidget()
 //    QlistView* m_showProgressView=nullptr;
 }
 
-QString  StudyStatusWidget::getStudyTime(QString &strMethod, QStringList &appList)
+void StudyStatusWidget::initUserInfo()
 {
+    qlonglong uid = getuid();
 
-//    QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface", strMethod.toLocal8Bit().data());
-//    request<<appList;
-//    QDBusMessage response = QDBusConnection::sessionBus().call(request);
-   long int iStudyTime = 0;
-//    if (response.type() == QDBusMessage::ReplyMessage)
- //   {
-//        iWeekmm = response.arguments().takeFirst().toInt();
-//        qDebug("study time:%d/n", iWeekmm);
-//    }
-//    else
-//    {
-//        qDebug( "get study time fail!/n");
-//    }
-    int iHour = iStudyTime/60;
-    int iMin = iStudyTime/60;
-    if(iHour > 0)
+    QDBusInterface user("org.freedesktop.Accounts",
+                        "/org/freedesktop/Accounts",
+                        "org.freedesktop.Accounts",
+                        QDBusConnection::systemBus());
+
+    QDBusMessage result = user.call("FindUserById", uid);
+    QString userpath = result.arguments().value(0).value<QDBusObjectPath>().path();
+    qDebug() << userpath;
+    m_userInterface = new QDBusInterface ("org.freedesktop.Accounts",
+                                           userpath,
+                                           "org.freedesktop.Accounts.User",
+                                           QDBusConnection::systemBus());
+    QString userName = m_userInterface->property("RealName").value<QString>();
+    QString userIconPath = m_userInterface->property("IconFile").value<QString>();
+    m_userInterface->connection().connect("org.freedesktop.Accounts",userpath, "org.freedesktop.DBus.Properties", "PropertiesChanged",
+                                    this, SLOT(AccountSlots(QString, QMap<QString, QVariant>, QStringList)));
+
+    m_userNameLabel->setText(userName);
+
+    if (userIconPath != QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.face")
     {
-       return QString("%1小时％2分钟").arg(iHour).arg(iMin);
+        m_userIconLabel->setPixmap(PixmapToRound(userIconPath, 10));
     }
     else
     {
-        return QString("％1分钟").arg(iMin);
+        qDebug() << "Connot found avatar image";
     }
 
+}
+
+QPixmap StudyStatusWidget::PixmapToRound(const QString &src, int radius)
+{
+    if (src == "") {
+        return QPixmap();
+    }
+    QPixmap pixmapa(src);
+    QPixmap pixmap(radius*2,radius*2);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    QPainterPath path;
+    path.addEllipse(0, 0, radius*2, radius*2);
+    painter.setClipPath(path);
+    painter.drawPixmap(0, 0, radius*2, radius*2, pixmapa);
+    return pixmap;
+}
+void StudyStatusWidget::paintProgressSlot(QList<TABLETAPP> applist)
+{
+    qDebug("StudyStatusWidget::paintProgressSlot/n");
+    for(int i = 0; i < applist.size(); i++)
+    {
+        qDebug("StudyStatusWidget::paintProgressSlot :%d:%d/n",i/2,i%2);
+        QLayoutItem* item= m_progressGridLayout->itemAtPosition(i/2,i%2);
+        ProgressWidget* progressWid = dynamic_cast<ProgressWidget*>(item->widget());
+        progressWid->paintSlot(applist[i]);
+    }
+}
+void StudyStatusWidget::timeChangeSlot(QString strMethod ,QString strTime)
+{
+    if(strMethod == "GetDayUseTime")
+    {
+        m_todayTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+    }
+    else if(strMethod == "GetWeekUseTime")
+    {
+        m_weekTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+    }
+    else if(strMethod == "GetMonthUseTime")
+    {
+        m_monthTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+    }
 }

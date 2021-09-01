@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/common.h \
     $$PWD/study-center-mode.h \
     $$PWD/study-center-factory.h \
     $$PWD/progress-item-delegate.h \

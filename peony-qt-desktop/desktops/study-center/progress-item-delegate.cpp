@@ -85,20 +85,29 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        QFont font;
         QRect iconRect;
 //        font.setPixelSize(Style::AppListFontSize);
-        iconRect=QRect(rect.x(),rect.y()+5, Style::AppListItemSizeWidth, Style::AppListItemSizeHeight);
+        iconRect=QRect(rect.x()+Style::AppLeftSpace ,
+                       rect.y()+Style::AppTopSpace,
+                       Style::AppListIconSize,
+                       Style::AppListIconSize);
 //        painter->setFont(font);
-        icon.paint(painter,iconRect);
+        icon.paint(painter,iconRect);      
+        painter->restore();
+        painter->save();
 
         painter->setPen(QPen(Qt::black));
         QRect textRect;
 
-        textRect=QRect(rect.x(),
-                       iconRect.height()+5,
-                       iconRect.width(),
-                       rect.height()-iconRect.height()-10);
+        textRect=QRect(rect.x()+5,
+                       iconRect.bottom()+Style::AppSpaceBetweenIconText,
+                       rect.width()-10,
+                       rect.height()-iconRect.height()-Style::AppSpaceBetweenIconText);
+
+        painter->save();
         QFontMetrics fm=painter->fontMetrics();
         QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,rect.width(),Qt::TextShowMnemonic);
-        painter->drawText(textRect,Qt::AlignLeft,appnameElidedText.toLocal8Bit().data());
+        painter->drawText(textRect,Qt::AlignHCenter,appnameElidedText.toLocal8Bit().data());
+        painter->restore();
+        painter->save();
 
 //        QRect progressRect;
 //        progressRect=QRect(textRect.x(), textRect.height(), rect.width() - iconRect.width()-5, rect.height()/2);

@@ -73,6 +73,7 @@ protected:
     //void getUseAppList(QString &strModuleName);
     //初始化应用列表界面
     void initAppListWidget();
+    void resizeScrollAreaControls();
 
 private Q_SLOTS:
 //    /**
@@ -82,7 +83,6 @@ private Q_SLOTS:
 //     */
 //    void updateListViewSlot(QString desktopfp,int type);
     void execApplication(QModelIndex appname);//执行应用程序
-    QString getExecPath(QString &strAppName);//获取应用程序执行路径
 //    void removeListItemSlot(QString desktopfp);//删除单个item
 //    //void removeListAllItemSlot();//删除所有非固定item
 //    //void updateListViewAllSlot();//更新应用列表槽函数

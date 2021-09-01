@@ -43,16 +43,15 @@ void PushButton::initAppBtn()
     this->setStyleSheet(btnstyle);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout* layout=new QHBoxLayout(this);
-    layout->setContentsMargins(15,0,0,0);
-    layout->setSpacing(6);
+    layout->setContentsMargins(0,0,0,0);
+   // layout->setSpacing(6);
 
     char style[100];
     sprintf(style,"color:#000000;");
     QFont font;
     font.setWeight(70);
     QLabel* textlabel=new QLabel(this);
-//    textlabel->setFont(font);
-    textlabel->setAlignment(Qt::AlignCenter);
+    textlabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     textlabel->setStyleSheet(style);
     textlabel->setFont(font);
     textlabel->setText(tr(name.toLocal8Bit().data()));
