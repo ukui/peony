@@ -34,6 +34,7 @@
 #include <QScreen>
 #include <QWindow>
 #include <QPropertyAnimation>
+#include <QDBusInterface>
 
 using namespace Peony;
 
@@ -48,11 +49,6 @@ public:
     static void showGuide(const QString &appName = "");
 
     static qint64 peony_desktop_start_time;
-
-    /**
-     * @brief 处理键盘按键事件。
-     */
-    void initKeyProcess();
 
     void initGSettings();
 
@@ -74,6 +70,11 @@ private:
      */
     QWidget *saveEffectWidget(QWidget *target);
 
+    /**
+     * @brief 切换桌面
+     */
+    void changeDesktop();
+
 protected Q_SLOTS:
     void parseCmd(quint32 id, QByteArray msg, bool isPrimary);
     bool isPrimaryScreen(QScreen *screen);
@@ -91,10 +92,16 @@ public Q_SLOTS:
 
     void changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation);
 
+private Q_SLOTS:
+    void updateTabletModeValue(bool mode);
+
 private:
     bool m_firstParse = true;
 
+    bool m_animationIsRunning = false;
+
     QGSettings *m_tabletModeGSettings = nullptr;
+    QDBusInterface *m_statusManagerDBus = nullptr;
 
     bool m_isTabletMode = false;
     bool m_startMenuActivated = false;

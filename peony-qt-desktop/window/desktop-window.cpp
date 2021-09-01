@@ -756,7 +756,7 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     connect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopWindow::desktopMoveProcess);
     connect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopWindow::desktopReboundProcess);
 
-    qDebug() << "===update all window!";
+    qDebug() << "[DesktopWindow::setWindowDesktop] update this window :" << this->winId();
     this->updateWinGeometry();
     this->updateView();
 }
@@ -840,6 +840,7 @@ void DesktopWindow::blurBackground(bool blur)
 
             this->setGraphicsEffect(blurEffect);
             this->m_currentDesktop->setHidden(true);
+            qDebug() << "[DesktopWindow::blurBackground] set blurEffect success";
         }
     } else {
         if (m_lastEffectWidget) {
@@ -848,6 +849,7 @@ void DesktopWindow::blurBackground(bool blur)
 
             delete m_lastEffectWidget;
             m_lastEffectWidget = nullptr;
+            qDebug() << "[DesktopWindow::blurBackground] reset blurEffect success";
         }
     }
 }

@@ -75,6 +75,10 @@ private:
     bool checkAppList();
     void paintEvent(QPaintEvent *event);
 
+private Q_SLOTS:
+    void updateRotationsValue(QString rotation);
+    void updateTabletModeValue(bool mode);
+
 public Q_SLOTS:
     void directoryChangedSlot();
     void requestUpdateSlot(QString desktopfp);
@@ -139,6 +143,8 @@ private:
     QString m_direction;
     QGSettings* m_tabletModeGSettings = nullptr;
     bool m_autoRotation=false;
+
+    QDBusInterface *m_statusManagerDBus = nullptr;
 
     int m_width=0;
     int m_height=0;
