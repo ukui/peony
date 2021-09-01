@@ -7,7 +7,7 @@
 
 #include "src/Interface/currenttimeinterface.h"
 #include "src/Style/style.h"
-#include "pluginwidget.h"
+#include "KySmallPluginInterface.h"
 
 
 #include <QWidget>
@@ -33,7 +33,7 @@ public:
 
     void setSearchOpacityEffect(const qreal& num);
 
-    pluginwidget *getPluginWidget();
+    QWidget *getPluginWidget();
 
     void updateMainLayout() {
         m_mainLayout->setContentsMargins(Style::TimeWidgetLeft, Style::TimeWidgetTop, 0, 0);
@@ -58,7 +58,7 @@ private:
 
     QGraphicsDropShadowEffect *m_effect = nullptr;
     //插件
-    pluginwidget *m_focusPlug = nullptr;
+    QWidget *m_pluginWidget = nullptr;
 
     QGSettings *m_timeSetting = nullptr;
     CurrentTimeInterface *m_timeInterface = nullptr;

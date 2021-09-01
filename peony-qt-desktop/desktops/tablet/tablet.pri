@@ -5,7 +5,8 @@ include($$PWD/config/config.pri)
 
 HEADERS += \
     $$PWD/tablet-mode.h \
-    $$PWD/tablet-mode-factory.h
+    $$PWD/tablet-mode-factory.h \
+    $$PWD/KySmallPluginInterface.h
 
 SOURCES += \
     $$PWD/tablet-mode.cpp \
@@ -23,7 +24,6 @@ SOURCES += \
         $$PWD/src/UtilityFunction/thumbnail.cpp \
         $$PWD/src/UtilityFunction/utility.cpp \
         $$PWD/src/UtilityFunction/toolbox.cpp \
-        $$PWD/src/UtilityFunction/pluginwidget.cpp \
         $$PWD/src/UtilityFunction/tablet-plugin-widget.cpp
 
 
@@ -41,7 +41,6 @@ HEADERS += \
         $$PWD/src/UtilityFunction/thumbnail.h \
         $$PWD/src/UtilityFunction/utility.h \
         $$PWD/src/UtilityFunction/toolbox.h \
-        $$PWD/src/UtilityFunction/pluginwidget.h \
         $$PWD/src/UtilityFunction/tablet-plugin-widget.h
 
 RESOURCES += \
