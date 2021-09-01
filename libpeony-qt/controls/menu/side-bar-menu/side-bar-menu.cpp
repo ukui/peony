@@ -175,8 +175,15 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-        PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
-        w->show();
+        //fix computer show properties crash issue, link to bug#77789
+        if (m_uri == "computer:///" || m_uri == "//")
+        {
+            gotoAboutComputer();
+        }
+        else{
+            PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+            w->show();
+        }
     });
     if ((0 != QString::compare(m_uri, "computer:///")) &&
         (0 != QString::compare(m_uri, "filesafe:///"))) {
@@ -205,6 +212,20 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
           l.last()->setEnabled(false);
     }
     return l;
+}
+
+void SideBarMenu::gotoAboutComputer()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    //-a para to show about computer infos
+    p.setArguments(QStringList()<<"-a");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+    p.startDetached();
+#else
+    p.startDetached("ukui-control-center", QStringList()<<"-a");
+#endif
+    p.waitForFinished(-1);
 }
 
 const QList<QAction *> SideBarMenu::constructNetWorkItemActions()

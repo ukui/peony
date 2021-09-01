@@ -37,6 +37,8 @@ class PEONYCORESHARED_EXPORT SideBarMenu : public QMenu
 public:
     explicit SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *parent = nullptr);
 
+    void gotoAboutComputer();
+
 protected:
     const QList<QAction *> constructFavoriteActions();
     const QList<QAction *> constructPersonalActions();
