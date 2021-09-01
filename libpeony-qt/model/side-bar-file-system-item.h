@@ -72,7 +72,7 @@ public:
 
 public Q_SLOTS:
     void eject(GMountUnmountFlags ejectFlag) override;
-    void realEject(GMountUnmountFlags ejectFlag);
+    bool realEject(GMountUnmountFlags ejectFlag);
     void unmount() override;
     void realUnmount();
     void format() override {}
