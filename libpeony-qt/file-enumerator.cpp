@@ -311,10 +311,14 @@ void FileEnumerator::handleError(GError *err)
                 connect(customErrorHandler, &CustomErrorHandler::finished, this, [=]{
                     this->prepared(nullptr, this->getEnumerateUri());
                 });
-                connect(customErrorHandler, &CustomErrorHandler::cancelled, this, &FileEnumerator::cancelled);
+                connect(customErrorHandler, &CustomErrorHandler::cancelled, this, [=]{
+                    cancel();
+                    deleteLater();
+                });
                 connect(customErrorHandler, &CustomErrorHandler::failed, this, [=](const QString &message){
+                    cancel();
+                    deleteLater();
                     QMessageBox::critical(0, 0, message);
-                    cancelled();
                 });
             }
         }
