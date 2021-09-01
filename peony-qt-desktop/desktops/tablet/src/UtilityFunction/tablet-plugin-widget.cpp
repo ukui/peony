@@ -57,6 +57,7 @@ void TabletPluginWidget::initDateTimeWidget()
     m_weekDateLayout->addWidget(m_dateLabel);
 
     m_dateTimeLayout->addWidget(m_timeLabel);
+    m_dateTimeLayout->addStretch(1);
     m_dateTimeLayout->addLayout(m_weekDateLayout);
 
     //添加到主布局中

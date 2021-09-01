@@ -6,6 +6,7 @@
 #define PEONY_TABLET_PLUGIN_WIDGET_H
 
 #include "src/Interface/currenttimeinterface.h"
+#include "src/Style/style.h"
 #include "pluginwidget.h"
 
 
@@ -33,6 +34,15 @@ public:
     void setSearchOpacityEffect(const qreal& num);
 
     pluginwidget *getPluginWidget();
+
+    void updateMainLayout() {
+        m_mainLayout->setContentsMargins(Style::TimeWidgetLeft, Style::TimeWidgetTop, 0, 0);
+        if (Style::ScreenRotation) {
+            m_mainLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+        } else {
+            m_mainLayout->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+        }
+    }
 
 protected:
     void changeSearchBoxBackground();

@@ -28,47 +28,24 @@ void FullCommonUseWidget::initUi()
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
- //   this->setFixedSize(1409,QApplication::primaryScreen()->geometry().height()-46);
+    m_mainLayout = new QHBoxLayout(this);
+    m_mainLayout->setSpacing(0);
+    m_mainLayout->setAlignment(Qt::AlignHCenter);
+    m_mainLayout->setContentsMargins(Style::AppListViewLeftMargin,Style::AppListViewTopMargin,Style::AppListViewRightMargin,Style::AppListViewBottomMargin);
 
-    QHBoxLayout* mainLayout=new QHBoxLayout(this);
-    mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(Style::AppListViewLeftMargin,Style::AppListViewTopMargin,Style::AppListViewRightMargin,Style::AppListViewBottomMargin);
-//    mainLayout->setContentsMargins(0,0,0,0);
-    this->setLayout(mainLayout);
+    this->setLayout(m_mainLayout);
     m_ukuiMenuInterface=new UkuiMenuInterface;
-//    this->setStyleSheet("border:1px solid #ff0000;background:yellow;");
-    initAppListWidget();
-//    fillAppList();
 
+    initAppListWidget();
+    this->setStyleSheet("border-width:0px;border-style:solid;border-color:white;background:transparent;");
 }
 
 void FullCommonUseWidget::initAppListWidget()
 {
-    m_listView=new FullListView(this,0);
-    m_listView->setFixedSize(m_width-Style::AppListViewLeftMargin-Style::AppListViewRightMargin,m_height);
-    QHBoxLayout *mainLayout=qobject_cast<QHBoxLayout*>(this->layout());
-    mainLayout->insertWidget(1,m_listView);
-    this->setStyleSheet("border-width:0px;border-style:solid;border-color:white;background:transparent;");
-}
-
-void FullCommonUseWidget::setStyleTable(int appnum)
-{
-    int lastpagenum=Style::appPage;
-    Style::appColumn=6;
-//    Style::appColumn=m_listView->width()/Style::AppListItemSizeWidth;
-    Style::appLine=m_listView->height()/Style::AppListItemSizeHeight;
-    Style::appNum=appnum;
-    if(Style::appNum%(Style::appColumn * Style::appLine)==0)
-        Style::appPage=Style::appNum/(Style::appColumn * Style::appLine);
-    else
-        Style::appPage=Style::appNum/(Style::appColumn * Style::appLine)+1;
-    if(Style::appNum%(Style::appColumn)==0)
-        Style::appRows=Style::appNum/ Style::appColumn;
-    else
-        Style::appRows=Style::appNum/ Style::appColumn+1;
-    int newpagenum=Style::appPage;
-    if(newpagenum!=lastpagenum)
-        Q_EMIT drawButtonWidgetAgain();
+//    m_listView=new FullListView(this,0);
+//    m_listView->setFixedSize(m_width-Style::AppListViewLeftMargin-Style::AppListViewRightMargin,m_height);
+//    m_mainLayout=qobject_cast<QHBoxLayout*>(this->layout());
+//    m_mainLayout->insertWidget(1,m_listView);
 }
 
 void FullCommonUseWidget::fillAppList()
@@ -77,54 +54,34 @@ void FullCommonUseWidget::fillAppList()
     keyVector.clear();
     keyValueVector.clear();
 
-    if(!setting->childGroups().contains("application"))
-    {
-        Q_FOREACH(QString desktopfp,UkuiMenuInterface::allAppVector)
-            m_data.append(desktopfp);
+    if (!setting->childGroups().contains("application")) {
+        Q_FOREACH(QString desktopfp, UkuiMenuInterface::allAppVector)m_data.append(desktopfp);
 
         setting->beginGroup("application");
         for (int index = 0; index < m_data.size(); index++) {
 
             QFileInfo fileInfo(m_data.at(index));
-            QString desktopfn=fileInfo.fileName();
-            setting->setValue(desktopfn,index);
+            QString desktopfn = fileInfo.fileName();
+            setting->setValue(desktopfn, index);
             setting->sync();
         }
         setting->endGroup();
 
-    }
-
-    else
-    {
+    } else {
         setting->beginGroup("application");
-        QStringList keyList=setting->childKeys();
+        QStringList keyList = setting->childKeys();
 
-        Q_FOREACH(QString desktopfn,keyList)
-        {
-            keyVector.append(desktopfn);
-            keyValueVector.append(setting->value(desktopfn).toInt());
-        }
+        Q_FOREACH(QString desktopfn, keyList) {
+                keyVector.append(desktopfn);
+                keyValueVector.append(setting->value(desktopfn).toInt());
+            }
         setting->endGroup();
-        qSort(keyList.begin(),keyList.end(),cmpApp);
+        qSort(keyList.begin(), keyList.end(), cmpApp);
 
-        Q_FOREACH(QString desktopfn,keyList)
-            m_data.append("/usr/share/applications/"+desktopfn);
+        Q_FOREACH(QString desktopfn, keyList)m_data.append("/usr/share/applications/" + desktopfn);
     }
 
-    setStyleTable(m_data.size());
-    m_listView->addData(m_data);
-
-    connect(m_listView,&FullListView::sendHideMainWindowSignal,this,&FullCommonUseWidget::sendHideMainWindowSignal);
-    connect(m_listView,&FullListView::sendItemClickedSignal,this,&FullCommonUseWidget::execApplication);
-    connect(m_listView,&FullListView::pagenumchanged,this,&FullCommonUseWidget::pagenumchanged);
-    connect(m_listView,&FullListView::sendUpdateAppListSignal,this,&FullCommonUseWidget::updateListViewSlot);
-    connect(m_listView,&FullListView::pageCollapse,this,&FullCommonUseWidget::pageCollapse);
-    connect(m_listView,&FullListView::pageSpread,this,&FullCommonUseWidget::pageSpread);
-
-    qDebug() << "元素高" << Style::AppListItemSizeHeight << "每页应用行数" << Style::appLine << "页数" << Style::appPage;
-    //限定滚动条范围，解决图标上端对齐问题
-    m_listView->verticalScrollBar()->setMaximum(Style::AppListItemSizeHeight * Style::appLine * (Style::appPage - 1));
-    qDebug() << "滚动条最大值1" << m_listView->verticalScrollBar()->maximum();
+//    updatePageData();
 }
 
 bool FullCommonUseWidget::cmpApp(QString &arg_1, QString &arg_2)
@@ -164,13 +121,13 @@ void FullCommonUseWidget::execApplication(QString desktopfp)
     bool bo=settt->contains(desktopfp1.toLocal8Bit().data());// iskey
     bool bo1=settt->QSettings::value(desktopfp1.toLocal8Bit().data()).toBool();//isvalue
     settt->endGroup();
-  
+
     if(bo && bo1==false)//都存在//存在并且为false，从filepathlist中去掉
     {
         //qDebug()<<"bool"<<bo<<bo1;
 
         return;
-    }   
+    }
     QString exe=execnamestr;
     QStringList parameters;
     if (exe.indexOf("%") != -1) {
@@ -205,7 +162,6 @@ void FullCommonUseWidget::execApplication(QString desktopfp)
 
 void FullCommonUseWidget::updateListViewSlot()
 {
-
     m_data.clear();
     keyVector.clear();
     keyValueVector.clear();
@@ -223,8 +179,7 @@ void FullCommonUseWidget::updateListViewSlot()
     Q_FOREACH(QString desktopfn,keyList)
         m_data.append("/usr/share/applications/"+desktopfn);
 
-    setStyleTable(m_data.size());
-    m_listView->updateData(m_data);
+    updatePageData();
 }
 
 
@@ -235,10 +190,7 @@ void FullCommonUseWidget::updateListView(QString desktopfp)
     Q_FOREACH(QString desktopfp,m_ukuiMenuInterface->getAllApp())
         m_data.append(desktopfp);
 
-    setStyleTable(m_data.size());
-    m_listView->updateData(m_data);
-
-
+    updatePageData();
 }
 
 FullCommonUseWidget::~FullCommonUseWidget()
@@ -247,69 +199,130 @@ FullCommonUseWidget::~FullCommonUseWidget()
         delete m_ukuiMenuInterface;
     if(setting)
         delete setting;
-    if(m_listView)
-        delete m_listView;
     if(settt)
         delete settt;
     m_ukuiMenuInterface=nullptr;
     setting=nullptr;
-    m_listView=nullptr;
     settt=nullptr;
-
 }
-void FullCommonUseWidget::deleteAppListView()
+
+void FullCommonUseWidget::updateStyleValue()
 {
-    m_data.clear();
-    keyVector.clear();
-    keyValueVector.clear();
+    Style::appColumn = 6;
 
-    setting->beginGroup("application");
-    QStringList keyList=setting->childKeys();
-    Q_FOREACH(QString desktopfn,keyList)
-    {
-        keyVector.append(desktopfn);
-        keyValueVector.append(setting->value(desktopfn).toInt());
+    if (Style::ScreenRotation) {
+        //竖屏7行
+        Style::appLine = 7;
+        Style::AppListViewTopMargin = 5;
+    } else {
+        //横屏4行
+        Style::appLine = 4;
+        Style::AppListViewTopMargin = 50;
     }
-    setting->endGroup();
-    qSort(keyList.begin(),keyList.end(),cmpApp);
 
-    Q_FOREACH(QString desktopfn,keyList)
-        m_data.append("/usr/share/applications/"+desktopfn);
+    Style::AppListViewWidth = this->width() - Style::AppListViewLeftMargin - Style::AppListViewRightMargin;
+    Style::AppListViewHeight = this->height() - Style::AppListViewTopMargin - Style::AppListViewBottomMargin;
 
-    setStyleTable(m_data.size());
+    Style::AppListItemSizeWidth = (Style::AppListViewWidth / Style::appColumn) - 1;
+    Style::AppListItemSizeHeight = (Style::AppListViewHeight / Style::appLine) - 1;
 
-    m_listView->addData(m_data);
+    int lastPageNum = Style::appPage;
+    Style::appNum = m_data.size();
+    if (Style::appNum % (Style::appColumn * Style::appLine) == 0) {
+        Style::appPage = Style::appNum / (Style::appColumn * Style::appLine);
+    } else {
+        Style::appPage = Style::appNum / (Style::appColumn * Style::appLine) + 1;
+    }
+
+    int newPageNum = Style::appPage;
+    if (newPageNum != lastPageNum) {
+        Q_EMIT drawButtonWidgetAgain();
+    }
 }
 
 void FullCommonUseWidget::repaintWid(int type)
 {
-    if (!m_listView) {
-        m_listView = new FullListView(this, 0);
+    //note 当屏幕发生变化后，对每个item的大小，appView的大小进行调整
+    updateStyleValue();
+
+    //TODO 实现可以只刷新某一页
+    for (FullListView *listView : m_pageList) {
+        listView->setGridSize(QSize(Style::AppListItemSizeWidth, Style::AppListItemSizeHeight));
+        listView->setFixedSize(Style::AppListViewWidth, Style::AppListViewHeight);
+        listView->update();
     }
 
-    QHBoxLayout *mainLayout = qobject_cast<QHBoxLayout*>(this->layout());
+    m_mainLayout->setContentsMargins(Style::AppListViewLeftMargin, Style::AppListViewTopMargin,
+                                     Style::AppListViewRightMargin, Style::AppListViewBottomMargin);
+    this->insertPageToLayout();
+}
 
-    if (type == 0) {//横屏
-        if (Style::IsWideScreen) {
-            Style::AppListItemSizeWidth  = 284;
-            Style::AppListViewLeftMargin = 44;
-            Style::AppLeftSpace          = 94;
-        } else {
-            Style::AppListItemSizeWidth  = 216;
-            Style::AppListViewLeftMargin = 52;
-            Style::AppLeftSpace          = 60;
+void FullCommonUseWidget::updatePageList()
+{
+    updateStyleValue();
+
+    quint32 currentPageCount = m_pageList.count();
+
+    if (Style::appPage < currentPageCount) {
+        for (int i = Style::appPage; i < currentPageCount; ++i) {
+            FullListView *listView = m_pageList.at(i);
+
+            m_pageList.removeOne(listView);
+            listView->deleteLater();
         }
-        m_listView->setGridSize(QSize(Style::AppListItemSizeWidth, Style::AppListItemSizeHeight));
-        m_listView->setFixedSize(this->width()-Style::AppListViewLeftMargin-Style::AppListViewRightMargin, this->height());
-    } else if (type == 1) {   //竖屏
-        QHBoxLayout *mainLayout = qobject_cast<QHBoxLayout*>(this->layout());
-        m_listView->setGridSize(QSize());
-        m_listView->setFixedSize(this->width()-Style::AppListViewLeftMargin-Style::AppListViewRightMargin,
-                                 this->height()-Style::AppListViewTopMargin-Style::AppListViewBottomMargin - 48);
+    } else if (Style::appPage > currentPageCount) {
+        for (int i = currentPageCount; i < Style::appPage; ++i) {
+            FullListView *listView = new FullListView(this, 0);
+            listView->setFixedSize(Style::AppListViewWidth, Style::AppListViewHeight);
+
+            connect(listView, &FullListView::sendHideMainWindowSignal, this, &FullCommonUseWidget::sendHideMainWindowSignal);
+            connect(listView, &FullListView::sendItemClickedSignal, this, &FullCommonUseWidget::execApplication);
+            connect(listView, &FullListView::pagenumchanged, this, &FullCommonUseWidget::pagenumchanged);
+            connect(listView, &FullListView::sendUpdateAppListSignal, this, &FullCommonUseWidget::updateListViewSlot);
+            connect(listView, &FullListView::pageCollapse, this, &FullCommonUseWidget::pageCollapse);
+            connect(listView, &FullListView::pageSpread, this, &FullCommonUseWidget::pageSpread);
+            connect(listView, &FullListView::moveRequest, this, &FullCommonUseWidget::moveRequest);
+
+            m_pageList.append(listView);
+        }
+    }
+}
+
+void FullCommonUseWidget::updatePageData()
+{
+    this->updatePageList();
+
+    QList<QStringList> dataList;
+
+    //每页应用数量
+    quint32 appNumPerPage = Style::appColumn * Style::appLine;
+
+    //每24个一组，进行分组
+    for (int i = 0; i < (m_data.count() - 1); i += appNumPerPage) {
+        dataList.append(m_data.mid(i, appNumPerPage));
     }
 
-    mainLayout->setContentsMargins(Style::AppListViewLeftMargin,Style::AppListViewTopMargin,Style::AppListViewRightMargin,Style::AppListViewBottomMargin);
-    mainLayout->addWidget(m_listView);
+    for (int i = 0; i < dataList.count(); ++i) {
+        m_pageList.at(i)->updateData(dataList.at(i));
+    }
+
+    this->insertPageToLayout();
+}
+
+void FullCommonUseWidget::insertPageToLayout()
+{
+    for (int i = 0; i < m_pageList.count(); ++i) {
+        FullListView *page = m_pageList.at(i);
+        if (page) {
+            if (i == (Style::nowpagenum - 1)) {
+                page->setHidden(false);
+                m_mainLayout->insertWidget(1, page);
+            } else {
+                page->setHidden(true);
+                m_mainLayout->removeWidget(page);
+            }
+        }
+    }
 }
 
 

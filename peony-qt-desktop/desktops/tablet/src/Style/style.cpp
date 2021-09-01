@@ -27,22 +27,23 @@ Style::Style()
 
 
 int Style::appLine=0;
-int Style::appColumn=0;
+int Style::appColumn=6;
 int Style::appPage=1;
 int Style::appNum=0;
 int Style::nowpagenum=1;
-int Style::appRows=0;
 bool Style::ScreenRotation=false;
 int Style::AppListItemSizeWidth=216;
-int Style::AppListItemSizeHeight=270;
+int Style::AppListItemSizeHeight=245;
 //int Style::ScreenWidth=1920;
 //int Style::ScreenHeight=1080;
-int Style::AppListViewTopMargin=0;
-int Style::AppListViewLeftMargin=52;
-int Style::AppListViewBottomMargin=20;
-int Style::AppListViewRightMargin=0;
-int Style::TimeWidgetTop=81;
-int Style::TimeWidgetLeft=112;
+int Style::AppListViewHeight=245 * 4;
+int Style::AppListViewWidth=216 * 6;
+int Style::AppListViewTopMargin=50;
+int Style::AppListViewLeftMargin=50;
+int Style::AppListViewBottomMargin=5;
+int Style::AppListViewRightMargin=50;
+int Style::TimeWidgetTop=50;
+int Style::TimeWidgetLeft=110;
 
 int Style::AppListIconSize=96;
 int Style::AppTopSpace=60;
@@ -52,6 +53,7 @@ int Style::GroupAppColumn=1;
 int Style::GroupAppRow=1;
 
 int Style::ButtonWidgetWidth=56;
+int Style::ButtonWidgetHeight=90;
 
 //int Style::WideAppListItemSizeWidth=284;
 //int Style::WideAppListItemSizeHeight=248;
@@ -61,36 +63,29 @@ bool Style::IsWideScreen=false;
 
 void Style::initWidStyle()
 {
+    AppListViewTopMargin=50;
+    AppListViewLeftMargin=50;
+    AppListViewRightMargin=50;
+    AppListViewBottomMargin=5;
 
-    if(ScreenRotation)
-    {
 
-        AppListViewTopMargin=0;
-        AppListViewLeftMargin=84;
-        AppListViewRightMargin=0;
-        AppListViewBottomMargin=32;
-        AppListItemSizeWidth=152;
-        AppListItemSizeHeight=216;
-        AppTopSpace=40;
-        AppLeftSpace=28;
-        TimeWidgetTop=96;
-        TimeWidgetLeft=104;
-        ButtonWidgetWidth=32;
-    }
-    else
-    {
+    if (ScreenRotation) {
+        AppListItemSizeWidth = 152;
+        AppListItemSizeHeight = 216;
+        AppTopSpace = 40;
+        AppLeftSpace = 28;
 
-        AppListViewTopMargin=0;
-        AppListViewLeftMargin=52;
-        AppListViewBottomMargin=20;
-        AppListViewRightMargin=0;
-        AppListItemSizeWidth=216;
-        AppListItemSizeHeight=270;
-        AppTopSpace=60;
-        AppLeftSpace=60;
-        TimeWidgetTop=81;
-        TimeWidgetLeft=112;
-        ButtonWidgetWidth=56;
+        TimeWidgetTop = 84;
+        TimeWidgetLeft = 84;
+
+    } else {
+        AppListItemSizeWidth = 216;
+        AppListItemSizeHeight = 245;
+        AppTopSpace = 60;
+        AppLeftSpace = 60;
+
+        TimeWidgetTop = 90;
+        TimeWidgetLeft = 0;
     }
 
 //    QGSettings* setting=new QGSettings(QString("org.mate.interface").toLocal8Bit());
