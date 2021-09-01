@@ -472,43 +472,70 @@ void TabletMode::initGSettings()
         });
     }
 
-    if (QGSettings::isSchemaInstalled(TABLED_ROTATION_SCHEMA)) {
-        m_rotationGSettings = new QGSettings(TABLED_ROTATION_SCHEMA);
-        m_direction = m_rotationGSettings->get("xrandrRotations").toString();
+//    if (QGSettings::isSchemaInstalled(TABLED_ROTATION_SCHEMA)) {
+//        m_rotationGSettings = new QGSettings(TABLED_ROTATION_SCHEMA);
+//        m_direction = m_rotationGSettings->get("xrandrRotations").toString();
+//
+//        connect(m_rotationGSettings, &QGSettings::changed, [this](const QString &key) {
+//            if (key == "xrandrRotations") {
+//                m_direction = m_rotationGSettings->get(key).toString();
+//            }
+//        });
+//    }
+//
+//    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
+//        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
+//        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+//
+//        connect(m_tabletModeGSettings, &QGSettings::changed, [this](const QString &key) {
+//            if (key == TABLET_MODE) {
+//                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
+//                m_autoRotation = m_tabletModeGSettings->get("autoRotation").toBool(); //监测旋转按钮是否开启
+//                m_direction = "normal";
+//
+//                if (m_rotationGSettings) {
+//                    m_rotationGSettings->set("xrandrRotations", m_direction);
+//                }
+//            }
+//        });
+//    }
 
-        connect(m_rotationGSettings, &QGSettings::changed, [this](const QString &key) {
-            if (key == "xrandrRotations") {
-                m_direction = m_rotationGSettings->get(key).toString();
-            }
-        });
-    }
-
-    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
-        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
-        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
-
-        connect(m_tabletModeGSettings, &QGSettings::changed, [this](const QString &key) {
-            if (key == TABLET_MODE) {
-                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
-                m_autoRotation = m_tabletModeGSettings->get("autoRotation").toBool(); //监测旋转按钮是否开启
-                m_direction = "normal";
-
-                if (m_rotationGSettings) {
-                    m_rotationGSettings->set("xrandrRotations", m_direction);
-                }
-            }
-        });
+    //dbus
+    m_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
+    qDebug() << "[TabletMode::initGSettings] init statusManagerDBus:" << m_statusManagerDBus->isValid();
+    if (m_statusManagerDBus) {
+        if (m_statusManagerDBus->isValid()) {
+            /**
+             * 屏幕旋转
+             * @brief normal,upside-down,left,right
+             */
+            connect(m_statusManagerDBus, SIGNAL(rotations_change_signal(QString)), this, SLOT(updateRotationsValue(QString)));
+            //平板模式切换
+            connect(m_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletModeValue(bool)));
+        }
     }
 }
 
 void TabletMode::updateGSettings()
 {
-    if (m_rotationGSettings) {
-        m_direction = m_rotationGSettings->get("xrandrRotations").toString();
-    }
+//    if (m_rotationGSettings) {
+//        m_direction = m_rotationGSettings->get("xrandrRotations").toString();
+//    }
+//
+//    if (m_tabletModeGSettings) {
+//        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+//    }
 
-    if (m_tabletModeGSettings) {
-        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+    if (m_statusManagerDBus) {
+        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+        if (message_a.isValid()) {
+            m_isTabletMode = message_a.value();
+        }
+
+        QDBusReply<QString> message_b = m_statusManagerDBus->call("get_current_rotation");
+        if (message_b.isValid()) {
+            m_direction = message_b.value();
+        }
     }
 }
 void TabletMode::initAllWidget()
@@ -689,4 +716,17 @@ void TabletMode::returnRawPoint()
     });
 
     returnAnimation->start();
+}
+
+void TabletMode::updateTabletModeValue(bool mode)
+{
+    m_isTabletMode = mode;
+}
+
+void TabletMode::updateRotationsValue(QString rotation)
+{
+    qDebug() << "[TabletMode::updateRotationsValue] rotation:" << rotation;
+    m_direction = rotation;
+
+    screenRotation();
 }

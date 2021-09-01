@@ -4,6 +4,8 @@
 
 #ifndef PEONY_DESKTOP_GLOBAL_SETTINGS_H
 #define PEONY_DESKTOP_GLOBAL_SETTINGS_H
+//dbus
+#define DBUS_STATUS_MANAGER_IF "com.kylin.statusmanager.interface"
 //schemas
 #define TABLED_ROTATION_SCHEMA "org.ukui.SettingsDaemon.plugins.xrandr"
 #define TABLET_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"

@@ -651,9 +651,10 @@ QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
+    m_animationIsRunning = true;
     this->updateGSettingValues();
     //NOTE 只在主屏幕上切换桌面
-    qDebug() << "=====开始切换桌面";
+    qDebug() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] start process";
     //TODO 在切换过程中不准打开开始菜单
     //桌面模式打开开始菜单
     //桌面模式切换平板模式
@@ -667,6 +668,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     DesktopWindow *primaryWindow = m_windowManager->getWindowByScreen(m_primaryScreen);
     if (!primaryWindow) {
+        m_animationIsRunning = false;
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window not found!";
         return;
     }
@@ -674,6 +676,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     DesktopWidgetBase *currentDesktop = primaryWindow->getCurrentDesktop();
 
     if (!currentDesktop) {
+        m_animationIsRunning = false;
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] primary window desktop not found!";
         return;
     }
@@ -684,11 +687,13 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     DesktopWidgetBase *nextDesktop = getNextDesktop(targetType, primaryWindow);
 
     if (!nextDesktop) {
+        m_animationIsRunning = false;
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
         return;
     }
 
     if (nextDesktop->isActivated()) {
+        m_animationIsRunning = false;
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
         return;
     }
@@ -733,6 +738,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         m_windowManager->updateAllWindowGeometry();
         connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
         delete nextEffectBackup;
+        m_animationIsRunning = false;
     });
 
     if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {
@@ -933,41 +939,63 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
     return nextDesktop;
 }
 
-void PeonyDesktopApplication::initKeyProcess()
+void PeonyDesktopApplication::changeDesktop()
 {
-
+    if (m_isTabletMode) {
+        this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
+    } else {
+        this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::OpacityFull);
+    }
 }
 
 void PeonyDesktopApplication::initGSettings()
 {
     m_isTabletMode = false; //默认值 false
-    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
-        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
-        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
-
-        connect(m_tabletModeGSettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == TABLET_MODE) {
-                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
-
-                if (m_isTabletMode) {
-                    this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
-                } else {
-                    this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::OpacityFull);
-                }
-            }
-        });
-    }
+//    if (QGSettings::isSchemaInstalled(TABLET_SCHEMA)) {
+//        m_tabletModeGSettings = new QGSettings(TABLET_SCHEMA);
+//        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+//
+//        connect(m_tabletModeGSettings, &QGSettings::changed, this, [=](const QString &key) {
+//            if (key == TABLET_MODE) {
+//                m_isTabletMode = m_tabletModeGSettings->get(key).toBool();
+//                this->changeDesktop();
+//            }
+//        });
+//    }
 
     PeonyDesktopDbusService *desktopDbusService = new PeonyDesktopDbusService(this);
 
     connect(desktopDbusService, &Peony::PeonyDesktopDbusService::blurBackGroundSignal, this, [=](quint32 status) {
+        qDebug() << "[PeonyDesktopApplication::blurBackGroundSignal] received signal, blur:" << status;
         if (m_windowManager) {
             DesktopWindow *window = m_windowManager->getWindowByScreen(m_primaryScreen);
             if (status == 1) {
                 //当需要模糊时才进行判断，否则取消模糊效果
                 updateGSettingValues();
                 if (m_isTabletMode) {
-                    window->blurBackground(true);
+                    if (m_animationIsRunning) {
+                        //当dbus信号到达时，使用多线程判断桌面切换动画是否还在进行中
+                        QFutureWatcher<void> *watcher = new QFutureWatcher<void>;
+                        connect(watcher, &QFutureWatcher<void>::finished, this, [=] {
+                            window->blurBackground(true);
+                            delete watcher;
+                        });
+
+                        QFuture<void> thread = QtConcurrent::run([&] {
+                            QThread::msleep(50);
+                            while (1) {
+                                if (!m_animationIsRunning) {
+                                    break;
+                                }
+                                qDebug() << "[blurBackGroundSignal] animation is running";
+                                QThread::msleep(50);
+                            }
+                            qDebug() << "[blurBackGroundSignal] animation is over";
+                        });
+                        watcher->setFuture(thread);
+                    } else {
+                        window->blurBackground(true);
+                    }
                 }
             } else {
                 window->blurBackground(false);
@@ -975,11 +1003,41 @@ void PeonyDesktopApplication::initGSettings()
         }
     });
 
+    //dbus
+    m_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
+    qDebug() << "[PeonyDesktopApplication::initGSettings] init statusManagerDBus" << m_statusManagerDBus->isValid();
+    if (m_statusManagerDBus) {
+        if (m_statusManagerDBus->isValid()) {
+            //平板模式切换
+            connect(m_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletModeValue(bool)));
+        }
+    }
+
+//    QDBusConnection::sessionBus().connect(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,"mode_change_signal",
+//                                          this, SLOT(updateTabletModeValue(bool)));
+
+    this->updateGSettingValues();
+}
+
+void PeonyDesktopApplication::updateTabletModeValue(bool mode)
+{
+    m_isTabletMode = mode;
+    m_isTabletMode = mode;
+
+    this->changeDesktop();
 }
 
 void PeonyDesktopApplication::updateGSettingValues()
 {
-    if (m_tabletModeGSettings) {
-        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+//    if (m_tabletModeGSettings) {
+//        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
+//    }
+
+    if (m_statusManagerDBus) {
+        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+        qDebug() << "[PeonyDesktopApplication::updateGSettingValues] get_current_tabletmode：" << message_a.value();;
+        if (message_a.isValid()) {
+            m_isTabletMode = message_a.value();
+        }
     }
 }
