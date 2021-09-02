@@ -2,20 +2,42 @@
 #define STUDYCENTERMODE_H
 
 #include "desktop-widget-base.h"
-
+#include "common.h"
+#include "../../tablet/data/tablet-app-manager.h"
 namespace Peony {
+
+class TabletAppManager;
 
 class StudyCenterMode : public DesktopWidgetBase
 {
 Q_OBJECT
 public:
-    StudyCenterMode();
+    explicit StudyCenterMode(QWidget *parent = nullptr);
 
-    ~StudyCenterMode() override;
+    ~StudyCenterMode();
 
-    void setActivated(bool activated) override;
+    void setActivated(bool activated);
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
+
+public:
+    QList<TABLETAPP>   getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap );
+    void  initTime();
+    long int getStudyTime(QString strMethod, QString appName);
+    QString  getTime(QString strMethod, QStringList appList);
+
+private:
+    void initUi();
+    TabletAppManager* m_tableAppMangager=nullptr;
+    QList<QString> m_appList;
+
+public Q_SLOTS:
+   void updateTimeSlot();
+
+Q_SIGNALS:
+    void valueChangedSingal(QList<TABLETAPP> applist);
+    void timeChangedSingal(QString strMethod ,QString strTime);
+    void markTimeSingal();
 };
 
 }
