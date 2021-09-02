@@ -2830,7 +2830,7 @@ Do you want to delete the link file?</source>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="139"/>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="145"/>
         <source>Origin Path: </source>
-        <translation>原路径: </translation>
+        <translation>原路径：</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="177"/>
@@ -2842,7 +2842,7 @@ Do you want to delete the link file?</source>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="166"/>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="198"/>
         <source>Size: </source>
-        <translation>文件大小: </translation>
+        <translation>文件大小：</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="192"/>
