@@ -180,7 +180,9 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
 
         //add 5 seconds delay to load plugins
         //try to fix first time enter desktop right menu not show open terminal issue
-        QTimer::singleShot(5000, [=]() {
+        //fix need wait 5 seconds open terminal issue, link to bug#75654
+        //目前新的加载流程不需要等待那么久，加载出桌面时，应用都注册好了
+        QTimer::singleShot(1000, [=]() {
             Peony::DesktopMenuPluginManager::getInstance();
         });
 
