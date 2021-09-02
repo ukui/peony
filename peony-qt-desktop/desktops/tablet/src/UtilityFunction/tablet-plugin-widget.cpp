@@ -121,9 +121,15 @@ void TabletPluginWidget::initSearchWidget()
     m_mainLayout->addWidget(m_searchContainer);
 }
 
-QWidget *TabletPluginWidget::getPluginWidget()
+void TabletPluginWidget::hidePluginWidget(bool hide)
 {
-    return m_pluginWidget;
+    if (m_pluginWidget) {
+        if (hide) {
+            m_pluginWidget->hide();
+        } else {
+            m_pluginWidget->show();
+        }
+    }
 }
 
 void TabletPluginWidget::initPluginWidget()

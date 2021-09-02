@@ -198,7 +198,7 @@ void TabletMode::screenRotation()
     //note 屏幕变化后，负责将app视图和小组件大小进行调整
     //1.隐藏各个组件
     m_pluginBoxWidget->hide();
-//    m_pluginBoxWidget->getPluginWidget()->hide();
+//    m_pluginBoxWidget->hidePluginWidget(true);
     m_appViewContainer->hide();
     m_pageButtonWidget->hide();
     //2.屏幕变化后回到第一页
@@ -237,12 +237,12 @@ void TabletMode::showAllWidgets()
 
     if (Style::ScreenRotation) {
         //屏幕垂直
-        m_pluginBoxWidget->getPluginWidget()->hide();
+        m_pluginBoxWidget->hidePluginWidget(true);
 
         m_appViewContainer->repaintWid(1);
     } else {
         //屏幕水平
-        m_pluginBoxWidget->getPluginWidget()->show();
+        m_pluginBoxWidget->hidePluginWidget(false);
 
         m_appViewContainer->repaintWid(0);
     }
@@ -632,16 +632,16 @@ void TabletMode::exitAnimationFinished(qint32 signal)
         //只在第一页显示小组件
         m_pluginBoxWidget->show();
         if (Style::ScreenRotation) {
-            m_pluginBoxWidget->getPluginWidget()->hide();
+            m_pluginBoxWidget->hidePluginWidget(true);
             screenVertical();
         } else {
-            m_pluginBoxWidget->getPluginWidget()->show();
+            m_pluginBoxWidget->hidePluginWidget(false);
             screenHorizontal();
         }
     } else {
         //不显示小组件
         m_pluginBoxWidget->hide();
-        m_pluginBoxWidget->getPluginWidget()->hide();
+        m_pluginBoxWidget->hidePluginWidget(true);
 
         m_appViewContainer->setGeometry(QRect(0, 0, m_width, m_height - Style::ButtonWidgetHeight));
     }

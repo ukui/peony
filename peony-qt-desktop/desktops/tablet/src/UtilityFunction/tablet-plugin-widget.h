@@ -33,7 +33,7 @@ public:
 
     void setSearchOpacityEffect(const qreal& num);
 
-    QWidget *getPluginWidget();
+    void hidePluginWidget(bool hide);
 
     void updateMainLayout() {
         m_mainLayout->setContentsMargins(Style::TimeWidgetLeft, Style::TimeWidgetTop, 0, 0);
