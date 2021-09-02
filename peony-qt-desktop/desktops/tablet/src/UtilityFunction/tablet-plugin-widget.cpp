@@ -7,6 +7,7 @@
 
 #include <QProcess>
 #include <QDebug>
+#include <QPluginLoader>
 
 #define TIME_FORMAT "org.ukui.control-center.panel.plugins"
 #define TABLED_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
@@ -120,16 +121,29 @@ void TabletPluginWidget::initSearchWidget()
     m_mainLayout->addWidget(m_searchContainer);
 }
 
-pluginwidget *TabletPluginWidget::getPluginWidget()
+void TabletPluginWidget::hidePluginWidget(bool hide)
 {
-    return m_focusPlug;
+    if (m_pluginWidget) {
+        if (hide) {
+            m_pluginWidget->hide();
+        } else {
+            m_pluginWidget->show();
+        }
+    }
 }
 
 void TabletPluginWidget::initPluginWidget()
 {
-    m_focusPlug = new pluginwidget();
-    m_focusPlug->setFixedSize(400,638);
-    m_mainLayout->addWidget(m_focusPlug);
+    QPluginLoader loader("/opt/small-plugin/bin/libsmall-plugin-manage.so");
+    QObject * plugin=loader.instance();
+    if(plugin)
+    {
+        KySmallPluginInterface * app=qobject_cast<KySmallPluginInterface *>(plugin);
+        m_pluginWidget = app->createWidget(this);
+        m_pluginWidget->setFixedSize(400,640);
+
+        m_mainLayout->addWidget(m_pluginWidget);
+    }
 }
 
 void TabletPluginWidget::changeSearchBoxBackground()
