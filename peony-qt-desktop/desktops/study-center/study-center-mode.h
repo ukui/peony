@@ -4,6 +4,9 @@
 #include "desktop-widget-base.h"
 #include "common.h"
 #include "../../tablet/data/tablet-app-manager.h"
+
+#include <QDBusInterface>
+
 namespace Peony {
 
 class TabletAppManager;
@@ -20,6 +23,13 @@ public:
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
+
 public:
     QList<TABLETAPP>   getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap );
     void  initTime();
@@ -30,6 +40,11 @@ private:
     void initUi();
     TabletAppManager* m_tableAppMangager=nullptr;
     QList<QString> m_appList;
+
+    QDBusInterface *m_statusManagerDBus = nullptr;
+    QPoint m_pressPoint;
+    QPoint m_releasePoint;
+    QPoint m_lastPressPoint;
 
 public Q_SLOTS:
    void updateTimeSlot();

@@ -12,6 +12,9 @@
 #include <QDBusInterface>
 #include <QDBusMessage>
 #include <QDBusConnection>
+#include <QMouseEvent>
+#include <QDebug>
+#include <QDBusReply>
 //#include <QList>
 using namespace Peony;
 
@@ -23,6 +26,8 @@ using namespace Peony;
 
 StudyCenterMode::StudyCenterMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
+    m_statusManagerDBus = new QDBusInterface("com.kylin.statusmanager.interface", "/" ,"com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
+    this->m_exitAnimationType = AnimationType::RightToLeft;
     initUi();
 }
 
@@ -275,4 +280,63 @@ void StudyCenterMode::updateTimeSlot()
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     initTime();
     Q_EMIT markTimeSingal();
+}
+
+void StudyCenterMode::mousePressEvent(QMouseEvent *event)
+{
+    qDebug() << "[StudyCenterMode::mousePressEvent] " <<  event->globalPos();
+    m_pressPoint = event->globalPos();
+    m_lastPressPoint = event->globalPos();
+    QWidget::mousePressEvent(event);
+}
+
+void StudyCenterMode::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_releasePoint = event->globalPos();
+    qint32 moveLength = m_releasePoint.x() - m_pressPoint.x();
+    qDebug() << "[StudyCenterMode::mouseReleaseEvent] " << moveLength;
+    if (moveLength < -200) {
+        //下一页
+        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+        if (message_a.isValid()) {
+            if ((bool)message_a.value()) {
+                Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+            } else {
+                Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+            }
+        } else {
+            Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+        }
+    } else {
+        Q_EMIT desktopReboundRequest();
+    }
+    m_pressPoint = QPoint(-1, -1);
+    m_lastPressPoint = QPoint(-1, -1);
+    m_releasePoint = QPoint(-1, -1);
+    QWidget::mouseReleaseEvent(event);
+}
+
+void StudyCenterMode::mouseMoveEvent(QMouseEvent *event)
+{
+    qDebug() << "[StudyCenterMode::mouseMoveEvent] " << event->globalPos();
+
+    if (m_lastPressPoint.x() == -1) {
+        return;
+    }
+    QPoint currentPoint = event->globalPos();
+
+    if (qAbs(currentPoint.x() - m_pressPoint.x()) < 50){
+        return;
+    }
+
+    qint32 length = currentPoint.x() - m_lastPressPoint.x();
+
+    if (length <= 0) {
+        Q_EMIT desktopMoveRequest(AnimationType ::RightToLeft, qAbs(length), 0);
+    } else {
+        Q_EMIT desktopMoveRequest(AnimationType ::LeftToRight, qAbs(length), 0);
+    }
+
+    m_lastPressPoint = currentPoint;
+    QWidget::mouseMoveEvent(event);
 }
