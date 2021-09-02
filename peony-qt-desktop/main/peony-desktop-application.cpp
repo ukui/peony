@@ -330,7 +330,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 });
                 return;
             } else {
-                this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
+                this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
             }
         }
 
