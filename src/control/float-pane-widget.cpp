@@ -53,6 +53,7 @@ FloatPaneWidget::FloatPaneWidget(QWidget *mainWidget, QWidget *floatWidget, QWid
             m_floatWidget->setVisible(true);
         }
     });
+    setMinimumWidth(FLOAT_WIDGET_MIN_WIDTH);
 }
 
 void FloatPaneWidget::setFloatWidgetWidthHint(int widthHint)
