@@ -75,6 +75,8 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        QIcon icon=index.data(Qt::DecorationRole).value<QIcon>();
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
         QString iconstr= tabletApp.appIcon;
+        qDebug("FullItemDelegate::paint : name:%s, icon:%s/n",tabletApp.appName.toLocal8Bit().data(),iconstr.toLocal8Bit().data());
+
         iconstr.remove(".png");
         iconstr.remove(".svg");
         QIcon icon=QIcon::fromTheme(iconstr);
@@ -98,9 +100,9 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         QRect textRect;
 
         textRect=QRect(rect.x()+5,
-                       iconRect.bottom()+Style::AppSpaceBetweenIconText,
+                       iconRect.bottom()+5,
                        rect.width()-10,
-                       rect.height()-iconRect.height()-Style::AppSpaceBetweenIconText);
+                       rect.height()-iconRect.height()-5);
 
         painter->save();
         QFontMetrics fm=painter->fontMetrics();

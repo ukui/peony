@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QIcon>
 
 ProgressWidget::ProgressWidget(const TABLETAPP &AppInfo,QWidget *parent)
     : QWidget(parent)
@@ -38,10 +39,11 @@ void ProgressWidget::initUi()
     m_nameLabel->setAlignment(Qt::AlignLeft);
 
     m_iconLabel = new QLabel(this);
-   // m_iconLabel->setFixedSize(this->width()/5,this->height());
-    QPixmap pix;
-    pix.load(m_strAppIcon);
-    pix = pix.scaled(m_iconLabel->width(), m_iconLabel->height());
+    QString iconstr= m_strAppIcon;
+    iconstr.remove(".png");
+    iconstr.remove(".svg");
+    QIcon icon=QIcon::fromTheme(iconstr);
+    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
     m_iconLabel->setPixmap(pix);
 
     m_timeLabel = new QLabel(this);
@@ -60,15 +62,18 @@ void ProgressWidget::initUi()
 }
 void  ProgressWidget::paintSlot(TABLETAPP &app)
 {
-    qDebug("ProgressWidget::paintSlot :time:%s ,name:%s, path:%s/n",app.iTime,m_strAppName.data(),m_strAppIcon.data());
+    qDebug("ProgressWidget::paintSlot :time:%d ,name:%s, path:%s/n",app.iTime,m_strAppName.toLocal8Bit().data(),m_strAppIcon.toLocal8Bit().data());
     this->m_iTime = app.iTime;
     this->m_strAppName = app.appName;
     this->m_strAppIcon = app.appIcon;
     m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
     m_processBar->setValue(m_iTime);
     m_nameLabel->setText(m_strAppName);
-    QPixmap pix;
-    pix.load(m_strAppIcon);
-    pix = pix.scaled(m_iconLabel->width(), m_iconLabel->height());
+
+    QString iconstr= m_strAppIcon;
+    iconstr.remove(".png");
+    iconstr.remove(".svg");
+    QIcon icon=QIcon::fromTheme(iconstr);
+    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
     m_iconLabel->setPixmap(pix);
 }

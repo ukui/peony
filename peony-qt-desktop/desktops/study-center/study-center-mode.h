@@ -31,10 +31,13 @@ private:
     TabletAppManager* m_tableAppMangager=nullptr;
     QList<QString> m_appList;
 
+public Q_SLOTS:
+   void updateTimeSlot();
+
 Q_SIGNALS:
     void valueChangedSingal(QList<TABLETAPP> applist);
     void timeChangedSingal(QString strMethod ,QString strTime);
-
+    void markTimeSingal();
 };
 
 }

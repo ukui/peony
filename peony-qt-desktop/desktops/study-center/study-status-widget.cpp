@@ -9,8 +9,8 @@
 #include <QPainter>
 #include <QDBusInterface>
 #include <QStandardPaths>
-//#include <QObject>
-//#include <QListView>
+#include <QTime>
+#include <QPushButton>
 //#include <QStandardItemModel>
 #include "progress-widget.h"
 //#include "progress-item-delegate.h"
@@ -183,6 +183,16 @@ void StudyStatusWidget::initWidget()
     }
     // gridLayout->setMargin(80);
     //m_progressGridLayout->setSpacing(20);
+    QTime curTime=QTime::currentTime(); //获取当前时间
+
+    m_updateTimeBt = new QPushButton(this);
+    m_updateTimeBt->setFont(ft);
+    m_updateTimeBt->setStyleSheet("color:#9C9C9C");
+
+    connect(m_updateTimeBt,SIGNAL(clicked()), this,SIGNAL(updateTimeSignal()));
+    m_updateTimeBt->setText(QString("更新于：今天%1:%2").arg(curTime.hour()).arg(curTime.minute()));
+    m_progressGridLayout->addWidget(m_updateTimeBt,2 ,1);
+
     m_mainVboxLayout->addLayout(m_progressGridLayout);
     m_mainVboxLayout->setMargin(30);
 //    m_showProgressView = new QListView ;
@@ -317,16 +327,22 @@ void StudyStatusWidget::paintProgressSlot(QList<TABLETAPP> applist)
 }
 void StudyStatusWidget::timeChangeSlot(QString strMethod ,QString strTime)
 {
+    qDebug("StudyStatusWidget::timeChangeSlot : method:%s, time:%s/n",strMethod.toLocal8Bit().data(),strTime.toLocal8Bit().data());
     if(strMethod == "GetDayUseTime")
     {
-        m_todayTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+        m_todayTimeLabel->setText(strTime.toLocal8Bit().data());
     }
     else if(strMethod == "GetWeekUseTime")
     {
-        m_weekTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+        m_weekTimeLabel->setText(strTime.toLocal8Bit().data());
     }
     else if(strMethod == "GetMonthUseTime")
     {
-        m_monthTimeLabel->setText(tr(strTime.toLocal8Bit().data()));
+        m_monthTimeLabel->setText(strTime.toLocal8Bit().data());
     }
+}
+void StudyStatusWidget::markTimeSlot()
+{
+    QTime curTime=QTime::currentTime(); //获取当前时间
+    m_updateTimeBt->setText(QString("更新于：今天%1:%2").arg(curTime.hour()).arg(curTime.minute()));
 }

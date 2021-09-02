@@ -13,6 +13,7 @@ class QTableView;
 class QGridLayout;
 class ProgressWidget;
 class QDBusInterface;
+class QPushButton;
 //class QListView;
 
 class StudyStatusWidget : public QWidget
@@ -40,6 +41,7 @@ private:
     QLabel* m_monthTimeLabel=nullptr;
     QLabel* m_userIconLabel=nullptr;
     QLabel* m_userNameLabel=nullptr;
+    QPushButton* m_updateTimeBt=nullptr;
     QDBusInterface* m_userInterface=nullptr;
    // QMap<QString, ProgressWidget*> m_progressMap;
     QList<TABLETAPP> m_appList;
@@ -47,14 +49,15 @@ private:
 public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);
    void timeChangeSlot(QString strMethod ,QString strTime);
-    //Q_SIGNALS:
-//    /**
-//     * 向LetterWidget界面发送字母分类按钮被点击信号
-//     * @param btnname存放按钮名称
-//     */
-//    void sendLetterBtnSignal(QString btnname);
+   void markTimeSlot();
 
-//private Q_SLOTS:
+Q_SIGNALS:
+    /**
+     * 向主界面发送更新时间点击信号
+     * @param btnname存放按钮名称
+     */
+    void updateTimeSignal();
+
 
 };
 

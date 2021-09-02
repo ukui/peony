@@ -12,7 +12,7 @@
 #include <QDBusInterface>
 #include <QDBusMessage>
 #include <QDBusConnection>
-
+//#include <QList>
 using namespace Peony;
 
 
@@ -80,6 +80,8 @@ void StudyCenterMode::initUi()
 
     connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP> &applist)),widget4,SLOT(paintProgressSlot(QList<TABLETAPP> &applist)));
     connect(this,SIGNAL(timeChangedSingal(QString,QString)),widget4,SLOT(timeChangeSlot(QString,QString)));
+    connect(widget4,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
+    connect(this,SIGNAL(markTimeSingal()),widget4,SLOT(markTimeSlot()));
 
     initTime();
 //    widget1->setFixedSize(iWidth/2, iHeight);
@@ -133,12 +135,13 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
 {
     QMap<QString, QList<TabletAppEntity*>>::const_iterator ite = studyCenterDataMap.begin();
     QList<TABLETAPP> maxTimeList;
-    TABLETAPP maxTimeApp;
-    maxTimeApp.desktopName = "";
-    maxTimeApp.appName = "";
-    maxTimeApp.appIcon = "";
-    maxTimeApp.execCommand = "";
-    maxTimeApp.iTime = -1;
+    TABLETAPP maxTimeAppfirst;
+    maxTimeAppfirst.desktopName = "";
+    maxTimeAppfirst.appName = "";
+    maxTimeAppfirst.appIcon = "";
+    maxTimeAppfirst.execCommand = "";
+    maxTimeAppfirst.iTime = -1;
+    maxTimeList.push_back(maxTimeAppfirst);
 
     m_appList.clear();
     for(; ite != studyCenterDataMap.constEnd(); ++ite)
@@ -146,28 +149,27 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
         QList<TabletAppEntity*> tabletAppList = ite.value();
         for(int i = 0; i < tabletAppList.size(); ++i)
         {
-
+            m_appList.push_back(tabletAppList[i]->appName);
             long int iWeekmm = getStudyTime("GetWeekCumulativeTime", tabletAppList[i]->appName);
-            qDebug("StudyCenterMode::getTimeOrder:%d,name:%s/n", iWeekmm,tabletAppList[i]->appName.toLocal8Bit().data());
+            qDebug("StudyCenterMode::getTimeOrder:%d,name:%s,path:%s  /n", iWeekmm,tabletAppList[i]->appName.toLocal8Bit().data(),tabletAppList[i]->appIcon.toLocal8Bit().data());
             for(int j = 0; j < maxTimeList.size(); ++j)
             {
-                m_appList.push_back(tabletAppList[i]->appName);
 
-                qDebug("StudyCenterMode::getTimeOrder tabletAppList[%d] :%s/n", i, tabletAppList[i]->appName.toLocal8Bit().data());
-                if(iWeekmm > maxTimeList[j].iTime)
+                qDebug("StudyCenterMode::getTimeOrder maxTimeList[%d] :%s,path:%s  /n", i, maxTimeList[i].appName.toLocal8Bit().data(),maxTimeList[i].appIcon.toLocal8Bit().data());
+                if(iWeekmm >= maxTimeList[j].iTime)
                 {
-                    qDebug("StudyCenterMode::getTimeOrder  maxTimeList.insert tabletAppList[%d] :%s/n", i, tabletAppList[i]->appName.toLocal8Bit().data());
-
                     TABLETAPP maxTimeApp;
                     maxTimeApp.desktopName = tabletAppList[i]->desktopName;
                     maxTimeApp.appName = tabletAppList[i]->appName;
                     maxTimeApp.appIcon = tabletAppList[i]->appIcon;
                     maxTimeApp.execCommand = tabletAppList[i]->execCommand;
+                    maxTimeApp.iTime = iWeekmm;
                     maxTimeList.insert(j, maxTimeApp);
                     if(maxTimeList.size() > 4)
                     {
                         maxTimeList.pop_back();
                     }
+                    break;
                 }
             }
         }
@@ -177,7 +179,7 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
 }
 long int StudyCenterMode::getStudyTime(QString strMethod, QString appName)
 {
-    QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface", strMethod.toLocal8Bit().data());
+    QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time", strMethod.toLocal8Bit().data());
     request<<appName;
     QDBusMessage response = QDBusConnection::sessionBus().call(request);
     long int iWeekmm = 0;
@@ -204,16 +206,16 @@ long int StudyCenterMode::getStudyTime(QString strMethod, QString appName)
 }
 QString  StudyCenterMode::getTime(QString strMethod, QStringList appList)
 {
+    //QList<QVariant> args;
     qDebug("StudyCenterMode::getTime: strMethod[%s],size:[%d]/n", strMethod.toLocal8Bit().data(),appList.size());
-
-    QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time.interface", strMethod.toLocal8Bit().data());
-    request<<appList;
+    QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time", strMethod.toLocal8Bit().data());//com.ukui.app.info.time.interfaces
     for(int i=0;i<appList.size();i++)
     {
-        request<<appList[i];
+       // args.append ( QVariant ( appList[i]) );
         qDebug("StudyCenterMode::getTime trMethod[%s],appList[%d]:%s/n",strMethod.toLocal8Bit().data(),i, appList[i].toLocal8Bit().data());
     }
-
+    //request.setArguments(args);
+    request << appList;
     QDBusMessage response = QDBusConnection::sessionBus().call(request);
     long int iWeekmm = 0;
     if (response.type() == QDBusMessage::ReplyMessage)
@@ -236,7 +238,7 @@ QString  StudyCenterMode::getTime(QString strMethod, QStringList appList)
 
     }
     int iHour = iWeekmm/60;
-    int iMin = iWeekmm/60;
+    int iMin = iWeekmm%60;
     if(iHour > 0)
     {
        return QString("%1小时%2分钟").arg(iHour).arg(iMin);
@@ -253,16 +255,24 @@ void  StudyCenterMode::initTime()
     QString strMethod ;
     strMethod = "GetDayUseTime";
     strTime = getTime(strMethod, m_appList);
-    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetDayUseTime",strTime.data());
+    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetDayUseTime",strTime.toLocal8Bit().data());
     Q_EMIT timeChangedSingal(strMethod, strTime);
 
     strMethod = "GetWeekUseTime";
     strTime = getTime(strMethod, m_appList);
-    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetWeekUseTime",strTime.data());
+    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetWeekUseTime",strTime.toLocal8Bit().data());
     Q_EMIT timeChangedSingal(strMethod, strTime);
 
     strMethod = "GetMonthUseTime";
     strTime = getTime(strMethod, m_appList);
-    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetMonthUseTime",strTime.data());
+    qDebug("StudyCenterMode::initTime :%s:%s/n", "GetMonthUseTime",strTime.toLocal8Bit().data());
     Q_EMIT timeChangedSingal(strMethod, strTime);
+}
+
+void StudyCenterMode::updateTimeSlot()
+{
+    QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
+    QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
+    initTime();
+    Q_EMIT markTimeSingal();
 }
