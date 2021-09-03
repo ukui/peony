@@ -495,8 +495,18 @@ void PermissionsPropertiesPage::updateCheckBox()
             checkbox->setChecked(this->m_permissions[i][j]);
 
             //disable home path
+            bool check_enable = true;
+            QString uri = m_uri;
+
+            if(uri.startsWith("filesafe:///")){
+                QStringList list = uri.split("/");
+                if(list.size()==4){
+                    check_enable = false;
+                }
+            }
+
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (this->m_uri == homeUri)
+            if (this->m_uri == homeUri || !check_enable)
                 checkbox->setDisabled(true);
             else
                 checkbox->setDisabled(false);
