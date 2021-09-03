@@ -94,7 +94,6 @@ void BorderShadowEffect::drawWindowShadowManually(QPainter *painter, const QRect
     QPainterPath contentPath;
     sourcePath.addRect(sourceRect);
     contentPath.addRoundedRect(contentRect, m_x_border_radius, m_y_border_radius);
-    auto targetPath = sourcePath - contentPath;
     //qDebug()<<contentPath;
     auto bgPath = contentPath - m_transparent_path;
     painter->fillPath(bgPath, m_window_bg);

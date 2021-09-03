@@ -168,8 +168,6 @@ protected:
 private:
     BorderShadowEffect *m_effect;
 
-    QWidgetResizeHandler *m_resize_handler;
-
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;
     QWidget *m_transparent_area_widget;
