@@ -81,7 +81,8 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
             for (auto uri : m_uris_to_be_removed) {
                 for (int row = 0; row < m_children->count(); row++) {
                     auto child = m_children->at(row);
-                    if (child->uri() == uri) {
+                    // 此处实际可靠性还有待验证
+                    if (FileUtils::isSamePath(uri, child->uri())) {
                         auto info = child->m_info;
                         if (info->isDir())
                         {
@@ -108,7 +109,8 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         for (auto uri : m_uris_to_be_removed) {
             for (int row = 0; row < m_children->count(); row++) {
                 auto child = m_children->at(row);
-                if (child->uri() == uri) {
+                // 此处实际可靠性还有待验证
+                if (FileUtils::isSamePath(uri, child->uri())) {
                     auto info = child->m_info;
                     if (info->isDir())
                     {
