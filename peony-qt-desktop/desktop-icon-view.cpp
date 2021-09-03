@@ -2043,6 +2043,10 @@ void DesktopIconView::clearAllIndexWidgets(const QStringList &uris)
         row++;
         index = model()->index(row, 0);
     }
+
+    // avoid dirty region out of index visual rect.
+    // link to: #77272.
+    viewport()->update();
 }
 
 void DesktopIconView::refresh()
