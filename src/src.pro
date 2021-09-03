@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gui-private x11extras dbus KWindowSystem concurrent
+QT       += core gui x11extras dbus KWindowSystem concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include(../common.pri)
 

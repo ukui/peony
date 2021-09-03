@@ -25,7 +25,6 @@
 #include "global-settings.h"
 
 #include "border-shadow-effect.h"
-#include <private/qwidgetresizehandler_p.h>
 
 #include <QVariant>
 #include <QMouseEvent>
@@ -129,11 +128,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //setWindowFlags(flags |Qt::FramelessWindowHint);
     //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
     //setContentsMargins(4, 4, 4, 4);
-
-    //bind resize handler
-    auto handler = new QWidgetResizeHandler(this);
-    handler->setMovingEnabled(false);
-    m_resize_handler = handler;
 
     //disable style window manager
     setProperty("useStyleWindowManager", false);
@@ -1179,7 +1173,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     m_effect->setWindowBackground(color);
     QPainter p(this);
 
-    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
+    m_effect->drawWindowShadowManually(&p, this->rect(), false);
     QMainWindow::paintEvent(e);
 }
 
