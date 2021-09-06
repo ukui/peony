@@ -815,7 +815,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     connect(fileInfoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
         QUrl url(uri);
         //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
-        if (url.isLocalFile()) {
+        //if (url.isLocalFile()) {
+        if(m_info->accessTime() != 0 && m_info->modifiedTime() != 0){
 //            if(m_timeModifiedLabel) {
 //                QDateTime date2 = qFileInfo.lastModified();
 //                QString time2 = date2.toString(m_systemTimeFormat);

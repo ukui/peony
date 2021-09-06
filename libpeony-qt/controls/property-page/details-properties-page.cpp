@@ -271,6 +271,10 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
 {
     this->getFIleInfo();
     QUrl url(uri);
+    if(uri.startsWith("filesafe:///")){
+        QUrl newUrl = QUrl(m_fileInfo->targetUri());
+        url = newUrl;
+    }
     QFontMetrics fm = this->fontMetrics();
 
     //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
