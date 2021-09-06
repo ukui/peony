@@ -104,7 +104,7 @@ private:
     QDBusInterface *m_statusManagerDBus = nullptr;
 
     bool m_isTabletMode = false;
-    bool m_startMenuActivated = false;
+    bool m_learningCenterActivated = false;
 
     QMutex m_mutex;
     //打开开始菜单后，将当前桌面暂时保存，以便在关闭开始菜单后进行显示

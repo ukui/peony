@@ -235,8 +235,8 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
     QCommandLineOption desktopOption(QStringList()<<"w"<<"desktop-window", tr("Take over the desktop displaying"));
     parser.addOption(desktopOption);
 
-    QCommandLineOption startMenuOption(QStringList()<<"s"<<"start-menu", tr("Open start menu."));
-    parser.addOption(startMenuOption);
+    QCommandLineOption studyOption(QStringList()<<"s"<<"study", tr("Open learning center."));
+    parser.addOption(studyOption);
 
     if (isPrimary) {
         PEONY_DESKTOP_LOG_WARN("parse cmd: it is primary screen");
@@ -321,7 +321,7 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
             has_desktop = true;
         }
 
-        if (parser.isSet(startMenuOption)) {
+        if (parser.isSet(studyOption)) {
             if (!has_desktop) {
                 qWarning() << "[PeonyDesktopApplication::parseCmd] peony-qt-desktop is not running!";
                 QTimer::singleShot(1, [=]() {
@@ -902,37 +902,20 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
     //获取一个桌面并指定父窗口
     DesktopWidgetBase *nextDesktop = m_desktopManager->getDesktopByType(targetType, parentWindow);
 
-    if (targetType == DesktopType::Tablet) {
-        if (m_isTabletMode) {
-            //当变化为平板模式时，开始菜单可能处于打开状态
-            if (m_startMenuActivated) {
-                //如果开始菜单已经打开，那么不进行平板切换，由平板模式自动适应
-                nextDesktop = nullptr;
+    if (targetType == DesktopType::StudyCenter) {
+        if (m_learningCenterActivated) {
+            if (m_isTabletMode) {
+                nextDesktop = m_desktopManager->getDesktopByType(DesktopType::Tablet, parentWindow);
             } else {
-                //如果开始菜单没有打开，那么切换到平板模式，并将开始菜单也置 true
-                //注意：平板模式下，m_startMenuActivated=true,m_isTabletMode=true;
-                //m_isTabletMode 跟随GSetting自动变化，m_startMenuActivated由切换桌面模式时手动设置
-                m_startMenuActivated = true;
+                nextDesktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, parentWindow);
             }
-
+            m_learningCenterActivated = false;
         } else {
-            //开始菜单已经被激活，并且没有处于平板模式，那么关闭开始菜单
-            if (m_startMenuActivated) {
-                m_startMenuActivated = false;
-                if (m_lastDesktop) {
-                    nextDesktop = m_lastDesktop;
-                    //设置父级以防止动画无响应
-                    nextDesktop->setParent(parentWindow);
-                    m_lastDesktop = nullptr;
-                }
-            } else {
-                m_startMenuActivated = true;
-                m_lastDesktop = parentWindow->getCurrentDesktop();
-            }
+            m_learningCenterActivated = true;
         }
     } else {
-        //切换其他模式桌面时，将开始菜单标志位置 false
-        m_startMenuActivated = false;
+        //切换其他模式桌面时，将标志位置 false
+        m_learningCenterActivated = false;
     }
     m_mutex.unlock();
 
