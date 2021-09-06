@@ -882,8 +882,12 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             g_object_unref(info);
 
         } else {
-            if (m_timeCreatedLabel)
-                m_timeCreatedLabel->setText(tr("Can't get remote file information"));
+            if (m_timeCreatedLabel){
+                QFontMetrics fontWidth(m_timeCreatedLabel->font());
+                QString elideNote = fontWidth.elidedText(tr("Can't get remote file information"),Qt::ElideRight,260);
+                m_timeCreatedLabel->setText(elideNote);
+                m_timeCreatedLabel->setToolTip(tr("Can't get remote file information"));
+            }
         }
 
         //FIXME:GVFS底层暂未实现文件创建时间获取API,暂时使用QT获取文件创建时间
