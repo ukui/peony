@@ -1,3 +1,16 @@
+peony (3.0.3-2+0902) v101; urgency=medium
+
+   *- Bug号:
+      无
+    - 需求号:
+      1.7216 新增“腾讯教育专区”桌面，且左右滑动可以切换平板桌面
+    - 其它改动说明:
+      学习专区属于测试版本，数据显示完整但不稳定
+    - 影响域:
+      intel平板模式桌面,学习专区 
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 02 Sep 2021 17:12:46 +0800
+
 peony (3.0.3-2+0826) v101; urgency=medium
 
    *- Bug号:
