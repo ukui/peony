@@ -225,6 +225,9 @@ public:
     quint64 accessTime() {
         return m_access_time;
     }
+    quint64 deletionTime() {
+        return m_deletion_date_uint64;
+    }
 
     QList<QColor> getColors() {
         return m_colors;
