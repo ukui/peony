@@ -27,8 +27,11 @@
 
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
+#include "file-utils.h"
 
 #include "icon-view-delegate.h"
+#include "clipboard-utils.h"
+#include "desktop-item-model.h"
 
 #include <QPushButton>
 #include <QWidget>
@@ -67,6 +70,9 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
 
+    opt.font = qApp->font();
+    opt.fontMetrics = qApp->fontMetrics();
+
     if (view->state() == DesktopIconView::DraggingState) {
         if (auto widget = view->indexWidget(index)) {
             view->setIndexWidget(index, nullptr);
@@ -78,6 +84,18 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     } else if (opt.state.testFlag(QStyle::State_Selected)) {
         if (view->indexWidget(index)) {
             opt.text = nullptr;
+        }
+    }
+
+    bool bCutFile = false;
+    if (Peony::FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())){
+        if (ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(FileUtils::urlEncode(index.data(DesktopItemModel::UriRole).toString()))) {
+                painter->setOpacity(0.5);
+                bCutFile = true;
+                qDebug()<<"cut item in desktop"<<index.data();
+            }
         }
     }
 
@@ -107,12 +125,16 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         painter->restore();
     }
 
+    //fix bug#46785, select one file cut has no effect issue
+    if (bCutFile && !getView()->getEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
+        view->setIndexWidget(index, nullptr);
+
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
     int y_delta = iconSizeExpected.height() - iconRect.height();
     opt.rect.translate(0, y_delta);
 
-    int maxTextHight = opt.rect.height() - iconSizeExpected.height() - 10;
+    int maxTextHight = opt.rect.height() - iconSizeExpected.height() + 10;
     if (maxTextHight < 0) {
         maxTextHight = 0;
     }
@@ -184,6 +206,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->save();
     painter->translate(0, 0 + iconSizeExpected.height() + 10);
     //painter->setFont(opt.font);
+    painter->setFont(qApp->font());
     QColor textColor = Qt::white;
     textColor.setAlphaF(0.9);
     painter->setPen(textColor);
@@ -199,7 +222,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->restore();
 
     //paint link icon and locker icon
-    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString(), true).get();
+    FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString()).get();
     if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;
@@ -336,14 +359,17 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     //NOTE: if we directly call this method, there will be
     //nothing happen. add a very short delay will ensure that
     //the edit be resized.
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, edit, [=]() {
         edit->minimalAdjust();
     });
 
     getView()->setEditFlag(true);
-    connect(edit, &IconViewEditor::returnPressed, [=]() {
+    connect(edit, &IconViewEditor::returnPressed, getView(), [=]() {
         this->setModelData(edit, nullptr, index);
         edit->deleteLater();
+        getView()->setEditFlag(false);
+    });
+    connect(edit, &IconViewEditor::destroyed, getView(), [=](){
         getView()->setEditFlag(false);
     });
 
@@ -359,11 +385,18 @@ void DesktopIconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    //qDebug()<<cursor.position();
-    if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
-        //qDebug()<<cursor.position();
+    bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
+    bool isDesktopFile = index.data(Qt::UserRole).toString().endsWith(".desktop");
+    bool isSoftLink = FileUtils::getFileIsSymbolicLink(index.data(Qt::UserRole).toString());
+    if (!isDesktopFile && !isSoftLink && !isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+        int n = 1;
+        if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
+            n = 2;
+        while(n){
+            cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            --n;
+        }
     }
     //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);
@@ -393,18 +426,35 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
         return;
     auto newName = edit->toPlainText();
     auto oldName = index.data(Qt::DisplayRole).toString();
-    QFileInfo info(index.data().toUrl().path());
-    auto suffix = "." + info.suffix();
     if (newName.isNull())
         return;
     //process special name . or .. or only space
     if (newName == "." || newName == ".." || newName.trimmed() == "")
         newName = "";
-    if (newName.length() >0 && newName != oldName && newName != suffix) {
+    //comment new name != suffix check to fix feedback issue
+    if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(Qt::UserRole).toString(), newName);
         getView()->setRenaming(true);
+
+        //select file when rename finished
+        connect(renameOp, &FileRenameOperation::operationFinished, getView(), [=](){
+            auto info = renameOp->getOperationInfo().get();
+            auto uri = info->target();
+            QTimer::singleShot(100, getView(), [=](){
+                getView()->setSelections(QStringList()<<uri);
+                getView()->scrollToSelection(uri);
+                getView()->setFocus();
+            });
+        }, Qt::BlockingQueuedConnection);
+
         fileOpMgr->startOperation(renameOp, true);
+    }
+    else if (newName == oldName)
+    {
+        //create new file, should select the file or folder
+        getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+        getView()->setFocus();
     }
 }
 

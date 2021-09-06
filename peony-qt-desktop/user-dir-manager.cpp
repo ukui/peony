@@ -26,10 +26,14 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
     m_do_not_thumbnail = m_settings->value(FORBID_THUMBNAIL_IN_VIEW).toBool();
     m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
+    m_showTrashDialog = m_settings->value(SHOW_TRASH_DIALOG).toBool();
     m_user_dir_watcher = new QFileSystemWatcher(this);
 
-    QString path0 = QString("/home/"+m_user_name+"/.config/user-dirs.dirs");
-    QString path1 = QString("/home/"+m_user_name+"/.config/org.ukui/peony-qt-preferences.conf");
+    m_user_path = "/home/"+m_user_name;
+    if (m_user_name == "root")
+        m_user_path = "/root";
+    QString path0 = QString(m_user_path +"/.config/user-dirs.dirs");
+    QString path1 = QString(m_user_path +"/.config/org.ukui/peony-qt-preferences.conf");
 
     if(!QFile(path0).exists())
     {
@@ -37,6 +41,7 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         connect(timer,&QTimer::timeout,[=](){
             if(QFile(path0).exists())
             {
+                qWarning()<<"m_times............."<<m_times;
                 getUserdir();
                 m_user_dir_watcher->addPath(path0);
                 timer->stop();
@@ -44,7 +49,10 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
             else
             {
                 if(--m_times==0)
+                {
                     timer->stop();
+                    qWarning()<<"stop finding user-dirs.dirs";
+                }
             }
         });
         timer->start(1000);
@@ -66,7 +74,8 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         if(uri == path0)
         {
             getUserdir();
-            moveFile();
+            Q_EMIT desktopDirChanged();
+//                moveFile();
         }
         //peony-qt-preferences  only thumbnail setting for now.
         else if(uri == path1)
@@ -82,6 +91,12 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
                 m_allow_parallel = m_settings->value(ALLOW_FILE_OP_PARALLEL).toBool();
                 FileOperationManager::getInstance()->setAllowParallel(m_allow_parallel);
             }
+            if(m_showTrashDialog != m_settings->value(SHOW_TRASH_DIALOG).toBool())
+            {
+                m_showTrashDialog = m_settings->value(SHOW_TRASH_DIALOG).toBool();
+                GlobalSettings::getInstance()->setValue("showTrashDialog", m_showTrashDialog);
+                GlobalSettings::getInstance()->forceSync("showTrashDialog");
+            }
         }
         m_user_dir_watcher->addPath(uri);
     });
@@ -96,20 +111,27 @@ void UserdirManager::getUserdir()
         m_last_user_dir = m_current_user_dir;
         m_current_user_dir.clear();
     }
-    auto settings = new QSettings("/home/"+m_user_name+"/.config/user-dirs.dirs",QSettings::IniFormat);
+
+    auto settings = new QSettings(m_user_path +"/.config/user-dirs.dirs",QSettings::IniFormat);
     settings->setIniCodec(QTextCodec::codecForName("UTF-8"));
 
-    m_current_user_dir.insert("XDG_DESKTOP_DIR",settings->value(QString("XDG_DESKTOP_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_DOWNLOAD_DIR",settings->value(QString("XDG_DOWNLOAD_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_TEMPLATES_DIR",settings->value(QString("XDG_TEMPLATES_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_PUBLICSHARE_DIR",settings->value(QString("XDG_PUBLICSHARE_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_DOCUMENTS_DIR",settings->value(QString("XDG_DOCUMENTS_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_MUSIC_DIR",settings->value(QString("XDG_MUSIC_DIR")).toString().replace("$HOME","/home/"+m_user_name)+"/");
-    m_current_user_dir.insert("XDG_PICTURES_DIR",settings->value(QString("XDG_PICTURES_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
-    m_current_user_dir.insert("XDG_VIDEOS_DIR",settings->value(QString("XDG_VIDEOS_DIR")).toString().replace("$HOME","/home/"+m_user_name) + "/");
+    m_current_user_dir.insert("XDG_DESKTOP_DIR",settings->value(QString("XDG_DESKTOP_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_DOWNLOAD_DIR",settings->value(QString("XDG_DOWNLOAD_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_TEMPLATES_DIR",settings->value(QString("XDG_TEMPLATES_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_PUBLICSHARE_DIR",settings->value(QString("XDG_PUBLICSHARE_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_DOCUMENTS_DIR",settings->value(QString("XDG_DOCUMENTS_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_MUSIC_DIR",settings->value(QString("XDG_MUSIC_DIR")).toString().replace("$HOME",m_user_path)+"/");
+    m_current_user_dir.insert("XDG_PICTURES_DIR",settings->value(QString("XDG_PICTURES_DIR")).toString().replace("$HOME",m_user_path) + "/");
+    m_current_user_dir.insert("XDG_VIDEOS_DIR",settings->value(QString("XDG_VIDEOS_DIR")).toString().replace("$HOME",m_user_path) + "/");
 
     //XDG_TEMPLATES_DIR will be used by right click menu.
     GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
+    //fix non Chinese desktop enviroment templates empty issue, bug#42484
+    //FIXME need system integration process
+    QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString templateDir = homePath + "/模板/";
+    GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
+
 }
 
 //rename the old paths to overwrire new one.
@@ -126,7 +148,7 @@ void UserdirManager::moveFile()
             auto fileName = dir->dirName();
             QDir *lastDir = new QDir(m_last_user_dir.value(i.key()));
 
-            if(lastDir->dirName() == QString("/home/"+m_user_name)||lastDir->isEmpty()||!lastDir->exists())
+            if(lastDir->dirName() == QString(m_user_path)||lastDir->isEmpty()||!lastDir->exists())
                 continue;
 
             auto operation = new Peony::FileRenameOperation("file://"+m_last_user_dir.value(i.key()),fileName);

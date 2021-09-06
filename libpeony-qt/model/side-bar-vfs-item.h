@@ -85,11 +85,11 @@ public Q_SLOTS:
     void clearChildren() override {}
 
 private:
-    VFSPluginIface *m_plugin;
+    VFSPluginIface *m_plugin = nullptr;
 
     QString m_uri;
     QString m_display_name;
-    SideBarModel *m_model;
+    SideBarModel *m_model = nullptr;
 };
 
 }

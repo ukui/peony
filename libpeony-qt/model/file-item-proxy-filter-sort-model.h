@@ -61,11 +61,13 @@ public:
     Q_ENUM(FilterFileModifyTime)
     enum FilterFileSize {
         ALL_SIZE,
+        EMPTY,
         TINY,
         SMALL,
         MEDIUM,
         BIG,
-        LARGE
+        LARGE,
+        GREAT
     };
     Q_ENUM(FilterFileSize)
 
@@ -116,6 +118,7 @@ private:
     bool checkFileTypeFilter(QString type) const;
     bool checkFileModifyTimeFilter(quint64 modifiedTime) const;
     bool checkFileSizeFilter(quint64 size) const;
+    bool checkFileSizeOrTypeFilter(quint64 sizem, bool isDir) const;
     bool checkFileNameFilter(const QString &displayName) const;
 
 private:

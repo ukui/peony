@@ -120,15 +120,20 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
-    if (ClipboardUtils::getClipedFilesParentUri() == view->getDirectoryUri()) {
+    bool bCutFile = false;
+    if (ClipboardUtils::isClipboardHasFiles() &&
+        FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
         if (ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
-            if (clipedUris.contains(index.data(FileItemModel::UriRole).toString())) {
+            if (clipedUris.contains(FileUtils::urlEncode(index.data(FileItemModel::UriRole).toString()))) {
                 painter->setOpacity(0.5);
+                bCutFile = true;
                 qDebug()<<"cut item"<<index.data();
             }
         }
     }
+    else
+       painter->setOpacity(1.0);
 
     auto iconSizeExpected = view->iconSize();
     auto iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, opt.widget);
@@ -164,21 +169,43 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto rect = view->visualRect(index);
 
     bool useIndexWidget = false;
-    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index) {
+    if (view->selectedIndexes().count() == 1 && view->selectedIndexes().first() == index && !bCutFile) {
         useIndexWidget = true;
         if (view->indexWidget(index)) {
         } else if (! view->isDraggingState() && view->m_allow_set_index_widget) {
             IconViewIndexWidget *indexWidget = new IconViewIndexWidget(this, option, index, getView());
+            connect(getView()->m_model, &FileItemModel::dataChanged, indexWidget, [=](const QModelIndex &topleft, const QModelIndex &bottomRight){
+                // if item has been removed and there is no reference for responding info,
+                // clear index widgets.
+                if (!indexWidget->m_info.lock()) {
+                    getView()->clearIndexWidget();
+                    return;
+                }
+                if (topleft.data(Qt::UserRole).toString() == indexWidget->m_info.lock().get()->uri()) {
+                    if (getView()->getSelections().count() == 1 && getView()->getSelections().first() == topleft.data(Qt::UserRole).toString()) {
+                        auto selections = getView()->getSelections();
+                        getView()->clearSelection();
+                        getView()->setSelections(selections);
+                    }
+                }
+            });
             view->setIndexWidget(index, indexWidget);
             indexWidget->adjustPos();
         }
     }
 
+    //fix bug#46785, select one file cut has no effect issue
+    if (bCutFile && !getView()->getDelegateEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
+        view->setIndexWidget(index, nullptr);
+
     // draw color symbols
     if (!isDragging || !view->selectedIndexes().contains(index)) {
         auto colors = info->getColors();
         int offset = 0;
-        for (auto color : colors) {
+        const int MAX_LABEL_NUM = 3;
+        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+        for (int i = startIndex; i < colors.count(); ++i) {
+            auto color = colors.at(i);
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->translate(option.rect.topLeft());
@@ -187,7 +214,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             painter->setBrush(color);
             painter->drawEllipse(QRectF(offset, 0, 10, 10));
             painter->restore();
-            offset += 10;
+            offset += 10/2;
         }
     }
 
@@ -252,20 +279,20 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     //NOTE: if we directly call this method, there will be
     //nothing happen. add a very short delay will ensure that
     //the edit be resized.
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, edit, [=]() {
         edit->minimalAdjust();
     });
 
-    connect(edit, &IconViewEditor::returnPressed, [=]() {
+    connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
         this->setModelData(edit, nullptr, index);
-        edit->deleteLater();
+        Q_EMIT isEditing(false);
     });
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         // NOTE: resort view after edit closed.
         // it's because if we not, the viewport might
         // not be updated in some cases.
-        Q_EMIT isEditing(false);
+        Q_EMIT isEditing(false);     
 #if QT_VERSION > QT_VERSION_CHECK(5, 12, 0)
         QTimer::singleShot(100, this, [=]() {
 #else
@@ -274,7 +301,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
             auto model = qobject_cast<QSortFilterProxyModel*>(getView()->model());
             //fix rename file back to default sort order
             //model->sort(-1, Qt::SortOrder(getView()->getSortOrder()));
-            model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
+            //model->sort(getView()->getSortType(), Qt::SortOrder(getView()->getSortOrder()));
         });
     });
 
@@ -291,11 +318,18 @@ void IconViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    //qDebug()<<cursor.position();
-    if (edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
-        cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
-        //qDebug()<<cursor.position();
+    bool isDir = FileUtils::getFileIsFolder(index.data(Qt::UserRole).toString());
+    bool isDesktopFile = index.data(Qt::UserRole).toString().endsWith(".desktop");
+    bool isSoftLink = FileUtils::getFileIsSymbolicLink(index.data(Qt::UserRole).toString());
+    if (!isDesktopFile && !isSoftLink && !isDir && edit->toPlainText().contains(".") && !edit->toPlainText().startsWith(".")) {
+        int n = 1;
+        if(index.data(Qt::DisplayRole).toString().contains(".tar.")) //ex xxx.tar.gz xxx.tar.bz2
+            n = 2;
+        while(n){
+            cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor, 1);
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            --n;
+        }
     }
     //qDebug()<<cursor.anchor();
     edit->setTextCursor(cursor);
@@ -325,14 +359,13 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         return;
     auto newName = edit->toPlainText();
     auto oldName = index.data(Qt::DisplayRole).toString();
-    QFileInfo info(index.data().toUrl().path());
-    auto suffix = "." + info.suffix();
     if (newName.isNull())
         return;
     //process special name . or .. or only space
     if (newName == "." || newName == ".." || newName.trimmed() == "")
         newName = "";
-    if (newName.length() >0 && newName != oldName && newName != suffix) {
+    //comment new name != suffix check to fix feedback issue
+    if (newName.length() >0 && newName != oldName/* && newName != suffix*/) {
         auto fileOpMgr = FileOperationManager::getInstance();
         auto renameOp = new FileRenameOperation(index.data(FileItemModel::UriRole).toString(), newName);
 
@@ -342,10 +375,19 @@ void IconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             QTimer::singleShot(100, getView(), [=](){
                 getView()->setSelections(QStringList()<<uri);
                 getView()->scrollToSelection(uri);
+                //set focus to fix bug#54061
+                getView()->setFocus();
             });
         }, Qt::BlockingQueuedConnection);
 
         fileOpMgr->startOperation(renameOp, true);
+    }
+    else if (newName == oldName)
+    {
+        //create new file, should select the file or folder
+        getView()->selectionModel()->select(index, QItemSelectionModel::Select);
+        //set focus to fix bug#54061
+        getView()->setFocus();
     }
 }
 

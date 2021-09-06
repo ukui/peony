@@ -47,6 +47,7 @@ enum ExceptionType
 enum ExceptionDialogType {
     ED_WARNING,
     ED_CONFLICT,
+    ED_NOT_SUPPORTED
 };
 
 /*!
@@ -64,6 +65,8 @@ enum ExceptionResponse {
     BackupAll,
     OverWriteOne,
     OverWriteAll,
+    Force,          // Force operation
+    ForceAll,       //
 };
 
 typedef enum{

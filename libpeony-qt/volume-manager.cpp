@@ -28,6 +28,8 @@
 #include <QDebug>
 #include "file-info.h"
 
+#include "file-info.h"
+
 #include <gio/gunixmounts.h>
 
 using namespace Peony;
@@ -174,7 +176,7 @@ std::shared_ptr<Mount> VolumeManager::getMountFromUri(const QString &uri)
     if (!file)
         return nullptr;
 
-    std::shared_ptr<Mount> tmp;
+    std::shared_ptr<Mount> tmp = nullptr;
     GError *err = nullptr;
     GMount *mount = g_file_find_enclosing_mount(file, nullptr, &err);
     if (err) {

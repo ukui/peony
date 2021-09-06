@@ -29,33 +29,41 @@
 
 #include "peony-core_global.h"
 
-#define FORBID_THUMBNAIL_IN_VIEW "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE "show-hidden"
-#define SORT_CHINESE_FIRST "chinese-first"
-#define SORT_FOLDER_FIRST "folder-first"
-#define SORT_TYPE	"sort-type"
-#define SORT_ORDER	"sort-order"
-
-#define RESIDENT_IN_BACKEND "resident"
-#define LAST_DESKTOP_SORT_ORDER "last-desktop-sort-order"
-#define ALLOW_FILE_OP_PARALLEL "allow-file-op-parallel"
-#define DEFAULT_WINDOW_SIZE "default-window-size"
-#define DEFAULT_SIDEBAR_WIDTH "default-sidebar-width"
+#define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
+#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
+#define SORT_CHINESE_FIRST          "chinese-first"
+#define SORT_FOLDER_FIRST           "folder-first"
+#define SORT_ORDER                  "sort-order"
+#define SORT_COLUMN                 "sort-column"
+#define RESIDENT_IN_BACKEND         "resident"
+#define LAST_DESKTOP_SORT_ORDER     "last-desktop-sort-order"
+#define ALLOW_FILE_OP_PARALLEL      "allow-file-op-parallel"
+#define DEFAULT_WINDOW_SIZE         "default-window-size"
+#define DEFAULT_SIDEBAR_WIDTH       "default-sidebar-width"
 #define TABLET_MODE "tablet-mode"
 #define TEMPLATES_DIR "templates-dir"
+#define SHOW_TRASH_DIALOG           "showTrashDialog"
 
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
 
-#define REMOTE_SERVER_IP            "remote-server/favorite-ip"
+#define REMOTE_SERVER_REMOTE_IP   "remote-server/favorite-ip"
+//#define REMOTE_SERVER_CONNECT_IP   "remote-server/connecte-ip"
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
+
+#define FONT_SETTINGS                "org.ukui.style"
 
 //difference between Community version and Commercial version
 #define COMMERCIAL_VERSION          false
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
+
+// control center
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // time format key, value is '12' or '24'
+#define UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE       "org.ukui.control-center.panel.plugins.date"            // date format key, value is cn or en
 #define SETTINGS_DAEMON_SCHEMA_XRANDR        "org.ukui.SettingsDaemon.plugins.xrandr"
 #define DUAL_SCREEN_MODE                     "xrandrMirrorMode"
 #define DUAL_SCREEN_EXPAND_MODE              "expand"
@@ -85,11 +93,22 @@ public:
 
 Q_SIGNALS:
     void valueChanged(const QString &key);
+    void signal_updateRemoteServer(const QString& server, bool add);
 
 public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
     void reset(const QString &key);
     void resetAll();
+    void setTimeFormat(const QString &value);
+    void setDateFormat(const QString &value);
+    QString getSystemTimeFormat();
+
+    /*!
+     * \brief 通过GSetting保存设置
+     * \param key
+     * \param value
+     */
+    void setGSettingValue(const QString &key, const QVariant &value);
 
     /*!
      * \brief forceSync
@@ -99,6 +118,7 @@ public Q_SLOTS:
      * keep same. this may be used in out progress, such as peony-qt-desktop.
      */
     void forceSync(const QString &key = nullptr);
+    void slot_updateRemoteServer(const QString& server, bool add);
 
 private:
     explicit GlobalSettings(QObject *parent = nullptr);
@@ -108,13 +128,20 @@ private:
     void getMachineMode();
     void getDualScreenMode();
 
-    QSettings *m_settings;
-    QMap<QString, QVariant> m_cache;
+    QSettings*                  m_settings;
+    QMap<QString, QVariant>     m_cache;
 
-    QGSettings *m_gsettings = nullptr;
+    QGSettings*                 m_gsettings = nullptr;
+    QGSettings*                 m_control_center_plugin = nullptr;
+    QGSettings*                 m_peony_gsettings  = nullptr;
     QGSettings *m_gsettings_tablet_mode = nullptr;
     QGSettings *m_gsettings_dual_screen_mode = nullptr;
+    QMutex                      m_mutex;
 
+    QString                     m_date_format = "";
+    QString                     m_time_format = "";
+    QString                     m_system_time_format  = "";
+    
     QMutex m_mutex;
 };
 

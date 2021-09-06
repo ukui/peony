@@ -69,10 +69,12 @@ void FileItemModel::setRootUri(const QString &uri)
 {
     if (uri.isNull()) {
         setRootUri("file:///");
+        m_root_uri = "file:///";
         return;
     }
+    m_root_uri = uri;
     auto info = FileInfo::fromUri(uri);
-    auto item = new FileItem(info, nullptr, this);
+    auto item = new FileItem(info, nullptr, this, this);
     setRootItem(item);
 }
 
@@ -214,6 +216,12 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignHCenter | Qt::AlignBaseline);
         }
         case Qt::DisplayRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         case Qt::DecorationRole: {
@@ -228,11 +236,16 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
                 }
                 return thumbnail;
             }
-
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
             return QVariant(icon);
         }
         case Qt::ToolTipRole: {
+            //fix bug#53504, desktop files not show same name issue
+            if (item->m_info->isDesktopFile())
+            {
+                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                return QVariant(displayName);
+            }
             return QVariant(item->m_info->displayName());
         }
         default:
@@ -242,11 +255,25 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     case ModifiedDate: {
         switch (role) {
         case Qt::DisplayRole:
+            //trash files show delete Date
+            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
+                return QVariant(item->m_info->deletionDate());
             return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
         }
     }
+    case FileType:
+        switch (role) {
+        case Qt::DisplayRole: {
+            if (item->m_info->isSymbolLink()) {
+                return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
+            }
+            return QVariant(item->m_info->fileType());
+        }
+        default:
+            return QVariant();
+        }
     case FileSize: {
         switch (role) {
         case Qt::DisplayRole: {
@@ -262,18 +289,6 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
-    case FileType:
-        switch (role) {
-        case Qt::DisplayRole: {
-            if (item->m_info->isSymbolLink()) {
-                return QVariant(tr("Symbol Link, ") + item->m_info->fileType());
-            }
-            return QVariant(item->m_info->displayFileType());
-        }
-        default:
-            return QVariant();
-        }
-
     default:
         return QVariant();
     }
@@ -284,16 +299,19 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
     if (orientation == Qt::Vertical)
         return QVariant();
     if (role == Qt::DisplayRole) {
-//        QDebug() <<"headerData:" <<section;
+        //qDebug() <<"headerData:" <<section;
         switch (section) {
         case FileName:
             return tr("File Name");
         case ModifiedDate:
+            //trash files show delete Date
+            if (m_root_uri.startsWith("trash:///"))
+                return tr("Delete Date");
             return tr("Modified Date");
-        case FileSize:
-            return tr("File Size");
         case FileType:
             return tr("File Type");
+        case FileSize:
+            return tr("File Size");
         default:
             return QVariant();
         }
@@ -433,10 +451,13 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     QStringList uris;
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
-        QUrl url = item->m_info->uri();
+        auto encodeUrl = Peony::FileUtils::urlEncode(item->m_info->uri());
+        QUrl url = encodeUrl;
         if (!urls.contains(url)) {
-            urls<<url;
-            uris<<item->uri();
+            qDebug() << "mimeData:" << url;
+
+            urls << url;
+            uris << encodeUrl;
         }
     }
     data->setUrls(urls);
@@ -450,6 +471,11 @@ Qt::DropActions FileItemModel::supportedDropActions() const
 {
     //qDebug()<<"supportedDropActions";
     return Qt::MoveAction|Qt::CopyAction;
+}
+
+Qt::DropActions FileItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }
 
 bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
@@ -478,7 +504,6 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         //we have to set the dest dir uri as its mount point.
         //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
-        //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(destDirUri);
         if (!targetUri.isEmpty()) {
             destDirUri = targetUri;
@@ -490,7 +515,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
-    auto info = Peony::FileInfo::fromUri(destDirUri, false);
+    auto info = Peony::FileInfo::fromUri(destDirUri);
     //qDebug() << "FileItemModel::dropMimeData:" <<info->isDir() <<info->type();
     //if (!FileUtils::getFileIsFolder(destDirUri))
     //fix drag file to folder symbolic fail issue
@@ -500,10 +525,6 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
-    if (urls.isEmpty()) {
-        qDebug() << "urls isEmpty return" <<urls;
-        return false;
-    }
 
     QStringList srcUris;
     if (data->hasFormat("peony-qt/encoded-uris")) {
@@ -543,24 +564,31 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash///")
+    if (b_trash_item && destDirUri != "trash:///")
         return false;
 
-    qDebug() << "dropMimeData:" <<action;
-    auto fileOpMgr = FileOperationManager::getInstance();
+    //fix drag file to trash issue, #42328
+    if (destDirUri.startsWith("trash:///"))
+    {
+        FileOperationUtils::trash(srcUris, true);
+        return true;
+    }
+
+    qDebug() << "dropMimeData:" <<action<<destDirUri;
     bool addHistory = true;
-    switch (action) {
-    case Qt::MoveAction: {
-        auto op = FileOperationUtils::move(srcUris, destDirUri, addHistory, true);
-        connect(op, &FileOperation::operationFinished, this, [=](){
-            auto opInfo = op->getOperationInfo();
-            auto targetUris = opInfo.get()->dests();
+    //krme files can not move to other place, default set as copy action
+    if (srcUris.first().startsWith("kmre:///") || srcUris.first().startsWith("kydroid:///"))
+        action = Qt::CopyAction;
 
-            //Fixme: If file operation is too fast so that model has no time to rect,the select request will fail.
-            QTimer::singleShot(500,this,[=](){
-                Q_EMIT this->selectRequest(targetUris);
-            });
-//            Q_EMIT this->selectRequest(targetUris);
+    //filesafe files can not move to other place, default set as copy action
+    if (srcUris.first().startsWith("filesafe:///"))
+        action = Qt::CopyAction;
+
+    auto op = FileOperationUtils::moveWithAction(srcUris, destDirUri, addHistory, action);
+    connect(op, &FileOperation::operationFinished, this, [=](){
+        auto opInfo = op->getOperationInfo();
+        auto targetUris = opInfo.get()->dests();
+        Q_EMIT this->selectRequest(targetUris);
 //            auto selectionModel = new QItemSelectionModel(this);
 //            selectionModel->clearSelection();
 //            QTimer::singleShot(1000, selectionModel, [=](){
@@ -570,34 +598,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 //                }
 //                selectionModel->deleteLater();
 //            });
-        }, Qt::BlockingQueuedConnection);
-        break;
-    }
-    case Qt::CopyAction: {
-        FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
-        connect(copyOp, &FileOperation::operationFinished, this, [=](){
-            auto opInfo = copyOp->getOperationInfo();
-            auto targetUris = opInfo.get()->dests();
-
-            QTimer::singleShot(500,this,[=](){
-                Q_EMIT this->selectRequest(targetUris);
-            });
-//            auto selectionModel = new QItemSelectionModel(this);
-//            selectionModel->clearSelection();
-//            QTimer::singleShot(1000, selectionModel, [=](){
-//                for (auto destUri : targetUris) {
-//                    auto index = indexFromUri(destUri);
-//                    selectionModel->select(index, QItemSelectionModel::Select);
-//                }
-//                selectionModel->deleteLater();
-//            });
-        }, Qt::BlockingQueuedConnection);
-        fileOpMgr->startOperation(copyOp);
-        break;
-    }
-    default:
-        break;
-    }
+    }, Qt::BlockingQueuedConnection);
 
     //NOTE:
     //we have to handle the dnd with file operation, so do not

@@ -23,6 +23,7 @@
 #ifndef OPERATIONMENU_H
 #define OPERATIONMENU_H
 
+#include "about-dialog.h"
 #include <QMenu>
 
 class MainWindow;

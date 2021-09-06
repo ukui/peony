@@ -58,6 +58,8 @@ class LabelBoxStyle : public QProxyStyle
     LabelBoxStyle() {}
 
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr) const override;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+    QSize sizeFromContents(ContentsType type, const QStyleOption *option, const QSize &size, const QWidget *widget) const override;
 };
 
 #endif // FILELABELBOX_H

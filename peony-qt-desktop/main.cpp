@@ -20,36 +20,29 @@
  *
  */
 
-#include "desktop-window.h"
 #include "peony-desktop-application.h"
-#include "desktop-screen.h"
-#include "peony-log.h"
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+#include <ukui-log4qt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <QTime>
 #include <QFile>
 
 #include <QStandardPaths>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-#include <QDBusInterface>
-
-#define UKUI_SERVICE    "org.gnome.SessionManager"
-#define UKUI_PATH   "/org/gnome/SessionManager"
-#define UKUI_INTERFACE    "org.gnome.SessionManager"
 
 void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
     QByteArray currentTime = QTime::currentTime().toString().toLocal8Bit();
 
-    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/peony-desktop.log";
+    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/peony-qt-desktop.log";
+
     bool showDebug = true;
-    //屏蔽代码，自动生成日志，无需手动创建
-//    if (!QFile::exists(logFilePath)) {
-//        showDebug = false;
-//    }
+    if (!QFile::exists(logFilePath)) {
+        showDebug = false;
+    }
     FILE *log_file = nullptr;
 
     if (showDebug) {
@@ -86,30 +79,30 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 int main(int argc, char *argv[])
 {
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
-    qInstallMessageHandler(messageOutput);
-
+    initUkuiLog4qt("peony-desktop");
+//    qInstallMessageHandler(messageOutput);
     qDebug() << "desktop start time in main:" <<PeonyDesktopApplication::peony_desktop_start_time;
-    PEONY_DESKTOP_LOG_WARN("peony desktop start#######################");
-
-    DesktopScreen *screen = new DesktopScreen();
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 
-    delete screen;
-
-    PeonyDesktopApplication a(argc, argv);
-    if (a.isSecondary())
+    QString id = "peony-qt-desktop" + qgetenv("DISPLAY");
+    PeonyDesktopApplication a(argc, argv, id);
+    if (a.isRunning())
         return 0;
 
-    PEONY_DESKTOP_LOG_WARN("peony desktop start before dbus interface#######################");
-    QDBusInterface interface(UKUI_SERVICE,
-                                 UKUI_PATH,
-                                 UKUI_INTERFACE,
-                                 QDBusConnection::sessionBus());
-
-    interface.call("startupfinished","peony-qt-desktop","finish");
-    PEONY_DESKTOP_LOG_WARN("peony desktop end#######################");
+    QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
+                                                          "/org/gnome/SessionManager",
+                                                          "org.gnome.SessionManager",
+                                                          "startupfinished");
+    QList<QVariant> args;
+    args.append("peony-qt-desktop");
+    args.append("startupfinished");
+    message.setArguments(args);
+    QDBusConnection::sessionBus().send(message);
 
     return a.exec();
 }

@@ -85,6 +85,9 @@ private:
     explicit FilePreviewPage(QWidget *parent = nullptr);
     ~FilePreviewPage();
 
+public:
+    void wrapData(QLabel *p_label, const QString &text);
+
 private Q_SLOTS:
     void updateInfo(FileInfo *info);
     void countAsync(const QString &uri);

@@ -24,9 +24,8 @@
 
 #include "linux-pwd-helper.h"
 
-#include "volume-manager.h"
-
 #include "file-utils.h"
+#include "datacdrom.h"
 
 #include <QFormLayout>
 #include <QFile>
@@ -35,12 +34,16 @@
 #include <QFrame>
 
 #include <QProgressBar>
+#include <QPushButton>
+#include <QProcess>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 #include <glib.h>
 
 using namespace Peony;
 
-ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : QWidget(parent)
+ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uri;
     m_layout = new QFormLayout(this);
@@ -104,39 +107,28 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
         m_layout->addRow(tr("User Name: "), new QLabel(userName, this));
         m_layout->addRow(tr("Desktop: "), new QLabel(desktopEnv, this));
     } else {
-        //FIXME: get volume info correctly.
-
         //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(uri);
         if (targetUri.isNull()) {
             m_layout->addRow(new QLabel(tr("You should mount this volume first"), nullptr));
             return;
         }
-        auto mount = VolumeManager::getMountFromUri(targetUri);
+
         if (targetUri == "file:///") {
             //NOTE: file:/// has not mount.
             GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
             GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
             quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
             quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
-            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-            // char *total_format = g_format_size(total);
-            // char *used_format = g_format_size(used);
-            // char *aviliable_format = g_format_size(aviliable);
-            //Calculated by 1024 bytes
-            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");
+            quint64 available = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
             m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
+            m_layout->addRow(tr("Total Space: "), new QLabel(formatCapacityString(total), this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(formatCapacityString(used), this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(formatCapacityString(available), this));
             m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
-            g_free(total_format);
-            g_free(used_format);
-            g_free(aviliable_format);
+
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
@@ -148,41 +140,102 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             m_layout->setAlignment(progressBar, Qt::AlignBottom);
             return;
         }
-        if (mount) {
-            auto volume = VolumeManager::getVolumeFromMount(mount);
-            auto drive = VolumeManager::getDriveFromMount(mount);
 
+        //FIXME: get volume info correctly.
+        //使用枚举的方法解决空光盘显示未知分区的问题。#58255，#58199
+        std::shared_ptr<Volume> volume = ComputerPropertiesPage::EnumerateOneVolumeByTargetUri(targetUri);
+        std::shared_ptr<Mount>  mount  = nullptr;
+
+        if (volume) {
+            mount = std::make_shared<Mount>(g_volume_get_mount(volume->getGVolume()), true);
+        } else {
+            mount  = VolumeManager::getMountFromUri(targetUri);
+            volume = VolumeManager::getVolumeFromMount(mount);
+        }
+
+        if (mount) {
             GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
             GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
-            quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
-            quint64 used = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
-            quint64 aviliable = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-            //char *total_format = g_format_size(total);
-            //char *used_format = g_format_size(used);
-            //char *aviliable_format = g_format_size(aviliable);
-            //Calculated by 1024 bytes
-            char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *used_format = strtok(g_format_size_full(used,G_FORMAT_SIZE_IEC_UNITS),"iB");
-            char *aviliable_format = strtok(g_format_size_full(aviliable,G_FORMAT_SIZE_IEC_UNITS),"iB");           
+
+            quint64 totalSpace     = 0;
+            quint64 usedSpace      = 0;
+            quint64 availableSpace = 0;
+
+            if (info) {
+                quint64 total = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+                quint64 used  = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
+                quint64 free  = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+
+                if (nullptr != volume) {
+                    char *deviceName = g_volume_get_identifier(G_VOLUME(volume->getGVolume()), G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+                    QString unixDeviceName;
+                    if(deviceName) {
+                        unixDeviceName = QString(deviceName);
+                        g_free(deviceName);
+                    }
+                    //光盘
+                    if (!unixDeviceName.isNull() && !unixDeviceName.isEmpty() && unixDeviceName.startsWith("/dev/sr")) {
+                        DataCDROM *cdrom = new DataCDROM(unixDeviceName);
+                        if (cdrom) {
+                            cdrom->getCDROMInfo();
+                            usedSpace = used;
+                            totalSpace = cdrom->getCDROMCapacity();
+                            availableSpace = totalSpace - usedSpace;
+                            delete cdrom;
+                            cdrom = nullptr;
+                        }
+                    }
+                }
+
+                if (totalSpace == 0) {
+                    if (total > 0 && (used > 0 || free > 0)) {
+                        if (used > 0 && used <= total) {
+                            usedSpace = used;
+                            totalSpace = total;
+                        } else if (free > 0 && free <= total) {
+                            usedSpace = total - free;
+                            totalSpace = total;
+                        }
+                    }
+                    availableSpace = free;
+                }
+            }
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+            //use dubs to get file system type, fix ntfs show as fuse issue
+            QString type = getFileSystemType(uri);
+            if (type.length() <=0)
+                type = fs_type;
+
             m_layout->addRow(tr("Name: "), new QLabel(mount->name(), this));
-            m_layout->addRow(tr("Total Space: "), new QLabel(total_format, this));
-            m_layout->addRow(tr("Used Space: "), new QLabel(used_format, this));
-            m_layout->addRow(tr("Free Space: "), new QLabel(aviliable_format, this));
-            m_layout->addRow(tr("Type: "), new QLabel(fs_type, this));
-            g_free(total_format);
-            g_free(used_format);
-            g_free(aviliable_format);
+/*            if (bMobileDevice)
+                m_layout->addRow(tr("Total Space: "), new QLabel(sizeInfo, this));
+            else */
+
+            m_layout->addRow(tr("Total Space: "), new QLabel(formatCapacityString(totalSpace), this));
+            m_layout->addRow(tr("Used Space: "), new QLabel(formatCapacityString(usedSpace), this));
+            m_layout->addRow(tr("Free Space: "), new QLabel(formatCapacityString(availableSpace), this));
+            m_layout->addRow(tr("Type: "), new QLabel(type, this));
+
+            auto progressBar = new QProgressBar(this);
+            auto value = double(usedSpace*1.0/totalSpace)*100;
+            progressBar->setValue(int((value > 0 && value < 1 ) ? 1 : value));
+            m_layout->addRow(progressBar);
+            m_layout->setAlignment(progressBar, Qt::AlignBottom);
+
+            if (QString(fs_type) == "isofs" && QFile::exists("/usr/bin/kylin-burner")) {
+                auto pushbutton = new QPushButton(tr("Kylin Burner"));
+                connect(pushbutton, &QPushButton::clicked, pushbutton, [=](){
+                    QProcess p;
+                    p.startDetached("kylin-burner");
+                    p.waitForStarted();
+                });
+                m_layout->addRow(new QLabel(tr("Open with: \t")), pushbutton);
+            }
+
             g_free(fs_type);
             g_object_unref(info);
             g_object_unref(file);
-
-            auto progressBar = new QProgressBar(this);
-            auto value = double(used*1.0/total)*100;
-            progressBar->setValue(int(value));
-            m_layout->addRow(progressBar);
-            m_layout->setAlignment(progressBar, Qt::AlignBottom);
         } else {
             m_layout->addRow(new QLabel(tr("Unknown"), nullptr));
         }
@@ -194,4 +247,84 @@ void ComputerPropertiesPage::addSeparator()
     auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addRow(separator);
+}
+
+void ComputerPropertiesPage::saveAllChange()
+{
+
+}
+
+QString ComputerPropertiesPage::getFileSystemType(QString uri)
+{
+    QString unixDevice,dbusPath;
+    QString fsType = "";
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return fsType;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return fsType;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Block",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        fsType = blockInterface.property("IdType").toString();
+
+    //if need diff FAT16 and FAT32, should use IdVersion
+//    if(fsType == "" && blockInterface.isValid())
+//        fsType = blockInterface.property("IdVersion").toString();
+
+    return fsType;
+}
+
+std::shared_ptr<Volume> ComputerPropertiesPage::EnumerateOneVolumeByTargetUri(QString targetUri)
+{
+    std::shared_ptr<Volume> volume = nullptr;
+    //enumerate
+    auto volume_monitor = g_volume_monitor_get();
+    auto current_volumes = g_volume_monitor_get_volumes(volume_monitor);
+    GList *l = current_volumes;
+
+    while (l) {
+        volume = std::make_shared<Volume>(G_VOLUME(l->data), true);
+        GMount *gMount = g_volume_get_mount(volume->getGVolume());
+        GFile *gFile = g_mount_get_root(gMount);
+        char *volumePath = g_file_get_uri(gFile);
+        bool isCurrentVolume = (volumePath == targetUri);
+
+        g_object_unref(gMount);
+        g_object_unref(gFile);
+        g_free(volumePath);
+
+        if (isCurrentVolume)
+            break;
+
+        volume = nullptr;
+        l = l->next;
+    }
+
+    return volume;
+}
+
+QString ComputerPropertiesPage::formatCapacityString(quint64 capacityNum)
+{
+//    char *strGB = g_format_size_full(capacityNum, G_FORMAT_SIZE_DEFAULT);
+    char *strGiB = g_format_size_full(capacityNum, G_FORMAT_SIZE_IEC_UNITS);
+
+//    QString formatString("");
+//    formatString = QString("%1%2%3%4").arg(strGB).arg(" (").arg(strGiB).arg(")");
+
+    QString formatString(strGiB);
+    //根据设计要求，按照1024字节对数据进行格式化（1GB = 1024MB），同时将GiB改为GB显示，以便于用户理解。参考windows显示样式。
+    formatString.replace("iB", "B");
+
+//    g_free(strGB);
+    g_free(strGiB);
+
+    return formatString;
 }

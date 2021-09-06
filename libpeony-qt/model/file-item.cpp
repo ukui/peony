@@ -46,7 +46,16 @@
 
 #include <QApplication>
 
+#include <QTime>
+
 using namespace Peony;
+
+QString uri2FavoriteUri(const QString &sourceUri)
+{
+    QUrl url = sourceUri;
+    QString favoriteUri = "favorite://" + url.path() + "?schema=" + url.scheme();
+    return favoriteUri;
+}
 
 FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, FileItemModel *model, QObject *parent) : QObject(parent)
 {
@@ -57,6 +66,68 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_model = model;
 
     m_backend_enumerator = new FileEnumerator(this);
+
+    m_idle = new QTimer(this);
+    m_idle->setInterval(0);
+    m_idle->setSingleShot(true);
+    connect(m_idle, &QTimer::timeout, this, [=]{
+        if (m_uris_to_be_removed.isEmpty())
+            return;
+
+        QStringList favoriteUris;
+
+        if (m_uris_to_be_removed.count() < 10) {
+            // do normal remove
+            for (auto uri : m_uris_to_be_removed) {
+                for (int row = 0; row < m_children->count(); row++) {
+                    auto child = m_children->at(row);
+                    // 此处实际可靠性还有待验证
+                    if (FileUtils::isSamePath(uri, child->uri())) {
+                        auto info = child->m_info;
+                        if (info->isDir())
+                        {
+                            favoriteUris.append(uri2FavoriteUri(uri));
+                        }
+                        m_model->beginRemoveRows(this->firstColumnIndex(), row, row);
+                        m_children->remove(row);
+                        delete child;
+                        m_model->endRemoveRows();
+                        break;
+                    }
+                }
+            }
+            BookMarkManager::getInstance()->removeBookMark(favoriteUris);
+            return;
+        }
+
+        // do reset model
+
+        int time0 = QTime::currentTime().msecsSinceStartOfDay();
+        qDebug()<<"execute deletion";
+        m_model->beginResetModel();
+        qDebug()<<"files deleted"<<m_uris_to_be_removed.count();
+        for (auto uri : m_uris_to_be_removed) {
+            for (int row = 0; row < m_children->count(); row++) {
+                auto child = m_children->at(row);
+                // 此处实际可靠性还有待验证
+                if (FileUtils::isSamePath(uri, child->uri())) {
+                    auto info = child->m_info;
+                    if (info->isDir())
+                    {
+                        favoriteUris.append(uri2FavoriteUri(uri));
+                    }
+                    m_children->remove(row);
+                    delete child;
+                    break;
+                }
+            }
+        }
+        m_model->endResetModel();
+        BookMarkManager::getInstance()->removeBookMark(favoriteUris);
+        int time1 = QTime::currentTime().msecsSinceStartOfDay();
+        qDebug()<<"excute deletion finished, cost"<<time1 - time0;
+        //ThumbnailManager::getInstance()->releaseThumbnail(m_uris_to_be_removed);
+    });
 
     m_thumbnail_watcher = std::make_shared<Peony::FileWatcher>("thumbnail://");
     connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
@@ -109,6 +180,8 @@ const QString FileItem::uri()
     return m_info->uri();
 }
 
+#include"file-operation-manager.h"
+
 QVector<FileItem*> *FileItem::findChildrenSync()
 {
     Q_EMIT m_model->findChildrenStarted();
@@ -145,9 +218,12 @@ void FileItem::findChildrenAsync()
     //NOTE: entry a new root might destroyed the current enumeration work.
     //the root item will be delete, so we should cancel the previous enumeration.
     enumerator->connect(this, &FileItem::cancelFindChildren, enumerator, &FileEnumerator::cancel);
+    enumerator->connect(enumerator, &FileEnumerator::cancelled, m_model, [=](){
+        m_model->findChildrenFinished();
+    });
     enumerator->connect(enumerator, &FileEnumerator::prepared, this, [=](std::shared_ptr<GErrorWrapper> err, const QString &targetUri, bool critical) {
         if (critical) {
-            Peony::AudioPlayManager::getInstance()->playWarningAudio();
+            //Peony::AudioPlayManager::getInstance()->playWarningAudio();
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
             return;
@@ -160,15 +236,7 @@ void FileItem::findChildrenAsync()
                 GFile *targetFile = g_file_new_for_uri(targetUri.toUtf8().constData());
                 QUrl targetUrl = targetUri;
                 auto path = g_file_get_path(targetFile);
-                if (path && !targetUrl.isLocalFile() && false) {
-                    QString localUri = QString("file://%1").arg(path);
-                    this->m_info = FileInfo::fromUri(localUri);
-                    enumerator->setEnumerateDirectory(localUri);
-                    g_free(path);
-                } else {
-                    enumerator->setEnumerateDirectory(targetFile);
-                }
-
+                enumerator->setEnumerateDirectory(targetFile);
                 g_object_unref(targetFile);
             }
 
@@ -176,7 +244,6 @@ void FileItem::findChildrenAsync()
             return;
         }
 
-        //FIXME: replace BLOCKING api in ui thread.
         auto target = FileUtils::getTargetUri(m_info->uri());
         if (!target.isEmpty()) {
             enumerator->cancel();
@@ -189,7 +256,7 @@ void FileItem::findChildrenAsync()
         }
         if (err) {
             qDebug()<<"file item error:" <<err->message()<<enumerator->getEnumerateUri();
-            Peony::AudioPlayManager::getInstance()->playWarningAudio();
+            //Peony::AudioPlayManager::getInstance()->playWarningAudio();
             if (err.get()->code() == G_IO_ERROR_NOT_FOUND || err.get()->code() == G_IO_ERROR_PERMISSION_DENIED) {
                 enumerator->cancel();
                 //fix goto removed path in case device is ejected
@@ -282,7 +349,7 @@ void FileItem::findChildrenAsync()
                         }
                     });
 
-                    connect(job, &FileInfoJob::infoUpdated, this, [=](){
+                    connect(job, &FileInfoJob::infoUpdated, child, [=](){
                         m_model->dataChanged(child->firstColumnIndex(), child->lastColumnIndex());
                     });
 
@@ -297,7 +364,7 @@ void FileItem::findChildrenAsync()
             enumerator->cancel();
             delete enumerator;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(), nullptr, true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children
@@ -307,16 +374,7 @@ void FileItem::findChildrenAsync()
                 qDebug() << "inpositive Model onChildAdded:" <<uri;
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
-                //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
-                if (info->isDir())
-                {
-                    BookMarkManager::getInstance()->removeBookMark(uri);
-                }
-                //remove the crosponding child
-                //tell the model update
                 this->onChildRemoved(uri);
-                Q_EMIT this->childRemoved(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -335,6 +393,10 @@ void FileItem::findChildrenAsync()
                     });
                     infoJob->queryAsync();
                 }
+            });
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
+                Q_EMIT this->renamed(oldUri, newUri);
+                this->onRenamed(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
@@ -358,6 +420,7 @@ void FileItem::findChildrenAsync()
                 m_model->sendPathChangeRequest("computer:///");
             });
             //qDebug()<<"startMonitor";
+
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
             m_watcher->startMonitor();
         });
@@ -396,7 +459,7 @@ void FileItem::findChildrenAsync()
 
                     m_ending_uris.removeOne(uri);
                     if (isEnding && m_ending_uris.isEmpty()) {
-                        qApp->processEvents();
+                        //qApp->processEvents();
                         Q_EMIT m_model->findChildrenFinished();
                         Q_EMIT m_model->updated();
                     }
@@ -416,7 +479,7 @@ void FileItem::findChildrenAsync()
             if (!m_model||!m_children||!m_info)
                 return;
 
-            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri());
+            m_watcher = std::make_shared<FileWatcher>(this->m_info->uri(), nullptr, true);
             m_watcher->setMonitorChildrenChange(true);
             connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](QString uri) {
                 //add new item to m_children
@@ -427,17 +490,7 @@ void FileItem::findChildrenAsync()
                 ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
-                //check bookmark and delete
-                auto info = FileInfo::fromUri(uri, false);
-                if (info->isDir())
-                {
-                    BookMarkManager::getInstance()->removeBookMark(uri);
-                }
-                //remove the crosponding child
-                //tell the model update
                 this->onChildRemoved(uri);
-                Q_EMIT this->childRemoved(uri);
-                qDebug() << "childRemoved:" <<uri;
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
                 auto index = m_model->indexFromUri(uri);
@@ -446,13 +499,18 @@ void FileItem::findChildrenAsync()
                     infoJob->setAutoDelete();
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
-                        auto info = FileInfo::fromUri(uri);
-                        if (info->isDesktopFile()) {
-                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
-                        }
+                        //comment to fix endless loop and can not rename issue, related to bug#72642
+//                        auto info = FileInfo::fromUri(uri);
+//                        if (info->isDesktopFile()) {
+//                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
+//                        }
                     });
                     infoJob->queryAsync();
                 }
+            });
+            connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
+                this->onRenamed(oldUri, newUri);
+                BookMarkManager::getInstance()->bookmarkChanged(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
                 m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
@@ -501,6 +559,13 @@ bool FileItem::hasChildren()
 
 FileItem *FileItem::getChildFromUri(QString uri)
 {
+    // optimize
+    auto index = m_model->indexFromUri(uri);
+    if (index.isValid()) {
+        return m_model->itemFromIndex(index);
+    }
+    return nullptr;
+    /*
     for (auto item : *m_children) {
         QUrl itemUrl = item->uri();
         QUrl url = uri;
@@ -509,10 +574,13 @@ FileItem *FileItem::getChildFromUri(QString uri)
             return item;
     }
     return nullptr;
+    */
 }
 
 void FileItem::onChildAdded(const QString &uri)
 {
+    m_uris_to_be_removed.removeOne(uri);
+
     qDebug()<<"add child:" << uri;
     FileItem *child = getChildFromUri(uri);
     if (child) {
@@ -535,18 +603,22 @@ void FileItem::onChildAdded(const QString &uri)
     infoJob->setAutoDelete();
     m_waiting_add_queue.append(uri);
     infoJob->connect(infoJob, &FileInfoJob::infoUpdated, this, [=]() {
-        if (m_waiting_add_queue.contains(uri)) {
-            auto item = new FileItem(info, this, m_model);
+        m_waiting_add_queue.removeOne(uri);
+        auto item = getChildFromUri(uri);
+        // add exsited checkment. link to: #66999
+        if (!item) {
+            item = new FileItem(info, this, m_model);
             m_model->beginInsertRows(firstColumnIndex(), m_children->count(), m_children->count());
             m_children->append(item);
             m_model->endInsertRows();
             qDebug() <<"successfully added child:" <<uri;
-            m_waiting_add_queue.removeOne(uri);
             //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             //Q_EMIT m_model->updated();
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+            QTimer::singleShot(1000, this, [=](){
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+            });
         } else {
-            qDebug()<<"the file is delete.............";
+            qInfo()<<"file"<<uri<<"has arealy in file item model";
         }
     });
     infoJob->queryAsync();
@@ -562,18 +634,13 @@ void FileItem::onChildAdded(const QString &uri)
 
 void FileItem::onChildRemoved(const QString &uri)
 {
-    FileItem *child = getChildFromUri(uri);
-    if (child) {
-        int index = m_children->indexOf(child);
-        m_model->beginRemoveRows(this->firstColumnIndex(), index, index);
-        m_children->removeOne(child);
-        qDebug() <<"successfully removed child:" <<uri;
-        delete child;
-        m_model->endRemoveRows();
-    } else {
-        m_waiting_add_queue.removeOne(uri);
+    // fix #62925
+    m_waiting_add_queue.removeOne(uri);
+    m_uris_to_be_removed.append(uri);
+    if (!m_idle->isActive()) {
+        m_idle->start();
     }
-    m_model->updated();
+    return;
 }
 
 void FileItem::onDeleted(const QString &thisUri)
@@ -607,9 +674,10 @@ void FileItem::onDeleted(const QString &thisUri)
             tmpItem = tmpItem->m_parent;
         }
         if (!tmpUri.isNull()) {
-            //! \note Fix direct setRootUri() prevents view switch error
-            // m_model->setRootUri(tmpUri);
-            m_model->sendPathChangeRequest(tmpUri);
+            if(tmpUri.startsWith("file:///media"))
+                m_model->sendPathChangeRequest("computer:///");
+            else
+                m_model->setRootUri(tmpUri);
         } else {
             //! \note Fix direct setRootUri() prevents view switch error
             // m_model->setRootUri("file:///");
@@ -622,10 +690,32 @@ void FileItem::onDeleted(const QString &thisUri)
 void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"renamed";
-    Q_UNUSED(oldUri);
-    if (m_parent) {
-        FileItem *newRootItem = new FileItem(FileInfo::fromUri(newUri), nullptr, m_model);
-        m_model->setRootItem(newRootItem);
+
+    // note that some times new file has arealy in directory view,
+    // and there is no delete event triggered. for example. copy
+    // a .desktop file in current view. in this case there might
+    // be an outdated tmp file left.
+    //
+    // to avoid that we add an existing checkment, and handle old
+    // file with different situation.
+    auto newChild = getChildFromUri(newUri);
+    if (newChild) {
+        qDebug()<<"new child has arealy in view";
+        newChild->updateInfoAsync();
+    }
+
+    FileItem *child = getChildFromUri(oldUri);
+    if (child) {
+        if (!newChild) {
+            int index = m_children->indexOf(child);
+            m_children->at(index)->m_info= FileInfo::fromUri(newUri);
+            child->updateInfoAsync();
+        } else {
+            m_model->beginRemoveRows(this->firstColumnIndex(), m_children->indexOf(child), m_children->indexOf(child));
+            m_children->removeOne(child);
+            child->deleteLater();
+            m_model->endRemoveRows();
+        }
     }
 }
 
@@ -641,14 +731,21 @@ void FileItem::onUpdateDirectoryRequest()
         QStringList rawUris;
         QStringList removedUris;
         QStringList addedUris;
+        QVector<FileItem*> removeFileItem ;
 
         for (auto child : *m_model->m_root_item->m_children) {
             rawUris<<child->uri();
             if (!currentUris.contains(child->uri())) {
                 removedUris<<child->uri();
-                m_model->m_root_item->onChildRemoved(child->uri());
+                removeFileItem.append(child);
+                //m_model->m_root_item->onChildRemoved(child->uri());
             }
         }
+
+        for (auto item : removeFileItem ) {
+            m_model->m_root_item->onChildRemoved(item->uri());
+        }
+
 
         for (auto uri : currentUris) {
             if (!rawUris.contains(uri)) {
@@ -690,6 +787,11 @@ void FileItem::updateInfoAsync()
     job->queryAsync();
 }
 
+void FileItem::removeChildren()
+{
+
+}
+
 void FileItem::clearChildren()
 {
     auto parent = firstColumnIndex();
@@ -701,4 +803,36 @@ void FileItem::clearChildren()
     m_expanded = false;
     m_watcher.reset();
     m_watcher = nullptr;
+}
+
+/* Func: if it isn't a vaild volume device,it should not be displayed.
+ */
+bool FileItem::shouldShow()
+{
+    QString uri,unixDevice,displayName;
+
+    uri = m_info->uri();
+    if(uri.isEmpty())
+        return false;
+    if("computer:///root.link" == uri)
+        return true;
+
+    //non computer path, no need check
+    //to fix sftp IO stuck issue
+    if (! uri.startsWith("computer:///") || ! uri.endsWith(".drive"))
+        return true;
+
+    displayName = FileUtils::getFileDisplayName(uri);
+    if(displayName.isEmpty())
+        return false;
+
+    if (displayName.contains(":"))
+        return true;
+
+    //if needed, comment to not use this IO stuck API
+    unixDevice = FileUtils::getUnixDevice(uri);
+    if(!unixDevice.isEmpty()){
+        return false;
+    }
+    return true;
 }

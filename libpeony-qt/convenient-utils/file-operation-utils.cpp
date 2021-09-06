@@ -100,7 +100,8 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
             QUrl url(uri);
             QFile file(url.path());
             //fix iso symbolLink delete prompt can not trash issue
-            auto info = FileInfo::fromUri(uri, false);
+            //FIXME: replace BLOCKING api in ui thread. and no type.
+            auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink())
                 continue;
             if (file.size() > 1024*1024*1024) {
@@ -164,11 +165,46 @@ FileOperation *FileOperationUtils::link(const QString &srcUri, const QString &de
 
 std::shared_ptr<FileInfo> FileOperationUtils::queryFileInfo(const QString &uri)
 {
+    //FIXME: replace BLOCKING api in ui thread.
     auto info = FileInfo::fromUri(uri);
     auto job = new FileInfoJob(info);
     job->querySync();
     job->deleteLater();
     return info;
+}
+
+FileOperation *FileOperationUtils::moveWithAction(const QStringList &srcUris, const QString &destUri, bool addHistory, Qt::DropAction action)
+{
+    FileOperation *op;
+    QString destDir = nullptr;
+    auto fileOpMgr = FileOperationManager::getInstance();
+    if (destUri != "trash:///") {
+        if (true == destUri.startsWith("computer:///")) {
+            destDir = FileUtils::getTargetUri(destUri);
+            if (nullptr == destDir){
+                qWarning()<<"get target uri failed, from uri:"
+                          <<destUri;
+                destDir = destUri;
+            }
+        }
+        else {
+            destDir = destUri;
+        }
+
+        if (action == Qt::CopyAction) {
+            // fix 71411
+            op = new FileCopyOperation(srcUris, destDir);
+        } else {
+            auto moveOp = new FileMoveOperation(srcUris, destDir);
+            moveOp->setAction(action);
+            op = moveOp;
+        }
+
+        fileOpMgr->startOperation(op, addHistory);
+    } else {
+        op = FileOperationUtils::trash(srcUris, true);
+    }
+    return op;
 }
 
 FileOperation *FileOperationUtils::restore(const QString &uriInTrash)
@@ -207,13 +243,9 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     int result = 0;
     if (uris.count() == 1) {
         QUrl url = uris.first();
-        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete %1? "
-                                       "Once you start a deletion, the files deleting will never be "
-                                       "restored again.").arg(url.fileName()));
+        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again."));
     } else {
-        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these %1 files? "
-                                       "Once you start a deletion, the files deleting will never be "
-                                       "restored again.").arg(uris.count()));
+        result = QMessageBox::question(nullptr, QObject::tr("Delete Permanently"), QObject::tr("Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again."));
     }
 
     if (result == QMessageBox::Yes) {
@@ -242,7 +274,6 @@ static int getNumOfFileName(const QString &name)
         while ((pos = regExp.indexIn(name, pos)) != -1) {
             tmp = regExp.cap(0).toUtf8();
             pos += regExp.matchedLength();
-           // qDebug()<<"pos"<<pos;
         }
         tmp.remove(0,1);
         tmp.chop(1);

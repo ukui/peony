@@ -25,45 +25,107 @@
 #include "file-info.h"
 #include "file-info-job.h"
 #include "file-utils.h"
+#include "global-settings.h"
+#include "file-count-operation.h"
+
 #include <QFormLayout>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
 #include <QUrl>
 
+#include <QCheckBox>
+#include <gio/gdesktopappinfo.h>
+
 using namespace Peony;
+//460 - 16 - 16 = 428
+#define FIXED_ROW_WIDTH 428;
 
-RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
-{
-    m_uri = uris.first();
-    bool startWithTrash = m_uri.startsWith("trash:///");
+QString RecentAndTrashPropertiesPage::getIconName() {
+    if (m_fileInfo == nullptr)
+        return "application-x-desktop";
 
-    auto info = FileInfo::fromUri(m_uri);
-    if (info->displayName().isEmpty()) {
-        FileInfoJob job(info);
-        job.querySync();
+    QString realPath;
+    bool startWithTrash = m_fileInfo->uri().startsWith("trash:///");
+
+    if (startWithTrash) {
+        realPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
+                + "/.local/share/Trash/files/"
+                + m_fileInfo->displayName();
+    } else {
+        realPath = m_fileInfo->targetUri();
     }
 
+    auto _desktop_file = g_desktop_app_info_new_from_filename(QUrl(realPath).path().toUtf8().constData());
+    if (_desktop_file) {
+        return QString(g_desktop_app_info_get_string(_desktop_file, "Icon"));
+    }
+    //在找不到图标时，返回默认图标 - When the icon is not found, return to the default icon
+    return "application-x-desktop";
+}
+
+RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
+{
+    m_uri = uris.first();
+
+    m_fileInfo = FileInfo::fromUri(m_uri);
+    FileInfoJob *job = new FileInfoJob(m_fileInfo);
+    job->setAutoDelete(true);
+    connect(job, &FileInfoJob::queryAsyncFinished, this, &RecentAndTrashPropertiesPage::init);
+    job->queryAsync();
+}
+
+void RecentAndTrashPropertiesPage::init()
+{
+    if (m_futureWatcher) {
+        delete m_futureWatcher;
+        m_futureWatcher = nullptr;
+    }
     m_layout = new QFormLayout(this);
     m_layout->setRowWrapPolicy(QFormLayout::WrapLongRows);
     m_layout->setFormAlignment(Qt::AlignLeft|Qt::AlignHCenter);
     m_layout->setLabelAlignment(Qt::AlignRight|Qt::AlignHCenter);
+    m_layout->setContentsMargins(16,16,16,0);
+    this->setLayout(m_layout);
 
-    auto icon = new QPushButton(QIcon::fromTheme(info->iconName()), nullptr, this);
+    QString iconName = m_fileInfo->iconName();
+    if (iconName == "application-x-desktop") {
+        iconName = getIconName();
+    }
+    auto icon = new QPushButton(QIcon::fromTheme(iconName), nullptr, this);
     icon->setIconSize(QSize(48, 48));
     icon->setProperty("isIcon", true);
+
+    QVBoxLayout *boxLayout = new QVBoxLayout(this);
     auto name = new QLineEdit(this);
     name->setReadOnly(true);
-    name->setText(info->displayName());
-    m_layout->addRow(icon, name);
-    m_layout->setAlignment(name, Qt::AlignLeft|Qt::AlignCenter);
+    name->setText(m_fileInfo->displayName());
+
+    boxLayout->addWidget(name);
+    boxLayout->setAlignment(Qt::AlignBottom);
+
+    m_layout->addRow(icon, boxLayout);
+    m_layout->setAlignment(Qt::AlignCenter);
 
     addSeparator();
 
+    bool startWithTrash = m_uri.startsWith("trash:///");
+
     if (startWithTrash) {
         if (m_uri == "trash:///") {
-
+            auto checkbox = new QCheckBox(tr("Show confirm dialog while trashing."));
+            m_layout->addWidget(checkbox);
+            connect(checkbox, &QCheckBox::toggled, this, [=](bool checked){
+                this->setProperty("check", checked);
+            });
+            auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
+            if (value.isValid()) {
+                checkbox->setChecked(value.toBool());
+            } else {
+                checkbox->setChecked(true);
+            }
         } else {
+            QLabel *label =new QLabel(this);
             GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
             GFileInfo *info = g_file_query_info(file,
                                                 G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
@@ -72,23 +134,69 @@ RecentAndTrashPropertiesPage::RecentAndTrashPropertiesPage(const QStringList &ur
                                                 nullptr);
             auto origin_path = g_file_info_get_attribute_byte_string(info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
 
-            auto label = new QLabel(QString(origin_path), this);
+            QUrl url(FileUtils::getParentUri("file://" + QString(origin_path)));
+
+            quint64 width = FIXED_ROW_WIDTH - label->fontMetrics().width(tr("Origin Path: "));
+            label->setText(label->fontMetrics().elidedText(url.path(), Qt::ElideMiddle,width));
             label->setWordWrap(true);
+
+//            g_object_unref(info);
+//            g_object_unref(file);
             m_layout->addRow(tr("Origin Path: "), label);
+
+            QLabel *size_label =new QLabel(this);
+            if (m_fileInfo->isDir()) {
+                FileCountOperation *fileCountOp = new FileCountOperation(QStringList() << m_fileInfo->uri());
+                fileCountOp->setAutoDelete(true);
+
+                connect(fileCountOp, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
+                    char *fileTotalSizeFormat = g_format_size_full(total_size, G_FORMAT_SIZE_IEC_UNITS);
+
+                    QString fileTotalSizeFormatString(fileTotalSizeFormat);
+
+                    size_label->setText(fileTotalSizeFormatString.replace("iB", "B"));
+
+                    g_free(fileTotalSizeFormat);
+                });
+                QThreadPool::globalInstance()->start(fileCountOp);
+            } else {
+                size_label->setText(m_fileInfo->fileSize());
+            }
+
+            m_layout->addRow(tr("Size: "), size_label);
+            //add delete date label
+            QLabel *delete_label =new QLabel(this);
+            info = g_file_query_info(file,
+                                     G_FILE_ATTRIBUTE_TRASH_DELETION_DATE,
+                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                     nullptr,
+                                     nullptr);
+
+            QString deletion_date = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+            deletion_date = deletion_date.replace("T", " ");
+            quint64 delete_width = FIXED_ROW_WIDTH - delete_label->fontMetrics().width(tr("Deletion Date: "));
+            delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
+            delete_label->setWordWrap(true);
 
             g_object_unref(info);
             g_object_unref(file);
+            m_layout->addRow(tr("Deletion Date: "), delete_label);
         }
     } else {
         if (m_uri == "recent:///") {
 
         } else {
-            //FIXME: replace BLOCKING api in ui thread.
-            auto targetUri = FileUtils::getTargetUri(m_uri);
-            auto label = new QLabel(QUrl(targetUri).toDisplayString(), this);
-            label->setWordWrap(true);
-            m_layout->addRow(tr("Size: "), new QLabel(info->fileSize(), this));
-            m_layout->addRow(tr("Original Location: "), label);
+            QLabel *sizeLabel =new QLabel(this);
+            QLabel *locationLabel =new QLabel(this);
+            auto targetUri = m_fileInfo->targetUri();
+            quint64 width = FIXED_ROW_WIDTH - locationLabel->fontMetrics().width(tr("Original Location: "));
+            locationLabel->setText(locationLabel->fontMetrics().elidedText(QUrl(targetUri).path(), Qt::ElideMiddle,width));
+            locationLabel->setWordWrap(true);
+
+            sizeLabel->setText(m_fileInfo->fileSize());
+
+            m_layout->addRow(tr("Size: "), sizeLabel);
+            m_layout->addRow(tr("Original Location: "), locationLabel);
         }
     }
 }
@@ -98,4 +206,10 @@ void RecentAndTrashPropertiesPage::addSeparator()
     auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     m_layout->addRow(separator);
+}
+
+void RecentAndTrashPropertiesPage::saveAllChange()
+{
+    bool check = this->property("check").toBool();
+    GlobalSettings::getInstance()->setGSettingValue("showTrashDialog", check);
 }

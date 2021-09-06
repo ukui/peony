@@ -97,7 +97,7 @@ SideBar::SideBar(QWidget *parent) : QTreeView(parent)
         }
         case 1: {
             auto item = proxy_model->itemFromIndex(index);
-            if (item->isMounted()) {
+            if (item->isMounted() && item->isRemoveable()) {
                 auto leftIndex = proxy_model->index(index.row(), 0, index.parent());
                 this->collapse(leftIndex);
                 item->unmount();

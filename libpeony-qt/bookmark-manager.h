@@ -54,14 +54,19 @@ Q_SIGNALS:
     void urisLoaded();
     void bookMarkAdded(const QString &uri, bool successed);
     void bookMarkRemoved(const QString &uri, bool successed);
+    void bookmarkChanged(const QString oldUri, const QString newUri);
 
 public Q_SLOTS:
     void addBookMark(const QString &uri);
     void removeBookMark(const QString &uri);
+    void renameBookmark(const QString oldUri, const QString newUri);
+    void removeBookMark(const QStringList &uris);
 
 private:
     explicit BookMarkManager(QObject *parent = nullptr);
     ~BookMarkManager();
+    void addBookMarkPrivate(const QString &uri);
+    void removeBookMarkPrivate(const QString &uri);
 
     QStringList m_uris;
     QSettings *m_book_mark = nullptr;

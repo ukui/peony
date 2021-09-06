@@ -42,6 +42,7 @@ namespace Peony {
 
 class FileOperationInfo;
 class FileWatcher;
+class FileOperation;
 
 /*!
  * \brief The FileOperationManager class
@@ -132,6 +133,7 @@ public Q_SLOTS:
 private:
     explicit FileOperationManager(QObject *parent = nullptr);
     ~FileOperationManager();
+    static void systemSleep (GDBusConnection* connection, const gchar* senderName, const gchar* objectPath, const gchar* interfaceName, const gchar* signalName, GVariant* parameters, gpointer udata);
 
 private:
     QThreadPool *m_thread_pool;
@@ -174,6 +176,7 @@ public:
     void LinkOppositeInfoConstruct();
     void RenameOppositeInfoConstruct();
     void UntrashOppositeInfoConstruct();
+    void trashOppositeInfoConstruct();
 
     Type operationType() {
         return m_type;
@@ -208,6 +211,11 @@ public:
     //Rename
     QString m_oldname = nullptr;
     QString m_newname = nullptr;
+
+    bool m_has_error = false;
+
+    //using for distiguist move action.
+    Qt::DropAction m_drop_action = Qt::IgnoreAction;
 };
 
 }

@@ -99,6 +99,8 @@ public:
 
     QRect visualRect(const QModelIndex &index) const override;
 
+    bool getDelegateEditFlag();
+
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);
 
@@ -126,6 +128,8 @@ public Q_SLOTS:
 
     void editUri(const QString &uri) override;
     void editUris(const QStringList uris) override;
+
+    void selectAll() override;
 
     void resort();
     void reportViewDirectoryChanged();
@@ -156,6 +160,8 @@ protected:
     void wheelEvent(QWheelEvent *e) override;
 
     void updateGeometries() override;
+
+    void focusInEvent(QFocusEvent *e) override;
 
     bool getIgnore_mouse_move_event() const;
     void setIgnore_mouse_move_event(bool ignore_mouse_move_event);

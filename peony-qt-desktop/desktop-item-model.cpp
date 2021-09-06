@@ -70,7 +70,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     // do not redo layout new items while we start an operation with peony's api.
     connect(FileOperationManager::getInstance(), &FileOperationManager::operationStarted, this, [=](){
-        m_new_file_info_query_queue.clear();
+        m_items_need_relayout.clear();
     });
 
     m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///, this");
@@ -91,7 +91,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileCreated, [=]() {
         //qDebug()<<"trash changed";
-        auto trash = FileInfo::fromUri("trash:///", true);
+        auto trash = FileInfo::fromUri("trash:///");
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -104,7 +104,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
     this->connect(m_trash_watcher.get(), &FileWatcher::fileDeleted, [=]() {
         //qDebug()<<"trash changed";
-        auto trash = FileInfo::fromUri("trash:///", true);
+        auto trash = FileInfo::fromUri("trash:///");
         auto job = new FileInfoJob(trash);
         job->setAutoDelete();
         connect(job, &FileInfoJob::infoUpdated, [=]() {
@@ -115,16 +115,16 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         job->queryAsync();
     });
 
-    m_desktop_watcher = std::make_shared<FileWatcher>("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), this);
-    m_desktop_watcher->setMonitorChildrenChange(true);
+    // monitor desktop
+    QString desktopFile = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
+    qWarning() << "desktopfile:" << desktopFile;
+    m_desktop_watcher = std::make_shared<FileWatcher>("file://" + desktopFile, this);
+    m_desktop_watcher->setMonitorChildrenChange(true);
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileCreated, [=](const QString &uri) {
         qDebug()<<"desktop file created"<<uri;
 
-        auto info = FileInfo::fromUri(uri, true);
-        if (!info->isDir() && !fileIsExists(uri)) {
-            return;
-        }
+        auto info = FileInfo::fromUri(uri);
         bool exsited = false;
         for (auto file : m_files) {
             if (file->uri() == info->uri()) {
@@ -133,22 +133,31 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
         }
 
-        if (m_new_file_info_query_queue.contains(uri)) {
-            exsited = true;
-        } else {
-            m_new_file_info_query_queue<<uri;
-        }
-
         if (!exsited) {
+            if (!m_renaming_file_pos.first.isEmpty() && uri != m_renaming_file_pos.first && uri.contains(m_renaming_file_pos.first)) {
+                return;
+            }
+            m_items_need_relayout.append(uri);
+            m_items_need_relayout.removeOne(m_renaming_file_pos.first);
+            m_items_need_relayout.removeOne(m_renaming_file_pos.first + ".desktop");
+            if (m_renaming_operation_info.get()) {
+                m_items_need_relayout.removeOne(m_renaming_operation_info.get()->target());
+            }
+            m_items_need_relayout.removeDuplicates();
+
             auto job = new FileInfoJob(info);
             job->setAutoDelete();
             job->querySync();
+
             // locate new item =====
 
             auto view = PeonyDesktopApplication::getIconView();
             auto itemRectHash = view->getCurrentItemRects();
             auto grid = view->gridSize();
-            auto viewRect = view->rect();
+            auto viewRect = view->viewport()->rect();
+
+            if (!view->m_show_hidden && info.get()->displayName().startsWith("."))
+                return;
 
             QRegion notEmptyRegion;
             for (auto rect : itemRectHash.values()) {
@@ -158,6 +167,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             if (!view->isRenaming()) {
                 view->setFileMetaInfoPos(uri, QPoint(-1, -1));
             } else {
+                m_items_need_relayout.removeOne(uri);
                 view->setRenaming(false);
             }
 
@@ -269,19 +279,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
-        // try relayout floating items, it's often occurred when unarchive a archive file, or modify a file with vim outside of peony.
-        m_last_deleted_item_uri = uri;
-        int index = m_new_file_info_query_queue.indexOf(uri);
-        if (index >= 0) {
-            m_items_need_relayout = m_new_file_info_query_queue;
-            for (int i = 0; i <= index; i++) {
-                m_items_need_relayout.removeFirst();
-            }
-        } else {
-            m_items_need_relayout.clear();
-        }
-        m_new_file_info_query_queue.removeOne(uri);
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileDeleted, [=](const QString &uri) {
+        m_items_need_relayout.removeOne(uri);
         auto view = PeonyDesktopApplication::getIconView();
         view->removeItemRect(uri);
 
@@ -294,13 +293,13 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 m_files.removeOne(info);
                 this->endRemoveRows();
                 //this->endResetModel();
-                Q_EMIT this->requestClearIndexWidget();
+                Q_EMIT this->requestClearIndexWidget(QStringList()<<uri);
                 Q_EMIT this->requestUpdateItemPositions();
             }
         }
     });
 
-    this->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
+    m_desktop_watcher->connect(m_desktop_watcher.get(), &FileWatcher::fileChanged, [=](const QString &uri) {
         auto view = PeonyDesktopApplication::getIconView();
         auto itemRectHash = view->getCurrentItemRects();
 
@@ -311,7 +310,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 connect(job, &FileInfoJob::infoUpdated, this, [=]() {
                     ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
-                    Q_EMIT this->requestClearIndexWidget();
+                    Q_EMIT this->requestClearIndexWidget(QStringList()<<uri);
 
                 });
                 job->queryAsync();
@@ -345,7 +344,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestUpdateItemPositions();
                     QStringList list;
                     list.append(info->uri());
-                    FileOperationUtils::trash(list, false);
+                    FileOperationUtils::remove(list);
                 }
             }
         }
@@ -398,6 +397,52 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
     connect(m_dir_manager,&UserdirManager::thumbnailSetingChange,[=](){
         refresh();
     });
+
+    connect(FileOperationManager::getInstance(), &FileOperationManager::operationStarted, this, [=](std::shared_ptr<FileOperationInfo> info){
+        if (info.get()->m_type == FileOperationInfo::Rename) {
+            m_renaming_operation_info = info;
+            auto renamingUri = info.get()->m_src_uris.first();
+            if (!renamingUri.endsWith(".desktop")) {
+                m_renaming_operation_info = nullptr;
+                return;
+            }
+            m_renaming_file_pos.first = renamingUri;
+            m_renaming_file_pos.second = PeonyDesktopApplication::getIconView()->getFileMetaInfoPos(renamingUri);
+        } else {
+            m_renaming_file_pos.first = nullptr;
+            m_renaming_file_pos.second = QPoint();
+            m_renaming_operation_info = nullptr;
+        }
+    });
+    connect(FileOperationManager::getInstance(), &FileOperationManager::operationFinished, this, [=](std::shared_ptr<FileOperationInfo> info){
+        if (info.get()->m_type == FileOperationInfo::Rename) {
+            if (!info.get()->m_has_error) {
+                auto renamingUri = info.get()->target();
+                if (!renamingUri.endsWith(".desktop")) {
+                    m_renaming_operation_info = nullptr;
+                    m_renaming_file_pos.first = nullptr;
+                    m_renaming_file_pos.second = QPoint();
+                    return;
+                }
+                m_renaming_file_pos.first = renamingUri;
+                m_items_need_relayout.removeOne(renamingUri);
+                m_items_need_relayout.removeOne(renamingUri + ".desktop");
+                PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+                PeonyDesktopApplication::getIconView()->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
+            } else {
+                // restore/relayout?
+            }
+            m_renaming_operation_info = nullptr;
+            QTimer::singleShot(100, this, [=]{
+                m_renaming_file_pos.first = nullptr;
+                m_renaming_file_pos.second = QPoint();
+            });
+        } else {
+            m_renaming_file_pos.first = nullptr;
+            m_renaming_file_pos.second = QPoint();
+            m_renaming_operation_info = nullptr;
+        }
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()
@@ -405,8 +450,27 @@ DesktopItemModel::~DesktopItemModel()
 
 }
 
-void DesktopItemModel::refresh()
+bool findProgram(const QString &program)
 {
+    QFileInfo fi(program);
+    if (!program.isEmpty() && fi.isExecutable()) {
+        return true;
+    }
+
+    const QStringList paths = QFile::decodeName(qgetenv("PATH")).split(':');
+    for(const QString &dir : paths) {
+        QFileInfo fi= QFileInfo(dir + QDir::separator() + program);
+        if (fi.isExecutable()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void DesktopItemModel::refreshInternal()
+{
+    m_items_need_relayout.clear();
     ThumbnailManager::getInstance()->syncThumbnailPreferences();
     beginResetModel();
     //removeRows(0, m_files.count());
@@ -422,6 +486,17 @@ void DesktopItemModel::refresh()
     if (!FileUtils::isFileExsit(desktopUri)) {
         // try get correct desktop path delay.
         //FIXME: replace BLOCKING api in ui thread.
+
+        if (findProgram("xdg-user-dirs-update")) {
+            do {
+                QProcess p;
+                p.setProgram("xdg-user-dirs-update");
+                p.start();
+                p.waitForFinished();
+                desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            } while (!FileUtils::isFileExsit(desktopUri));
+        }
+
         QTimer::singleShot(1000, this, [=](){
             if (!FileUtils::isFileExsit(desktopUri)) {
                 endResetModel();
@@ -430,6 +505,7 @@ void DesktopItemModel::refresh()
             } else {
                 m_enumerator = new FileEnumerator(this);
                 m_enumerator->setAutoDelete();
+                m_enumerator->setEnumerateWithInfoJob();
                 m_enumerator->setEnumerateDirectory(desktopUri);
                 m_enumerator->connect(m_enumerator, &FileEnumerator::enumerateFinished, this, &DesktopItemModel::onEnumerateFinished);
                 m_enumerator->enumerateAsync();
@@ -466,19 +542,22 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     auto info = m_files.at(index.row());
     switch (role) {
     case Qt::DisplayRole:
-        if (m_userName == info->displayName()) {
-            return tr("My Document");
-        } else {
-            return info->displayName();
+        //fix bug#53504, desktop files not show same name issue
+        if (info->isDesktopFile())
+        {
+            auto displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
+            return displayName;
         }
+        return info->displayName();
     case Qt::ToolTipRole:
-        if (m_userName == info->displayName()) {
-            return tr("My Document");
-        } else {
-            return info->displayName();
+        //fix bug#53504, desktop files not show same name issue
+        if (info->isDesktopFile())
+        {
+            auto displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
+            return displayName;
         }
+        return info->displayName();
     case Qt::DecorationRole: {
-        //auto thumbnail = info->thumbnail();
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
             if(info->isExecDisable())  //add by nsg
@@ -510,9 +589,9 @@ void DesktopItemModel::onEnumerateFinished()
     m_files.clear();
     endRemoveRows();
 
-    auto computer = FileInfo::fromUri("computer:///", true);
-    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), true);
-    auto trash = FileInfo::fromUri("trash:///", true);
+    auto computer = FileInfo::fromUri("computer:///");
+    auto personal = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    auto trash = FileInfo::fromUri("trash:///");
 
     QList<std::shared_ptr<FileInfo>> infos;
     QList<std::shared_ptr<FileInfo>> tmp_infos;
@@ -526,45 +605,76 @@ void DesktopItemModel::onEnumerateFinished()
     std::sort(tmp_infos.begin(), tmp_infos.end(), uriLittleThan);
 
     infos<<tmp_infos;
+    m_querying_files = infos;
+    m_files = infos;
 
     //qDebug()<<m_files.count();
     //this->endResetModel();
     for (auto info : infos) {
-        beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-        auto syncJob = new FileInfoJob(info);
-        syncJob->querySync();
-        syncJob->deleteLater();
-        m_files<<info;
-        endInsertRows();
+        auto asyncJob = new FileInfoJob(info);
+        connect(asyncJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+            m_querying_files.removeOne(info);
+            if (m_querying_files.isEmpty()) {
+                beginInsertRows(QModelIndex(), 0, m_files.count() - 1);
+                endInsertRows();
 
-        if (info->isDesktopFile()) {
-            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
-        } else {
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
-        }
-    }
-    for (auto info : m_files) {
-        auto uri = info->uri();
-        auto pos = view->getFileMetaInfoPos(info->uri());
-        if (pos.x() >= 0) {
-            view->updateItemPosByUri(info->uri(), pos);
-        } else {
-            view->ensureItemPosByUri(uri);
-        }
-    }
+                for (auto info : m_files) {
+                    auto uri = info->uri();
+                    auto view = PeonyDesktopApplication::getIconView();
+                    auto pos = view->getFileMetaInfoPos(info->uri());
+                    if (pos.x() >= 0) {
+                        view->updateItemPosByUri(info->uri(), pos);
+                    } else {
+                        view->ensureItemPosByUri(uri);
+                    }
 
-    Q_EMIT refreshed();
+                    if (info->isDesktopFile()) {
+                        ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
+                    } else {
+                        ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+                    }
+                }
 
-    //qDebug()<<"startMornitor";
-    m_trash_watcher->startMonitor();
-    if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
-        m_desktop_watcher->stopMonitor();
-        m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-        m_desktop_watcher->setMonitorChildrenChange(true);
+                //qDebug()<<"startMornitor";
+                m_trash_watcher->startMonitor();
+
+                qWarning() << "desktopfile:" << m_desktop_watcher->currentUri() << " >>>> " << QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                if (m_desktop_watcher->currentUri() != "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)) {
+                    m_desktop_watcher->stopMonitor();
+                    m_desktop_watcher->forceChangeMonitorDirectory("file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+                    m_desktop_watcher->setMonitorChildrenChange(true);
+                }
+                m_desktop_watcher->startMonitor();
+                m_system_app_watcher->startMonitor();
+                m_andriod_app_watcher->startMonitor();
+
+                Q_EMIT refreshed();
+
+                asyncJob->deleteLater();
+            }
+        });
+        asyncJob->queryAsync();
     }
-    m_desktop_watcher->startMonitor();
-    m_system_app_watcher->startMonitor();
-    m_andriod_app_watcher->startMonitor();
+}
+
+void DesktopItemModel::clearFloatItems()
+{
+    m_items_need_relayout.clear();
+}
+
+void DesktopItemModel::relayoutAddedItems()
+{
+    PeonyDesktopApplication::getIconView()->relayoutExsitingItems(m_items_need_relayout);
+}
+
+bool DesktopItemModel::acceptDropAction() const
+{
+    return m_accept_drop_action;
+}
+
+void DesktopItemModel::setAcceptDropAction(bool acceptDropAction)
+{
+    m_accept_drop_action = acceptDropAction;
 }
 
 const QModelIndex DesktopItemModel::indexFromUri(const QString &uri)
@@ -616,7 +726,7 @@ bool DesktopItemModel::removeRow(int row, const QModelIndex &parent)
 Qt::ItemFlags DesktopItemModel::flags(const QModelIndex &index) const
 {
     auto uri = index.data(UriRole).toString();
-    auto info = FileInfo::fromUri(uri, false);
+    auto info = FileInfo::fromUri(uri);
     if (index.isValid()) {
         Qt::ItemFlags flags = QAbstractItemModel::flags(index);
         flags |= Qt::ItemIsDragEnabled;
@@ -651,6 +761,8 @@ QMimeData *DesktopItemModel::mimeData(const QModelIndexList &indexes) const
 
 bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    if (!acceptDropAction())
+        return false;
     //qDebug()<<row<<column;
     //qDebug()<<"drop mime data"<<parent.data()<<index(row, column, parent).data();
     //judge the drop dest uri.
@@ -667,6 +779,13 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     auto info = FileInfo::fromUri(destDirUri);
+    if (info.get()->isEmptyInfo()) {
+        // note that this case nearly won't happend.
+        // but there is a bug reported due to this.
+        // link to task #48798.
+        FileInfoJob j(info);
+        j.querySync();
+    }
     if (!info->isDir()  && ! destDirUri.startsWith("trash:///")) {
         return false;
     }
@@ -674,9 +793,6 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     //NOTE:
     //do not allow drop on it self.
     auto urls = data->urls();
-    if (urls.isEmpty()) {
-        return false;
-    }
 
     QStringList srcUris;
     if (data->hasFormat("peony-qt/encoded-uris")) {
@@ -718,33 +834,25 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash///")
+    if (b_trash_item && destDirUri != "trash:///")
         return false;
 
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
-    if (destDirUri == "trash:///") {
+    if (destDirUri.startsWith("trash:///")) {
         FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
         fileOpMgr->startOperation(trashOp, addHistory);
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
-        switch (action) {
-        case Qt::MoveAction: {
-            qDebug() << "DesktopItemModel moveOp";
-            FileMoveOperation *moveOp = new FileMoveOperation(srcUris, destDirUri);
-            moveOp->setCopyMove(true);
-            fileOpMgr->startOperation(moveOp, addHistory);
-            break;
-        }
-        case Qt::CopyAction: {
-            qDebug() << "DesktopItemModel copyOp";
-            FileCopyOperation *copyOp = new FileCopyOperation(srcUris, destDirUri);
-            fileOpMgr->startOperation(copyOp);
-            break;
-        }
-        default:
-            break;
-        }
+        //krme files can not move to other place, default set as copy action
+        if (srcUris.first().startsWith("kmre:///") || srcUris.first().startsWith("kydroid:///"))
+            action = Qt::CopyAction;
+
+        //filesafe files can not move to other place, default set as copy action
+        if (srcUris.first().startsWith("filesafe:///"))
+            action = Qt::CopyAction;
+
+        FileOperationUtils::moveWithAction(srcUris, destDirUri, true, action);
     }
 
     //NOTE:
@@ -755,7 +863,7 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 Qt::DropActions DesktopItemModel::supportedDropActions() const
 {
-    //return Qt::MoveAction|Qt::CopyAction;
+    return Qt::MoveAction|Qt::CopyAction;
     return QAbstractItemModel::supportedDropActions();
 }
 
@@ -870,4 +978,20 @@ static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInf
     return desktopDefaultSort.indexOf(p1FileName) > desktopDefaultSort.indexOf(p2FileName);
 
 //    return QString::compare(p1->uri(), p2->uri()) <= 0;
+}
+
+Qt::DropActions DesktopItemModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
+}
+
+void DesktopItemModel::refresh()
+{
+    m_desktop_info = FileInfo::fromPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    auto infoJob = new FileInfoJob(m_desktop_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        refreshInternal();
+    });
+    infoJob->queryAsync();
 }

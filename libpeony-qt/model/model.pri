@@ -17,7 +17,9 @@ HEADERS += \
     $$PWD/path-bar-model.h \
     $$PWD/path-completer.h \
     $$PWD/side-bar-separator-item.h \
-    $$PWD/side-bar-vfs-item.h
+    $$PWD/side-bar-single-item.h \
+    $$PWD/side-bar-vfs-item.h \
+    $$PWD/side-bar-net-work-item.h
 
 SOURCES += \
     $$PWD/file-item.cpp \
@@ -34,4 +36,6 @@ SOURCES += \
     $$PWD/path-bar-model.cpp \
     $$PWD/path-completer.cpp \
     $$PWD/side-bar-separator-item.cpp \
-    $$PWD/side-bar-vfs-item.cpp
+    $$PWD/side-bar-single-item.cpp \
+    $$PWD/side-bar-vfs-item.cpp \
+    $$PWD/side-bar-net-work-item.cpp

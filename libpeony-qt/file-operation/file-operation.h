@@ -32,6 +32,7 @@
 #include "gobject-template.h"
 #include "peony-core_global.h"
 #include "file-operation-error-handler.h"
+#include "file-operation-manager.h"
 
 namespace Peony {
 
@@ -67,9 +68,7 @@ public:
     ~FileOperation();
     virtual void run();
 
-    void setHasError(bool hasError = true) {
-        m_has_error = hasError;
-    }
+    void setHasError(bool hasError = true);
     bool hasError() {
         return m_has_error;
     }
@@ -294,10 +293,39 @@ Q_SIGNALS:
      */
     void operationFinished();
 
+    /**
+     * @brief operationPause
+     * <br>
+     * This signal tells the thread that the current file operation should be paused.
+     * </br>
+     */
+    void operationPause();
+
+    /**
+     * @brief operationStart
+     * <br>
+     * This signal tells the thread that the current file operation should resume from its pause.
+     * </br>
+     */
+    void operationResume();
+
+    /**
+     * @brief operationCancel
+     * <br>
+     * This signal tells the thread that the current user has chosen to cancel the operation.
+     *  this signal is used for custom copy operations to release the lock in the thread.
+     * </br>
+     */
+    void operationCancel();
+
 public Q_SLOTS:
     virtual void cancel();
 
 protected:
+    void fileSync (QString srcFile, QString destFile);
+    bool nameIsValid (QString& uri);
+    bool makeFileNameValidForDestFS (QString& srcPath, QString& destPath, QString* newFileName);
+
     GCancellableWrapperPtr getCancellable() {
         return m_cancellable_wrapper;
     }
@@ -307,12 +335,14 @@ protected:
      * tell views operation finished.
      */
     void notifyFileWatcherOperationFinished();
+protected:
+    bool                        m_is_pause = false;
 
 private:
-    GCancellableWrapperPtr m_cancellable_wrapper = nullptr;
-    bool m_is_cancelled = false;
-    bool m_reversible = false;
-    bool m_has_error = false;
+    bool                        m_has_error = false;
+    bool                        m_reversible = false;
+    bool                        m_is_cancelled = false;
+    GCancellableWrapperPtr      m_cancellable_wrapper = nullptr;
 };
 
 }

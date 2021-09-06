@@ -25,10 +25,6 @@
 
 #include <QTreeView>
 #include <QStyledItemDelegate>
-#include <QLabel>
-
-#include <valarray>
-#include <QPainter>
 #include <QProxyStyle>
 
 namespace Peony {
@@ -56,18 +52,15 @@ public:
 
     QSize sizeHint() const;
 
-    void mousePressEvent(QMouseEvent *event);
-
-    //! \brief to determine if you need to draw a pop-up button
-    bool isRemoveable(const QModelIndex& index);
-    bool isMounted(const QModelIndex& index);
-
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
     void labelButtonClicked(bool checked);
 
 protected:
     void keyPressEvent(QKeyEvent *event);
+    void focusInEvent(QFocusEvent *event);
+
+    int sizeHintForColumn(int column) const override;
 
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
@@ -92,37 +85,18 @@ private:
 
 class NavigationSideBarItemDelegate : public QStyledItemDelegate
 {
-    Q_OBJECT
     friend class NavigationSideBar;
     explicit NavigationSideBarItemDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-
-    /*!
-     * \brief print a new expand button in right of side bar
-    */
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-};
-class TitleLabel : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit TitleLabel(QWidget *parent);
-
-private:
-    QLabel *m_pix_label;
-    QLabel *m_text_label;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 class NavigationSideBarStyle : public QProxyStyle
 {
 public:
-    static NavigationSideBarStyle* getStyle();
-    void drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
-
-private:
-    NavigationSideBarStyle(QStyle *style = nullptr);
-    ~NavigationSideBarStyle() override {}
+    explicit NavigationSideBarStyle();
+    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
 };
 
 #endif // NAVIGATIONSIDEBAR_H

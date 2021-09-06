@@ -28,41 +28,93 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include <QUrl>
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
 
 SideBarProxyFilterSortModel::SideBarProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
-
+    setDynamicSortFilter(true);
 }
 
 bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
+
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
-        if (item->displayName().isNull())
+        if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
-    }
-    if (item) {
-        if (!item->displayName().isEmpty()) {
-            if (QString(item->displayName().at(0)) == ".") {
+
+        //not exist path filter
+        if (item->type() == SideBarAbstractItem::FavoriteItem && ! item->uri().isEmpty())
+        {
+            QDir dir(QUrl(item->uri()).path());
+            if (! dir.exists())
                 return false;
-            }
         }
     }
+
+    if (item->type() == SideBarAbstractItem::NetWorkItem) {
+        if (item->uri().isEmpty()) {
+            return false;
+        }
+    }
+    //comment to fix bug 41426, user add .config file to bookmark for convinient accesss
+//    if (item) {
+//        if (!item->displayName().isEmpty()) {
+//            if (QString(item->displayName().at(0)) == ".") {
+//                return false;
+//            }
+//        }
+//    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
+            //special Volumn of 839 M upgrade part not show process
+            auto targetUri = FileUtils::getTargetUri(item->uri());
+            if (targetUri == "")
+                targetUri = item->uri();
+            //maybe info is not updated, so should add a existed checkment. link to: #67016.
+            if (!FileUtils::isFileExsit(targetUri))
+                return false;
+            if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
+                return false;
+
+            //hide data volumn if /data/usershare exsited.
+            if (targetUri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
+                return false;
+            }
+            //FIXME use display name to hide 839 MB disk
+            if (item->displayName().contains("839 MB"))
+                return false;
+
+            //fix side bar show kylin box issue, bug#45781
+            if (targetUri.startsWith("file:///home/"))
+                return false;
+
             if (item->uri() != "computer:///root.link") {
 
+                //FIXME: replace BLOCKING api in ui thread.
                 auto gvfsFileInfo = FileInfo::fromUri(item->uri());
-                if (gvfsFileInfo->displayName().isEmpty()) {
+                if (gvfsFileInfo->displayName().isEmpty() || gvfsFileInfo->targetUri().isEmpty()) {
                         FileInfoJob j(gvfsFileInfo);
                         j.querySync();
                 }
                 QString gvfsDisplayName = gvfsFileInfo->displayName();
                 QString gvfsUnixDevice = gvfsFileInfo->unixDeviceFile();
+
+                // FIX bug 43701 This filters out mounted FTP file systems
+                if (!gvfsUnixDevice.isNull()
+                        && (gvfsFileInfo->targetUri().startsWith("ftp://")
+                            || gvfsFileInfo->targetUri().startsWith("ftp://")))
+                    return true;
+
+                if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")
+                                                 /*||gvfsDisplayName.contains("CDROM")*/))
+                    return true;
+
                 if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
                     return false;//Filter some non-mountable drive items
 
@@ -77,6 +129,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
             }
         }
     }
+
     return true;
 }
 

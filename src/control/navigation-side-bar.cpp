@@ -52,20 +52,26 @@
 #include <QScrollBar>
 
 #include <QKeyEvent>
-#include <QLabel>
 
 #include <QUrl>
 #include <QDropEvent>
 #include <QMimeData>
 
 #include <QTimer>
+#include <QMessageBox>
+
+#include <QPainterPath>
 
 #include <QDebug>
+
+#define NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS 4
 
 using namespace Peony;
 
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
+    static NavigationSideBarStyle *global_style = new NavigationSideBarStyle;
+
     setIconSize(QSize(16, 16));
 
     setProperty("useIconHighlightEffect", true);
@@ -84,15 +90,18 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    setStyleSheet("NavigationSideBar{border: 0px solid transparent}");
+    setStyleSheet(".NavigationSideBar"
+                  "{"
+                  "border: 0px solid transparent"
+                  "}");
+
+    setStyle(global_style);
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    viewport()->setAttribute(Qt::WA_Disabled, false);
-    header()->setSectionResizeMode(QHeaderView::Custom);
+    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header()->setStretchLastSection(false);
     header()->hide();
-
-    setStyle(NavigationSideBarStyle::getStyle());
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -106,13 +115,6 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     this->setModel(m_proxy_model);
 
-    // To hide the expend button of side bar
-    this->setRootIsDecorated(false);
-
-    // this->setIndentation(0);
-    // this->setRootIsDecorated(false);
-    // this->setLayoutDirection(Qt::RightToLeft);
-    // this->resetIndentation();
     VolumeManager *volumeManager = VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
         m_proxy_model->invalidate();//display DVD device in real time.
@@ -141,31 +143,41 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         item->clearChildren();
     });
 
-//    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
-
-        //! Delete the second column to fit the topic
-//        switch (index.column()) {
-//        case 0: {
-//            auto item = m_proxy_model->itemFromIndex(index);
-//            //some side bar item doesn't have a uri.
-//            //do not emit signal with a null uri to window.
-//            if (!item->uri().isNull())
-//                Q_EMIT this->updateWindowLocationRequest(item->uri());
-//            break;
-//        }
-//        case 1: {
-//            auto item = m_proxy_model->itemFromIndex(index);
-//            if (item->isMounted() || item->isEjectable()) {
-//                auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
-//                this->collapse(leftIndex);
-//                item->ejectOrUnmount();
-//            }
-//            break;
-//        }
-//        default:
-//            break;
-//        }
-//    });
+    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
+        switch (index.column()) {
+        case 0: {
+            auto item = m_proxy_model->itemFromIndex(index);
+            auto targetUri = FileUtils::getTargetUri(item->uri());
+            if (targetUri == "" && item->uri().endsWith(".drive") && item->displayName().contains("DVD"))
+            {
+                qDebug() << "empty drive"<<item->uri();
+                QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
+                break;
+            }
+            //some side bar item doesn't have a uri.
+            //do not emit signal with a null uri to window.
+            if (!item->uri().isNull())
+                Q_EMIT this->updateWindowLocationRequest(item->uri());
+            break;
+        }
+        case 1: {
+            auto item = m_proxy_model->itemFromIndex(index);
+            if (item->isMounted() || item->isEjectable()) {
+                auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
+                this->collapse(leftIndex);
+                item->ejectOrUnmount();
+            } else {
+                // if item is not unmountable, just be same with first column.
+                // fix #39716
+                if (!item->uri().isNull())
+                    Q_EMIT this->updateWindowLocationRequest(item->uri());
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    });
 
     connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
         auto index = indexAt(pos);
@@ -173,8 +185,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         if (item) {
             if (item->type() != Peony::SideBarAbstractItem::SeparatorItem) {
                 Peony::SideBarMenu menu(item, nullptr);
+                QList<QAction *> actionList;
                 MainWindow *window = dynamic_cast<MainWindow *>(this->topLevelWidget());
-                menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In &New Window"), [=](){
+
+                actionList << menu.addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open In New Window"), [=](){
                     auto enumerator = new Peony::FileEnumerator;
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();
@@ -182,8 +196,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            auto newWindow = window->create(targetUri);
-                            dynamic_cast<QWidget *>(newWindow)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    auto newWindow = window->create(targetUri);
+                                    dynamic_cast<QWidget *>(newWindow)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             auto newWindow = window->create(item->uri());
                             dynamic_cast<QWidget *>(newWindow)->show();
@@ -197,7 +222,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->prepare();
                 });
 
-                menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New &Tab"), [=](){
+                actionList << menu.addAction(QIcon::fromTheme("tab-new-symbolic"), tr("Open In New Tab"), [=](){
                     auto enumerator = new Peony::FileEnumerator;
                     enumerator->setEnumerateDirectory(item->uri());
                     enumerator->setAutoDelete();
@@ -205,8 +230,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     enumerator->connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
                         auto targetUri = Peony::FileUtils::getTargetUri(item->uri());
                         if (!targetUri.isEmpty()) {
-                            window->addNewTabs(QStringList()<<targetUri);
-                            dynamic_cast<QWidget *>(window)->show();
+                            auto enumerator2 = new Peony::FileEnumerator;
+                            enumerator2->setEnumerateDirectory(targetUri);
+                            enumerator2->connect(enumerator2, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
+                                if (!critical) {
+                                    window->addNewTabs(QStringList()<<targetUri);
+                                    dynamic_cast<QWidget *>(window)->show();
+                                } else {
+                                    auto info = FileInfo::fromUri(targetUri);
+                                    QMessageBox::critical(0, 0, tr("Can not open %1, %2").arg(info.get()->displayName()).arg(err.get()->message()));
+                                }
+                                enumerator2->deleteLater();
+                            });
+                            enumerator2->prepare();
                         } else if (!err.get() && !critical) {
                             window->addNewTabs(QStringList()<<item->uri());
                             dynamic_cast<QWidget *>(window)->show();
@@ -219,6 +255,16 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
                     enumerator->prepare();
                 });
+
+                if (item->type() == SideBarAbstractItem::FileSystemItem) {
+                    if ((0 != QString::compare(item->uri(), "computer:///")) &&
+                        (0 != QString::compare(item->uri(), "filesafe:///"))) {
+                        for (const auto &actionItem : actionList) {
+                            actionItem->setEnabled(item->isMounted());
+                        }
+                    }
+                }
+
                 menu.exec(QCursor::pos());
             }
         }
@@ -228,9 +274,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
-    //! \bug if annotated it, favorite in side bar will have a empty line, why?
     expandAll();
-
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
@@ -262,13 +306,21 @@ void NavigationSideBar::paintEvent(QPaintEvent *event)
 void NavigationSideBar::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
-    if (header()->count() > 0)
-        header()->resizeSection(0, this->viewport()->width() - 30);
+    if (header()->count() > 0) {
+        this->setColumnWidth(1, 20);
+        header()->resizeSection(0, this->viewport()->width() - this->columnWidth(1));
+    }
 }
 
 void NavigationSideBar::dropEvent(QDropEvent *e)
 {
-    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem) {
+    //fix invalid index cause crash issue
+    if (! indexAt(e->pos()).isValid())
+        return;
+
+    QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
+
+    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
         // add to bookmark
         e->setAccepted(true);
 
@@ -276,7 +328,8 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         auto bookmark = Peony::BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
-                auto info = Peony::FileInfo::fromUri(url.toDisplayString(), false);
+                //FIXME: replace BLOCKING api in ui thread.
+                auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
                     Peony::FileInfoJob j(info);
                     j.querySync();
@@ -287,6 +340,13 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
             }
         }
     }
+
+    if (e->keyboardModifiers() == Qt::ControlModifier) {
+        m_model->dropMimeData(e->mimeData(), Qt::CopyAction, 0, 0, QModelIndex());
+        e->accept();
+        return;
+    }
+
     QTreeView::dropEvent(e);
 }
 
@@ -308,122 +368,68 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
     }
 }
 
-
-void NavigationSideBar::mousePressEvent(QMouseEvent *event)
+void NavigationSideBar::focusInEvent(QFocusEvent *event)
 {
-    if (event->button() != Qt::LeftButton)
-        return;
-
-    QModelIndex index = indexAt(event->pos());
-
-    if (!index.isValid())
-        return;
-
-    auto item = m_proxy_model->itemFromIndex(index);
-
-    if (!index.parent().isValid() &&
-        event->x() < rect().right() - 25 &&
-        event->x() > rect().right() - 60) {
-        // if click expend rect
-        QPoint point(event->x(), event->y());
-        if (!isExpanded(indexAt(point)))
-            expand(indexAt(point));
-        else
-            collapse(indexAt(point));
-
-    }
-    else if (event->x() < rect().right() - 15 &&
-             event->x() > rect().right() - 45 &&
-             (item->isEjectable() || item->isMountable())) {
-        // if click umount rect
-        auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
-        this->collapse(leftIndex);
-        item->ejectOrUnmount();
-    }
-    else {
-        if (!item->uri().isNull())
-            Q_EMIT this->updateWindowLocationRequest(item->uri());
-        QTreeView::mousePressEvent(event);
+    QTreeView::focusInEvent(event);
+    if (event->reason() == Qt::TabFocus) {
+        if (selectedIndexes().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::Select);
+            selectionModel()->select(model()->index(0, 1), QItemSelectionModel::Select);
+        } else {
+            scrollTo(selectedIndexes().first(), QTreeView::PositionAtCenter);
+            auto selections = selectedIndexes();
+            clearSelection();
+            QTimer::singleShot(100, this, [=](){
+                for (auto index : selections) {
+                    selectionModel()->select(index, QItemSelectionModel::Select);
+                }
+            });
+        }
     }
 }
 
-bool NavigationSideBar::isRemoveable(const QModelIndex &index)
+int NavigationSideBar::sizeHintForColumn(int column) const
 {
-    auto item = m_proxy_model->itemFromIndex(index);
-    if (item != nullptr)
-        return item->isRemoveable();
-    else
-        return false;
+    if (column == 1)
+        return 22;
+
+    if (column == 0)
+        return viewport()->width() - 22;
+
+    return QTreeView::sizeHintForColumn(column);
 }
 
-bool NavigationSideBar::isMounted(const QModelIndex &index)
-{
-    auto item = m_proxy_model->itemFromIndex(index);
-    if (item != nullptr)
-        return item->isMounted();
-    else
-        return false;
-}
-
-NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : QStyledItemDelegate(parent)
+NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
 {
 
 }
 
 QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-//    auto size = QStyledItemDelegate::sizeHint(option, index);
-//    size.setHeight(36);
-//    return size;
-    return QStyledItemDelegate::sizeHint(option, index);
+    auto size = QStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(36);
+    return size;
 }
 
-void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
-                                          const QModelIndex &index) const
+void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    if (!index.isValid() || option.state == QStyle::State_None)
-        return;
-
-    QStyleOptionViewItem opt = option;
-
-    //! \brief Temporarily replace drawPrimitive
-    if (opt.state.testFlag(QStyle::State_MouseOver) && !opt.state.testFlag(QStyle::State_Selected))
-        opt.state = QStyle::State_Enabled;
-
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    QStyledItemDelegate::paint(painter, opt, index);
-
-    NavigationSideBar* view = qobject_cast<NavigationSideBar*>(this->parent());
-    if (view == nullptr)
-        return;
-
-    //! \brief print mount icon
-    if (view->isRemoveable(index) && view->isMounted(index)) {
-        QRect rect = option.rect;
-        rect.setY(rect.top() + sizeHint(option, index).height()/3);
-        rect.setX(rect.right() - 30);
-        rect.setSize(QSize(16, 16));
-        painter->drawPixmap(rect, QPixmap(":/img/media-eject"));
+    painter->save();
+    if (index.column() == 1) {
+        QPainterPath rightRoundedRegion;
+        rightRoundedRegion.setFillRule(Qt::WindingFill);
+        auto rect = option.rect;
+        auto view = qobject_cast<const QAbstractItemView *>(option.widget);
+        if (view) {
+            rect.setRight(view->viewport()->rect().right());
+        }
+        rightRoundedRegion.addRoundedRect(rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
+        rightRoundedRegion.addRect(rect.adjusted(0, 0, -NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0));
+        painter->setClipPath(rightRoundedRegion);
     }
 
-    if (!index.model()->hasChildren(index))
-        return;
-
-    if (view->isExpanded(index)) {
-        QRect rect = option.rect;
-        rect.setY(rect.top() + sizeHint(option, index).height()/3);
-        rect.setX(rect.right() - 45);
-        rect.setSize(QSize(16, 16));
-        painter->drawPixmap(rect, QPixmap(":/img/branches2"));
-    }
-    else {
-        QRect rect = option.rect;
-        rect.setTop(rect.top() + sizeHint(option, index).height()/3);
-        rect.setX(rect.right() - 45);
-        rect.setSize(QSize(16, 16));
-        painter->drawPixmap(rect, QPixmap(":/img/branches1"));
-    }
+    painter->setRenderHint(QPainter::Antialiasing);
+    QStyledItemDelegate::paint(painter, option, index);
+    painter->restore();
 }
 
 NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
@@ -443,23 +449,25 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     m_sidebar = sidebar;
     m_layout->addWidget(sidebar);
 
-//    QWidget *w = new QWidget(this);
-//    QVBoxLayout *l = new QVBoxLayout;
-//    l->setContentsMargins(4, 4, 2, 4);
+    QWidget *w = new QWidget(this);
+    QVBoxLayout *l = new QVBoxLayout;
+    l->setContentsMargins(4, 4, 2, 4);
 
-//    m_label_button = new QPushButton(QIcon::fromTheme("emblem-important-symbolic"), tr("All tags..."), this);
-//    m_label_button->setProperty("useIconHighlightEffect", true);
-//    m_label_button->setProperty("iconHighlightEffectMode", 1);
-//    m_label_button->setProperty("fillIconSymbolicColor", true);
-//    m_label_button->setCheckable(true);
+    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
+    m_label_button->setProperty("useIconHighlightEffect", true);
+    m_label_button->setProperty("iconHighlightEffectMode", 1);
+    m_label_button->setProperty("fillIconSymbolicColor", true);
+    m_label_button->setCheckable(true);
 
-//    l->addWidget(m_label_button);
+    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
 
-//    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
+    l->addWidget(m_label_button);
 
-//    w->setLayout(l);
+    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
 
-//    m_layout->addWidget(w);
+    w->setLayout(l);
+
+    m_layout->addWidget(w);
 
     setLayout(m_layout);
 }
@@ -468,59 +476,44 @@ QSize NavigationSideBarContainer::sizeHint() const
 {
     auto size = QWidget::sizeHint();
     auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 210;
     size.setWidth(width);
     return size;
 }
 
-TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
+NavigationSideBarStyle::NavigationSideBarStyle()
 {
-    this->setFixedHeight(50);
-    m_pix_label = new QLabel(this);
-    m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
-    m_text_label = new QLabel(tr("Files"),this);
-    QHBoxLayout *l = new QHBoxLayout(this);
-    l->setMargin(16);
-    l->addSpacing(16);
-    l->addWidget(m_pix_label);
-    l->addSpacing(8);
-    l->addWidget(m_text_label);
-    l->addStretch();
+
 }
 
-static NavigationSideBarStyle *global_instance = nullptr;
-
-NavigationSideBarStyle::NavigationSideBarStyle(QStyle *style) : QProxyStyle(style) {}
-
-NavigationSideBarStyle* NavigationSideBarStyle::getStyle()
-{
-    if (!global_instance)
-        global_instance = new NavigationSideBarStyle;
-    return global_instance;
-}
-
-//! \brief replace polish, delete hover state
 void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    painter->save();
     switch (element) {
-    case PE_PanelItemViewItem: {
-        //! \bug never in here in qt5-ukui-platformtheme-tablet-1205
-        if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
-            return;
+    case QStyle::PE_IndicatorBranch: {
+        if (option->rect.x() == 0) {
+            QPainterPath leftRoundedRegion;
+            leftRoundedRegion.setFillRule(Qt::WindingFill);
+            leftRoundedRegion.addRoundedRect(option->rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
+            leftRoundedRegion.addRect(option->rect.adjusted(NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0, 0, 0));
+            painter->setClipPath(leftRoundedRegion);
         }
-        else {
-            QProxyStyle::drawPrimitive(element, option, painter, widget);
-            return;
-        }
+        break;
     }
-    case PE_IndicatorBranch: {
-        if (option->state.testFlag(QStyle::State_MouseOver) && !option->state.testFlag(QStyle::State_Selected)) {
-            return;
-        }
-        else {
-            QProxyStyle::drawPrimitive(element, option, painter, widget);
-            return;
-        }
+    case QStyle::PE_PanelItemViewRow: {
+        return;
+        break;
     }
-    default: QProxyStyle::drawPrimitive(element, option, painter, widget);
+    case QStyle::PE_PanelItemViewItem: {
+        break;
     }
+    default:
+        break;
+    }
+
+    QProxyStyle::drawPrimitive(element, option, painter, widget);
+    painter->restore();
 }

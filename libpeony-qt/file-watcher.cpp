@@ -28,13 +28,15 @@
 #include <QUrl>
 #include "file-utils.h"
 #include "file-operation-manager.h"
+#include "file-info.h"
 #include "volume-manager.h"
 
 #include <QDebug>
 
 using namespace Peony;
 
-FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
+FileWatcher::FileWatcher(QString uri, QObject *parent, bool isWatchMovesFlag)
+    : QObject(parent), m_isWatchMovesFlag(isWatchMovesFlag)
 {
     if (uri.startsWith("thumbnail://"))
         return;
@@ -47,27 +49,7 @@ FileWatcher::FileWatcher(QString uri, QObject *parent) : QObject(parent)
     //monitor target file if existed.
     prepare();
 
-    GError *err1 = nullptr;
-    m_monitor = g_file_monitor_file(m_file,
-                                    G_FILE_MONITOR_WATCH_MOVES,
-                                    m_cancellable,
-                                    &err1);
-    if (err1) {
-        qDebug()<<err1->code<<err1->message;
-        g_error_free(err1);
-        m_support_monitor = false;
-    }
-
-    GError *err2 = nullptr;
-    m_dir_monitor = g_file_monitor_directory(m_file,
-                    G_FILE_MONITOR_NONE,
-                    m_cancellable,
-                    &err2);
-    if (err2) {
-        qDebug()<<err2->code<<err2->message;
-        g_error_free(err2);
-        m_support_monitor = false;
-    }
+    creatorMonitor();
 
     FileOperationManager::getInstance()->registerFileWatcher(this);
 }
@@ -104,24 +86,15 @@ FileWatcher::~FileWatcher()
  */
 void FileWatcher::prepare()
 {
-    //FIXME: replace BLOCKING api in ui thread.
-    GFileInfo *info = g_file_query_info(m_file,
-                                        G_FILE_ATTRIBUTE_STANDARD_TARGET_URI,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        m_cancellable,
-                                        nullptr);
+    auto fileInfo = FileInfo::fromGFile(m_file);
+    auto targetUri = fileInfo.get()->targetUri();
 
-    char *uri = g_file_info_get_attribute_as_string(info,
-                G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-
-    if (uri) {
+    if (!targetUri.isNull()) {
         g_object_unref(m_file);
-        m_file = g_file_new_for_uri(uri);
-        m_target_uri = uri;
-        g_free(uri);
+        m_file = g_file_new_for_uri(targetUri.toUtf8().constData());
+        m_target_uri = targetUri;
     }
-
-    g_object_unref(info);
+    return;
 }
 
 void FileWatcher::cancel()
@@ -177,6 +150,32 @@ void FileWatcher::forceChangeMonitorDirectory(const QString &uri)
     changeMonitorUri(uri);
 }
 
+void FileWatcher::creatorMonitor()
+{
+    GError *err1 = nullptr;
+    m_monitor = g_file_monitor_file(m_file,
+                                    G_FILE_MONITOR_WATCH_MOVES,
+                                    m_cancellable,
+                                    &err1);
+    if (err1) {
+        qDebug()<<err1->code<<err1->message;
+        g_error_free(err1);
+        m_support_monitor = false;
+    }
+
+    GError *err2 = nullptr;
+    GFileMonitorFlags flag = m_isWatchMovesFlag?G_FILE_MONITOR_WATCH_MOVES:G_FILE_MONITOR_NONE;
+    m_dir_monitor = g_file_monitor_directory(m_file,
+                    flag,
+                    m_cancellable,
+                    &err2);
+    if (err2) {
+        qDebug()<<err2->code<<err2->message;
+        g_error_free(err2);
+        m_support_monitor = false;
+    }
+}
+
 void FileWatcher::changeMonitorUri(QString uri)
 {
     QString oldUri = m_uri;
@@ -197,27 +196,7 @@ void FileWatcher::changeMonitorUri(QString uri)
 
     prepare();
 
-    GError *err1 = nullptr;
-    m_monitor = g_file_monitor_file(m_file,
-                                    G_FILE_MONITOR_WATCH_MOVES,
-                                    m_cancellable,
-                                    &err1);
-    if (err1) {
-        m_support_monitor = false;
-        qDebug()<<err1->code<<err1->message;
-        g_error_free(err1);
-    }
-
-    GError *err2 = nullptr;
-    m_dir_monitor = g_file_monitor_directory(m_file,
-                    G_FILE_MONITOR_NONE,
-                    m_cancellable,
-                    &err2);
-    if (err2) {
-        m_support_monitor = false;
-        qDebug()<<err2->code<<err2->message;
-        g_error_free(err2);
-    }
+    creatorMonitor();
 
     startMonitor();
 
@@ -255,6 +234,12 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         break;
     }
     case G_FILE_MONITOR_EVENT_DELETED: {
+        auto uri = g_file_get_uri(file);
+        bool shouldSendSignal = p_this->m_target_uri == uri;
+        if (uri)
+            g_free(uri);
+        if (!shouldSendSignal)
+            return;
         p_this->stopMonitor();
         p_this->cancel();
         //qDebug()<<p_this->m_target_uri;
@@ -284,7 +269,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     Q_UNUSED(other_file);
     switch (event_type) {
     case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
-    case G_FILE_MONITOR_EVENT_CHANGED: {
+    case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT: {
         if (p_this->m_montor_children_change) {
             char *uri = g_file_get_uri(file);
             QString changedFileUri = uri;
@@ -296,22 +281,34 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
         }
         break;
     }
-    case G_FILE_MONITOR_EVENT_CREATED: {
+    case G_FILE_MONITOR_EVENT_CREATED:
+    case G_FILE_MONITOR_EVENT_MOVED_IN: {
         char *uri = g_file_get_uri(file);
-        QString createdFileUri = uri;
-        //QUrl url = createdFileUri;
-        //createdFileUri = url.toDisplayString();
+        QString createdFileUri = uri;       
+        //qDebug()<<"***create uri***"<<createdFileUri;
         g_free(uri);
+
         Q_EMIT p_this->fileCreated(createdFileUri);
         break;
     }
-    case G_FILE_MONITOR_EVENT_DELETED: {
+    case G_FILE_MONITOR_EVENT_DELETED:
+    case G_FILE_MONITOR_EVENT_MOVED_OUT: {
         char *uri = g_file_get_uri(file);
         QString deletedFileUri = uri;
-        //QUrl url = deletedFileUri;
-        //deletedFileUri = url.toDisplayString();
+        //qDebug()<<"***delete uri***"<<deletedFileUri;
         g_free(uri);
+
         Q_EMIT p_this->fileDeleted(deletedFileUri);
+        break;
+    }
+
+    case G_FILE_MONITOR_EVENT_RENAMED: {
+        char *old_uri = g_file_get_uri (file);
+        char *new_uri = g_file_get_uri(other_file);
+        Q_EMIT p_this->fileRenamed(old_uri,new_uri);     
+        qDebug()<<"***oldUri***newUri***"<<old_uri<<" "<<new_uri;
+        g_free(old_uri);
+        g_free(new_uri);
         break;
     }
     case G_FILE_MONITOR_EVENT_UNMOUNTED: {
@@ -327,3 +324,4 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
         break;
     }
 }
+

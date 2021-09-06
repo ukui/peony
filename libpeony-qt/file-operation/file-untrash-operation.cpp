@@ -23,6 +23,9 @@
 #include "file-utils.h"
 #include "file-untrash-operation.h"
 #include "file-operation-manager.h"
+#include "file-info-job.h"
+#include "file-info.h"
+#include "file-meta-info.h"
 #include <QUrl>
 
 using namespace Peony;
@@ -45,7 +48,7 @@ void FileUntrashOperation::cacheOriginalUri()
         if (isCancelled())
             break;
 
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+        auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData()));
         auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
                                   G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
                                   G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -206,8 +209,8 @@ int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
     int ret = 0;
     GError *err = nullptr;
 
-    auto file = wrapGFile(g_file_new_for_uri(srcFile.toUtf8().constData()));
-    auto originFile = wrapGFile(g_file_new_for_uri(destFile.toUtf8().constData()));
+    auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(srcFile).toUtf8().constData()));
+    auto originFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(destFile).toUtf8().constData()));
 
     g_file_copy(file.get()->get(),
                 originFile.get()->get(),
@@ -234,18 +237,17 @@ int FileUntrashOperation::copyFileProcess(QString &srcFile, QString &destFile)
     return ret;
 }
 
-int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &parentPath)
+int FileUntrashOperation::moveRecursively(FileNode *fileNode, QString &destPath)
 {
     int ret = 0;
     QString srcFile = fileNode->uri();
-    QString destPath = parentPath + '/' + fileNode->baseName();
 
     if (fileNode->isFolder()) {
         if (!FileUtils::isFileExsit(destPath)){
             //如果目录不存在，则创建
             GError *err = nullptr;
 
-            auto originFile = wrapGFile(g_file_new_for_uri(destPath.toUtf8().constData()));
+            auto originFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(destPath).toUtf8().constData()));
             g_file_make_directory(originFile.get()->get(),
                                   getCancellable().get()->get(),
                                   &err);
@@ -290,7 +292,7 @@ int FileUntrashOperation::deleteFileProcess(FileNode *fileNode)
     QString destFile = nullptr;
 
     QString srcFile = fileNode->uri();
-    GFile *file = g_file_new_for_uri(srcFile.toUtf8().constData());
+    GFile *file = g_file_new_for_uri(FileUtils::urlEncode(srcFile).toUtf8().constData());
 
     g_file_delete(file,
                   getCancellable().get()->get(),
@@ -314,13 +316,24 @@ int FileUntrashOperation::untrashFileOverWrite(QString &uri)
 
     //1、通过树形结构，构建目录下的节点（文件和目录）
     FileNode *node = new FileNode(uri, nullptr, nullptr);
-    node->findChildrenRecursively();
 
-    QString originParentPath = m_restore_hash.value(uri);
+    if (node->isFolder()) {
+        node->findChildrenRecursively();
 
-    //2、对node的树形结构进行递归遍历处理
-    for (auto child : *(node->children())) {
-        ret = moveRecursively(child, originParentPath);
+        QString originParentPath = m_restore_hash.value(uri) ;
+
+        //2、对node的树形结构进行递归遍历处理
+        for (auto child : *(node->children())) {
+            QString destPath = originParentPath + '/' + child->baseName();
+            ret = moveRecursively(child, destPath);
+            if (ret < 0)
+            {
+                goto l_free;
+            }
+        }
+    } else {
+        QString originParentPath = m_restore_hash.value(uri);
+        ret = moveRecursively(node, originParentPath);
         if (ret < 0)
         {
             goto l_free;
@@ -349,9 +362,29 @@ void FileUntrashOperation::run()
     for (auto uri : m_uris) {
         //cacheOriginalUri();
         auto originUri = m_restore_hash.value(uri);
+        if (originUri.isEmpty()) {
+            // try get meta info origin path
+            FileInfoJob j(uri);
+            j.querySync();
+            auto trashedFileLocaledUri = FileUtils::getTargetUri(uri);
+            FileInfoJob j2(trashedFileLocaledUri);
+            j2.querySync();
+            auto metaInfo = FileMetaInfo::fromUri(trashedFileLocaledUri);
+            if (metaInfo) {
+                // there is a case which makes peony crash.
+                // 1. trash an item in desktop application.
+                // 2. restore the item from peony application.
+                // 3. undo the operation in desktop application.
+                // in this case trashedFileLocaledUri is empty, and could not get
+                // the responding info. so I add a checkment to avoid the case happend.
+                originUri = "file://" + metaInfo.get()->getMetaInfoString("orig-path");
+            } else {
+                qWarning()<<"invalid file meta info orig-path"<<trashedFileLocaledUri;
+            }
+        }
 
-        auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
-        auto destFile = wrapGFile(g_file_new_for_uri(originUri.toUtf8().constData()));
+        auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData()));
+        auto destFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(originUri).toUtf8().constData()));
 
 retry:
         if (isCancelled())
@@ -371,11 +404,9 @@ retry:
         }
 
         if (err) {
-
             FileOperationError except;
             ExceptionResponse type = prehandle(err);
-            if (Other == type)
-            {
+            if (Other == type) {
                 untrashFileErrDlg(except, uri, originUri, err);
                 type = except.respCode;
             }

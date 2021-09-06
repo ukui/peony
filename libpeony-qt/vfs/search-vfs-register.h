@@ -46,6 +46,7 @@ public:
     QString uriScheme() override {return "search://";}
     bool holdInSideBar() override {return false;}
     void *parseUriToVFSFile(const QString &uri) override;
+    CustomErrorHandler *customErrorHandler() override {return nullptr;}
 };
 
 class PEONYCORESHARED_EXPORT SearchVFSRegister

@@ -27,6 +27,10 @@
 
 #include <QDebug>
 #include <QStandardPaths>
+#include <file-utils.h>
+
+extern bool kydroidInstall;
+extern QString kydroidPath;
 
 G_DEFINE_TYPE_WITH_PRIVATE(FavoritesVFSFileEnumerator, vfs_favorites_file_enumerator, G_TYPE_FILE_ENUMERATOR);
 
@@ -46,9 +50,26 @@ static void vfs_favorites_file_enumerator_init (FavoritesVFSFileEnumerator* self
     self->priv = priv;
     self->priv->enumerate_queue = new QQueue<QString>;
 
-    self->priv->enumerate_queue->enqueue("favorite:///?schema=recent");
-    self->priv->enumerate_queue->enqueue("favorite:///?schema=trash");
+    self->priv->enumerate_queue->enqueue(QString("favorite://?schema=trash"));
+    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)));
+    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MoviesLocation)));
     self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)));
+    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)));
+    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)));
+
+    if (Peony::FileUtils::isFileExsit("file:///data/usershare")) {
+        self->priv->enumerate_queue->enqueue("favorite:///data/usershare?schema=file");
+    }
+
+    // check kydroid is install
+    if (kydroidInstall) {
+        if (kydroidPath.startsWith("kydroid:///"))
+           self->priv->enumerate_queue->enqueue("favorite:///?schema=kydroid");
+        else
+          self->priv->enumerate_queue->enqueue("favorite:///?schema=kmre");
+    }
+
 
     // add others
     auto alluris = Peony::BookMarkManager::getInstance()->getCurrentUris();

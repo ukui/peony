@@ -2,11 +2,14 @@
 #define VFSPLUGINIFACE_H
 
 #include "plugin-iface.h"
+#include "peony-core_global.h"
+
+#include "custom-error-handler.h"
 
 #define VFSPluginInterface_iid "org.ukui.peony-qt.plugin-iface.VFSPluginInterface"
 
 namespace Peony {
-class VFSPluginIface : public PluginInterface {
+class PEONYCORESHARED_EXPORT VFSPluginIface : public PluginInterface {
 public:
     virtual ~VFSPluginIface() {}
 
@@ -49,6 +52,14 @@ public:
      * registered and can not use GVfsFileLookupFunc to get file handler.
      */
     virtual void* parseUriToVFSFile(const QString &uri) = 0;
+
+    /*!
+     * \brief customErrorHandler
+     * \return
+     * custom error handler for this vfs. normally it using with FileEnumerator::prepare(),
+     * and FileEnumerator::handleError().
+     */
+    virtual CustomErrorHandler *customErrorHandler() = 0;
 };
 }
 

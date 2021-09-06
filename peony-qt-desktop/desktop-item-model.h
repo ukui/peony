@@ -25,6 +25,7 @@
 
 #include <QAbstractListModel>
 #include <QQueue>
+#include <QPoint>
 #include <memory>
 #include "user-dir-manager.h"
 
@@ -33,6 +34,7 @@ namespace Peony {
 class FileEnumerator;
 class FileInfo;
 class FileWatcher;
+class FileOperationInfo;
 
 class DesktopItemModel : public QAbstractListModel
 {
@@ -72,11 +74,15 @@ public:
                       int row, int column, const QModelIndex &parent) override;
 
     Qt::DropActions supportedDropActions() const override;
+    Qt::DropActions supportedDragActions() const override;
+
+    bool acceptDropAction() const;
+    void setAcceptDropAction(bool acceptDropAction);
     bool fileIsExists(const QString &uri);
 
 Q_SIGNALS:
     void requestLayoutNewItem(const QString &uri);
-    void requestClearIndexWidget();
+    void requestClearIndexWidget(const QStringList &uris = QStringList());
     void requestUpdateItemPositions(const QString &uri = nullptr);
     void refreshed();
 
@@ -87,10 +93,15 @@ public Q_SLOTS:
     void enabelChange(QString, bool);
 protected Q_SLOTS:
     void onEnumerateFinished();
+    void clearFloatItems();
+    void relayoutAddedItems();
 
 private:
+    void refreshInternal();
+
     FileEnumerator *m_enumerator;
     QList<std::shared_ptr<FileInfo>> m_files;
+    QList<std::shared_ptr<FileInfo>> m_querying_files;
     std::shared_ptr<FileWatcher> m_trash_watcher;
     std::shared_ptr<FileWatcher> m_desktop_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher; //just handle the thumbnail created.
@@ -98,12 +109,18 @@ private:
     std::shared_ptr<FileWatcher> m_system_app_watcher;
     std::shared_ptr<FileWatcher> m_andriod_app_watcher;
 
-    QQueue<QString> m_info_query_queue;
     QQueue<QString> m_new_file_info_query_queue;
 
-    QString m_last_deleted_item_uri;
     QStringList m_items_need_relayout;
     UserdirManager * m_dir_manager;
+
+    std::shared_ptr<FileInfo> m_desktop_info;
+    std::shared_ptr<FileOperationInfo> m_renaming_operation_info;
+
+    QPair<QString, QPoint> m_renaming_file_pos;
+
+    bool m_accept_drop_action = true;
+
     QString m_userName;
 };
 

@@ -92,13 +92,13 @@ class PEONYCORESHARED_EXPORT IconViewTextHelper
     static QSize getTextSizeForIndex(const QStyleOptionViewItem &option,
                                      const QModelIndex &index,
                                      int horizalMargin = 0,
-                                     int maxLineCount = 0);
+                                     int maxLineCount = 4);
     static void paintText(QPainter *painter,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index,
                           int textMaxHeight,
                           int horizalMargin = 0,
-                          int maxLineCount = 0, bool useSystemPalette = true, const QColor &customColor = Qt::transparent);
+                          int maxLineCount = 4, bool useSystemPalette = true, const QColor &customColor = Qt::transparent);
 };
 
 }

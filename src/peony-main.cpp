@@ -31,6 +31,7 @@
 
 #include <QStandardPaths>
 
+#include <ukui-log4qt.h>
 #include "navigation-tab-bar.h"
 #include "tab-widget.h"
 
@@ -78,13 +79,18 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
         fclose(log_file);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     PeonyApplication::peony_start_time = QDateTime::currentMSecsSinceEpoch();
-    qInstallMessageHandler(messageOutput);
+    initUkuiLog4qt("peony");
+//    qInstallMessageHandler(messageOutput);
     qDebug() << "peony start in main time:" <<PeonyApplication::peony_start_time ;
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 
     PeonyApplication app(argc, argv, "peony-qt");
     if (app.isSecondary())

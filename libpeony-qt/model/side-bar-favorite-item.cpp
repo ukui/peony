@@ -24,6 +24,9 @@
 #include "side-bar-model.h"
 #include "file-utils.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+
 #include "bookmark-manager.h"
 
 #include <QStandardPaths>
@@ -31,44 +34,119 @@
 
 using namespace Peony;
 
-SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
-        SideBarFavoriteItem *parentItem,
-        SideBarModel *model,
-        QObject *parent) : SideBarAbstractItem (model, parent)
+bool kydroidInstall = false;
+QString kydroidPath = "kydroid:///";
+static const char* localFileSystemPath = "file://";
+
+SideBarFavoriteItem::SideBarFavoriteItem(QString uri,SideBarFavoriteItem *parentItem,
+                                         SideBarModel *model, QObject *parent) :
+    SideBarAbstractItem (model, parent),m_parent(parentItem),m_uri(uri)
+
 {
-    m_parent = parentItem;
     m_is_root_child = m_parent == nullptr;
     if (m_is_root_child) {
-        m_uri = "favorite:///";
-        m_display_name = tr("Favorite");
-        //m_icon_name = "emblem-favorite";
-        //top dir don't show icon
-        m_icon_name = "";
-
-        SideBarFavoriteItem *recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
-        QString desktopUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-        SideBarFavoriteItem *desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
-        SideBarFavoriteItem *trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
-        m_children->append(recentItem);
-        m_children->append(desktopItem);
-        m_children->append(trashItem);
-        m_model->insertRows(0, m_children->count(), firstColumnIndex());
-        //TODO: support custom bookmarks.
-        auto bookmark = BookMarkManager::getInstance();
-        if (bookmark->isLoaded()) {
-            syncBookMark();
-        } else {
-            connect(bookmark, &BookMarkManager::urisLoaded, this, [=]() {
-                syncBookMark();
-                disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
-            });
-        }
+        initChildren();
         return;
     }
-    m_uri = uri;
+
     //FIXME: replace BLOCKING api in ui thread.
-    m_display_name = FileUtils::getFileDisplayName(uri);
-    m_icon_name = FileUtils::getFileIconName(uri);
+    GFile* file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    if (nullptr != file) {
+        GFileInfo* fileInfo = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        if (nullptr != fileInfo) {
+            const char* displayName = g_file_info_get_attribute_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
+            if (nullptr != displayName) {
+                m_display_name = displayName;
+            }
+            g_object_unref(fileInfo);
+        }
+        g_object_unref(file);
+    }
+
+    if (m_display_name.isEmpty() || "" == m_display_name) {
+        m_display_name = FileUtils::getFileDisplayName(m_uri);
+    }
+
+    m_icon_name = FileUtils::getFileIconName(m_uri);
+
+    m_info = FileInfo::fromUri(m_uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        Q_EMIT this->queryInfoFinished();
+    });
+    infoJob->queryAsync();
+}
+
+void SideBarFavoriteItem::initChildren()
+{
+    m_uri = "favorite:///";
+    m_display_name = tr("Favorite");
+
+    QString desktopUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString videoUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString pictureUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString downloadUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QString musicUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString docUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+
+    auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
+    auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
+    auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
+    auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
+    auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
+    auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
+    auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
+
+    m_children->append(desktopItem);
+    m_children->append(docItem);
+    m_children->append(musicItem);
+    m_children->append(downloadItem);
+    m_children->append(pictureItem);
+    m_children->append(videoItem);
+    m_children->append(trashItem);
+
+    if (FileUtils::isFileExsit("file:///data/usershare")) {
+        m_children->append(new SideBarFavoriteItem("favorite:///data/usershare?schema=file", this, m_model));
+    }
+
+    // check kydroid is install
+    if (FileUtils::isFileExsit("file:///var/lib/kydroid") || FileUtils::isFileExsit("file:///var/lib/kmre")) {
+        GVfs* vfs = g_vfs_get_default();
+        if (vfs) {
+            const gchar* const* schemas = g_vfs_get_supported_uri_schemes (vfs);
+            if (schemas) {
+                int i = 0;
+                for (; schemas[i] != NULL; ++i) {
+                    if (0 == strcmp(schemas[i], "kydroid")) {
+                        kydroidInstall = true;
+                        kydroidPath = "kydroid:///";
+                        break;
+                    }
+                    else if(0 == strcmp(schemas[i], "kmre"))
+                    {
+                        kydroidInstall = true;
+                        kydroidPath = "kmre:///";
+                        break;
+                    }
+                }
+            }
+        }
+        if (kydroidInstall)
+            m_children->append(new SideBarFavoriteItem(kydroidPath, this, m_model));
+    }
+
+    m_model->insertRows(0, m_children->count(), firstColumnIndex());
+    //TODO: support custom bookmarks.
+    auto bookmark = BookMarkManager::getInstance();
+    if (bookmark->isLoaded()) {
+        syncBookMark();
+    } else {
+        connect(bookmark, &BookMarkManager::urisLoaded, this, [=]() {
+            syncBookMark();
+            disconnect(bookmark, &BookMarkManager::urisLoaded, this, nullptr);
+        });
+    }
 }
 
 SideBarAbstractItem::Type SideBarFavoriteItem::type() {
@@ -82,12 +160,16 @@ QString SideBarFavoriteItem::uri()
 
 QString SideBarFavoriteItem::displayName()
 {
-    return m_display_name;
+    if (!m_info)
+        return m_display_name;
+    return m_info.get()->displayName();
 }
 
 QString SideBarFavoriteItem::iconName()
 {
-    return m_icon_name;
+    if (!m_info)
+        return m_icon_name;
+    return m_info.get()->iconName();
 }
 
 bool SideBarFavoriteItem::hasChildren()
@@ -107,6 +189,8 @@ QModelIndex SideBarFavoriteItem::lastColumnIndex()
     return m_model->lastColumnIndex(this);
 }
 
+
+
 void SideBarFavoriteItem::syncBookMark()
 {
     qDebug()<<"sync book mark=================="<<this->displayName();
@@ -119,19 +203,40 @@ void SideBarFavoriteItem::syncBookMark()
     }
     connect(bookmark, &BookMarkManager::bookMarkAdded, this, [=](const QString &uri, bool successed) {
         if (successed) {
-            auto item = new SideBarFavoriteItem(uri, this, m_model);
+            auto item = new SideBarFavoriteItem(FileUtils::urlDecode(uri), this, m_model);
             *m_children<<item;
             m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
         }
     });
-    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=](const QString &uri, bool successed) {
+    connect(bookmark, &BookMarkManager::bookMarkRemoved, this, [=] (const QString &uri, bool successed) {
+        QString delUri = getTargetUri(uri);
         if (successed) {
             for (auto item : *m_children) {
-                if (item->uri() == uri) {
+                QString itemUri = getTargetUri(item->uri());
+                if (delUri == itemUri) {
                     m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
                     m_children->removeOne(item);
                 }
             }
         }
     });
+}
+
+QString SideBarFavoriteItem::getTargetUri(const QString &uri)
+{
+    QString sguri = uri;
+    if (uri.startsWith("favorite://")) {
+        g_autoptr(GFile) turi = g_file_new_for_uri(FileUtils::urlEncode(uri).toUtf8().constData());
+        if (turi) {
+            g_autoptr(GFileInfo) turiInfo = g_file_query_info(turi, "standard::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+            if (turiInfo) {
+                g_autofree char* tturi = g_file_info_get_attribute_as_string(turiInfo, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+                if (tturi) {
+                    sguri = tturi;
+                }
+            }
+        }
+    }
+
+    return FileUtils::urlDecode(sguri);
 }

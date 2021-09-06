@@ -37,6 +37,7 @@
 #include <format_dialog.h>
 
 #include <QDebug>
+#include <volume-manager.h>
 
 using namespace Peony;
 
@@ -65,6 +66,10 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
         constructFileSystemItemActions();
         break;
     }
+    case SideBarAbstractItem::NetWorkItem: {
+        constructNetWorkItemActions();
+        break;
+    }
     default: {
         auto action = addAction(QIcon::fromTheme("preview-file"), tr("Properties"));
         action->setEnabled(false);
@@ -76,12 +81,19 @@ SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *p
 const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
-    l << addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Delete Symbolic"), [=]() {
-         BookMarkManager::getInstance()->removeBookMark(m_uri);
+
+    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete Symbolic"), [=]() {
+        BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
+
     if (!m_item->firstColumnIndex().parent().isValid()) {
         l.last()->setEnabled(false);
-    } else if (m_item->firstColumnIndex().row() < 3) {
+    } else if (m_item->firstColumnIndex().row() < 10) {
+        l.last()->setEnabled(false);
+    }
+    else if (m_uri == "file:///data/usershare" || m_uri == "kmre:///" || m_uri == "kydroid:///")
+    {
+        //fix bug#68431, can not delete option issue
         l.last()->setEnabled(false);
     }
 
@@ -112,16 +124,17 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
 
-    auto info = FileInfo::fromUri(m_uri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    auto info = FileInfo::fromUri(m_uri);
     if (info->displayName().isEmpty()) {
         FileInfoJob j(info);
         j.querySync();
     }
+
     if (info->canUnmount() || info->canMount()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Unmount"), [=]() {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
             m_item->unmount();
         });
-
         bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
         bool isMounted = isUmountable;
         auto targetUri = FileUtils::getTargetUri(m_item->uri());
@@ -135,30 +148,47 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 
         l.last()->setEnabled(isMounted);
     }
-    if (info->canEject() || info->canStop()) {
-        l<<addAction(QIcon::fromTheme("media-eject"), tr("&Eject"), [=](){
-            m_item->eject(G_MOUNT_UNMOUNT_NONE);
-        });
+    if(0 != QString::compare(m_uri, "computer:///root.link"))
+    {
+        if (m_item->isRemoveable()) {
+            l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
+                m_item->eject(G_MOUNT_UNMOUNT_NONE);
+            });
+
+            l.last()->setEnabled(m_item->isMounted());
+        }
     }
 
-    auto mgr = MenuPluginManager::getInstance();
-    auto ids = mgr->getPluginIds();
-    for (auto id : ids) {
-        auto factory = mgr->getPlugin(id);
-        //qDebug()<<id;
-        auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
-        addActions(tmp);
-        for (auto action : tmp) {
-            action->setParent(this);
+    if(0 != QString::compare(m_uri, "filesafe:///")) {
+        auto mgr = MenuPluginManager::getInstance();
+        auto ids = mgr->getPluginIds();
+        for (auto id : ids) {
+            auto factory = mgr->getPlugin(id);
+            //qDebug()<<id;
+            auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
+            addActions(tmp);
+            for (auto action : tmp) {
+                action->setParent(this);
+            }
+            l<<tmp;
         }
-        l<<tmp;
     }
 
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-        PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
-        w->show();
+        //fix computer show properties crash issue, link to bug#77789
+        if (m_uri == "computer:///" || m_uri == "//")
+        {
+            gotoAboutComputer();
+        }
+        else{
+            PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+            w->show();
+        }
     });
-
+    if ((0 != QString::compare(m_uri, "computer:///")) &&
+        (0 != QString::compare(m_uri, "filesafe:///"))) {
+        l.last()->setEnabled(m_item->isMounted());
+    }
 
     /*
      *  add format function
@@ -167,10 +197,11 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
      */
     auto targetUri = FileUtils::getTargetUri(m_uri);
     auto mount = VolumeManager::getMountFromUri(targetUri);
-
+    QString unixDevice = FileUtils::getUnixDevice(m_uri);
+    //qDebug() << "targetUri:"<<targetUri<<m_uri;
     //fix erasable optical disk can be format issue, bug#32415
-    if(! m_uri.startsWith("burn:///") && !m_uri.endsWith(".mount")
-       && !(m_uri.startsWith("file:///media") && m_uri.endsWith("CDROM"))
+    //fix bug#52491, CDROM and DVD can format issue
+    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
        && info->isVolume() && info->canUnmount()){
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
           Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
@@ -181,5 +212,40 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
           l.last()->setEnabled(false);
     }
     return l;
+}
+
+void SideBarMenu::gotoAboutComputer()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    //-a para to show about computer infos
+    p.setArguments(QStringList()<<"-a");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+    p.startDetached();
+#else
+    p.startDetached("ukui-control-center", QStringList()<<"-a");
+#endif
+    p.waitForFinished(-1);
+}
+
+const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
+{
+    QList<QAction *> l;
+
+    /* 共享文件夹无右键菜单'卸载' */
+    if (!m_uri.startsWith("file://")) {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
+            m_item->unmount();
+        });       
+        l.last()->setEnabled(m_item->isMounted());
+    }
+
+    l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
+        PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+        w->show();
+    });
+
+    return l;
+
 }
 

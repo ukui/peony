@@ -31,66 +31,15 @@
 
 #include <QMessageBox>
 #include <QProcess>
+#include <file-utils.h>
 
 using namespace Peony;
 
 #define TEMPLATE_DIR "file://" + GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString()
 
-void CreateTemplateOperation::handleDuplicate(const QString &uri) {
-    QString name = uri.split("/").last();
-    QRegExp regExpNum("^\\(\\d+\\)");
-    QRegExp regExp("\\(\\d+\\)(\\.[0-9a-zA-Z]+|)$");
-    if (name.contains(regExp)) {
-        int num = 0;
-        QString numStr = "";
-
-        QString ext = regExp.cap(0);
-        if (ext.contains(regExpNum)) {
-            numStr = regExpNum.cap(0);
-        }
-
-        numStr.remove(0, 1);
-        numStr.chop(1);
-        num = numStr.toInt();
-        ++num;
-        name = name.replace(regExp, ext.replace(regExpNum, QString("(%1)").arg(num)));
-        m_target_uri = m_dest_dir_uri + "/" + name;
-    } else {
-        if (name.contains(".")) {
-            auto list = name.split(".");
-            if (list.count() <= 1) {
-                m_target_uri = m_dest_dir_uri + "/" + name + "(1)";
-            } else {
-                int pos = list.count() - 1;
-                if (list.last() == "gz" |
-                        list.last() == "xz" |
-                        list.last() == "Z" |
-                        list.last() == "sit" |
-                        list.last() == "bz" |
-                        list.last() == "bz2") {
-                    pos--;
-                }
-                if (pos < 0)
-                    pos = 0;
-                //list.insert(pos, "(1)");
-                auto tmp = list;
-                QStringList suffixList;
-                for (int i = 0; i < list.count() - pos; i++) {
-                    suffixList.prepend(tmp.takeLast());
-                }
-                auto suffix = suffixList.join(".");
-
-                auto basename = tmp.join(".");
-                name = basename + "(1)" + "." + suffix;
-                if (name.endsWith("."))
-                    name.chop(1);
-                m_target_uri = m_dest_dir_uri + "/" + name;
-            }
-        } else {
-            name = name + "(1)";
-            m_target_uri = m_dest_dir_uri + "/" + name;
-        }
-    }
+void CreateTemplateOperation::handleDuplicate(const QString &uri)
+{
+    m_target_uri = m_dest_dir_uri + "/" + FileUtils::handleDuplicateName(uri);
 }
 
 CreateTemplateOperation::CreateTemplateOperation(const QString &destDirUri, Type type, const QString &templateName, QObject *parent) : FileOperation(parent)
@@ -113,10 +62,9 @@ void CreateTemplateOperation::run()
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFile") + ".txt";
 retry_create_empty_file:
         GError *err = nullptr;
-        GFileOutputStream *newFile = g_file_create(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
+        GFileOutputStream *newFile = g_file_create(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_target_uri).toUtf8())).get()->get(), G_FILE_CREATE_NONE, nullptr, &err);
         if (err) {
             FileOperationError except;
-            // todo: Allow user naming
             if (err->code == G_IO_ERROR_EXISTS) {
                 g_error_free(err);
                 handleDuplicate(m_target_uri);
@@ -142,7 +90,7 @@ retry_create_empty_file:
         m_target_uri = m_dest_dir_uri + "/" + tr("NewFolder");
 retry_create_empty_folder:
         GError *err = nullptr;
-        g_file_make_directory(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+        g_file_make_directory(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_target_uri).toUtf8())).get()->get(),
                               nullptr,
                               &err);
         if (err) {
@@ -171,7 +119,7 @@ retry_create_empty_folder:
 retry_create_template:
         qDebug() << "create tmp";
         GError *err = nullptr;
-        g_file_copy(wrapGFile(g_file_new_for_uri(m_src_uri.toUtf8())).get()->get(),
+        g_file_copy(wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8())).get()->get(),
                     wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
                     GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS),
                     nullptr,
@@ -202,21 +150,17 @@ retry_create_template:
         }
         // change file's modify time and access time after copy templete file;
         time_t now_time = time(NULL);
-        struct utimbuf tm = {now_time, now_time};
-
-        if (m_target_uri.startsWith("file://")) {
-            utime (m_target_uri.toStdString().c_str() + 6, &tm);
-        } else if (m_target_uri.startsWith("/")) {
-            utime (m_target_uri.toStdString().c_str(), &tm);
-        }
-
+        g_file_set_attribute_uint64(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+                                    G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                                    (guint64)now_time,
+                                    G_FILE_QUERY_INFO_NONE, nullptr, &err);
         break;
     }
     }
 
     // judge if the operation should sync.
     bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(m_src_uri.toUtf8().constData());
+    GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8().constData());
     GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
     if (src_first_mount) {
         needSync = g_mount_can_unmount(src_first_mount);
@@ -227,7 +171,7 @@ retry_create_template:
     }
     g_object_unref(src_first_file);
 
-    GFile *dest_dir_file = g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData());
+    GFile *dest_dir_file = g_file_new_for_uri(FileUtils::urlEncode(m_dest_dir_uri).toUtf8().constData());
     GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
     if (src_first_mount) {
         needSync = g_mount_can_unmount(dest_dir_mount);

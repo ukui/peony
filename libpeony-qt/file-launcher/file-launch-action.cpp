@@ -31,7 +31,7 @@
 
 #include <QMessageBox>
 #include <QPushButton>
-
+#include <QDir>
 #include <QUrl>
 #include <QFile>
 #include <QProcess>
@@ -83,7 +83,8 @@ const QString FileLaunchAction::getUri()
 
 bool FileLaunchAction::isDesktopFileAction()
 {
-    auto info = FileInfo::fromUri(m_uri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    auto info = FileInfo::fromUri(m_uri);
     if (info->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
@@ -111,7 +112,8 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
@@ -244,8 +246,8 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
-
+    //FIXME: replace BLOCKING api in ui thread.
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
@@ -307,6 +309,8 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     bool isExecutable = isExcuteableFile(fileInfo->type());
     qDebug() <<"executable:" <<executable <<isAppImage <<fileInfo->type();
+
+    QUrl url = m_uri;
     if (isAppImage) {
         if (executable) {
             QUrl url = m_uri;
@@ -365,7 +369,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             }
             else
                 QMessageBox::critical(nullptr, tr("Open Failed"),
-                                  tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
+                                  tr("Can not open %1, Please confirm you have the right authority.").arg(url.toDisplayString()));
         }
         else if (fileInfo->isDesktopFile())
         {
@@ -464,7 +468,8 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
     if(files.isEmpty())
         return;
 
-    auto fileInfo = FileInfo::fromUri(m_uri, false);
+    //FIXME: replace BLOCKING api in ui thread.
+    auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
         FileInfoJob j(fileInfo);
         j.querySync();
@@ -627,8 +632,11 @@ void FileLaunchAction::execFile()
 {
     QUrl url = m_uri;
     char *quote = g_shell_quote(url.path().toUtf8());
+    QString newDir = m_uri.section('/',0,m_uri.count('/')-1);
     GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NONE, nullptr);
+    QDir::setCurrent(QUrl(newDir).path());
     g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    QDir::setCurrent(QDir::homePath());
     g_object_unref(app_info);
     g_free(quote);
 }
@@ -637,8 +645,11 @@ void FileLaunchAction::execFileInterm()
 {
     QUrl url = m_uri;
     char *quote = g_shell_quote(url.path().toUtf8());
+    QString newDir = m_uri.section('/',0,m_uri.count('/')-1);
     GAppInfo *app_info = g_app_info_create_from_commandline(quote, nullptr, G_APP_INFO_CREATE_NEEDS_TERMINAL, nullptr);
+    QDir::setCurrent(QUrl(newDir).path());
     g_app_info_launch(app_info, nullptr, nullptr, nullptr);
+    QDir::setCurrent(QDir::homePath());
     g_object_unref(app_info);
     g_free(quote);
 }

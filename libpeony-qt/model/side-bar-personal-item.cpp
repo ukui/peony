@@ -23,8 +23,8 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-model.h"
 #include "file-utils.h"
-#include "file-watcher.h"
-
+#include "file-info.h"
+#include "file-info-job.h"
 #include <QStandardPaths>
 
 using namespace Peony;
@@ -43,90 +43,71 @@ SideBarPersonalItem::SideBarPersonalItem(QString uri,
         //m_icon_name = "emblem-personal";
         //top dir don't show icon
         m_icon_name = "";
-        int count = 0;
 
         QString documentUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-        if(homeUri != documentUri)
-        {
-            SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,
-                                                                        this,
-                                                                        m_model);
-            m_children->append(documentItem);
-            count++;
-        }
+        SideBarPersonalItem *documentItem = new SideBarPersonalItem(documentUri,
+                this,
+                m_model);
+        m_children->append(documentItem);
 
         QString pictureUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-        if(homeUri != pictureUri)
-        {
-            SideBarPersonalItem *pictureItem = new SideBarPersonalItem(pictureUri,
-                                                                       this,
-                                                                       m_model);
-            m_children->append(pictureItem);
-            count++;
-        }
+        SideBarPersonalItem *pictureItem = new SideBarPersonalItem(pictureUri,
+                this,
+                m_model);
+        m_children->append(pictureItem);
 
         QString mediaUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-        if(homeUri != mediaUri)
-        {
-            SideBarPersonalItem *mediaItem = new SideBarPersonalItem(mediaUri,
-                                                                     this,
-                                                                     m_model);
-            m_children->append(mediaItem);
-            count++;
-        }
-
-        QString musicUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-        if(homeUri != musicUri)
-        {
-            SideBarPersonalItem *musicItem = new SideBarPersonalItem(musicUri,
-                                                                     this,
-                                                                     m_model);
-            m_children->append(musicItem);
-            count++;
-        }
+        SideBarPersonalItem *mediaItem = new SideBarPersonalItem(mediaUri,
+                this,
+                m_model);
+        m_children->append(mediaItem);
 
         QString downloadUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        if(homeUri != downloadUri)
-        {
-            SideBarPersonalItem *downloadItem = new SideBarPersonalItem(downloadUri,
-                                                                        this,
-                                                                        m_model);
-            m_children->append(downloadItem);
-            count++;
-        }
+        SideBarPersonalItem *downloadItem = new SideBarPersonalItem(downloadUri,
+                this,
+                m_model);
+        m_children->append(downloadItem);
 
-        m_model->insertRows(0, count, firstColumnIndex());
+        QString musicUri = "file://" + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+        SideBarPersonalItem *musicItem = new SideBarPersonalItem(musicUri,
+                this,
+                m_model);
+        m_children->append(musicItem);
 
-        //! \brief Add monitor dir del
-        this->initWatcher();
-        m_watcher->startMonitor();
-        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](const QString& uri) {
-            GFile* file = g_file_new_for_uri(uri.toLatin1().constData());
-            QString path = g_file_get_path(file);
-            qDebug() << path;
-            QString _uri = "file://" + path;
-            for(SideBarAbstractItem* i : *m_children)
-            {
-                if(i->uri() == _uri )
-                {
-                    m_model->removeRow(m_children->indexOf(i), this->firstColumnIndex());
-                    m_children->removeOne(i);
-                }
-            }
-            g_object_unref(file);
-        });
-
-        //! \todo monitor file creat
-//        connect(m_watcher.get(), &FileWatcher::fileCreated, this, [=](const QString& uri) {
-
-//        });
-
+        m_model->insertRows(0, 5, firstColumnIndex());
         return;
     }
     m_uri = uri;
     //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);
+
+    m_info = FileInfo::fromUri(uri);
+    auto infoJob = new FileInfoJob(m_info);
+    infoJob->setAutoDelete();
+    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
+        Q_EMIT this->queryInfoFinished();
+    });
+    infoJob->queryAsync();
+}
+
+QString SideBarPersonalItem::uri()
+{
+    return m_uri;
+}
+
+QString SideBarPersonalItem::displayName()
+{
+    if (!m_info)
+        return m_display_name;
+    return m_info.get()->displayName();
+}
+
+QString SideBarPersonalItem::iconName()
+{
+    if (!m_info)
+        return m_icon_name;
+    return m_info.get()->iconName();
 }
 
 QModelIndex SideBarPersonalItem::firstColumnIndex()
@@ -137,11 +118,4 @@ QModelIndex SideBarPersonalItem::firstColumnIndex()
 QModelIndex SideBarPersonalItem::lastColumnIndex()
 {
     return m_model->lastColumnIndex(this);
-}
-
-void SideBarPersonalItem::initWatcher()
-{
-    if (!m_watcher) {
-        m_watcher = std::make_shared<FileWatcher>(m_uri);
-    }
 }

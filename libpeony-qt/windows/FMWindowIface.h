@@ -119,6 +119,7 @@ public:
     virtual void editUris(const QStringList &uris) {}
 
     virtual void setCurrentViewZoomLevel(int zoomLevel) {}
+    virtual bool getFilterWorking() {return false;}
 };
 }
 

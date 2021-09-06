@@ -35,15 +35,23 @@ FileLabelModel::FileLabelModel(QObject *parent)
 {
     m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
     if (m_label_settings->value("lastid").isNull()) {
+        //adjsut color value to design instead of Qt define color,task#25507
+        QColor Red(0xFA6056);
+        QColor Orange(0xF8A34C);
+        QColor Yellow(0xF7CE52);
+        QColor Green(0x5FD065);
+        QColor Blue(0x478EF8);
+        QColor Purple(0xB470D5);
+        QColor Gray(0x9D9DA0);
         //init settings
-        addLabel(tr("Red"), Qt::red);
-        addLabel(tr("Orange"), QColor("orange"));
-        addLabel(tr("Yellow"), Qt::yellow);
-        addLabel(tr("Green"), Qt::green);
-        addLabel(tr("Blue"), Qt::blue);
-        addLabel(tr("Purple"), QColor("purple"));
-        addLabel(tr("Gray"), Qt::gray);
-        addLabel(tr("Transparent"), Qt::transparent);
+        addLabel(tr("Red"), Red);
+        addLabel(tr("Orange"), Orange);
+        addLabel(tr("Yellow"), Yellow);
+        addLabel(tr("Green"), Green);
+        addLabel(tr("Blue"), Blue);
+        addLabel(tr("Purple"), Purple);
+        addLabel(tr("Gray"), Gray);
+        //addLabel(tr("Transparent"), Qt::transparent);
     } else {
         initLabelItems();
     }
@@ -162,11 +170,13 @@ void FileLabelModel::removeLabel(int id)
         }
     }
 
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(id);
     m_label_settings->setValue("visible", false);
     m_label_settings->endArray();
     m_label_settings->sync();
+
+    Q_EMIT dataChanged(QModelIndex(), QModelIndex());
 
     endResetModel();
 }
@@ -369,7 +379,7 @@ bool FileLabelModel::removeRows(int row, int count, const QModelIndex &parent)
 
 void FileLabelModel::setName(FileLabelItem *item, const QString &name)
 {
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(item->id());
     m_label_settings->setValue("label", name);
     m_label_settings->endArray();
@@ -378,7 +388,7 @@ void FileLabelModel::setName(FileLabelItem *item, const QString &name)
 
 void FileLabelModel::setColor(FileLabelItem *item, const QColor &color)
 {
-    m_label_settings->beginWriteArray("labels");
+    m_label_settings->beginWriteArray("labels", lastLabelId() + 1);
     m_label_settings->setArrayIndex(item->id());
     m_label_settings->setValue("color", color);
     m_label_settings->endArray();
@@ -387,28 +397,19 @@ void FileLabelModel::setColor(FileLabelItem *item, const QColor &color)
 
 void FileLabelModel::initLabelItems()
 {
-    QMap<QVariant, QString>  colorMap;
-    colorMap.insert(QColor(Qt::red), tr("Red"));
-    colorMap.insert(QColor("orange"), tr("Orange"));
-    colorMap.insert(QColor(Qt::yellow), tr("Yellow"));
-    colorMap.insert(QColor(Qt::green), tr("Green"));
-    colorMap.insert(QColor(Qt::blue), tr("Blue"));
-    colorMap.insert(QColor("purple"), tr("Purple"));
-    colorMap.insert(QColor(Qt::gray), tr("Gray"));
-    colorMap.insert(QColor(Qt::transparent), tr("Transparent"));
-
     beginResetModel();
     auto size = m_label_settings->beginReadArray("labels");
     for (int i = 0; i < size; i++) {
         m_label_settings->setArrayIndex(i);
         bool visible = m_label_settings->value("visible").toBool();
         if (visible) {
+            auto name = m_label_settings->value("label").toString();
             auto color = qvariant_cast<QColor>(m_label_settings->value("color"));
 
             auto item = new FileLabelItem(this);
             item->m_id = i;
-            item->setName(colorMap[color]);
-            item->setColor(color);
+            item->m_name = name;
+            item->m_color = color;
 
             m_labels.append(item);
         }
@@ -456,6 +457,12 @@ void FileLabelItem::setName(const QString &name)
 
 void FileLabelItem::setColor(const QColor &color)
 {
+    if (color.blackF() == 1) {
+        auto black = color;
+        black.setRgbF(0.01, 0.01, 0.01);
+        setColor(black);
+        return;
+    }
     m_color = color;
     if (m_id >= 0) {
         if (global_instance)

@@ -52,7 +52,9 @@ public:
     }
 
     void createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr, bool force = false);
+    void clearThumbnail();
     void releaseThumbnail(const QString &uri);
+    void releaseThumbnail(const QStringList &uris);
     void updateDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher = nullptr);
     const QIcon tryGetThumbnail(const QString &uri);
 
@@ -74,6 +76,10 @@ private:
     void createImageFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
     void createOfficeFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
     void createDesktopFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
+
+    //djvu file process
+    void findAtril();
+    void createImagePdfFileThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher);
 
     QHash<QString, QIcon> m_hash;
     //QMutex m_mutex;

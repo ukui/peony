@@ -1,7 +1,7 @@
 /*
  * Peony-Qt's Library
  *
- * Copyright (C) 2020, KylinSoft Co., Ltd.
+ * Copyright (C) 2021, KylinSoft Co., Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,29 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Meihong He <hemeihong@kylinos.cn>
+ * Authors: Yue Lan <lanyue@kylinos.cn>
  *
  */
 
-#include "desktop-screen.h"
-#include <X11/Xlib.h>
+#include "custom-error-handler.h"
+#include <QMessageBox>
 
-DesktopScreen::DesktopScreen()
+using namespace Peony;
+
+CustomErrorHandler::CustomErrorHandler(QObject *parent) : QObject(parent)
 {
 
 }
 
-int DesktopScreen::getScreenWidth()
+QList<int> CustomErrorHandler::errorCodeSupportHandling()
 {
-    Display *disp = XOpenDisplay(NULL);
-    Screen *scrn = DefaultScreenOfDisplay(disp);
-    if (NULL == scrn) {
-        return 0;
-    }
-    int width = scrn->width;
+    return QList<int>();
+}
 
-    if (NULL != disp) {
-        XCloseDisplay(disp);
+void CustomErrorHandler::handleCustomError(const QString &uri, int errorCode)
+{
+    QMessageBox::StandardButton button = QMessageBox::question(0, 0, tr("Is Error Handled?"));
+    if (button == QMessageBox::Yes) {
+        Q_EMIT finished();
+    } else {
+        Q_EMIT failed(tr("Error not be handled correctly"));
     }
-    return width;
 }

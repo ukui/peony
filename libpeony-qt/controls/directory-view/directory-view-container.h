@@ -27,6 +27,7 @@
 #include "peony-core_global.h"
 #include <QWidget>
 #include <QStack>
+#include <QGSettings>
 
 #include "file-item-model.h"
 
@@ -156,6 +157,7 @@ private:
 
     FileItemModel *m_model;
     FileItemProxyFilterSortModel *m_proxy_model;
+    QGSettings* m_control_center_plugin = nullptr;
 };
 
 }

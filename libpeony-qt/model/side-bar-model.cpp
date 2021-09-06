@@ -25,7 +25,7 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-file-system-item.h"
 #include "side-bar-separator-item.h"
-#include "side-bar-cloud-item.h"
+#include "side-bar-net-work-item.h"
 
 #include "file-info.h"
 #include "file-info-job.h"
@@ -35,6 +35,9 @@
 
 #include "vfs-plugin-manager.h"
 #include "side-bar-vfs-item.h"
+
+#include "side-bar-single-item.h"
+#include "file-utils.h"
 
 #include <QIcon>
 #include <QMimeData>
@@ -54,8 +57,12 @@ SideBarModel::SideBarModel(QObject *parent)
     auto vfsMgr = VFSPluginManager::getInstance();
     auto plugins = vfsMgr->registeredPlugins();
     for (auto plugin : plugins) {
-        if (plugin->holdInSideBar())
+        if (plugin->uriScheme().contains("kydroid://") || plugin->uriScheme().contains("kmre://")) {
+            continue;
+        }
+        if (plugin->holdInSideBar()) {
             m_root_children->append(new SideBarVFSItem(plugin, this));
+        }
     }
 
 //    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
@@ -68,21 +75,28 @@ SideBarModel::SideBarModel(QObject *parent)
 //    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator2);
 
-    SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
-    m_root_children->append(personal_root_item);
+//    if (FileUtils::isFileExsit("file:///data/usershare")) {
+//        SideBarSingleItem *userShareItem = new SideBarSingleItem("file:///data/usershare", nullptr, tr("Shared Data"), this);
+//        m_root_children->append(userShareItem);
+//    }
+
+//    SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
+//    m_root_children->append(personal_root_item);
     //personal_root_item->findChildren();
 
 //    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator3);
 
-    //! \note Temporarily hidden cloud
-//    SideBarCloudItem *cloudItem = new SideBarCloudItem(nullptr, nullptr, this);
-//    m_root_children->append(cloudItem);
-
-    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr, nullptr, this);
+    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
+            nullptr,
+            this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
 
+//    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+    SideBarNetWorkItem *networkItem = new SideBarNetWorkItem("network:///", "network-workgroup-symbolic",
+                                                             tr("Network"), nullptr, this);
+    m_root_children->append(networkItem);
 
     endResetModel();
 
@@ -177,16 +191,13 @@ int SideBarModel::rowCount(const QModelIndex &parent) const
 int SideBarModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 1;
+    return 2;
 }
 
 bool SideBarModel::hasChildren(const QModelIndex &parent) const
 {
     if (!parent.isValid())
         return true;
-    // to make item in side bar can expand only one time
-    if (parent.parent().isValid())
-        return false;
 
     SideBarAbstractItem *parentItem = static_cast<SideBarAbstractItem*>(parent.internalPointer());
     return parentItem->hasChildren();
@@ -210,24 +221,29 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
 
     SideBarAbstractItem *item = static_cast<SideBarAbstractItem*>(index.internalPointer());
 
-    //! Delete the second column to fit the topic
-//    if (index.column() == 1) {
-//        if(role == Qt::DecorationRole){
-//            bool unmountAble,ejectAble;
-//            unmountAble = item->isMountable();
-//            ejectAble = item->isEjectable();
-//            if(unmountAble && ejectAble)
-//                return QVariant(QIcon::fromTheme("media-eject"));
-//            else if(unmountAble){
-//                if(item->isMounted())
-//                    return QVariant(QIcon::fromTheme("media-eject"));
-//                else
-//                    return QVariant();
-//            }else
-//                return QVariant();
-//        }else
-//            return QVariant();
-//    }
+    if (index.column() == 0 && !index.parent().isValid()) {
+        if(role == Qt::DecorationRole) {
+            return QVariant();
+        }
+    }
+
+    if (index.column() == 1) {
+        if(role == Qt::DecorationRole){
+            bool unmountAble,ejectAble;
+            unmountAble = item->isMountable();
+            ejectAble = item->isEjectable();
+            if(unmountAble && ejectAble)
+                return QVariant(QIcon::fromTheme("media-eject-symbolic"));
+            else if(unmountAble){
+                if(item->isMounted())
+                    return QVariant(QIcon::fromTheme("media-eject-symbolic"));
+                else
+                    return QVariant();
+            }else
+                return QVariant();
+        }else
+            return QVariant();
+    }
 
     switch (role) {
     case Qt::DecorationRole:
@@ -315,8 +331,28 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
 
 bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if (data->urls().isEmpty())
+    auto urls = data->urls();
+
+    QStringList srcUris;
+    if (data->hasFormat("peony-qt/encoded-uris")) {
+        srcUris = data->text().split(" ");
+        for (QString uri : srcUris) {
+            if (uri.startsWith("recent://"))
+                srcUris.removeOne(uri);
+        }
+    } else {
+        for (auto url : urls) {
+            //can not drag file from recent
+            if (url.url().startsWith("recent://"))
+                return false;
+            srcUris<<url.url();
+        }
+    }
+    srcUris.removeDuplicates();
+
+    if (srcUris.isEmpty()) {
         return false;
+    }
 
     auto item = this->itemFromIndex(parent);
     qDebug()<<"SideBarModel::dropMimeData:" <<action<<row<<column<<parent.data();
@@ -324,14 +360,15 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
         auto bookmark = BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
-            for (auto url : data->urls()) {
-                auto info = FileInfo::fromUri(url.toDisplayString(), false);
+            for (auto url : srcUris) {
+                //FIXME: replace BLOCKING api in ui thread.
+                auto info = FileInfo::fromUri(url);
                 if (info->displayName().isNull()) {
                     FileInfoJob j(info);
                     j.querySync();
                 }
                 if (info->isDir()) {
-                    bookmark->addBookMark(url.url());
+                    bookmark->addBookMark(url);
                 }
             }
         }
@@ -360,10 +397,7 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 //    }
     case SideBarAbstractItem::PersonalItem:
     case SideBarAbstractItem::FileSystemItem: {
-        QStringList uris;
-        for (auto url : data->urls()) {
-            uris<<url.url();
-        }
+        QStringList uris = srcUris;
 
         //can not drag file to recent
         if (item->uri().startsWith("recent://"))
@@ -377,7 +411,16 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             if (uri.startsWith("recent://"))
                 return false;
         }
-        FileOperationUtils::move(uris, item->uri(), true, true);
+        if (action == Qt::MoveAction)
+        {
+            FileOperationUtils::move(uris, item->uri(), true, true);
+            //qDebug() << "sideBarModel moveOp";
+        }
+        else if (action == Qt::CopyAction)
+        {
+            FileOperationUtils::copy(uris, item->uri(), true);
+            //qDebug() << "sideBarModel CopyOp";
+        }
         break;
     }
     }
@@ -386,5 +429,11 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
 Qt::DropActions SideBarModel::supportedDropActions() const
 {
+    return Qt::MoveAction|Qt::CopyAction;
     return Qt::MoveAction|Qt::CopyAction|Qt::LinkAction;
+}
+
+Qt::DropActions SideBarModel::supportedDragActions() const
+{
+    return Qt::MoveAction;
 }

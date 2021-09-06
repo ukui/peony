@@ -25,6 +25,7 @@
 
 #include <QToolBar>
 #include "peony-core_global.h"
+#include <memory>
 
 class QLineEdit;
 class QHBoxLayout;
@@ -32,6 +33,8 @@ class QToolButton;
 class QMenu;
 
 namespace Peony {
+
+class FileInfo;
 
 class LocationBar : public QWidget
 {
@@ -53,6 +56,7 @@ public Q_SLOTS:
 protected:
     void clearButtons();
     void addButton(const QString &uri, bool setIcon = false, bool setMenu = true);
+    void updateButtons();
 
     void mousePressEvent(QMouseEvent *e) override;
     void paintEvent(QPaintEvent *e) override;
@@ -70,6 +74,11 @@ private:
     QMenu *m_indicator_menu;
 
     const int ELIDE_TEXT_LENGTH = 16;
+
+    std::shared_ptr<FileInfo> m_current_info;
+    QList<std::shared_ptr<FileInfo>> m_buttons_info;
+    QList<std::shared_ptr<FileInfo>> m_querying_buttons_info;
+    QHash<QString, QList<std::shared_ptr<FileInfo>>> m_infos_hash;
 };
 
 }

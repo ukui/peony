@@ -55,6 +55,9 @@ public:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const;
 
+Q_SIGNALS:
+    void showHiddenFile();
+
 private:
     int m_sort_type = Other;
     bool m_show_hidden;

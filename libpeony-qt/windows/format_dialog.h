@@ -23,18 +23,16 @@
 #ifndef FORMAT_DIALOG_H
 #define FORMAT_DIALOG_H
 
-#include <QDialog>
-#include <sys/stat.h>
-#include <udisks/udisks.h>
-#include <libnotify/notify.h>
-#include <glib/gi18n.h>
 #include <QTimer>
 #include <errno.h>
+#include <QDialog>
+#include <sys/stat.h>
+#include <glib/gi18n.h>
+#include <udisks/udisks.h>
+#include <libnotify/notify.h>
 
-#include "side-bar-menu.h"
-#include "volume-manager.h"
-#include "file-utils.h"
-#include "side-bar-abstract-item.h"
+#include "peony-core_global.h"
+
 namespace Ui {
 class Format_Dialog;
 }
@@ -61,7 +59,7 @@ struct CreateformatData{
 };
 
 
-class Format_Dialog : public QDialog
+class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
 
@@ -78,7 +76,6 @@ public:
 
     UDisksObject *get_object_from_block_device 	(UDisksClient *client,
                                                  const gchar *block_device);
-
 
     void kdisk_format(const gchar * device_name,const gchar *format_type,
                       const gchar * erase_type,const gchar * filesystem_name,int *format_finish);
@@ -109,6 +106,8 @@ public:
 
     double m_simulate_progress = 0;
 
+    void closeEvent(QCloseEvent* );
+
 Q_SIGNALS:
      void ensure_format(bool flags);
 
@@ -117,13 +116,8 @@ public Q_SLOTS:
     void acceptFormat (bool);
     void colseFormat(bool);
 
-
     void formatloop();
-
-
-
 private:
-
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 

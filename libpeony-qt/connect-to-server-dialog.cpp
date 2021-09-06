@@ -23,16 +23,21 @@
 #include "connect-to-server-dialog.h"
 #include "global-settings.h"
 
+#include <QUrl>
 #include <QIcon>
 #include <QDebug>
 #include <QLineEdit>
 #include <QSizePolicy>
 #include <QSpacerItem>
 #include <QButtonGroup>
-#include <QUrl>
 
 using namespace Peony;
-
+static const QString ftpTypeStr="ftp";
+static const QString sftpTypeStr="sftp";
+static const QString sambaTypeStr="samba";
+static const QString ftpDefaultPortStr="21";
+static const QString sftpDefaultPortStr="22";
+static const QString sambaDefaultPortStr="445";
 ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 {
     setFixedSize(m_widget_size);
@@ -55,11 +60,13 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
     m_main_layout->addSpacing(12);
 
-    m_remote_type->append("ftp");
-    m_remote_type->append("samba");
+    m_remote_type->append(ftpTypeStr);
+    m_remote_type->append(sftpTypeStr);
+    m_remote_type->append(sambaTypeStr);
     m_remote_port->append("20");
-    m_remote_port->append("21");
-    m_remote_port->append("445");
+    m_remote_port->append(ftpDefaultPortStr);
+    m_remote_port->append(sftpDefaultPortStr);
+    m_remote_port->append(sambaDefaultPortStr);
     m_ip_label->setText(tr("ip"));
     m_port_editor->setEditable(true);
     m_port_label->setText(tr("port"));
@@ -71,6 +78,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     m_ip_edit->setFixedWidth(194);
     m_port_label->setFixedHeight(36);
     m_port_editor->setFixedHeight(36);
+    m_port_editor->setFixedWidth(65);
     m_remote_type_label->setFixedHeight(36);
     m_remote_type_edit->setFixedHeight(36);
     m_remote_type_edit->addItems(*m_remote_type);
@@ -119,62 +127,56 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
     setLayout(m_main_layout);
 
-    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_IP)) {
-        m_favorite_uri = QSet<QString>::fromList(GlobalSettings::getInstance()->getValue(REMOTE_SERVER_IP).toStringList());
-    }
-
-    for (auto uri = m_favorite_uri.begin(); uri != m_favorite_uri.end(); ++uri) {
-        if ("" != *uri) {
-            QListWidgetItem* item = new QListWidgetItem;
-            item->setText(*uri);
-            m_favorite_list->addItem(item);
-        }
-    }
-
-    connect(m_btn_add, &QPushButton::clicked, [=] (bool checked) {
-        if (!m_favorite_uri.contains(uri())) {
-            m_favorite_uri.insert(uri());
-            GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.toList()));
-            GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
-
-            QListWidgetItem* item = new QListWidgetItem;
-            item->setText(uri());
-            m_favorite_list->addItem(item);
-            m_favorite_widgets.insert(uri(), item);
-            m_favorite_list->setCurrentItem(item);
+    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
+        QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
+        for (auto uri = uriList.constBegin(); uri != uriList.constEnd(); ++uri) {
+            QUrl url(*uri);
+            if ("" != *uri) {
+                QString urit = *uri == url.toDisplayString() ? *uri : url.toDisplayString();
+                QListWidgetItem* item = new QListWidgetItem;
+                item->setText(urit);
+                m_favorite_uri += urit;
+                m_favorite_list->addItem(item);
+                m_favorite_widgets.insert(urit, item);
+            }
         }
 
+        syncUri();
+    }
+
+    connect(m_btn_add, &QPushButton::clicked, this, [=] (bool checked) {
+        addUri(uri());        
         Q_UNUSED(checked);
     });
 
-    connect(m_btn_del, &QPushButton::clicked, [=] (bool checked) {
-        if (m_favorite_uri.contains(uri())) {
-            m_favorite_uri.remove(uri());
-            GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.toList()));
-            GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
-
-            QListWidgetItem* item = m_favorite_widgets[uri()];
-            m_favorite_list->removeItemWidget(item);
-            m_favorite_widgets.remove(uri());
-            delete item;
+    connect(m_remote_type_edit, &QComboBox::currentTextChanged, this, [=] (const QString& type) {
+        if (sambaTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sambaDefaultPortStr);
+        } else if (ftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(ftpDefaultPortStr);
+        }else if (sftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sftpDefaultPortStr);
         }
+    });
+    Q_EMIT m_remote_type_edit->currentTextChanged(ftpTypeStr);
 
+    connect(m_btn_del, &QPushButton::clicked, this, [=] (bool checked) {
+        removeUri(uri());
         if (m_favorite_uri.count() <= 0) {
             m_favorite_list->clear();
         } else {
+            setUri(*(m_favorite_uri.begin()));
             m_favorite_list->setCurrentItem(m_favorite_widgets[*(m_favorite_uri.begin())]);
         }
-
         m_favorite_list->update();
-
         Q_UNUSED(checked);
     });
 
-    connect(m_favorite_list, &QListWidget::itemClicked, [=] (QListWidgetItem *item) {
+    connect(m_favorite_list, &QListWidget::itemClicked, this, [=] (QListWidgetItem *item) {
         setUri(item->text());
     });
 
-    connect(m_btn_conn, &QPushButton::clicked, [=] (bool checked) {
+    connect(m_btn_conn, &QPushButton::clicked, this, [=] (bool checked) {
         if ("" != uri()) {
             accept();
         }
@@ -192,10 +194,12 @@ QString ConnectServerDialog::uri()
 {
     QString uuri = "";
 
-    if (m_remote_type_edit->currentText() == "samba") {
+    if (m_remote_type_edit->currentText() == sambaTypeStr) {
         uuri = "smb://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
-    } else if (m_remote_type_edit->currentText() == "ftp") {
+    } else if (m_remote_type_edit->currentText() == ftpTypeStr) {
         uuri = "ftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
+    }else if (m_remote_type_edit->currentText() == sftpTypeStr) {
+        uuri = "sftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
     }
 
     return uuri;
@@ -206,6 +210,13 @@ QString ConnectServerDialog::getIP()
     return m_ip_edit->text();
 }
 
+void ConnectServerDialog::syncUri()
+{
+    GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP, QStringList(m_favorite_uri.values()));
+    GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
+
+}
+
 void ConnectServerDialog::setUri(QString uri)
 {
     QUrl        rl   = uri;
@@ -213,7 +224,7 @@ void ConnectServerDialog::setUri(QString uri)
     QString     schema = rl.scheme();
 
     if ("smb" == schema) {
-        m_remote_type_edit->setCurrentText("samba");
+        m_remote_type_edit->setCurrentText(sambaTypeStr);
     } else {
         m_remote_type_edit->setCurrentText(rl.scheme());
     }
@@ -222,8 +233,57 @@ void ConnectServerDialog::setUri(QString uri)
     m_port_editor->setCurrentText(port);
 }
 
+void ConnectServerDialog::addUri(QString uri)
+{
+    bool canInsert = false;
+    QUrl url(uri);
 
-ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDialog(parent)
+    // fixme:// fix
+    if (!m_favorite_uri.contains(uri) && !m_favorite_uri.contains(url.toDisplayString())) {
+        canInsert = true;
+    }
+
+    if (canInsert) {
+        m_favorite_uri.insert(url.toDisplayString());
+
+        QListWidgetItem* item = new QListWidgetItem;
+        item->setText(url.toDisplayString());
+        m_favorite_list->addItem(item);
+        m_favorite_widgets.insert(url.toDisplayString(), item);
+        m_favorite_list->setCurrentItem(item);
+
+        syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(url.toDisplayString(), true);
+    }
+}
+
+void ConnectServerDialog::removeUri(QString uri)
+{
+    QUrl url (uri);
+    QString removeUrl = uri;
+
+    if (m_favorite_uri.contains(uri)) {
+        removeUrl = uri;
+    } else if (m_favorite_uri.contains(url.toDisplayString())) {
+        removeUrl = url.toDisplayString();
+    }
+
+    if (m_favorite_uri.contains(removeUrl)) {
+        m_favorite_uri.remove(removeUrl);
+        syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(removeUrl,false);
+    }
+
+    if (m_favorite_widgets.contains(removeUrl)) {
+        QListWidgetItem* item = m_favorite_widgets[removeUrl];
+        m_favorite_list->removeItemWidget(item);
+        m_favorite_widgets.remove(removeUrl);
+        delete item;
+    }
+}
+
+ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent)
+    : QDialog(parent),m_remoteIP(remoteIP)
 {
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
@@ -271,6 +331,7 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     m_reg_usr_name_editor->setFixedHeight(36);
     m_reg_usr_passwd_editor->setFixedHeight(36);
     m_reg_usr_combox->setFixedHeight(36);
+
     m_reg_usr_passwd_editor->setEchoMode(QLineEdit::Password);
     m_reg_usr_layout->addWidget(m_reg_usr_name_label,       0, 0);
     m_reg_usr_layout->addWidget(m_reg_usr_name_editor,      0, 1);
@@ -308,7 +369,8 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
 
     connect(m_usr_btn_usr, &QRadioButton::clicked, [=] () {
         setFixedSize(m_widget_size);
-        m_reg_usr_combox->setHidden(false);
+        // FIXME://
+        m_reg_usr_combox->setHidden(true);
         m_reg_usr_name_label->setHidden(false);
         m_reg_usr_name_editor->setHidden(false);
         m_reg_usr_passwd_label->setHidden(false);
@@ -336,7 +398,7 @@ QString ConnectServerLogin::user()
 
 QString ConnectServerLogin::domain()
 {
-    return "";
+    return "WORKGROUP";
 }
 
 QString ConnectServerLogin::password()
@@ -352,5 +414,34 @@ bool ConnectServerLogin::anonymous()
 bool ConnectServerLogin::savePassword()
 {
     return m_reg_usr_combox->isChecked();
+}
+
+void ConnectServerLogin::syncRemoteServer(const QUrl& url)
+{
+    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
+        QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
+
+        QString portStr = QString::number(url.port());
+        QString type = url.scheme();
+        if(portStr.toInt()< 0)
+        {
+            if(ftpTypeStr==type.toLower()){
+                portStr = ftpDefaultPortStr;
+            }else if(sftpTypeStr==type.toLower()){
+                portStr = sftpDefaultPortStr;
+            }else if("smb"==type.toLower()){/* samba服务是smb */
+                portStr = sambaDefaultPortStr;
+            }
+        }
+        QString remoteUri= type.append("://").append(url.host()).append(":").append(portStr);
+
+        if(!uriList.contains(remoteUri)){
+            uriList.append(remoteUri);
+
+            GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP,uriList);
+            GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
+            GlobalSettings::getInstance()->slot_updateRemoteServer(remoteUri, true);
+        }
+    }
 }
 

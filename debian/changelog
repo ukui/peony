@@ -1,328 +1,1024 @@
-peony (3.0.3-2+0716) v101; urgency=medium
+peony (3.2.2+0903) v101; urgency=medium
+
+  * 0820-1版本更新
+    - Bug号:
+      #76917 修复侧边栏的宽度可以向右无限拖拽的问题（向文杰）
+      #77634 修改翻译文件，将右键回收箱的文件属性内容对齐（向文杰）
+      #75654 桌面菜单打开终端项加载缓慢（何美宏）
+      #77272 开始菜单添加桌面快捷方式显示问题（兰悦）
+      #76072 文件保护箱名称为中文时，属性不显示文件名、类型等信息，
+      且位置错误（兰悦）
+      #77590 左侧导航栏中，点击“保护箱”后取消再点击“快速访问”
+      ，也会弹出认证窗口（兰悦）
+      #76416 弹出登录认证后取消，切换快速访问菜单时会弹出登录认证 
+      #78161 禁用保护箱属性的权限设置（常存璘）
+    - 需求号: 无
+    - 其它改动说明:
+      去除qt private库的依赖，修复因编码问题导致的文件保护箱下文件
+      重命名和删除异常问题
+    - 影响域:
+      侧边栏、属性窗口、桌面、文件保护箱
+
+ -- Yue Lan <lanyue@kylinos.cn>  Fri, 03 Sep 2021 19:03:12 +0800
+
+peony (3.2.2+0902) v101; urgency=medium
+
+  * 0820-1版本更新
+    - Bug号:
+      #69665 共享文件夹点击路径访问上一层目录后，新建文件不会自动刷新（张渊）
+      #77789 右键打开侧边栏计算机属性，文件管理器闪退（何美宏）
+      #77076 解决重命名冲突时候无法选择替换或备份的bug（丁敬）
+      #76688 修复文件/文件夹的属性界面标记，颜色的文字显示不完全问题（向文杰）
+      #75122 同上
+      #77246 解决弹出U盘没有进行授权时候，出现成功卸载的通知（丁敬）
+      #76880 文件保护箱下右键新建模板文件修改时间不更新问题（尔广强）
+      #78131 文件保护箱的拖拽操作不统一（尔广强）
+      #76417 文件保护箱目录取消认证后点击快速访问弹出认证（兰悦）
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域：
+      远程目录、重命名操作、属性窗口标记页面、U盘卸载、文件保护箱、拖拽
+
+ -- Yue Lan <lanyue@kylinos.cn>  Thu, 02 Sep 2021 09:21:22 +0800
+
+peony (3.2.2+0831) v101; urgency=medium
+
+  * 0820-1版本更新
+    - Bug号:
+      #76864 文件保护箱属性窗口有移动按钮
+      #76880 文件保护箱下右键新建模板文件修改时间不更新问题
+      #73529 ln创建的目录链接方式打开失败
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域: 属性窗口、文件保护箱、打开链接
+
+ -- Yue Lan <lanyue@kylinos.cn>  Tue, 31 Aug 2021 15:28:20 +0800
+
+peony (3.2.2+0827) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #47361 字体调到16号，文件管理器界面显示不齐全
+      #48938 回收站文件不显示删除时间
+      #58268 计算机本地分区移动硬盘图标显示错误
+      #75342 清空回收站，插上U盘，双击打开回收站，里面显示u盘中的内容
+      #71475 文件管理器文件名称排序的箭头方向和文件的实际排序不对应
+      #22280 通过文件管理器顶部菜单、右键菜单更改排序类型，文件标题栏的箭头未同步
+      #76850 文件管理器，右键空白处排序偏好“中文优先”功能异常
+      #72948 文件保护箱中的文件/目录鼠标右键删除时，直接走永久删除流程来处理
+      #72119 挂载中文label磁盘文件管理器中显示乱码问题
+      #76427 计算机界面，文件操作菜单问题
+      #75595 格式化无fat32、exfat格式选项
+      #76150 命令行输入 'peony + 文件' 会弹出远程登录验证框
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域:
+      回收站、排序、文件保护箱、disk
+      解决u盘乱码问题，影响了vfat格式u盘的中文卷标的处理
+
+ -- Yue Lan <lanyue@kylinos.cn>  Fri, 27 Aug 2021 16:17:41 +0800
+
+peony (3.2.2+0825) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #66299 同时删除超过很多个文件时（1000多个文件以上），当前文件夹卡死
+      #71627 （ctrl+x）剪切（ctrl+v）粘贴后文件仍为灰色，状态未自动更新
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域:
+      文件操作、文件视图
+
+ -- Yue Lan <lanyue@kylinos.cn>  Wed, 25 Aug 2021 14:01:07 +0800
+
+peony (3.2.2+0824) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #74306 从移动应用中拖拽文件到其他目录闪退
+      #70440 副屏放置文件失败
+      #69764 文件保护箱中创建文件刷新才显示
+      #68431 快速访问中移动应用有可删除选项
+      #46903 系统字体为16时，格式化界面显示不全
+      #74242 连接ftp、sftp 登录窗口输入用户名后取消再连接，会重复弹框(插件)
+    - 需求号: 无
+    - 其它改动说明:
+      更新pkg-config文件生成规则
+    - 影响域:
+      拖拽、文件保护箱、快速访问、格式化界面、连接服务器
+
+ -- Yue Lan <lanyue@kylinos.cn>  Tue, 24 Aug 2021 10:52:20 +0800
+
+peony (3.2.2+0821) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #72080 地址栏文字遮挡以及样式问题
+      #74435 快速访问项异常增加的问题
+      #74242 连接服务器登录框弹窗两次的问题
+      #63091 复制粘贴的文本，显示在原文件之前
+      #74480 ogg音频文件，右键打开方式会显示两个音乐
+      #63447 【mips】ctrl加鼠标左键拖动复制文件失败
+      #66265 【快捷键】【x86，arm，loongarch64】复制文件失败
+    - 需求号: 无
+    - 其它改动说明:
+      修复侧边栏网络选项存在空行问题
+      文件保护箱屏蔽单个保护箱Del、Ctrl + D、 Shift + Del快捷键
+      修复某些机型首次进入系统无法拖拽文件到桌面的问题
+    - 影响域:
+      地址栏、快速访问、文件操作、打开方式、连接服务器、
+      侧边栏、文件保护箱、桌面
+
+ -- Yue Lan <lanyue@kylinos.cn>  Sat, 21 Aug 2021 14:18:16 +0800
+
+peony (3.2.2+0819) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      69672 共享文件夹内同时文件数量大于2个时，删除不彻底
+      73327 收藏夹下文件属性异常
+      71411 按住键盘 Ctrl 键拖动选中文件，不能被复制
+      58824 设置系统字体大小为16，搜索界面显示不全
+      74350 文件保护箱右键点击属性，文件管理器闪退
+      72948 文件保护箱中文件直接提示永久删除
+      50989 拖拽图标时，鼠标样式变成鼠标带一个+号
+      71928 安全中心将音频和视频文件添加保护后，文件管理器这两种文件不会加锁
+    - 需求号: 无
+    - 其它改动说明: 修改面包屑地址栏左侧按钮样式，去掉右下角的箭头
+    - 影响域:
+      远程目录文件操作、收藏夹、拖拽、文件保护箱
+
+ -- Yue Lan <lanyue@kylinos.cn>  Thu, 19 Aug 2021 17:13:49 +0800
+
+peony (3.2.2+0818) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #74259 禁用保护箱左侧边栏节点右键发送到移动设备功能
+      #74241 修复保护箱左侧边栏节点右键属性也信息错误问题
+      #68711 网络模块下，右键点击侧边栏的ftp服务器地址，有卸载、属性、在新窗口打开、在新标签页打开选项，无弹出选项
+      #61872  无法通过文件管理器左侧边栏向上箭头卸载ftp服务器
+      #73300 【需求-文件浏览器-6000】连接ftp远程目录后地址标签保存在“网络”，但收起网络目录再展开，左侧地址标签可能会消失(6/10 times)
+    - 需求号: 无
+    - 其它改动说明: 回退对pkgconfig生成文件的改动
+    - 影响域:
+      导航栏、文件保护箱
+
+ -- Yue Lan <lanyue@kylinos.cn>  Wed, 18 Aug 2021 09:52:18 +0800
+
+peony (3.2.2+0817) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #58262 切换用户后点击弹出U盘，弹出授权窗口后取消，出现错误提示框
+      #71212 复制应用的快捷方式，右键属性里的名称始终一样
+    - 需求号: 无
+    - 其它改动说明:
+      ConnectToServerDialog API变更，为解决网络下连接到的服务器端口号为-1的问题
+      重写peony.pc，采用qmake自动生成的方式，解决架构相关的问题
+    - 影响域:
+      u盘弹出、属性窗口、计算机视图、连接服务器
+
+ -- Yue Lan <lanyue@kylinos.cn>  Tue, 17 Aug 2021 10:23:32 +0800
+
+peony (3.2.2+0814) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      69117 删除的文件属性中缺少文件大小信息
+      63105 16号字体时文件详细信息显示不全
+      60482 重命名滚动条下拉下的最后一个文件时，文件位置发生变动，且最后一个文件信息未能显示完全，滚动条无法继续下拉
+      69429 添加钉钉桌面快捷方式，软件图标显示异常
+      58824 设置系统字体大小为16，搜索界面显示不全
+      69526 一处说明有误，夜间或深色模式下，示例图标为黑色圆圈
+      72642 对桌面上 应用图标进行复制粘贴后，新增图标的名称是xx-副本(1)(1)，此处应显示为xx-副本(1)，其属性里名称也是xx-副本(1)
+      62178 文件添加标记的颜色类型未汉化
+      42397 注销用户后再次登录桌面黑屏
+      63279 普通用户可以通过shift+delete删除root属主的文件，而且普通用户对该文件没有写权限
+      70836 文件排序偏好设置-“中文优先”失败
+      67932 SP1系统默认分区/data目录下的文件无法删除到回收站
+      63447 【mips】ctrl加鼠标左键拖动复制文件失败
+      66265 【x86，arm，loongarch64】复制文件失败
+    - 需求号: #8059 支持sftp链接
+    - 其它改动说明: 无
+    - 影响域: 属性窗口、列表视图、桌面图标、帮助手册、快捷键、文件操作、拖拽、
+      回收站、排序、连接到服务器
+
+ -- Yue Lan <lanyue@kylinos.cn>  Sat, 14 Aug 2021 11:20:44 +0800
+
+peony (3.2.2+0812) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #72585 [未复现] 连接远程服务器界面，“端口”的位置显示在了ip输入框上，显示异常
+      #49537 【同方超翔TL630-V001】【移动硬盘】移动硬盘识别准确率低于95%
+      #69558 连接远程服务器IP地址输入空格，提示语不正确
+      #68439 mips架构从文件管理器拖动文件到桌面失败
+      #58148 地址栏为面包屑模式，地址栏节点概率性出现无下拉箭头
+      #65953 复制含有deb包的文件夹到本机报错
+      #73312 【需求-文件浏览器-6361】点进“收藏夹”，右侧没有“文档”文件夹
+      #73278 【需求-文件浏览器-6361】左侧导航栏的目录名称与需求不符，“收藏夹”应改为“快速访问”，“本地共享”应改为“本机共享”，不应该有当前用户目录
+      #58824 设置系统字体大小为16，搜索界面显示不全
+      #69526 【文件管理器】【用户手册】一处说明有误，夜间或深色模式下，示例图标为黑色圆圈
+      #72642 对桌面上 应用图标进行复制粘贴后，新增图标的名称是xx-副本(1)(1)，此处应显示为xx-副本(1)，其属性里名称也是xx-副本(1)
+      #62178 [未复现] 文件添加标记的颜色类型未汉化
+      #42397 注销用户后再次登录桌面黑屏
+      #62851 右击光盘文件点击属性，切换光盘文件再次查看属性时，仍显示上一个光盘的属性内容
+      #71411 【桌面】 按住键盘 Ctrl 键拖动选中文件，不能被复制
+      #67263 [未复现] 【双屏】设置分辨率后，注销，屏幕出现黑屏后白屏
+      #70021 [未复现] 【双屏】双屏连接测试，注销登录之后，HDMI屏幕显示不全
+    - 需求号: 无
+    - 其它改动说明: 调整面包屑地址栏的样式
+    - 影响域: 连接到服务器、地址栏、侧边栏、拖拽、双屏、桌面
+
+ -- Yue Lan <lanyue@kylinos.cn>  Thu, 12 Aug 2021 16:13:31 +0800
+
+peony (3.2.2+0810) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #69526 一处说明有误，夜间或深色模式下，
+      示例图标为黑色圆圈 
+    - 需求号:
+      #6000 共享文件支持保存地址
+      #6361 左侧导航布局不合理，新增的“移动应用”
+      和“共享数据”位置和分类
+    - 其它改动说明:
+      VFS插件增加异常处理接口
+    - 影响域:
+      侧边栏、导航栏、连接到服务器、
+      属性窗口共享
+  * 侧边栏（导航栏）重构
+
+ -- Yue Lan <lanyue@kylinos.cn>  Tue, 10 Aug 2021 09:33:06 +0800
+
+peony (3.2.2+0807) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #70916 文件浏览器中点搜索按钮，
+      筛选条件和搜索位置都是置灰状态，无法点击
+      #71747 计算机本地分区移动硬盘图标显示错误
+      #70859 将U盘里的文件拖动至本机，或将本机的
+      文件拖动至U盘，拖动的实质功能是“剪切”，
+      应当是“复制”功能的
+      #72071 从桌面或其他位置 拖动文件夹到本地共
+      享中时，原位置的文件夹消失
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域:
+
+ -- Yue Lan <lanyue@kylinos.cn>  Sat, 07 Aug 2021 13:56:06 +0800
+
+peony (3.2.2+0806) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #56549 打开搜索选择路径子窗口时，
+      无法操作其他文件管理器窗口
+    - 需求号:
+      #6990#4 磁盘容量及文件大小单位统一,
+      关联任务号#45584
+    - 其它改动说明:
+      优化&修复了标签页栏的布局和交互问题
+    - 影响域:
+      搜索、属性窗口、大小单位、标签页栏
+
+ -- Yue Lan <lanyue@kylinos.cn>  Fri, 06 Aug 2021 09:09:53 +0800
+
+peony (3.2.2+0804) v101; urgency=medium
+
+  * 0820版本更新
+    - Bug号:
+      #70545 翻译问题
+      #68991 关于界面邮箱链接文字显示问题
+      #70565 属性窗口显示异常
+      #70891 桌面图标遮挡问题
+      #70273 删除失败问题
+      #32415 可擦写光盘格式化失败
+      #66265 ctrl拖拽复制文件失败
+      #43948 格式化窗口界面问题
+    - 需求号: 无
+    - 其它改动说明: 无
+    - 影响域:
+      关于界面、属性窗口、格式化窗口、桌面、
+      文件操作、光盘
+
+ -- Yue Lan <lanyue@kylinos.cn>  Wed, 04 Aug 2021 09:14:55 +0800
+
+peony (3.2.2+0802) v101; urgency=medium
+
+  * 0820版本更新
+    - BUG号:
+      桌面图标相关问题#55672, #55710, #55723,
+      #56189, #56194, #56247, #56382.
+      Bug#43885打开文件夹标签页重复问题
+      Bug#62793搜索匹配问题
+      Bug#56179标签页栏布局问题
+      Bug#56301桌面图标重叠问题
+      Bug#60164样式问题
+      自动分区方案下回收站问题#69014, #48982
+    - 需求号: 无
+    - 其它改动说明: 9x0, sp1代码合并分支
+    - 影响域: 桌面, 文件操作, 侧边栏, 计算机视图
+      回收站
+  * 9x0,sp1代码合并分支
+
+ -- Yue Lan <lanyue@kylinos.cn>  Mon, 02 Aug 2021 18:11:21 +0800
+
+peony (3.2.2+0730) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69099:快捷键缩小图标大小失败.
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 快捷键操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 30 Jul 2021 14:15:18 +0800
+
+peony (3.2.2+0729) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69555:连接远程服务器多次后，文件管理器应用
+       卡死，点击无反应.
+     - bug#69014:删除/data/useshare目录下文件，无法放
+       入回收站。
+     - bug#48982:data分区中删除的文件无法放入回收站。
+     - bug#70014:第一个插入的硬盘图标会被识别为U盘，再
+       插入U盘会显示硬盘图标。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 侧边栏属性，文件删除，移动设备图标显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 29 Jul 2021 18:56:18 +0800
+
+peony (3.2.2+0728) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69348:格式化2.0U盘，弹出无法挂载文件后闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件属性，U盘格式化。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 28 Jul 2021 10:36:18 +0800
+
+peony (3.2.2+0727) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#53504:桌面上存在无限数量的同一文件，且名称属性一致.
+     - bug#69348:格式化2.0U盘，弹出无法挂载文件后闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件属性，U盘格式化。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 28 Jul 2021 10:36:18 +0800
+
+peony (3.2.2+0726) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#69031:打开文件管理器直接按F2, 文件管理器闪退.
+     - bug#69038:回收站中删除文件，全部应用按钮无效。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件删除，快捷键操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 26 Jul 2021 16:58:18 +0800
+
+peony (3.2.2+0723) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#67932:data盘中文件无法删除到回收站.
+     - bug#63093:回收站没有按照删除日期进行倒序排序。
+     - bug#65521:手机通过USB设备传输文件，拷贝到桌面报错。
+     - bug#68431:收藏夹中移动应用右键删除无反应也无提示。
+     - bug#66442:脚本里执行pwd显示目录非脚本所在目录。
+     - bug#68788:在/tmp目录下搜索core文件，关闭筛选闪退。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - 文件删除，回收站排序，手机文件拷贝。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 23 Jul 2021 16:58:18 +0800
+
+peony (3.2.2+0722) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#53504:桌面上存在无限数量的同一文件，且名称属性一致.
+     - bug#67831:新建用户切换到新用户，花屏，壁纸不显示。
+     - bug#34619:注销重新登录后，桌面隐藏文件图标重叠。
+     - bug#34965:窗口缩小后，标签“向右”按钮无效。
+     - bug#41057:调整过任务栏后，再向桌面添加文件图标会重叠。
+     - bug#68146:在文件管理器中格式化U盘，弹出的提示未汉化。
+    * 需求号：无
+    * 其他改动说明：无。
+    * 影响域：
+     - desktop副本文件显示，桌面显示，窗口操作。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 21 Jul 2021 09:46:18 +0800
+
+peony (3.2.2+0721-1) v101; urgency=medium
+
+  * 0610-2版本更新
+    * BUG号：
+     - bug#66516:在文件管理器中格式化U盘，弹出的提示未汉化。
+     - bug#67435:右键点击侧边栏FTP服务器地址的属性文管闪退。
+     - bug#67635:中文环境下格式化U盘，提示框为英文显示。
+     - bug#48962:弹出U盘后切换至计算机，弹出错误提示。
+    * 需求号：无
+    * 其他改动说明：还原需求修改代码。
+    - 影响域：U盘格式化, FTP连接属性，光盘容量显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 20 Jul 2021 16:46:18 +0800
+
+peony (3.2.2+0720) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：67016, 67435.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：U盘卸载, FTP连接属性。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 19 Jul 2021 16:22:18 +0800
+
+peony (3.2.2+0716) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：61906.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：移动应用中拷贝文件。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 16 Jul 2021 14:36:18 +0800
+
+peony (3.2.2+0715) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：66999.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：下载文件显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 15 Jul 2021 19:41:18 +0800
+
+peony (3.2.2+0714) v101; urgency=medium
+
+  * 0610-2版本更新
+    - BUG号：53504.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：应用的desktop文件复制显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 14 Jul 2021 14:18:18 +0800
+
+peony (3.2.2+0713) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：43678, 43948, 66432.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：格式化显示，samba连接创建文件。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 13 Jul 2021 10:24:18 +0800
+
+peony (3.2.2+0709) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：58199, 58255.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：光盘属性显示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 09 Jul 2021 16:28:18 +0800
+
+peony (3.2.2+0708) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：43678, 65830.
+    - 需求号：6935。
+    - 其他改动说明：无。
+    - 影响域：桌面显示，格式化提示。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 08 Jul 2021 16:18:18 +0800
+
+peony (3.2.2+0707) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：62906.
+    - 需求号：6935。
+    - 其他改动说明：集成版本桌面自启动问题。
+    - 影响域：路径显示，桌面启动。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 07 Jul 2021 17:38:18 +0800
+
+peony (3.2.2+0705) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：64860，53504.
+    - 需求号：task#33292。
+    - 其他改动说明：集成版本桌面自启动问题。
+    - 影响域：桌面应用快捷方式文件复制。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 05 Jul 2021 17:08:18 +0800
+
+peony (3.2.2+0702) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：63093，53147.
+    - 需求号：task#40855。
+    - 其他改动说明：文件替换无效，复制文件
+      提示错误。
+    - 影响域：回收站，桌面显示，文件替换，
+      文件复制。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 02 Jul 2021 16:08:18 +0800
+
+peony (3.2.2+0630) v101; urgency=medium
+
+  * 0710版本更新
+    - BUG号：63927，57660, 60474.
+    - 需求号：6361，task#42064，41801。
+    - 其他改动说明：无。
+    - 影响域：文件夹属性，关于界面，重命名
+      文件，应用快捷方式拷贝，侧边栏，移动
+      硬盘图标。
+
+  * New upstream release.
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 30 Jun 2021 14:18:18 +0800
+
+peony (3.2.2+0625) v101; urgency=medium
+
+  * 0610-1版本更新
+    - BUG号：61906.
+    - 需求号：无。
+    - 其他改动说明：继续修复安卓兼容插件问题。
+    - 影响域：安卓移动数据拷贝。
+
+  * New upstream release.
+
+
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 25 Jun 2021 11:42:18 +0800
+
+peony (3.2.2+0622) v101; urgency=medium
+
+  * 0610-1版本更新
+    - BUG号：61906.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：安卓移动数据拷贝。
+
+  * New upstream release.
+
 
-   * Fix: change log path from ~/.config to /tmp
-     and auto create log file to track desktop 
-     icon not show bug, related bug#63997.
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 22 Jun 2021 17:08:18 +0800
 
- -- MeihongHe <hemeihong@kylinos.cn>  Fri, 16 Jul 2021 13:48:35 +0800
+peony (3.2.2+0618) v101; urgency=medium
 
-peony (3.0.3-2+0701) v101; urgency=medium
+  * 0610-1版本更新
+    - BUG号：61404,61410,61408,61405，
+      62378.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 影响域：U盘格式化，插拔U盘，分区
+      属性显示，新建wps文件。
 
-   * Fix: change log path from /tmp to ~/.config 
-     to track desktop icon not show bug.
+  * New upstream release.
 
- -- MeihongHe <hemeihong@kylinos.cn>  Thu, 01 Jul 2021 16:58:35 +0800
 
-peony (3.0.3-2+0527) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 18 Jun 2021 15:08:18 +0800
 
-   * Fix: double click response with title bar
+peony (3.2.2+0615) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 27 May 2021 09:29:31 +0800
+  * 07.10主版本更新
+    - BUG号：60862, 53505.
+    - 需求号：task#33756, task#40072。
+    - 其他改动说明：同步光盘容量显示。
+    - 影响域：光盘容量，桌面文件重命名。
 
-peony (3.0.3-2+0524) v101; urgency=medium
+  * New upstream release.
 
-   * Fix: default sort in desktop after tencent app rename
 
- -- wangweinan <wangweinan@kylinos.cn>  Mon, 24 May 2021 09:29:31 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Wed, 16 Jun 2021 09:58:18 +0800
 
-peony (3.0.3-2+0519) v101; urgency=medium
+peony (3.2.2+0611) v101; urgency=medium
 
-   * Fix: rename desktop file of trash #54924
-   * Fix: desktop file parse error #47636
-   * Fix: Unify the style of triple keys, meet the design requirements. Id: #54139
-   * Modify: cancel commit 3012c18f2a26a6b8c604313f5a83a9c0068853fb,and resolve bug 51008
-   * Fix: Delete unnecessary logs
+  * 主版本更新
+    - BUG号：60869, 60861, 60175, 60567.
+    - 需求号：无。
+    - 其他改动说明：高级搜索图标调用修改，
+      深色模式按钮反白修改, 共享数据汉化。
+    - 影响域：搜索模式图标，侧边栏显示，
+      状态栏显示，颜色标记功能。
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 19 May 2021 09:29:31 +0800
+  * New upstream release.
 
-peony (3.0.3-2+0512) v101; urgency=medium
 
-   * Fix: 删除视图方式icon,仅显示选项前的“.”选中符号 #45911
-   * Fix: 去除tabpage的页签图标 #45774
-   * Fix: 为清空回收站设计新的弹窗
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 11 Jun 2021 09:38:18 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 12 May 2021 09:29:31 +0800
+peony (3.2.2+0608) v101; urgency=medium
 
-peony (3.0.3-2+0421) v101; urgency=medium
+  * 主版本更新
+    - BUG号：59814, 59893.
+    - 需求号：6607。
+    - 其他改动说明：无。
+    - 影响域：移动数据下显示。
 
-   * Fix: the desktop file is showed fialed,when it is trashed. #44190
-   * Fix: the window is invalid, when it is moved to screen of 4K. #37822
-   * Fix: resolve file label translation problem. #43023
-   * Fix: it can not drag file to desktop from phone. #39051
-   * Fix: ssd card can not show in sidebar. #28533
-   * Fix: udisk cna not ejected, when create empty file in udisk. #44566
-   * Fix: an inconsistency in the display of my document tooltip #46830
-   * Fix: rename file with ./ failed #46787
-   * Fix: it will show tmp file, when rename desktop file. #39805
-   * Fix: peony sort with size wrong. #47542
-   * Fix: can not go back,when open a folder in favorite with menu. #44813
-   * Fix: files are not sorted correctly #48612
-   * Fix: resolue file conflict
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Apr 2021 09:29:31 +0800
 
-peony (3.0.3-2+0408) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 08 Jun 2021 14:48:18 +0800
 
-   *Feature: it will tell to ukui-session
+peony (3.2.2+0607) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 08 Apr 2021 09:29:31 +0800
+  * 主版本更新
+    - BUG号：52777.
+    - 需求号：6379, 6346。
+    - 其他改动说明：桌面开机启动放到/etc/xdg/
+      autostart路径下。
+    - 影响域：详细信息界面显示, 侧边栏图标。
 
-peony (3.0.3-2+0406) v101; urgency=medium
+  * New upstream release.
 
-   *Fix: icon and displayname error when desktop file disable. #46784
 
- -- wangweinan <wangweinan@kylinos.cn>  Tue, 06 Apr 2021 09:29:31 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 07 Jun 2021 19:48:33 +0800
 
-peony (3.0.3-2+0330) v101; urgency=medium
+peony (3.2.2+0605) v101; urgency=medium
 
-   *Fix: the empty cdrom can not format. #44643
+  * 主版本更新
+    - BUG号：49442.
+    - 需求号：6377, 6521, 6362, 6346,
+      6366, 6375, 6360, 6359, 6348。
+    - 其他改动说明：无。
+    - 影响域：地址栏、侧边栏、页签、详细信息
+      界面显示，地址栏以及搜索栏图标，桌面重
+      命名文件。
 
- -- wangweinan <wangweinan@kylinos.cn>  Tue, 30 Mar 2021 09:29:31 +0800
+  * New upstream release.
 
-peony (3.0.3-2+0325) v101; urgency=medium
 
-  * Fix: the disktop is blue, when system boot. #37173
-  * Fix: Key_up and Key_down can not make list view scroll to selection.
-  * Fix: Side bar will display 'usr_xxxxx' if some user default path been removed.
-  * Fix: the expand screen is black,when drag expand screen. #38140
-  * Fix: The Trash and Recent dates do not appear correctly after the Favorites interface switches to list view #41566
- 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 25 Mar 2021 09:29:31 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 05 Jun 2021 17:52:33 +0800
 
-peony (3.0.3-2+0316) v101; urgency=medium
+peony (3.2.2+0604) v101; urgency=medium
 
-  * Fix: it will show rubberBand, after drag some item in lsit mode #42628
+  * 主版本更新
+    - BUG号：32706, 48065.
+    - 需求号：任务 33110, 33113(0610验收标准)。
+    - 其他改动说明：地址栏按钮列表修改。
+    - 响应域：状态栏显示，侧边栏显示。
 
- -- wangweinan <wangweinan@kylinos.cn>  Tue, 16 Mar 2021 09:29:31 +0800
+  * New upstream release.
 
-peony (3.0.3-2+0315) v101; urgency=medium
 
-  * Fix: add log for black screen;
-  * Fix: desktop can not normal show.
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 04 Jun 2021 16:28:33 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Mon, 15 Mar 2021 09:29:31 +0800
+peony (3.2.2+0603) v101; urgency=medium
 
-peony (3.0.3-2+0313) v101; urgency=medium
+  * 主版本更新
+    - BUG号：53505.
+    - 需求号：任务 33122,33284,33107。
+    - 其他改动说明：多屏修改还原。
+    - 响应域：桌面文件重命名，窗口默认大小，
+      回收站和状态栏显示，屏幕显示问题。
 
-  * Fix: Hide "Templates" directory in popupmenu which is poped up on location bar.
-  * Fix: 同名文件复制自动重命名而不是提示用户
-  * Fix: the desktop is black, when it boots in tablet model.
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 13 Mar 2021 09:29:31 +0800
 
-peony (3.0.3-2+0310) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 03 Jun 2021 17:08:33 +0800
 
-  * Fix: Dragging the user directory folder on the desktop is prohibited.
-  * Fix: When you drag a file with the same name to another directory with your mouse, click Cancel and the file with the same name in the target window is deleted.
+peony (3.2.2+0525) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 10 Mar 2021 09:29:31 +0800
+  * 主版本更新
+    - BUG号：56453,56160,56648,40346.
+    - 需求号：无。
+    - 其他改动说明：无。
+    - 响应域：无。
 
-peony (3.0.3-2+0308) v101; urgency=medium
+  * New upstream release.
 
-  * Fix: The sort method was not saved
-  * Fix: The multi-select mode does not exit after switching paths
 
- -- wangweinan <wangweinan@kylinos.cn>  Mon, 08 Mar 2021 09:29:31 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 21 May 2021 09:03:33 +0800
 
-peony (3.0.3-2+0303) v101; urgency=medium
+peony (3.2.2+0521) v101; urgency=medium
 
-  * Modify:add log for trace black screen
-  * fix:modify the column width of list view, when the size of window is changed.
-  * fix: the icon in the destop will stack,when pc and panel mode change.
-  * fix:hide the templete dir,so it can not be operated.
-  * fix:desktop file show with .desktop format
+  * 主版本更新
+    - BUG号：56133-sp1, 45682-990.
+    - 需求号：无。
+    - 其他改动说明：增加多屏支持，桌面文件屏蔽
+      添加文件标记，应用程序链接重命名后撤销。
+    - 响应域：多屏显示，桌面占用100%cpu,属性
+      显示,文件重命名，用户手册。
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 03 Mar 2021 09:29:31 +0800
+  * New upstream release.
 
-peony (3.0.3-2+0226) v101; urgency=medium
 
-  * Update changelog
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 21 May 2021 09:03:33 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Fri, 26 Feb 2021 09:29:31 +0800
+peony (3.2.2+0517) v101; urgency=medium
 
-peony (3.0.3-2+0224) v101; urgency=medium
+  * 主版本更新
+    - BUG号：54061,46785，45717,33429.
+    - 需求号：无。
+    - 其他改动说明：在属性页禁止移动和重命名标准
+      路径文件夹，如果桌面、图片、下载等
+      bug号是HW项目提的，但是通用版本也有，需要
+      内测验证。
+    - 响应域：文件剪切，文件重命名，文件enter打开,
+      用户手册。
 
-  * Fix: desktop file show with .desktop format #3719
-  * Fix: When the permissions are modified, they cannot take effect immediately. #33247
-  * Fix: hide the templete dir,so it can not be operated. #33221
-  * Fix: desktop file show with .desktop format. #37179
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 24 Feb 2021 09:29:31 +0800
 
-peony (3.0.3-2+0203) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 17 May 2021 15:46:33 +0800
 
-  * Fix: link file can not be opened ＃32657
-  * Fix: modify name of personal folder in desktop ＃34761
-  * Fix: adjust the order of music and download in side bar #34510
-  * Fix: icons in desktop is stacked #32870
+peony (3.2.2+0510) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 03 Feb 2021 09:29:31 +0800
+  * 主版本更新
+    - BUG号：35424,50797,50680,51160,49210,
+      32415,37487,47456,50494,52228,50585,
+      49744,46521,44202,48180,48658,50511,
+      49612,51886,49713,19304,39998,42104,
+      52806,48511.
+    - 需求号：任务#25507。
+    - 其他改动说明：添加文件拷贝暂停功能。
+    - 响应域：光盘格式化选项，颜色标签，列表模式
+      文件显示，用户手册，文件拷贝等操作,桌面文件
+      显示，文件共享，FTP远程连接。
 
-peony (3.0.3-2+0127) v101; urgency=medium
+  * New upstream release.
 
-  * Fix: 光标从图标移走，不经过说明内容，图标的说明内容还存在一段时间
-  * Fix: blank CD cannot be unmount
-  * Modify: Custom desktop default sort
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 27 Jan 2021 09:29:31 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 10 May 2021 09:36:33 +0800
 
-peony (3.0.3-2+0123) v101; urgency=medium
+peony (3.2.2+0423) v101; urgency=medium
 
-  * Fix when decompressing files, extra files will appear #32109
-  * Fix chinese and english translate in property page #35521
+  * 主版本更新
+    - BUG号：47258,49220,18899，49131,
+      43941，45717，48513,49713,19304，
+      39998,39774。
+    - 需求号：25381。
+    - 其他改动说明：无
+    - 响应域：属性页面，程序日志，桌面文件重命名，
+      开机时桌面背景动画, 格式化进度显示，日志，
+      文件共享。
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 23 Jan 2020 8:44:46 +0800
+  * New upstream release.
 
-peony (3.0.3-2+0120) v101; urgency=medium
 
-  * Fix eject flash drive jump to icon view. bug #30746
-  * Fix the file or folder can not be draged,when mosue on it in multi select mode. bug #29768
-  * Fix icon of desktop position changes,when language changes. #32954
-  * Fix the task bar has black area when when panel to pc. #32937
-  * Fix chinese and english translate bug. #33491 #33497
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 23 Apr 2021 10:12:33 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 20 Jan 2020 8:44:46 +0800
+peony (3.2.2+0416) v101; urgency=medium
 
-peony (3.0.3-2+0113) v101; urgency=medium
+  * 主版本更新
+    - BUG号：37773,47456,45734,31642,47822,
+      45746,45884,47355,48031,45684。
+    - 需求号：25495,25498
+    - 其他改动说明：侧边栏数据分区调整，有新共享分区
+      则不显示Data分区，修复Esc取消剪切不生效问题。
+    - 响应域：剪切文件取消，用户手册，地址栏显示,
+      手机挂载操作，英文关于界面，侧边栏分区显示。
 
-  * Fix if there is no item in item rect hash, skip items relocation
-  * Fix default app order when add new user.
-  * Fix fonts app can not close, when it opens txt file failed. 
-  * Fix hidden cloud #30313
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 13 Jan 2020 8:44:46 +0800
 
-peony (3.0.3-1+210106) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 15 Apr 2021 14:20:35 +0800
 
-  * Fix the desktop app can not be add to desktop in right place[31525]
-  * Fix there is not icon of "+" in table bar[29873]
-  * Fix can not select when the win of file manager is small in list mode[30944]
-  * Fix the file manager is crash, when open not exsit in recent[27278]
+peony (3.2.2+0407) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 06 Jan 2020 8:44:46 +0800
+  * 主版本更新
+    - 修复桌面双击计算机，文件系统，后退闪退问题。
+    - 修复bug(#45684,44815,42542,45008,44314,
+      40096,44107,42484,#45781,#37773)。
+    - 响应域：桌面重命名文件，列表模式底部遮挡，
+      英文模式下新建模板，路径前进后退操作。
 
+  * New upstream release.
 
-peony (3.0.3-1+1230) v101; urgency=medium
 
-  * Modify check index is valid
-  * Merge peony/dev-unity
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 09 Apr 2021 09:20:35 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 30 Dec 2020 8:44:46 +0800
+peony (3.2.2+0325) v101; urgency=medium
 
+  * 主版本更新
+    - 修复bug(#43637,38591,39389,44839,
+       43499)。
+    - 响应域：详细信息，颜色标记，快捷方式，
+      高级搜索文件大小筛选。
 
-peony (3.0.3-1+1223) v101; urgency=medium
+  * New upstream release.
 
-  *Fix The list view does not have a reserved box selection[26464]
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 23 Dec 2020 8:44:46 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 25 Mar 2021 16:20:35 +0800
 
-peony (3.0.3-1+1216) v101; urgency=medium
+peony (3.2.2+0324) v101; urgency=medium
 
-  *Merge peony/dev-unity
+  * 主版本更新
+    - 修复bug(#42299,40207,33429,25323,42244,
+      40737,42256,43134,42484,35145,44318,
+      43044)。
+    - 响应域：拖动文件删除，英文系统右键新建，
+      打开下载路径，用户手册，权限拒绝汉化,
+      U盘新建文件占用。
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 16 Dec 2020 8:44:46 +0800
+  * New upstream release.
 
-peony (3.0.3-1+1208) v101; urgency=medium
 
-  *Merge peony/dev-unity
-  *Fix conflicts with the theme
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 23 Mar 2021 16:20:35 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 03 Dec 2020 8:44:46 +0800
+peony (3.2.2+0315) v101; urgency=medium
 
-peony (3.0.3-1+1203) v101; urgency=medium
+  * 主版本更新
+    - 修复bug(#42558,42485,41909,42496,42328),
+      添加高分屏适配。
+    - 响应域：高分屏显示，桌面图标文字显示，拖动删除文件
+      到回收站，右键菜单显示。
 
-  *Merge peony/dev-unity
-  *Fix conflicts with the theme
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Thu, 03 Dec 2020 8:44:46 +0800
 
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 15 Mar 2021 16:20:35 +0800
 
-peony (3.0.3-1+1128) v101; urgency=medium
+peony (3.2.2+0311) v101; urgency=medium
 
-  *Merge peony/dev-unity
+  * 主版本更新
+    - 修复bug(#41426,41464,41094,41874,41897,41682,
+      40457,40120,40123,40218,40487,41874,41897,
+      41682,41623,42185,42454)。
+    - 响应域：右键菜单，关于界面，属性界面，文件保护箱。
 
- -- wangweinan <wangweinan@kylinos.cn>  Sat, 28 Nov 2020 8:44:46 +0800
+  * New upstream release.
 
-peony (3.0.3-1+1126) v101; urgency=medium
 
-  *Merge peony/dev-unity
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 11 Mar 2021 20:20:35 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Tue, 25 Nov 2020 8:44:46 +0800
+peony (3.2.2+0306) v101; urgency=medium
 
-peony (3.0.3-1+1122.1) v101; urgency=medium
+  * 主版本更新
+    - 重构桌面代码，增加对wayland适配。
+    - 修复bug(#41779，39999,37629，40457,41779)。
+    - 响应域：文件管理器自身，系统桌面，如主屏改变，
+      屏幕旋转，屏幕插拔这些操作。
 
-  *Fix switch view error in cloud:///
+  * New upstream release.
 
- -- wangweinan <wangweinan@kylinos.cn>  Sat, 21 Nov 2020 8:44:46 +0800
 
-peony (3.0.3-1+1120) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 06 Mar 2021 16:30:35 +0800
 
-  *Fix switch view error in cloud:///
+peony (3.2.2+0304) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Fri, 20 Nov 2020 8:44:46 +0800
+  * 主版本更新
+    - 修复bug(#40779,38942,41239,41038,41293)。
 
-peony (3.0.3-1+1117) v101; urgency=medium
+  * New upstream release.
 
-  *Fix switch view error in cloud:///
 
- -- wangweinan <wangweinan@kylinos.cn>  Tue, 17 Nov 2020 8:44:46 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 04 Mar 2021 17:00:35 +0800
 
-peony (3.0.3-1+1114) v101; urgency=medium
+peony (3.2.2+0301) v101; urgency=medium
 
-  *Fix switch view failed after enter cloud view #24452.
-  *Fix unmount icon cannot click #19862
-  *Fix rename item #19703
-  *Fix empty line in side bar  #19502
+  * 主版本更新
+    - 修复bug(#38545,38690,39579,39657,39966,40003,
+      39884,40099,40179,40331,40346,40284,40492)。
 
- -- wangweinan <wangweinan@kylinos.cn>  Sat, 14 Nov 2020 8:44:46 +0800
+  * New upstream release.
 
 
-peony (3.0.3-1+1111) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 01 Mar 2021 09:00:35 +0800
 
-  *Modify search bar.
-  *Modify side bar and title change with conter center
+peony (3.2.1+0219) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 11 Nov 2020 8:44:46 +0800
+  * 主版本更新
+    - 最新版本更新。
+    - Bug清仓大处理。
 
+  * New upstream release.
 
-peony (3.0.3-1+1028) v101; urgency=medium
 
-  *Modify side bar items list structure to tree structure.
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 19 Feb 2021 09:00:35 +0800
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 28 Oct 2020 10:44:46 +0800
+peony (3.2.1) v101; urgency=medium
 
-peony (3.0.3-1+1021.2) v101; urgency=medium
+  * 主版本更新
+    - UI根据新设计调整，标题栏去掉新建文件夹和打开终端，
+      设置窗口最小宽度，限制拉伸，留出空白拖拽。
+    - 属性窗口根据新设计稿重构。
+    - 修复新提的和激活的bug,列表如下:bug#31190,33923,
+      35543,33604,18296,35331,28392,29055,33022,19133,
+      27423,31847,20293等。
 
-  *Modify side bar items list structure to tree structure.
+  * New upstream release.
+    - Fix new report bugs(bug#31190,33923,35543,
+      33604,18296,35331,28392,29055,33022,19133,
+      27423,31847,20293).
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Oct 2020 15:44:46 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 28 Jan 2021 15:00:35 +0800
 
-peony (3.0.3-1+1021) v101; urgency=medium
+peony (3.2.0+0120) v101; urgency=medium
 
-  *Modify side bar items list structure to tree structure
+  * 主版本更新
+    - 修复设计师反馈的UI问题，侧边栏默认宽度错误，
+      工具栏新建文件夹，打开终端按钮有背景。
 
- -- wangweinan <wangweinan@kylinos.cn>  Wed, 21 Oct 2020 13:44:46 +0800
+  * New upstream release.
+    - Fix UI issues by design request.
 
-peony (3.0.3-1+1016) v101; urgency=medium
+ -- MeihongHe <hemeihong@kylinos.cn>  Tue, 19 Jan 2021 14:00:35 +0800
 
-  *Fixed bugs cloud plugin.
-  *Make sidebar from a list structure to a tree structure.
+peony (3.2.0) v101; urgency=medium
 
- -- wangweinan <wangweinan@kylinos.cn>  Fri, 16 Oct 2020 13:44:46 +0800
+  * 主版本更新
+    - 添加版本检查功能，解决编包问题。
 
-peony (3.0.3-1+0924) v101; urgency=medium
+  * New upstream release.
+    - Formal version to give out.
 
-  *Fixed bugs about roundcorner and shadow effect.
-  *Hide desktop when tablet mode is actived. 
-  *Make sidebar expand button resized with sidebar itself.
+ -- MeihongHe <hemeihong@kylinos.cn>  Mon, 18 Jan 2021 09:00:35 +0800
 
- -- zhangpengfei <zhangpengfei@kylinos.cn>  Thu, 24 Sep 2020 09:44:46 +0800
+peony (3.0.15) v101; urgency=medium
 
-peony (3.0.3-1+0917) v101; urgency=medium
+  * 主版本更新
+    - 添加版本检查功能，解决编包问题。
+    - 添加用户手册文件到安装包。
+    - 修复侧边栏以及计算机视图导致的插拔U盘闪退问题。
+    - 修复剪切文件状态看不到变化问题。
+    - 修复安装百度网盘桌面图标不能即时更新问题。
+    - 修复其他一些问题，具体看如下bug列表。
+    - 修复bug#33791,33656,33234,33031,31582,32337,31203,
+      30996,32726,31123,31249,33452,31651.
 
-  * modified tabbar and window corner style.
+  * New upstream release.
+    - Add Version check function, use master as commercial
+      version and try to fix build issue.
+    - Fix bugs(#33791,33656,33234,33031,31582,32337,31203,
+      30996,32726,31123,31249,33452,31651).
 
- -- leichen <leichen@kylinos.com>  Thu, 17 Sep 2020 15:00:47 +0800
+ -- MeihongHe <hemeihong@kylinos.cn>  Sat, 16 Jan 2021 17:00:35 +0800
+
+peony (3.0.6-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 28 Nov 2020 15:53:31 +0800
+
+
+peony (3.0.5-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sun, 27 Sep 2020 19:28:06 +0800
+
+peony (3.0.4-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 26 Sep 2020 20:26:06 +0800
 
 peony (3.0.3-1) unstable; urgency=medium
 

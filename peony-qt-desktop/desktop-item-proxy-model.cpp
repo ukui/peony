@@ -32,6 +32,8 @@
 
 #include <QLocale>
 #include <QCollator>
+#include <QStandardPaths>
+#include <QUrl>
 
 using namespace Peony;
 
@@ -57,13 +59,26 @@ DesktopItemProxyModel::DesktopItemProxyModel(QObject *parent) : QSortFilterProxy
     setDynamicSortFilter(false);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_HIDDEN_PREFERENCE == key) {
+            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
+            invalidateFilter();
+            Q_EMIT showHiddenFile();
+        }
+    });
     //qDebug() <<"DesktopItemProxyModel:" <<settings->isExist(SHOW_HIDDEN_PREFERENCE)<<m_show_hidden;
 
+    m_bwListInfo = new BWListInfo();
+    m_jsonOp = new PeonyJsonOperation();
+    QString jsonPath=QDir::homePath()+"/.config/peony-security-config.json";
+    m_jsonOp->setConfigFile(jsonPath);
+    m_jsonOp->loadConfigFile(m_bwListInfo);
 }
 
 DesktopItemProxyModel::~DesktopItemProxyModel()
 {
-
+    delete m_jsonOp;
+    delete m_bwListInfo;
 }
 
 bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -72,6 +87,8 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
         return false;
 
     auto sourceIndex = sourceModel()->index(source_row, 0, source_parent);
+    if (sourceIndex.data().toString().isEmpty())
+        return false;
     auto uri = sourceIndex.data(Qt::UserRole).toString();
     auto info = FileInfo::fromUri(uri);
     //qDebug()<<"fiter"<<uri<<info->displayName();
@@ -80,6 +97,22 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     }
     if (! m_show_hidden && info->displayName().startsWith(".")) {
         return false;
+    }
+
+    //fix desktop show Desktop folder issue, bug#20293
+    if (QUrl(uri).path() == QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Desktop"
+        || QUrl(uri).path() == QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop" + "/Desktop")
+    {
+        if (! QFile::exists(QUrl(uri).path()))
+           return false;
+    }
+
+    if (info->isDesktopFile() && nullptr != info->desktopName()){
+        if (m_bwListInfo->isBlackListMode()){
+            return !m_bwListInfo->desktopNameExist(info->desktopName());
+        } else if (m_bwListInfo->isWriteListMode()){
+            return m_bwListInfo->desktopNameExist(info->desktopName());
+        }
     }
 
     return true;
@@ -127,6 +160,7 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
         }
     }
 
+    //qDebug()<<"sort in desktop"<<SortType(m_sort_type)<<m_sort_type;
     switch (m_sort_type) {
     case FileName: {
         if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftInfo->displayName(), rightInfo->displayName())) {
@@ -151,7 +185,6 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
     }
     case FileType: {
         return leftInfo->type() < rightInfo->type();
-
     }
     case FileSize: {
         return leftInfo->size() < rightInfo->size();
@@ -163,8 +196,16 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
 
 void DesktopItemProxyModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }
 
+int DesktopItemProxyModel::updateBlackAndWriteLists()
+{
+    m_bwListInfo->clearBWlist();
+    m_jsonOp->loadConfigFile(m_bwListInfo);
+    //重新过滤显示
+    invalidateFilter();
+    return 0;
+}

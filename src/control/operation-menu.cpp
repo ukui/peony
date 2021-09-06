@@ -36,6 +36,8 @@
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 #include "file-operation-manager.h"
+#include "directory-view-widget.h"
+#include "directory-view-container.h"
 
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
@@ -82,7 +84,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, checked);
-        m_window->refresh();
+        //m_window->refresh();
     });
     m_forbid_thumbnailing = forbidThumbnailing;
     forbidThumbnailing->setCheckable(true);
@@ -105,12 +107,15 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addSeparator();
 
-    addAction(QIcon::fromTheme("gtk-help"), tr("Help"), this, [=]() {
+    //comment icon to design request
+    addAction(/*QIcon::fromTheme("gtk-help"),*/ tr("Help"), this, [=]() {
         PeonyApplication::help();
     });
 
-    addAction(QIcon::fromTheme("gtk-about"), tr("About"), this, [=]() {
-        PeonyApplication::about();
+    addAction(/*QIcon::fromTheme("gtk-about"),*/ tr("About"), this, [=]() {
+        //PeonyApplication::about();
+        AboutDialog dlg (m_window);
+        dlg.exec();
     });
 }
 
@@ -198,6 +203,7 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
                 return ;
             }
             Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
+            window->getCurrentPage()->getView()->repaintView();
             Q_EMIT operationAccepted();
         }
     });
@@ -249,11 +255,12 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     bool isSearch = currentDirUri.startsWith("search://");
     bool isRecent = currentDirUri.startsWith("recent://");
     bool isTrash = currentDirUri.startsWith("trash://");
+    bool isComputer = currentDirUri.startsWith("computer:///");
 
-    m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash);
-    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash);
-    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
+    m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash && !isComputer);
+    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash && !isComputer);
+    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isComputer);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash);
+    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash && !isComputer);
 }

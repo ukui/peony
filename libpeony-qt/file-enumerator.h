@@ -28,6 +28,8 @@
 
 #include <memory>
 #include <gio/gio.h>
+#include <QMap>
+#include "custom-error-handler.h"
 
 class QTimer;
 
@@ -138,6 +140,8 @@ Q_SIGNALS:
      * So just tell them the last result with this signal.
      */
     void enumerateFinished(bool successed = false);
+
+    void cancelled();
 
 public Q_SLOTS:
     void enumerateAsync();
@@ -261,6 +265,18 @@ private:
      * getChildren()
      */
     QList<std::shared_ptr<FileInfo>> m_cached_infos;
+
+    /*!
+     * \brief m_is_custom_error_handler_initialized
+     * \
+     */
+    bool m_is_custom_error_handler_initialized = false;
+    /*!
+     * \brief m_custom_error_handlers
+     * handling custom error occurred in custom vfs.
+     * \see VFSPluginIface::customErrorHandler().
+     */
+    QMap<int, CustomErrorHandler *> m_custom_error_handlers;
 };
 
 }

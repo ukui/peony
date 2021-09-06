@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QPalette>
+#include <QScreen>
 
 using namespace Peony;
 
@@ -52,31 +53,117 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     //if local languege is chinese, set chinese first as deafult
     if (QLocale::system().name().contains("zh") && !m_settings->allKeys().contains(SORT_CHINESE_FIRST))
         setValue(SORT_CHINESE_FIRST, true);
-
     for (auto key : m_settings->allKeys()) {
         m_cache.insert(key, m_settings->value(key));
+    }
+
+    m_date_format = tr("yyyy/MM/dd");
+    m_time_format = tr("HH:mm:ss");
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+            QString value = m_control_center_plugin->get(key).toString();
+            if ("hoursystem" == key) {
+                m_cache.remove(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+                m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, value);
+                Q_EMIT this->valueChanged(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME);
+                setTimeFormat(value);
+            }
+            else if (key == "date")
+            {
+                m_cache.remove(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE);
+                m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, value);
+                Q_EMIT this->valueChanged(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE);
+                setDateFormat(value);
+            }
+        });
+
+        QString timeValue = m_control_center_plugin->get("time").toString();
+        QString dateValue = m_control_center_plugin->get("date").toString();
+        m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, timeValue);
+        m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, dateValue);
+        setTimeFormat(timeValue);
+        setDateFormat(dateValue);
+    }
+
+    m_cache.insert(SHOW_TRASH_DIALOG, true);
+    m_cache.insert(SHOW_HIDDEN_PREFERENCE, false);
+    if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
+        m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
+        connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "showTrashDialog") {
+                m_cache.remove(SHOW_TRASH_DIALOG);
+                m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
+            } else if (SHOW_HIDDEN_PREFERENCE == key) {
+                if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
+                {
+                    m_cache.remove(key);
+                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());                  
+                }
+                /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
+                 *  but the other document management does not take effect in real time.modified by 2021/06/15  */
+                Q_EMIT this->valueChanged(key);
+            }
+        });
+
+        m_cache.remove(SHOW_TRASH_DIALOG);
+        m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
+
+        m_cache.remove(SHOW_HIDDEN_PREFERENCE);
+        m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
+    }
+
+    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "peonySideBarTransparency") {
+                m_cache.remove(SIDEBAR_BG_OPACITY);
+                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
+        m_cache.remove(SIDEBAR_BG_OPACITY);
+        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
     }
 
     getUkuiStyle();
     getDualScreenMode();
 
-    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull()) {
-        setValue(DEFAULT_WINDOW_SIZE, QSize(1200, 675));
-        setValue(DEFAULT_SIDEBAR_WIDTH, 292);
+    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
+        QScreen *screen=qApp->primaryScreen();
+        QRect geometry = screen->availableGeometry();
+        int default_width = geometry.width() * 2/3;
+        int default_height =  geometry.height() * 4/5;
+        if (default_width < 850)
+            default_width = 850;
+        if (default_height < 850 *0.618)
+            default_height = 850 *0.618;
+        setValue(DEFAULT_WINDOW_SIZE, QSize(default_width, default_height));
+        setValue(DEFAULT_SIDEBAR_WIDTH, 210);
+        qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<210;
     }
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
         setValue(DEFAULT_VIEW_ID, "Icon View");
     }
 
+    if (m_cache.value(SORT_ORDER).isNull()){
+        setValue(SORT_ORDER, Qt::AscendingOrder);
+    }
+
+    if (m_cache.value(SORT_COLUMN).isNull()){
+        setValue(SORT_COLUMN, 0);
+    }
+
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
-        setValue(DEFAULT_VIEW_ZOOM_LEVEL, 70);
+        setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
     }
 
     getMachineMode();
 
-    if (m_cache.value(REMOTE_SERVER_IP).isNull()) {
-        setValue(REMOTE_SERVER_IP, QVariant(QList<QString>()));
+    if (m_cache.value(REMOTE_SERVER_REMOTE_IP).isNull()) {
+        setValue(REMOTE_SERVER_REMOTE_IP, QVariant(QList<QString>()));
     }
 
 
@@ -188,6 +275,8 @@ void GlobalSettings::resetAll()
 
 void GlobalSettings::setValue(const QString &key, const QVariant &value)
 {
+
+    m_cache.remove(key);
     m_cache.insert(key, value);
     QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {
@@ -210,4 +299,48 @@ void GlobalSettings::forceSync(const QString &key)
         m_cache.remove(key);
         m_cache.insert(key, m_settings->value(key));
     }
+}
+
+void GlobalSettings::slot_updateRemoteServer(const QString& server, bool add)
+{
+    Q_EMIT signal_updateRemoteServer(server, add);
+}
+
+void GlobalSettings::setTimeFormat(const QString &value)
+{
+    if (value == "12"){
+        m_time_format = tr("hh:mm:ss AP");
+    }
+    else{
+        m_time_format = tr("HH:mm:ss");
+    }
+}
+
+void GlobalSettings::setDateFormat(const QString &value)
+{
+    if (value == "cn"){
+        m_date_format = tr("yyyy/MM/dd");
+    }
+    else{
+        m_date_format = tr("yyyy-MM-dd");
+    }
+}
+
+QString GlobalSettings::getSystemTimeFormat()
+{
+    m_system_time_format = m_date_format + " " + m_time_format;
+    return m_system_time_format;
+}
+void GlobalSettings::setGSettingValue(const QString &key, const QVariant &value)
+{
+    if (!m_peony_gsettings)
+        return;
+
+    const QStringList list = m_peony_gsettings->keys();
+    if (!list.contains(key))
+        return;
+
+    m_peony_gsettings->set(key, value);
+    m_cache.remove(key);
+    m_cache.insert(key, m_peony_gsettings->get(key));
 }

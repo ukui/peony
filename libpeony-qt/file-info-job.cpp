@@ -29,6 +29,7 @@
 #include "file-label-model.h"
 
 #include <gio/gdesktopappinfo.h>
+#include <global-settings.h>
 
 #include <QDebug>
 #include <QDateTime>
@@ -36,7 +37,6 @@
 #include <QUrl>
 #include <QLocale>
 #include <QFileInfo>
-#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -46,6 +46,7 @@ FileInfoJob::FileInfoJob(std::shared_ptr<FileInfo> info, QObject *parent) : QObj
     //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 
     m_cancellable = g_cancellable_new();
+    m_fs_cancellable = g_cancellable_new();
 }
 
 FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
@@ -55,11 +56,13 @@ FileInfoJob::FileInfoJob(const QString &uri, QObject *parent) : QObject (parent)
     //connect(m_info.get(), &FileInfo::updated, this, &FileInfoJob::infoUpdated);
 
     m_cancellable = g_cancellable_new();
+    m_fs_cancellable = g_cancellable_new();
 }
 
 FileInfoJob::~FileInfoJob()
 {
     g_object_unref(m_cancellable);
+    g_object_unref(m_fs_cancellable);
 }
 
 void FileInfoJob::cancel()
@@ -68,6 +71,10 @@ void FileInfoJob::cancel()
     g_cancellable_cancel(m_cancellable);
     g_object_unref(m_cancellable);
     m_cancellable = g_cancellable_new();
+
+    g_cancellable_cancel(m_fs_cancellable);
+    g_object_unref(m_fs_cancellable);
+    m_fs_cancellable = g_cancellable_new();
 }
 
 bool FileInfoJob::querySync()
@@ -83,7 +90,7 @@ bool FileInfoJob::querySync()
     GError *err = nullptr;
 
     auto _info = g_file_query_info(info->m_file,
-                                   "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                                   "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," "trash::*," G_FILE_ATTRIBUTE_ID_FILE,
                                    G_FILE_QUERY_INFO_NONE,
                                    nullptr,
                                    &err);
@@ -96,7 +103,18 @@ bool FileInfoJob::querySync()
         return false;
     }
 
+    auto _fs_info = g_file_query_filesystem_info(info->m_file, "filesystem::*,", m_fs_cancellable, &err);
+
+    if (err) {
+        qDebug()<<err->code<<err->message;
+        g_error_free(err);
+        if (m_auto_delete)
+            deleteLater();
+        return false;
+    }
+
     refreshInfoContents(_info);
+    refreshFileSystemInfo(_fs_info);
     g_object_unref(_info);
     if (m_auto_delete)
         deleteLater();
@@ -112,17 +130,14 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
 
     GError *err = nullptr;
 
-    GFileInfo *_info = g_file_query_info_finish(file,
-                       res,
-                       &err);
+    GFileInfo *_info = g_file_query_info_finish(file, res, &err);
 
     if (_info != nullptr) {
         thisJob->refreshInfoContents(_info);
         g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
         Q_EMIT thisJob->infoUpdated();
-    }
-    else {
+    } else {
         if (err) {
             qDebug()<<err->code<<err->message;
             g_error_free(err);
@@ -132,6 +147,21 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
     }
 
     return nullptr;
+}
+
+void FileInfoJob::refreshFileSystemInfo(GFileInfo *new_info)
+{
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    // fs type
+    m_info->m_fs_type = g_file_info_get_attribute_string (new_info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
+    Q_EMIT info->updated();
 }
 
 void FileInfoJob::queryAsync()
@@ -145,7 +175,7 @@ void FileInfoJob::queryAsync()
         return;
     }
     g_file_query_info_async(info->m_file,
-                            "standard::*," "time::*," "access::*," "mountable::*," "metadata::*," G_FILE_ATTRIBUTE_ID_FILE,
+                            "standard::*," "time::*," "access::*," "mountable::*," "metadata::*,"  "trash::*," G_FILE_ATTRIBUTE_ID_FILE,
                             G_FILE_QUERY_INFO_NONE,
                             G_PRIORITY_DEFAULT,
                             m_cancellable,
@@ -156,11 +186,7 @@ void FileInfoJob::queryAsync()
         connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
 }
 
-void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
-{
-//    if (!m_info->m_mutex.tryLock(300))
-//        return;
-
+void FileInfoJob::queryFileType(GFileInfo* new_info){
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
@@ -180,6 +206,67 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     default:
         break;
     }
+}
+
+void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    info->m_display_name = QString (g_file_info_get_display_name(new_info));
+    if (info->isDesktopFile()) {
+        info->m_desktop_name = info->displayName();
+        QUrl url = info->uri();
+        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+        if (!desktop_info) {
+            m_info->m_mutex.unlock();
+            info->updated();
+            return;
+        }
+#if GLIB_CHECK_VERSION(2, 56, 0)
+        auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
+#else
+        //FIXME: should handle locale?
+        //change "Name" to QLocale::system().name(),
+        //try to fix Qt5.6 untranslated desktop file issue
+        auto key = "Name[" +  QLocale::system().name() + "]";
+        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
+#endif
+        qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
+        QString path = "/usr/share/applications/" + info->displayName();
+        if(QFileInfo::exists(url.path().toUtf8()) && QFileInfo::exists(path))
+        {
+            url = path;
+            desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
+            string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
+            info->m_display_name = string;
+        }
+        else{
+            info->m_display_name = string;
+        }
+
+        if (string)
+           g_free(string);
+        g_object_unref(desktop_info);
+    }
+}
+
+void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
+{
+//    if (!m_info->m_mutex.tryLock(300))
+//        return;
+
+    FileInfo *info = nullptr;
+    if (auto data = m_info) {
+        info = data.get();
+    } else {
+        return;
+    }
+
+    queryFileType(new_info);
 
     info->m_is_symbol_link = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
     if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
@@ -188,8 +275,19 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         // we assume an unknow access file is readable.
         info->m_can_read = true;
     }
-    info->m_can_write = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
-    info->m_can_excute = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+
+    if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+        info->m_can_write = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+    } else {
+        info->m_can_write = true;
+    }
+
+    if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE)) {
+        info->m_can_excute = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+    } else {
+        info->m_can_excute = true;
+    }
+
     info->m_can_delete = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
     info->m_can_trash = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH);
     info->m_can_rename = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME);
@@ -204,7 +302,6 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     if(g_file_info_has_attribute(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE))
         info->m_unix_device_file = g_file_info_get_attribute_string(new_info,G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
 
-    info->m_display_name = QString (g_file_info_get_display_name(new_info));
     GIcon *g_icon = g_file_info_get_icon (new_info);
     if (G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
@@ -247,24 +344,8 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     }
 
     info->m_size = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
-    QString real_file_path;
-    QFileInfo real_file_info;
-    info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-    if(info->m_target_uri == "trash:///") { 
-        real_file_path = QStandardPaths::locate(QStandardPaths::HomeLocation, "/.local/share/Trash", QStandardPaths::LocateDirectory);
-        real_file_info.setFile(real_file_path);
-        char *rpath = real_file_path.toLatin1().data();
-    }else if(info->m_target_uri == "recent:///") {
-        real_file_path = QStandardPaths::locate(QStandardPaths::HomeLocation, "/.local/share/recently-used.xbel");
-        real_file_info.setFile(real_file_path);
-    }
-    if(real_file_path == "") {
-        info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-        info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
-    }else {
-        info->m_modified_time = real_file_info.fileTime(QFileDevice::FileModificationTime).toSecsSinceEpoch(); 
-        info->m_access_time = real_file_info.fileTime(QFileDevice::FileAccessTime).toSecsSinceEpoch(); 
-    }
+    info->m_modified_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    info->m_access_time = g_file_info_get_attribute_uint64(new_info, G_FILE_ATTRIBUTE_TIME_ACCESS);
 
     info->m_mime_type_string = info->m_content_type;
     if (!info->m_mime_type_string.isEmpty()) {
@@ -274,19 +355,41 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         content_type = nullptr;
     }
 
-    char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
-    info->m_file_size = size_full;
-    g_free(size_full);
+    if (info->m_size) {
+//        char *size_full = strtok(g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS),"iB");
+        //列表视图显示改为GB - List view display changed to GB
+        char *size_full = g_format_size_full(info->m_size, G_FORMAT_SIZE_IEC_UNITS);
+        info->m_file_size = QString(size_full).replace("iB", "B");;
+        g_free(size_full);
+    } else {
+        info->m_file_size = nullptr;
+    }
 
+    auto systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
     QDateTime date = QDateTime::fromMSecsSinceEpoch(info->m_modified_time*1000);
-    info->m_modified_date = date.toString(Qt::SystemLocaleShortDate);
+    if (info->m_modified_time) {
+        info->m_modified_date = date.toString(systemTimeFormat);
+    } else {
+        info->m_modified_date = nullptr;
+    }
 
-    date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
-    info->m_access_date = date.toString(Qt::SystemLocaleShortDate);
+    if (info->m_access_time) {
+        date = QDateTime::fromMSecsSinceEpoch(info->m_access_time*1000);
+        info->m_access_date = date.toString(systemTimeFormat);
+    } else {
+        info->m_access_date = nullptr;
+    }
+
+    if (g_file_info_has_attribute(new_info, "trash::deletion-date"))
+    {
+       QString deletionDate = g_file_info_get_attribute_as_string(new_info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+       info->m_deletion_date = deletionDate.replace("T", " ");
+       auto date = g_file_info_get_deletion_date(new_info);
+       info->m_deletion_date_uint64 = g_date_time_to_unix(date);
+       g_date_time_unref(date);
+    }
 
     m_info->m_meta_info = FileMetaInfo::fromGFileInfo(m_info->uri(), new_info);
-
-    // m_info->m_meta_info->setMetaInfoInt("exec_disable",0);  //add by nsg test
     // update peony qt color list after meta info updated.
     m_info->m_colors = FileLabelModel::getGlobalModel()->getFileColors(m_info->uri());
 
@@ -295,63 +398,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         m_info->m_icon_name = customIconName;
     }
 
-    if (info->isDesktopFile()) {
-        info->m_desktop_name = info->displayName();
-        QUrl url = info->uri();
-        GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8());
-        if (!desktop_info) {
-            //! \note add for mdm
-            //! mdm将应用禁用后快捷方式的可执行路径会被改成不可执行，g_desktop_app_info_new_from_filename会
-            //! 认为这个文件不是一个快捷方式因此displayName会是文件本身的名字
-            if (!info->uri().endsWith(".desktop") || !QFile(url.path()).exists())
-                return;
-            QSettings desktop_file(url.path(), QSettings::IniFormat);
-            desktop_file.setIniCodec("UTF8");
-            desktop_file.beginGroup("Desktop Entry");
-            QString key = "Name[" + QLocale::system().name() + "]";
-            QString _name_string = desktop_file.value(key).toString();
-            if (!_name_string.isEmpty()) {
-                info->m_display_name = _name_string;
-            }
-            else {
-                _name_string = desktop_file.value("Name").toString();
-                if (!_name_string.isEmpty())
-                    info->m_display_name = _name_string;
-            }
-            m_info->m_mutex.unlock();
-            info->updated();
-            return;
-        }
-#if GLIB_CHECK_VERSION(2, 56, 0)
-        auto string = g_desktop_app_info_get_locale_string(desktop_info, "Name");
-#else
-        //FIXME: should handle locale?
-        //change "Name" to QLocale::system().name(),
-        //try to fix Qt5.6 untranslated desktop file issue
-        auto key = "Name[" +  QLocale::system().name() + "]";
-        auto string = g_desktop_app_info_get_string(desktop_info, key.toUtf8().constData());
-#endif
-        qDebug() << "get name string:"<<string <<info->uri()<<info->displayName();
-        if (string) {
-            info->m_display_name = string;
-            g_free(string);
-        } else {
-            QString path = "/usr/share/applications/" + info->displayName();
-            auto name = getAppName(path);
-            if (name.length() > 0)
-                info->m_display_name = name;
-            else
-            {
-                string = g_desktop_app_info_get_string(desktop_info, "Name");
-                if (string) {
-                    info->m_display_name = string;
-                    g_free(string);
-                }
-            }
-        }
-        g_object_unref(desktop_info);
-    }
+    queryFileDisplayName(new_info);
 
+    info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     info->m_symlink_target = g_file_info_get_symlink_target(new_info);
 
     Q_EMIT info->updated();

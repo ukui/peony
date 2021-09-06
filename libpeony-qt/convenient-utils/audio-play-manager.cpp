@@ -29,7 +29,7 @@ static AudioPlayManager *audio_global_instance = nullptr;
 
 AudioPlayManager::AudioPlayManager(QObject *parent) : QObject(parent)
 {
-    ca_context_create(&m_ca_context);
+//    ca_context_create(&m_ca_context);
 }
 
 AudioPlayManager::~AudioPlayManager()
@@ -58,9 +58,9 @@ void AudioPlayManager::init()
 
 void AudioPlayManager::playWarningAudio()
 {
-    ca_context_play(m_ca_context, 0,
-                     CA_PROP_EVENT_ID, m_event_id,
-                     CA_PROP_EVENT_DESCRIPTION,
-                     tr("Operation file Warning"),
-                     NULL);
+//    ca_context_play(m_ca_context, 0,
+//                     CA_PROP_EVENT_ID, m_event_id,
+//                     CA_PROP_EVENT_DESCRIPTION,
+//                     tr("Operation file Warning"),
+//                     NULL);
 }

@@ -156,7 +156,8 @@ QIcon VideoThumbnail::generateThumbnail()
            <<"-ss"<<pos              /* seeks in this position*/
            <<"-vframes"<<"1"         /* Num Frames */
            <<"-f"<<"image2"          /* file format.  */
-           <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
+          // <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
+           <<"-s"<<"640x640"         /*<<"-vf"<<scal*/
            <<fileThumbnail; /*output file Name */
         qDebug()<<"the ffmpeg cmd: " << list;
 
@@ -164,10 +165,12 @@ QIcon VideoThumbnail::generateThumbnail()
         p.start("ffmpeg",list);
 
         if (!p.waitForStarted()) {
+            qWarning()<<"start get video image failed.";
             return thumbnailImage;
         }
 
-        if (!p.waitForFinished()) {
+        if (!p.waitForFinished(40000)) {
+            qWarning()<<"wait video image too long time.";
             return thumbnailImage;
         }
 

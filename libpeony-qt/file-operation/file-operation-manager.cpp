@@ -44,6 +44,8 @@
 #include "file-watcher.h"
 #include "audio-play-manager.h"
 
+#include "properties-window.h"
+
 #include <QVector4D>
 
 #include <QDebug>
@@ -68,10 +70,20 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
 
     //
     connect(m_progressbar, &FileOperationProgressBar::canceled, [=] () {
-        if (!m_allow_parallel) {
-            m_progressbar->removeAllProgressbar();
-        }
+        m_progressbar->removeAllProgressbar();
     });
+
+    // 休眠检测
+    GDBusConnection* pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
+    if (pconnection) {
+        g_dbus_connection_signal_subscribe(pconnection,
+                       "org.freedesktop.login1",
+                       "org.freedesktop.login1.Manager",
+                       "PrepareForSleep",
+                       "/org/freedesktop/login1", NULL,
+                       G_DBUS_SIGNAL_FLAGS_NONE,
+                       systemSleep, this, NULL);
+    }
 }
 
 FileOperationManager::~FileOperationManager()
@@ -113,6 +125,64 @@ bool FileOperationManager::isAllowParallel()
 
 void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
 {
+    auto operationInfo = operation->getOperationInfo();
+
+    if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
+        auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
+        if (value.isValid()) {
+            if (value.toBool() == false) {
+                goto start;
+            }
+        }
+        // check dialog
+        QMessageBox questionBox;
+        questionBox.addButton(QMessageBox::Yes);
+        questionBox.addButton(QMessageBox::No);
+        questionBox.addButton(tr("No, go to settings"), QMessageBox::ActionRole);
+        questionBox.setText(tr("Do you want to put selected %1 item(s) into trash?").arg(operationInfo.get()->sources().count()));
+        auto result = questionBox.exec();
+
+        if (result != QMessageBox::Yes) {
+            if (result != QMessageBox::No) {
+                // settings
+                QStringList uris;
+                uris<<"trash:///";
+                auto propertyWindow = new PropertiesWindow(uris);
+                propertyWindow->show();
+            }
+            return;
+        }
+    }
+
+    // do not add move operation between favorite:///
+    // FIXME: due to some desgin issues, we can not
+    // support undo/redo with favorite:/// yet. that
+    // should be fixed in the future.
+
+    // dnd use copy move mode here between different
+    // file system, so we should better check operation class,
+    // not operation info type.
+    if (dynamic_cast<FileMoveOperation *>(operation)) {
+        if (addToHistory) {
+            for (QString uri : operationInfo.get()->sources()) {
+                if (uri.startsWith("favorite:///")) {
+                    addToHistory = false;
+                    break;
+                }
+            }
+            if (addToHistory) {
+                for (QString uri : operationInfo.get()->dests()) {
+                    if (uri.startsWith("favorite:///")) {
+                        addToHistory = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+start:
+
     QApplication::setQuitOnLastWindowClosed(false);
 
     connect(operation, &FileOperation::operationFinished, this, [=]() {
@@ -133,7 +203,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         });
     }, Qt::BlockingQueuedConnection);
 
-    auto operationInfo = operation->getOperationInfo();
+
 
     bool allowParallel = m_allow_parallel;
 
@@ -187,10 +257,15 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
    proc->connect(operation, &FileOperation::operationRollbackedOne, proc, &ProgressBar::onFileRollbacked);
    proc->connect(operation, &FileOperation::operationStartSnyc, proc, &ProgressBar::onStartSync);
    proc->connect(operation, &FileOperation::operationFinished, proc, &ProgressBar::onFinished);
-   proc->connect(proc, &ProgressBar::cancelled, operation, &Peony::FileOperation::cancel);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &FileOperation::cancel);
+   proc->connect(proc, &ProgressBar::cancelled, operation, &FileOperation::operationCancel);
+   proc->connect(proc, &ProgressBar::pause, operation, &FileOperation::operationPause);
+   proc->connect(proc, &ProgressBar::resume, operation, &FileOperation::operationResume);
+
    operation->connect(operation, &FileOperation::errored, [=]() {
        operation->setHasError(true);
    });
+
    operation->connect(operation, &FileOperation::errored, this, &FileOperationManager::handleError, Qt::BlockingQueuedConnection);
    operation->connect(operation, &FileOperation::operationFinished, this, [=](){
        Q_EMIT this->operationFinished(operation->getOperationInfo(), !operation->hasError());
@@ -258,6 +333,8 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
     }
     case FileOperationInfo::Move: {
         op = new FileMoveOperation(info->m_src_uris, info->m_dest_dir_uri);
+        auto moveOp = qobject_cast<FileMoveOperation *>(op);
+        moveOp->setAction(info->m_drop_action);
         break;
     }
     case FileOperationInfo::Rename: {
@@ -265,9 +342,7 @@ void FileOperationManager::startUndoOrRedo(std::shared_ptr<FileOperationInfo> in
             op = new FileRenameOperation(info->m_src_uris.isEmpty()? nullptr: info->m_src_uris.at(0),
                                          info->m_dest_dir_uri);
         } else {
-            auto destUri = info->m_node_map.first();
-            QUrl url = destUri;
-            op = new FileRenameOperation(info->m_node_map.firstKey(), url.fileName());
+            op = new FileRenameOperation(info->m_node_map.firstKey(), info.get()->m_newname);
         }
         break;
     }
@@ -392,23 +467,61 @@ void FileOperationManager::unregisterFileWatcher(FileWatcher *watcher)
 
 void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *info)
 {
-    if (!info)
+    if (!info) {
         return;
+    }
 
     // skip create template opeartion, it will be handled by operation itself.
-    if (info->m_src_dir_uri == QStandardPaths::writableLocation(QStandardPaths::TempLocation))
+    if (info->m_src_dir_uri == QStandardPaths::writableLocation(QStandardPaths::TempLocation)) {
         return;
+    }
 
     for (auto watcher : m_watchers) {
         if (!watcher->supportMonitor()) {
             auto srcDir = info->m_src_dir_uri;
             auto destDir = info->m_dest_dir_uri;
-            if (info->operationType() == FileOperationInfo::Link || info->operationType() == FileOperationInfo::Rename) {
-                srcDir = FileUtils::getParentUri(info->m_src_uris.first());
+            auto firstUri = info->m_src_uris.first();
+            
+            //'file:///run/user/1000/gvfs/smb-share:server=xxx,share=xxx/' converted to 'smb://xxx'
+            GFile * file  = g_file_new_for_uri(destDir.toLatin1().data());
+            char *uri = g_file_get_uri(file);	
+            if (uri) {
+                destDir = uri;
             }
+            g_object_unref(file);
+            g_free(uri);
+            
+            if (info->operationType() == FileOperationInfo::Link || info->operationType() == FileOperationInfo::Rename) {
+                srcDir = FileUtils::getParentUri(firstUri);
+            }
+
+            if ("" == srcDir) {
+                if (firstUri.endsWith("/")) {
+                    firstUri.chop(1);
+                }
+
+                QStringList fileSplit = firstUri.split("/");
+                fileSplit.pop_back();
+
+                srcDir = fileSplit.join("/");
+            }
+
             // check watcher directory
+            // srcDir is null in samba filesystem, so that it not work
+            // currentUri maybe is 'file:///run/user/1000/gvfs/smb-share:server=xxx,share=xxx/' or 'smb://xxx'
             if (watcher->currentUri() == srcDir || watcher->currentUri() == destDir) {
                 // tell the view/model the directory should be updated
+                watcher->requestUpdateDirectory();
+            }
+
+            qDebug() << "src:" << srcDir << " == dest:" << destDir << " == type:" << info->operationType();
+
+            if (srcDir.startsWith("smb://")
+                 || srcDir.startsWith("ftp://")
+                 || srcDir.startsWith("sftp://")
+                 || destDir.startsWith("smb://")
+                 || destDir.startsWith("ftp://")
+                 || destDir.startsWith("sftp://")) {
                 watcher->requestUpdateDirectory();
             }
         }
@@ -451,7 +564,7 @@ void FileOperationInfo::oppositeInfoConstruct(Type type)
         }
         case Trash: {
             m_opposite_type = Untrash;
-            commonOppositeInfoConstruct();
+            trashOppositeInfoConstruct();
             break;
         }
         case Untrash: {
@@ -540,9 +653,21 @@ void FileOperationInfo::UntrashOppositeInfoConstruct()
     return;
 }
 
+void FileOperationInfo::trashOppositeInfoConstruct()
+{
+    // note that this function is unreliable.
+    // the info would be updated while FileTrashOperation::run()
+    // again.
+    commonOppositeInfoConstruct();
+}
+
 std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperationInfo *info) {
 
     auto oppositeInfo = std::make_shared<FileOperationInfo>(info->m_dest_uris, info->m_src_dir_uri, m_opposite_type);
+    if (info->m_drop_action == Qt::TargetMoveAction) {
+        oppositeInfo->m_drop_action = Qt::TargetMoveAction;
+        oppositeInfo->m_type = FileOperationInfo::Move;
+    }
     QMap<QString, QString> oppsiteMap;
     for (auto key : m_node_map.keys()) {
         auto value = m_node_map.value(key);
@@ -553,4 +678,19 @@ std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperat
     oppositeInfo->m_oldname = this->m_newname;
 
     return oppositeInfo;
+}
+
+void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar *senderName, const gchar *objectPath, const gchar *interfaceName, const gchar *signalName, GVariant *parameters, gpointer udata)
+{
+    FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;
+    if (pb) {
+        Q_EMIT pb->pause();
+    }
+
+    Q_UNUSED(connection)
+    Q_UNUSED(senderName)
+    Q_UNUSED(objectPath)
+    Q_UNUSED(signalName)
+    Q_UNUSED(parameters)
+    Q_UNUSED(interfaceName)
 }

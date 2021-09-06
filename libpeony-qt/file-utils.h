@@ -44,12 +44,21 @@ public:
     NO_BLOCKING static GFileWrapperPtr getFileParent(const GFileWrapperPtr &file);
     NO_BLOCKING static QString getRelativePath(const GFileWrapperPtr &dir, const GFileWrapperPtr &file);
     NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
+    NO_BLOCKING static QString urlEncode(const QString& url);
+    NO_BLOCKING static QString urlDecode(const QString& url);
+
+
+    /**
+     * @return handled name
+     */
+    BLOCKING static QString handleDuplicateName (const QString& uri);
     BLOCKING static bool getFileHasChildren(const GFileWrapperPtr &file);
     BLOCKING static bool getFileIsFolder(const GFileWrapperPtr &file);
     BLOCKING static bool getFileIsFolder(const QString &uri);
     BLOCKING static bool getFileIsSymbolicLink(const QString &uri);
     BLOCKING static QStringList getChildrenUris(const QString &directoryUri);
 
+    NO_BLOCKING static QString handleDesktopFileName(const QString& uri, const QString& displayName);
     NO_BLOCKING static QString getNonSuffixedBaseNameFromUri(const QString &uri);
     BLOCKING static QString getFileDisplayName(const QString &uri);
     BLOCKING static QString getFileIconName(const QString &uri, bool checkValid = true);
@@ -67,6 +76,7 @@ public:
     NO_BLOCKING static const QString getOriginalUri(const QString &uri);
 
     NO_BLOCKING static bool isStandardPath(const QString &uri);
+    NO_BLOCKING static bool isSamePath(const QString &uri, const QString &targetUri);
     NO_BLOCKING static bool containsStandardPath(const QStringList &list);
 
     BLOCKING static bool isFileExsit(const QString &uri);
@@ -84,8 +94,12 @@ public:
     BLOCKING static bool isFileDirectory(const QString &uri);
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
+    BLOCKING static double getDeviceSize(const gchar * device_name);
 
     static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
+    static QString getUnixDevice(const QString &uri);
+    static quint64 getFileSystemSize(QString uri);
+    static QString getFileSystemType(QString uri);
 private:
     FileUtils();
 };

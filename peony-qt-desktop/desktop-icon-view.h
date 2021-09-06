@@ -68,6 +68,7 @@ public:
     void initDoubleClick();
 
     void openFileByUri(QString uri);
+    void restoreItemsPosByMetaInfo();
 
     void bindModel(FileItemModel *sourceModel, FileItemProxyFilterSortModel *proxyModel) {
         Q_UNUSED(sourceModel) Q_UNUSED(proxyModel)
@@ -101,6 +102,9 @@ public:
         m_item_rect_hash.clear();
     }
 
+private:
+    QRect getScreenArea(QScreen* screen);
+
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
 
@@ -133,13 +137,15 @@ public Q_SLOTS:
 
     void editUris(const QStringList uris);
 
+    void scrollTo(const QModelIndex &index, ScrollHint hint) override;
+
     //zoom
     void setDefaultZoomLevel(ZoomLevel level);
     ZoomLevel zoomLevel() const;
     void zoomIn();
     void zoomOut();
 
-    void clearAllIndexWidgets();
+    void clearAllIndexWidgets(const QStringList &uris = QStringList());
 
     void refresh();
 
@@ -186,10 +192,14 @@ public Q_SLOTS:
      * @brief Rearrange the desktop icon position
      * @param screenSize: The value of the screen size is the resolution minus the height of the control panel
      */
-    void resolutionChange(const QRect &screenSize);
+    void resolutionChange();
     void setEditFlag(bool edit);
+    bool getEditFlag();
 
 protected:
+    int verticalOffset() const override;
+    int horizontalOffset() const override;
+
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
@@ -198,6 +208,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent *e);
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
+
+    void startDrag(Qt::DropActions supportedActions);
 
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
@@ -221,6 +233,7 @@ protected:
 
 private:
     ZoomLevel m_zoom_level = Invalid;
+    QMargins m_panel_margin;
 
     QModelIndex m_last_index;
     QTimer m_edit_trigger_timer;
@@ -251,6 +264,11 @@ private:
     QMap<QScreen*, bool> m_screens;
     PeonyDbusService *m_peonyDbusSer;
     QMap<QString, QRect> m_item_rect_hash;
+
+    // remember items postions before resolution changed.
+    QMap<QString, QRect> m_resolution_item_rect;
+
+    QPoint m_press_pos;
 };
 
 }

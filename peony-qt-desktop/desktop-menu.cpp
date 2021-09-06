@@ -44,6 +44,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QtConcurrent>
 
 #include <QUrl>
 #include <QDir>
@@ -53,8 +54,9 @@ using namespace Peony;
 
 DesktopMenu::DesktopMenu(DirectoryViewIface *view, QWidget *parent) : QMenu(parent)
 {
-    setProperty("useIconHighlightEffect", true);
-    setProperty("iconHighlightEffectMode", 1);
+    //comment old highlight effect
+//    setProperty("useIconHighlightEffect", true);
+//    setProperty("iconHighlightEffectMode", 1);
     setProperty("fillIconSymbolicColor", true);
 
     m_view = view;
@@ -104,12 +106,12 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
 
     bool isBackgroundMenu = m_selections.isEmpty();
     if (isBackgroundMenu) {
-        l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("&Open in new Window"));
+        l<<addAction(QIcon::fromTheme("window-new-symbolic"), tr("Open in new Window"));
         connect(l.last(), &QAction::triggered, [=]() {
             this->openWindow(m_directory);
         });
 
-        l<<addAction(tr("Select &All"));
+        l<<addAction(tr("Select All"));
         connect(l.last(), &QAction::triggered, [=]() {
             //qDebug() << "select all";
             m_view->invertSelections();
@@ -132,7 +134,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
             }
             if (info->isDir()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     if (!info->canRead()) {
                         QUrl url = m_selections.first();
@@ -146,7 +148,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
                 if (recommendActions.count() > 1)
                 {
-                    auto openWithAction = addAction(tr("Open &with..."));
+                    auto openWithAction = addAction(tr("Open with..."));
                     QMenu *openWithMenu = new QMenu(this);
 
                     for (auto action : recommendActions) {
@@ -159,22 +161,29 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                         openWithMenu->addAction(static_cast<QAction*>(action));
                     }
                     openWithMenu->addSeparator();
-                    openWithMenu->addAction(tr("&More applications..."), [=]() {
+                    openWithMenu->addAction(tr("More applications..."), [=]() {
                         FileLauchDialog d(m_selections.first());
                         d.exec();
                     });
                     openWithAction->setMenu(openWithMenu);
                 }
             } else if (!info->isVolume()) {
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     FileLaunchManager::openAsync(uri);
                 });
-                auto openWithAction = addAction(tr("Open &with..."));
+                auto openWithAction = addAction(tr("Open with..."));
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                //fix has default open app but no recommend actions issue, link to bug#61365
+                if (recommendActions.count() == 0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -185,13 +194,13 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
                 openWithMenu->addSeparator();
-                openWithMenu->addAction(tr("&More applications..."), [=]() {
+                openWithMenu->addAction(tr("More applications..."), [=]() {
                     FileLauchDialog d(m_selections.first());
                     d.exec();
                 });
                 openWithAction->setMenu(openWithMenu);
             } else {
-                l<<addAction(tr("&Open"));
+                l<<addAction(tr("Open"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     auto uri = m_selections.first();
                     //FIXME:
@@ -202,10 +211,10 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
             {
                 auto info = FileInfo::fromUri(m_selections.first());
                 auto displayName = info->displayName();
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open"));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
             }
             else
-                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("&Open %1 selected files").arg(m_selections.count()));
+                l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open %1 selected files").arg(m_selections.count()));
 
             connect(l.last(), &QAction::triggered, [=]() {
                 qDebug()<<"triggered:"<<m_selections.count();
@@ -266,6 +275,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         //enumerate template dir
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        qWarning()<<"tempalte Path is"<<templatePath;
         if(!templatePath.isEmpty())
         {
             QDir templateDir(templatePath);
@@ -273,8 +283,10 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
             if (!templates.isEmpty()) {
                 for (auto t : templates) {
                     QFileInfo qinfo(templateDir, t);
+                    qWarning()<<"template entry is"<<qinfo.filePath();
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
+                    //FIXME: replace BLOCKING api in ui thread.
                     std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
 
                     QString mimeType = info->mimeType();
@@ -299,9 +311,9 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                             if(!tmpIcon.isNull())
                                 isOnlyUnref = true;
                         }
-                        g_object_unref(app_infos);
                         l = l->next;
                     }
+                    g_list_free_full(app_infos, g_object_unref);
 
                     QAction *action = new QAction(tmpIcon, qinfo.baseName(), this);
                     connect(action, &QAction::triggered, [=]() {
@@ -315,11 +327,15 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                     g_object_unref(gtk_file);
                 }
                 subMenu->addSeparator();
+            } else {
+                qWarning()<<"template entries is empty";
             }
+        } else {
+            qWarning()<<"template path is empty";
         }
 
         QList<QAction *> actions;
-        auto createEmptyFileAction = new QAction(QIcon::fromTheme("document-new-symbolic"), tr("Empty &File"), this);
+        auto createEmptyFileAction = new QAction(QIcon::fromTheme("document-new-symbolic"), tr("Empty File"), this);
         actions<<createEmptyFileAction;
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory);
@@ -329,7 +345,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
             qDebug()<<"target:"<<targetUri;
             m_uris_to_edit<<targetUri;
         });
-        auto createFolderActions = new QAction(QIcon::fromTheme("folder-new-symbolic"), tr("&Folder"), this);
+        auto createFolderActions = new QAction(QIcon::fromTheme("folder-new-symbolic"), tr("Folder"), this);
         actions<<createFolderActions;
         connect(actions.last(), &QAction::triggered, [=]() {
             //FileOperationUtils::create(m_directory, nullptr, CreateTemplateOperation::EmptyFolder);
@@ -356,16 +372,24 @@ const QList<QAction *> DesktopMenu::constructViewOpActions()
         auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
         auto zoomLevel = desktopView->zoomLevel();
 
-        auto smallAction = viewTypeSubMenu->addAction(tr("&Small"), [=]() {
+        auto smallAction = viewTypeSubMenu->addAction(tr("Small"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Small)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Small);
         });
-        auto normalAction = viewTypeSubMenu->addAction(tr("&Normal"), [=]() {
+        auto normalAction = viewTypeSubMenu->addAction(tr("Normal"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Normal)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Normal);
         });
-        auto largeAction = viewTypeSubMenu->addAction(tr("&Large"), [=]() {
+        auto largeAction = viewTypeSubMenu->addAction(tr("Large"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Large)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Large);
         });
-        auto hugeAction = viewTypeSubMenu->addAction(tr("&Huge"), [=]() {
+        auto hugeAction = viewTypeSubMenu->addAction(tr("Huge"), [=]() {
+            if (desktopView->zoomLevel() == DesktopIconView::Huge)
+                return;
             desktopView->setDefaultZoomLevel(DesktopIconView::Huge);
         });
 
@@ -473,7 +497,7 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
 //                FileOperationUtils::restore(trashChildren);
 //            });
 //            l.last()->setEnabled(!trashChildren.isEmpty());
-            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the trash"), [=]() {
+            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clean the trash"), [=]() {
                 Peony::AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
                                                     "Once you start a deletion, the files deleting will never be "
@@ -487,26 +511,45 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
         } else if (m_selections.count() == 1 && m_selections.first() == "computer:///") {
 
         } else if (! m_selections.contains(homeUri)) {
-            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("&Copy"));
+            l<<addAction(QIcon::fromTheme("edit-copy-symbolic"), tr("Copy"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, false);
             });
             l<<addAction(QIcon::fromTheme("edit-cut-symbolic"), tr("Cut"));
             connect(l.last(), &QAction::triggered, [=]() {
                 ClipboardUtils::setClipboardFiles(m_selections, true);
+                auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
+                desktopView->update();
             });
 
             if (!m_selections.contains("trash:///")) {
-                l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("&Delete to trash"));
-                connect(l.last(), &QAction::triggered, [=]() {
-                    FileOperationUtils::trash(m_selections, true);
-                });
-                //comment delete forever right menu option,reference to mac and Windows
-                //add delete forever option
-//                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
-//                connect(l.last(), &QAction::triggered, [=]() {
-//                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
-//                });
+                bool canTrash = true;
+                bool canDelete = true;
+                for (auto uri : m_selections) {
+                    auto info = FileInfo::fromUri(uri);
+                    if (! info->canTrash())
+                        canTrash = false;
+
+                    if (! info->canDelete())
+                        canDelete = false;
+                }
+
+                if (canTrash)
+                {
+                    l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::trash(m_selections, true);
+                    });
+                }
+                else if(canDelete)
+                {
+                    //comment delete forever right menu option,reference to mac and Windows
+                    //add delete forever option
+                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    connect(l.last(), &QAction::triggered, [=]() {
+                        FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                    });
+                }
             }
 
             if (m_selections.count() == 1) {
@@ -517,13 +560,13 @@ const QList<QAction *> DesktopMenu::constructFileOpActions()
             }
         }
     } else {
-        auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("&Paste"));
+        auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
         l<<pasteAction;
         pasteAction->setEnabled(ClipboardUtils::isClipboardHasFiles());
         connect(l.last(), &QAction::triggered, [=]() {
             ClipboardUtils::pasteClipboardFiles(m_directory);
         });
-        l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("&Refresh"));
+        l<<addAction(QIcon::fromTheme("view-refresh-symbolic"), tr("Refresh"));
         connect(l.last(), &QAction::triggered, [=]() {
             auto desktopView = dynamic_cast<DesktopIconView*>(m_view);
             desktopView->refresh();
@@ -633,25 +676,37 @@ void DesktopMenu::showProperties(const QStringList &uris)
     QStringList args;
     for (auto arg : uris) {
         QUrl url = arg;
-        args<<url.toEncoded();
+        args << url.toEncoded();
     }
 
-    if (uris.contains("computer:///"))
-    {
-        gotoAboutComputer();
-        return;
+    args.removeDuplicates();
+
+    //注释掉这里以修复BUG#17809
+    if (uris.contains("computer:///")) {
+        args.removeAt(args.indexOf("computer:///"));
+        QtConcurrent::run([=]() {
+            gotoAboutComputer();
+        });
     }
 
-    if (uris.contains("trash:///") && uris.count() >1)
-    {
-        args.clear();
-        args << "trash:///";
+    if (uris.contains("trash:///") && uris.count() > 1) {
+        args.removeAt(args.indexOf("trash:///"));
+        QtConcurrent::run([=]() {
+            QProcess p;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+            p.setProgram("peony");
+            p.setArguments(QStringList() << "--show-properties" << "trash:///");
+            p.startDetached();
+#else
+            p.startDetached("peony", QStringList()<<"--show-properties"<<args);
+#endif
+        });
     }
 
     QProcess p;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     p.setProgram("peony");
-    p.setArguments(QStringList()<<"--show-properties"<<args);
+    p.setArguments(QStringList() << "--show-properties" << args);
     p.startDetached();
 #else
     p.startDetached("peony", QStringList()<<"--show-properties"<<args);

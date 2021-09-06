@@ -21,6 +21,7 @@
  */
 
 #include "menu-plugin-manager.h"
+#include "file-info.h"
 
 //create link
 #include <file-operation-manager.h>
@@ -100,40 +101,53 @@ QList<QAction *> CreateLinkInternalPlugin::menuActions(MenuPluginInterface::Type
     QList<QAction *> l;
     if (types == MenuPluginInterface::DesktopWindow || types == MenuPluginInterface::DirectoryView) {
         if (selectionUris.count() == 1) {
-            auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
-            auto info = FileInfo::fromUri(selectionUris.first(), false);
-            QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-            QString originPath = QUrl(selectionUris.first()).path();
-            //special type mountable, or isVirtual then return
-            if (selectionUris.first().startsWith("computer:///") || info->isVirtual()
-                || selectionUris.first().startsWith("trash:///")
-                || selectionUris.first().startsWith("recent:///")
-                || originPath.startsWith(desktopPath))
+            auto select_file_info = FileInfo::fromUri(selectionUris[0]);
+            if(select_file_info->isSymbolLink())
                 return l;
 
-            connect(createLinkToDesktop, &QAction::triggered, [=]() {
-                //QUrl src = selectionUris.first();
-                QString desktopUri = "file://" + desktopPath;
-                FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
-                op->setAutoDelete(true);
-                FileOperationManager::getInstance()->startOperation(op, true);
-            });
-            l<<createLinkToDesktop;
+            QString str_cmp = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            str_cmp.insert(0, QString("file://"));
+            //在桌面文件夹中屏蔽 “发送到桌面快捷方式” 和 “创建链接到...” - Block "Create link to desktop" and "Create link to..." in the desktop folder
+            if(QString::compare(QUrl::fromPercentEncoding(uri.toLocal8Bit()), str_cmp))
+            {
+                auto createLinkToDesktop = new QAction(QIcon::fromTheme("emblem-link-symbolic"), tr("Create Link to Desktop"), nullptr);
+                auto info = FileInfo::fromUri(selectionUris.first());
+                QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+                QString originPath = QUrl(selectionUris.first()).path();
+                //special type mountable, or isVirtual then return
+                if (selectionUris.first().startsWith("computer:///")
+                        || info->isVirtual()
+                        || selectionUris.first().startsWith("trash:///")
+                        || selectionUris.first().startsWith("recent:///")
+                        || selectionUris.first().startsWith("mtp://")
+                        || originPath == desktopPath) {
+                    return l;
+                }
 
-            auto createLinkTo = new QAction(tr("Create Link to..."), nullptr);
-            connect(createLinkTo, &QAction::triggered, [=]() {
-                QUrl targetDir = QFileDialog::getExistingDirectoryUrl(nullptr,
-                                 tr("Choose a Directory to Create Link"),
-                                 uri);
-                if (!targetDir.isEmpty()) {
+                connect(createLinkToDesktop, &QAction::triggered, [=]() {
                     //QUrl src = selectionUris.first();
-                    QString target = targetDir.url();
-                    FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), target);
+                    QString desktopUri = "file://" + desktopPath;
+                    FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), desktopUri);
                     op->setAutoDelete(true);
                     FileOperationManager::getInstance()->startOperation(op, true);
-                }
-            });
-            l<<createLinkTo;
+                });
+                l<<createLinkToDesktop;
+
+                auto createLinkTo = new QAction(tr("Create Link to..."), nullptr);
+                connect(createLinkTo, &QAction::triggered, [=]() {
+                    QUrl targetDir = QFileDialog::getExistingDirectoryUrl(nullptr,
+                                                                          tr("Choose a Directory to Create Link"),
+                                                                          uri);
+                    if (!targetDir.isEmpty()) {
+                        //QUrl src = selectionUris.first();
+                        QString target = targetDir.url();
+                        FileLinkOperation *op = new FileLinkOperation(selectionUris.first(), target);
+                        op->setAutoDelete(true);
+                        FileOperationManager::getInstance()->startOperation(op, true);
+                    }
+                });
+                l<<createLinkTo;
+            }
         }
     }
     return l;
@@ -156,7 +170,8 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
     if (types == DirectoryView) {
         if (selectionUris.count() == 1) {
             //not allow in trash path
-            if (uri.startsWith("trash://") || uri.startsWith("smb://") || uri.startsWith("recent://"))
+            if (uri.startsWith("trash://") || uri.startsWith("smb://")
+                || uri.startsWith("recent://") || uri.startsWith("computer://"))
                 return l;
             auto action = new QAction(tr("Add File Label..."), nullptr);
             auto uri = selectionUris.first();
@@ -167,6 +182,11 @@ QList<QAction *> FileLabelInternalMenuPlugin::menuActions(MenuPluginInterface::T
                 bool checked = ids.contains(item->id());
                 auto a = menu->addAction(item->name(), [=]() {
                     if (!checked) {
+                        // note: while add label to file at first time (usually new user created),
+                        // it might fail to add a label correctly, but second time will work.
+                        // it might be a bug of gvfsd-metadata. anyway we should to avoid this
+                        // situation.
+                        FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
                         FileLabelModel::getGlobalModel()->addLabelToFile(uri, item->id());
                     } else {
                         FileLabelModel::getGlobalModel()->removeFileLabel(uri, item->id());

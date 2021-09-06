@@ -45,6 +45,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void setUri(const QString &uri);
 
+
 protected:
     void focusInEvent(QFocusEvent *e) override;
     void focusOutEvent(QFocusEvent *e) override;

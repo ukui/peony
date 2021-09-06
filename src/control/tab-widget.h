@@ -78,6 +78,8 @@ public:
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
+    /* Function:Get all file information under the current path */
+    const QList<std::shared_ptr<Peony::FileInfo>> getCurrentAllFileInfos();
 
     const QStringList getBackList();
     const QStringList getForwardList();
@@ -105,6 +107,7 @@ Q_SIGNALS:
     void activePageViewSortTypeChanged();
 
     void viewDoubleClicked(const QString &uri);
+    void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
 
     void updateWindowSelectionRequest(const QStringList &uris);
@@ -186,6 +189,7 @@ public Q_SLOTS:
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
+    void enableSearchBar(bool enable);
 
     void updateCurrentSearchPath();
     void switchSearchPath (bool isCurrent);
@@ -207,6 +211,7 @@ protected:
 
 private:
     NavigationTabBar *m_tab_bar;
+    QToolButton *m_add_page_button;
 
     //QWidget *m_tab_bar_bg;
     QWidget *m_header_bar_bg;
@@ -263,16 +268,20 @@ private:
     bool m_search_child_flag = true;
 
     //Button size macro definition
-    const int TRASH_BUTTON_HEIGHT = 28;
+    //change height to 36 to ensure max size font can show complete, link to bug#58824
+    const int TRASH_BUTTON_HEIGHT = 36;
     const int TRASH_BUTTON_WIDTH = 65;
 
     //advance search filter options
-    QStringList m_option_list = {tr("name"), tr("type"), tr("modify time"), tr("file size")};
+    QStringList m_option_list = {tr("type"), tr("file size"), tr("modify time"), tr("name")};
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"), tr("video"),
                                     tr("text file"), tr("audio"), tr("wps file"), tr("others")};
     QStringList m_file_mtime_list = {tr("all"), tr("today"), tr("this week"), tr("this month"), tr("this year"), tr("year ago")};
-    QStringList m_file_size_list = {tr("all"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-100M)"), tr("big(100M-1G)"),tr("large(>1G)")};
+    QStringList m_file_size_list = {tr("all"),tr("empty(0K)"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-128M)"), tr("big(128M-1G)"),tr("large(1-4G)"),tr("great(>4G)")};
 
+    bool m_first_add_page = true;
+
+    std::shared_ptr<Peony::FileInfo> m_search_button_info;
 };
 
 class PreviewPageContainer : public QStackedWidget

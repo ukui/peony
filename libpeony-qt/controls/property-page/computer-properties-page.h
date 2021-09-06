@@ -24,13 +24,16 @@
 #define COMPUTERPROPERTIESPAGE_H
 
 #include <QWidget>
+
+#include "properties-window-tab-iface.h"
 #include "peony-core_global.h"
+#include "volume-manager.h"
 
 class QFormLayout;
 
 namespace Peony {
 
-class PEONYCORESHARED_EXPORT ComputerPropertiesPage : public QWidget
+class PEONYCORESHARED_EXPORT ComputerPropertiesPage : public PropertiesWindowTabIface
 {
     Q_OBJECT
 public:
@@ -39,9 +42,33 @@ public:
 protected:
     void addSeparator();
 
+    /**
+     * \brief dbus获取文件系统函数
+     * \param uri
+     * \return
+     */
+    QString getFileSystemType(QString uri);
+
+    /*!
+     * \brief 通过给定的targetUri从全部卷中获取匹配的卷。
+     * \param targetUri 需要匹配的目标Uri (挂载路径)
+     * \return 具有给定targetUri的卷，如果不存在则返回 nullptr
+     */
+    static std::shared_ptr<Volume> EnumerateOneVolumeByTargetUri(QString targetUri);
+
+    /**
+     * \brief 统一格式化容量字符串
+     * \param capacityNum
+     * \return
+     */
+    QString formatCapacityString(quint64 capacityNum);
 private:
     QString m_uri;
     QFormLayout *m_layout;
+
+    // PropertiesWindowTabIface interface
+public:
+    void saveAllChange();
 };
 
 }

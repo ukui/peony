@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui x11extras dbus concurrent
+QT       += core gui x11extras dbus concurrent KWindowSystem KWaylandClient
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 3.0.0
+include(../common.pri)
 
 TARGET = peony-qt-desktop
 TEMPLATE = app
@@ -16,34 +16,27 @@ QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitia
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
 DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
 
-# The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
-# You can also make your code fail to compile if you use deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include(../libpeony-qt/libpeony-qt-header.pri)
 include(../3rd-parties/SingleApplication/singleapplication.pri)
+include(../3rd-parties/qtsingleapplication/qtsingleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra wayland-client
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
-LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11
+LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
 
 TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_tr.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
 
 SOURCES += \
-    desktop-screen.cpp \
+    desktop-background-manager.cpp \
+    desktopbackgroundwindow.cpp \
     main.cpp \
-    desktop-window.cpp \
     peony-desktop-application.cpp \
     fm-dbus-service.cpp \
     desktop-item-model.cpp \
@@ -56,11 +49,16 @@ SOURCES += \
     peony-json-operation.cpp \
     bw-list-info.cpp \
     peony-dbus-service.cpp \
-    user-dir-manager.cpp
+    plasma-shell-manager.cpp \
+    primary-manager.cpp \
+    user-dir-manager.cpp \
+    waylandoutputmanager.cpp \
+    ukui-output-core.c \
+    desktopbackground.cpp
 
 HEADERS += \
-    desktop-screen.h \
-    desktop-window.h \
+    desktop-background-manager.h \
+    desktopbackgroundwindow.h \
     peony-desktop-application.h \
     fm-dbus-service.h \
     desktop-item-model.h \
@@ -73,7 +71,12 @@ HEADERS += \
     peony-json-operation.h \
     bw-list-info.h \
     peony-dbus-service.h \
-    user-dir-manager.h
+    plasma-shell-manager.h \
+    primary-manager.h \
+    user-dir-manager.h \
+    waylandoutputmanager.h \
+    ukui-output-client.h \
+    desktopbackground.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
@@ -81,8 +84,9 @@ target.path = /usr/bin
 #QM_FILES_RESOURCE_PREFIX = ../translations/peony-qt-desktop
 QM_FILES_INSTALL_PATH = /usr/share/peony-qt-desktop
 
-data.path = /etc/xdg/autostart
-data.files += ../data/peony-desktop.desktop
+desktop_data.path = /etc/xdg/autostart
+desktop_data.files += ../data/peony-desktop.desktop
+INSTALLS += desktop_data
 
 DISTFILES +=
 

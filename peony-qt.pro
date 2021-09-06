@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
+
 SUBDIRS = src libpeony-qt \ # plugin #libpeony-qt/test \ #plugin-iface
     #libpeony-qt/model/model-test \
     #libpeony-qt/file-operation/file-operation-test \

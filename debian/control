@@ -8,7 +8,6 @@ Build-Depends: debhelper-compat (=12),
                pkg-config,
                qt5-qmake,
                qtbase5-dev,
-               qtbase5-private-dev,
                qtchooser,
                qtbase5-dev-tools,
                qttools5-dev-tools,
@@ -20,7 +19,10 @@ Build-Depends: debhelper-compat (=12),
                libpoppler-dev,
                libpoppler-qt5-dev,
                libkf5windowsystem-dev,
-               libcanberra-dev
+               libcanberra-dev,
+               libukui-log4qt-dev,
+               libkf5wayland-dev,
+               libwayland-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
@@ -32,6 +34,7 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         libukui-log4qt0,
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
 Recommends: gvfs-backends,
@@ -62,6 +65,7 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         dvd+rw-tools,
          gvfs
 Provides: libpeony,
 Breaks: peony (<< 2.2.0-1),
@@ -84,6 +88,7 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         libcanberra-dev,
          libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)
  Peony is the official file manager for the UKUI desktop. It allows one

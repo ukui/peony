@@ -29,6 +29,8 @@
 #include <QPushButton>
 #include <QUrl>
 
+#include <QLineEdit>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -52,6 +54,7 @@ MountOperation::~MountOperation()
     g_object_unref(m_cancellable);
 
     //g_list_free_full(m_errs, GDestroyNotify(g_error_free));
+    m_dlg->deleteLater();
 }
 
 void MountOperation::cancel()
@@ -66,34 +69,40 @@ void MountOperation::cancel()
 
 void MountOperation::start()
 {
-//    ConnectServerDialog *dlg = new ConnectServerDialog;
-    QUrl uri = QUrl(g_file_get_uri(m_volume));
-    ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
-    connect(dlg, &QDialog::accepted, [=]() {
-        g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
-        g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
-        g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
-        g_mount_operation_set_anonymous(m_op, dlg->anonymous());
-        //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
-        g_mount_operation_set_password_save(m_op, dlg->savePassword()? G_PASSWORD_SAVE_NEVER: G_PASSWORD_SAVE_FOR_SESSION);
-    });
-    //block ui
-    auto code = dlg->exec();
-    if (code == QDialog::Rejected) {
-        cancel();
-        QMessageBox msg;
-        msg.setText(tr("Operation Cancelled"));
-        msg.exec();
-        return;
+    gchar* urit = g_file_get_uri(m_volume);
+    QUrl uri = QUrl(urit);
+    if (uri.scheme() != "mtp") {
+        ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
+        m_dlg = dlg;
+        //block ui
+        auto code = dlg->exec();
+        if (code == QDialog::Accepted) {
+            g_mount_operation_set_username(m_op, dlg->user().toUtf8().constData());
+            g_mount_operation_set_password(m_op, dlg->password().toUtf8().constData());
+            g_mount_operation_set_domain(m_op, dlg->domain().toUtf8().constData());
+            g_mount_operation_set_anonymous(m_op, dlg->anonymous());
+            //TODO: when FileEnumerator::prepare(), trying mount volume without password dialog first.
+            g_mount_operation_set_password_save(m_op, dlg->savePassword()? G_PASSWORD_SAVE_FOR_SESSION: G_PASSWORD_SAVE_NEVER);
+        }
+        if (code == QDialog::Rejected) {
+            cancel();
+            QMessageBox msg;
+            msg.setText(tr("Operation Cancelled"));
+            msg.exec();
+            return;
+        }
     }
-    dlg->deleteLater();
+
     g_file_mount_enclosing_volume(m_volume, G_MOUNT_MOUNT_NONE, m_op, m_cancellable, GAsyncReadyCallback(mount_enclosing_volume_callback), this);
 
     g_signal_connect (m_op, "ask-question", G_CALLBACK(ask_question_cb), this);
     g_signal_connect (m_op, "ask-password", G_CALLBACK (ask_password_cb), this);
     g_signal_connect (m_op, "aborted", G_CALLBACK (aborted_cb), this);
+
+    if (nullptr != urit)  g_free(urit);
 }
 
+#include "global-settings.h"
 GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volume,
         GAsyncResult *res,
         MountOperation *p_this)
@@ -105,8 +114,12 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         qDebug()<<err->code<<err->message<<err->domain;
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
+    } else{
+        QUrl url = QUrl(g_file_get_uri(volume));
+        p_this->m_dlg->syncRemoteServer(url);
+        p_this->finished(nullptr);
     }
-    p_this->finished(nullptr);
+
     if (p_this->m_auto_delete) {
         p_this->disconnect();
         p_this->deleteLater();
@@ -153,12 +166,37 @@ void MountOperation::ask_password_cb(GMountOperation *op,
     Q_UNUSED(flags);
     Q_UNUSED(p_this);
 
-    if (g_mount_operation_get_anonymous(op)) {
-        // need passwd, should restart a mount operation?
-        auto err = GErrorWrapper::wrapFrom(g_error_new_literal(G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED, message));
-        p_this->finished(err);
-
-        g_mount_operation_reply (op, G_MOUNT_OPERATION_UNHANDLED);
+    //block ui
+    if (p_this->m_dlg->anonymous()) {
+        // try login anonymous once, if not successed, ask password.
+        p_this->m_dlg->m_usr_btn_usr->click();
+        g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);
+        return;
+    } else {
+        // try get password and login once, if not successed, show message and
+        // require input password again.
+        if (!p_this->m_dlg->password().isEmpty()) {
+            p_this->m_dlg->m_reg_usr_passwd_editor->setText(nullptr);
+            g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);
+            return;
+        } else {
+            QMessageBox::information(0, 0, message);
+            auto code = p_this->m_dlg->exec();
+            auto dlg = p_this->m_dlg;
+            if (code == QDialog::Accepted) {
+                g_mount_operation_set_username(op, dlg->user().toUtf8().constData());
+                g_mount_operation_set_password(op, dlg->password().toUtf8().constData());
+                g_mount_operation_set_domain(op, dlg->domain().toUtf8().constData());
+                g_mount_operation_set_anonymous(op, dlg->anonymous());
+                g_mount_operation_set_password_save(op, dlg->savePassword()? G_PASSWORD_SAVE_FOR_SESSION: G_PASSWORD_SAVE_NEVER);
+                g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);
+                return;
+            }
+            if (code == QDialog::Rejected) {
+                g_mount_operation_reply (op, G_MOUNT_OPERATION_ABORTED);
+                return;
+            }
+        }
     }
 
     g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);

@@ -126,7 +126,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromUri(QString uri, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromUri(QString uri);
     /*!
      * \brief fromPath
      * \param path
@@ -134,7 +134,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromPath(QString path, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromPath(QString path);
     /*!
      * \brief fromGFile
      * \param file
@@ -142,7 +142,7 @@ public:
      * \return
      * \deprecated
      */
-    static std::shared_ptr<FileInfo> fromGFile(GFile *file, bool addToHash = true);
+    static std::shared_ptr<FileInfo> fromGFile(GFile *file);
 
     std::shared_ptr<FileMetaInfo> metainfo() {
         return m_meta_info;
@@ -165,14 +165,6 @@ public:
     bool isValid()
     {
         return m_is_valid;
-    }
-
-    QString displayName() {
-        // Fixme: #19703 rename in desktop
-        if (m_display_name == "回收站"){
-            return QString("回收箱");
-        }
-        return m_display_name;
     }
 
     QString desktopName(){
@@ -211,10 +203,19 @@ public:
     QString accessDate() {
         return m_access_date;
     }
+    QString deletionDate() {
+        return m_deletion_date;
+    }
+
 
     QString type() {
         return m_content_type;
     }
+
+    QString fileSystemType() {
+        return m_fs_type;
+    }
+
     quint64 size() {
         return m_size;
     }
@@ -263,9 +264,6 @@ public:
     bool canStop() {
         return m_can_stop;
     }
-    QString unixDeviceFile() {
-        return QString(m_unix_device_file);
-    }
 
     bool isDesktopFile() {
         return m_can_excute && m_uri.endsWith(".desktop");
@@ -273,18 +271,21 @@ public:
 
     bool isPdfFile(){
         return m_mime_type_string.contains("pdf");
-
     }
 
     bool isImageFile(){
         return m_mime_type_string.startsWith("image/");
     }
 
+    bool isImagePdfFile(){
+        return m_mime_type_string.contains("djvu");
+    }
+
     bool isVideoFile();
     bool isOfficeFile();
 
     bool isEmptyInfo() {
-        return m_display_name == nullptr;
+        return m_display_name == nullptr || m_display_name == "";
     }
     // 是否禁止执行程序
     bool isExecDisable();
@@ -321,17 +322,20 @@ public:
     }
 
     const QString targetUri();
+    const QString displayName();
     const QString symlinkTarget();
+    const QString unixDeviceFile();
 
     const QString customIcon();
+
+    quint64 getDeletionDateUInt64();
 
     //const QIcon thumbnail() {return m_thumbnail;}
     //void setThumbnail(const QIcon &thumbnail) {m_thumbnail = thumbnail;}
 
 Q_SIGNALS:
     void updated();
-//private Q_SLOTS:
-//    void getEnableSig(QString, bool);
+
 private:
     QString m_uri = nullptr;
     bool m_is_valid = false;
@@ -353,6 +357,7 @@ private:
     guint64 m_size = 0;
     guint64 m_modified_time = 0;
     guint64 m_access_time = 0;
+    guint64 m_deletion_date_uint64 = 0;
 
     /*!
      * \deprecated
@@ -364,6 +369,7 @@ private:
     QString m_file_size = nullptr;
     QString m_modified_date = nullptr;
     QString m_access_date = nullptr;
+    QString m_deletion_date = nullptr;
 
     //access
     bool m_can_read = true;
@@ -387,6 +393,9 @@ private:
 
     QString m_target_uri;
     QString m_symlink_target;
+
+    // filesystem
+    QString m_fs_type;
 
     /*!
      * \brief m_cancellable

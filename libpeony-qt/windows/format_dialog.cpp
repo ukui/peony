@@ -20,45 +20,85 @@
  *
  */
 
+#include "file-utils.h"
 #include "format_dialog.h"
+#include "side-bar-menu.h"
+#include "volume-manager.h"
 #include "ui_format_dialog.h"
+#include "side-bar-abstract-item.h"
+#include "linux-pwd-helper.h"
 
-#include <QMessageBox>
 #include <QObject>
+#include <QMessageBox>
+#include <KWindowSystem>
+#include <QCloseEvent>
 
 using namespace  Peony;
 static bool b_finished = false;
+static bool b_failed = false;
+static bool b_canClose = true;
 
 Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Format_Dialog)
 {
        ui->setupUi(this);
+       setFixedSize(this->width(), this->height());
 
        fm_uris = m_uris;
        fm_item = m_item;
        m_parent = parent;
+       b_canClose = true;
 
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
        auto targetUri = FileUtils::getTargetUri(fm_uris);
+       if (targetUri.isEmpty()) {
+           targetUri = fm_uris;
+       }
        GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
        GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
        quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
-       //get the rom size
-       //char *total_format = g_format_size(total);
-
-       //Calculated by 1024 bytes
-       char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-
        //add the rom size value into  rom_size combox
-       ui->comboBox_rom_size->addItem(total_format);
+       //fix system Udisk calculate size wrong issue
+       QString m_volume_name, m_unix_device, m_display_name,m_fs_type;
+       FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
+       bool hasSetRomSize = false;
+       m_fs_type = FileUtils::getFileSystemType(m_uris);
+       //U disk or other mobile device, only use in iso system install device
+       if (! m_unix_device.isEmpty() && m_fs_type.startsWith("iso")
+           && ! m_uris.startsWith("computer:///WDC"))
+       {
+          char dev_name[256] ={0};
+          strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+          auto size = FileUtils::getDeviceSize(dev_name);
+          if (size > 0)
+          {
+              QString sizeInfo = QString::number(size, 'f', 1);
+              qDebug() << "size:" <<size;
+              sizeInfo += "G";
+              ui->label_rom_size_text->setText(sizeInfo);
+              hasSetRomSize = true;
+          }
+       }
 
+       if (! hasSetRomSize)
+       {
+           //Calculated by 1024 bytes
+           char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+           ui->label_rom_size_text->setText(total_format);
+       }
 
        auto mount = VolumeManager::getMountFromUri(targetUri);
-       ui->lineEdit_device_name->setText(mount->name());
+       //fix name not show complete in bottom issue, bug#36887
+       ui->lineEdit_device_name->setFixedHeight(40);
+       if (mount.get()) {
+            ui->lineEdit_device_name->setText(mount->name());
+       } else {
+            ui->lineEdit_device_name->setText(LinuxPWDHelper::getCurrentUser().fullName());
+       }
 
        ui->progressBar_process->setValue(0);
 
@@ -103,6 +143,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     
     if (err) {
         flags = 0;
+        b_failed = true;
         
         QMessageBox message_error;
           
@@ -134,21 +175,29 @@ void Format_Dialog::acceptFormat(bool)
     ui->pushButton_close->setDisabled(true);
 
     //check format or not 
-   if(!format_makesure_dialog()){
+    if(!format_makesure_dialog()){
         return;
-   };
+    };
+
+    //keep this window above, fix bug #41227
+    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
     int full_clean = 0;
 
+    QString romType = ui->comboBox_system->currentText();
+    if (QString("vfat/fat32") == romType) {
+        romType = "vfat";
+    }
+
     //get values from ui
-    strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
-    strncpy(rom_type,ui->comboBox_system->currentText().toUtf8().constData(),sizeof(ui->comboBox_system->currentText().toUtf8().constData())-1);
+    //strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
+    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
     strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
 
     //disable name and rom size list
-    ui->comboBox_rom_size->setDisabled(true);
+    //ui->comboBox_rom_size->setDisabled(true);
     ui->comboBox_system->setDisabled(true);
 
     full_clean = ui->checkBox_clean_or_not->isChecked();
@@ -189,6 +238,7 @@ void Format_Dialog::acceptFormat(bool)
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
+    b_failed = false;
     if(full_clean){
         my_time->setInterval(1000);
         m_total_predict = 1800;
@@ -208,7 +258,9 @@ void Format_Dialog::acceptFormat(bool)
         // set ui button disable
         ui->pushButton_ok->setDisabled(TRUE);
         ui->pushButton_close->setDisabled(TRUE);
-        ui->lineEdit_device_name->setDisabled(TRUE);
+        //ui->lineEdit_device_name->setDisabled(TRUE);
+        //use set readonly property, fix exit issue link to task#33686
+        ui->lineEdit_device_name->setReadOnly(true);
         ui->checkBox_clean_or_not->setDisabled(TRUE);
 
         int format_value = 0;
@@ -247,13 +299,17 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
     return 0;
 }
 
-
 void Format_Dialog::formatloop(){
 
     if (b_finished)
     {
         ui->progressBar_process->setValue(100);
         ui->label_process->setText("100%");
+        my_time->stop();
+        return;
+    }
+    else if (b_failed)
+    {
         my_time->stop();
         return;
     }
@@ -277,7 +333,9 @@ void Format_Dialog::formatloop(){
         cost = 100;
 
     if (m_simulate_progress >= pre){
-        m_simulate_progress += (cost - pre)/100;
+        //fix waiting in 100% issue
+        if (m_simulate_progress < 99)
+           m_simulate_progress += (cost - pre)/100;
     }
     else{
         m_simulate_progress = pre;
@@ -379,6 +437,7 @@ gboolean Format_Dialog::is_iso(const gchar *device_path){
  */
 void Format_Dialog::ensure_unused_cb(CreateformatData *data)
 {
+    b_canClose = false;
 
     if(is_iso(data->device_name)==FALSE) {     
         ensure_format_cb (data);
@@ -445,8 +504,11 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
         data->dl->format_ok_dialog();
     }
     else{
+        b_failed = true;
         data->dl->format_err_dialog();  
     }
+
+    b_canClose = true;
 
     data->dl->my_time->stop();
     data->dl->close();
@@ -457,26 +519,28 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
 
 void Format_Dialog::format_ok_dialog()
 {
-    QMessageBox::about(m_parent,tr("qmesg_notify"),tr("Format operation has been finished successfully."));
-};
+    QMessageBox::about(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Format operation has been finished successfully."));
+    ui->pushButton_close->setEnabled(true);
+}
 
 
 void Format_Dialog::format_err_dialog()
 {
-      QMessageBox::warning(m_parent,tr("qmesg_notify"),tr("Sorry, the format operation is failed!"));
-};
+      QMessageBox::warning(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
+      ui->pushButton_close->setEnabled(true);
+}
 
 bool Format_Dialog::format_makesure_dialog(){
 
     QMessageBox message_format;
 
-    message_format.setText(tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+    message_format.setText(QObject::tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
 
-    message_format.setWindowTitle(tr("format"));
+    message_format.setWindowTitle(QObject::tr("format"));
 
-    QPushButton *okButton = message_format.addButton(tr("begin format"),QMessageBox::YesRole);
+    QPushButton *okButton = message_format.addButton(QObject::tr("begin format"),QMessageBox::YesRole);
 
-    QPushButton *cancelButton = message_format.addButton(tr("close"),QMessageBox::NoRole);
+    QPushButton *cancelButton = message_format.addButton(QObject::tr("close"),QMessageBox::NoRole);
 
     message_format.exec();
 
@@ -489,7 +553,6 @@ bool Format_Dialog::format_makesure_dialog(){
 
     return true;
 }
-
 
 /* ensure_format_cb ,function ensure to do format
  *
@@ -512,7 +575,7 @@ void Format_Dialog::ensure_format_cb (CreateformatData *data){
 
     if (g_strcmp0 (data->format_type, "vfat") != 0 &&
             g_strcmp0 (data->format_type, "ntfs") != 0 &&
-            g_strcmp0 (data->format_type, "exfat") != 0){
+            g_strcmp0 (data->format_type, "exfat") != 0) {
         g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
                                g_variant_new_boolean (TRUE));
     }
@@ -563,7 +626,7 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
 
         if (g_strcmp0 (data->format_type, "vfat") != 0 &&
                 g_strcmp0 (data->format_type, "ntfs") != 0 &&
-                g_strcmp0 (data->format_type, "exfat") != 0){
+                g_strcmp0 (data->format_type, "exfat") != 0) {
             g_variant_builder_add (&options_builder, "{sv}", "take-ownership",
                                    g_variant_new_boolean (TRUE));
         }
@@ -586,10 +649,6 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
                         data);
 
 }
-
-
-
-
 
 UDisksObject *Format_Dialog::get_object_from_block_device (UDisksClient *client,const gchar *block_device)
 {
@@ -663,4 +722,17 @@ void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_t
 Format_Dialog::~Format_Dialog()
 {
     delete ui;
+    b_canClose = true;
 }
+
+void Format_Dialog::closeEvent(QCloseEvent *e)
+{
+    if (!b_canClose) {
+
+        QMessageBox::warning(nullptr, tr("Formatting. Do not close this window"), tr("Formatting. Do not close this window"), QMessageBox::Ok);
+
+        e->ignore();
+        return;
+    }
+}
+

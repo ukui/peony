@@ -68,6 +68,8 @@ public:
      */
     void setCopyMove(bool copyMove = true);
 
+    void setAction(Qt::DropAction action);
+
     /*!
      * \brief setForceUseFallback
      * \param useFallback
@@ -120,6 +122,7 @@ protected:
     bool isValid();
     void move();
     void moveForceUseFallback();
+    void moveForceUseFallback(FileNode* node);
 
     /*!
      * \brief prehandle
@@ -174,11 +177,18 @@ private:
      * \brief m_copy_move
      * \value true, if native move operation is not supported.
      * just copy source files and do not delete source files.
+     * \deprecated
+     * should be dropped. use m_move_action instead.
      */
     bool m_copy_move = false;
 
+    /*!
+     * \brief m_move_action
+     * replacing m_copy_move flag.
+     */
+    Qt::DropAction m_move_action = Qt::MoveAction;
+
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS|
-                                         G_FILE_COPY_ALL_METADATA|
                                          G_FILE_COPY_NO_FALLBACK_FOR_MOVE);
 
     FileNodeReporter *m_reporter = nullptr;

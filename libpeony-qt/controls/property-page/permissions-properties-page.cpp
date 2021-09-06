@@ -24,6 +24,8 @@
 
 #include "linux-pwd-helper.h"
 #include "file-watcher.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -36,11 +38,14 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QCheckBox>
+#include <QProcess>
+#include <QPushButton>
 
 #include <QUrl>
 #include <QStandardPaths>
 
 #include <QDebug>
+#include <QFileInfo>
 
 using namespace Peony;
 
@@ -52,34 +57,46 @@ using namespace Peony;
 #define READABLE 2
 #define WRITEABLE 3
 #define EXECUTEABLE 4
+//460 - 22 - 22 = 416 ,右侧有字符被遮挡，再减去6px -_-;
+#define TARGET_LABEL_WIDTH 410
 
-PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : QWidget(parent)
+PermissionsPropertiesPage::PermissionsPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uri = uris.first();
+    QUrl url(m_uri);
 
-    auto layout = new QVBoxLayout(this);
-    this->setLayout(layout);
-    m_table = new QTableWidget(this);
-    m_table->setRowCount(4);
-    m_table->setColumnCount(5);
-    m_table->verticalHeader()->setVisible(false);
-    m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
-    m_table->horizontalHeader()->setSelectionMode(QTableWidget::NoSelection);
-    m_table->setSelectionMode(QTableWidget::NoSelection);
-    m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    auto l = QStringList();
-    l<<tr("User or Group")<<tr("Type")<<tr("Readable")<<tr("Writeable")<<tr("Excuteable");
-    m_table->setHorizontalHeaderLabels(l);
-    m_table->setEditTriggers(QTableWidget::NoEditTriggers);
+    //note:请查看：BasicPropertiesPage::getFIleInfo(QString uri) - Look BasicPropertiesPage::getFIleInfo(QString uri)
+    if (m_uri.startsWith("favorite://")) {
+        m_uri = "file://" + url.path();
+        url = QUrl(m_uri);
+    }
 
-    m_label = new QLabel(tr("File: %1").arg(m_uri), this);
+    m_layout = new QVBoxLayout(this);
+    m_layout->setContentsMargins(0,0,0,0);
+    this->setLayout(m_layout);
+
+    m_label = new QLabel(this);
+
+    QString str = tr("Target: %1").arg(url.path());
+    int fontSize = m_label->fontMetrics().width(str);
+
+    if(fontSize > TARGET_LABEL_WIDTH) {
+        m_label->setToolTip(str);
+        str = m_label->fontMetrics().elidedText(str, Qt::ElideMiddle, TARGET_LABEL_WIDTH);
+    }
+    m_label->setText(str);
+
+    m_label->setMinimumHeight(60);
+    m_label->setContentsMargins(22,0,22,0);
+
+    m_layout->addWidget(m_label);
+
     m_message = new QLabel(this);
     m_message->setAlignment(Qt::AlignCenter);
-    layout->addWidget(m_label);
-    layout->addWidget(m_table);
-    layout->addWidget(m_message);
 
+    this->initTableWidget();
+
+    m_layout->addWidget(m_message);
     m_message->setVisible(false);
 
     m_watcher = std::make_shared<FileWatcher>(m_uri);
@@ -94,11 +111,48 @@ PermissionsPropertiesPage::~PermissionsPropertiesPage()
 
 }
 
+void PermissionsPropertiesPage::initTableWidget()
+{
+    m_table = new QTableWidget(this);
+    m_table->setRowCount(4);
+    m_table->setColumnCount(5);
+    m_table->verticalHeader()->setVisible(false);
+    m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
+    m_table->setFrameShape(QFrame::NoFrame);
+    m_table->horizontalHeader()->setSelectionMode(QTableWidget::NoSelection);
+    m_table->setSelectionMode(QTableWidget::NoSelection);
+    m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_table->setShowGrid(false);
+
+    m_table->horizontalHeader()->setMinimumHeight(34);
+    m_table->rowHeight(34);
+
+    m_table->setAlternatingRowColors(true);
+
+    auto l = QStringList();
+    l<<tr("User or Group")<<tr("Type")<<tr("Read")<<tr("Write")<<tr("Executable");
+    m_table->setHorizontalHeaderLabels(l);
+    m_table->setEditTriggers(QTableWidget::NoEditTriggers);
+    //开启手动设置宽度 - Enable manual width setting
+    m_table->horizontalHeader()->setMinimumSectionSize(30);
+
+    m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+
+    m_table->setColumnWidth(0, 150);
+
+    m_layout->addWidget(m_table);
+}
+
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
 {
     m_uri = uri;
-    QUrl url = uri;
-    m_label->setText(url.toDisplayString());
+    QUrl url = m_uri;
+    m_label->setText(m_label->fontMetrics().elidedText(tr("Target: %1").arg(url.path()), Qt::ElideMiddle,TARGET_LABEL_WIDTH));
     m_table->setEnabled(false);
 
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
@@ -115,9 +169,7 @@ void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QSt
 GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GObject *obj, GAsyncResult *res, PermissionsPropertiesPage *p_this)
 {
     GError *err = nullptr;
-    auto info = g_file_query_info_finish(G_FILE(obj),
-                                         res,
-                                         &err);
+    auto info = g_file_query_info_finish(G_FILE(obj), res, &err);
 
     if (!info) {
         if (p_this) {
@@ -142,42 +194,48 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
             bool enable = true;
             auto table = p_this->m_table;
             auto user = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER);
-            auto owner = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER_REAL);
+            //auto owner = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_USER_REAL);
             QString userString = user;
             QString groupName = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_OWNER_GROUP);
-            QString userNameDisplayString = owner;
+            QString userNameDisplayString = user;
 
             bool current_user_readable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
             bool current_user_writeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
-            bool current_user_executeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
+            bool current_user_executable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
 
             bool has_unix_mode = g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_UNIX_MODE);
             guint32 mode = 0;
             if (has_unix_mode)
                 mode = g_file_info_get_attribute_uint32(info, G_FILE_ATTRIBUTE_UNIX_MODE);
 
-            auto owner_readable = mode & S_IRUSR;
-            p_this->m_permissions[0][0] = owner_readable;
+            auto owner_readable  = mode & S_IRUSR;
             auto owner_writeable = mode & S_IWUSR;
+            auto owner_executable = mode & S_IXUSR;
+
+            //read
+            p_this->m_permissions[0][0] = owner_readable;
+            //write
             p_this->m_permissions[0][1] = owner_writeable;
-            auto owner_executeable = mode & S_IXUSR;
-            p_this->m_permissions[0][2] = owner_executeable;
+            //executable
+            p_this->m_permissions[0][2] = owner_executable;
 
-            auto group_readable = mode & S_IRGRP;
-            p_this->m_permissions[1][0] = group_readable;
+            auto group_readable  = mode & S_IRGRP;
             auto group_writeable = mode & S_IWGRP;
+            auto group_executable = mode & S_IXGRP;
+
+            p_this->m_permissions[1][0] = group_readable;
             p_this->m_permissions[1][1] = group_writeable;
-            auto group_executeable = mode & S_IXGRP;
-            p_this->m_permissions[1][2] = group_executeable;
+            p_this->m_permissions[1][2] = group_executable;
 
-            auto other_readable = mode & S_IROTH;
-            p_this->m_permissions[2][0] = other_readable;
+            auto other_readable  = mode & S_IROTH;
             auto other_writeable = mode & S_IWOTH;
-            p_this->m_permissions[2][1] = other_writeable;
-            auto other_executeable = mode & S_IXOTH;
-            p_this->m_permissions[2][2] = other_executeable;
+            auto other_executable = mode & S_IXOTH;
 
-            qDebug()<<current_user_readable<<current_user_writeable<<current_user_executeable;
+            p_this->m_permissions[2][0] = other_readable;
+            p_this->m_permissions[2][1] = other_writeable;
+            p_this->m_permissions[2][2] = other_executable;
+
+            qDebug()<<current_user_readable<<current_user_writeable<<current_user_executable;
 
             uid_t uid = geteuid();
             struct passwd *pw = getpwuid(uid);
@@ -198,74 +256,80 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                     groupName = tr("Unkwon");
                     */
 
-                if (!isSelf && !isSameGroup)
+                if (!isSelf && !isSameGroup) {
+                    qDebug()<<"the uid not permit";
                     enable = false;
+                }
 
                 if (pw->pw_uid == 0) {
-                    enable = true;
+                    QFileInfo file("/usr/sbin/security-switch");
+                    if(file.exists() == true) {
+                        QProcess shProcess;
+                        shProcess.start("security-switch --get");
+                        if (!shProcess.waitForStarted()) {
+                            qDebug()<<"wait get security state start timeout";
+                        } else {
+                            if (!shProcess.waitForFinished()) {
+                                qDebug()<<"wait get security state finshed timeout";
+                            } else {
+                                QString secState = shProcess.readAllStandardOutput();
+                                qDebug()<<"security-switch get test "<< secState;
+                                if (secState.contains("strict")) {
+                                    qDebug()<<"now it is in strict mode, so root is not super";
+                                } else {
+                                    qDebug()<<"pw uid is 0, it is super";
+                                    enable = true;
+                                }
+                            }
+                        }
+                    } else {
+                        qDebug()<<"security-switch is not support, so it is super";
+                        enable = true;
+                    }
+                   /*
+                    if (!kysec_is_disabled() && kysec_get_3adm_status()) {
+                        qDebug()<<"now it is in strict mode, so root is not super";
+                    } else {
+                        qDebug()<<"pw uid is 0, it is super";
+                        enable = true;
+                    }*/
                 }
+
             } else {
                 enable = false;
             }
 
             if (enable) {
-//                table->setRowCount(3);
-                table->setRowCount(1);
+                table->setRowCount(3);
+                //更新表格选中情况
+                p_this->updateCheckBox();
 
-//                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        table->setCellWidget(0, j + 2, nullptr);
-                        QWidget *w = new QWidget(table);
-                        QHBoxLayout *l = new QHBoxLayout(w);
-                        l->setMargin(0);
-                        w->setLayout(l);
-                        l->setAlignment(Qt::AlignCenter);
-                        auto checkbox = new QCheckBox(w);
-                        l->addWidget(checkbox);
-                        table->setCellWidget(0, j + 2, w);
-
-                        checkbox->setChecked(p_this->m_permissions[0][j]);
-
-                        //disable home path
-                        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-                        if (p_this->m_uri == homeUri)
-                            checkbox->setDisabled(true);
-                        else
-                            checkbox->setDisabled(false);
-
-                        connect(checkbox, &QCheckBox::clicked, p_this, [=]() {
-                            qDebug()<<"clicked"<<0<<j<<checkbox->isChecked();
-                            p_this->checkBoxChanged(0, j, checkbox->isChecked());
-                        });
-                    }
-//                }
-
-                QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, nullptr);
+                QTableWidgetItem* itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), userNameDisplayString);
                 table->setItem(0, 0, itemR0C0);
 
-//                QTableWidgetItem *itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
-//                table->setItem(1, 0, nullptr);
-//                table->setItem(1, 0, itemR1C0);
+                table->setItem(1, 0, nullptr);
+                QTableWidgetItem* itemR1C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), groupName);
+                table->setItem(1, 0, itemR1C0);
 
-//                QTableWidgetItem *itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
-//                table->setItem(2, 0, nullptr);
-//                table->setItem(2, 0, itemR2C0);
+                table->setItem(2, 0, nullptr);
+                QTableWidgetItem* itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
+                table->setItem(2, 0, itemR2C0);
 
                 auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
                 itemR0C1->setTextAlignment(Qt::AlignCenter);
-//                auto itemR1C1 = new QTableWidgetItem(tr("Group"));
-//                itemR1C1->setTextAlignment(Qt::AlignCenter);
-//                auto itemR2C1 = new QTableWidgetItem(tr("Other Users"));
-//                itemR2C1->setTextAlignment(Qt::AlignCenter);
+                auto itemR1C1 = new QTableWidgetItem(tr("Group"));
+                itemR1C1->setTextAlignment(Qt::AlignCenter);
+                auto itemR2C1 = new QTableWidgetItem(tr("Other"));
+                itemR2C1->setTextAlignment(Qt::AlignCenter);
 
                 table->setItem(0, 1, itemR0C1);
-//                table->setItem(1, 1, itemR1C1);
-//                table->setItem(2, 1, itemR2C1);
+                table->setItem(1, 1, itemR1C1);
+                table->setItem(2, 1, itemR2C1);
 
                 table->showRow(0);
-//                table->showRow(1);
-//                table->showRow(2);
+                table->showRow(1);
+                table->showRow(2);
             } else {
                 p_this->m_message->setText(tr("You can not change the access of this file."));
                 p_this->m_message->show();
@@ -299,13 +363,15 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                         checkbox->setChecked(current_user_writeable);
                         break;
                     case 2:
-                        checkbox->setChecked(current_user_executeable);
+                        checkbox->setChecked(current_user_executable);
                         break;
                     }
                 }
             }
 
             table->setEnabled(enable);
+            //防止误修改
+            p_this->m_enable = enable;
         }
 
         g_object_unref(info);
@@ -315,13 +381,30 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
 
 void PermissionsPropertiesPage::changePermission(int row, int column, bool checked)
 {
+    if(!m_enable)
+        return;
+
+    m_permissions[row][column] = checked;
+
+    this->thisPageChanged();
+
+    this->updateCheckBox();
+}
+
+/*!
+ * update file ermissions
+ * \brief PermissionsPropertiesPage::savePermissions
+ */
+void PermissionsPropertiesPage::savePermissions()
+{
     /*!
       \bug
       even though directory know the file's attributes have been changed, and
       model request updated the data, the view doesn't paint the current emblems correctly.
-      */
+    */
     //FIXME: should use g_file_set_attribute() with mode info?
-    m_permissions[row][column] = checked;
+    if(!m_enable)
+        return;
 
     mode_t mod = 0;
     for (int i = 0; i < 3; i++) {
@@ -342,6 +425,7 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
                     mod |= S_IXUSR;
                     break;
                 }
+
                 case 10: {
                     mod |= S_IRGRP;
                     break;
@@ -373,7 +457,108 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
 
     QUrl url = m_uri;
     if (url.isLocalFile()) {
-        g_chmod(url.path().toUtf8(), mod);
-        qDebug()<<mod;
+        int ret = g_chmod(url.path().toUtf8(), mod);
+        if (ret < 0) {
+            qDebug()<<"uri"<<url.path().toUtf8()<<"chmod" <<mod<<"failed";
+        } else {
+            qDebug()<<"chmod uri"<<url.path().toUtf8() <<"mod"<<mod <<"success";
+        }
     }
+}
+
+void PermissionsPropertiesPage::saveAllChange()
+{
+    if(this->m_thisPageChanged)
+        this->savePermissions();
+    qDebug() << "PermissionsPropertiesPage::saveAllChange()" << this->m_thisPageChanged;
+}
+
+void PermissionsPropertiesPage::thisPageChanged()
+{
+    this->m_thisPageChanged = true;
+}
+
+void PermissionsPropertiesPage::updateCheckBox()
+{
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            m_table->setCellWidget(i, j + 2, nullptr);
+            QWidget *w = new QWidget(m_table);
+            QHBoxLayout *l = new QHBoxLayout(w);
+            l->setMargin(0);
+            w->setLayout(l);
+            l->setAlignment(Qt::AlignCenter);
+            auto checkbox = new QCheckBox(w);
+            l->addWidget(checkbox);
+            m_table->setCellWidget(i, j + 2, w);
+
+            checkbox->setChecked(this->m_permissions[i][j]);
+
+            //disable home path
+            bool check_enable = true;
+            QString uri = m_uri;
+
+            if(uri.startsWith("filesafe:///")){
+                QStringList list = uri.split("/");
+                if(list.size()==4){
+                    check_enable = false;
+                }
+            }
+
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (this->m_uri == homeUri || !check_enable)
+                checkbox->setDisabled(true);
+            else
+                checkbox->setDisabled(false);
+
+            connect(checkbox, &QCheckBox::clicked, this, [=]() {
+                qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
+                this->checkBoxChanged(i, j, checkbox->isChecked());
+            });
+        }
+    }
+}
+
+QWidget *PermissionsPropertiesPage::createCellWidget(QWidget *parent, QIcon icon, QString text)
+{
+    QWidget *widget = new QWidget(parent);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+    layout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    layout->setContentsMargins(22, 0, 0, 0);
+    //组件间距 - Widget spacing
+    layout->setSpacing(9);
+
+    QPushButton *cellIcon = new QPushButton(widget);
+    cellIcon->setStyleSheet("QPushButton{"
+                        "border-radius: 8px; "
+                        "background-color: transparent;"
+                        "max-width:16px;"
+                        "max-height:16px;"
+                        "min-width:16px;"
+                        "min-height:16px;"
+                        "}");
+    cellIcon->setEnabled(false);
+
+    cellIcon->setIcon(icon);
+    cellIcon->setIconSize(QSize(16, 16));
+
+    layout->addWidget(cellIcon);
+
+    QLabel *label = new QLabel(widget);
+    label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    QFontMetrics fontMetrics = label->fontMetrics();
+    int fontSize = fontMetrics.width(text);
+    QString str = text;
+    //widget宽度200px;设计稿在左边空出22px;icon宽度16px，icon右侧9px;
+    //200-22-16-9 = 153 , widget：剩下的3px给右侧留空 -_-；
+    if(fontSize > 150) {
+        widget->setToolTip(text);
+        str = fontMetrics.elidedText(text, Qt::ElideRight, 150);
+    }
+    label->setText(str);
+
+    layout->addWidget(label);
+
+    return widget;
 }

@@ -38,7 +38,7 @@ public:
 
     //plugin iface
     const QString name() override {
-        return QObject::tr("Computer Properties Page");
+        return QObject::tr("Computer Properties");
     }
     PluginType pluginType() override {
         return PluginType::PropertiesWindowPlugin;
@@ -61,7 +61,7 @@ public:
         return 1000-1;
     }
     bool supportUris(const QStringList &uris) override;
-    QWidget *createTabPage(const QStringList &uris) override;
+    PropertiesWindowTabIface *createTabPage(const QStringList &uris) override;
 
     void closeFactory() override {}
 

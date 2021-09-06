@@ -69,6 +69,7 @@ public:
     static QStringList getClipboardFilesUris();
     static FileOperation *pasteClipboardFiles(const QString &targetDirUri);
     static void clearClipboard();
+    static void popLastTargetDirectoryUri(QString& uri);
     static const QString getClipedFilesParentUri();
 
     const QString getLastTargetDirectoryUri();

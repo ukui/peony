@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/custom-error-handler.h \
     $$PWD/peony-core_global.h           \
     $$PWD/file-info.h                   \
     $$PWD/file-info-job.h               \
@@ -18,9 +19,12 @@ HEADERS += \
     $$PWD/linux-pwd-helper.h            \
     $$PWD/file-meta-info.h              \
     $$PWD/bookmark-manager.h            \
-    $$PWD/sync-thread.h
+    $$PWD/sync-thread.h                 \
+    $$PWD/volumeManager.h               \
+    $$PWD/usershare-manager.h
 
 SOURCES += \
+    $$PWD/custom-error-handler.cpp \
     $$PWD/file-info.cpp                 \
     $$PWD/file-info-job.cpp             \
     $$PWD/file-info-manager.cpp         \
@@ -37,7 +41,9 @@ SOURCES += \
     $$PWD/linux-pwd-helper.cpp          \
     $$PWD/file-meta-info.cpp            \
     $$PWD/bookmark-manager.cpp          \
-    $$PWD/sync-thread.cpp
+    $$PWD/sync-thread.cpp               \
+    $$PWD/volumeManager.cpp		\
+    $$PWD/usershare-manager.cpp
 
 FORMS += \
     $$PWD/connect-server-dialog.ui

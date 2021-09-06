@@ -47,10 +47,17 @@ QCollator comparer = QCollator(locale);
 
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    setDynamicSortFilter(false);
     //enable number sort, like 100 is after 99
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_HIDDEN_PREFERENCE == key) {
+            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
+            invalidateFilter();
+        }
+    });
     m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
     m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
 }
@@ -61,7 +68,7 @@ void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
         disconnect(sourceModel());
     QSortFilterProxyModel::setSourceModel(model);
     FileItemModel *file_item_model = static_cast<FileItemModel*>(model);
-    connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
+    //connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
 }
 
 FileItem *FileItemProxyFilterSortModel::itemFromIndex(const QModelIndex &proxyIndex)
@@ -111,9 +118,17 @@ default_sort:
             if (m_use_default_name_sort_order) {
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
-                return comparer.compare(leftDisplayName, rightDisplayName) < 0;
+
+                //fix chinese first sort wrong issue, link to bug#70836
+                if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
+                    return false;
+                else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                    return true;
+                else
+                    return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
-            return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
+            //return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
+            return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) < 0;
         }
         case FileItemModel::FileSize: {
             return leftItem->m_info->size() < rightItem->m_info->size();
@@ -122,6 +137,10 @@ default_sort:
             return leftItem->m_info->type() < rightItem->m_info->type();
         }
         case FileItemModel::ModifiedDate: {
+            //delete time sort in trash, fix bug#63093
+            if (leftItem->uri().startsWith("trash://"))
+                return leftItem->m_info->deletionDate() < rightItem->m_info->deletionDate();
+
             return leftItem->m_info->modifiedTime() < rightItem->m_info->modifiedTime();
         }
         default:
@@ -140,6 +159,8 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
     auto childIndex = model->index(sourceRow, 0, sourceParent);
     if (childIndex.isValid()) {
         auto item = static_cast<FileItem*>(childIndex.internalPointer());
+        if(!item->shouldShow())
+            return false;
         if (!m_show_hidden) {
             //qDebug()<<sourceRow<<item->m_info->displayName()<<model->rowCount(sourceParent);
             //QMessageBox::warning(nullptr, "filter", item->m_info->displayName());
@@ -153,13 +174,24 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         }
         //regExp
 
+        //special Volumn of 839 M upgrade part not show process
+        auto targetUri = FileUtils::getTargetUri(item->uri());
+        if (targetUri == "")
+            targetUri = item->uri();
+        if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
+            return false;
+
+        //FIXME use display name to hide 839 MB disk
+        if (item->m_info->displayName().contains("839 MB"))
+            return false;
+
         //check the file info filter conditions
         //qDebug()<<"start filter conditions check"<<item->m_info->displayName()<<item->m_info->type();
         if (! checkFileTypeFilter(item->m_info->type()))
             return false;
         if (! checkFileModifyTimeFilter(item->m_info->modifiedTime()))
             return false;
-        if (! checkFileSizeFilter(item->m_info->size()))
+        if (! checkFileSizeOrTypeFilter(item->m_info->size(), item->m_info->isDir()))
             return false;
         if (! checkFileNameFilter(item->m_info->displayName()))
             return false;
@@ -404,44 +436,65 @@ bool FileItemProxyFilterSortModel::checkFileSizeFilter(quint64 size) const
         auto cur = m_file_size_list[i];
         switch (cur)
         {
-        case TINY: //[0-16K)
-        {
-            if (size < 16 * K_BASE)
+        case EMPTY: //[0K]
+        {           
+            if (size ==0 )
                 return true;
             break;
         }
-        case SMALL:  //[16k-1M]
-        {
-            if(size >= 16 * K_BASE && size <=K_BASE * K_BASE)
+        case TINY: //（0-16K]
+        {          
+            if (size > 0  &&size <=16 * K_BASE)
                 return true;
             break;
         }
-        case MEDIUM: //(1M-100M]
+        case SMALL:  //（16k-1M]
         {
-            if(size > K_BASE * K_BASE && size <= 100 * K_BASE * K_BASE)
+            if(size > 16 * K_BASE && size <=K_BASE * K_BASE)
                 return true;
             break;
         }
-        case BIG:  //(100M-1G]
+        case MEDIUM: //(1M-128M]
         {
-            if(size > 100 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+            if(size > K_BASE * K_BASE && size <= 128 * K_BASE * K_BASE)
                 return true;
             break;
         }
-        case LARGE: //>1G
+        case BIG:  //(128M-1G]
         {
-            if (size > K_BASE * K_BASE * K_BASE)
+            if(size > 128 * K_BASE * K_BASE && size <= K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case LARGE: //(1-4G]
+        {
+            if (size > K_BASE * K_BASE * K_BASE&& size <= 4*K_BASE * K_BASE * K_BASE)
+                return true;
+            break;
+        }
+        case GREAT: //>4G
+        {
+            if (size > 4*K_BASE * K_BASE * K_BASE)
                 return true;
             break;
         }
         default:
             break;
         }
-    }
 
+    }
     return false;
 }
 
+bool FileItemProxyFilterSortModel::checkFileSizeOrTypeFilter(quint64 size, bool isDir) const
+{
+    if (m_file_size_list.count() == 0 || m_file_size_list.contains(ALL_FILE))
+        return true;
+    else if(isDir)
+        return false;
+
+   return checkFileSizeFilter(size);
+}
 
 void FileItemProxyFilterSortModel::update()
 {
@@ -450,7 +503,7 @@ void FileItemProxyFilterSortModel::update()
 
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }
@@ -483,18 +536,18 @@ void FileItemProxyFilterSortModel::addFileNameFilter(QString key, bool updateNow
 void FileItemProxyFilterSortModel::addFilterCondition(int option, int classify, bool updateNow)
 {
     switch (option) {
-    case 1:
+    case 0:
         if (! m_file_type_list.contains(classify))
             m_file_type_list.append(classify);
 
         break;
+    case 1:
+        if (! m_file_size_list.contains(classify))
+            m_file_size_list.append(classify);
+        break;
     case 2:
         if (! m_modify_time_list.contains(classify))
             m_modify_time_list.append(classify);
-        break;
-    case 3:
-        if (! m_file_size_list.contains(classify))
-            m_file_size_list.append(classify);
         break;
     default:
         break;
@@ -597,7 +650,6 @@ QModelIndexList FileItemProxyFilterSortModel::getAllFileIndexes()
             auto disyplayName = index.data(Qt::DisplayRole).toString();
             if (disyplayName.isEmpty()) {
                 auto uri = this->index(i, 0, QModelIndex()).data(FileItemModel::UriRole).toString();
-                //FIXME: replace BLOCKING api in ui thread.
                 disyplayName = FileUtils::getFileDisplayName(uri);
             }
             if (!disyplayName.startsWith(".")) {

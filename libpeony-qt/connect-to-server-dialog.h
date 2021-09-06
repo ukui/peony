@@ -49,7 +49,10 @@ public:
     QString getIP();
 
 private:
+    void syncUri();
     void setUri(QString uri);
+    void addUri (QString uri);
+    void removeUri (QString uri);
 
 private:
     float           m_widget_margin         = 24;
@@ -82,8 +85,10 @@ private:
     QMap<QString, QListWidgetItem*> m_favorite_widgets;
 };
 
+
 class PEONYCORESHARED_EXPORT ConnectServerLogin : public QDialog
 {
+    friend class MountOperation;
     Q_OBJECT
 public:
     explicit ConnectServerLogin(QString remoteIP, QWidget* parent = nullptr);
@@ -94,6 +99,8 @@ public:
     QString password();
     bool anonymous();
     bool savePassword();
+
+    void syncRemoteServer(const QUrl& url);
 
 private:
     float           m_widget_margin         = 24;
@@ -119,6 +126,10 @@ private:
     QPushButton*    m_btn_cancel            = nullptr;
     QPushButton*    m_btn_ok                = nullptr;
     QHBoxLayout*    m_btn_layout            = nullptr;
+
+    QString m_remoteIP;
+
 };
+
 };
 #endif // CONNECTTOSERVERDIALOG_H

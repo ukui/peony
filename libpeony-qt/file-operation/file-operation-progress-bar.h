@@ -53,6 +53,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 Q_SIGNALS:
+    void pause();
+    void start();
     void canceled();
 
 public Q_SLOTS:
@@ -98,11 +100,19 @@ public:
     void setIcon (const QString& icon);
     QIcon& getIcon();
     bool getStatus();
+    float getProgress();
+    float getTotalSize();
+    QString getFileName();
+    bool isPause();
+    void setPause();
+    void setResume();
 
 private:
     ~ProgressBar();
 
 Q_SIGNALS:
+    void pause();
+    void resume();
     void cancelled();
     void finished(ProgressBar* fop);
     void sendValue(QString&, QIcon&, double);
@@ -126,7 +136,11 @@ public Q_SLOTS:
     void onFileRollbacked(const QString &destUri, const QString &srcUri);
 
 private:
-    int m_min_width = 400;
+
+    bool m_has_finished = false;
+    bool m_sync = false;
+
+    int m_fix_width = 550;
     int m_fix_height = 62;
 
     int m_btn_size = 18;
@@ -140,6 +154,27 @@ private:
 
     int m_percent_width = 20;
 
+    // const
+    const float m_icon_x = m_margin_lr;
+    const float m_icon_y = (m_fix_height - m_margin_ud * 2 - m_icon_size) / 2 + m_margin_ud;
+
+    const float m_text_x = m_margin_lr * 2 + m_icon_size;
+    const float m_text_y = (m_fix_height - m_margin_ud * 2 - m_text_height) / 2 + m_margin_ud;
+    const float m_text_w = m_fix_width - m_margin_lr * 6 - m_icon_size - m_btn_size * 2 - m_progress_width - m_percent_width;
+
+    const float m_progress_x = m_margin_lr * 3 + m_icon_size + m_text_w;
+    const float m_progress_y = (m_fix_height - m_margin_ud * 2 - m_progress_height) / 2 + m_margin_ud;
+
+    const float m_pause_x = m_margin_lr * 5 + m_icon_size + m_text_w + m_progress_width;
+    const float m_pause_x_r = m_pause_x + m_btn_size;
+    const float m_pause_y = (m_fix_height - m_margin_ud * 2 - m_btn_size) / 2 + m_margin_ud;
+    const float m_pause_y_b = m_pause_y + m_btn_size;
+
+    const float m_close_x = m_pause_x + m_margin_lr + m_btn_size;
+    const float m_close_x_r = m_close_x + m_btn_size;
+    const float m_close_y = m_pause_y;
+    const float m_close_y_b = m_pause_y_b;
+
     // value
     QIcon m_icon;
     double m_current_value = 0.0;
@@ -150,6 +185,8 @@ private:
     int m_current_count = 1;
     quint64 m_total_size = 0;
     qint32 m_current_size = 0;
+
+    bool m_pause = false;
 
     bool m_is_stopping = false;
 };
@@ -162,6 +199,11 @@ public:
     void initPrarm();
     void setFileIcon (QIcon& icon);
     void setTitle (QString title);
+    void setPause();
+    void setResume();
+    void setIsSync(bool);
+    void setProgress(float);
+    void setFileName(QString);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -177,16 +219,20 @@ private:
 Q_SIGNALS:
     void minimized();
     void closeWindow();
+    void pause();
+    void start();
 
 public Q_SLOTS:
     void cancelld();
     void updateValue (QString&, QIcon&, double);
 
 private:
+    bool m_sync = false;
+    // can modify
     // header
     QString m_title;
     int m_fix_width = 550;
-    int m_fix_height = 200;
+    int m_fix_height = 176;
     int m_title_width = 480;
     int m_header_height = 30;
 
@@ -203,6 +249,9 @@ private:
     int m_file_name_height = 60;
     int m_file_name_margin = 10;
 
+    // pase button
+    int m_pause_btn_height = 20;
+
     // percent
     int m_percent_margin = 15;
     int m_percent_height = 50;
@@ -210,8 +259,38 @@ private:
     // foot
     float m_foot_margin = 3;
 
+    // calc
+    const float m_minilize_button_x_l = m_fix_width - m_btn_margin * 2 - m_btn_size * 2;
+    const float m_minilize_button_x_r = m_minilize_button_x_l + m_btn_size;
+    const float m_minilize_button_y_t = m_btn_margin_top;
+    const float m_minilize_button_y_b = m_btn_margin_top + m_btn_size;
+
+    const float m_close_button_x_l = m_fix_width - m_btn_margin - m_btn_size;
+    const float m_close_button_x_r = m_fix_width - m_btn_margin;
+    const float m_close_button_y_t = m_btn_margin_top;
+    const float m_close_button_y_b = m_btn_margin_top + m_btn_size;
+
+    const float m_foot_progress_back_y = m_fix_height - m_foot_margin;
+
+    const float m_text_area_x = (m_fix_width - m_title_width ) / 2 - 2;
+
+    const float m_icon_area_y = (m_fix_height - m_icon_size) / 2;
+
+    const float m_file_name_x = m_icon_margin + m_file_name_margin + m_icon_size;
+    const float m_file_name_y = m_fix_height / 2 - m_file_name_height / 2;
+    const float m_file_name_w = m_fix_width - m_icon_size - m_icon_margin - m_pause_btn_height * 2 - m_file_name_margin * 3;
+
+    const float m_progress_pause_x = m_file_name_x + m_file_name_w + m_pause_btn_height;
+    const float m_progress_pause_x_r = m_progress_pause_x + m_pause_btn_height;
+    const float m_progress_pause_y = (m_fix_height - m_pause_btn_height) / 2;
+    const float m_progress_pause_y_b = (m_fix_height + m_pause_btn_height) / 2;
+
+    const float m_percent_x = m_fix_width - m_percent_margin - m_percent_height;
+    const float m_percent_y = m_fix_height - m_foot_margin - m_percent_height - m_percent_margin / 5;
+
     // progress
     bool m_show = false;
+    bool m_pause = false;
     float m_move_x = 0.5;
     bool m_stopping = false;
     float m_current_value = 0.0;

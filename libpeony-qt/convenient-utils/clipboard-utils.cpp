@@ -29,7 +29,6 @@
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
 #include "file-copy-operation.h"
-#include "file-utils.h"
 
 using namespace Peony;
 
@@ -46,7 +45,7 @@ static ClipboardUtils *global_instance = nullptr;
  */
 static QString m_clipboard_parent_uri = nullptr;
 
-static QString m_last_target_directory_uri = nullptr;
+static QList<QString> m_target_directory_uri;
 
 ClipboardUtils *ClipboardUtils::getInstance()
 {
@@ -69,7 +68,7 @@ ClipboardUtils::ClipboardUtils(QObject *parent) : QObject(parent)
 
 ClipboardUtils::~ClipboardUtils()
 {
-
+    m_target_directory_uri.clear();
 }
 
 void ClipboardUtils::release()
@@ -84,7 +83,7 @@ const QString ClipboardUtils::getClipedFilesParentUri()
 
 const QString ClipboardUtils::getLastTargetDirectoryUri()
 {
-    return m_last_target_directory_uri;
+    return m_target_directory_uri.size() > 0 ? m_target_directory_uri.back() : "";
 }
 
 void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
@@ -106,20 +105,11 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
     data->setData("peony-qt/is-cut", isCutData.toByteArray());
     QList<QUrl> urls;
     QStringList encodedUris;
-    for (QString uri : uris) {
-        if(!uri.startsWith("recent:///"))
-        {
-            urls<<uri;
-            encodedUris<<uri;
-        }
-        else
-        {
-            auto targetUri = FileUtils::getTargetUri(uri);
-            urls<<targetUri;
-            encodedUris<<targetUri;
-        }
+    for (auto uri : uris) {
+        auto encodeUrl = Peony::FileUtils::urlEncode(uri);
+        urls << QString(encodeUrl);
+        encodedUris << QString(encodeUrl);
     }
-
     data->setUrls(urls);
     QString string = encodedUris.join(" ");
     data->setData("peony-qt/encoded-uris", string.toUtf8());
@@ -157,6 +147,7 @@ QStringList ClipboardUtils::getClipboardFilesUris()
     auto peonyText = mimeData->data("peony-qt/encoded-uris");
 
     if (!peonyText.isEmpty()) {
+        qDebug() << "peony text:" << peonyText;
         auto byteArrays = peonyText.split(' ');
         for (auto byteArray : byteArrays) {
             l<<byteArray;
@@ -179,31 +170,48 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     }
     //check existed
     auto uris = getClipboardFilesUris();
-    for (auto uri : getClipboardFilesUris()) {
-        //FIXME: replace BLOCKING api in ui thread.
-        if (!FileUtils::isFileExsit(uri)) {
-            uris.removeAll(uri);
-        }
-    }
+//    for (auto uri : getClipboardFilesUris()) {
+//        //FIXME: replace BLOCKING api in ui thread.
+//        if (!FileUtils::isFileExsit(uri)) {
+//            uris.removeAll(uri);
+//        }
+//    }
     if (uris.isEmpty()) {
         return op;
     }
 
-    //auto uris = getClipboardFilesUris();
+    auto parentPath = FileUtils::getParentUri(uris.first());
+    //paste file in old path, return op
+    if (FileUtils::isSamePath(parentPath, targetDirUri) && isClipboardFilesBeCut())
+    {
+        clearClipboard();
+        return op;
+    }
+
     auto fileOpMgr = FileOperationManager::getInstance();
     if (isClipboardFilesBeCut()) {
         qDebug()<<uris;
         auto moveOp = new FileMoveOperation(uris, targetDirUri);
+        moveOp->setAction(Qt::TargetMoveAction);
         op = moveOp;
         fileOpMgr->startOperation(moveOp, true);
         QApplication::clipboard()->clear();
     } else {
+
+        qDebug() << "clipboard:" << uris;
         auto copyOp = new FileCopyOperation(uris, targetDirUri);
         op = copyOp;
         fileOpMgr->startOperation(copyOp, true);
     }
 
-    m_last_target_directory_uri = targetDirUri;
+    if (m_target_directory_uri.size() <= 0 || m_target_directory_uri.back() != targetDirUri) {
+        m_target_directory_uri.append(targetDirUri);
+    }
+
+
+    if (m_target_directory_uri.size() > 2) {
+        m_target_directory_uri.pop_front();
+    }
 
     return op;
 }
@@ -211,4 +219,11 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
 void ClipboardUtils::clearClipboard()
 {
     QApplication::clipboard()->clear();
+}
+
+void ClipboardUtils::popLastTargetDirectoryUri(QString &uri)
+{
+    if (m_target_directory_uri.size() > 0 && uri == m_target_directory_uri.back()) {
+        m_target_directory_uri.pop_back();
+    }
 }

@@ -5,11 +5,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gui-private x11extras dbus KWindowSystem concurrent
+QT       += core gui x11extras dbus KWindowSystem concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 3.0.0
+include(../common.pri)
 
 TARGET = peony
 
@@ -23,7 +23,7 @@ include(control/control.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
-LIBS +=-lgio-2.0 -lglib-2.0 -lX11
+LIBS +=-lgio-2.0 -lglib-2.0 -lX11 -lukui-log4qt
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony
@@ -64,8 +64,7 @@ data.path = /usr/share/applications
 data.files += ../data/peony.desktop \
               ../data/peony-computer.desktop \
               ../data/peony-home.desktop \
-              ../data/peony-trash.desktop \
-              ../data/peony-desktop.desktop
+              ../data/peony-trash.desktop
 INSTALLS += data
 
 RESOURCES += \

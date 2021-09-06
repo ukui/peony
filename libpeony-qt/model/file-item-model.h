@@ -206,6 +206,8 @@ public:
                       int row, int column, const QModelIndex &parent) override;
 
     Qt::DropActions supportedDropActions() const override;
+    Qt::DropActions supportedDragActions() const override;
+    void sendPathChangeRequest(const QString &uri);
 
     void sendPathChangeRequest(const QString& uri);
 
@@ -239,6 +241,7 @@ Q_SIGNALS:
     void updated();
 
     void selectRequest(const QStringList &uris);
+    void changePathRequest(const QString &uri, bool addHistory, bool forceUpdate);
 
     /*!
      * \brief changePathRequest
@@ -275,6 +278,7 @@ private:
     FileItem *m_root_item = nullptr;
     bool m_is_positive = false;
     bool m_can_expand = false;
+    QString m_root_uri = "file:///";
 };
 
 }

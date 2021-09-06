@@ -90,9 +90,11 @@
 
 #include "complementary-style.h"
 
+#include "volume-manager.h"
+
 #include "file-enumerator.h"
 #include "gerror-wrapper.h"
-#include "volume-manager.h"
+
 #include <QTranslator>
 #include <QLocale>
 
@@ -116,8 +118,7 @@ static bool m_resident = false;
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
-    setApplicationVersion("v3.0.0");
-    setApplicationName("peony-qt");
+    setApplicationVersion(QString("v%1").arg(VERSION));
     //setApplicationDisplayName(tr("Peony-Qt"));
 
     QFile file(":/data/libpeony-qt-styled.qss");
@@ -129,16 +130,15 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     QTranslator *t = new QTranslator(this);
     qDebug()<<"\n\n\n\n\n\n\ntranslate:"<<t->load("/usr/share/libpeony-qt/libpeony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t);
-
     QTranslator *t2 = new QTranslator(this);
     t2->load("/usr/share/peony-qt/peony-qt_"+QLocale::system().name());
     QApplication::installTranslator(t2);
-
     QTranslator *t3 = new QTranslator(this);
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
-
     setStyle(Peony::ComplementaryStyle::getStyle());
+
+    setApplicationName(tr("peony-qt"));
 
     parser.addOption(quitOption);
     parser.addOption(showItemsOption);
@@ -158,12 +158,13 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
             auto dir = g_get_current_dir();
             args<<"peony"<<dir;
             g_free(dir);
-            auto message = args.join(' ').toUtf8();
+            auto message = getUriMessage(args).toUtf8();
             sendMessage(message);
             return;
         }
         parser.process(arguments());
-        auto message = this->arguments().join(' ').toUtf8();
+        QStringList allArgs = arguments();
+        auto message = getUriMessage(allArgs).toUtf8();
         sendMessage(message);
         return;
     }
@@ -173,7 +174,9 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     }
 
     //parse cmd
-    auto message = this->arguments().join(' ').toUtf8();
+    parser.process(arguments());
+    QStringList allArgs = arguments();
+    auto message = getUriMessage(allArgs).toUtf8();
     parseCmd(this->instanceId(), message);
 
     auto testIcon = QIcon::fromTheme("folder");
@@ -269,6 +272,26 @@ void PeonyApplication::unmountAllFtpLinks()
     }
 }
 
+QString PeonyApplication::getUriMessage(QStringList& strList)
+{
+    QStringList args;
+
+    for (auto uri = strList.constBegin(); uri != strList.constEnd(); ++uri) {
+        if ("peony" == (*uri) || (*uri).startsWith("-") || (*uri).startsWith("--") || (*uri).startsWith("%")
+                || (*uri).startsWith("/usr/") || (*uri).startsWith("/bin/") || (*uri).startsWith("/sbin/")) {
+            args << *uri;
+        } else if ((*uri).startsWith("/")) {
+            args << Peony::FileUtils::urlEncode("file://" + *uri);
+        } else if ((*uri).contains("://")) {
+            args << Peony::FileUtils::urlEncode(*uri);
+        } else {
+            args << Peony::FileUtils::urlEncode(QString("file://%1/%2").arg(g_get_current_dir()).arg(*uri));
+        }
+    }
+
+    return args.join(' ');
+}
+
 void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
 {
     QCommandLineParser parser;
@@ -331,6 +354,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 });
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             }
         }
 
@@ -347,6 +373,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             }
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
         if (parser.isSet(showPropertiesOption)) {
             QStringList uris = Peony::FileUtils::toDisplayUris(parser.positionalArguments());
@@ -354,10 +383,16 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 return;
             }
 
+            qApp->setProperty("showProperties", true);
+
             Peony::PropertiesWindow *window = new Peony::PropertiesWindow(uris);
+
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
     } else {
         if (!parser.positionalArguments().isEmpty()) {
@@ -365,7 +400,6 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             arguments.removeOne("%U");
             arguments.removeOne("%U&");
             QStringList uris = Peony::FileUtils::toDisplayUris(arguments);
-
             if (!uris.isEmpty()) {
                 auto window = new MainWindow(uris.first());
                 uris.removeAt(0);
@@ -375,11 +409,17 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             } else {
                 auto window = new MainWindow();
                 window->setAttribute(Qt::WA_DeleteOnClose);
                 window->show();
                 KWindowSystem::raiseWindow(window->winId());
+                if (KWindowSystem::activeWindow() != window->winId()) {
+                    KWindowSystem::activateWindow(window->winId());
+                }
             }
         } else {
             auto window = new MainWindow;
@@ -387,6 +427,9 @@ void PeonyApplication::parseCmd(quint32 id, QByteArray msg)
             window->setAttribute(Qt::WA_DeleteOnClose);
             window->show();
             KWindowSystem::raiseWindow(window->winId());
+            if (KWindowSystem::activeWindow() != window->winId()) {
+                KWindowSystem::activateWindow(window->winId());
+            }
         }
     }
 

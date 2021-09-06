@@ -101,7 +101,7 @@ GFileInfo *peony_search_vfs_file_query_info(GFile *file,
     auto icon = g_themed_icon_new("search");
     g_file_info_set_icon(info, icon);
     g_object_unref(icon);
-    g_file_info_set_display_name(info, "");
+    g_file_info_set_display_name(info, " ");
     g_file_info_set_file_type(info, G_FILE_TYPE_DIRECTORY);
     return info;
 }

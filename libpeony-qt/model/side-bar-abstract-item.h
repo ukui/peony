@@ -29,9 +29,12 @@
 #include "peony-core_global.h"
 #include <gio/gio.h>
 
+#include <memory>
+
 namespace Peony {
 
 class SideBarModel;
+class FileInfo;
 
 class PEONYCORESHARED_EXPORT SideBarAbstractItem : public QObject
 {
@@ -43,8 +46,10 @@ public:
         FavoriteItem,
         PersonalItem,
         FileSystemItem,
+        NetWorkItem,
         SeparatorItem,
-        VFSItem
+        VFSItem,
+        SingleItem
     };
 
     explicit SideBarAbstractItem(SideBarModel* model, QObject *parent = nullptr);
@@ -72,8 +77,10 @@ public:
 protected:
     QVector<SideBarAbstractItem*> *m_children = nullptr;
     SideBarModel *m_model = nullptr;
+    std::shared_ptr<FileInfo> m_info;
 
 Q_SIGNALS:
+    void queryInfoFinished();
     void findChildrenFinished();
     void updated();
 

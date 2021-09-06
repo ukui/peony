@@ -21,16 +21,28 @@
  */
 
 #include <QApplication>
+#include <QProcess>
+#include <QRegExp>
+#include <file-info-job.h>
+#include <file-info.h>
 
 #include "file-operation.h"
 #include "file-operation-manager.h"
 
 using namespace Peony;
 
+QRegExp gInvalidName("[\\\\/:\\*\\?\\\"<>\\|]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、<、>、|  */
+
 FileOperation::FileOperation(QObject *parent) : QObject (parent)
 {
     m_cancellable_wrapper = wrapGCancellable(g_cancellable_new());
     setAutoDelete(true);
+    connect(this, &FileOperation::operationPause, this, [=] () {
+        m_is_pause = true;
+    });
+    connect(this, &FileOperation::operationResume, this, [=] () {
+        m_is_pause = false;
+    });
 }
 
 FileOperation::~FileOperation()
@@ -43,10 +55,110 @@ void FileOperation::run()
 
 }
 
+void FileOperation::setHasError(bool hasError)
+{
+    m_has_error = hasError;
+    getOperationInfo().get()->m_has_error = hasError;
+}
+
 void FileOperation::cancel()
 {
     g_cancellable_cancel(m_cancellable_wrapper.get()->get());
     m_is_cancelled = true;
+}
+
+
+bool FileOperation::nameIsValid (QString& name)
+{
+    if (nullptr == name) {
+        return false;
+    }
+
+    return !name.contains(gInvalidName);
+}
+
+bool FileOperation::makeFileNameValidForDestFS(QString &srcPath, QString &destPath, QString *newFileName)
+{
+    FileInfoJob fileInfoJob(destPath);
+    FileInfoJob fileInfoJobSrc(srcPath);
+    fileInfoJob.querySync();
+    fileInfoJobSrc.querySync();
+
+    QString srcFileName = fileInfoJobSrc.getInfo()->displayName();
+    *newFileName = srcFileName;
+    QString fsType = fileInfoJob.getInfo()->fileSystemType();
+
+    qDebug() << "target filesystem type is: " << fsType;
+
+    if ("fat" == fsType || "vfat" == fsType || "fuse" == fsType || "ntfs" == fsType || "msdos" == fsType || "msdosfs" == fsType) {
+        *newFileName = (*newFileName).replace(gInvalidName, "_");
+        qDebug() << "uri:" << QUrl(srcPath).toDisplayString() << "target filesystem type is: " << fsType << "  old name:" << srcFileName << "  new name:" << *newFileName;
+    }
+
+    return *newFileName != srcFileName;
+}
+
+void FileOperation::fileSync(QString srcFile, QString destDir)
+{
+    if (srcFile.endsWith("/")) {
+        srcFile.chop(1);
+    }
+
+    QString destFile = "";
+    if (destDir.split("/").back() == srcFile.split("/").back()) {
+        destFile = destDir;
+    } else {
+        destFile = destDir + "/" + srcFile.split("/").back();
+    }
+    bool needSync = true;
+
+//    if (!FileUtils::isFileExsit(destFile)) {
+//        qDebug() << "file:" << destFile << " is not existed!";
+//        return;
+//    }
+
+//    bool needSync = false;
+    GFile* srcGfile = g_file_new_for_uri(srcFile.toUtf8().constData());
+    GFile* destGfile = g_file_new_for_uri(destFile.toUtf8().constData());
+    GMount* srcMount = g_file_find_enclosing_mount(srcGfile, nullptr, nullptr);
+    GMount* destMount = g_file_find_enclosing_mount(destGfile, nullptr, nullptr);
+
+    // xxxMount is null in root filesystem
+    if ((srcMount != destMount) && (NULL != destMount)) {
+        needSync = true;
+    }
+
+    if (needSync) {
+        Q_EMIT operationStartSnyc();
+        auto path = g_file_get_path(destGfile);
+        qDebug() << "DJ- sync -- src: " << srcFile << "  ===  " << destDir << "  ===  " << destFile << "  path:" << path;
+        if (path) {
+            QProcess p;
+            auto shellPath = g_shell_quote(path);
+            qDebug() << "DJ- start execute: " << QString("sync -f %1").arg(shellPath);
+            p.start(QString("sync -f %1").arg(shellPath));
+            qDebug() << "DJ- execute: " << QString("sync -f %1  ok!!!").arg(shellPath);
+            g_free(path);
+            g_free(shellPath);
+            p.waitForFinished(-1);
+        }
+    }
+
+    if (nullptr != srcMount) {
+        g_object_unref(srcMount);
+    }
+
+    if (nullptr != destMount) {
+        g_object_unref(destMount);
+    }
+
+    if (nullptr != srcGfile) {
+        g_object_unref(srcGfile);
+    }
+
+    if (nullptr != destGfile) {
+        g_object_unref(destGfile);
+    }
 }
 
 void FileOperation::notifyFileWatcherOperationFinished()
@@ -55,7 +167,8 @@ void FileOperation::notifyFileWatcherOperationFinished()
         // notify operation for file watchers.
         auto info = this->getOperationInfo();
         qDebug()<<info->m_src_dir_uri;
-        if (info)
+        if (info) {
             FileOperationManager::getInstance()->manuallyNotifyDirectoryChanged(info.get());
+        }
     }
 }

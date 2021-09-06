@@ -29,6 +29,8 @@
 #include <QObject>
 #include <QVector>
 
+class QTimer;
+
 namespace Peony {
 
 class FileInfo;
@@ -91,6 +93,7 @@ public:
     QModelIndex lastColumnIndex();
 
     bool hasChildren();
+    bool shouldShow();
 
 Q_SIGNALS:
     void cancelFindChildren();
@@ -140,6 +143,8 @@ protected:
      */
     void updateInfoAsync();
 
+    void removeChildren();
+
 private:
     FileItem *m_parent = nullptr;
     std::shared_ptr<Peony::FileInfo> m_info;
@@ -154,6 +159,9 @@ private:
 
     QStringList m_ending_uris;
     QStringList m_waiting_add_queue;
+
+    QStringList m_uris_to_be_removed;
+    QTimer *m_idle = nullptr;
 
 
     /*!

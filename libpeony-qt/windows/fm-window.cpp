@@ -291,20 +291,20 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
         m_tool_bar->updateStates();
     });
 
-    //search
-    connect(m_search_bar, &SearchBar::searchKeyChanged, [=]() {
-        //FIXME: filter the current directory
-    });
-    connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key) {
-        QString uri = this->getCurrentUri();
-        if (uri.startsWith("search:///")) {
-            uri = m_last_non_search_location;
-        }
-        m_update_condition = false; //common search, no filter
-        auto targetUri = SearchVFSUriParser::parseSearchKey(uri, key);
-        this->goToUri(targetUri, true);
-        m_clear_record->setDisabled(false); //has record to clear
-    });
+    //search, comment old code
+//    connect(m_search_bar, &SearchBar::searchKeyChanged, [=]() {
+//        //FIXME: filter the current directory
+//    });
+//    connect(m_search_bar, &SearchBar::searchRequest, [=](const QString &key) {
+//        QString uri = this->getCurrentUri();
+//        if (uri.startsWith("search:///")) {
+//            uri = m_last_non_search_location;
+//        }
+//        m_update_condition = false; //common search, no filter
+//        auto targetUri = SearchVFSUriParser::parseSearchKey(uri, key);
+//        this->goToUri(targetUri, true);
+//        m_clear_record->setDisabled(false); //has record to clear
+//    });
 
     //action
     QAction *stopLoadingAction = new QAction(this);

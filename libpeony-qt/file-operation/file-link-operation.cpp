@@ -42,6 +42,8 @@ FileLinkOperation::FileLinkOperation(QString srcUri, QString destDirUri, QObject
         m_dest_uri = destDirUri + "/" + tr("Symbolic Link") + " - " + url.fileName();
     }
 
+    m_dest_uri = QUrl::fromEncoded(m_dest_uri.toUtf8()).toDisplayString();
+
     QStringList fake_uris;
     fake_uris<<srcUri;
     m_info = std::make_shared<FileOperationInfo>(fake_uris, destDirUri, FileOperationInfo::Link);
@@ -55,13 +57,12 @@ FileLinkOperation::~FileLinkOperation()
 void FileLinkOperation::run()
 {
     operationStarted();
-    auto destFile = wrapGFile(g_file_new_for_uri(m_dest_uri.toUtf8().constData()));
+    auto destFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_dest_uri).toUtf8().constData()));
     GError *err = nullptr;
+
 retry:
     QUrl url = m_src_uri;
-    g_file_make_symbolic_link(destFile.get()->get(),
-                              url.path().toUtf8().constData(),
-                              nullptr, &err);
+    g_file_make_symbolic_link(destFile.get()->get(), url.path().toUtf8().constData(), nullptr, &err);
     if (err) {
         setHasError(true);
         //forbid response actions except retry and cancel.
@@ -76,7 +77,7 @@ retry:
         except.destDirUri = m_dest_uri;
         auto responseType = Invalid;
         if (G_IO_ERROR_EXISTS == err->code) {
-            except.dlgType = ED_CONFLICT;
+            except.dlgType = ED_WARNING;
             Q_EMIT errored(except);
             responseType = except.respCode;
         } else {
@@ -92,45 +93,50 @@ retry:
         }
     }
 
-    g_file_set_display_name(destFile.get()->get(),
-                            QUrl::fromPercentEncoding(m_dest_uri.split("/").last().toUtf8()).toUtf8().constData(),
-                            nullptr, nullptr);
+    g_file_set_display_name(destFile.get()->get(), QUrl::fromPercentEncoding(m_dest_uri.split("/").last().toUtf8()).toUtf8().constData(), nullptr, nullptr);
+
 end:
+
+    // maybe not need sync ???
+    fileSync(m_src_uri, m_dest_uri);
+
+
+
     // judge if the operation should sync.
-    bool needSync = false;
-    GFile *src_first_file = g_file_new_for_uri(m_src_uri.toUtf8().constData());
-    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
-    if (src_first_mount) {
-        needSync = g_mount_can_unmount(src_first_mount);
-        g_object_unref(src_first_mount);
-    } else {
-        // maybe a vfs file.
-        needSync = true;
-    }
-    g_object_unref(src_first_file);
+//    bool needSync = false;
+//    GFile *src_first_file = g_file_new_for_uri(m_src_uri.toUtf8().constData());
+//    GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
+//    if (src_first_mount) {
+//        needSync = g_mount_can_unmount(src_first_mount);
+//        g_object_unref(src_first_mount);
+//    } else {
+//        // maybe a vfs file.
+//        needSync = true;
+//    }
+//    g_object_unref(src_first_file);
 
-    GFile *dest_dir_file = g_file_new_for_uri(m_dest_uri.toUtf8().constData());
-    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
-    if (src_first_mount) {
-        needSync = g_mount_can_unmount(dest_dir_mount);
-        g_object_unref(dest_dir_mount);
-    } else {
-        needSync = true;
-    }
-    g_object_unref(dest_dir_file);
+//    GFile *dest_dir_file = g_file_new_for_uri(m_dest_uri.toUtf8().constData());
+//    GMount *dest_dir_mount = g_file_find_enclosing_mount(dest_dir_file, nullptr, nullptr);
+//    if (src_first_mount) {
+//        needSync = g_mount_can_unmount(dest_dir_mount);
+//        g_object_unref(dest_dir_mount);
+//    } else {
+//        needSync = true;
+//    }
+//    g_object_unref(dest_dir_file);
 
-    //needSync = true;
+//    //needSync = true;
 
-    if (needSync) {
-        auto path = g_file_get_path(destFile.get()->get());
-        if (path) {
-            operationStartSnyc();
-            QProcess p;
-            p.start(QString("sync -f '%1'").arg(path));
-            p.waitForFinished(-1);
-            g_free(path);
-        }
-    }
+//    if (needSync) {
+//        auto path = g_file_get_path(destFile.get()->get());
+//        if (path) {
+//            operationStartSnyc();
+//            QProcess p;
+//            p.start(QString("sync -f '%1'").arg(path));
+//            p.waitForFinished(-1);
+//            g_free(path);
+//        }
+//    }
 
     operationFinished();
     //notifyFileWatcherOperationFinished();

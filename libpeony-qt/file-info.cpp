@@ -19,18 +19,19 @@
  * Authors: Yue Lan <lanyue@kylinos.cn>
  *
  */
-
+#include <gio/gunixmounts.h>
 #include "file-info.h"
 
 #include "file-info-manager.h"
 #include "file-info-job.h"
 #include "file-meta-info.h"
-
+#include "file-utils.h"
 #include "thumbnail-manager.h"
 
 #include <QUrl>
 #include <QtDBus/QDBusConnection>
 #include <QStandardPaths>
+#include <QDir>
 #include <QDebug>
 
 using namespace Peony;
@@ -38,9 +39,6 @@ using namespace Peony;
 FileInfo::FileInfo(QObject *parent) : QObject (parent)
 {
     m_cancellable = g_cancellable_new();
-//    bool a = QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
-//                                         "com.ukui.desktop.software", "send_to_client", this,
-//                                         SLOT(getEnableSig(QString, bool)));
 }
 
 FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
@@ -71,10 +69,6 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     default:
         break;
     }
-//    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
-//                                         "com.ukui.desktop.software", "send_to_client", this,
-//                                         SLOT(getEnableSig(QString, bool)));
-
 }
 
 FileInfo::~FileInfo()
@@ -92,9 +86,8 @@ FileInfo::~FileInfo()
     m_uri = nullptr;
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 {
-    addToHash = true;
     FileInfoManager *info_manager = FileInfoManager::getInstance();
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
@@ -108,40 +101,41 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri, bool addToHash)
         newly_info->m_file = g_file_new_for_uri(uri.toUtf8().data());
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
-        newly_info->m_is_remote = !g_file_is_native(newly_info->m_file);
-        GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
-        switch (type) {
-        case G_FILE_TYPE_DIRECTORY:
-            //qDebug()<<"dir";
-            newly_info->m_is_dir = true;
-            break;
-        case G_FILE_TYPE_MOUNTABLE:
-            //qDebug()<<"mountable";
-            newly_info->m_is_volume = true;
-            break;
-        default:
-            break;
+        newly_info->m_is_remote = ! g_file_is_native(newly_info->m_file);
+        if (! newly_info->m_is_remote && false) {
+            GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
+            switch (type) {
+            case G_FILE_TYPE_DIRECTORY:
+                //qDebug()<<"dir";
+                newly_info->m_is_dir = true;
+                break;
+            case G_FILE_TYPE_MOUNTABLE:
+                //qDebug()<<"mountable";
+                newly_info->m_is_volume = true;
+                break;
+            default:
+                break;
+            }
         }
-        if (addToHash) {
-            newly_info = info_manager->insertFileInfo(newly_info);
-        }
+
+        newly_info = info_manager->insertFileInfo(newly_info);
         info_manager->unlock();
         return newly_info;
     }
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromPath(QString path, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromPath(QString path)
 {
-    QString uri = "file://"+path;
-    return fromUri(uri, addToHash);
+    QString uri = "file://" + path;
+    return fromUri(uri);
 }
 
-std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file, bool addToHash)
+std::shared_ptr<FileInfo> FileInfo::fromGFile(GFile *file)
 {
     char *uri_str = g_file_get_uri(file);
     QString uri = uri_str;
     g_free(uri_str);
-    return fromUri(uri, addToHash);
+    return fromUri(uri);
 }
 
 /*******
@@ -216,6 +210,15 @@ const QString FileInfo::targetUri()
 
 const QString FileInfo::symlinkTarget()
 {
+    if (m_symlink_target == ".")
+        return "";
+
+    //fix soft link use relative path issue, link to bug#73529
+    if (! m_symlink_target.startsWith("/"))
+    {
+        QString parentUri = FileUtils::getParentUri(m_uri);
+        m_symlink_target = QUrl(parentUri).path() + "/" + m_symlink_target;
+    }
     return m_symlink_target;
 }
 
@@ -224,6 +227,87 @@ const QString FileInfo::customIcon()
     if (!m_meta_info)
         return nullptr;
     return m_meta_info.get()->getMetaInfoString("custom-icon");
+}
+
+quint64 FileInfo::getDeletionDateUInt64()
+{
+    return m_deletion_date_uint64;
+}
+
+const QString FileInfo::unixDeviceFile()
+{
+    GFile* file;
+    const char *path;
+    bool isMountPoint;
+    GUnixMountEntry* entry;
+    char* device = nullptr;
+    QString unixDevice = nullptr;
+
+    isMountPoint = FileUtils::isMountPoint(m_uri);
+    //return from here if @m_uri is like "computer:///xxx"
+    if(!isMountPoint)
+        return m_unix_device_file;
+
+    //query device path if @m_uri is like "file:///media/user/xxx"
+    file = g_file_new_for_uri(m_uri.toUtf8().constData());
+    if(!file)
+        return unixDevice;
+
+    path = g_file_peek_path(file);
+    if(path){
+        entry = g_unix_mount_at(path,NULL);
+        if(!entry)
+            entry = g_unix_mount_for(path,NULL);
+
+        if(entry){
+            device = g_strescape(g_unix_mount_get_device_path(entry),NULL);
+            g_unix_mount_free(entry);
+        }
+    }
+
+    unixDevice = device;
+    g_object_unref(file);
+    if(device)
+        g_free(device);
+
+    return unixDevice;
+}
+
+const QString FileInfo::displayName()
+{
+    if (isEmptyInfo())
+        return nullptr;
+    bool isMountPoint;
+    QString unixDevice,deviceName;
+
+    unixDevice = unixDeviceFile();
+    isMountPoint = FileUtils::isMountPoint(m_uri);
+
+    if(m_uri == "file:///DATA")
+    {
+        return tr("data");
+    }
+
+    if((nullptr != m_display_name)
+            && (!isMountPoint
+                || unixDevice.isEmpty()  /*@m_uri is like "computer:///xxx"*/
+                || !unixDevice.contains("/dev")  /*audio-cd*/
+                || unixDevice.contains("/dev/sr"))) { /*blank-cd or blank-dvd*/
+         return m_display_name;
+    }
+
+    if (m_uri.endsWith("/")) {
+        QString uri = m_uri;
+        if (!m_uri.endsWith(":///") && !m_uri.endsWith("://")) {
+            uri.chop(1);
+        }
+        return uri.split("/").last();
+    }
+
+    //@deviceName transcoding
+    deviceName = m_display_name;
+    FileUtils::handleVolumeLabelForFat32(deviceName,unixDevice);
+    return deviceName;
 }
 
 QString FileInfo::displayFileType()
