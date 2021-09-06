@@ -691,6 +691,11 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"renamed";
 
+    // fix #77076, which caused by idle removing item due to #66255.
+    if (m_uris_to_be_removed.contains(newUri)) {
+        m_uris_to_be_removed.removeOne(newUri);
+    }
+
     // note that some times new file has arealy in directory view,
     // and there is no delete event triggered. for example. copy
     // a .desktop file in current view. in this case there might
