@@ -136,16 +136,17 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
     //开启手动设置宽度 - Enable manual width setting
     m_table->horizontalHeader()->setMinimumSectionSize(30);
+    m_table->horizontalHeader()->setMaximumSectionSize(400);
 
     m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    m_table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
 
     m_table->setColumnWidth(0, 150);
-
-    m_layout->addWidget(m_table);
+    m_layout->addWidget(m_table);   
 }
 
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
