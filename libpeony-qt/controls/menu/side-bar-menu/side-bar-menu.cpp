@@ -240,10 +240,13 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
         l.last()->setEnabled(m_item->isMounted());
     }
 
-    l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-        PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
-        w->show();
-    });
+    //fix network items has Properties option issue, link to bug#78617
+    if (! m_uri.startsWith("network://")) {
+        l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
+            PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+            w->show();
+        });
+    }
 
     return l;
 
