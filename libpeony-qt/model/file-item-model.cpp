@@ -40,8 +40,9 @@
 #include <QUrl>
 
 #include <QTimer>
-
 #include <QDebug>
+#include <QDateTime>
+#include <QGSettings>
 
 using namespace Peony;
 
@@ -249,8 +250,19 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
             //trash files show delete Date
-            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
+            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull()) {
+                QDateTime deleteTime = QDateTime::fromMSecsSinceEpoch(item->m_info->deletionTime (), Qt::LocalTime);
+                if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+                    QGSettings setting("org.ukui.control-center.panel.plugins");
+                    QString val = setting.get ("date").toString ();
+                    if ("cn" == val) {
+                        return QVariant(deleteTime.toString ("yyyy/MM/dd HH:mm:ss"));
+                    } else {
+                        return QVariant(deleteTime.toString ("yyyy-MM-dd HH:mm:ss"));
+                    }
+                }
                 return QVariant(item->m_info->deletionDate());
+            }
             return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
