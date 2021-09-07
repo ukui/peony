@@ -1,6 +1,7 @@
 #include "sync-thread.h"
 #include <QThread>
 #include <QDebug>
+#include <QDBusInterface>
 #include <libnotify/notify.h>
 
 using namespace Peony;
@@ -29,15 +30,23 @@ void SyncThread::parentStartedSlot()
 
 void SyncThread::notifyUser(QString notifyContent)
 {
-    NotifyNotification* notify;
+    QDBusInterface iface ("org.freedesktop.Notifications",
+                         "/org/freedesktop/Notifications",
+                         "org.freedesktop.Notifications", QDBusConnection::sessionBus ());
 
-    notify_init(QObject::tr("PeonyNotify").toUtf8().constData());
-    notify  = notify_notification_new(QObject::tr("File Manager").toUtf8().constData(),
-                                      notifyContent.toUtf8().constData(),
-                                      "system-file-manager");
-    notify_notification_show(notify,nullptr);
+    QList <QVariant> args;
+    QStringList actions;
+    QMap <QString, QVariant> hints;
 
-    notify_uninit();
-    g_object_unref(G_OBJECT(notify));
+    args << QObject::tr("File Manager").toUtf8().constData()
+         << ((unsigned int) 0)
+         << "system-file-manager"
+         << tr("notify")
+         << notifyContent
+         << actions
+         << hints
+         << (int) -1;
+
+    iface.callWithArgumentList (QDBus::AutoDetect, "Notify", args);
 }
 
