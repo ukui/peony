@@ -204,15 +204,17 @@ void FileLaunchManager::openAsync(const QString &uri, bool forceWithArg, bool sk
 
 void FileLaunchManager::openAsync(const QStringList &files, bool forceWithArg, bool skipDialog)
 {
-    QString tmp = files.at(0);
-    //FIXME: replace BLOCKING api in ui thread.
-    auto targetUri = FileUtils::getTargetUri(tmp);
-    if (!targetUri.isNull()) {
-        tmp = targetUri;
-        qDebug()<<"open async"<<targetUri;
+    QStringList targets;
+    for (auto uri : files) {
+        auto target = FileUtils::getTargetUri(uri);
+        if (!target.isEmpty()) {
+            targets.append(target);
+        } else {
+            targets.append(uri);
+        }
     }
-    auto action = getDefaultAction(tmp);
-    action->lauchFilesAsync(files, forceWithArg, skipDialog);
+    auto action = getDefaultAction(targets.first());
+    action->lauchFilesAsync(targets, forceWithArg, skipDialog);
     action->deleteLater();
 }
 
