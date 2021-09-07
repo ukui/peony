@@ -53,9 +53,11 @@ public:
     const QBrush selectedBrush() const;
 Q_SIGNALS:
     void isEditing(bool editing) const;
+    void requestDone(QWidget *editor);
 
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);
+    void doneWithEditor();
 
 protected:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
