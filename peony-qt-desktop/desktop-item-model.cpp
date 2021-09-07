@@ -839,9 +839,22 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
+    bool canNotTrash = false;
+
+    for (auto uri : srcUris) {
+        if (uri.startsWith("filesafe:///")) {
+            canNotTrash = true;
+        }
+    }
+
     if (destDirUri.startsWith("trash:///")) {
-        FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
-        fileOpMgr->startOperation(trashOp, addHistory);
+        if(canNotTrash){
+            FileOperationUtils::trash(srcUris,false);
+        }else {
+            FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
+            fileOpMgr->startOperation(trashOp, addHistory);
+        }
+
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
         //krme files can not move to other place, default set as copy action
