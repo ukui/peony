@@ -34,6 +34,7 @@ class SideBarProxyFilterSortModel;
 
 class QPushButton;
 class QVBoxLayout;
+class QLabel;
 
 class NavigationSideBar : public QTreeView
 {
@@ -81,6 +82,17 @@ private:
     QVBoxLayout *m_layout = nullptr;
 
     QPushButton *m_label_button;
+};
+
+class TitleLabel : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit TitleLabel(QWidget *parent);
+
+private:
+    QLabel *m_pix_label;
+    QLabel *m_text_label;
 };
 
 class NavigationSideBarItemDelegate : public QStyledItemDelegate

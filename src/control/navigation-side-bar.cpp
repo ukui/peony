@@ -61,6 +61,7 @@
 #include <QMessageBox>
 
 #include <QPainterPath>
+#include <QLabel>
 
 #include <QDebug>
 
@@ -516,4 +517,19 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 
     QProxyStyle::drawPrimitive(element, option, painter, widget);
     painter->restore();
+}
+
+TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
+{
+    this->setFixedHeight(50);
+    m_pix_label = new QLabel(this);
+    m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
+    m_text_label = new QLabel(tr("Files"),this);
+    QHBoxLayout *l = new QHBoxLayout(this);
+    l->setMargin(16);
+    l->addSpacing(16);
+    l->addWidget(m_pix_label);
+    l->addSpacing(8);
+    l->addWidget(m_text_label);
+    l->addStretch();
 }

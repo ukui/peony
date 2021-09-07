@@ -196,6 +196,8 @@ public Q_SLOTS:
     void setEditFlag(bool edit);
     bool getEditFlag();
 
+    int updateBWList();
+
 protected:
     int verticalOffset() const override;
     int horizontalOffset() const override;

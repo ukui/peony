@@ -130,11 +130,6 @@ void PathEdit::cancelList()
     m_completer->activated(m_completer->currentIndex());
 }
 
-void PathEdit::cancelList()
-{
-    m_completer->activated(m_completer->currentIndex());
-}
-
 void PathEdit::keyPressEvent(QKeyEvent *e)
 {
     QLineEdit::keyPressEvent(e);

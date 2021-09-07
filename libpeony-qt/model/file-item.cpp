@@ -273,7 +273,7 @@ void FileItem::findChildrenAsync()
                     // m_model->setRootUri(FileUtils::getParentUri(this->uri()));
                     m_model->sendPathChangeRequest(FileUtils::getParentUri(this->uri()));
 
-                auto fileInfo = FileInfo::fromUri(this->uri(), false);
+                auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
                 {
                     auto result = QMessageBox::question(nullptr, tr("Open Link failed"),

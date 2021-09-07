@@ -51,6 +51,7 @@ public:
     }
 
     void setShowHidden(bool showHidden);
+    int updateBlackAndWriteLists();
 
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const;
@@ -61,7 +62,8 @@ Q_SIGNALS:
 private:
     int m_sort_type = Other;
     bool m_show_hidden;
-
+    BWListInfo *m_bwListInfo = nullptr;
+    PeonyJsonOperation *m_jsonOp = nullptr;
 };
 
 }

@@ -33,6 +33,7 @@
 #define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
+#define SORT_TYPE                   "sort-type"
 #define SORT_ORDER                  "sort-order"
 #define SORT_COLUMN                 "sort-column"
 #define RESIDENT_IN_BACKEND         "resident"
@@ -140,9 +141,7 @@ private:
 
     QString                     m_date_format = "";
     QString                     m_time_format = "";
-    QString                     m_system_time_format  = "";
-    
-    QMutex m_mutex;
+    QString                     m_system_time_format  = "";    
 };
 
 }

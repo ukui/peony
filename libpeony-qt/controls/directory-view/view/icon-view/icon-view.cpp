@@ -425,6 +425,27 @@ void IconView::updateGeometries()
     verticalScrollBar()->setMaximum(verticalScrollBar()->maximum() + BOTTOM_STATUS_MARGIN);
 }
 
+void IconView::focusInEvent(QFocusEvent *e)
+{
+    QListView::focusInEvent(e);
+    if (e->reason() == Qt::TabFocusReason) {
+        if (selectedIndexes().isEmpty()) {
+            selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
+        } else {
+            scrollTo(selectedIndexes().first(), QListView::PositionAtCenter);
+            //auto selections = selectedIndexes();
+            clearSelection();
+            //added for tab key to focus button issue
+            //comment to fix crash bug#68788
+//            QTimer::singleShot(100, this, [=](){
+//                for (auto index : selections) {
+//                    selectionModel()->select(index, QItemSelectionModel::Select);
+//                }
+//            });
+        }
+    }
+}
+
 void IconView::slotRename()
 {
     //special path like trash path not allow rename
@@ -525,7 +546,7 @@ void IconView::setProxy(DirectoryViewProxyIface *proxy)
             return;
         auto uri = index.data(FileItemModel::UriRole).toString();
         //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" + FileUtils::getSymbolicTarget(uri);
         if(!m_multi_select)
@@ -578,6 +599,11 @@ QRect IconView::visualRect(const QModelIndex &index) const
     return rect;
 }
 
+bool IconView::getDelegateEditFlag()
+{
+    return m_delegate_editing;
+}
+
 int IconView::getSortType()
 {
     int type = m_sort_filter_proxy_model->sortColumn();
@@ -620,6 +646,17 @@ void IconView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+void IconView::selectAll()
+{
+    // fix: #62397
+//    for (int i = 0; i < model()->rowCount(); i++) {
+//        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
+//    }
+    // optimize selectAll(). do not trigger selection changed signal to many times.
+    QItemSelection selection(model()->index(0, 0), model()->index(model()->rowCount() - 1, 0));
+    selectionModel()->select(selection, QItemSelectionModel::Select);
 }
 
 void IconView::clearIndexWidget()
@@ -697,7 +734,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
             return;
         auto uri = index.data(Qt::UserRole).toString();
         //process open symbolic link
-        auto info = FileInfo::fromUri(uri, false);
+        auto info = FileInfo::fromUri(uri);
         if (info->isSymbolLink() && uri.startsWith("file://") && info->isValid())
             uri = "file://" +  FileUtils::getSymbolicTarget(uri);
         if(!m_view->m_multi_select)

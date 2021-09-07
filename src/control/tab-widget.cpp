@@ -822,7 +822,7 @@ void TabWidget::setPreviewPage(Peony::PreviewPageIface *previewPage)
 
 void TabWidget::addPage(const QString &uri, bool jumpTo)
 {
-    auto info = Peony::FileInfo::fromUri(uri, false);
+    auto info = Peony::FileInfo::fromUri(uri);
     if (! info->isDir())
         return;
 
@@ -1039,7 +1039,7 @@ void TabWidget::editUris(const QStringList &uris)
 void TabWidget::onViewDoubleClicked(const QString &uri)
 {
     qDebug()<<"tab widget double clicked"<<uri;
-    auto info = Peony::FileInfo::fromUri(uri, false);
+    auto info = Peony::FileInfo::fromUri(uri);
     if (info->uri().startsWith("trash://")) {
         auto w = new Peony::PropertiesWindow(QStringList()<<uri);
         w->show();
@@ -1047,7 +1047,7 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
         //process open symbolic link
-        auto info = Peony::FileInfo::fromUri(uri, false);
+        auto info = Peony::FileInfo::fromUri(uri);
         QString targetUri = info.get()->targetUri();
         if (targetUri.isEmpty())
             targetUri = uri;

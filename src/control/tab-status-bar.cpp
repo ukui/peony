@@ -102,13 +102,12 @@ void TabStatusBar::update()
         return;
     }
 
+    goffset size = 0;
+    int specialCount = 0;
+
     if (! selections.isEmpty()) {
         QString directoriesString = "";
-        int directoryCount = 0;
         QString filesString="";
-        int fileCount = 0;
-        int specialCount = 0;
-        goffset size = 0;
         for (auto selection : selections) {
             //not count special path
             if (selection->uri() == "network:///"
