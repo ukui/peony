@@ -808,17 +808,17 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     for (auto uri : srcUris) {
         if (uri.startsWith("filesafe:///")) {
             canNotTrash = true;
+            break;
         }
     }
 
     if (destDirUri.startsWith("trash:///")) {
         if(canNotTrash){
-            FileOperationUtils::trash(srcUris,false);
+            FileOperationUtils::trash(srcUris, false);
         }else {
             FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
             fileOpMgr->startOperation(trashOp, addHistory);
         }
-
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
         //krme files can not move to other place, default set as copy action
