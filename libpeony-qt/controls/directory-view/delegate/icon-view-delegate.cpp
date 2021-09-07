@@ -251,6 +251,14 @@ void IconViewDelegate::setCutFiles(const QModelIndexList &indexes)
     m_cut_indexes = indexes;
 }
 
+void IconViewDelegate::doneWithEditor()
+{
+    auto editor = qobject_cast<QWidget *>(sender());
+    commitData(editor);
+    closeEditor(editor, NoHint);
+    isEditing(false);
+}
+
 QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     Q_UNUSED(option);
@@ -269,10 +277,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         edit->minimalAdjust();
     });
 
-    connect(edit, &IconViewEditor::returnPressed, edit, [=]() {
-        this->setModelData(edit, nullptr, index);
-        Q_EMIT isEditing(false);
-    });
+    connect(edit, &IconViewEditor::returnPressed, this, &IconViewDelegate::doneWithEditor);
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         // NOTE: resort view after edit closed.
