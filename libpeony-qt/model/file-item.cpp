@@ -226,6 +226,8 @@ void FileItem::findChildrenAsync()
             //Peony::AudioPlayManager::getInstance()->playWarningAudio();
             QMessageBox::critical(nullptr, tr("Error"), err->message());
             enumerator->cancel();
+            //fix bug#77594
+            enumerator->deleteLater();
             return;
         }
 
