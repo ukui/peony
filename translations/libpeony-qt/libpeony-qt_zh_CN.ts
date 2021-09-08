@@ -683,7 +683,8 @@
         <translation>%1 个文件, %2 个文件夹</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="886"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="887"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="889"/>
         <source>Can&apos;t get remote file information</source>
         <translation>未能获取远程文件信息</translation>
     </message>
@@ -1579,29 +1580,34 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileCopy</name>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="140"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="148"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="159"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="145"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="153"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="164"/>
         <source>Error in source or destination file path!</source>
         <translation>源地址或者目标文件路径出错！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="185"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="190"/>
         <source>The dest file &quot;%1&quot; has existed!</source>
         <translation>目标文件 %1 已经存在！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="233"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="219"/>
+        <source>Vfat/FAT32 file systems do not support a single file that occupies more than 4 GB space!</source>
+        <translation>vfat/fat32文件系统不支持单文件所占空间大于4g</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="260"/>
         <source>Error opening source or destination file!</source>
         <translation>打开源文件或者目标文件出错！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="278"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="305"/>
         <source>Please confirm that the device controls are insufficient!</source>
         <translation>请确认设备空间是否足够!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="331"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="358"/>
         <source>File opening failure</source>
         <translation>打开文件失败</translation>
     </message>
@@ -1610,7 +1616,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">读和写文件不一致！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="291"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="318"/>
         <source>operation cancel</source>
         <translation>操作取消</translation>
     </message>
@@ -1693,29 +1699,29 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="227"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="284"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="296"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="301"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="286"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="298"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="303"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="272"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="274"/>
         <source>Open Link failed</source>
         <translation>打开链接失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="273"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="275"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="285"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="287"/>
         <source>Can not open path &quot;%1&quot;，permission denied.</source>
         <translation>打开路径 &quot;%1&quot; 失败，权限被拒绝。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="295"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="297"/>
         <source>Can not find path &quot;%1&quot;，are you moved or renamed it?</source>
         <translation>未找到路径：&quot;%1&quot;，您是否已经移动或者重命名？</translation>
     </message>
@@ -3077,7 +3083,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::SyncThread</name>
     <message>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="45"/>
+        <location filename="../../libpeony-qt/sync-thread.cpp" line="44"/>
         <source>notify</source>
         <translatorcomment>温馨提示</translatorcomment>
         <translation>温馨提示</translation>
@@ -3468,8 +3474,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="42"/>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="56"/>
+        <location filename="../../libpeony-qt/sync-thread.cpp" line="41"/>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="481"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
