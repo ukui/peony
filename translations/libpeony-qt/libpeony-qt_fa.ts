@@ -636,7 +636,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="886"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="887"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="889"/>
         <source>Can&apos;t get remote file information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1435,34 +1436,39 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileCopy</name>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="140"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="148"/>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="159"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="145"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="153"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="164"/>
         <source>Error in source or destination file path!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="185"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="190"/>
         <source>The dest file &quot;%1&quot; has existed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="233"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="219"/>
+        <source>Vfat/FAT32 file systems do not support a single file that occupies more than 4 GB space!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="260"/>
         <source>Error opening source or destination file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="278"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="305"/>
         <source>Please confirm that the device controls are insufficient!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="331"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="358"/>
         <source>File opening failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-copy.cpp" line="291"/>
+        <location filename="../../libpeony-qt/file-copy.cpp" line="318"/>
         <source>operation cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1526,29 +1532,29 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/model/file-item.cpp" line="227"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="284"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="296"/>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="301"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="286"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="298"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="303"/>
         <source>Error</source>
         <translation type="unfinished">خطا</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="272"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="274"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="273"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="275"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="285"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="287"/>
         <source>Can not open path &quot;%1&quot;，permission denied.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item.cpp" line="295"/>
+        <location filename="../../libpeony-qt/model/file-item.cpp" line="297"/>
         <source>Can not find path &quot;%1&quot;，are you moved or renamed it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2766,7 +2772,7 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::SyncThread</name>
     <message>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="45"/>
+        <location filename="../../libpeony-qt/sync-thread.cpp" line="44"/>
         <source>notify</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3116,8 +3122,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="unfinished">لغو</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="42"/>
-        <location filename="../../libpeony-qt/sync-thread.cpp" line="56"/>
+        <location filename="../../libpeony-qt/sync-thread.cpp" line="41"/>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="481"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
