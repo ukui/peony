@@ -171,21 +171,20 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
                 //fix has default open app but no recommend actions issue, link to bug#61365
                 //fix open options has two same app issue, linkto bug#74480, 69977
-                //存在数据异步问题，第一次查询应用数为0，添加了默认打开程序，后续获得信息后，
-                //再次添加了默认打开程序,导致应用显示重复
-//                if (recommendActions.count() == 0)
-//                {
-//                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
-//                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
-//                        recommendActions.append(action);
-//                }
+                if (recommendActions.count() == 0 && fallbackActions.count() ==0)
+                {
+                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    if (action != NULL && action->getAppInfoDisplayName().length() > 0)
+                        recommendActions.append(action);
+                }
                 for (auto action : recommendActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
-                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+
                 for (auto action : fallbackActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
