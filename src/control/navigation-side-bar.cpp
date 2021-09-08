@@ -454,17 +454,17 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     QVBoxLayout *l = new QVBoxLayout;
     l->setContentsMargins(4, 4, 2, 4);
 
-    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
-    m_label_button->setProperty("useIconHighlightEffect", true);
-    m_label_button->setProperty("iconHighlightEffectMode", 1);
-    m_label_button->setProperty("fillIconSymbolicColor", true);
-    m_label_button->setCheckable(true);
+//    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
+//    m_label_button->setProperty("useIconHighlightEffect", true);
+//    m_label_button->setProperty("iconHighlightEffectMode", 1);
+//    m_label_button->setProperty("fillIconSymbolicColor", true);
+//    m_label_button->setCheckable(true);
 
-    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
+//    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
 
-    l->addWidget(m_label_button);
+//    l->addWidget(m_label_button);
 
-    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
+//    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
 
     w->setLayout(l);
 
