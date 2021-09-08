@@ -266,6 +266,11 @@ void MainWindow::checkSettings()
                 QFont font = this->font();
                 for(auto widget : qApp->allWidgets())
                     widget->setFont(font);
+
+                //fix change font not show name issue, link to bug#77678
+                QString curUri = getCurrentUri();
+                if(curUri.startsWith("kmre://") || curUri.startsWith("kydroid://"))
+                    getCurrentPage()->refresh();
             }
         });
     }
