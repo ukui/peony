@@ -263,7 +263,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe)
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe && !m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -722,7 +722,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 else if(m_can_delete && canDelete)
                 {
                     hasDeleteForever = true;
-                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+
+                    //fix the bug 77131;
+                    if(m_is_filebox_file){
+                        l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
+                    }else {
+                        l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    }
+
                     connect(l.last(), &QAction::triggered, [=]() {
                         FileOperationUtils::executeRemoveActionWithDialog(m_selections);
                     });
@@ -1046,7 +1053,7 @@ const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
         for (auto id : pluginIds) {
             auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
 
-            if(m_is_filesafe) {
+            if(m_is_filesafe||m_is_filebox_file) {
                 if(plugin->name() == tr("Peony-Qt filesafe menu Extension")) {
                     auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
                     l<<actions;
