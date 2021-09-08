@@ -52,6 +52,8 @@ public:
 
     ~IconViewIndexWidget() override;
 
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 protected:
     void paintEvent(QPaintEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
