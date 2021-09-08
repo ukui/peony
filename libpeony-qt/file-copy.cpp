@@ -21,9 +21,10 @@
  */
 #include "file-copy.h"
 #include "file-utils.h"
-
+#include <stdio.h>
 #include <cstring>
 #include <QString>
+#include <mntent.h>
 #include <QProcess>
 #include "file-info.h"
 #include "file-info-job.h"
@@ -32,6 +33,8 @@
 #define SYNC_INTERVAL   10
 
 using namespace Peony;
+
+static gchar* get_fs_type (char* path);
 
 FileCopy::FileCopy (QString srcUri, QString destUri, GFileCopyFlags flags, GCancellable* cancel, GFileProgressCallback cb, gpointer pcd, GError** error, QObject* obj) : QObject (obj)
 {
@@ -132,6 +135,8 @@ void FileCopy::run ()
     GFileType               destFileType = G_FILE_TYPE_UNKNOWN;
     g_autofree gchar*       buf = (char*)g_malloc0(sizeof (char) * BUF_SIZE);
 
+    g_autoptr (GFile)       destDir = NULL;
+
     srcFile = g_file_new_for_uri(FileUtils::urlEncode(mSrcUri).toUtf8());
     destFile = g_file_new_for_uri(FileUtils::urlEncode(mDestUri).toUtf8());
 
@@ -198,6 +203,28 @@ void FileCopy::run ()
     }
 
     qDebug() << "copy - src: " << mSrcUri << "  to: " << mDestUri;
+
+    // check dest filesystem
+    destDir = g_file_get_parent (destFile);
+    if (destDir) {
+        g_autoptr (GMount) destMount = g_file_find_enclosing_mount (destDir, NULL, NULL);
+        if (destMount) {
+            g_autoptr (GFile) destMountFile = g_mount_get_default_location (destMount);
+            if (destMountFile) {
+                g_autofree gchar* mountPath = g_file_get_path (destMountFile);
+                if (mountPath) {
+                    g_autofree gchar* fstype = get_fs_type (mountPath);
+                    if (!g_strcmp0 (fstype, "vfat") || !g_strcmp0 (fstype, "fat32")) {
+                        if (mTotalSize >= 4294967296) {
+                            error = g_error_new (1, G_IO_ERROR_NOT_SUPPORTED, "%s", QString(tr("Vfat/FAT32 file systems do not support a single file that occupies more than 4 GB space!")).toUtf8 ().constData ());
+                            detailError(&error);
+                            goto out;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // read io stream
     readIO = g_file_read(srcFile, mCancel ? mCancel : nullptr, &error);
@@ -362,4 +389,35 @@ out:
     if (nullptr != destFileInfo) {
         g_object_unref(destFileInfo);
     }
+}
+
+/**
+ * @note
+ *  同步了 glib 针对vfat/fat32 单文件大于4g，提前提醒用户的补丁，
+ *  由于 gio 获取文件系统类型不准确(据康哥反馈会把某些设备vfat/fat32、ntfs文件系统都识别为msdos)，
+ *  所以使用linux接口获取。
+ */
+static gchar* get_fs_type (char* path)
+{
+    char*           fstype = NULL;
+    struct mntent*  m = NULL;
+    FILE*           f = NULL;
+
+    f = setmntent ("/etc/mtab", "r");
+    if (!f) {
+        qDebug() << "get filesystem type error";
+    }
+
+    while ((m = getmntent(f))) {
+        if (!path) continue;
+        if (!m->mnt_dir) continue;
+        if (!strcmp (path, m->mnt_dir)) {
+            fstype = g_strdup_printf("%s", m->mnt_type);
+            break;
+        }
+    }
+
+    endmntent (f);
+
+    return fstype;
 }
