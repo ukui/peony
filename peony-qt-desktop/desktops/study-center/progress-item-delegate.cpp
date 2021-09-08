@@ -75,6 +75,8 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        QIcon icon=index.data(Qt::DecorationRole).value<QIcon>();
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
         QString iconstr= tabletApp.appIcon;
+        qDebug("FullItemDelegate::paint : name:%s, icon:%s/n",tabletApp.appName.toLocal8Bit().data(),iconstr.toLocal8Bit().data());
+
         iconstr.remove(".png");
         iconstr.remove(".svg");
         QIcon icon=QIcon::fromTheme(iconstr);
@@ -85,20 +87,29 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        QFont font;
         QRect iconRect;
 //        font.setPixelSize(Style::AppListFontSize);
-        iconRect=QRect(rect.x(),rect.y()+5, Style::AppListItemSizeWidth, Style::AppListItemSizeHeight);
+        iconRect=QRect(rect.x()+Style::AppLeftSpace ,
+                       rect.y()+Style::AppTopSpace,
+                       Style::AppListIconSize,
+                       Style::AppListIconSize);
 //        painter->setFont(font);
-        icon.paint(painter,iconRect);
+        icon.paint(painter,iconRect);      
+        painter->restore();
+        painter->save();
 
         painter->setPen(QPen(Qt::black));
         QRect textRect;
 
-        textRect=QRect(rect.x(),
-                       iconRect.height()+5,
-                       iconRect.width(),
-                       rect.height()-iconRect.height()-10);
+        textRect=QRect(rect.x()+5,
+                       iconRect.bottom()+5,
+                       rect.width()-10,
+                       rect.height()-iconRect.height()-5);
+
+        painter->save();
         QFontMetrics fm=painter->fontMetrics();
         QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,rect.width(),Qt::TextShowMnemonic);
-        painter->drawText(textRect,Qt::AlignLeft,appnameElidedText.toLocal8Bit().data());
+        painter->drawText(textRect,Qt::AlignHCenter,appnameElidedText.toLocal8Bit().data());
+        painter->restore();
+        painter->save();
 
 //        QRect progressRect;
 //        progressRect=QRect(textRect.x(), textRect.height(), rect.width() - iconRect.width()-5, rect.height()/2);

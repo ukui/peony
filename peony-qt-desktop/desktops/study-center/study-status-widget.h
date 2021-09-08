@@ -5,46 +5,59 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include "common.h"
+
 class QVBoxLayout;
 class QLabel;
 class QTableView;
 class QGridLayout;
 class ProgressWidget;
+class QDBusInterface;
+class QPushButton;
 //class QListView;
 
 class StudyStatusWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit StudyStatusWidget(QWidget *parent = nullptr);
+    explicit StudyStatusWidget(QList<TABLETAPP> appList,QWidget *parent = nullptr);
     ~StudyStatusWidget();
 
 public:
-
    QString  getStudyTime(QString &strMethod, QStringList &appList);
+   QPixmap PixmapToRound(const QString &src, int radius);
 
 protected:
     void initWidget();
-
+    void initUserInfo();
+    void resizeScrollAreaControls();
 private:
     QVBoxLayout* m_mainVboxLayout=nullptr;
-    QGridLayout* m_timeGridLayout = nullptr;
+    QGridLayout* m_progressGridLayout = nullptr;
    // QTableView* m_timeView=nullptr;
     //QListView* m_showProgressView=nullptr;
     QLabel* m_todayTimeLabel=nullptr;
     QLabel* m_weekTimeLabel=nullptr;
     QLabel* m_monthTimeLabel=nullptr;
-    QMap<QString, ProgressWidget*> m_progressMap;
-//public Q_SLOTS:
-  // void setAppTimeSlot();
-    //Q_SIGNALS:
-//    /**
-//     * 向LetterWidget界面发送字母分类按钮被点击信号
-//     * @param btnname存放按钮名称
-//     */
-//    void sendLetterBtnSignal(QString btnname);
+    QLabel* m_userIconLabel=nullptr;
+    QLabel* m_userNameLabel=nullptr;
+    QPushButton* m_updateTimeBt=nullptr;
+    QDBusInterface* m_userInterface=nullptr;
+   // QMap<QString, ProgressWidget*> m_progressMap;
+    QList<TABLETAPP> m_appList;
 
-//private Q_SLOTS:
+public Q_SLOTS:
+   void paintProgressSlot(QList<TABLETAPP> applist);
+   void timeChangeSlot(QString strMethod ,QString strTime);
+   void markTimeSlot();
+
+Q_SIGNALS:
+    /**
+     * 向主界面发送更新时间点击信号
+     * @param btnname存放按钮名称
+     */
+    void updateTimeSignal();
+
 
 };
 

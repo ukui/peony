@@ -3,12 +3,16 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QIcon>
 
-ProgressWidget::ProgressWidget(const QString &strAppName,long int iTime, QWidget *parent)
+ProgressWidget::ProgressWidget(const TABLETAPP &AppInfo,QWidget *parent)
     : QWidget(parent)
 {
-    this->m_iTime = iTime;
-    this->m_strAppName = strAppName;
+    this->m_iTime = AppInfo.iTime;
+    this->m_strAppName = AppInfo.appName;
+    this->m_strAppIcon = AppInfo.appIcon;
+    this->m_serialNumber = AppInfo.serialNumber;
+    qDebug("ProgressWidget::ProgressWidget time:%d,name:%s,icon:%s/n",this->m_iTime, this->m_strAppName.toLocal8Bit().data(), this->m_strAppIcon.toLocal8Bit().data());
     initUi();
 }
 ProgressWidget::~ProgressWidget()
@@ -23,7 +27,7 @@ void ProgressWidget::initUi()
     m_processBar = new QProgressBar(this);
     //m_processBar->setFixedSize(this->width()/5*4,8);
     m_processBar->setRange(0,100);
-    m_processBar->setValue(50);
+    m_processBar->setValue(m_iTime);
     m_processBar->setStyleSheet("border-radius:10px;"
                                     "background: Grey;");
 
@@ -35,11 +39,12 @@ void ProgressWidget::initUi()
     m_nameLabel->setAlignment(Qt::AlignLeft);
 
     m_iconLabel = new QLabel(this);
-   // m_iconLabel->setFixedSize(this->width()/5,this->height());
-    QPixmap pix;
-    pix.load("/home/kylin/.cache/uksc/icons/classified-ads.png");
-   // pix = pix.scaled(m_iconLabel->width(), m_iconLabel->height());
-    //m_iconLabel->setPixmap(pix);
+    QString iconstr= m_strAppIcon;
+    iconstr.remove(".png");
+    iconstr.remove(".svg");
+    QIcon icon=QIcon::fromTheme(iconstr);
+    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
+    m_iconLabel->setPixmap(pix);
 
     m_timeLabel = new QLabel(this);
     m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
@@ -54,4 +59,21 @@ void ProgressWidget::initUi()
    // gridLayout->setMargin(80);
     m_timeGridLayout->setSpacing(1);
     this->setLayout(m_timeGridLayout);
+}
+void  ProgressWidget::paintSlot(TABLETAPP &app)
+{
+    qDebug("ProgressWidget::paintSlot :time:%d ,name:%s, path:%s/n",app.iTime,m_strAppName.toLocal8Bit().data(),m_strAppIcon.toLocal8Bit().data());
+    this->m_iTime = app.iTime;
+    this->m_strAppName = app.appName;
+    this->m_strAppIcon = app.appIcon;
+    m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
+    m_processBar->setValue(m_iTime);
+    m_nameLabel->setText(m_strAppName);
+
+    QString iconstr= m_strAppIcon;
+    iconstr.remove(".png");
+    iconstr.remove(".svg");
+    QIcon icon=QIcon::fromTheme(iconstr);
+    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
+    m_iconLabel->setPixmap(pix);
 }
