@@ -746,6 +746,9 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 
     m_currentDesktop = desktop;
     m_currentDesktop->setParent(this);
+    //不适用主题框架的窗口拖动，避免被主题框架屏蔽移动事件
+    this->setProperty("useStyleWindowManager", false);
+    m_currentDesktop->setProperty("useStyleWindowManager", false);
 
     this->takeCentralWidget();
     this->setCentralWidget(m_currentDesktop);

@@ -23,18 +23,13 @@ public:
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    void mouseMoveEvent(QMouseEvent *event) override;
-
 public:
     QList<TABLETAPP>   getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap );
     void  initTime();
     long int getStudyTime(QString strMethod, QString appName);
     QString  getTime(QString strMethod, QStringList appList);
+
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     void initUi();
@@ -45,6 +40,7 @@ private:
     QPoint m_pressPoint;
     QPoint m_releasePoint;
     QPoint m_lastPressPoint;
+    bool   m_leftButtonPressed = false;
 
 public Q_SLOTS:
    void updateTimeSlot();
