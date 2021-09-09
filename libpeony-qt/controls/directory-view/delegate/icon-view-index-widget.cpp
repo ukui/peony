@@ -238,7 +238,6 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         //qDebug()<< "symbolic:" << info->symbolicIconName();
         icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
     }
-    IconView *view = m_delegate->getView();
     if(view->m_multi_select)
     {
         QIcon icon = QIcon(":/icons/icon-selected.png");
