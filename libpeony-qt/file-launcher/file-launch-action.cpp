@@ -135,7 +135,9 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
         // 首先把exec整个截取成 path+parameter形式
         if (exe.contains(" ")) {
-            parameters = exe.split(" ");
+//            parameters = exe.split(" ");
+            //排除参数之间多个空格分隔的情况
+            parameters = exe.split(QRegExp("\\s+"));
             exe = parameters[0];
             parameters.removeAt(0);
         }
