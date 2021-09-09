@@ -28,6 +28,7 @@ StudyCenterMode::StudyCenterMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
     m_statusManagerDBus = new QDBusInterface("com.kylin.statusmanager.interface", "/" ,"com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
     this->m_exitAnimationType = AnimationType::RightToLeft;
+    this->installEventFilter(this);
     initUi();
 }
 
@@ -55,7 +56,7 @@ void StudyCenterMode::initUi()
     int ScreenWidth=QApplication::primaryScreen()->geometry().width();
     int ScreenHeight=QApplication::primaryScreen()->geometry().height();
     this->setFixedSize(ScreenWidth,ScreenHeight);
-    m_tableAppMangager = TabletAppManager::getInstance();
+    m_tableAppMangager = TabletAppManager::getInstance(this);
 
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     QStringList strListTitleStyle;
@@ -66,19 +67,19 @@ void StudyCenterMode::initUi()
     dataMap.insert(STUDY_CENTER_ENGLISH,studyCenterDataMap[STUDY_CENTER_ENGLISH]);
     dataMap.insert(STUDY_CENTER_CHINESE,studyCenterDataMap[STUDY_CENTER_CHINESE]);
     dataMap.insert(STUDY_CENTER_OTHER,studyCenterDataMap[STUDY_CENTER_OTHER]);
-    StudyDirectoryWidget* practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1);
+    StudyDirectoryWidget* practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
     dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
-    StudyDirectoryWidget* guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    StudyDirectoryWidget* guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
     dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
-    StudyDirectoryWidget* synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    StudyDirectoryWidget* synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     StudyStatusWidget* widget4 = new StudyStatusWidget(appList,this);
@@ -99,6 +100,11 @@ void StudyCenterMode::initUi()
 //    QVBoxLayout vboxLayout;
 //    vboxLayout->addLayout(hboxLayout);
 //    vboxLayout->addWidget(widget4);
+
+    practiceWidget->installEventFilter(this);
+    guradWidget->installEventFilter(this);
+    synWidget->installEventFilter(this);
+    widget4->installEventFilter(this);
 
     QGridLayout* gridLayout = new QGridLayout;
 
@@ -282,61 +288,76 @@ void StudyCenterMode::updateTimeSlot()
     Q_EMIT markTimeSingal();
 }
 
-void StudyCenterMode::mousePressEvent(QMouseEvent *event)
+bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
 {
-    qDebug() << "[StudyCenterMode::mousePressEvent] " <<  event->globalPos();
-    m_pressPoint = event->globalPos();
-    m_lastPressPoint = event->globalPos();
-    QWidget::mousePressEvent(event);
-}
-
-void StudyCenterMode::mouseReleaseEvent(QMouseEvent *event)
-{
-    m_releasePoint = event->globalPos();
-    qint32 moveLength = m_releasePoint.x() - m_pressPoint.x();
-    qDebug() << "[StudyCenterMode::mouseReleaseEvent] " << moveLength;
-    if (moveLength < -200) {
-        //下一页
-        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
-        if (message_a.isValid()) {
-            if ((bool)message_a.value()) {
-                Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
-            } else {
-                Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
-            }
-        } else {
-            Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            qDebug() << "[StudyCenterMode::mousePressEvent] " << mouseEvent->globalPos();
+            m_pressPoint = mouseEvent->globalPos();
+            m_lastPressPoint = mouseEvent->globalPos();
+            m_leftButtonPressed = true;
         }
-    } else {
-        Q_EMIT desktopReboundRequest();
+    } else if (event->type() == QEvent::MouseButtonRelease) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            if (m_leftButtonPressed) {
+                m_releasePoint = mouseEvent->globalPos();
+                if (qAbs(m_releasePoint.y() - m_pressPoint.y()) < 50) {
+                    qint32 moveLength = m_releasePoint.x() - m_pressPoint.x();
+                    qDebug() << "[StudyCenterMode::mouseReleaseEvent] " << m_releasePoint << m_pressPoint << moveLength;
+                    if (moveLength < -200) {
+                        //下一页
+                        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+                        if (message_a.isValid()) {
+                            if ((bool) message_a.value()) {
+                                Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+                            } else {
+                                Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+                            }
+                        } else {
+                            Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+                        }
+                    } else {
+                        Q_EMIT desktopReboundRequest();
+                    }
+                    m_pressPoint = QPoint(-1, -1);
+                    m_lastPressPoint = QPoint(-1, -1);
+                    m_releasePoint = QPoint(-1, -1);
+
+                    return true;
+                }
+                m_leftButtonPressed = false;
+            }
+        }
     }
-    m_pressPoint = QPoint(-1, -1);
-    m_lastPressPoint = QPoint(-1, -1);
-    m_releasePoint = QPoint(-1, -1);
-    QWidget::mouseReleaseEvent(event);
-}
 
-void StudyCenterMode::mouseMoveEvent(QMouseEvent *event)
-{
-    qDebug() << "[StudyCenterMode::mouseMoveEvent] " << event->globalPos();
-
-    if (m_lastPressPoint.x() == -1) {
-        return;
-    }
-    QPoint currentPoint = event->globalPos();
-
-    if (qAbs(currentPoint.x() - m_pressPoint.x()) < 50){
-        return;
-    }
-
-    qint32 length = currentPoint.x() - m_lastPressPoint.x();
-
-    if (length <= 0) {
-        Q_EMIT desktopMoveRequest(AnimationType ::RightToLeft, qAbs(length), 0);
-    } else {
-        Q_EMIT desktopMoveRequest(AnimationType ::LeftToRight, qAbs(length), 0);
-    }
-
-    m_lastPressPoint = currentPoint;
-    QWidget::mouseMoveEvent(event);
+//    else if (event->type() == QEvent::MouseMove) {
+//        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+//    if (m_leftButtonPressed) {
+//        qDebug() << "[StudyCenterMode::mouseMoveEvent] " << event->globalPos();
+//
+//        if (m_lastPressPoint.x() == -1) {
+//            return;
+//        }
+//        QPoint currentPoint = event->globalPos();
+//
+//        if (qAbs(currentPoint.x() - m_pressPoint.x()) < 50) {
+//            return;
+//        }
+//
+//        qint32 length = currentPoint.x() - m_lastPressPoint.x();
+//
+//        if (length <= 0) {
+//            Q_EMIT desktopMoveRequest(AnimationType::RightToLeft, qAbs(length), 0);
+//        } else {
+//            Q_EMIT desktopMoveRequest(AnimationType::LeftToRight, qAbs(length), 0);
+//        }
+//
+//        m_lastPressPoint = currentPoint;
+//    } else {
+//        QWidget::mouseMoveEvent(event);
+//    }
+//    }
+    return false;
 }
