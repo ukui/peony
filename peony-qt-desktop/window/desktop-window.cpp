@@ -737,7 +737,7 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     }
     //TODO 尝试实现不同窗口设置不同背景 20210810
     if (m_currentDesktop) {
-        m_currentDesktop->setParent(nullptr);
+//        m_currentDesktop->setParent(nullptr);
         //取消掉上一个桌面的信号链接
         disconnect(m_currentDesktop, &DesktopWidgetBase::gotoSetBackground, this, &DesktopWindow::gotoSetThisBackground);
         disconnect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopWindow::desktopMoveProcess);
@@ -747,6 +747,7 @@ void DesktopWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     m_currentDesktop = desktop;
     m_currentDesktop->setParent(this);
 
+    this->takeCentralWidget();
     this->setCentralWidget(m_currentDesktop);
 
     m_currentDesktop->initDesktop(geometry());

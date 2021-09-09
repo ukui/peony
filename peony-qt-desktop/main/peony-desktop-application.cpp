@@ -317,6 +317,8 @@ void PeonyDesktopApplication::parseCmd(quint32 id, QByteArray msg, bool isPrimar
                 {
                     addWindow(screen);
                 }
+
+                this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
             }
             has_desktop = true;
         }
@@ -479,14 +481,14 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
     if (screen != nullptr) {
+        if (screen->geometry().topLeft() != m_primaryScreen->geometry().topLeft()) {
+            //屏幕设置为镜像屏时，不添加窗口
+            PEONY_DESKTOP_LOG_WARN("screen add process");
+            this->addWindow(screen, false);
+        }
         qDebug() << "screenAdded" << screen->name() << screen << m_windowManager->getWindowNumber()
                  << screen->availableSize();
-    } else {
-        return;
     }
-
-    PEONY_DESKTOP_LOG_WARN("screen add process");
-    addWindow(screen, false);
 }
 
 void PeonyDesktopApplication::screenRemovedProcess(QScreen *screen)
@@ -651,6 +653,9 @@ QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
+    if (m_animationIsRunning) {
+        return;
+    }
     m_animationIsRunning = true;
     this->updateGSettingValues();
     //NOTE 只在主屏幕上切换桌面
@@ -698,8 +703,8 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         return;
     }
     //保存原始效果以解决动画冲突问题
-    QWidget *currentEffectBackup = saveEffectWidget(currentDesktop);
-    QWidget *nextEffectBackup    = saveEffectWidget(nextDesktop);
+//    QWidget *currentEffectBackup = saveEffectWidget(currentDesktop);
+//    QWidget *nextEffectBackup    = saveEffectWidget(nextDesktop);
 
     //断开发送请求桌面的链接，防止频繁发送消息
     disconnect(currentDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
@@ -721,23 +726,30 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     //出现动画
     QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop,
                                                                       nextDesktopStartRect, primaryScreenRect);
+    showAnimation->setDuration(300);
+    QSequentialAnimationGroup *animationGroup = new QSequentialAnimationGroup(this);
+    animationGroup->addAnimation(exitAnimation);
+    animationGroup->addAnimation(showAnimation);
+
+    connect(animationGroup, &QSequentialAnimationGroup::finished, this, [=] {
+        animationGroup->clear();
+        animationGroup->deleteLater();
+    });
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
-        delete exitAnimation;
-        currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
+//        currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
         currentDesktop->setActivated(false);
-        delete currentEffectBackup;
+//        delete currentEffectBackup;
     });
 
     //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
     connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
-        delete showAnimation;
-        nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
+//        nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
         primaryWindow->setWindowDesktop(nextDesktop);
 
         m_windowManager->updateAllWindowGeometry();
         connect(nextDesktop, &DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
-        delete nextEffectBackup;
+//        delete nextEffectBackup;
         m_animationIsRunning = false;
     });
 
@@ -749,8 +761,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 //        nextDesktop->setHidden(false);
     }
 
-    exitAnimation->start();
-    showAnimation->start();
+    animationGroup->start();
 }
 
 QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &currentDesktopRect, AnimationType animationType, bool isExit)
@@ -816,7 +827,7 @@ QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &
 QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationType animationType, DesktopWidgetBase *object, QRect &startRect, QRect &endRect)
 {
     //动画时间 xx ms
-    quint32 duration = 600;
+    quint32 duration = 500;
 
     PropertyName propertyName = this->getPropertyNameByAnimation(animationType);
     //TODO 添加并实现其他动画类型 ...
@@ -925,9 +936,9 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
 void PeonyDesktopApplication::changeDesktop()
 {
     if (m_isTabletMode) {
-        this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::OpacityFull);
+        this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
     } else {
-        this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::OpacityFull);
+        this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::LeftToRight);
     }
 }
 

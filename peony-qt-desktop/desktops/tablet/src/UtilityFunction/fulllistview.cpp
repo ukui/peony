@@ -35,11 +35,11 @@
 FullListView::FullListView(QWidget *parent, int module):
     QListView(parent)
 {
-    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
-    shadowEffect->setBlurRadius(15);
-    shadowEffect->setColor(QColor(63, 63, 63, 180));
-    shadowEffect->setOffset(0,0);
-    this->setGraphicsEffect(shadowEffect);
+//    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
+//    shadowEffect->setBlurRadius(15);
+//    shadowEffect->setColor(QColor(63, 63, 63, 180));
+//    shadowEffect->setOffset(0,0);
+//    this->setGraphicsEffect(shadowEffect);
 
     this->module=module;
     initWidget();

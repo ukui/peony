@@ -29,7 +29,7 @@ QT_END_NAMESPACE
 
 TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
-    this->m_exitAnimationType = AnimationType::OpacityLess;
+    this->m_exitAnimationType = AnimationType::LeftToRight;
 
     this->setAutoFillBackground(false);
     this->setFocusPolicy(Qt::StrongFocus);
