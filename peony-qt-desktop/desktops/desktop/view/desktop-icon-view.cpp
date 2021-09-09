@@ -263,12 +263,12 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     this->refresh();
 
     PEONY_DESKTOP_LOG_WARN("create desktop icon view end");
-
-    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect;
-    shadowEffect->setBlurRadius(20);
-    shadowEffect->setColor(QColor(63, 63, 63, 180));
-    shadowEffect->setOffset(0,0);
-    setGraphicsEffect(shadowEffect);
+//该阴影效果应用于整个view，会导致桌面全部操作都存在阴影效果，引出很多bug
+//    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect;
+//    shadowEffect->setBlurRadius(20);
+//    shadowEffect->setColor(QColor(63, 63, 63, 180));
+//    shadowEffect->setOffset(0,0);
+//    setGraphicsEffect(shadowEffect);
 
     m_animation = new QVariantAnimation(this);
     m_animation->setDuration(250);
