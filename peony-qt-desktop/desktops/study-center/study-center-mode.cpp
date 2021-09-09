@@ -71,13 +71,13 @@ void StudyCenterMode::initUi()
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
-    dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
+    dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
     StudyDirectoryWidget* guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
-    dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
+    dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
     StudyDirectoryWidget* synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
