@@ -548,16 +548,15 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
     for (QString path : args) {
         QUrl url = path;
         if (url.scheme().isEmpty()) {
-            auto current_dir = g_get_current_dir();
-            QDir currentDir = QDir(current_dir);
-            g_free(current_dir);
-            //currentDir.cd(path);
-            auto absPath = currentDir.absoluteFilePath(path);
-            path = absPath;
-            url = QUrl::fromLocalFile(absPath);
-            uris << url.toDisplayString();
+            if (path.startsWith ("/")) {
+                uris << ("file://" + path);
+            } else {
+                g_autofree gchar* currentDir = g_get_current_dir();
+                g_autofree gchar* file = g_strdup_printf ("file://%s/%s", currentDir, path.toUtf8 ().constData ());
+                uris << file;
+            }
         } else {
-            uris << QString(url.toEncoded());
+            uris << FileUtils::urlEncode (path);
         }
     }
 
