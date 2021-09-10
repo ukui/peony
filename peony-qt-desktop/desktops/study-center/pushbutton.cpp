@@ -18,10 +18,12 @@
 
 #include "pushbutton.h"
 #include <QFont>
+#include <QDebug>
 
 PushButton::PushButton(QWidget *parent, QString name, int width, int height):
     QPushButton(parent)
 {
+    qDebug()<<"PushButton::PushButton name:"<<name;
     this->name=name;
     this->width=width;
     this->height=height;
@@ -54,6 +56,7 @@ void PushButton::initAppBtn()
     textlabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
     textlabel->setStyleSheet(style);
     textlabel->setFont(font);
+    qDebug()<<"PushButton::initAppBtn name:"<<name;
     textlabel->setText(tr(name.toLocal8Bit().data()));
     textlabel->adjustSize();
 
