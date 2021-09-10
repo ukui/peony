@@ -25,6 +25,7 @@
 #include "progress-item-delegate.h"
 #include "pushbutton.h"
 #include "../../tablet/data/tablet-app-manager.h"
+#include "../../tablet/src/Style/style.h"
 
 using namespace Peony;
 
@@ -155,7 +156,7 @@ void StudyDirectoryWidget::initAppListWidget()
     //    this->setUpdatesEnabled(true);
         listView->setFlow(QListView::LeftToRight);
         listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
+        listView->setGridSize(QSize(Style::AppListIconSize,Style::AppListIconSize));
         QStandardItemModel* listmodel=new QStandardItemModel;
         listView->setModel(listmodel);
 

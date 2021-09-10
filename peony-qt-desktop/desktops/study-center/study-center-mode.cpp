@@ -15,7 +15,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QDBusReply>
-//#include <QList>
+#include "../../tablet/src/Style/style.h"
 using namespace Peony;
 
 
@@ -44,6 +44,7 @@ void StudyCenterMode::setActivated(bool activated)
 
 DesktopWidgetBase *StudyCenterMode::initDesktop(const QRect &rect)
 {
+    updateTimeSlot();
     return DesktopWidgetBase::initDesktop(rect);
 }
 void StudyCenterMode::initUi()
@@ -63,26 +64,26 @@ void StudyCenterMode::initUi()
     strListTitleStyle<<"精准练习"<<"color:#009ACD";
     QMap<QString, QList<TabletAppEntity*>> dataMap;
 
-    dataMap.insert(STUDY_CENTER_MATH,studyCenterDataMap[STUDY_CENTER_MATH]);
-    dataMap.insert(STUDY_CENTER_ENGLISH,studyCenterDataMap[STUDY_CENTER_ENGLISH]);
-    dataMap.insert(STUDY_CENTER_CHINESE,studyCenterDataMap[STUDY_CENTER_CHINESE]);
-    dataMap.insert(STUDY_CENTER_OTHER,studyCenterDataMap[STUDY_CENTER_OTHER]);
-    StudyDirectoryWidget* practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
+    dataMap.insert(tr("math"),studyCenterDataMap[STUDY_CENTER_MATH]);
+    dataMap.insert(tr("english"),studyCenterDataMap[STUDY_CENTER_ENGLISH]);
+    dataMap.insert(tr("chinese"),studyCenterDataMap[STUDY_CENTER_CHINESE]);
+    dataMap.insert(tr("other"),studyCenterDataMap[STUDY_CENTER_OTHER]);
+    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
     dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
-    StudyDirectoryWidget* guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
+    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
     dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
-    StudyDirectoryWidget* synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1, this);
+    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
-    StudyStatusWidget* widget4 = new StudyStatusWidget(appList,this);
+    widget4 = new StudyStatusWidget(appList,this);
 
     connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP> &applist)),widget4,SLOT(paintProgressSlot(QList<TABLETAPP> &applist)));
     connect(this,SIGNAL(timeChangedSingal(QString,QString)),widget4,SLOT(timeChangeSlot(QString,QString)));
@@ -105,23 +106,36 @@ void StudyCenterMode::initUi()
     guradWidget->installEventFilter(this);
     synWidget->installEventFilter(this);
     widget4->installEventFilter(this);
+    m_mainGridLayout = new QGridLayout(this);
 
-    QGridLayout* gridLayout = new QGridLayout;
+    screenRotation();
 
-    gridLayout->addWidget(practiceWidget,0,0,3,2);
-    gridLayout->addWidget(guradWidget,0,2,1,1);
-    gridLayout->addWidget(synWidget,0,3,1,1);
-    gridLayout->addWidget(widget4,1,2,2,2);
+    //分辨率变化，就重画屏幕
+    connect(QApplication::desktop(), &QDesktopWidget::resized, this, [=]() {
+//       sleep(500);
+        centerToScreen(this);
+        screenRotation();
+    });
 
-//    gridLayout->setColumnStretch(0,1);
-//   // gridLayout->setColumnStretch(3,1);
-//    gridLayout->setRowStretch(2,1);
-//    gridLayout->setRowStretch(3,1);
-    //gridLayout->setRowStretch(4,1);
-    gridLayout->setMargin(80);
-    gridLayout->setSpacing(20);
-    this->setLayout(gridLayout);
+    //主屏变化
+    connect(QApplication::desktop(), &QDesktopWidget::primaryScreenChanged, this, [=] {
+        centerToScreen(this);
+    });
+    connect(QApplication::desktop(), &QDesktopWidget::screenCountChanged, this, [=] {
+        centerToScreen(this);
+    });
 
+    if (m_statusManagerDBus) {
+        if (m_statusManagerDBus->isValid()) {
+            /**
+             * 屏幕旋转
+             * @brief normal,upside-down,left,right
+             */
+            connect(m_statusManagerDBus, SIGNAL(rotations_change_signal(QString)), this, SLOT(updateRotationsValue(QString)));
+            //平板模式切换
+            connect(m_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletModeValue(bool)));
+        }
+    }
 
 //    QVBoxLayout* m_mainLayout = new QVBoxLayout(this);
 //    //m_mainLayout->setContentsMargins(1,0,0,0);
@@ -160,13 +174,14 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
         QList<TabletAppEntity*> tabletAppList = ite.value();
         for(int i = 0; i < tabletAppList.size(); ++i)
         {
-            m_appList.push_back(tabletAppList[i]->appName);
-            long int iWeekmm = getStudyTime("GetWeekCumulativeTime", tabletAppList[i]->appName);
+            QString strDesktop = tabletAppList[i]->desktopName.left(tabletAppList[i]->desktopName.indexOf(".desktop"));
+            m_appList.push_back(strDesktop);
+            long int iWeekmm = getStudyTime("GetWeekCumulativeTime", strDesktop);
+            qDebug("StudyCenterMode::getTimeOrder appName[%d] :%s,desktop:%s  /n", i, tabletAppList[i]->appName.toLocal8Bit().data(),tabletAppList[i]->desktopName.toLocal8Bit().data());
             qDebug("StudyCenterMode::getTimeOrder:%d,name:%s,path:%s  /n", iWeekmm,tabletAppList[i]->appName.toLocal8Bit().data(),tabletAppList[i]->appIcon.toLocal8Bit().data());
             for(int j = 0; j < maxTimeList.size(); ++j)
             {
-
-                qDebug("StudyCenterMode::getTimeOrder maxTimeList[%d] :%s,path:%s  /n", i, maxTimeList[i].appName.toLocal8Bit().data(),maxTimeList[i].appIcon.toLocal8Bit().data());
+                   qDebug("StudyCenterMode::getTimeOrder maxTimeList[%d] :%s,path:%s  /n", i, maxTimeList[i].appName.toLocal8Bit().data(),maxTimeList[i].appIcon.toLocal8Bit().data());
                 if(iWeekmm >= maxTimeList[j].iTime)
                 {
                     TABLETAPP maxTimeApp;
@@ -176,15 +191,16 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
                     maxTimeApp.execCommand = tabletAppList[i]->execCommand;
                     maxTimeApp.iTime = iWeekmm;
                     maxTimeList.insert(j, maxTimeApp);
-                    if(maxTimeList.size() > 4)
-                    {
-                        maxTimeList.pop_back();
-                    }
                     break;
                 }
+//                else if(iWeekmm == maxTimeList[j].iTime)
+//                {
+//                    //QCollator
+//                }
             }
         }
     }
+    maxTimeList.pop_back();
     Q_EMIT valueChangedSingal(maxTimeList);
     return maxTimeList;
 }
@@ -360,4 +376,91 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
 //    }
 //    }
     return false;
+}
+
+void StudyCenterMode::updateTabletModeValue(bool mode)
+{
+    m_isTabletMode = mode;
+}
+
+void StudyCenterMode::updateRotationsValue(QString rotation)
+{
+    qDebug() << "StudyCenterMode::updateRotationsValue rotation:" << rotation <<"  m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
+    m_direction = rotation;
+    screenRotation();
+}
+void StudyCenterMode::screenRotation()
+{
+    qDebug() << "StudyCenterMode::screenRotation   m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
+
+    if (!m_isTabletMode)
+    {
+        return;
+    }
+    //note 屏幕变化后，负责将app视图和小组件大小进行调整
+    //1.隐藏各个组件
+    if(m_mainGridLayout->count())
+    {
+        m_mainGridLayout->removeWidget(practiceWidget);
+        m_mainGridLayout->removeWidget(guradWidget);
+        m_mainGridLayout->removeWidget(synWidget);
+        m_mainGridLayout->removeWidget(widget4);
+    }
+
+    //3.从新获取屏幕大小,设置当前组件几何
+    QScreen *primaryScreen = QApplication::primaryScreen();
+
+    //4.从新设置组件
+    if ((m_direction == "left" || m_direction == "right") &&
+               (primaryScreen->geometry().width() <
+                primaryScreen->geometry().height()))
+    {
+         Style::ScreenRotation = true; //竖屏
+
+    }
+    else
+    {
+         Style::ScreenRotation = false; //横屏
+    }
+    qDebug() << "StudyCenterMode::screenRotation width:" << primaryScreen->geometry().width()  <<"  height:"<<primaryScreen->geometry().height() << "Style::ScreenRotation :"<<Style::ScreenRotation  ;
+
+    this->setFixedSize(primaryScreen->geometry().width(),primaryScreen->geometry().height());
+    qDebug() << "StudyCenterMode::screenRotation widget width:" << this->width()  <<"  height:"<<this->height();
+
+    Style::initWidStyle();
+
+    //5.显示全部组件
+    if(Style::ScreenRotation)
+    {
+        m_mainGridLayout->addWidget(practiceWidget,0,0,4,2);
+        m_mainGridLayout->addWidget(guradWidget,4,0,2,1);
+        m_mainGridLayout->addWidget(synWidget,4,1,2,1);
+        m_mainGridLayout->addWidget(widget4,6,0,3,2);
+    }
+    else
+    {
+        m_mainGridLayout->addWidget(practiceWidget,0,0,3,2);
+        m_mainGridLayout->addWidget(guradWidget,0,2,1,1);
+        m_mainGridLayout->addWidget(synWidget,0,3,1,1);
+        m_mainGridLayout->addWidget(widget4,1,2,2,2);
+    }
+
+    m_mainGridLayout->setMargin(80);
+    m_mainGridLayout->setSpacing(20);
+    this->setLayout(m_mainGridLayout);
+}
+
+
+void StudyCenterMode::centerToScreen(QWidget *widget)
+{
+    qDebug() << "StudyCenterMode::centerToScreen" ;
+    if (!widget)
+        return;
+    QDesktopWidget *m = QApplication::desktop();
+    QRect desk_rect = m->screenGeometry(m->screenNumber(QCursor::pos()));
+    int desk_x = desk_rect.width();
+    int desk_y = desk_rect.height();
+    int x = QApplication::primaryScreen()->geometry().width();
+    int y = QApplication::primaryScreen()->geometry().height();
+    widget->move(desk_x / 2 - x / 2 + desk_rect.left(), desk_y / 2 - y / 2 + desk_rect.top());
 }
