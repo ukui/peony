@@ -341,7 +341,8 @@ void MainWindow::setShortCuts()
         connect(trashAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("search://")
-                    || currentUri.startsWith("favorite://") || currentUri == "filesafe:///")
+                    || currentUri.startsWith("favorite://") || currentUri == "filesafe:///"
+                    || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
             auto uris = this->getCurrentSelections();
@@ -371,7 +372,8 @@ void MainWindow::setShortCuts()
         addAction(deleteAction);
         connect(deleteAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
-            if (currentUri.startsWith("search://") || currentUri == "filesafe:///")
+            if (currentUri.startsWith("search://") || currentUri == "filesafe:///"
+                    || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
             auto uris = this->getCurrentSelections();
