@@ -18,5 +18,7 @@
         <file>img/click.svg</file>
         <file>img/default.svg</file>
         <file>img/hover.svg</file>
+        <file>img/learning-center-select.svg</file>
+        <file>img/learning-center-selected.svg</file>
     </qresource>
 </RCC>

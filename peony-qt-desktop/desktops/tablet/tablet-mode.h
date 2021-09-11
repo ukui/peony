@@ -74,6 +74,7 @@ protected:
 private:
     bool checkAppList();
     void paintEvent(QPaintEvent *event);
+    void updatePageButtonStatus(qint32 page);
 
 private Q_SLOTS:
     void updateRotationsValue(QString rotation);
