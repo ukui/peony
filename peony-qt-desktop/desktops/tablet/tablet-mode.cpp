@@ -300,9 +300,9 @@ void TabletMode::updatePageButton()
 
         if (page == 0) {
             //学习中心特别图标
-            button->setStyleSheet("QPushButton{border-image:url(:/img/click.svg);}"
-                                  "QPushButton:hover{border-image: url(:/img/click.svg);}"
-                                  "QPushButton:pressed{border-image: url(:/img/click.svg);}");
+            button->setStyleSheet("QPushButton{border-image:url(:/img/learning-center-select.svg);}"
+                                  "QPushButton:hover{border-image: url(:/img/learning-center-select.svg);}"
+                                  "QPushButton:pressed{border-image: url(:/img/learning-center-selected.svg);}");
 
         } else if (page == 1) {
             button->setStyleSheet("QPushButton{border-image:url(:/img/click.svg);}"
@@ -326,6 +326,7 @@ void TabletMode::buttonClicked(QAbstractButton *button)
 {
     int id = m_buttonGroup->id(button);
     if (id <= 0) {
+        this->updatePageButtonStatus(0);
         //goto study center
         Q_EMIT moveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         return;
@@ -336,6 +337,33 @@ void TabletMode::buttonClicked(QAbstractButton *button)
     }
 
     this->pageNumberChanged(id - Style::nowpagenum);
+}
+
+void TabletMode::updatePageButtonStatus(qint32 page)
+{
+    for (int i = 0; i < m_buttonGroup->buttons().count(); i++) {
+        if (i == page) {
+            if (i == 0) {
+                m_buttonGroup->button(i)->setStyleSheet("QPushButton{border-image:url(:/img/learning-center-selected.svg);}"
+                                                           "QPushButton:hover{border-image: url(:/img/learning-center-selected.svg);}"
+                                                           "QPushButton:pressed{border-image: url(:/img/learning-center-selected.svg);}");
+            } else {
+                m_buttonGroup->button(i)->setStyleSheet("QPushButton{border-image:url(:/img/click.svg);}"
+                                                           "QPushButton:hover{border-image: url(:/img/click.svg);}"
+                                                           "QPushButton:pressed{border-image: url(:/img/click.svg);}");
+            }
+        } else {
+            if (i == 0) {
+                m_buttonGroup->button(i)->setStyleSheet("QPushButton{border-image:url(:/img/learning-center-select.svg);}"
+                                                        "QPushButton:hover{border-image: url(:/img/learning-center-select.svg);}"
+                                                        "QPushButton:pressed{border-image: url(:/img/learning-center-selected.svg);}");
+            } else {
+                m_buttonGroup->button(i)->setStyleSheet("QPushButton{border-image:url(:/img/default.svg);}"
+                                                        "QPushButton:hover{border-image: url(:/img/default.svg);}"
+                                                        "QPushButton:pressed{border-image: url(:/img/click.svg);}");
+            }
+        }
+    }
 }
 
 void TabletMode::pageNumberChanged(qint32 signal)
@@ -350,6 +378,7 @@ void TabletMode::pageNumberChanged(qint32 signal)
 
     if (Style::nowpagenum < 1) {
         Style::nowpagenum = 1;
+        this->updatePageButtonStatus(0);
         Q_EMIT moveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         return;
     }
@@ -366,18 +395,7 @@ void TabletMode::pageNumberChanged(qint32 signal)
     if (Style::appPage != 1) {
         m_pageButtonWidget->hide();
         this->changePage(signal);
-        for (int page = 1; page <= Style::appPage; page++) {
-            if (Style::nowpagenum == page) {
-                m_buttonGroup->button(page)->setStyleSheet("QPushButton{border-image:url(:/img/click.svg);}"
-                                                         "QPushButton:hover{border-image: url(:/img/click.svg);}"
-                                                         "QPushButton:pressed{border-image: url(:/img/click.svg);}");
-
-            } else {
-                m_buttonGroup->button(page)->setStyleSheet("QPushButton{border-image:url(:/img/default.svg);}"
-                                                         "QPushButton:hover{border-image: url(:/img/default.svg);}"
-                                                         "QPushButton:pressed{border-image: url(:/img/click.svg);}");
-            }
-        }
+        this->updatePageButtonStatus(Style::nowpagenum);
     }
 }
 

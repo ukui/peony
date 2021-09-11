@@ -135,7 +135,8 @@ void FullCommonUseWidget::execApplication(QString desktopfp)
         //qDebug()<<"=====dd====="<<exe;
     }
     if (exe.indexOf("-") != -1) {
-        parameters = exe.split(" ");
+//        parameters = exe.split(" ");
+        parameters = exe.split(QRegExp("\\s+"));
         exe = parameters[0];
         parameters.removeAt(0);
         //qDebug()<<"===qqq==="<<exe;
