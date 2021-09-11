@@ -366,7 +366,7 @@ void PeonyDesktopApplication::addWindow(QScreen *screen, bool checkPrimary)
         {
             DesktopWidgetBase *desktop = nullptr;
             //通过系统类型获取桌面
-            qDebug() << "===当前桌面模式：" << m_isTabletMode;
+            qDebug() << "[PeonyDesktopApplication::addWindow] is tablet mode?" << m_isTabletMode;
             if(m_isTabletMode) {
                 //平板模式
                 desktop = m_desktopManager->getDesktopByType(DesktopType::Tablet);
@@ -758,7 +758,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         nextDesktop->setGeometry(primaryScreenRect);
     } else {
         nextDesktop->setGeometry(nextDesktopStartRect);
-//        nextDesktop->setHidden(false);
+        nextDesktop->show();
     }
 
     animationGroup->start();
@@ -796,10 +796,10 @@ QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &
     } else {
         switch (animationType) {
             case AnimationType::LeftToRight:
-                nextRect = QRect((currentDesktopRect.x() - screenRect.width()), 0, screenRect.width(), screenRect.height());
+                nextRect = QRect(-screenRect.width(), 0, screenRect.width(), screenRect.height());
                 break;
             case AnimationType::RightToLeft:
-                nextRect = QRect((currentDesktopRect.x() + screenRect.width()), 0, screenRect.width(), screenRect.height());
+                nextRect = QRect(screenRect.width(), 0, screenRect.width(), screenRect.height());
                 break;
             case AnimationType::CenterToEdge: {
                 //起点rect的高度为窗口高度的四分之一
