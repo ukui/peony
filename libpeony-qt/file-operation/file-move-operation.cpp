@@ -97,6 +97,15 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
 ExceptionResponse FileMoveOperation::prehandle(GError *err)
 {
     //setHasError(true);
+
+    /**
+     * @note FIX BUG 79363
+     * 文件传输中拔掉U盘，第一次报错:G_IO_ERROR_FAILED，后续报错:G_IO_ERROR_NOT_FOUND
+     */
+    if (G_IO_ERROR_NOT_FOUND == err->code && m_prehandle_hash.contains(G_IO_ERROR_FAILED)) {
+        return IgnoreAll;
+    }
+
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
 

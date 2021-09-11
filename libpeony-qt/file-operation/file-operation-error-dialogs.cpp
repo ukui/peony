@@ -307,6 +307,9 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
         case G_IO_ERROR_TOO_MANY_OPEN_FILES:
             error.respCode = Cancel;
             break;
+        case G_IO_ERROR_FAILED:
+            error.respCode = IgnoreAll;
+            break;
         default:
             error.respCode = IgnoreOne;
             break;
