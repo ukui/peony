@@ -39,35 +39,46 @@ static QString formatGerrorString (const Peony::FileOperationError* error);
 Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
 {
-    QPushButton* b = addButton (tr("Replace"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ignore = false;
-        m_backup = false;
-        m_replace = true;
-        done(QDialog::Accepted);
-    });
+    setFixedSize(m_fix_width, m_fix_height);
+    setContentsMargins(9, 9, 9, 9);
 
-    b = addButton (tr("Ignore"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ignore = true;
-        m_backup = false;
-        m_replace = false;
-        done(QDialog::Accepted);
-    });
+    // file icon
+    m_file_icon = new QLabel(this);
+    m_file_icon->setGeometry(m_file_x, m_file_y, m_file_size, m_file_size);
+    m_file_icon->setPixmap(QIcon::fromTheme(m_file_icon_name.isEmpty()?"text-x-plain":m_file_icon_name).pixmap(QSize(m_file_size, m_file_size)));
 
-    b = addButton (tr("Backup"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ignore = false;
-        m_backup = true;
-        m_replace = false;
-        done(QDialog::Accepted);
-    });
 
-    QCheckBox* c = addCheckBoxLeft (tr("Do the same"));
-    connect(c, &QCheckBox::stateChanged, this, [=](int chose) {
+    m_tip = new QLabel(this);
+    m_tip->setTextFormat(Qt::RichText);
+    m_tip->setBackgroundRole(QPalette::Link);
+    m_tip->setText(QString("<p>%1 %3</p>")
+                   .arg(tr("This location already contains the file,"))
+                   .arg(tr("Do you want to override it?")));
+    m_tip->setWordWrap(true);
+    m_tip->setGeometry(m_tip_x, m_tip_y, m_tip_width, m_tip_height);
+
+    // replace
+    m_rp_btn = new QPushButton(this);
+    m_rp_btn->setText(tr("Replace"));
+    m_rp_btn->setBackgroundRole(QPalette::Button);
+    m_rp_btn->setGeometry(m_rp_btn_x, m_rp_btn_y, m_rp_btn_width, m_rp_btn_height);
+
+    // ignore
+    m_ig_btn = new QPushButton(this);
+    m_ig_btn->setText(tr("Ignore"));
+    m_ig_btn->setGeometry(m_ig_btn_x, m_ig_btn_y, m_ig_btn_width, m_ig_btn_height);
+
+    // backup
+    m_bk_btn = new QPushButton(this);
+    m_bk_btn->setText(tr("Backup"));
+    m_bk_btn->setGeometry(m_bk_btn_x, m_bk_btn_y, m_bk_btn_width, m_bk_btn_height);
+
+    // Then do the same thing
+    m_sm_ck = new QCheckBox(this);
+    m_sm_ck->setText(tr("Do the same"));
+    m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width / 2, m_sm_btn_height);
+
+    connect(m_sm_ck, &QCheckBox::stateChanged, this, [=](int chose) {
         switch (chose) {
         case Qt::Checked:
             m_do_same = true;
@@ -76,6 +87,27 @@ Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOp
         default:
             m_do_same = false;
         }
+    });
+
+    connect(m_rp_btn, &QPushButton::pressed, this, [=] () {
+        m_ignore = false;
+        m_backup = false;
+        m_replace = true;
+        done(QDialog::Accepted);
+    });
+
+    connect(m_ig_btn, &QPushButton::pressed, this, [=] () {
+        m_ignore = true;
+        m_backup = false;
+        m_replace = false;
+        done(QDialog::Accepted);
+    });
+
+    connect(m_bk_btn, &QPushButton::pressed, this, [=] () {
+        m_ignore = false;
+        m_backup = true;
+        m_replace = false;
+        done(QDialog::Accepted);
     });
 }
 
@@ -86,18 +118,19 @@ Peony::FileOperationErrorDialogConflict::~FileOperationErrorDialogConflict()
 
 void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
 {
-    if (!name.isNull () && !name.isEmpty()) {
+    if (!name.isEmpty()) {
         QStyleOptionViewItem opt;
-        QString fileName = QUrl(name).toDisplayString();
-        setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
-                    .arg(opt.fontMetrics.elidedText(fileName, Qt::ElideMiddle, 480)));
+        m_file_name = QUrl(name).toDisplayString();
+        m_tip->setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
+                       .arg(opt.fontMetrics.elidedText(m_file_name, Qt::ElideMiddle, 480)));
     }
 }
 
 void Peony::FileOperationErrorDialogConflict::setTipFileicon(QString icon)
 {
-    if (!icon.isNull () && !icon.isEmpty()) {
-        setIcon (icon);
+    if (!icon.isEmpty()) {
+        m_file_icon_name = icon;
+        m_file_icon->setPixmap(QIcon::fromTheme(m_file_icon_name.isEmpty()?"text-x-plain":m_file_icon_name).pixmap(QSize(m_file_size, m_file_size)));
     }
 }
 
@@ -110,11 +143,31 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
         file.querySync();
         setTipFileicon(file.getInfo()->iconName());
         setTipFilename(file.getInfo()->displayName());
+    } else if (FileOpUntrash == m_error->op) {
+        // The Recycle Bin has special treatment for files with the same name
+        QString srcFileName = error.srcUri.split("/").back();
+        QString srcFileNoExt = srcFileName.split(".").first();
+
+        QString destFileName = error.destDirUri.split("/").back();
+        QString destFileNoExt = destFileName.split(".").first();
+
+        FileInfoJob file(error.srcUri, nullptr);
+        file.querySync();
+
+        setTipFileicon(file.getInfo()->iconName());
+
+        if (srcFileNoExt == destFileNoExt && srcFileName.contains(destFileNoExt)) {
+            setTipFilename(destFileName);
+        } else {
+            setTipFilename(file.getInfo()->displayName());
+        }
+
     } else {
         QString fileName = error.srcUri.split("/").back();
         QString url = error.destDirUri.contains(fileName) ? error.destDirUri : error.destDirUri + "/" + fileName;
         FileInfoJob file(url, nullptr);
         file.querySync();
+
         setTipFileicon(file.getInfo()->iconName());
         setTipFilename(file.getInfo()->displayName());
     }
@@ -156,12 +209,15 @@ Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDia
     switch (errInfo.dlgType) {
     case ED_CONFLICT:
         dlg = new FileOperationErrorDialogConflict();
+        dlg->setHeaderIcon("dialog-warning");
         break;
     case ED_WARNING:
         dlg = new FileOperationErrorDialogWarning();
+        dlg->setHeaderIcon("dialog-error");
         break;
     case ED_NOT_SUPPORTED: {
         dlg = new FileOperationErrorDialogNotSupported();
+        dlg->setHeaderIcon("dialog-information");
         break;
     }
     }
@@ -172,20 +228,42 @@ Peony::FileOperationErrorHandler *Peony::FileOperationErrorDialogFactory::getDia
 Peony::FileOperationErrorDialogWarning::FileOperationErrorDialogWarning(Peony::FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
 {
-    QPushButton* b = addButton (tr("OK"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ok = true;
-        m_cancel = false;
-        done(QDialog::Accepted);
+    setFixedSize(m_fix_width, m_fix_height);
+    setContentsMargins(9, 9, 9, 9);
+
+    m_icon = new QLabel(this);
+    m_icon->setGeometry(m_margin_lr, m_pic_top, m_pic_size, m_pic_size);
+    m_icon->setPixmap(QIcon::fromTheme("dialog-error").pixmap(m_pic_size, m_pic_size));
+
+    m_text_scroll = new QScrollArea(this);
+    m_text_scroll->setFrameShape(QFrame::NoFrame);
+    m_text_scroll->setGeometry(m_margin + m_margin_lr + m_pic_size, m_text_y,
+                               width() - m_margin - m_margin_lr * 2 - m_pic_size, m_text_heigth);
+
+    m_text = new QLabel(m_text_scroll);
+
+    m_text->setText("");
+    m_text->setWordWrap(true);
+    m_text->setMinimumWidth(width() - m_margin - m_margin_lr * 2 - m_pic_size);
+
+    m_text_scroll->setWidget(m_text);
+    m_text_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_text_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_ok = new QPushButton(this);
+    m_ok->setText(tr("OK"));
+    m_ok->setGeometry(m_ok_x, m_ok_y, m_ok_w, m_ok_h);
+
+    m_cancel = new QPushButton(this);
+    m_cancel->setText(tr("Cancel"));
+    m_cancel->setGeometry(m_cancel_x, m_cancel_y, m_cancel_w, m_cancel_h);
+
+    connect(m_ok, &QPushButton::pressed, this, [=](){
+        done (QDialog::Accepted);
     });
 
-    m_cancel_btn = b = addButton (tr("Cancel"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ok = false;
-        m_cancel = true;
-        done(QDialog::Rejected);
+    connect(m_cancel, &QPushButton::pressed, this, [=] () {
+        done (QDialog::Rejected);
     });
 }
 
@@ -209,32 +287,32 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
         m_text->setText(htmlString);
     }
 
+    m_text->adjustSize();
+    m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     if (m_error->op && FileOpRenameToHideFile == m_error->op) {
-        if (m_cancel_btn) {
-            delete m_cancel_btn;
-        }
+        delete m_cancel;
     }
 
     int ret = exec();
 
     switch (m_error->errorCode) {
-    case G_IO_ERROR_BUSY:
-    case G_IO_ERROR_PENDING:
-    case G_IO_ERROR_NO_SPACE:
-    case G_IO_ERROR_CANCELLED:
-    case G_IO_ERROR_INVALID_DATA:
-    case G_IO_ERROR_NOT_SUPPORTED:
-    case G_IO_ERROR_PERMISSION_DENIED:
-    case G_IO_ERROR_CANT_CREATE_BACKUP:
-    case G_IO_ERROR_TOO_MANY_OPEN_FILES:
-        error.respCode = Cancel;
-        break;
-    case G_IO_ERROR_FAILED:
-        error.respCode = IgnoreAll;
-        break;
-    default:
-        error.respCode = IgnoreOne;
-        break;
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_NOT_SUPPORTED:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            error.respCode = Cancel;
+            break;
+        case G_IO_ERROR_FAILED:
+            error.respCode = IgnoreAll;
+            break;
+        default:
+            error.respCode = IgnoreOne;
+            break;
     }
 
     // Delete file to the Recycle Bin error, prompt whether to force deletion
@@ -269,34 +347,46 @@ static QPixmap drawSymbolicColoredPixmap (const QPixmap& source)
 
 Peony::FileOperationErrorDialogNotSupported::FileOperationErrorDialogNotSupported(Peony::FileOperationErrorDialogBase *parent) : FileOperationErrorDialogBase(parent)
 {
-    setIcon ("dialog-infomation");
+    setFixedSize(m_fix_width, m_fix_height);
+    setContentsMargins(9, 9, 9, 9);
 
-    QPushButton* b = addButton (tr("Yes"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ok = true;
-        m_cancel = false;
-        done(QDialog::Accepted);
+    m_icon = new QLabel(this);
+    m_icon->setGeometry(m_margin_lr, m_pic_top, m_pic_size, m_pic_size);
+    m_icon->setPixmap(QIcon::fromTheme("dialog-infomation").pixmap(m_pic_size, m_pic_size));
+
+    m_text_scroll = new QScrollArea(this);
+    m_text_scroll->setFrameShape(QFrame::NoFrame);
+    m_text_scroll->setGeometry(m_margin + m_margin_lr + m_pic_size, m_text_y,
+                               width() - m_margin - m_margin_lr * 2 - m_pic_size, m_text_heigth);
+
+    m_text = new QLabel(m_text_scroll);
+
+    m_text->setText("");
+    m_text->setWordWrap(true);
+    m_text->setMinimumWidth(width() - m_margin - m_margin_lr * 2 - m_pic_size);
+
+    m_text_scroll->setWidget(m_text);
+    m_text_scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_text_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_ok = new QPushButton(this);
+    m_ok->setText(tr("Yes"));
+    m_ok->setGeometry(m_ok_x, m_ok_y, m_ok_w, m_ok_h);
+
+    m_cancel = new QPushButton(this);
+    m_cancel->setText(tr("Cancel"));
+    m_cancel->setGeometry(m_cancel_x, m_cancel_y, m_cancel_w, m_cancel_h);
+
+    m_sm_ck = new QCheckBox(this);
+    m_sm_ck->setText(tr("Do the same"));
+    m_sm_ck->setGeometry(m_sm_btn_x, m_sm_btn_y, m_sm_btn_width, m_sm_btn_height);
+
+    connect(m_ok, &QPushButton::pressed, this, [=](){
+        done (QDialog::Accepted);
     });
 
-    b = addButton (tr("Cancel"));
-    b->setBackgroundRole(QPalette::Button);
-    connect(b, &QPushButton::pressed, this, [=] () {
-        m_ok = false;
-        m_cancel = true;
-        done(QDialog::Rejected);
-    });
-
-    QCheckBox* c = addCheckBoxLeft (tr("Do the same"));
-    connect(c, &QCheckBox::stateChanged, this, [=](int chose) {
-        switch (chose) {
-        case Qt::Checked:
-            m_do_same = true;
-            break;
-        case Qt::Unchecked:
-        default:
-            m_do_same = false;
-        }
+    connect(m_cancel, &QPushButton::pressed, this, [=] () {
+        done (QDialog::Rejected);
     });
 }
 
@@ -312,41 +402,44 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
     QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
         QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(m_error->errorStr.toHtmlEscaped(), Qt::ElideMiddle, 480).toHtmlEscaped());
-        setText(htmlString);
+                .arg(opt.fontMetrics.elidedText(m_error->errorStr.toHtmlEscaped(), Qt::ElideMiddle, 480).toHtmlEscaped());
+        m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
-        setText(htmlString);
+                .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
+        m_text->setText(htmlString);
     }
+
+    m_text->adjustSize();
+    m_text->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 
     int ret = exec();
 
     switch (m_error->errorCode) {
-    case G_IO_ERROR_NOT_SUPPORTED: {
-        if (!m_do_same)
-            error.respCode = OverWriteOne;
-        else
-            error.respCode = OverWriteAll;
-        break;
-    }
-    case G_IO_ERROR_BUSY:
-    case G_IO_ERROR_PENDING:
-    case G_IO_ERROR_NO_SPACE:
-    case G_IO_ERROR_CANCELLED:
-    case G_IO_ERROR_INVALID_DATA:
-    case G_IO_ERROR_PERMISSION_DENIED:
-    case G_IO_ERROR_CANT_CREATE_BACKUP:
-    case G_IO_ERROR_TOO_MANY_OPEN_FILES:
-        error.respCode = Cancel;
-        break;
-    default:
-        error.respCode = IgnoreOne;
-        break;
+        case G_IO_ERROR_NOT_SUPPORTED: {
+            if (!m_sm_ck->isChecked())
+                error.respCode = OverWriteOne;
+            else
+                error.respCode = OverWriteAll;
+            break;
+        }
+        case G_IO_ERROR_BUSY:
+        case G_IO_ERROR_PENDING:
+        case G_IO_ERROR_NO_SPACE:
+        case G_IO_ERROR_CANCELLED:
+        case G_IO_ERROR_INVALID_DATA:
+        case G_IO_ERROR_PERMISSION_DENIED:
+        case G_IO_ERROR_CANT_CREATE_BACKUP:
+        case G_IO_ERROR_TOO_MANY_OPEN_FILES:
+            error.respCode = Cancel;
+            break;
+        default:
+            error.respCode = IgnoreOne;
+            break;
     }
 
     if (QDialog::Accepted == ret && m_error->op == FileOpTrash && G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode) {
-        error.respCode = m_do_same ? error.respCode = ForceAll : error.respCode = Force;
+        error.respCode = m_sm_ck->isChecked() ? error.respCode = ForceAll : error.respCode = Force;
     } else if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
