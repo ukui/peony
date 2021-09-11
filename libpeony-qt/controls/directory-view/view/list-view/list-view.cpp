@@ -68,6 +68,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
+    setAutoScroll(true);
+    setAutoScrollMargin(100);
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setSelectionBehavior(QTreeView::SelectRows);
