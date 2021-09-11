@@ -70,6 +70,9 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
+    setAutoScroll(true);
+    setAutoScrollMargin(100);
+
     setStyle(IconViewStyle::getStyle());
     //FIXME: do not create proxy in view itself.
     IconViewDelegate *delegate = new IconViewDelegate(this);
