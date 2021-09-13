@@ -25,11 +25,13 @@ void ProgressWidget::initUi()
     this->setAttribute(Qt::WA_StyledBackground,true);
 
     m_processBar = new QProgressBar(this);
-    //m_processBar->setFixedSize(this->width()/5*4,8);
+    m_processBar->setFixedSize(this->width()/6*4,8);
     m_processBar->setRange(0,100);
     m_processBar->setValue(m_iTime);
-    m_processBar->setStyleSheet("border-radius:10px;"
-                                    "background: Grey;");
+    m_processBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;"
+                                "background-color:rgba(232, 232, 232 );}"
+                                "QProgressBar::chunk{background-color:rgba(99, 184, 255 );border:none;border-radius:4px;}");
+
 
     m_processBar->setTextVisible(false);
 
@@ -52,10 +54,10 @@ void ProgressWidget::initUi()
     m_timeLabel->setAlignment(Qt::AlignRight);
 
     m_timeGridLayout = new QGridLayout;
-    m_timeGridLayout->addWidget(m_iconLabel,0,0,2,1);
+    m_timeGridLayout->addWidget(m_iconLabel,0,0,4,1);
     m_timeGridLayout->addWidget(m_nameLabel,0,1,1,2);
-    m_timeGridLayout->addWidget(m_timeLabel,0,2,1,2);
-    m_timeGridLayout->addWidget(m_processBar,1,1,1,4);
+    m_timeGridLayout->addWidget(m_timeLabel,0,3,1,2);
+    m_timeGridLayout->addWidget(m_processBar,2,1,1,4);
    // gridLayout->setMargin(80);
     m_timeGridLayout->setSpacing(1);
     this->setLayout(m_timeGridLayout);
