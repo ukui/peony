@@ -109,7 +109,9 @@ void StudyCenterMode::initUi()
     m_mainGridLayout = new QGridLayout(this);
 
     screenRotation();
-
+    m_mainGridLayout->setMargin(80);
+    m_mainGridLayout->setSpacing(20);
+    this->setLayout(m_mainGridLayout);
     //分辨率变化，就重画屏幕
     connect(QApplication::desktop(), &QDesktopWidget::resized, this, [=]() {
 //       sleep(500);
@@ -393,10 +395,10 @@ void StudyCenterMode::screenRotation()
 {
     qDebug() << "StudyCenterMode::screenRotation   m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
 
-    if (!m_isTabletMode)
-    {
-        return;
-    }
+//    if (!m_isTabletMode)
+//    {
+//        return;
+//    }
     //note 屏幕变化后，负责将app视图和小组件大小进行调整
     //1.隐藏各个组件
     if(m_mainGridLayout->count())
@@ -445,9 +447,6 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(widget4,1,2,2,2);
     }
 
-    m_mainGridLayout->setMargin(80);
-    m_mainGridLayout->setSpacing(20);
-    this->setLayout(m_mainGridLayout);
 }
 
 
