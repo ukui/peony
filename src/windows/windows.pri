@@ -15,3 +15,6 @@ SOURCES += \
     $$PWD/x11-window-manager.cpp \
     $$PWD/xatom-helper.cpp \
     $$PWD/about-dialog.cpp
+
+FORMS += \
+    $$PWD/about-dialog.ui
