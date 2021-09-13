@@ -112,7 +112,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.setPen(Qt::transparent);
     bgColor.setAlpha(255*0.7);
     p.setBrush(bgColor);
-    p.drawRoundedRect(this->rect(), 6, 6);
+    p.drawRoundedRect(this->rect(), 16, 16);
     p.restore();
 
     //auto font = view->getViewItemFont(&m_option);
@@ -200,7 +200,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 
     bgColor.setAlpha(255*0.8);
     p.setPen(bgColor);
-    p.drawRoundedRect(this->rect().adjusted(0, 0, -1, -1), 6, 6);
+    p.drawRoundedRect(this->rect().adjusted(0, 0, -1, -1), 16, 16);
 }
 
 void DesktopIndexWidget::mousePressEvent(QMouseEvent *event)
