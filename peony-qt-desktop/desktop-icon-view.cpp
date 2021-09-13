@@ -648,7 +648,7 @@ void DesktopIconView::initMenu()
             this->selectionModel()->select(this->indexAt(pos), QItemSelectionModel::Select);
         }
 
-        QTimer::singleShot(1, [=]() {
+        QTimer::singleShot(1, this, [=]() {
             DesktopMenu menu(this);
             if (this->getSelections().isEmpty()) {
                 auto action = menu.addAction(tr("set background"));

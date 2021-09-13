@@ -603,7 +603,7 @@ void MainWindow::setShortCuts()
                 connect(op, &Peony::FileOperation::operationFinished, this, [=](){
                     auto opInfo = op->getOperationInfo();
                     auto targetUirs = opInfo->dests();
-                    QTimer::singleShot(500,[=](){
+                    QTimer::singleShot(500, this, [=](){
                         setCurrentSelectionUris(targetUirs);
                     });
 //                    setCurrentSelectionUris(targetUirs);
@@ -1207,42 +1207,28 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //SideBar
-    QDockWidget *sidebarContainer = new QDockWidget(this);
+    if (true) {
+        NavigationSideBarContainer *sidebar = new NavigationSideBarContainer(this);
+        sidebar->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        m_side_bar = sidebar;
+        m_transparent_area_widget = sidebar;
+        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
+        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
+    } else {
 
-    sidebarContainer->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    auto palette = sidebarContainer->palette();
-    palette.setColor(QPalette::Window, Qt::transparent);
-    sidebarContainer->setPalette(palette);
-//    sidebarContainer->setStyleSheet("{"
-//                                    "background-color: transparent;"
-//                                    "border: 0px solid transparent"
-//                                    "}");
-    sidebarContainer->setTitleBarWidget(new QWidget(this));
-    sidebarContainer->titleBarWidget()->setFixedHeight(0);
-    sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
-    sidebarContainer->setContentsMargins(0, 0, 0, 0);
-
-    NavigationSideBar *sidebar = new NavigationSideBar(this);
-    m_side_bar = sidebar;
-
-    auto navigationSidebarContainer = new NavigationSideBarContainer(this);
-    navigationSidebarContainer->addSideBar(m_side_bar);
-
-    m_transparent_area_widget = navigationSidebarContainer;
-
-    connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
-    connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
+    }
+    addDockWidget(Qt::LeftDockWidgetArea, m_side_bar);
 
 //    auto labelDialog = new FileLabelBox(this);
 //    labelDialog->hide();
-    TitleLabel *t = new TitleLabel(this);
+//    TitleLabel *t = new TitleLabel(this);
 
-    auto splitter = new QSplitter(this);
-    splitter->setChildrenCollapsible(false);
-    splitter->setHandleWidth(0);
-    splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(t);
-    splitter->addWidget(navigationSidebarContainer);
+//    auto splitter = new QSplitter(this);
+//    splitter->setChildrenCollapsible(false);
+//    splitter->setHandleWidth(0);
+//    splitter->setOrientation(Qt::Vertical);
+//    splitter->addWidget(t);
+//    splitter->addWidget(navigationSidebarContainer);
     //splitter->addWidget(labelDialog);
 
 //    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
@@ -1262,9 +1248,6 @@ void MainWindow::initUI(const QString &uri)
 //    });
 
 //    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
-
-    sidebarContainer->setWidget(splitter);
-    addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
 
 //    m_status_bar = new Peony::StatusBar(this, this);
 //    setStatusBar(m_status_bar);

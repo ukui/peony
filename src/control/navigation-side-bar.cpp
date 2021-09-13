@@ -433,13 +433,24 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     painter->restore();
 }
 
-NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
+NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent) : Peony::SideBar(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_layout = new QVBoxLayout;
     m_layout->setContentsMargins(0, 4, 0, 0);
     m_layout->setSpacing(0);
+    auto sideBar = new NavigationSideBar(this);
+
+    QWidget *widget = new QWidget;
+    m_layout->addWidget(new TitleLabel(this));
+    m_layout->addWidget(sideBar);
+    widget->setLayout(m_layout);
+
+    setWidget(widget);
+    //addSideBar(sideBar);
+
+    connect(sideBar, &NavigationSideBar::updateWindowLocationRequest, this, &NavigationSideBarContainer::updateWindowLocationRequest);
 }
 
 void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
@@ -450,9 +461,9 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     m_sidebar = sidebar;
     m_layout->addWidget(sidebar);
 
-    QWidget *w = new QWidget(this);
-    QVBoxLayout *l = new QVBoxLayout;
-    l->setContentsMargins(4, 4, 2, 4);
+//    QWidget *w = new QWidget(this);
+//    QVBoxLayout *l = new QVBoxLayout;
+//    l->setContentsMargins(4, 4, 2, 4);
 
 //    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
 //    m_label_button->setProperty("useIconHighlightEffect", true);
@@ -466,9 +477,9 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
 
 //    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
 
-    w->setLayout(l);
+//    w->setLayout(l);
 
-    m_layout->addWidget(w);
+//    m_layout->addWidget(w);
 
     setLayout(m_layout);
 }
@@ -521,15 +532,15 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 
 TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
 {
-    this->setFixedHeight(50);
     m_pix_label = new QLabel(this);
     m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
     m_text_label = new QLabel(tr("Files"),this);
     QHBoxLayout *l = new QHBoxLayout(this);
-    l->setMargin(16);
+    l->setMargin(8);
     l->addSpacing(16);
     l->addWidget(m_pix_label);
     l->addSpacing(8);
     l->addWidget(m_text_label);
     l->addStretch();
+    this->setFixedHeight(sizeHint().height());
 }

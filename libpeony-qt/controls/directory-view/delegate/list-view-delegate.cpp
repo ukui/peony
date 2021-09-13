@@ -111,7 +111,7 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
 
-    QTimer::singleShot(1, [=]() {
+    QTimer::singleShot(1, this, [=]() {
         this->updateEditorGeometry(edit, option, index);
     });
 

@@ -23,6 +23,8 @@
 #ifndef NAVIGATIONSIDEBAR_H
 #define NAVIGATIONSIDEBAR_H
 
+#include "side-bar.h"
+
 #include <QTreeView>
 #include <QStyledItemDelegate>
 #include <QProxyStyle>
@@ -68,7 +70,7 @@ private:
     Peony::SideBarModel *m_model;
 };
 
-class NavigationSideBarContainer : public QWidget
+class NavigationSideBarContainer : public Peony::SideBar
 {
     Q_OBJECT
 public:

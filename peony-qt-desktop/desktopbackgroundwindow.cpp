@@ -46,7 +46,7 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
             }
         }
 
-        QTimer::singleShot(1, [=]() {
+        QTimer::singleShot(1, this, [=]() {
             DesktopMenu menu(PeonyDesktopApplication::getIconView());
             if (PeonyDesktopApplication::getIconView()->getSelections().isEmpty()) {
                 auto action = menu.addAction(QObject::tr("set background"));

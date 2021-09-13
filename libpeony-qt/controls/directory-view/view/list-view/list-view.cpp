@@ -776,7 +776,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
         //NOTE: we have to ensure that we have cleared the
         //selection if menu request at blank pos.
-        QTimer::singleShot(1, [=]() {
+        QTimer::singleShot(1, this, [=]() {
             Q_EMIT this->menuRequest(QCursor::pos());
         });
     });
