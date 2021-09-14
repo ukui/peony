@@ -101,7 +101,7 @@ void FileOperationProgressBar::showProgress(ProgressBar &progress)
         progress.show();
         show();
 
-        QTimer::singleShot(300, [=] () {
+        QTimer::singleShot(300, this, [=] () {
             setAttribute(Qt::WA_TranslucentBackground, false);
         });
     }

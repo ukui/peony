@@ -741,6 +741,8 @@ Peony::DirectoryViewContainer *TabWidget::currentPage()
 
 const QString TabWidget::getCurrentUri()
 {
+    if (!currentPage())
+        return nullptr;
     return currentPage()->getCurrentUri();
 }
 

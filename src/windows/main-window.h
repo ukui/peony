@@ -39,6 +39,7 @@ namespace Peony {
 class DirectoryViewContainer;
 class FileInfo;
 class StatusBar;
+class SideBar;
 }
 
 class MainWindow : public QMainWindow, public Peony::FMWindowIface
@@ -167,7 +168,7 @@ private:
     BorderShadowEffect *m_effect;
 
     HeaderBar *m_header_bar;
-    NavigationSideBar *m_side_bar;
+    Peony::SideBar *m_side_bar;
     QWidget *m_transparent_area_widget;
     QStackedWidget *m_side_bar_container;
     TabWidget *m_tab;
