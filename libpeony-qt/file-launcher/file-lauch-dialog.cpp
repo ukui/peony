@@ -65,6 +65,11 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
         //fix show no icon app in list issue, bug#18171
         if (action->icon().isNull())
             continue;
+        //FIXME should have a spcific rule to decide which kind of app can show
+        //fix show uninstall app in list issue, link to bug#80233
+        if (action->icon().name().contains("uninstall"))
+            continue;
+
         action->setParent(this);
         //qDebug() << "lauch actions:" <<action->icon() <<action->iconText() <<action->text();
         auto item = new QListWidgetItem(!action->icon().isNull()? action->icon(): QIcon::fromTheme("application-x-desktop"),
