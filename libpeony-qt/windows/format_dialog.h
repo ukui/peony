@@ -65,6 +65,7 @@ class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 
 public:
     explicit Format_Dialog(const QString &uris,SideBarAbstractItem *m_item,QWidget *parent = nullptr);
+    explicit Format_Dialog(const QString &uri, QWidget *parent = nullptr);
 
     gboolean is_iso(const gchar *device_path);
 

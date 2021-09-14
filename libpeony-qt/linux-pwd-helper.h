@@ -28,6 +28,8 @@
 #include <pwd.h>
 #include <sys/types.h>
 
+#include "peony-core_global.h"
+
 /*!
  * \brief The PWDItem class
  * is the abstraction of passwd struct in linux.
@@ -68,7 +70,7 @@ private:
     int m_gid = -1;
 };
 
-class LinuxPWDHelper
+class PEONYCORESHARED_EXPORT LinuxPWDHelper
 {
 public:
     static const QList<PWDItem> getAllUserInfos();

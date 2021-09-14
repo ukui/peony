@@ -108,6 +108,73 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        connect(ui->pushButton_close, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
 }
 
+Format_Dialog::Format_Dialog(const QString &uri, QWidget *parent)
+{
+    ui->setupUi(this);
+    setFixedSize(this->width(), this->height());
+
+    fm_uris = uri;
+    m_parent = parent;
+    b_canClose = true;
+
+    //from uris get the rom size
+    //FIXME: replace BLOCKING api in ui thread.
+    auto targetUri = FileUtils::getTargetUri(fm_uris);
+    if (targetUri.isEmpty()) {
+        targetUri = fm_uris;
+    }
+    GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
+
+    GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
+    quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+
+    //add the rom size value into  rom_size combox
+    //fix system Udisk calculate size wrong issue
+    QString m_volume_name, m_unix_device, m_display_name,m_fs_type;
+    FileUtils::queryVolumeInfo(fm_uris, m_volume_name, m_unix_device, m_display_name);
+    bool hasSetRomSize = false;
+    m_fs_type = FileUtils::getFileSystemType(fm_uris);
+    //U disk or other mobile device, only use in iso system install device
+    if (! m_unix_device.isEmpty() && m_fs_type.startsWith("iso")
+        && ! fm_uris.startsWith("computer:///WDC"))
+    {
+       char dev_name[256] ={0};
+       strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+       auto size = FileUtils::getDeviceSize(dev_name);
+       if (size > 0)
+       {
+           QString sizeInfo = QString::number(size, 'f', 1);
+           qDebug() << "size:" <<size;
+           sizeInfo += "G";
+           ui->label_rom_size_text->setText(sizeInfo);
+           hasSetRomSize = true;
+       }
+    }
+
+    if (! hasSetRomSize)
+    {
+        //Calculated by 1024 bytes
+        char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+        ui->label_rom_size_text->setText(total_format);
+    }
+
+    auto mount = VolumeManager::getMountFromUri(targetUri);
+    //fix name not show complete in bottom issue, bug#36887
+    ui->lineEdit_device_name->setFixedHeight(40);
+    if (mount.get()) {
+         ui->lineEdit_device_name->setText(mount->name());
+    } else {
+         ui->lineEdit_device_name->setText(LinuxPWDHelper::getCurrentUser().fullName());
+    }
+
+    ui->progressBar_process->setValue(0);
+
+
+    connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
+
+    connect(ui->pushButton_close, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
+}
+
 void Format_Dialog::colseFormat(bool)
 {
 
