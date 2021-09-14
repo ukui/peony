@@ -72,7 +72,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
 
         painter->setOpacity(1);
-//        QIcon icon=index.data(Qt::DecorationRole).value<QIcon>();
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
         QString iconstr= tabletApp.appIcon;
         qDebug("FullItemDelegate::paint : name:%s, icon:%s/n",tabletApp.appName.toLocal8Bit().data(),iconstr.toLocal8Bit().data());
@@ -84,27 +83,31 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             icon=QIcon::fromTheme(QString("application-x-desktop"));
         QString appname= tabletApp.appName;
 
-//        QFont font;
+
         QRect iconRect;
-//        font.setPixelSize(Style::AppListFontSize);
-        iconRect=QRect(rect.x(),
-                       rect.y()+10,
-                       Style::AppListIconSize,
-                       Style::AppListIconSize);
-//        painter->setFont(font);
+        QRect textRect;
+        QPixmap pixmap;
+        bool bigIcon = index.data(Qt::UserRole).toBool();
+
+        if(bigIcon)
+        {
+            iconRect=QRect(rect.x()+Style::Margin-5, rect.y()+Style::Margin-5, Style::BigIconSize,Style::BigIconSize);
+            textRect=QRect(rect.x(),iconRect.bottom()+5, rect.width(),rect.height()-iconRect.height()-10-5);
+            pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
+        }
+        else
+        {
+            iconRect=QRect(rect.x()+Style::Margin, rect.y()+Style::Margin, Style::SmallIconSize,Style::SmallIconSize);
+            textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::Margin);
+            pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
+        }
+
+        icon = QIcon(pixmap);
         icon.paint(painter,iconRect);      
         painter->restore();
         painter->save();
-
         painter->setPen(QPen(Qt::black));
-        QRect textRect;
 
-        textRect=QRect(rect.x(),
-                       iconRect.bottom()+5,
-                       Style::AppListIconSize,
-                       rect.height()-iconRect.height()-5);
-
-        painter->save();
         QFontMetrics fm=painter->fontMetrics();
         QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,textRect.width(),Qt::TextShowMnemonic);
         painter->drawText(textRect,Qt::AlignHCenter,appnameElidedText.toLocal8Bit().data());
@@ -138,7 +141,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 QSize FullItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return QSize(Style::AppListIconSize, Style::AppListIconSize);
+    return QSize(100,125);
 }
 
 //bool FullItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)

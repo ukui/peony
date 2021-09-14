@@ -29,8 +29,6 @@
 #include <QDir>
 #include <QProcess>
 //#include <QSvgRenderer>
-#include <QHeaderView>
-#include <QListView>
 #include <QStringList>
 #include <QScrollArea>
 

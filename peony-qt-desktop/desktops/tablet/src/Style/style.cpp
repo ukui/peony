@@ -61,6 +61,10 @@ int Style::ButtonWidgetHeight=90;
 int Style::ToolWidgetLeft=24;
 bool Style::IsWideScreen=false;
 
+int Style::BigIconSize=80;
+int Style::SmallIconSize=70;
+int Style::Margin=15;
+
 void Style::initWidStyle()
 {
     AppListViewTopMargin=50;
