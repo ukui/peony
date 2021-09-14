@@ -41,6 +41,8 @@
 
 using namespace Peony;
 
+static const int FAVORITE_CAN_NOT_DELETE_URI_COUNT=7;
+
 SideBarMenu::SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *parent) : QMenu (parent)
 {
     m_uri = item->uri();
@@ -88,10 +90,10 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
 
     if (!m_item->firstColumnIndex().parent().isValid()) {
         l.last()->setEnabled(false);
-    } else if (m_item->firstColumnIndex().row() < 10) {
+    } else if (m_item->firstColumnIndex().row()<FAVORITE_CAN_NOT_DELETE_URI_COUNT) {
         l.last()->setEnabled(false);
     }
-    else if (m_uri == "file:///data/usershare" || m_uri == "kmre:///" || m_uri == "kydroid:///")
+    else if (m_uri == "favorite:///data/usershare?schema=file" || m_uri == "kmre:///" || m_uri == "kydroid:///")
     {
         //fix bug#68431, can not delete option issue
         l.last()->setEnabled(false);
