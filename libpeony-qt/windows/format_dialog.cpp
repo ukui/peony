@@ -108,7 +108,9 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        connect(ui->pushButton_close, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
 }
 
-Format_Dialog::Format_Dialog(const QString &uri, QWidget *parent)
+Format_Dialog::Format_Dialog(const QString &uri, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Format_Dialog)
 {
     ui->setupUi(this);
     setFixedSize(this->width(), this->height());
