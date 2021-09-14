@@ -85,7 +85,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     installEventFilter(this);
 
-    setStyleSheet("NavigationSideBar{border: 0px solid transparent}");
+    setStyleSheet(".Intel--NavigationSideBar{border: 0px solid transparent}");
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
@@ -532,6 +532,10 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
             QProxyStyle::drawPrimitive(element, option, painter, widget);
             return;
         }
+    }
+    case QStyle::PE_Frame:
+    case QStyle::PE_FrameWindow: {
+        return;
     }
     default: QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
