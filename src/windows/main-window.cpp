@@ -658,7 +658,7 @@ void MainWindow::setShortCuts()
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
                 || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
-                || currentUri.startsWith("search://"))
+                || currentUri.startsWith("search://") || currentUri == "filesafe:///")
             {
                 return;
             }

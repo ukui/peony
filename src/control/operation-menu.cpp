@@ -256,11 +256,12 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     bool isRecent = currentDirUri.startsWith("recent://");
     bool isTrash = currentDirUri.startsWith("trash://");
     bool isComputer = currentDirUri.startsWith("computer:///");
+    bool isFileBox = currentDirUri == "filesafe:///";
 
     m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash && !isComputer);
     m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash && !isComputer);
     m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isComputer);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash && !isComputer);
+    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash && !isComputer && !isFileBox);
 }
