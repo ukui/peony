@@ -53,28 +53,28 @@ void FileTrashOperation::run()
 retry:
         GError *err = nullptr;
         auto srcFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(src).toUtf8().constData()));
-        //
-        FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
-        if (fileInfoJob.querySync()) {
-            FileInfo* fileInfo = fileInfoJob.getInfo().get();
-            if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
-                FileOperationError except;
-                except.srcUri = src;
-                except.destDirUri = tr("trash:///");
-                except.isCritical = true;
-                except.op = FileOpTrash;
-                except.title = tr("Trash file error");
-                except.errorCode = G_IO_ERROR_FAILED;
-                except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
-                except.errorType = ET_GIO;
-                except.dlgType = ED_WARNING;
-                Q_EMIT errored(except);
-                if (Cancel == except.respCode) {
-                    cancel();
-                }
-                continue;
-            }
-        }
+        //fix can trash files prompt error dialog issue
+//        FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
+//        if (fileInfoJob.querySync()) {
+//            FileInfo* fileInfo = fileInfoJob.getInfo().get();
+//            if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
+//                FileOperationError except;
+//                except.srcUri = src;
+//                except.destDirUri = tr("trash:///");
+//                except.isCritical = true;
+//                except.op = FileOpTrash;
+//                except.title = tr("Trash file error");
+//                except.errorCode = G_IO_ERROR_FAILED;
+//                except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
+//                except.errorType = ET_GIO;
+//                except.dlgType = ED_WARNING;
+//                Q_EMIT errored(except);
+//                if (Cancel == except.respCode) {
+//                    cancel();
+//                }
+//                continue;
+//            }
+//        }
 
         g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
