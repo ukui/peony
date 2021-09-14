@@ -127,6 +127,49 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 
     //setFixedHeight(opt.rect.height() + y_delta);
 
+    //draw icon shadow
+    p.save();
+
+    auto iconSize = opt.decorationSize;
+    QPixmap iconPixmap(opt.icon.pixmap(iconSize));
+    QPainter iconShadowPainter(&iconPixmap);
+    iconShadowPainter.end();
+
+    QImage iconShadowImage(iconSize + QSize(6,6), QImage::Format_ARGB32_Premultiplied);
+    iconShadowImage.fill(Qt::transparent);
+    iconShadowPainter.begin(&iconShadowImage);
+    auto tmpRect = opt.rect;
+    opt.rect = QRect(-(iconRect.x() - opt.rect.x()) + 3,
+                     -(iconRect.y() - opt.rect.y()) + 3,
+                     opt.rect.width(),
+                     opt.rect.height());
+    auto tmpText = opt.text;
+    opt.text = nullptr;
+
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &iconShadowPainter, opt.widget);
+    iconShadowPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    iconShadowPainter.fillRect(iconPixmap.rect(),QColor(0,0,0,80));
+
+    opt.rect = tmpRect;
+    opt.text = tmpText;
+    qt_blurImage(iconShadowImage, 12, false, false);
+
+    for (int x = 0; x < iconShadowImage.width(); x++) {
+        for (int y = 0; y < iconShadowImage.height(); y++) {
+            auto color = iconShadowImage.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                iconShadowImage.setPixelColor(x, y, color);
+            }
+        }
+    }
+
+    iconShadowPainter.end();
+    p.drawImage(opt.rect.x() + (iconRect.x() - opt.rect.x()) - 3,
+                      opt.rect.y() + (iconRect.y() - opt.rect.y()) - 3,
+                     iconShadowImage);
+    p.restore();
+
     // draw icon
     opt.text = nullptr;
     p.save();
