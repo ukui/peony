@@ -29,7 +29,7 @@
 
 namespace Peony {
 
-class MenuPluginManager : public QObject
+class PEONYCORESHARED_EXPORT MenuPluginManager : public QObject
 {
     Q_OBJECT
 public:

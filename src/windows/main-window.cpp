@@ -49,6 +49,8 @@
 #include "advance-search-bar.h"
 #include "status-bar.h"
 
+#include "intel/intel-navigation-side-bar.h"
+
 #include "peony-main-window-style.h"
 
 #include "file-label-box.h"
@@ -1207,7 +1209,7 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //SideBar
-    if (true) {
+    if (false) {
         NavigationSideBarContainer *sidebar = new NavigationSideBarContainer(this);
         sidebar->setFeatures(QDockWidget::NoDockWidgetFeatures);
         m_side_bar = sidebar;
@@ -1215,7 +1217,12 @@ void MainWindow::initUI(const QString &uri)
         connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
         connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
     } else {
-
+        Intel::NavigationSideBarContainer *sidebar = new Intel::NavigationSideBarContainer(this);
+        sidebar->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        m_side_bar = sidebar;
+        m_transparent_area_widget = sidebar;
+        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
+        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
     }
     addDockWidget(Qt::LeftDockWidgetArea, m_side_bar);
 
