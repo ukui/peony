@@ -65,6 +65,7 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         //connect(m_watcher.get(), &FileWatcher::fileChanged, [=]())
     } else {
         m_uri = uri;
+        m_info = FileInfo::fromUri(uri);
         //FIXME: replace BLOCKING api in ui thread.
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
@@ -144,6 +145,9 @@ void SideBarFileSystemItem::findChildren()
         }
 
         for (auto info: infos) {
+            FileInfoJob j(info);
+            j.querySync();
+
             if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())) {
                 isEmpty = false;
             }

@@ -27,7 +27,11 @@
 
 #include "intel-side-bar-abstract-item.h"
 
+#include <memory>
+
 namespace Peony {
+
+class FileInfo;
 
 namespace Intel {
 
@@ -83,6 +87,8 @@ private:
     QString m_uri = nullptr;
     QString m_display_name = nullptr;
     QString m_icon_name = nullptr;
+
+    std::shared_ptr<FileInfo> m_info = nullptr;
 };
 
 }

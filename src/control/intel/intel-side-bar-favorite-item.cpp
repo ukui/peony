@@ -26,6 +26,9 @@
 
 #include "bookmark-manager.h"
 
+#include "file-info.h"
+#include "file-info-job.h"
+
 #include <QStandardPaths>
 #include <QUrl>
 
@@ -66,6 +69,9 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
         return;
     }
     m_uri = uri;
+    m_info = FileInfo::fromUri(uri);
+    FileInfoJob j(m_info);
+    j.querySync();
     //FIXME: replace BLOCKING api in ui thread.
     m_display_name = FileUtils::getFileDisplayName(uri);
     m_icon_name = FileUtils::getFileIconName(uri);

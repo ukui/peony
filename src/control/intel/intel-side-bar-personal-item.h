@@ -31,6 +31,7 @@
 namespace Peony {
 
 class FileWatcher;
+class FileInfo;
 
 namespace Intel {
 
@@ -102,6 +103,7 @@ private:
 
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
 
+    std::shared_ptr<FileInfo> m_info = nullptr;
 };
 
 }

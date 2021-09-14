@@ -31,6 +31,7 @@
 namespace Peony {
 
 class FileWatcher;
+class FileInfo;
 
 namespace Intel {
 
@@ -115,6 +116,8 @@ private:
 
     QString m_unix_device; // sdb1, etc...
     QString m_volume_name; // Windows, Data etc...
+
+    std::shared_ptr<FileInfo> m_info = nullptr;
 };
 
 }
