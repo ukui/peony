@@ -8,6 +8,7 @@ HEADERS += \
     $$PWD/progress-widget.h \
     $$PWD/pushbutton.h \
     $$PWD/study-directory-widget.h \
+    $$PWD/study-list-view.h \
     $$PWD/study-status-widget.h
 
 SOURCES += \
@@ -17,5 +18,6 @@ SOURCES += \
     $$PWD/progress-widget.cpp \
     $$PWD/pushbutton.cpp \
     $$PWD/study-directory-widget.cpp \
+    $$PWD/study-list-view.cpp \
     $$PWD/study-status-widget.cpp
 
