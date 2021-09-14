@@ -37,12 +37,20 @@ FileTrashOperation::FileTrashOperation(QStringList srcUris, QObject *parent) : F
 {
     m_src_uris = srcUris;
     m_info = std::make_shared<FileOperationInfo>(srcUris, "trash:///", FileOperationInfo::Trash);
+    m_total_count = m_src_uris.length ();
 }
 
 void FileTrashOperation::run()
 {
     Q_EMIT operationStarted();
     Peony::ExceptionResponse response = Invalid;
+
+    for (auto src : m_src_uris) {
+        Q_EMIT operationPreparedOne (src, 1);
+    }
+
+    Q_EMIT operationPrepared ();
+
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
@@ -183,6 +191,8 @@ retry:
             auto info = FileInfo::fromUri(src);
             info.get()->setProperty(TRASH_TIME, time);
         }
+
+        FileProgressCallback("trash:///", src, "", ++m_current_count, m_total_count);
     }
 
     // judge if the operation should sync.
