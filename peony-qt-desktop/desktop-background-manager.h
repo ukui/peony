@@ -27,6 +27,8 @@ public:
 
     bool getPaintBackground() const;
 
+    const QString &getBackgroundOption();
+
 Q_SIGNALS:
     void screensUpdated();
 
@@ -57,6 +59,7 @@ protected:
     QTimeLine *m_timeLine = nullptr;
 
     QString m_current_bg_path;
+    QString m_backgroundOption;
 };
 
 #endif // DESKTOPBACKGROUNDMANAGER_H

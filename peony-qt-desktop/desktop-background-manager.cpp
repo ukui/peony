@@ -164,6 +164,18 @@ void DesktopBackgroundManager::switchBackground()
     if (!m_backgroundSettings)
         return;
 
+    //intel项目背景绘制模式 平铺，拉伸等
+    m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
+    if (m_backgroundOption.isEmpty()) {
+        //判断系统类型
+        bool intel = false;
+        if (intel) {
+            m_backgroundOption = "stretched";
+        } else {
+            m_backgroundOption = "";
+        }
+    }
+
     auto path = m_backgroundSettings->get("pictureFilename").toString();
     if (! QFile::exists(path) && !path.isEmpty())
         path = getAccountBackground();
@@ -235,4 +247,9 @@ DesktopBackgroundManager *DesktopBackgroundManager::globalInstance()
 QPixmap DesktopBackgroundManager::getBackPixmap() const
 {
     return m_backPixmap;
+}
+
+const QString &DesktopBackgroundManager::getBackgroundOption()
+{
+    return m_backgroundOption;
 }
