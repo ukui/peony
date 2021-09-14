@@ -635,7 +635,10 @@ void MainWindow::setShortCuts()
             }
 
             auto currentUri = getCurrentUri();
-            if (currentUri.startsWith("search://"))
+            if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+                || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
+                || currentUri.startsWith("search://") || currentUri == "filesafe:///")
+            {
                 return;
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
