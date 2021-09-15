@@ -93,6 +93,10 @@ private:
     bool m_enable = false;
 
     bool m_permissions[3][3];
+
+    //unixmode能力，标识修改权限是否可使用gio接口
+    bool m_has_unix_mode = false;
+
 public:
     void thisPageChanged() override;
 
