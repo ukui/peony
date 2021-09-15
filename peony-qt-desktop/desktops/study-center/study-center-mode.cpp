@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QDBusReply>
 #include "../../tablet/src/Style/style.h"
+#include <QCollator>
 using namespace Peony;
 
 
@@ -26,6 +27,7 @@ using namespace Peony;
 
 StudyCenterMode::StudyCenterMode(QWidget *parent) : DesktopWidgetBase(parent)
 {
+    qRegisterMetaType<QList<TABLETAPP>>("QList<TABLETAPP>");
     m_statusManagerDBus = new QDBusInterface("com.kylin.statusmanager.interface", "/" ,"com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
     this->m_exitAnimationType = AnimationType::RightToLeft;
     this->installEventFilter(this);
@@ -83,29 +85,19 @@ void StudyCenterMode::initUi()
     synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
-    widget4 = new StudyStatusWidget(appList,this);
+    statusWidget = new StudyStatusWidget(appList,this);
 
-    connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP> &applist)),widget4,SLOT(paintProgressSlot(QList<TABLETAPP> &applist)));
-    connect(this,SIGNAL(timeChangedSingal(QString,QString)),widget4,SLOT(timeChangeSlot(QString,QString)));
-    connect(widget4,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
-    connect(this,SIGNAL(markTimeSingal()),widget4,SLOT(markTimeSlot()));
+    connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP>)),statusWidget,SLOT(paintProgressSlot(QList<TABLETAPP>)));
+    connect(this,SIGNAL(timeChangedSingal(QString,QString)),statusWidget,SLOT(timeChangeSlot(QString,QString)));
+    connect(statusWidget,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
+    connect(this,SIGNAL(markTimeSingal()),statusWidget,SLOT(markTimeSlot()));
 
     initTime();
-//    widget1->setFixedSize(iWidth/2, iHeight);
-//    widget2->setFixedSize(iWidth/4, iHeight/3);
-//    widget3->setFixedSize(iWidth/4, iHeight/3);
-//    widget4->setFixedSize(iWidth/4, iHeight/3*2);
-//    QHBoxLayout hboxLayout;
-//    hboxLayout->addWidget(widget2);
-//    hboxLayout->addWidget(widget3);
-//    QVBoxLayout vboxLayout;
-//    vboxLayout->addLayout(hboxLayout);
-//    vboxLayout->addWidget(widget4);
 
     practiceWidget->installEventFilter(this);
     guradWidget->installEventFilter(this);
     synWidget->installEventFilter(this);
-    widget4->installEventFilter(this);
+    statusWidget->installEventFilter(this);
     m_mainGridLayout = new QGridLayout(this);
 
     screenRotation();
@@ -162,14 +154,6 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
 {
     QMap<QString, QList<TabletAppEntity*>>::const_iterator ite = studyCenterDataMap.begin();
     QList<TABLETAPP> maxTimeList;
-    TABLETAPP maxTimeAppfirst;
-    maxTimeAppfirst.desktopName = "";
-    maxTimeAppfirst.appName = "";
-    maxTimeAppfirst.appIcon = "";
-    maxTimeAppfirst.execCommand = "";
-    maxTimeAppfirst.iTime = -1;
-    maxTimeList.push_back(maxTimeAppfirst);
-
     m_appList.clear();
     for(; ite != studyCenterDataMap.constEnd(); ++ite)
     {
@@ -179,33 +163,32 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
             QString strDesktop = tabletAppList[i]->desktopName.left(tabletAppList[i]->desktopName.indexOf(".desktop"));
             m_appList.push_back(strDesktop);
             long int iWeekmm = getStudyTime("GetWeekCumulativeTime", strDesktop);
+            TABLETAPP maxTimeApp;
+            maxTimeApp.desktopName = tabletAppList[i]->desktopName;
+            maxTimeApp.appName = tabletAppList[i]->appName;
+            maxTimeApp.appIcon = tabletAppList[i]->appIcon;
+            maxTimeApp.execCommand = tabletAppList[i]->execCommand;
+            maxTimeApp.iTime = iWeekmm;
+            maxTimeList.insert(i, maxTimeApp);
             qDebug("StudyCenterMode::getTimeOrder appName[%d] :%s,desktop:%s  /n", i, tabletAppList[i]->appName.toLocal8Bit().data(),tabletAppList[i]->desktopName.toLocal8Bit().data());
             qDebug("StudyCenterMode::getTimeOrder:%d,name:%s,path:%s  /n", iWeekmm,tabletAppList[i]->appName.toLocal8Bit().data(),tabletAppList[i]->appIcon.toLocal8Bit().data());
-            for(int j = 0; j < maxTimeList.size(); ++j)
-            {
-                   qDebug("StudyCenterMode::getTimeOrder maxTimeList[%d] :%s,path:%s  /n", i, maxTimeList[i].appName.toLocal8Bit().data(),maxTimeList[i].appIcon.toLocal8Bit().data());
-                if(iWeekmm >= maxTimeList[j].iTime)
-                {
-                    TABLETAPP maxTimeApp;
-                    maxTimeApp.desktopName = tabletAppList[i]->desktopName;
-                    maxTimeApp.appName = tabletAppList[i]->appName;
-                    maxTimeApp.appIcon = tabletAppList[i]->appIcon;
-                    maxTimeApp.execCommand = tabletAppList[i]->execCommand;
-                    maxTimeApp.iTime = iWeekmm;
-                    maxTimeList.insert(j, maxTimeApp);
-                    break;
-                }
-//                else if(iWeekmm == maxTimeList[j].iTime)
-//                {
-//                    //QCollator
-//                }
-            }
         }
     }
-    maxTimeList.pop_back();
-    Q_EMIT valueChangedSingal(maxTimeList);
+    qSort(maxTimeList.begin(), maxTimeList.end(), [=](TABLETAPP p1, TABLETAPP p2){
+        QLocale local(QLocale::Chinese);
+        QCollator collator(local);
+        int nResult = false;
+        if((p1.iTime > p2.iTime) || (p1.iTime == p2.iTime && collator.compare(p1.appName, p2.appName) < 0))
+        {
+            qDebug()<<"StudyCenterMode::qsort p1.appName:"<<p1.appName<<"  p2.appName:"<< p2.appName <<" p1.iTime:"<<p1.iTime <<" p1.iTime:" <<p2.iTime;
+            nResult = true;
+        }
+        qDebug()<<"StudyCenterMode::qsort p1.appName:"<<p1.appName<<"  p2.appName:"<< p2.appName <<" p1.iTime:"<<p1.iTime <<" p1.iTime:" <<p2.iTime <<" result:"<<nResult;
+        return nResult;
+    });
     return maxTimeList;
 }
+
 long int StudyCenterMode::getStudyTime(QString strMethod, QString appName)
 {
     QDBusMessage request = QDBusMessage::createMethodCall("com.ukui.app.info","/com/ukui/app/info/time","com.ukui.app.info.time", strMethod.toLocal8Bit().data());
@@ -301,7 +284,10 @@ void  StudyCenterMode::initTime()
 void StudyCenterMode::updateTimeSlot()
 {
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
+    qDebug()<<"StudyCenterMode::updateTimeSlot begin,size:"<<studyCenterDataMap.size();
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
+    Q_EMIT valueChangedSingal(appList);
+    qDebug()<<"StudyCenterMode::valueChangedSingal end,size:"<<appList.size();
     initTime();
     Q_EMIT markTimeSingal();
 }
@@ -406,7 +392,7 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->removeWidget(practiceWidget);
         m_mainGridLayout->removeWidget(guradWidget);
         m_mainGridLayout->removeWidget(synWidget);
-        m_mainGridLayout->removeWidget(widget4);
+        m_mainGridLayout->removeWidget(statusWidget);
     }
 
     //3.从新获取屏幕大小,设置当前组件几何
@@ -437,14 +423,14 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(practiceWidget,0,0,4,2);
         m_mainGridLayout->addWidget(guradWidget,4,0,2,1);
         m_mainGridLayout->addWidget(synWidget,4,1,2,1);
-        m_mainGridLayout->addWidget(widget4,6,0,3,2);
+        m_mainGridLayout->addWidget(statusWidget,6,0,3,2);
     }
     else
     {
         m_mainGridLayout->addWidget(practiceWidget,0,0,3,2);
         m_mainGridLayout->addWidget(guradWidget,0,2,1,1);
         m_mainGridLayout->addWidget(synWidget,0,3,1,1);
-        m_mainGridLayout->addWidget(widget4,1,2,2,2);
+        m_mainGridLayout->addWidget(statusWidget,1,2,2,2);
     }
 
 }
