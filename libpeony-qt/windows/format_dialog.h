@@ -26,6 +26,8 @@
 #include <QTimer>
 #include <errno.h>
 #include <QDialog>
+#include <QProxyStyle>
+#include <QVariantAnimation>
 #include <sys/stat.h>
 #include <glib/gi18n.h>
 #include <udisks/udisks.h>
@@ -59,6 +61,7 @@ struct CreateformatData{
 };
 
 
+class ProgressBarStyle;
 class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
@@ -124,5 +127,23 @@ private:
     SideBarAbstractItem *fm_item;
 
 };
+
+class ProgressBarStyle : public QProxyStyle
+{
+    Q_OBJECT
+        public:
+                 ProgressBarStyle ();
+    ~ProgressBarStyle ();
+
+    void polish(QWidget *widget);
+    int pixelMetric(PixelMetric m, const QStyleOption *opt, const QWidget *widget) const;
+    void drawPrimitive(PrimitiveElement elem, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const;
+    QRect subElementRect(SubElement sr, const QStyleOption *opt, const QWidget *widget) const;
+
+private:
+    QVariantAnimation* mAnimation = NULL;
+};
+
 
 #endif // FORMAT_DIALOG_H
