@@ -328,6 +328,9 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         auto bookmark = Peony::BookMarkManager::getInstance();
         if (bookmark->isLoaded()) {
             for (auto url : data->urls()) {
+                if(url.toString().startsWith("filesafe:///")){
+                    continue;
+                }
                 //FIXME: replace BLOCKING api in ui thread.
                 auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
