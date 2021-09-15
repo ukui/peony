@@ -410,7 +410,13 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             //can not drag file from recent
             if (uri.startsWith("recent://"))
                 return false;
+
+            //如果源文件路径是filesafe保护箱下的文件只支持复制，不支持移动；
+            if(uri.startsWith("filesafe:///")) {
+                action = Qt::CopyAction;
+            }
         }
+
         if (action == Qt::MoveAction)
         {
             FileOperationUtils::move(uris, item->uri(), true, true);
