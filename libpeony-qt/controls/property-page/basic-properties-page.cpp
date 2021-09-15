@@ -208,6 +208,10 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     form2->addRow(tr("Name"), m_displayNameEdit);
     form2->addRow(tr("Location"), m_locationEdit);
 
+    if(uris.first() == "filesafe:///"){
+        form2->itemAt(1,QFormLayout::LabelRole)->widget()->setEnabled(false);
+    }
+
     //select multiplefiles
     if (fileType == BP_MultipleFIle || !m_info->canRename())
         m_displayNameEdit->setReadOnly(true);
@@ -302,6 +306,10 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         //FIX:At present, only the file shortcuts are judged and displayed here. This is not appropriate.
         //I hope to directly add shortcuts to the underlying file file Type.
         m_fileTypeLabel->setText(m_info->isSymbolLink() ? tr("symbolLink") : m_info.get()->fileType());
+    }
+
+    if(fileType == BP_Folder && uris.first() == "filesafe:///"){
+        m_fileTypeLabel->setText(tr("Folder"));
     }
 
     //根据文件类型添加组件 - Add components based on file type
