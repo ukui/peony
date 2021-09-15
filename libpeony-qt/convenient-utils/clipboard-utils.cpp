@@ -30,6 +30,9 @@
 #include "file-move-operation.h"
 #include "file-copy-operation.h"
 
+#include <glib.h>
+#include <glib/gi18n.h>
+
 using namespace Peony;
 
 static ClipboardUtils *global_instance = nullptr;
@@ -155,7 +158,8 @@ QStringList ClipboardUtils::getClipboardFilesUris()
     } else {
         auto urls = mimeData->urls();
         for (auto url : urls) {
-            l<<url.toString();
+            g_autofree gchar* uri = g_uri_unescape_string(url.toString().toUtf8().constData(), nullptr);
+            l<<QString(uri);
         }
     }
 
