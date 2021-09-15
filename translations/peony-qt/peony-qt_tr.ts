@@ -164,32 +164,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="731"/>
+        <location filename="../../src/windows/main-window.cpp" line="728"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="325"/>
+        <location filename="../../src/windows/main-window.cpp" line="324"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="332"/>
+        <location filename="../../src/windows/main-window.cpp" line="331"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="729"/>
+        <location filename="../../src/windows/main-window.cpp" line="726"/>
         <source>Search</source>
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1523"/>
+        <location filename="../../src/windows/main-window.cpp" line="1520"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1524"/>
+        <location filename="../../src/windows/main-window.cpp" line="1521"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -198,12 +198,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1513"/>
+        <location filename="../../src/windows/main-window.cpp" line="1510"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1514"/>
+        <location filename="../../src/windows/main-window.cpp" line="1511"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -212,7 +212,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="744"/>
+        <location filename="../../src/windows/main-window.cpp" line="741"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -384,12 +384,12 @@ p, li { white-space: pre-wrap; }
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="448"/>
+        <location filename="../../src/peony-application.cpp" line="447"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="449"/>
+        <location filename="../../src/peony-application.cpp" line="448"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -552,32 +552,32 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="203"/>
+        <location filename="../../src/control/tab-widget.cpp" line="204"/>
         <source>Trash</source>
         <translation>Çöp</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="207"/>
+        <location filename="../../src/control/tab-widget.cpp" line="208"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="211"/>
+        <location filename="../../src/control/tab-widget.cpp" line="212"/>
         <source>Recover</source>
         <translation>Geri Yükle</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="303"/>
+        <location filename="../../src/control/tab-widget.cpp" line="304"/>
         <source>Close Filter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="315"/>
+        <location filename="../../src/control/tab-widget.cpp" line="316"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="409"/>
+        <location filename="../../src/control/tab-widget.cpp" line="410"/>
         <source>Select Path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -590,12 +590,12 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="324"/>
+        <location filename="../../src/control/tab-widget.cpp" line="325"/>
         <source>Choose other path to search.</source>
         <translation>Aramak için başka bir yol seçin.</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="333"/>
+        <location filename="../../src/control/tab-widget.cpp" line="334"/>
         <source>Search recursively</source>
         <translation>Yinelemeli olarak ara</translation>
     </message>
@@ -612,13 +612,13 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="obsolete">Yol seç</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="459"/>
-        <location filename="../../src/control/tab-widget.cpp" line="558"/>
+        <location filename="../../src/control/tab-widget.cpp" line="460"/>
+        <location filename="../../src/control/tab-widget.cpp" line="559"/>
         <source>is</source>
         <translation>de</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="477"/>
+        <location filename="../../src/control/tab-widget.cpp" line="478"/>
         <source>Please input key words...</source>
         <translation>Lütfen anahtar kelimeler girin ...</translation>
     </message>
@@ -627,130 +627,130 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="522"/>
-        <location filename="../../src/control/tab-widget.cpp" line="544"/>
+        <location filename="../../src/control/tab-widget.cpp" line="523"/>
+        <location filename="../../src/control/tab-widget.cpp" line="545"/>
         <source>contains</source>
         <translation>İçerik</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>name</source>
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>type</source>
         <translation>Tür</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>modify time</source>
         <translation>Değiştirme Zamanı</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="262"/>
+        <location filename="../../src/control/tab-widget.h" line="263"/>
         <source>file size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="263"/>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="264"/>
         <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>all</source>
         <translation>Tümü</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="263"/>
+        <location filename="../../src/control/tab-widget.h" line="264"/>
         <source>file folder</source>
         <translation>Dosya klasör</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="263"/>
+        <location filename="../../src/control/tab-widget.h" line="264"/>
         <source>image</source>
         <translation>Resim</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="263"/>
+        <location filename="../../src/control/tab-widget.h" line="264"/>
         <source>video</source>
         <translation>Video</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>text file</source>
         <translation>Metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>audio</source>
         <translation>Ses</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>others</source>
         <translation>Diğer</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>wps file</source>
         <translation type="unfinished">Wps Dosyası</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>today</source>
         <translation>Bugün</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>this week</source>
         <translation>Bu hafta</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>this month</source>
         <translation>Bu ay</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>this year</source>
         <translation>Bu yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>year ago</source>
         <translation>Geçen yıl</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>tiny(0-16K)</source>
         <translation>Çok küçük(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>small(16k-1M)</source>
         <translation>Küçük(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>empty(0K)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>medium(1M-128M)</source>
         <translation type="unfinished">Orta(1M-100M) {1M?} {128M?}</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>big(128M-1G)</source>
         <translation type="unfinished">Büyük(100M-1G) {128M?} {1G?}</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>large(1-4G)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>great(&gt;4G)</source>
         <translation type="unfinished"></translation>
     </message>
