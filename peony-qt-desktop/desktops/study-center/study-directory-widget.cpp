@@ -19,13 +19,11 @@
 #include "study-directory-widget.h"
 #include <QDesktopWidget>
 #include <QDebug>
-#include <QStandardItemModel>
-#include <QStandardItem>
 #include <iterator>
-#include "progress-item-delegate.h"
 #include "pushbutton.h"
 #include "../../tablet/data/tablet-app-manager.h"
-#include "../../tablet/src/Style/style.h"
+#include "study-list-view.h"
+#include "common.h"
 
 using namespace Peony;
 
@@ -137,49 +135,8 @@ void StudyDirectoryWidget::initAppListWidget()
         }
 
         //插入应用列表
-        QListView* listView = new QListView;
-        listView->setStyleSheet("QListView{border:0px;}\
-                            QListView:Item{background:transparent;border:0px;color:#ffffff;font-size:14px;padding-left:0px;}\
-                            QListView:Item:hover{background:transparent;}\
-                            QListView:Item:pressed{background:transparent;}");
-        listView->setSelectionMode(QAbstractItemView::SingleSelection);
-        listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-       // listView->setViewMode(QListView::IconMode);
-        listView->setContextMenuPolicy(Qt::CustomContextMenu);
-        listView->setResizeMode(QListView::Adjust);
-        listView->setTextElideMode(Qt::ElideRight);
-        listView->setMouseTracking(true);
-        listView->setFocusPolicy(Qt::NoFocus);
-    //    this->setAcceptDrops(false);
-        listView->setMovement(QListView::Static);
-    //    this->setUpdatesEnabled(true);
-        listView->setFlow(QListView::LeftToRight);
-        listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        listView->setGridSize(QSize(Style::AppListIconSize,Style::AppListIconSize));
-        QStandardItemModel* listmodel=new QStandardItemModel;
-        listView->setModel(listmodel);
-
-        QList<TabletAppEntity*> tabletAppList = ite.value();
-        for(int i = 0; i < tabletAppList.size(); ++i)
-        {
-            QStandardItem* item=new QStandardItem;
-            //item->setText(desktopfp);
-            //item->setIcon(icon);
-            //item->setTextAlignment(Qt::AlignBottom | Qt::AlignHCenter);
-            TABLETAPP stuApp;
-            stuApp.serialNumber = tabletAppList.at(i)->serialNumber;
-            stuApp.desktopName = tabletAppList.at(i)->desktopName;
-            stuApp.appName = tabletAppList.at(i)->appName;
-            stuApp.appIcon = tabletAppList.at(i)->appIcon;
-            stuApp.execCommand = tabletAppList.at(i)->execCommand;
-
-            item->setData(QVariant::fromValue<TABLETAPP>(stuApp),Qt::DisplayRole);
-            listmodel->appendRow(item);
-        }
-
-        FullItemDelegate* delegate= new FullItemDelegate(listView,0);
-        listView->setItemDelegate(delegate);
+        StudyListView* listView = new StudyListView;
+        listView->setData(ite.value());
         m_scrollAreaWidLayout->addWidget(listView);
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));
 
