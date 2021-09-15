@@ -496,6 +496,9 @@ gboolean vfs_favorite_file_move(GFile* source, GFile* destination, GFileCopyFlag
         // dnd from favorite:/// to favorite:///, do nothing
         return true;
     }
+    if (srcUri.startsWith("filesafe:///")){
+        return true;
+    }
     if (srcScheme == "favorite" && destScheme == "file") {
         // dnd from favorite:/// to file:///xxx
         // find file favorite file point to, and create a symbolic link.
