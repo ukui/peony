@@ -135,7 +135,14 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
         QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
         connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
             if (key == "systemFontSize") {
-                updateButtons();
+                // note that updateButtons() will cost more time.
+                // there is no need to query file infos again here.
+                // use doLayout() is enough.
+                // btw, Bug#76858 is directly caused by info querying
+                // due to updateButtons().
+
+                //updateButtons();
+                doLayout();
             }
         });
     }
