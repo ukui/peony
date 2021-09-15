@@ -42,7 +42,7 @@ private:
     StudyDirectoryWidget* practiceWidget=nullptr;
     StudyDirectoryWidget* guradWidget=nullptr;
     StudyDirectoryWidget* synWidget=nullptr;
-    StudyStatusWidget* widget4=nullptr;
+    StudyStatusWidget* statusWidget=nullptr;
 
     TabletAppManager* m_tableAppMangager=nullptr;
     QList<QString> m_appList;
