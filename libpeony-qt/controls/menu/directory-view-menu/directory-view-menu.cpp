@@ -190,6 +190,11 @@ void DirectoryViewMenu::fillActions()
             addSeparator();
     }
 
+    //add multiselect action
+    auto multiselectAction = constructMultiSelectActions();
+    if(!multiselectAction.isEmpty())
+        addSeparator();
+
     //add operation actions
     auto fileOpActions = constructFileOpActions();
     if (!fileOpActions.isEmpty())
