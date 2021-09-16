@@ -103,14 +103,21 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
                  *  but the other document management does not take effect in real time.modified by 2021/06/15  */
                 Q_EMIT this->valueChanged(key);
+            } else if (key == MULTI_SELECT) {
+                m_cache.remove(key);
+                m_cache.insert(key, m_peony_gsettings->get(key).toBool());
+                Q_EMIT this->valueChanged(key);
+            } else if (key == ZOOM_SLIDER_VISIBLE) {
+                m_cache.remove(key);
+                m_cache.insert(key, m_peony_gsettings->get(key).toBool());
+                Q_EMIT this->valueChanged(key);
             }
         });
 
-        m_cache.remove(SHOW_TRASH_DIALOG);
-        m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
-
-        m_cache.remove(SHOW_HIDDEN_PREFERENCE);
-        m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
+        for (auto key : m_peony_gsettings->keys()) {
+            m_cache.remove(key);
+            m_cache.insert(key, m_peony_gsettings->get(key));
+        }
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);

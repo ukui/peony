@@ -44,6 +44,8 @@
 #define TABLET_MODE "tablet-mode"
 #define TEMPLATES_DIR "templates-dir"
 #define SHOW_TRASH_DIALOG           "showTrashDialog"
+#define MULTI_SELECT                "multiSelectCheckboxEnabled"
+#define ZOOM_SLIDER_VISIBLE         "zoomSliderVisible"
 
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"

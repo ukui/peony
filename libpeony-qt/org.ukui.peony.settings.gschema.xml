@@ -13,9 +13,22 @@
       <summary>show hide file</summary>
       <description>show hide files in peony and peony-desktop</description>
     </key>
+
     <!--directory-view-->
+    <key type="b" name="multi-select-checkbox-enabled">
+      <default>true</default>
+      <summary>multi-select with checkbox</summary>
+      <description>determe wether support multi select with checkbox</description>
+    </key>
 
     <!--remote-server-->
+
+    <!--status-bar-->
+    <key type="b" name="zoom-slider-visible">
+      <default>true</default>
+      <summary>show zoom slider</summary>
+      <description>determe wether status bar zoom slider is visible</description>
+    </key>
 
   </schema>
 </schemalist>
