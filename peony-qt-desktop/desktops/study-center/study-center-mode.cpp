@@ -307,7 +307,7 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
         if (mouseEvent->button() == Qt::LeftButton) {
             if (m_leftButtonPressed) {
                 m_releasePoint = mouseEvent->globalPos();
-                if (qAbs(m_releasePoint.y() - m_pressPoint.y()) < 50) {
+                if (qAbs(m_releasePoint.y() - m_pressPoint.y()) < 300) {
                     qint32 moveLength = m_releasePoint.x() - m_pressPoint.x();
                     qDebug() << "[StudyCenterMode::mouseReleaseEvent] " << m_releasePoint << m_pressPoint << moveLength;
                     if (moveLength < -200) {

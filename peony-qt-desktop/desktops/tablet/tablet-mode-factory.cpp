@@ -44,6 +44,7 @@ Peony::DesktopWidgetBase *Peony::TabletModeFactory::createDesktop(QWidget *paren
 {
     if (!g_tabletMode) {
         g_tabletMode = new TabletMode(parent);
+        g_tabletMode->setDesktopType(DesktopType::Tablet);
     }
 
     return g_tabletMode;
