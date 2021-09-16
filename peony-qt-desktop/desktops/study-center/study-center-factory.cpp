@@ -49,6 +49,7 @@ DesktopWidgetBase *StudyCenterFactory::createDesktop(QWidget *parent)
 {
     if (!g_studyCenterMode) {
         g_studyCenterMode = new StudyCenterMode(parent);
+        g_studyCenterMode->setDesktopType(DesktopType::StudyCenter);
     }
 
     return g_studyCenterMode;

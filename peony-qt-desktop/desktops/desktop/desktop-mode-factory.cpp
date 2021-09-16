@@ -49,6 +49,7 @@ DesktopWidgetBase *DesktopModeFactory::createDesktop(QWidget *parent)
 {
     if (!g_desktopMode) {
         g_desktopMode = new DesktopMode(parent);
+        g_desktopMode->setDesktopType(DesktopType::Desktop);
     }
 
     return g_desktopMode;

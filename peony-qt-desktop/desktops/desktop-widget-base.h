@@ -62,6 +62,16 @@ public:
         return this;
     };
 
+    DesktopType getDesktopType() const
+    {
+        return m_currentDesktopType;
+    }
+
+    void setDesktopType(DesktopType desktopType)
+    {
+        m_currentDesktopType = desktopType;
+    }
+
 protected:
 
     /**
@@ -79,29 +89,12 @@ protected:
      * 可以在打开开始菜单时判断是否展示学习中心，
      * 根据当前系统的模式判断是否启用滑动切换桌面。
      */
-    DesktopType m_systemDesktopType = DesktopType::Desktop;
+    DesktopType m_currentDesktopType = DesktopType::Desktop;
 
     /**
      * \brief 当前桌面的退出动画，根据系统的桌面模式设置
      */
     AnimationType m_exitAnimationType = AnimationType::LeftToRight;
-
-public Q_SLOTS:
-
-    /**
-     * \brief 设置当前的系统桌面模式
-     * \param systemDesktopMode 系统模式枚举变量
-     * 根据系统的桌面模式显示部分组件
-     */
-    void setSystemDesktopMode(DesktopType systemDesktopType)
-    {
-        //（系统桌面模式没有学习中心模式）
-        if (systemDesktopType == DesktopType::StudyCenter) {
-            this->m_systemDesktopType = DesktopType::Desktop;
-        } else {
-            this->m_systemDesktopType = systemDesktopType;
-        }
-    }
 
 Q_SIGNALS:
 
