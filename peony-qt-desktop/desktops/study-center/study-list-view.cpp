@@ -29,7 +29,7 @@ StudyListView::StudyListView(QWidget *parent): QListView(parent)
 //    this->setUpdatesEnabled(true);
     this->setFlow(QListView::LeftToRight);
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    this->setGridSize(QSize(Style::AppListIconSize,Style::AppListIconSize));
+    this->setGridSize(QSize(Style::GridSize,Style::GridSize));
 
     m_listmodel=new QStandardItemModel;
     this->setModel(m_listmodel);
@@ -91,7 +91,9 @@ void StudyListView::mouseReleaseEvent(QMouseEvent *event)
 }
 void StudyListView::mouseMoveEvent(QMouseEvent *event)
 {
-     QListView::mouseReleaseEvent(event);
+    QPoint pressedpos = event->pos();
+    this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+    QListView::mouseMoveEvent(event);
 }
 void StudyListView::mouseDoubleClickEvent(QMouseEvent *event)
 {
