@@ -77,6 +77,9 @@
 #include "directory-view-menu.h"
 #include "icon-view.h"
 
+#include "side-bar-factory-manager.h"
+#include "intel/tablet-side-bar-factory.h"
+
 #include "plugin-manager.h"
 
 #include "list-view.h"
@@ -171,6 +174,7 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
 
     if (this->isPrimary()) {
         connect(this, &SingleApplication::receivedMessage, this, &PeonyApplication::parseCmd);
+        Peony::SideBarFactoryManager::getInstance()->registerFactory(new Peony::Intel::TabletSideBarFactory);
     }
 
     //parse cmd

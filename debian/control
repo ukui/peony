@@ -89,6 +89,7 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libcanberra-dev,
+         libukui-common-dev,
          libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)
  Peony is the official file manager for the UKUI desktop. It allows one
