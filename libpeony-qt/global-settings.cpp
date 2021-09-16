@@ -223,7 +223,9 @@ void GlobalSettings::getDualScreenMode()
     if(QGSettings::isSchemaInstalled(SETTINGS_DAEMON_SCHEMA_XRANDR)) {
         m_gsettings_dual_screen_mode = new QGSettings(SETTINGS_DAEMON_SCHEMA_XRANDR, QByteArray(), this);
         m_cache.remove(DUAL_SCREEN_MODE);
-        //m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(DUAL_SCREEN_MODE).toString());
+        if (m_gsettings_dual_screen_mode->keys().contains(DUAL_SCREEN_MODE)) {
+            m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(DUAL_SCREEN_MODE).toString());
+        }
         connect(m_gsettings_dual_screen_mode, &QGSettings::changed, this, [=](const QString &key){
            if (key == DUAL_SCREEN_MODE) {
                m_cache.remove(DUAL_SCREEN_MODE);
