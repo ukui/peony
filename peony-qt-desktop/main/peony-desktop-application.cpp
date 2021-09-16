@@ -978,8 +978,11 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
 
 void PeonyDesktopApplication::changeDesktop()
 {
+    if (m_windowManager->getWindowByScreen(m_primaryScreen)->getCurrentDesktop()->getDesktopType() == DesktopType::StudyCenter) {
+        return;
+    }
     if (m_isTabletMode) {
-        this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+        this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::LeftToRight);
     } else {
         this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::LeftToRight);
     }
