@@ -93,6 +93,7 @@ void StudyListView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint pressedpos = event->pos();
     this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
+    QListView::mouseMoveEvent(event);
 }
 void StudyListView::mouseDoubleClickEvent(QMouseEvent *event)
 {
