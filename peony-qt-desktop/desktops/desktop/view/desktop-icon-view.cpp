@@ -98,7 +98,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     installEventFilter(this);
 
     //解决桌面可以拖动的问题
-    setProperty("notUseSlideListView", true);
+    setProperty("notUseSlideGesture", true);
 
     initShoutCut();
     //initMenu();
