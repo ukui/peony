@@ -25,6 +25,8 @@
 #include <QStyleOptionRubberBand>
 #include <QPainter>
 
+#include <QApplication>
+
 #include <QDebug>
 
 using namespace Peony;
@@ -60,6 +62,18 @@ void IconViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
 
 void IconViewStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (element == CE_RubberBand) {
+        if (qApp->devicePixelRatio() != 1.0) {
+            const QStyleOptionRubberBand *tmp = qstyleoption_cast<const QStyleOptionRubberBand *>(option);
+            QStyleOptionRubberBand opt = *tmp;
+            if (opt.rect.width() >= 2 && opt.rect.height() >= 2) {
+                opt.rect.adjust(1, 1, -1, -1);
+            } else {
+                opt.rect = QRect();
+            }
+            return QProxyStyle::drawControl(element, &opt, painter, widget);
+        }
+    }
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
