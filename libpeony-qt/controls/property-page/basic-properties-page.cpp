@@ -678,8 +678,10 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
-    m_watcher->stopMonitor();
-    m_thumbnail_watcher->stopMonitor();
+    if (m_watcher)
+        m_watcher->stopMonitor();
+    if (m_thumbnail_watcher)
+        m_thumbnail_watcher->stopMonitor();
     //未发生修改
     if (!this->m_thisPageChanged)
         return;
