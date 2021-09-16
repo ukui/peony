@@ -25,6 +25,7 @@
 #include "menu-plugin-manager.h"
 #include "directory-view-factory-manager.h"
 #include "preview-page-factory-manager.h"
+#include "side-bar-factory-manager.h"
 
 #include "directory-view-plugin-iface.h"
 #include "directory-view-plugin-iface2.h"
@@ -57,6 +58,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     DirectoryViewFactoryManager2::getInstance();
     PreviewPageFactoryManager::getInstance();
     VFSPluginManager::getInstance();
+    SideBarFactoryManager::getInstance();
 
     QDir pluginsDir(PLUGIN_INSTALL_DIRS);
 //    if (COMMERCIAL_VERSION)
@@ -120,6 +122,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::VFSPlugin: {
             auto p = dynamic_cast<VFSPluginIface *>(plugin);
             VFSPluginManager::getInstance()->registerPlugin(p);
+            break;
+        }
+        case PluginInterface::SideBarPlugin: {
+            auto p = dynamic_cast<SideBarPluginInterface *>(plugin);
+            SideBarFactoryManager::getInstance()->registerFactory(p);
             break;
         }
         default:

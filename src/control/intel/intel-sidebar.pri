@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/intel-side-bar-personal-item.h \
     $$PWD/intel-side-bar-proxy-filter-sort-model.h \
     $$PWD/intel-side-bar-separator-item.h \
-    $$PWD/intel-side-bar-vfs-item.h
+    $$PWD/intel-side-bar-vfs-item.h \
+    $$PWD/tablet-side-bar-factory.h
 
 SOURCES += \
     $$PWD/intel-navigation-side-bar.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
     $$PWD/intel-side-bar-personal-item.cpp \
     $$PWD/intel-side-bar-proxy-filter-sort-model.cpp \
     $$PWD/intel-side-bar-separator-item.cpp \
-    $$PWD/intel-side-bar-vfs-item.cpp
+    $$PWD/intel-side-bar-vfs-item.cpp \
+    $$PWD/tablet-side-bar-factory.cpp

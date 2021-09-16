@@ -70,6 +70,8 @@
 #include "global-settings.h"
 #include "audio-play-manager.h"
 
+#include "side-bar-factory-manager.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -1209,21 +1211,17 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //SideBar
-    if (false) {
+    auto sideBarFactory = Peony::SideBarFactoryManager::getInstance()->getFactoryFromPlatformName();
+    if (!sideBarFactory) {
         NavigationSideBarContainer *sidebar = new NavigationSideBarContainer(this);
-        sidebar->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        m_side_bar = sidebar;
-        m_transparent_area_widget = sidebar;
-        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
-        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
+        m_side_bar = sidebar;        
     } else {
-        Intel::NavigationSideBarContainer *sidebar = new Intel::NavigationSideBarContainer(this);
-        sidebar->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        auto sidebar = sideBarFactory->create(this);
         m_side_bar = sidebar;
-        m_transparent_area_widget = sidebar;
-        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
-        connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
     }
+    m_transparent_area_widget = m_side_bar;
+    connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
     addDockWidget(Qt::LeftDockWidgetArea, m_side_bar);
 
 //    auto labelDialog = new FileLabelBox(this);
