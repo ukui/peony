@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>hover</title>
+    <g id="Edu-OS-Light" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TM-桌面01" transform="translate(-1856.000000, -532.000000)">
+            <g id="hover" transform="translate(1856.000000, 532.000000)">
+                <rect id="overlay" fill-opacity="0.298039216" fill="#FF5500" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                <path d="M12,8 C14.209139,8 16,9.790861 16,12 C16,14.209139 14.209139,16 12,16 C9.790861,16 8,14.209139 8,12 C8,9.790861 9.790861,8 12,8 Z" id="矩形备份-3" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
