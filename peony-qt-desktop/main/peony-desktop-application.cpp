@@ -456,12 +456,14 @@ void PeonyDesktopApplication::setupBgAndDesktop()
 void PeonyDesktopApplication::setupDesktop()
 {
     qDebug() << "[PeonyDesktopApplication::setupDesktop]";
+    //初始化主屏
+    m_primaryScreen = QApplication::primaryScreen();
     for (auto screen : qApp->screens()) {
         addBgWindow(screen);
     }
     updateDesktop();
 
-    connect(qApp, &QApplication::screenAdded, this, &PeonyDesktopApplication::screenAddedProcess);
+    connect(this, &QApplication::screenAdded, this, &PeonyDesktopApplication::screenAddedProcess);
     connect(this, &PeonyDesktopApplication::primaryScreenChanged, this, &PeonyDesktopApplication::primaryScreenChangedProcess);
 }
 
@@ -472,13 +474,15 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
     window->show();
 
     connect(screen, &QScreen::destroyed, this, [=]() {
-        m_primaryScreen = QApplication::primaryScreen();
+        if (screen == m_primaryScreen) {
+            m_primaryScreen = QApplication::primaryScreen();
+        }
         m_windowManager->removeWindowByScreen(screen);
+        this->updateDesktop();
     });
 
     // raise primary window to make sure icon view is visible.
     if (window->screen() == QApplication::primaryScreen()) {
-        m_primaryScreen = QApplication::primaryScreen();
         KWindowSystem::raiseWindow(window->winId());
     }
 }
@@ -506,7 +510,11 @@ void PeonyDesktopApplication::layoutDirectionChangedProcess(Qt::LayoutDirection 
 
 void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
 {
-    if (screen == nullptr) {
+    if ((screen == nullptr) || (m_primaryScreen == nullptr)) {
+        return;
+    }
+
+    if (screen == m_primaryScreen) {
         return;
     }
 
@@ -532,23 +540,32 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimaryWindow->show();
 
         KWindowSystem::raiseWindow(currentPrimaryWindow->winId());
-
-        primaryDesktop->onPrimaryScreenChanged();
+        if (primaryDesktop) {
+            primaryDesktop->onPrimaryScreenChanged();
+        }
     }
 }
 
 void PeonyDesktopApplication::screenAddedProcess(QScreen *screen)
 {
-    qDebug() << "[PeonyDesktopApplication::screenAddedProcess] new screen:" << screen->geometry();
-    qDebug() << "[PeonyDesktopApplication::screenAddedProcess] primary screen:" << m_primaryScreen->geometry();
-
     if (screen != nullptr) {
-        //屏幕设置为镜像屏时，不添加窗口
-        if (screen->geometry().topLeft() != m_primaryScreen->geometry().topLeft()) {
-            //新建窗口
-            addBgWindow(screen);
-            //更新desktop
-            updateDesktop();
+        qDebug() << "[PeonyDesktopApplication::screenAddedProcess] new screen:" << screen->geometry();
+        qDebug() << "[PeonyDesktopApplication::screenAddedProcess] primary screen:" << m_primaryScreen->geometry();
+
+        if (screen == QApplication::primaryScreen()) {
+            if (screen != m_primaryScreen) {
+                //新建窗口
+                addBgWindow(screen);
+                this->primaryScreenChangedProcess(screen);
+            }
+        } else {
+            //屏幕设置为镜像屏时，不添加窗口
+            if (screen->geometry().topLeft() != QApplication::primaryScreen()->geometry().topLeft()) {
+                //新建窗口
+                addBgWindow(screen);
+                //更新desktop
+                updateDesktop();
+            }
         }
     }
 }
