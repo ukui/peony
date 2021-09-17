@@ -1,3 +1,15 @@
+peony (3.2.2+0917ukui3.1) v101; urgency=medium
+
+  * UKUI3.1版本更新
+    - Bug号:
+    - 需求号: 无
+    - 其它改动说明:
+      Intel & sp1 合并版本
+    - 影响域:
+      全部、桌面、侧边栏、标签页栏、文件视图、状态栏、自定义样式、翻译
+
+ -- Yue Lan <lanyue@kylinos.cn>  Fri, 17 Sep 2021 16:38:54 +0800
+
 peony (3.2.2+0917) v101; urgency=medium
 
   * 0820-1版本更新
