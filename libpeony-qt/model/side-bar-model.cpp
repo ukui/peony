@@ -337,13 +337,13 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     if (data->hasFormat("peony-qt/encoded-uris")) {
         srcUris = data->text().split(" ");
         for (QString uri : srcUris) {
-            if (uri.startsWith("recent://"))
+            if (uri.startsWith("recent://") || uri.startsWith("filesafe://"))
                 srcUris.removeOne(uri);
         }
     } else {
         for (auto url : urls) {
             //can not drag file from recent
-            if (url.url().startsWith("recent://"))
+            if (url.url().startsWith("recent://") || url.url().startsWith("filesafe://"))
                 return false;
             srcUris<<url.url();
         }
