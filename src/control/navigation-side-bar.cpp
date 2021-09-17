@@ -63,6 +63,7 @@
 #include <QPainterPath>
 
 #include <QDebug>
+#include <QToolTip>
 
 #define NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS 4
 
@@ -115,12 +116,19 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     this->setModel(m_proxy_model);
 
+    setMouseTracking(true);//追踪鼠标
+
     VolumeManager *volumeManager = VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
         m_proxy_model->invalidate();//display DVD device in real time.
     });
     connect(volumeManager,&Peony::VolumeManager::volumeRemoved,this,[=](const std::shared_ptr<Peony::Volume> &volume){
         m_proxy_model->invalidate();//The drive does not display when the DVD device is removed.
+        //qDebug() << "volumeRemoved:" <<QToolTip::text();
+        //fix abnormal pull out usb device tips not hide issue, link to bug#81190
+        if (QToolTip::isVisible()) {
+            QToolTip::hideText();
+        }
     });
     connect(volumeManager,&Peony::VolumeManager::driveDisconnected,this,[=](const std::shared_ptr<Peony::Drive> &drive){
         m_proxy_model->invalidate();//Multiple udisk eject display problem
