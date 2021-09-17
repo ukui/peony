@@ -1677,7 +1677,7 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
                 setIndexWidget(m_last_index,
                                indexWidget);
                 indexWidget->move(visualRect(m_last_index).topLeft());
-                m_animation->start();
+                //m_animation->start();
             }
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
             for (auto uri : getAllFileUris()) {
