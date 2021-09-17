@@ -226,32 +226,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="656"/>
+        <location filename="../../src/windows/main-window.cpp" line="659"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="298"/>
+        <location filename="../../src/windows/main-window.cpp" line="295"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="305"/>
+        <location filename="../../src/windows/main-window.cpp" line="302"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="654"/>
+        <location filename="../../src/windows/main-window.cpp" line="657"/>
         <source>Search</source>
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1356"/>
+        <location filename="../../src/windows/main-window.cpp" line="1355"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1357"/>
+        <location filename="../../src/windows/main-window.cpp" line="1356"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -272,7 +272,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="669"/>
+        <location filename="../../src/windows/main-window.cpp" line="672"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -493,6 +493,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Peony::Intel::TabletSideBarFactory</name>
+    <message>
+        <location filename="../../src/control/intel/tablet-side-bar-factory.cpp" line="38"/>
+        <source>Intel Side Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::TrashWarnDialog</name>
     <message>
         <location filename="../../src/windows/trash-warn-dialog.cpp" line="101"/>
@@ -507,27 +515,27 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="141"/>
+        <location filename="../../src/peony-application.cpp" line="144"/>
         <source>peony-qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="148"/>
+        <location filename="../../src/peony-application.cpp" line="151"/>
         <source>Files or directories to open</source>
         <translation>Açılacak dosyalar veya dizinler</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="148"/>
+        <location filename="../../src/peony-application.cpp" line="151"/>
         <source>[FILE1, FILE2,...]</source>
         <translation>[DOSYA1, DOSYA2,...]</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="188"/>
+        <location filename="../../src/peony-application.cpp" line="192"/>
         <source>Warning</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="188"/>
+        <location filename="../../src/peony-application.cpp" line="192"/>
         <source>Peony-Qt can not get the system&apos;s icon theme. There are 2 reasons might lead to this problem:
 
 1. Peony-Qt might be running as root, that means you have the higher permission and can do some things which normally forbidden. But, you should learn that if you were in a root, the virtual file system will lose some featrue such as you can not use &quot;My Computer&quot;, the theme and icons might also went wrong. So, run peony-qt in a root is not recommended.
@@ -540,12 +548,12 @@ p, li { white-space: pre-wrap; }
 2. Sisteminiz için qt olmayan bir tema kullanıyorsunuz ancak qt uygulamaları için platform tema eklentisini yüklemediniz. Gtk-theme kullanıyorsanız, bu sorunu çözmek için qt5-gtk2-platformtheme paketini yüklemeyi deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="447"/>
+        <location filename="../../src/peony-application.cpp" line="451"/>
         <source>Peony Qt</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/peony-application.cpp" line="448"/>
+        <location filename="../../src/peony-application.cpp" line="452"/>
         <source>Author:
 	Yue Lan &lt;lanyue@kylinos.cn&gt;
 	Meihong He &lt;hemeihong@kylinos.cn&gt;
@@ -992,7 +1000,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="537"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="540"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>
