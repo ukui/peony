@@ -635,6 +635,7 @@ void MainWindow::setShortCuts()
                 || currentUri.startsWith("search://") || currentUri == "filesafe:///")
             {
                 return;
+            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
