@@ -137,7 +137,9 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
         // 首先把exec整个截取成 path+parameter形式
         if (exe.contains(" ")) {
-            parameters = exe.split(" ");
+//            parameters = exe.split(" ");
+            //排除参数之间多个空格分隔的情况
+            parameters = exe.split(QRegExp("\\s+"));
             exe = parameters[0];
             parameters.removeAt(0);
         }
@@ -252,57 +254,54 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+    bool intel = false;
+    if (intel) {
+        //intel应用禁用
+        if (fileInfo->isExecDisable()) return;
 
-    if(fileInfo->isExecDisable())return;
+        if (isDesktopFileAction()) {
+            QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
+            desktop_file.setIniCodec("UTF8");
+            desktop_file.beginGroup("Desktop Entry");
+            QString key = "Exec";
+            QString exe = desktop_file.value(key).toString();
 
-    if (fileInfo->type() == "application/x-desktop") {
+            if (exe.isEmpty()) {
+                qDebug() << "Get desktop file Exec value error";
+                return;
+            }
 
-//        auto tmp = g_desktop_app_info_get_locale_string((GDesktopAppInfo*)m_app_info, "Exec");
-        QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
-        desktop_file.setIniCodec("UTF8");
-        desktop_file.beginGroup("Desktop Entry");
-        QString key = "Exec";
-        QString exe = desktop_file.value(key).toString();
+            QStringList parameters;
+            // 首先把exec整个截取成 path+parameter形式
+            if (exe.contains(" ")) {
+//            parameters = exe.split(" ");
+                //排除参数之间多个空格分隔的情况
+                parameters = exe.split(QRegExp("\\s+"));
+                exe = parameters[0];
+                parameters.removeAt(0);
+            }
 
-        if (exe.isEmpty()) {
-            qDebug() << "Get desktop file Exec value error";
+            // 优先判断path里有没有带%U等，如果存在的话，删除%和后面紧跟的字符
+            if (exe.contains("%")) {
+                exe = exe.left(exe.indexOf("%"));
+            }
+
+            for (auto begin = parameters.begin(); begin != parameters.end(); ++begin) {
+                if (begin->contains("%")) {
+                    // 命令行最多可包含一个％f，％u，％F或％U字段代码
+                    if (begin->count() == 2)
+                        parameters.removeOne(*begin);
+                    else {
+                        begin->remove(begin->indexOf("%"), 2);
+                    }
+                    break;
+                }
+            }
+
+            QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+            session.call("app_open", exe, parameters);
             return;
         }
-
-        QStringList parameters;
-
-        // 首先把exec整个截取成 path+parameter形式
-        if (exe.contains(" ")) {
-            parameters = exe.split(" ");
-            exe = parameters[0];
-            parameters.removeAt(0);
-        }
-
-        // 优先判断path里有没有带%U等，如果存在的话，删除%和后面紧跟的字符
-        if (exe.contains("%")) {
-            exe = exe.left(exe.indexOf("%"));
-        }
-
-        for (auto begin = parameters.begin(); begin != parameters.end(); ++begin) {
-            if (begin->contains("%")) {
-                // 命令行最多可包含一个％f，％u，％F或％U字段代码
-                if (begin->count() == 2)
-                    parameters.removeOne(*begin);
-                else {
-                    begin->remove(begin->indexOf("%"), 2);
-                }
-                break;
-            }
-        }
-
-        QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
-        session.call("app_open", exe, parameters);
-//        if (parameters.isEmpty())
-//            session.call("app_open", exe, parameters);
-//        else
-//            session.call("app_open", exe, parameters);
-
-        return;
     }
 
     bool executable = fileInfo->canExecute();
