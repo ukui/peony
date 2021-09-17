@@ -532,6 +532,8 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         currentPrimaryWindow->show();
 
         KWindowSystem::raiseWindow(currentPrimaryWindow->winId());
+
+        primaryDesktop->onPrimaryScreenChanged();
     }
 }
 

@@ -20,6 +20,8 @@ public:
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
+    void onPrimaryScreenChanged() override;
+
     void initUI();
 
     void initMenu();

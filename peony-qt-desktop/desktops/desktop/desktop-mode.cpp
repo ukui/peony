@@ -31,6 +31,13 @@ DesktopWidgetBase *DesktopMode::initDesktop(const QRect &rect)
     return this;
 }
 
+void DesktopMode::onPrimaryScreenChanged()
+{
+    if (m_view->isVisible()) {
+        m_view->resolutionChange();
+    }
+}
+
 void DesktopMode::initUI()
 {
     this->setContentsMargins(0, 0, 0, 0);

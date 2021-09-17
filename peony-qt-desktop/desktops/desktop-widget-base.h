@@ -73,6 +73,8 @@ public:
         return this;
     };
 
+    virtual void onPrimaryScreenChanged() {}
+
     DesktopType getDesktopType() const
     {
         return m_currentDesktopType;
