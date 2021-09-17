@@ -42,6 +42,8 @@ Depends: ${misc:Depends},
          libukui-log4qt0,
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
+         accountsservice,
+         bamfdaemon,
 Recommends: gvfs-backends,
             peony-extensions
 Description: file Manager for the UKUI desktop
