@@ -236,10 +236,10 @@ void StudyStatusWidget::initUserInfo()
                                            userpath,
                                            "org.freedesktop.Accounts.User",
                                            QDBusConnection::systemBus());
-    QString userName = "Hi," + m_userInterface->property("RealName").value<QString>() + "同学";
+    QString userName = "Hi, " + m_userInterface->property("RealName").value<QString>() + "同学";
     QString userIconPath = m_userInterface->property("IconFile").value<QString>();
     m_userInterface->connection().connect("org.freedesktop.Accounts",userpath, "org.freedesktop.DBus.Properties", "PropertiesChanged",
-                                    this, SLOT(AccountSlots(QString, QMap<QString, QVariant>, QStringList)));
+                                    this, SLOT(accountSlots(QString, QMap<QString, QVariant>, QStringList)));
 
     m_userNameLabel->setText(userName);
 
@@ -320,4 +320,19 @@ void StudyStatusWidget::markTimeSlot()
 {
     QDateTime curTime = QDateTime::currentDateTime();//获取当前时间
     m_updateTimeBt->setText(QString("更新于：") + curTime.toString("MM.dd HH:mm"));
+}
+void StudyStatusWidget::accountSlots(QString property, QMap<QString, QVariant> propertyMap, QStringList propertyList)
+{
+    Q_UNUSED(property);
+    Q_UNUSED(propertyList);
+
+    if (propertyMap.keys().contains("IconFile"))
+    {
+        m_userIconLabel->setPixmap(PixmapToRound(propertyMap.value("IconFile").toString(), 20));
+    }
+    if (propertyMap.keys().contains("RealName"))
+    {
+        QString userName = "Hi, " + m_userInterface->property("RealName").value<QString>() + "同学";
+        m_userNameLabel->setText(userName);
+    }
 }
