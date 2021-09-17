@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
 #include "common.h"
 
 class QVBoxLayout;
@@ -52,6 +53,7 @@ public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);
    void timeChangeSlot(QString strMethod ,QString strTime);
    void markTimeSlot();
+   void accountSlots(QString property, QMap<QString, QVariant> propertyMap, QStringList propertyList);
 
 Q_SIGNALS:
     /**
