@@ -24,8 +24,12 @@ DesktopManager::DesktopManager(bool enablePreloading, QObject *parent) : QObject
 
     //注册组件，添加新的组件后，需要手动添加到此处
     registerPlugin(DesktopModeFactory::getInstance());
-    registerPlugin(TabletModeFactory::getInstance());
-    registerPlugin(StudyCenterFactory::getInstance());
+
+    bool isIntel = false;
+    if (isIntel) {
+        registerPlugin(TabletModeFactory::getInstance());
+        registerPlugin(StudyCenterFactory::getInstance());
+    }
 
     //预加载全部桌面，加快切换桌面时的速度
     if (m_enablePreloading) {

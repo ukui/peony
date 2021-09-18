@@ -54,7 +54,6 @@ DesktopBackgroundWindow *WindowManager::getWindowByScreen(QScreen *screen)
 
     for (DesktopBackgroundWindow *window : m_windowList) {
         if (window->screen() == screen) {
-            m_mutex.unlock();
             return window;
         }
     }

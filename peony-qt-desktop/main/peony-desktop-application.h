@@ -70,6 +70,11 @@ private:
 
     void updateDesktop();
 
+    /**
+     * @brief 唤起全部窗口，保证主屏不被覆盖
+     */
+    void raiseWindows();
+
     void initManager();
 
     void initGSettings();
