@@ -61,10 +61,13 @@ int Style::ButtonWidgetHeight=90;
 int Style::ToolWidgetLeft=24;
 bool Style::IsWideScreen=false;
 
-int Style::BigIconSize=75;
-int Style::SmallIconSize=65;
-int Style::Margin=15;
-int Style::GridSize=125;
+int Style::BigIconSize=106;
+int Style::SmallIconSize=96;
+int Style::Margin=74;
+int Style::topSpace=16;
+int Style::GridSize=170;
+int Style::itemWidth=96;
+int Style::itemHeight=120;
 
 void Style::initWidStyle()
 {
