@@ -425,7 +425,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe) {
+    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe && !m_is_trash) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
