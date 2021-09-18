@@ -47,32 +47,31 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         rect.setHeight(option.rect.height());
 
         //QPainterPath画圆角矩形
-//        const qreal radius = 4;
-//        QPainterPath path;
-//        path.moveTo(rect.topRight() - QPointF(radius, 0));
-//        path.lineTo(rect.topLeft() + QPointF(radius, 0));
-//        path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
-//        path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
-//        path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
-//        path.lineTo(rect.bottomRight() - QPointF(radius, 0));
-//        path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
-//        path.lineTo(rect.topRight() + QPointF(0, radius));
-//        path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+        const qreal radius = 4;
+        QPainterPath path;
+        path.moveTo(rect.topRight() - QPointF(radius, 0));
+        path.lineTo(rect.topLeft() + QPointF(radius, 0));
+        path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+        path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
+        path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+        path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+        path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+        path.lineTo(rect.topRight() + QPointF(0, radius));
+        path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
 
-//        painter->setRenderHint(QPainter::Antialiasing);
-//        if(option.state & QStyle::State_MouseOver)
-//        {
-//            painter->setPen(QPen(Qt::NoPen));
-//            QColor color;
-//            color.setNamedColor("white");
-//            painter->setBrush(QBrush(color));
+        painter->setRenderHint(QPainter::Antialiasing);
+        if(option.state & QStyle::State_MouseOver)
+        {
+            painter->setPen(QPen(Qt::NoPen));
+            QColor color;
+            color.setNamedColor("black");
+            painter->setBrush(QBrush(color));
 
-//            painter->setOpacity(0.14);
-//            painter->drawPath(path);
-//        }
+            painter->setOpacity(0.14);
+            painter->drawPath(path);
+        }
 
         painter->setOpacity(1);
-//        QIcon icon=index.data(Qt::DecorationRole).value<QIcon>();
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
         QString iconstr= tabletApp.appIcon;
         qDebug("FullItemDelegate::paint : name:%s, icon:%s/n",tabletApp.appName.toLocal8Bit().data(),iconstr.toLocal8Bit().data());
@@ -84,57 +83,61 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             icon=QIcon::fromTheme(QString("application-x-desktop"));
         QString appname= tabletApp.appName;
 
-//        QFont font;
+
         QRect iconRect;
-//        font.setPixelSize(Style::AppListFontSize);
-        iconRect=QRect(rect.x()+Style::AppLeftSpace ,
-                       rect.y()+Style::AppTopSpace,
-                       Style::AppListIconSize,
-                       Style::AppListIconSize);
-//        painter->setFont(font);
+        QRect textRect;
+        QPixmap pixmap;
+        bool bigIcon = index.data(Qt::UserRole).toBool();
+
+        if(bigIcon)
+        {
+            iconRect=QRect(rect.x()+Style::Margin-5, rect.y()+Style::Margin-5, Style::BigIconSize,Style::BigIconSize);
+            textRect=QRect(rect.x(),iconRect.bottom()+5, rect.width(),rect.height()-iconRect.height()-10-5);
+            pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
+            pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::IgnoreAspectRatio);
+
+        }
+        else
+        {
+            iconRect=QRect(rect.x()+Style::Margin, rect.y()+Style::Margin, Style::SmallIconSize,Style::SmallIconSize);
+            textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::Margin);
+            pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
+            pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::IgnoreAspectRatio);
+
+        }
+
+        icon = QIcon(pixmap);
         icon.paint(painter,iconRect);      
         painter->restore();
         painter->save();
-
         painter->setPen(QPen(Qt::black));
-        QRect textRect;
 
-        textRect=QRect(rect.x()+5,
-                       iconRect.bottom()+5,
-                       rect.width()-10,
-                       rect.height()-iconRect.height()-5);
-
-        painter->save();
         QFontMetrics fm=painter->fontMetrics();
-        QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,rect.width(),Qt::TextShowMnemonic);
+        QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,textRect.width(),Qt::TextShowMnemonic);
         painter->drawText(textRect,Qt::AlignHCenter,appnameElidedText.toLocal8Bit().data());
         painter->restore();
         painter->save();
 
-//        QRect progressRect;
-//        progressRect=QRect(textRect.x(), textRect.height(), rect.width() - iconRect.width()-5, rect.height()/2);
-//        painter->drawRect(progressRect);
-//        painter->fillRect(progressRect,QColor(Qt::blue));
-//        if(option.state & QStyle::State_MouseOver)
-//        {
-////            painter->setPen(QPen(Qt::NoPen));
-////            QColor color;
-////            color.setNamedColor(QString::fromLocal8Bit(AppBtnHover));
-////            painter->setBrush(QBrush(color));
+        if(option.state & QStyle::State_MouseOver)
+        {
+            painter->setPen(QPen(Qt::NoPen));
+            QColor color;
+            color.setNamedColor(QString::fromLocal8Bit(AppBtnHover));
+            painter->setBrush(QBrush(color));
 
-////            painter->setOpacity(0.14);
-////            painter->drawPath(path);
+            painter->setOpacity(0.14);
+            painter->drawPath(path);
 
-//            if(fm.boundingRect(appname).width()>rect.width())
-//            {
-//                QToolTip::showText(QCursor::pos(),appname);
-//            }
-////                QToolTip::showText(QPoint(QCursor::pos().x(),option.rect.bottom()),appname);
+            if(fm.boundingRect(appname).width()>rect.width())
+            {
+                QToolTip::showText(QCursor::pos(),appname);
+            }
+            QToolTip::showText(QPoint(QCursor::pos().x(),option.rect.bottom()),appname);
 
-//        }
-//        else {
-//            QToolTip::hideText();
-//        }
+        }
+        else {
+            QToolTip::hideText();
+        }
         painter->restore();
 
     }
@@ -142,7 +145,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 QSize FullItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return QSize(128, 128);
+    return QSize(Style::GridSize,Style::GridSize);
 }
 
 //bool FullItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)

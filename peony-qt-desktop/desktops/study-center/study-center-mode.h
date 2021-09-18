@@ -4,8 +4,10 @@
 #include "desktop-widget-base.h"
 #include "common.h"
 #include "../../tablet/data/tablet-app-manager.h"
-
+#include "study-status-widget.h"
+#include "study-directory-widget.h"
 #include <QDBusInterface>
+class QGridLayout;
 
 namespace Peony {
 
@@ -33,6 +35,15 @@ public:
 
 private:
     void initUi();
+    void screenRotation();
+
+private:
+    QGridLayout* m_mainGridLayout=nullptr;
+    StudyDirectoryWidget* practiceWidget=nullptr;
+    StudyDirectoryWidget* guradWidget=nullptr;
+    StudyDirectoryWidget* synWidget=nullptr;
+    StudyStatusWidget* statusWidget=nullptr;
+
     TabletAppManager* m_tableAppMangager=nullptr;
     QList<QString> m_appList;
 
@@ -41,9 +52,16 @@ private:
     QPoint m_releasePoint;
     QPoint m_lastPressPoint;
     bool   m_leftButtonPressed = false;
+    bool m_isTabletMode;
+    QString m_direction;
 
 public Q_SLOTS:
    void updateTimeSlot();
+   void updateRotationsValue(QString rotation);
+   void updateTabletModeValue(bool mode);
+
+protected Q_SLOTS:
+   void centerToScreen(QWidget *widget);
 
 Q_SIGNALS:
     void valueChangedSingal(QList<TABLETAPP> applist);

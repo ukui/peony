@@ -129,9 +129,11 @@ public:
     static int WideAppViewLeftMargin;
     static bool IsWideScreen;
 
-
-
-
+    //学习专区应用列表
+    static int BigIconSize;
+    static int SmallIconSize;
+    static int Margin;
+    static int GridSize;
 
 };
 

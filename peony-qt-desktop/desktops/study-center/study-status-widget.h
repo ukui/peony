@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
 #include "common.h"
 
 class QVBoxLayout;
@@ -14,6 +15,7 @@ class QGridLayout;
 class ProgressWidget;
 class QDBusInterface;
 class QPushButton;
+class QScrollArea;
 //class QListView;
 
 class StudyStatusWidget : public QWidget
@@ -42,6 +44,7 @@ private:
     QLabel* m_userIconLabel=nullptr;
     QLabel* m_userNameLabel=nullptr;
     QPushButton* m_updateTimeBt=nullptr;
+    QScrollArea*   m_scrollArea=nullptr;
     QDBusInterface* m_userInterface=nullptr;
    // QMap<QString, ProgressWidget*> m_progressMap;
     QList<TABLETAPP> m_appList;
@@ -50,6 +53,7 @@ public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);
    void timeChangeSlot(QString strMethod ,QString strTime);
    void markTimeSlot();
+   void accountSlots(QString property, QMap<QString, QVariant> propertyMap, QStringList propertyList);
 
 Q_SIGNALS:
     /**

@@ -401,16 +401,16 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 //    shadowEffect->setOffset(0,0);
 //    setGraphicsEffect(shadowEffect);
 
-    m_animation = new QVariantAnimation(this);
-    m_animation->setDuration(250);
-    m_animation->setKeyValueAt(0,1.0);
-    m_animation->setKeyValueAt(0.5,1.1);
-    m_animation->setKeyValueAt(1,1.0);
-    m_animation->setEndValue(1.0);
+//    m_animation = new QVariantAnimation(this);
+//    m_animation->setDuration(250);
+//    m_animation->setKeyValueAt(0,1.0);
+//    m_animation->setKeyValueAt(0.5,1.1);
+//    m_animation->setKeyValueAt(1,1.0);
+//    m_animation->setEndValue(1.0);
 
-    connect(m_animation,&QVariantAnimation::valueChanged,this,[=](){
-        viewport()->update();
-    });
+//    connect(m_animation,&QVariantAnimation::valueChanged,this,[=](){
+//        viewport()->update();
+//    });
 }
 
 DesktopIconView::~DesktopIconView()

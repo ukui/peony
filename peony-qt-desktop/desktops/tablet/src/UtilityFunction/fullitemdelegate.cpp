@@ -21,6 +21,9 @@
 #include "src/Interface/ukuimenuinterface.h"
 #include "src/Style/style.h"
 
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
+
 FullItemDelegate::FullItemDelegate(QObject *parent, int module):
     QStyledItemDelegate(parent)
 {
@@ -63,6 +66,8 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         rect.setHeight(option.rect.height());
 
         painter->setOpacity(1);
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
         QString desktopfp=index.data(Qt::DisplayRole).value<QString>();
         QString iconstr=pUkuiMenuInterface->getAppIcon(desktopfp);
         QIcon icon;
@@ -215,6 +220,35 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             }
         icon = QIcon(mPixmap);
         }
+
+        //绘制图标阴影
+        auto iconSize = QSize(Style::AppListIconSize,Style::AppListIconSize);
+        QPixmap iconPixmap(icon.pixmap(iconSize));
+        QPainter iconShadowPainter(&iconPixmap);
+        iconShadowPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        iconShadowPainter.fillRect(iconPixmap.rect(),QColor(0,0,0,80));
+        iconShadowPainter.end();
+
+        QImage iconShadowImage(iconSize + QSize(6,6), QImage::Format_ARGB32_Premultiplied);
+        iconShadowImage.fill(Qt::transparent);
+        iconShadowPainter.begin(&iconShadowImage);
+        iconShadowPainter.drawPixmap(3,3,iconPixmap);
+
+        qt_blurImage(iconShadowImage,12,false,false);
+        for (int x = 0; x < iconShadowImage.width(); x++) {
+              for (int y = 0; y < iconShadowImage.height(); y++) {
+                  auto color = iconShadowImage.pixelColor(x, y);
+                  if (color.alpha() > 0) {
+                      color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                      iconShadowImage.setPixelColor(x, y, color);
+                  }
+              }
+          }
+
+        iconShadowPainter.end();
+        painter->drawImage(iconRect.x() - 3,
+                          iconRect.y() - 3,
+                          iconShadowImage);
 
 //        qDebug()<<"iconRect"<<iconRect;
         icon.paint(painter,iconRect);

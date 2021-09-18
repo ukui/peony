@@ -111,7 +111,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255);
             painter->setPen(color.darker(100));
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
         }
         if (opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
@@ -120,7 +120,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255*0.8);
             painter->setPen(color);
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
         }
         painter->restore();
     }
@@ -138,6 +138,49 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     if (maxTextHight < 0) {
         maxTextHight = 0;
     }
+
+    painter->save();
+
+    auto iconSize = opt.decorationSize;
+    QPixmap iconPixmap(opt.icon.pixmap(iconSize));
+    QPainter iconShadowPainter(&iconPixmap);
+    iconShadowPainter.end();
+
+    QImage iconShadowImage(iconSize + QSize(6,6), QImage::Format_ARGB32_Premultiplied);
+    iconShadowImage.fill(Qt::transparent);
+    iconShadowPainter.begin(&iconShadowImage);
+    auto tmpRect = opt.rect;
+    opt.rect = QRect(-(iconRect.x() - opt.rect.x()) + 3,
+                     -(iconRect.y() - opt.rect.y()) + 3,
+                     opt.rect.width(),
+                     opt.rect.height());
+    auto tmpText = opt.text;
+    opt.text = nullptr;
+
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, &iconShadowPainter, opt.widget);
+    iconShadowPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    iconShadowPainter.fillRect(iconPixmap.rect(),QColor(0,0,0,80));
+
+    opt.rect = tmpRect;
+    opt.text = tmpText;
+    qt_blurImage(iconShadowImage, 12, false, false);
+
+    for (int x = 0; x < iconShadowImage.width(); x++) {
+        for (int y = 0; y < iconShadowImage.height(); y++) {
+            auto color = iconShadowImage.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                color.setAlphaF(qMin(color.alphaF() * 1.5, 1.0));
+                iconShadowImage.setPixelColor(x, y, color);
+            }
+        }
+    }
+
+    iconShadowPainter.end();
+    painter->drawImage(opt.rect.x() + (iconRect.x() - opt.rect.x()) -3,
+                      opt.rect.y() + (iconRect.y() - opt.rect.y()) -3,
+                     iconShadowImage);
+
+    painter->restore();
 
     //paint icon item
     auto color = QColor(230, 230, 230);

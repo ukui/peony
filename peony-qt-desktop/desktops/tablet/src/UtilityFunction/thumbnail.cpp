@@ -25,12 +25,12 @@ void ThumbNail::initUi()
     setWindowFlags(Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     this->setStyleSheet("border:0px;background:transparent;");
-    this->setFixedSize(Style::AppListIconSize,Style::AppListIconSize);
+    this->setFixedSize(Style::AppListIconSize + 12,Style::AppListIconSize + 12);
 
     iconLabel= new QLabel(this);
     iconLabel->setStyleSheet("border:0px;background-color:transparent;");
     iconLabel->setFocusPolicy(Qt::NoFocus);
-    iconLabel->setFixedSize(Style::AppListIconSize,Style::AppListIconSize);
+    iconLabel->setFixedSize(Style::AppListIconSize + 12,Style::AppListIconSize + 12);
 
     layout = new QVBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
@@ -125,6 +125,7 @@ void ThumbNail::setupthumbnail(QString desktopfp)
             pixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize),QIcon::Selected,QIcon::Off);
 
         }
+        pixmap = pixmap.scaled(108,108,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
         iconLabel->setPixmap(pixmap);
 
     }

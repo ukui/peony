@@ -271,7 +271,7 @@ private:
     QMap<QString, QRect> m_resolution_item_rect;
 
     QPoint m_press_pos;
-    QVariantAnimation *m_animation = nullptr;
+    //QVariantAnimation *m_animation = nullptr;
 };
 
 }
