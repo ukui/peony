@@ -139,7 +139,7 @@ void DirectoryViewMenu::fillActions()
         m_is_filebox_file = true;
     }
 
-    if(m_directory == "filesafe:///") {
+    if(m_directory == "filesafe:///" || m_directory.startsWith("search:///search_uris=filesafe:///&")) {
         m_is_filesafe = true;
     }
 
