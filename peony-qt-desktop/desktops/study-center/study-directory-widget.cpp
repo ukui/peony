@@ -24,6 +24,7 @@
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-list-view.h"
 #include "common.h"
+#include "../../tablet/src/Style/style.h"
 
 using namespace Peony;
 
@@ -146,6 +147,7 @@ void StudyDirectoryWidget::initAppListWidget()
 
     }
     //m_mainLayout->setContentsMargins(Style::LeftWidWidth,0,0,0);
+    resizeScrollAreaControls();
 
 }
 /**
@@ -163,34 +165,6 @@ void StudyDirectoryWidget::execApplication(QModelIndex app)
         execpath.remove(index-1,3);
     }
     QProcess::startDetached(execpath);
-
-
-//    QStringList parameters;
-//    if(exe.indexOf("%") != -1)
-//    {
-//         exe = exe.left(exe.indexOf("%") - 1);
-//         //qDebug()<<"=====dd====="<<exe;
-//    }
-//    if(exe.indexOf("-") != -1)
-//    {
-//         parameters = exe.split(" ");
-//         exe = parameters[0];
-//         parameters.removeAt(0);
-//         //qDebug()<<"===qqq==="<<exe;
-//    }
-
-//     qDebug()<<"5 exe"<<exe<<parameters;
-//     QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
-//     if (parameters.isEmpty())
-//     {
-//         session.call("app_open", exe, parameters);
-//     }
-//     else
-//     {
-//         session.call("app_open", exe, parameters);
-//     }
-
-     //Q_EMIT sendHideMainWindowSignal();
 
 }
 
@@ -274,43 +248,36 @@ void StudyDirectoryWidget::execApplication(QModelIndex app)
  */
 void StudyDirectoryWidget::resizeScrollAreaControls()
 {
-//    int row = 0;
-//    int temp = 0;
-//    temp = this->width()-40/Style::;
-//   QMap<QString, QList<TabletAppEntity*>> m_studyCenterDataMap;
-//    if(1 == m_iMode)
-//    {
-//        for(int i = 0; i < m_studyCenterDataMap.size(); ++i)
-//        {
-//            int temp2 = m_studyCenterDataMap[i].size()%temp;
-//            row += (temp2==0? m_studyCenterDataMap[i].size()/temp:m_studyCenterDataMap[i].size()/temp+1);
-//        }
-//        row*Style::
-//    }
-//    for()
-//    {
-//        //应用界面
-//        QLayoutItem* widItem=m_scrollAreaWidLayout->itemAt(row*2+1);
-//        QWidget* wid=widItem->widget();
-//        QListView* listview=qobject_cast<QListView*>(wid);
-//        listview->adjustSize();
-//        int dividend=(m_scrollArea->width()-5)/this->width();
+    int iIndex = 0;
+    int iCount = m_iMode == 1? m_scrollAreaWidLayout->count()/2:m_scrollAreaWidLayout->count();
+    qDebug()<<"mode: " <<m_iMode<<" count: "<<iCount;
+    while(iIndex<iCount)
+    {
+        //应用界面
+        int iRow = m_iMode == 1? iIndex*2+1:iIndex;
 
-//        int rowcount=0;
-//        if(listview->model()->rowCount()%dividend>0)
-//        {
-//            rowcount=listview->model()->rowCount()/dividend+1;
-//        }
-//        else
-//        {
-//            rowcount=listview->model()->rowCount()/dividend;
+        QLayoutItem* widItem=m_scrollAreaWidLayout->itemAt(iRow);
+        QWidget* wid=widItem->widget();
+        StudyListView* listview=qobject_cast<StudyListView*>(wid);
+        listview->adjustSize();
+        int iDividend=(m_scrollArea->width())/Style::GridSize;
+        qDebug()<<"resizeScrollAreaControls iRow: " <<iRow <<" iDividend:"<<iDividend;
+        int iRowCount=0;
+        if(listview->model()->rowCount()%iDividend>0)
+        {
+            iRowCount = listview->model()->rowCount()/iDividend+1;
+        }
+        else
+        {
+            iRowCount = listview->model()->rowCount()/iDividend;
 
-//        }
+        }
 
-//        listview->setFixedSize(m_scrollArea->width()-5+1,listview->gridSize().height()*rowcount);
-//        row++;
-//    }
-//    m_scrollArea->widget()->adjustSize();
+        listview->setFixedSize(m_scrollArea->width(),listview->gridSize().height()*iRowCount);
+
+        iIndex++;
+    }
+    m_scrollArea->widget()->adjustSize();
 }
 //void StudyDirectoryWidget::valueChangedSlot(int value)
 //{

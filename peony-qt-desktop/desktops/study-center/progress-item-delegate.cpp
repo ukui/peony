@@ -91,7 +91,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
         if(bigIcon)
         {
-            iconRect=QRect(rect.x()+Style::Margin-5, rect.y()+Style::Margin-5, Style::BigIconSize,Style::BigIconSize);
+            iconRect=QRect(rect.x(), rect.y()+Style::topSpace-5, Style::BigIconSize,Style::BigIconSize);
             textRect=QRect(rect.x(),iconRect.bottom()+5, rect.width(),rect.height()-iconRect.height()-10-5);
             pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
             pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::IgnoreAspectRatio);
@@ -99,8 +99,8 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
         else
         {
-            iconRect=QRect(rect.x()+Style::Margin, rect.y()+Style::Margin, Style::SmallIconSize,Style::SmallIconSize);
-            textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::Margin);
+            iconRect=QRect(rect.x(), rect.y()+Style::topSpace, Style::SmallIconSize,Style::SmallIconSize);
+            textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::topSpace);
             pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
             pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::IgnoreAspectRatio);
 
@@ -145,7 +145,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 QSize FullItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return QSize(Style::GridSize,Style::GridSize);
+    return QSize(Style::itemWidth,Style::itemHeight);
 }
 
 //bool FullItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)
