@@ -386,6 +386,8 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
 
         if (parser.isSet(desktopOption)) {
             setupBgAndDesktop();
+            //intel 切换主桌面
+            this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         }
 
         if (parser.isSet(backgroundOption)) {
@@ -401,18 +403,6 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
                 return;
             } else {
                 this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
-            }
-        }
-
-        if (parser.isSet(studyOption1)) {
-            if (!has_desktop) {
-                qWarning() << "[PeonyDesktopApplication::parseCmd] peony-qt-desktop is not running!";
-                QTimer::singleShot(1, [=]() {
-                    qApp->quit();
-                });
-                return;
-            } else {
-                this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::LeftToRight);
             }
         }
 
@@ -697,10 +687,12 @@ static void volume_mount_cb (GObject* source, GAsyncResult* res, gpointer udata)
 
 void PeonyDesktopApplication::initManager()
 {
-    m_windowManager  = WindowManager::getInstance(this);
-    m_desktopManager = DesktopManager::getInstance(true,this);
+    DesktopGlobalSettings::globalInstance(this);
     //初始化背景管理器
     DesktopBackgroundManager::globalInstance();
+
+    m_windowManager  = WindowManager::getInstance(this);
+    m_desktopManager = DesktopManager::getInstance(true,this);
 }
 
 QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
@@ -715,6 +707,9 @@ QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
+    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() != V10_SP1_EDU) {
+        return;
+    }
     if (m_animationIsRunning) {
         return;
     }

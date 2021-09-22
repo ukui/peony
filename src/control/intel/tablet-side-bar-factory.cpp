@@ -13,7 +13,7 @@ TabletSideBarFactory::TabletSideBarFactory(QObject *parent) : QObject(parent)
 const QStringList TabletSideBarFactory::keys()
 {
     QStringList keys;
-    keys.append("V10SP1-Intel");
+    keys.append("V10SP1-edu");
     keys.append("Intel");
     return keys;
 }

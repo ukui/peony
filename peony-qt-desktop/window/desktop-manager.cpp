@@ -1,4 +1,5 @@
 #include "desktop-manager.h"
+#include "desktop-global-settings.h"
 #include "desktop-mode-factory.h"
 #include "tablet-mode-factory.h"
 #include "study-center-factory.h"
@@ -25,8 +26,7 @@ DesktopManager::DesktopManager(bool enablePreloading, QObject *parent) : QObject
     //注册组件，添加新的组件后，需要手动添加到此处
     registerPlugin(DesktopModeFactory::getInstance());
 
-    bool isIntel = false;
-    if (isIntel) {
+    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
         registerPlugin(TabletModeFactory::getInstance());
         registerPlugin(StudyCenterFactory::getInstance());
     }
