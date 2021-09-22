@@ -321,9 +321,6 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
     QCommandLineOption studyOption(QStringList()<<"s"<<"study", tr("Open learning center."));
     parser.addOption(studyOption);
 
-    QCommandLineOption studyOption1(QStringList()<<"t"<<"tablet", tr("Open learning center."));
-    parser.addOption(studyOption1);
-
     if (isPrimary) {
         if (m_firstParse) {
             auto helpOption = parser.addHelpOption();
