@@ -61,6 +61,7 @@ private:
     QSettings* settt;
     QHBoxLayout *m_mainLayout = nullptr;
     QList<FullListView*> m_pageList;
+    bool m_backToMain = false;
 protected:
     /**
      * @brief Initializes UI
