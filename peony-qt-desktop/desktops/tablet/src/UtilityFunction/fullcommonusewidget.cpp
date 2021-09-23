@@ -270,6 +270,7 @@ void FullCommonUseWidget::updatePageList()
 
             m_pageList.removeOne(listView);
             listView->deleteLater();
+            m_backToMain = true;
         }
     } else if (Style::appPage > currentPageCount) {
         for (int i = currentPageCount; i < Style::appPage; ++i) {
@@ -291,6 +292,7 @@ void FullCommonUseWidget::updatePageList()
 
 void FullCommonUseWidget::updatePageData()
 {
+    m_backToMain = false;
     this->updatePageList();
 
     QList<QStringList> dataList;
@@ -299,7 +301,7 @@ void FullCommonUseWidget::updatePageData()
     quint32 appNumPerPage = Style::appColumn * Style::appLine;
 
     //每24个一组，进行分组
-    for (int i = 0; i < (m_data.count() - 1); i += appNumPerPage) {
+    for (int i = 0; i < m_data.count(); i += appNumPerPage) {
         dataList.append(m_data.mid(i, appNumPerPage));
     }
 
@@ -307,7 +309,13 @@ void FullCommonUseWidget::updatePageData()
         m_pageList.at(i)->updateData(dataList.at(i));
     }
 
-    this->insertPageToLayout();
+    if (m_backToMain) {
+        Style::appPage = 2;
+        Style::nowpagenum = 2;
+        Q_EMIT pagenumchanged(-1);
+    } else {
+        this->insertPageToLayout();
+    }
 }
 
 void FullCommonUseWidget::insertPageToLayout()
