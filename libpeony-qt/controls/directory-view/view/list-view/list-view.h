@@ -84,6 +84,11 @@ public:
     QRect visualRect(const QModelIndex &index) const override;
     int getCurrentCheckboxColumn();
 
+    /**
+     * @brief 定制版本需要显示多选框
+     * @return
+     */
+    bool isEnableMultiSelect();
 
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);

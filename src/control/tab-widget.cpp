@@ -1218,6 +1218,11 @@ void TabWidget::updateStatusBarGeometry()
     QFontMetrics fm(font);
     m_status_bar->setGeometry(0, this->height() - fm.height() - 10, m_stack->width(), fm.height() + 10);
     m_status_bar->raise();
+    if (Peony::GlobalSettings::getInstance()->getValue(ZOOM_SLIDER_VISIBLE).toBool()) {
+        m_status_bar->m_slider->show();
+    } else {
+        m_status_bar->m_slider->hide();
+    }
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()
