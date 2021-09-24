@@ -44,16 +44,12 @@ GlobalSettings *GlobalSettings::getInstance()
 GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
-    //set default allow parallel
-    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL))
-    {
-        qDebug() << "default ALLOW_FILE_OP_PARALLEL:true";
-        setValue(ALLOW_FILE_OP_PARALLEL, true);
+    if (!m_settings->allKeys().contains(REMOTE_SERVER_REMOTE_IP)) {
+        setValue(REMOTE_SERVER_REMOTE_IP, QVariant());
     }
-    //if local languege is chinese, set chinese first as deafult
-    if (QLocale::system().name().contains("zh") && !m_settings->allKeys().contains(SORT_CHINESE_FIRST))
-        setValue(SORT_CHINESE_FIRST, true);
+
     for (auto key : m_settings->allKeys()) {
+        //only REMOTE_SERVER_REMOTE_IP
         m_cache.insert(key, m_settings->value(key));
     }
 
@@ -98,7 +94,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
                 {
                     m_cache.remove(key);
-                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());                  
+                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());
                 }
                 /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
                  *  but the other document management does not take effect in real time.modified by 2021/06/15  */
@@ -120,24 +116,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         }
     }
 
-    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
-    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "peonySideBarTransparency") {
-                m_cache.remove(SIDEBAR_BG_OPACITY);
-                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
-            }
-        });
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
-    }
-
     getUkuiStyle();
     getDualScreenMode();
+    getMachineMode();
 
-    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
+    if (m_cache.value(DEFAULT_WINDOW_WIDTH).isNull()
+        || m_cache.value(DEFAULT_WINDOW_HEIGHT).isNull()
+        || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0)
+    {
         QScreen *screen=qApp->primaryScreen();
         QRect geometry = screen->availableGeometry();
         int default_width = geometry.width() * 2/3;
@@ -146,7 +132,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             default_width = 850;
         if (default_height < 850 *0.618)
             default_height = 850 *0.618;
-        setValue(DEFAULT_WINDOW_SIZE, QSize(default_width, default_height));
+        setValue(DEFAULT_WINDOW_WIDTH, default_width);
+        setValue(DEFAULT_WINDOW_HEIGHT, default_height);
         setValue(DEFAULT_SIDEBAR_WIDTH, 210);
         qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<210;
     }
@@ -166,8 +153,6 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(DEFAULT_VIEW_ZOOM_LEVEL).isNull()) {
         setValue(DEFAULT_VIEW_ZOOM_LEVEL, 25);
     }
-
-    getMachineMode();
 
     if (m_cache.value(REMOTE_SERVER_REMOTE_IP).isNull()) {
         setValue(REMOTE_SERVER_REMOTE_IP, QVariant(QList<QString>()));
@@ -194,9 +179,6 @@ void GlobalSettings::getUkuiStyle()
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
         m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
-
         connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "peonySideBarTransparency") {
                 m_cache.remove(SIDEBAR_BG_OPACITY);
@@ -204,6 +186,8 @@ void GlobalSettings::getUkuiStyle()
                 qApp->paletteChanged(qApp->palette());
             }
         });
+        m_cache.remove(SIDEBAR_BG_OPACITY);
+        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
     }
 }
 
@@ -284,16 +268,19 @@ void GlobalSettings::resetAll()
 
 void GlobalSettings::setValue(const QString &key, const QVariant &value)
 {
-
-    m_cache.remove(key);
-    m_cache.insert(key, value);
-    QtConcurrent::run([=]() {
-        if (m_mutex.tryLock(1000)) {
-            m_settings->setValue(key, value);
-            m_settings->sync();
-            m_mutex.unlock();
-        }
-    });
+    if (key == REMOTE_SERVER_REMOTE_IP) {
+        m_cache.remove(key);
+        m_cache.insert(key, value);
+        QtConcurrent::run([=]() {
+            if (m_mutex.tryLock(1000)) {
+                m_settings->setValue(key, value);
+                m_settings->sync();
+                m_mutex.unlock();
+            }
+        });
+    } else {
+        setGSettingValue(key, value);
+    }
 }
 
 void GlobalSettings::forceSync(const QString &key)
@@ -304,9 +291,19 @@ void GlobalSettings::forceSync(const QString &key)
         for (auto key : m_settings->allKeys()) {
             m_cache.insert(key, m_settings->value(key));
         }
+
+        if (m_peony_gsettings) {
+            for (auto key : m_peony_gsettings->keys()) {
+                m_cache.insert(key, m_peony_gsettings->get(key));
+            }
+        }
     } else {
         m_cache.remove(key);
-        m_cache.insert(key, m_settings->value(key));
+        if (m_settings->allKeys().contains(key)) {
+            m_cache.insert(key, m_settings->value(key));
+        } else {
+            m_cache.insert(key, m_peony_gsettings ? m_peony_gsettings->get(key) : QVariant());
+        }
     }
 }
 

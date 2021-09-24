@@ -29,38 +29,58 @@
 
 #include "peony-core_global.h"
 
-#define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
-#define SORT_CHINESE_FIRST          "chinese-first"
-#define SORT_FOLDER_FIRST           "folder-first"
-#define SORT_TYPE                   "sort-type"
-#define SORT_ORDER                  "sort-order"
-#define SORT_COLUMN                 "sort-column"
+//顶部菜单 - Top menu
 #define RESIDENT_IN_BACKEND         "resident"
-#define LAST_DESKTOP_SORT_ORDER     "last-desktop-sort-order"
-#define ALLOW_FILE_OP_PARALLEL      "allow-file-op-parallel"
-#define DEFAULT_WINDOW_SIZE         "default-window-size"
-#define DEFAULT_SIDEBAR_WIDTH       "default-sidebar-width"
-#define TABLET_MODE "tablet-mode"
-#define TEMPLATES_DIR "templates-dir"
+#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
+#define ALLOW_FILE_OP_PARALLEL      "allowFileOpParallel"
+#define FORBID_THUMBNAIL_IN_VIEW    "doNotThumbnail"
+
+//视图 - View
+#define DEFAULT_VIEW_ID             "defaultViewId"
+#define DEFAULT_VIEW_ZOOM_LEVEL     "defaultViewZoomLevel"
+
+//排序类型 - Sort type
+#define SORT_COLUMN                 "sortColumn"
+#define SORT_TYPE                   "sortType"
+
+//排序顺序 - Sort order
+#define SORT_ORDER                  "sortOrder"
+
+//排序偏好 - Sort preference
+#define SORT_FOLDER_FIRST           "folderFirst"
+#define SORT_CHINESE_FIRST          "chineseFirst"
+
+//窗口设置 - Window setting
+#define DEFAULT_WINDOW_WIDTH        "defaultWindowWidth"
+#define DEFAULT_WINDOW_HEIGHT       "defaultWindowHeight"
+
+//侧边栏 - Sidebar
+#define DEFAULT_SIDEBAR_WIDTH       "defaultSidebarWidth"
+
+//删除提示框 - tooltip
 #define SHOW_TRASH_DIALOG           "showTrashDialog"
-#define MULTI_SELECT                "multiSelectCheckboxEnabled"
+
+//状态栏 - Zoom Slider
 #define ZOOM_SLIDER_VISIBLE         "zoomSliderVisible"
 
-#define DEFAULT_VIEW_ID             "directory-view/default-view-id"
-#define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
+//多选模式 - Multiple selection
+#define MULTI_SELECT                "multiSelectCheckboxEnabled"
 
-#define REMOTE_SERVER_REMOTE_IP   "remote-server/favorite-ip"
-//#define REMOTE_SERVER_CONNECT_IP   "remote-server/connecte-ip"
+//桌面配置 - Desktop setting
+#define LAST_DESKTOP_SORT_ORDER     "lastDesktopSortOrder"
+#define TEMPLATES_DIR               "templatesDir"
+
+//收藏的服务器IP - favorite ip
+#define REMOTE_SERVER_REMOTE_IP     "remote-server/favorite-ip"
+
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
+#define TABLET_MODE                 "tablet-mode"
 
-#define FONT_SETTINGS                "org.ukui.style"
+#define FONT_SETTINGS               "org.ukui.style"
 
 //difference between Community version and Commercial version
 #define COMMERCIAL_VERSION          false
-//TEMPLATES standard path
-#define TEMPLATES_DIR               "templates-dir"
 
 
 // control center
@@ -143,7 +163,7 @@ private:
 
     QString                     m_date_format = "";
     QString                     m_time_format = "";
-    QString                     m_system_time_format  = "";    
+    QString                     m_system_time_format  = "";
 };
 
 }

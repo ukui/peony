@@ -151,7 +151,8 @@ MainWindow::~MainWindow()
 {
     if (last_resize_window == this) {
         auto settings = Peony::GlobalSettings::getInstance();
-        settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
+        settings->setValue(DEFAULT_WINDOW_WIDTH, this->size().width());
+        settings->setValue(DEFAULT_WINDOW_HEIGHT, this->size().height());
         last_resize_window = nullptr;
     }
 }
@@ -182,7 +183,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
-    QSize defaultSize = (Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_SIZE)).toSize();
+    QSize defaultSize(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_WIDTH).toInt(),
+                      Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_HEIGHT).toInt());
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
     //return screenSize*2/3;
@@ -1216,7 +1218,7 @@ void MainWindow::initUI(const QString &uri)
     auto sideBarFactory = Peony::SideBarFactoryManager::getInstance()->getFactoryFromPlatformName();
     if (!sideBarFactory) {
         NavigationSideBarContainer *sidebar = new NavigationSideBarContainer(this);
-        m_side_bar = sidebar;        
+        m_side_bar = sidebar;
     } else {
         auto sidebar = sideBarFactory->create(this);
         m_side_bar = sidebar;
@@ -1277,6 +1279,12 @@ void MainWindow::initUI(const QString &uri)
         // code.
         m_tab->updateTabBarGeometry();
         m_tab->updateStatusBarGeometry();
+    });
+
+    connect(Peony::GlobalSettings::getInstance(), &Peony::GlobalSettings::valueChanged, this, [=](const QString &key) {
+        if (key == ZOOM_SLIDER_VISIBLE) {
+            m_tab->updateStatusBarGeometry();
+        }
     });
 
     connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
