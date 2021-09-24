@@ -83,21 +83,23 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     auto rect = view->visualRect(index);
 
-    int selectBox = 0;
-    //get current checkbox positon and draw them.
-    selectBox = view->getCurrentCheckboxColumn();
-    int selectBoxPosion = view->viewport()->width()+view->viewport()->x()-view->header()->sectionViewportPosition(selectBox)-48;
-    if(index.column() == selectBox)
-    {
-        if(view->selectionModel()->selectedIndexes().contains(index))
+    if (view->isEnableMultiSelect()) {
+        int selectBox = 0;
+        //get current checkbox positon and draw them.
+        selectBox = view->getCurrentCheckboxColumn();
+        int selectBoxPosion = view->viewport()->width()+view->viewport()->x()-view->header()->sectionViewportPosition(selectBox)-48;
+        if(index.column() == selectBox)
         {
-            QIcon icon = QIcon(":/icons/icon-selected.png");
-            icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
-        }
-        else
-        {
-            QIcon icon = QIcon(":/icons/icon-select.png");
-            icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+            if(view->selectionModel()->selectedIndexes().contains(index))
+            {
+                QIcon icon = QIcon(":/icons/icon-selected.png");
+                icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+            }
+            else
+            {
+                QIcon icon = QIcon(":/icons/icon-select.png");
+                icon.paint(painter, rect.x()+selectBoxPosion, rect.y()+rect.height()/2-8, 16, 16, Qt::AlignCenter);
+            }
         }
     }
 }

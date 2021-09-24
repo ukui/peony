@@ -673,7 +673,9 @@ void IconView::clearIndexWidget()
 
 void IconView::multiSelect()
 {
-    m_multi_select = true;
+    if (GlobalSettings::getInstance()->getValue(MULTI_SELECT).toBool()) {
+        m_multi_select = true;
+    }
     setSelectionMode(MultiSelection);
 }
 

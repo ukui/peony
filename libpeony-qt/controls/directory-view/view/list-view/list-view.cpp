@@ -198,19 +198,23 @@ void ListView::mousePressEvent(QMouseEvent *e)
 
     QPoint p = e->pos();
     auto visualRect = this->visualRect(index);
-    int selectBoxColumn = getCurrentCheckboxColumn();
-    int selectBoxPosion = viewport()->width()+viewport()->x()-header()->sectionViewportPosition(selectBoxColumn)-48;
-    if (index.column() == selectBoxColumn&&p.x()>visualRect.x()+selectBoxPosion-4&&p.x()<visualRect.x()+selectBoxPosion+24)
-    {
-        if(!isIndexSelected)
+
+    if (isEnableMultiSelect()) {
+        int selectBoxColumn = getCurrentCheckboxColumn();
+        int selectBoxPosion = viewport()->width() + viewport()->x() - header()->sectionViewportPosition(selectBoxColumn) - 48;
+        if (index.column() == selectBoxColumn && p.x() > visualRect.x() + selectBoxPosion - 4 &&
+            p.x() < visualRect.x() + selectBoxPosion + 24)
         {
-            this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            if(!isIndexSelected)
+            {
+                this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            }
+            else
+            {
+                this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
+            }
+            return;
         }
-        else
-        {
-            this->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Deselect|QItemSelectionModel::Rows);
-        }
-        return;
     }
 
     QTreeView::mousePressEvent(e);
@@ -695,6 +699,11 @@ void ListView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+bool ListView::isEnableMultiSelect()
+{
+    return GlobalSettings::getInstance()->getValue(MULTI_SELECT).toBool();
 }
 
 //List View 2
