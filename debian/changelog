@@ -1,3 +1,18 @@
+peony (3.0.3-2+0923) v101; urgency=medium
+
+   *- Bug号:
+      1.79954 修改用户名和头像后，学习专区同步修改
+      2.80880 守护中心下多了一行“studentGuard”，同步学习下多了一行“synchronized”
+      3.82196 应用商店卸载任意3个应用,重启再次进入平板模式后第三屏不显示任何应用图标
+    - 需求号:
+      无
+    - 其它改动说明:
+      无
+    - 影响域:
+      无
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 23 Sep 2021 16:30:00 +0800
+
 peony (3.0.3-2+0916) v101; urgency=medium
 
   *- Bug号:
