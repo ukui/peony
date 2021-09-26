@@ -58,9 +58,8 @@ void StudyStatusWidget::initWidget()
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("border:0px;background:transparent;\
-                        background-color:rgba(255, 255, 255);\
-                        border-radius:15px;");
+    this->setStyleSheet("background-color:rgba(255, 255, 255,0.85);backdrop-filter: blur(27.1828px);\
+                        border-radius:24px;");
      //widget->setWindowOpacity(0.9);
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);

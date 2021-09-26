@@ -25,7 +25,7 @@ void ProgressWidget::initUi()
     this->setAttribute(Qt::WA_StyledBackground,true);
 
     m_processBar = new QProgressBar(this);
-    m_processBar->setFixedSize(this->width()/6*4,8);
+    m_processBar->setMaximumHeight(8);
     m_processBar->setRange(0,100);
     m_processBar->setValue(m_iTime);
     m_processBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;"

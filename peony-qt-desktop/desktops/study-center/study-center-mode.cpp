@@ -70,19 +70,19 @@ void StudyCenterMode::initUi()
     dataMap.insert(tr("english"),studyCenterDataMap[STUDY_CENTER_ENGLISH]);
     dataMap.insert(tr("chinese"),studyCenterDataMap[STUDY_CENTER_CHINESE]);
     dataMap.insert(tr("other"),studyCenterDataMap[STUDY_CENTER_OTHER]);
-    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1);
+    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1,this);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
     dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
-    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 0, this);
 
     dataMap.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
     dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
-    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 0, this);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);
@@ -101,8 +101,8 @@ void StudyCenterMode::initUi()
     m_mainGridLayout = new QGridLayout(this);
 
     screenRotation();
-    m_mainGridLayout->setMargin(80);
-    m_mainGridLayout->setSpacing(20);
+
+    m_mainGridLayout->setSpacing(16);
     this->setLayout(m_mainGridLayout);
     //分辨率变化，就重画屏幕
     connect(QApplication::desktop(), &QDesktopWidget::resized, this, [=]() {
@@ -131,23 +131,6 @@ void StudyCenterMode::initUi()
         }
     }
 
-//    QVBoxLayout* m_mainLayout = new QVBoxLayout(this);
-//    //m_mainLayout->setContentsMargins(1,0,0,0);
-//    QListView* m_listview = new QListView;
-
-//    QStringList m_strListData ={"1","2","3","4"};
-//    QStandardItemModel* listmodel=new QStandardItemModel(this);
-//    m_listview->setModel(listmodel);
-//    m_listview->setFixedSize(200,200);
-//    for(int i = 0;i< m_strListData.size();i++)
-//    {
-//        QString str= static_cast<QString>(m_strListData.at(i));
-//        QStandardItem* item=new QStandardItem(str);
-//        listmodel->appendRow(item);
-//    }
-//    //this->addWidget(m_listview);
-//    m_mainLayout->addWidget(m_listview);
-    //this->setLayout(m_mainLayout);
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )
@@ -387,6 +370,14 @@ void StudyCenterMode::screenRotation()
 //    }
     //note 屏幕变化后，负责将app视图和小组件大小进行调整
     //1.隐藏各个组件
+    for(int i=0;i < m_mainGridLayout->rowCount();i++ )
+    {
+         m_mainGridLayout->setRowStretch(i,0);
+    }
+    for(int i=0;i < m_mainGridLayout->columnCount();i++ )
+    {
+         m_mainGridLayout->setColumnStretch(i,0);
+    }
     if(m_mainGridLayout->count())
     {
         m_mainGridLayout->removeWidget(practiceWidget);
@@ -424,6 +415,12 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(guradWidget,4,0,2,1);
         m_mainGridLayout->addWidget(synWidget,4,1,2,1);
         m_mainGridLayout->addWidget(statusWidget,6,0,3,2);
+        m_mainGridLayout->setRowStretch(3,13);
+        m_mainGridLayout->setRowStretch(4,5);
+        m_mainGridLayout->setRowStretch(6,8);
+        m_mainGridLayout->setColumnStretch(0,1);
+        m_mainGridLayout->setColumnStretch(1,1);
+        m_mainGridLayout->setContentsMargins(72,72,72,72);
     }
     else
     {
@@ -431,6 +428,13 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(guradWidget,0,2,1,1);
         m_mainGridLayout->addWidget(synWidget,0,3,1,1);
         m_mainGridLayout->addWidget(statusWidget,1,2,2,2);
+
+        m_mainGridLayout->setRowStretch(0,5);
+        m_mainGridLayout->setRowStretch(1,8);
+        m_mainGridLayout->setColumnStretch(0,2);
+        m_mainGridLayout->setColumnStretch(2,1);
+        m_mainGridLayout->setColumnStretch(3,1);
+        m_mainGridLayout->setContentsMargins(80,86,80,138);
     }
 
 }
