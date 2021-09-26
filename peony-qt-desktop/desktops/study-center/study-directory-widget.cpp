@@ -61,9 +61,8 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("border:0px;background:transparent;\
-                        background-color:rgba(255, 255, 255);\
-                        border-radius:15px;");
+    this->setStyleSheet("background-color:rgba(255, 255, 255, 0.85);backdrop-filter: blur(27.1828px);\
+                        border-radius:24px;");
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
@@ -91,7 +90,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
                                              "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
                                              );
     QWidget* scrollAreaWid=new QWidget;
-    scrollAreaWid->setMinimumSize(this->width()-40,this->height()-60);
+    scrollAreaWid->setMinimumSize(Style::itemWidth,Style::itemHeight);
     m_scrollArea->setWidget(scrollAreaWid);
     m_scrollArea->setWidgetResizable(true);
     m_scrollAreaWidLayout = new QVBoxLayout;
