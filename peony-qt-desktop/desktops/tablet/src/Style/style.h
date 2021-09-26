@@ -134,6 +134,9 @@ public:
     static int SmallIconSize;
     static int Margin;
     static int GridSize;
+    static int itemWidth;
+    static int itemHeight;
+    static int topSpace;
 
 };
 
