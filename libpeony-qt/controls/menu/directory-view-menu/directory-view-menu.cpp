@@ -143,6 +143,10 @@ void DirectoryViewMenu::fillActions()
         m_is_filesafe = true;
     }
 
+    if(m_directory.startsWith("smb://")){
+        m_is_smb_file = true;
+    }
+
     QString homeUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString musicUri = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
@@ -743,6 +747,13 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             }
 
             if (m_is_favorite && m_can_delete && !m_is_filesafe && !hasDeleteForever) {
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                });
+            }
+
+            if (m_is_smb_file && m_can_delete && !hasDeleteForever) {
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::executeRemoveActionWithDialog(m_selections);
