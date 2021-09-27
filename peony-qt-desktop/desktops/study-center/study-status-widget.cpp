@@ -58,7 +58,7 @@ void StudyStatusWidget::initWidget()
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("background-color:rgba(255, 255, 255,0.95);backdrop-filter: blur(27.1828px);border-radius:24px;");
+    this->setStyleSheet("background-color:rgba(255, 255, 255,0.85);backdrop-filter: blur(27.1828px);border-radius:24px;");
      //widget->setWindowOpacity(0.9);
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -92,6 +92,7 @@ void StudyStatusWidget::initWidget()
     userInfoLayout->addWidget(titleLabel);
     userInfoLayout->addStretch();
     userInfoLayout->addWidget(m_userIconLabel);
+    userInfoLayout->addSpacing(10);
     userInfoLayout->addWidget(m_userNameLabel);
    // userInfoLayout->addSpacing(10);
    // userInfoLayout->setAlignment(Qt::AlignRight);
@@ -141,6 +142,7 @@ void StudyStatusWidget::initWidget()
     m_monthTimeLabel->setStyleSheet("color:#1C1C1C");
 
     QGridLayout* timeGridLayout = new QGridLayout;
+    timeGridLayout->setSpacing(10);
    // timeGridLayout->addWidget(titleLabel,0,0,1,1);
    // timeGridLayout->addWidget(userInfoWidget,0,2,1,1);
     timeGridLayout->addWidget(todayTitleLabel,0,0);
@@ -158,7 +160,7 @@ void StudyStatusWidget::initWidget()
 
     m_mainVboxLayout = new QVBoxLayout;
     m_mainVboxLayout->addLayout(userInfoLayout);
-    m_mainVboxLayout->addSpacing(30);
+    m_mainVboxLayout->addSpacing(55);
     m_mainVboxLayout->addLayout(timeGridLayout);
 
     m_mainVboxLayout->addStretch();
@@ -168,9 +170,9 @@ void StudyStatusWidget::initWidget()
     line->setFixedHeight(1);
     line->setStyleSheet("background-color:rgba(0, 0, 0, 0.06)");
     //line->setFixedSize(this->width()-15*2, 1);
-    m_mainVboxLayout->addSpacing(20);
+    m_mainVboxLayout->addSpacing(30);
     m_mainVboxLayout->addWidget(line);
-    m_mainVboxLayout->addSpacing(20);
+    m_mainVboxLayout->addSpacing(30);
 
     QLabel* timeTitleLabel = new QLabel;
     timeTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
@@ -180,6 +182,7 @@ void StudyStatusWidget::initWidget()
     timeTitleLabel->setText(tr("最常使用 (本周累计)"));
     timeTitleLabel->setStyleSheet("color:#9C9C9C");
     m_mainVboxLayout->addWidget(timeTitleLabel);
+    m_mainVboxLayout->addSpacing(15);
 
     m_progressGridLayout = new QGridLayout;
     for(int i = 0 ; i < m_appList.size(); ++i)
@@ -228,9 +231,10 @@ void StudyStatusWidget::initWidget()
     QHBoxLayout* updateTimeLayout = new QHBoxLayout;
     updateTimeLayout->addItem(space);
     updateTimeLayout->addWidget(m_updateTimeBt);
+    m_mainVboxLayout->addSpacing(18);
     m_mainVboxLayout->addLayout(updateTimeLayout);
 
-    m_mainVboxLayout->setContentsMargins(30, 30, 30, 10);
+    m_mainVboxLayout->setContentsMargins(50, 32, 50, 16);
 
     this->setLayout(m_mainVboxLayout);
 
