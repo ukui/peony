@@ -29,11 +29,11 @@
 using namespace Peony;
 
 
-StudyDirectoryWidget::StudyDirectoryWidget(QStringList &strListTitleStyle, QMap<QString, QList<TabletAppEntity*>> &subtitleMap, int mode, QWidget *parent)
+StudyDirectoryWidget::StudyDirectoryWidget(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleList, int mode, QWidget *parent)
 : QWidget(parent)
 {
     m_iMode = mode;
-    m_studyCenterDataMap = subtitleMap;
+    m_studyCenterDataList = subtitleList;
     initWidget(strListTitleStyle);
 }
 
@@ -123,29 +123,23 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
 
 void StudyDirectoryWidget::initAppListWidget()
 {
-    QMap<QString, QList<TabletAppEntity*>>::const_iterator ite = m_studyCenterDataMap.begin();
-    for(; ite != m_studyCenterDataMap.constEnd(); ++ite)
-    {     
+    for(int i = 0; i < m_studyCenterDataList.size(); ++i)
+    {
         if(1 == m_iMode)
         {
             //设置子标题
-            QString  strTitle = ite.key();
+            QString  strTitle = m_studyCenterDataList.at(i).first;
             PushButton* titleBtn = new PushButton(this,strTitle,m_scrollArea->width()-12,20);
             m_scrollAreaWidLayout->addWidget(titleBtn);
         }
 
         //插入应用列表
         StudyListView* listView = new StudyListView;
-        listView->setData(ite.value());
+        listView->setData(m_studyCenterDataList.at(i).second);
         m_scrollAreaWidLayout->addWidget(listView);
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));
-
-       // connect(listView,SIGNAL(sendItemClickedSignal(QString)),this,SLOT(execApplication(QString)));
-       // connect(listView,SIGNAL(sendUpdateAppListSignal(QString,int)),this,SIGNAL(sendUpdateAppListSignal(QString,int)));
-       // connect(listView,SIGNAL(removeListItemSignal(QString)),this,SIGNAL(removeListItemSignal(QString)));
-
     }
-    //m_mainLayout->setContentsMargins(Style::LeftWidWidth,0,0,0);
+
     resizeScrollAreaControls();
 
 }
