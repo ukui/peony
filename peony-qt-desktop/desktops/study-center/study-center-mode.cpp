@@ -64,25 +64,25 @@ void StudyCenterMode::initUi()
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     QStringList strListTitleStyle;
     strListTitleStyle<<"精准练习"<<"color:#009ACD";
-    QMap<QString, QList<TabletAppEntity*>> dataMap;
+    QList<QPair<QString, QList<TabletAppEntity*>>> dataList;
 
-    dataMap.insert(tr("math"),studyCenterDataMap[STUDY_CENTER_MATH]);
-    dataMap.insert(tr("english"),studyCenterDataMap[STUDY_CENTER_ENGLISH]);
-    dataMap.insert(tr("chinese"),studyCenterDataMap[STUDY_CENTER_CHINESE]);
-    dataMap.insert(tr("other"),studyCenterDataMap[STUDY_CENTER_OTHER]);
-    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1,this);
+    dataList.append(qMakePair(QString(tr("math")),studyCenterDataMap[STUDY_CENTER_MATH]));
+    dataList.append(qMakePair(QString(tr("english")),studyCenterDataMap[STUDY_CENTER_ENGLISH]));
+    dataList.append(qMakePair(QString(tr("chinese")),studyCenterDataMap[STUDY_CENTER_CHINESE]));
+    dataList.append(qMakePair(QString(tr("other")),studyCenterDataMap[STUDY_CENTER_OTHER]));
+    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 1,this);
 
-    dataMap.clear();
+    dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
-    dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
-    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 0, this);
+    dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
+    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
-    dataMap.clear();
+    dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
-    dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
-    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 0, this);
+    dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
+    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);
