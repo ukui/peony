@@ -20,7 +20,6 @@
 #define STUDYDIRECTORYWIDGET_H
 
 #include <QWidget>
-#include <QSettings>
 #include <QHBoxLayout>
 #include <QTableWidget>
 #include <QScrollBar>
@@ -39,12 +38,11 @@ namespace Peony {
 
 class TabletAppEntity;
 
-
 class StudyDirectoryWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit StudyDirectoryWidget(QStringList &strListTitleStyle, QMap<QString, QList<TabletAppEntity*>> &subtitleMap, int mode = 0, QWidget *parent = nullptr);
+    explicit StudyDirectoryWidget(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleMap, int mode = 0, QWidget *parent = nullptr);
     ~StudyDirectoryWidget();
 
 private:
@@ -56,40 +54,18 @@ private:
     QVBoxLayout*  m_scrollAreaWidLayout=nullptr;
     QScrollArea*  m_scrollArea=nullptr;
     QWidget*      m_scrollareawid=nullptr;
-    QMap<QString, QList<TabletAppEntity*>> m_studyCenterDataMap;
+    QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
     int m_iMode;
-//    QListView* m_listview=nullptr;
-//    QStringList m_strListData;
-
-//    QFileSystemWatcher* fileWatcher=nullptr;//监控文件夹状态
-//    RightClickMenu* menu=nullptr;
-//public:
-    //QMap<QString, QList<TabletAppEntity*>> getStudyCenterData();
 
 protected:
     void initWidget(QStringList &strListTitleStyle);
-    //void getUseAppList(QString &strModuleName);
     //初始化应用列表界面
     void initAppListWidget();
     void resizeScrollAreaControls();
 
 private Q_SLOTS:
-//    /**
-//     * @brief 更新单个item槽函数
-//     * @param desktopfp为desktop文件路径
-//     * @param type为0时表示固定，为1时表示取消固定
-//     */
-//    void updateListViewSlot(QString desktopfp,int type);
-    void execApplication(QModelIndex appname);//执行应用程序
-//    void removeListItemSlot(QString desktopfp);//删除单个item
-//    //void removeListAllItemSlot();//删除所有非固定item
-//    //void updateListViewAllSlot();//更新应用列表槽函数
-
-//Q_SIGNALS:
-//    void sendUpdateAppListSignal(QString desktopfp,int type);//向CommonUseWidget发送更新应用列表信号
-//    void sendHideMainWindowSignal();//向MainViewWidget发送隐藏主窗口信号
-//    void removeListItemSignal(QString desktopfp);
-//    //void removeListAllItemSignal();
+    //执行应用程序
+    void execApplication(QModelIndex appname);
 };
 }
 
