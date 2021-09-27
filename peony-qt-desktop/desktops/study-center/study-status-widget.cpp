@@ -58,13 +58,13 @@ void StudyStatusWidget::initWidget()
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("background-color:rgba(255, 255, 255,0.85);backdrop-filter: blur(27.1828px);\
-                        border-radius:24px;");
+    this->setStyleSheet("background-color:rgba(255, 255, 255,0.95);backdrop-filter: blur(27.1828px);border-radius:24px;");
      //widget->setWindowOpacity(0.9);
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
     QLabel* titleLabel = new QLabel(this);
+    titleLabel->setAttribute(Qt::WA_TranslucentBackground);
     //设置字号
     QFont ft;
     ft.setPointSize(18);
@@ -81,6 +81,10 @@ void StudyStatusWidget::initWidget()
 
     m_userIconLabel = new QLabel(this);
     m_userNameLabel = new QLabel(this);
+
+    m_userIconLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_userNameLabel->setAttribute(Qt::WA_TranslucentBackground);
+
     m_userNameLabel->setFont(ft);
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -98,6 +102,11 @@ void StudyStatusWidget::initWidget()
 
     QLabel* weekTitleLabel = new QLabel(this);
     QLabel* monthTitleLabel = new QLabel(this);
+
+    todayTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
+    weekTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
+    monthTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
+
     //设置字号
     ft.setPointSize(12);
     ft.setWeight(50);
@@ -117,6 +126,10 @@ void StudyStatusWidget::initWidget()
     m_todayTimeLabel = new QLabel(this);
     m_weekTimeLabel = new QLabel(this);
     m_monthTimeLabel = new QLabel(this);
+
+    m_todayTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_weekTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_monthTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
 
     ft.setPointSize(14);
     m_todayTimeLabel->setFont(ft);
@@ -145,6 +158,7 @@ void StudyStatusWidget::initWidget()
 
     m_mainVboxLayout = new QVBoxLayout;
     m_mainVboxLayout->addLayout(userInfoLayout);
+    m_mainVboxLayout->addSpacing(30);
     m_mainVboxLayout->addLayout(timeGridLayout);
 
     m_mainVboxLayout->addStretch();
@@ -154,10 +168,13 @@ void StudyStatusWidget::initWidget()
     line->setFixedHeight(1);
     line->setStyleSheet("background-color:rgba(0, 0, 0, 0.06)");
     //line->setFixedSize(this->width()-15*2, 1);
+    m_mainVboxLayout->addSpacing(20);
     m_mainVboxLayout->addWidget(line);
+    m_mainVboxLayout->addSpacing(20);
 
     QLabel* timeTitleLabel = new QLabel;
-   // timeTitleLabel->setFixedSize(this->width()-15*2, 12);
+    timeTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
+    // timeTitleLabel->setFixedSize(this->width()-15*2, 12);
     ft.setPointSize(12);
     timeTitleLabel->setFont(ft);
     timeTitleLabel->setText(tr("最常使用 (本周累计)"));
@@ -175,6 +192,7 @@ void StudyStatusWidget::initWidget()
 
     m_scrollArea = new QScrollArea;
     QWidget* scrollWid = new QWidget;
+    scrollWid->setStyleSheet("background:transparent;");
     scrollWid->setLayout(m_progressGridLayout);
 
     m_scrollArea->setWidget(scrollWid);
@@ -193,7 +211,7 @@ void StudyStatusWidget::initWidget()
     m_progressGridLayout->setSpacing(20);
     m_updateTimeBt = new QPushButton(this);
     m_updateTimeBt->setFont(ft);
-    m_updateTimeBt->setStyleSheet("color:#9C9C9C");
+    m_updateTimeBt->setStyleSheet("color:#9C9C9C;background:transparent;");
 
     connect(m_updateTimeBt,SIGNAL(clicked()), this,SIGNAL(updateTimeSignal()));
     QDateTime curTime = QDateTime::currentDateTime();//获取当前时间
@@ -212,7 +230,7 @@ void StudyStatusWidget::initWidget()
     updateTimeLayout->addWidget(m_updateTimeBt);
     m_mainVboxLayout->addLayout(updateTimeLayout);
 
-    m_mainVboxLayout->setMargin(30);
+    m_mainVboxLayout->setContentsMargins(30, 30, 30, 10);
 
     this->setLayout(m_mainVboxLayout);
 
