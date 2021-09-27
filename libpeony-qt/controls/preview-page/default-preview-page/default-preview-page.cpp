@@ -315,7 +315,7 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 
     }
 
-    if (!info->symlinkTarget().isEmpty()) {
+    if (info->isSymbolLink()&&!info->symlinkTarget().isEmpty()){
         countAsync("file:///" + info->symlinkTarget());
     } else {
         countAsync(info->uri());
