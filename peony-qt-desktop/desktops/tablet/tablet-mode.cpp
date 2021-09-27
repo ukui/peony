@@ -626,33 +626,36 @@ TabletMode::~TabletMode()
 
 void TabletMode::changePage(qint32 signal)
 {
+    if (m_exitAnimation) return;
     QRect saveRect = this->geometry();
 
     //显示动画
-    QPropertyAnimation *exitAnimation = new QPropertyAnimation(this, "pos");
-    exitAnimation->setEasingCurve(QEasingCurve::Linear);
-    exitAnimation->setStartValue(saveRect.topLeft());
-    exitAnimation->setDuration(500);
+    m_exitAnimation = new QPropertyAnimation(this, "pos");
+    m_exitAnimation->setEasingCurve(QEasingCurve::Linear);
+    m_exitAnimation->setStartValue(saveRect.topLeft());
+    m_exitAnimation->setDuration(500);
 
     if (signal < 0) {
         //上一页（左边）
-        exitAnimation->setEndValue(QPoint(saveRect.width(), 0));
+        m_exitAnimation->setEndValue(QPoint(saveRect.width(), 0));
 
     } else {
         //下一页（右边）
-        exitAnimation->setEndValue(QPoint(-saveRect.width(), 0));
+        m_exitAnimation->setEndValue(QPoint(-saveRect.width(), 0));
     }
 
-    connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
-        delete exitAnimation;
+    connect(m_exitAnimation, &QPropertyAnimation::finished, this, [=] {
+        delete m_exitAnimation;
+        m_exitAnimation = nullptr;
         exitAnimationFinished(signal);
     });
 
-    exitAnimation->start();
+    m_exitAnimation->start();
 }
 
 void TabletMode::exitAnimationFinished(qint32 signal)
 {
+    if (m_showAnimation) return;
     //fix bug #82786
     if (!m_isActivated) return;
 
@@ -692,19 +695,20 @@ void TabletMode::exitAnimationFinished(qint32 signal)
     m_appViewContainer->updatePageData();
 
     //显示动画
-    QPropertyAnimation *showAnimation = new QPropertyAnimation(this, "pos");
-    showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
-    showAnimation->setStartValue(endRect.topLeft());
-    showAnimation->setEndValue(screenRect.topLeft());
-    showAnimation->setDuration(500);
+    m_showAnimation = new QPropertyAnimation(this, "pos");
+    m_showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    m_showAnimation->setStartValue(endRect.topLeft());
+    m_showAnimation->setEndValue(screenRect.topLeft());
+    m_showAnimation->setDuration(500);
 
-    connect(showAnimation, &QVariantAnimation::finished, this, [=] {
+    connect(m_showAnimation, &QVariantAnimation::finished, this, [=] {
         //显示按钮
         m_pageButtonWidget->show();
-        delete showAnimation;
+        delete m_showAnimation;
+        m_showAnimation = nullptr;
     });
 
-    showAnimation->start();
+    m_showAnimation->start();
 }
 
 void TabletMode::moveWindow(qint32 length)
