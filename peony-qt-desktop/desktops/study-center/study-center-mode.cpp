@@ -17,6 +17,8 @@
 #include <QDBusReply>
 #include "../../tablet/src/Style/style.h"
 #include <QCollator>
+#include <QButtonGroup>
+#include <QTimer>
 using namespace Peony;
 
 
@@ -47,6 +49,7 @@ void StudyCenterMode::setActivated(bool activated)
 DesktopWidgetBase *StudyCenterMode::initDesktop(const QRect &rect)
 {
     updateTimeSlot();
+    updatePageButton();
     return DesktopWidgetBase::initDesktop(rect);
 }
 void StudyCenterMode::initUi()
@@ -121,6 +124,15 @@ void StudyCenterMode::initUi()
 
     if (m_statusManagerDBus) {
         if (m_statusManagerDBus->isValid()) {
+            QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+            if (message_a.isValid()) {
+                m_isTabletMode = message_a.value();
+            }
+
+            QDBusReply<QString> message_b = m_statusManagerDBus->call("get_current_rotation");
+            if (message_b.isValid()) {
+                m_direction = message_b.value();
+            }
             /**
              * 屏幕旋转
              * @brief normal,upside-down,left,right
@@ -131,6 +143,7 @@ void StudyCenterMode::initUi()
         }
     }
 
+    initPageButton();
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )
@@ -352,13 +365,20 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
 void StudyCenterMode::updateTabletModeValue(bool mode)
 {
     m_isTabletMode = mode;
+
+    updatePageButton();
 }
 
 void StudyCenterMode::updateRotationsValue(QString rotation)
 {
     qDebug() << "StudyCenterMode::updateRotationsValue rotation:" << rotation <<"  m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
     m_direction = rotation;
+    m_pageButtonWidget->hide();
     screenRotation();
+
+    QTimer::singleShot(300, [=] {
+        updatePageButton();
+    });
 }
 void StudyCenterMode::screenRotation()
 {
@@ -452,4 +472,80 @@ void StudyCenterMode::centerToScreen(QWidget *widget)
     int x = QApplication::primaryScreen()->geometry().width();
     int y = QApplication::primaryScreen()->geometry().height();
     widget->move(desk_x / 2 - x / 2 + desk_rect.left(), desk_y / 2 - y / 2 + desk_rect.top());
+}
+
+void StudyCenterMode::initPageButton()
+{
+    m_pageButtonWidget = new QWidget(this);
+    m_buttonLayout     = new QHBoxLayout(m_pageButtonWidget);
+
+    m_buttonLayout->setAlignment(Qt::AlignCenter);
+    m_buttonLayout->setSpacing(10);
+
+    m_pageButtonWidget->setLayout(m_buttonLayout);
+
+    m_buttonGroup = new QButtonGroup(m_pageButtonWidget);
+    connect(m_buttonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked), this,
+            &StudyCenterMode::pageButtonClicked);
+
+    updatePageButton();
+}
+
+void StudyCenterMode::updatePageButton()
+{
+    if (!m_isTabletMode) {
+        m_pageButtonWidget->hide();
+        return;
+    };
+
+    QScreen *screen = QApplication::primaryScreen();
+    if (Style::ScreenRotation) {
+        m_buttonLayout->setContentsMargins(0, 0, 0, 26);
+    } else {
+        m_buttonLayout->setContentsMargins(0, 0, 0, 56);
+    }
+    //0.更新切换页面按钮
+    m_pageButtonWidget->setGeometry(QRect(0,
+                                          screen->geometry().height() - Style::ButtonWidgetHeight,
+                                          screen->geometry().width(),
+                                          Style::ButtonWidgetHeight));
+
+    for (auto button: m_buttonGroup->buttons()) {
+        m_buttonGroup->removeButton(button);
+        button->hide();
+        delete button;
+    }
+
+    for (int page = 0; page <= Style::appPage; page++) {
+        QPushButton *button = new QPushButton(m_pageButtonWidget);
+        button->setFocusPolicy(Qt::NoFocus);
+        button->setFixedSize(24, 24);
+
+        if (page == 0) {
+            //学习中心特别图标
+            button->setStyleSheet("QPushButton{border-image:url(:/img/learning-center-selected.svg);}"
+                                  "QPushButton:hover{border-image: url(:/img/learning-center-selected.svg);}"
+                                  "QPushButton:pressed{border-image: url(:/img/learning-center-selected.svg);}");
+
+        } else {
+            button->setStyleSheet("QPushButton{border-image: url(:/img/default.svg);}"
+                                  "QPushButton:hover{border-image: url(:/img/default.svg);}"
+                                  "QPushButton:pressed{border-image:url(:/img/click.svg);}");
+        }
+
+        m_buttonGroup->addButton(button, page);
+        m_buttonLayout->addWidget(button);
+    }
+
+    m_pageButtonWidget->show();
+}
+
+void StudyCenterMode::pageButtonClicked(QAbstractButton *button)
+{
+    int id = m_buttonGroup->id(button);
+
+    if (id <= 0) return;
+    m_pageButtonWidget->hide();
+
+    Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
 }

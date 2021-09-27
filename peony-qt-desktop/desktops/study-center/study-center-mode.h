@@ -36,6 +36,8 @@ public:
 private:
     void initUi();
     void screenRotation();
+    void initPageButton();
+    void updatePageButton();
 
 private:
     QGridLayout* m_mainGridLayout=nullptr;
@@ -55,11 +57,16 @@ private:
     bool m_isTabletMode;
     QString m_direction;
 
+    QWidget *m_pageButtonWidget = nullptr;
+    QHBoxLayout *m_buttonLayout = nullptr;
+    QButtonGroup *m_buttonGroup = nullptr;
+
 public Q_SLOTS:
    void updateTimeSlot();
    void updateRotationsValue(QString rotation);
    void updateTabletModeValue(bool mode);
 
+   void pageButtonClicked(QAbstractButton *button);
 protected Q_SLOTS:
    void centerToScreen(QWidget *widget);
 
