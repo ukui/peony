@@ -76,6 +76,15 @@ void  ProgressWidget::paintSlot(TABLETAPP &app)
     iconstr.remove(".png");
     iconstr.remove(".svg");
     QIcon icon=QIcon::fromTheme(iconstr);
-    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
+    QPixmap pix = icon.pixmap(64, 64);
     m_iconLabel->setPixmap(pix);
+}
+
+void ProgressWidget::setMaximum(int iMaxValue)
+{
+    if(iMaxValue <= 0 )
+    {
+        iMaxValue = 100;
+    }
+    m_processBar->setMaximum(iMaxValue);
 }
