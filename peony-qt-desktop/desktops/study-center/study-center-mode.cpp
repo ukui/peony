@@ -89,7 +89,10 @@ void StudyCenterMode::initUi()
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);
-
+    if(0 < appList.size())
+    {
+        Q_EMIT statusWidget->setMaximum(appList[0].iTime);
+    }
     connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP>)),statusWidget,SLOT(paintProgressSlot(QList<TABLETAPP>)));
     connect(this,SIGNAL(timeChangedSingal(QString,QString)),statusWidget,SLOT(timeChangeSlot(QString,QString)));
     connect(statusWidget,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
@@ -282,6 +285,10 @@ void StudyCenterMode::updateTimeSlot()
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     qDebug()<<"StudyCenterMode::updateTimeSlot begin,size:"<<studyCenterDataMap.size();
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
+    if(0 < appList.size())
+    {
+        Q_EMIT statusWidget->setMaximum(appList[0].iTime);
+    }
     Q_EMIT valueChangedSingal(appList);
     qDebug()<<"StudyCenterMode::valueChangedSingal end,size:"<<appList.size();
     initTime();
