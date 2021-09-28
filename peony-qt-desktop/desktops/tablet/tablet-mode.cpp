@@ -626,41 +626,39 @@ TabletMode::~TabletMode()
 
 void TabletMode::changePage(qint32 signal)
 {
+    if (m_exitAnimation) return;
     QRect saveRect = this->geometry();
 
-    QTimeLine *timeLine = new QTimeLine(300, this);
-    timeLine->setUpdateInterval(3);
-    timeLine->setFrameRange(0, 100);
-    timeLine->setEasingCurve(QEasingCurve::Linear);
+    //显示动画
+    m_exitAnimation = new QPropertyAnimation(this, "pos");
+    m_exitAnimation->setEasingCurve(QEasingCurve::Linear);
+    m_exitAnimation->setStartValue(saveRect.topLeft());
+    m_exitAnimation->setDuration(500);
 
     if (signal < 0) {
         //上一页（左边）
-        connect(timeLine, &QTimeLine::frameChanged, this, [=](const QVariant variant) {
-            qreal value = variant.toReal();
-            setGeometry(QRect((saveRect.x() + (4 * value)), saveRect.y(), saveRect.width(), saveRect.height()));
-            setWindowOpacity(1 - value);
-        });
+        m_exitAnimation->setEndValue(QPoint(saveRect.width(), 0));
 
     } else {
         //下一页（右边）
-        connect(timeLine, &QTimeLine::frameChanged, this, [=](const QVariant variant) {
-            qreal value = variant.toReal();
-            setGeometry(QRect((saveRect.x() - (4 * value)), saveRect.y(), saveRect.width(), saveRect.height()));
-            setWindowOpacity(1 - (value/100));
-        });
+        m_exitAnimation->setEndValue(QPoint(-saveRect.width(), 0));
     }
 
-    connect(timeLine, &QTimeLine::finished, this, [=] {
+    connect(m_exitAnimation, &QPropertyAnimation::finished, this, [=] {
+        delete m_exitAnimation;
+        m_exitAnimation = nullptr;
         exitAnimationFinished(signal);
-
-        delete timeLine;
     });
 
-    timeLine->start();
+    m_exitAnimation->start();
 }
 
 void TabletMode::exitAnimationFinished(qint32 signal)
 {
+    if (m_showAnimation) return;
+    //fix bug #82786
+    if (!m_isActivated) return;
+
     QRect screenRect = QApplication::primaryScreen()->geometry();
 
     this->hide();
@@ -697,27 +695,28 @@ void TabletMode::exitAnimationFinished(qint32 signal)
     m_appViewContainer->updatePageData();
 
     //显示动画
-    QPropertyAnimation *showAnimation = new QPropertyAnimation(this, "pos");
-    showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
-    showAnimation->setStartValue(endRect.topLeft());
-    showAnimation->setEndValue(screenRect.topLeft());
-    showAnimation->setDuration(600);
+    m_showAnimation = new QPropertyAnimation(this, "pos");
+    m_showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    m_showAnimation->setStartValue(endRect.topLeft());
+    m_showAnimation->setEndValue(screenRect.topLeft());
+    m_showAnimation->setDuration(500);
 
-    connect(showAnimation, &QVariantAnimation::finished, this, [=] {
+    connect(m_showAnimation, &QVariantAnimation::finished, this, [=] {
         //显示按钮
         m_pageButtonWidget->show();
-        delete showAnimation;
+        delete m_showAnimation;
+        m_showAnimation = nullptr;
     });
 
-    showAnimation->start();
+    m_showAnimation->start();
 }
 
 void TabletMode::moveWindow(qint32 length)
 {
-    m_mutex.tryLock(20);
+//    m_mutex.tryLock(20);
 //    m_mutex.lock();
     this->setGeometry(QRect((geometry().x() + length), 0, geometry().width(), geometry().height()));
-    m_mutex.unlock();
+//    m_mutex.unlock();
 }
 
 void TabletMode::returnRawPoint()
@@ -746,5 +745,6 @@ void TabletMode::updateRotationsValue(QString rotation)
     qDebug() << "[TabletMode::updateRotationsValue] rotation:" << rotation;
     m_direction = rotation;
 
+    m_appViewContainer->updateStyleValue();
     screenRotation();
 }

@@ -129,6 +129,7 @@ private:
 
     //翻页
     QVariantAnimation *m_exitAnimation=nullptr;
+    QVariantAnimation *m_showAnimation=nullptr;
 
     //监控
     QFileSystemWatcher* m_fileWatcher=nullptr;

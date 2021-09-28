@@ -17,6 +17,8 @@
 #include <QDBusReply>
 #include "../../tablet/src/Style/style.h"
 #include <QCollator>
+#include <QButtonGroup>
+#include <QTimer>
 using namespace Peony;
 
 
@@ -47,6 +49,7 @@ void StudyCenterMode::setActivated(bool activated)
 DesktopWidgetBase *StudyCenterMode::initDesktop(const QRect &rect)
 {
     updateTimeSlot();
+    updatePageButton();
     return DesktopWidgetBase::initDesktop(rect);
 }
 void StudyCenterMode::initUi()
@@ -64,25 +67,25 @@ void StudyCenterMode::initUi()
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     QStringList strListTitleStyle;
     strListTitleStyle<<"精准练习"<<"color:#009ACD";
-    QMap<QString, QList<TabletAppEntity*>> dataMap;
+    QList<QPair<QString, QList<TabletAppEntity*>>> dataList;
 
-    dataMap.insert(tr("math"),studyCenterDataMap[STUDY_CENTER_MATH]);
-    dataMap.insert(tr("english"),studyCenterDataMap[STUDY_CENTER_ENGLISH]);
-    dataMap.insert(tr("chinese"),studyCenterDataMap[STUDY_CENTER_CHINESE]);
-    dataMap.insert(tr("other"),studyCenterDataMap[STUDY_CENTER_OTHER]);
-    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap, 1);
+    dataList.append(qMakePair(QString(tr("math")),studyCenterDataMap[STUDY_CENTER_MATH]));
+    dataList.append(qMakePair(QString(tr("english")),studyCenterDataMap[STUDY_CENTER_ENGLISH]));
+    dataList.append(qMakePair(QString(tr("chinese")),studyCenterDataMap[STUDY_CENTER_CHINESE]));
+    dataList.append(qMakePair(QString(tr("other")),studyCenterDataMap[STUDY_CENTER_OTHER]));
+    practiceWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 1,this);
 
-    dataMap.clear();
+    dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"color:#43CD80";
-    dataMap.insert(STUDY_CENTER_STUDENT_GUARD,studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]);
-    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
+    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
-    dataMap.clear();
+    dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"color:#FF8247";
-    dataMap.insert(STUDY_CENTER_SYNCHRONIZED,studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]);
-    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataMap);
+    dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
+    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);
@@ -101,8 +104,8 @@ void StudyCenterMode::initUi()
     m_mainGridLayout = new QGridLayout(this);
 
     screenRotation();
-    m_mainGridLayout->setMargin(80);
-    m_mainGridLayout->setSpacing(20);
+
+    m_mainGridLayout->setSpacing(16);
     this->setLayout(m_mainGridLayout);
     //分辨率变化，就重画屏幕
     connect(QApplication::desktop(), &QDesktopWidget::resized, this, [=]() {
@@ -121,6 +124,15 @@ void StudyCenterMode::initUi()
 
     if (m_statusManagerDBus) {
         if (m_statusManagerDBus->isValid()) {
+            QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
+            if (message_a.isValid()) {
+                m_isTabletMode = message_a.value();
+            }
+
+            QDBusReply<QString> message_b = m_statusManagerDBus->call("get_current_rotation");
+            if (message_b.isValid()) {
+                m_direction = message_b.value();
+            }
             /**
              * 屏幕旋转
              * @brief normal,upside-down,left,right
@@ -131,23 +143,7 @@ void StudyCenterMode::initUi()
         }
     }
 
-//    QVBoxLayout* m_mainLayout = new QVBoxLayout(this);
-//    //m_mainLayout->setContentsMargins(1,0,0,0);
-//    QListView* m_listview = new QListView;
-
-//    QStringList m_strListData ={"1","2","3","4"};
-//    QStandardItemModel* listmodel=new QStandardItemModel(this);
-//    m_listview->setModel(listmodel);
-//    m_listview->setFixedSize(200,200);
-//    for(int i = 0;i< m_strListData.size();i++)
-//    {
-//        QString str= static_cast<QString>(m_strListData.at(i));
-//        QStandardItem* item=new QStandardItem(str);
-//        listmodel->appendRow(item);
-//    }
-//    //this->addWidget(m_listview);
-//    m_mainLayout->addWidget(m_listview);
-    //this->setLayout(m_mainLayout);
+    initPageButton();
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )
@@ -369,13 +365,20 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
 void StudyCenterMode::updateTabletModeValue(bool mode)
 {
     m_isTabletMode = mode;
+
+    updatePageButton();
 }
 
 void StudyCenterMode::updateRotationsValue(QString rotation)
 {
     qDebug() << "StudyCenterMode::updateRotationsValue rotation:" << rotation <<"  m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
     m_direction = rotation;
+    m_pageButtonWidget->hide();
     screenRotation();
+
+    QTimer::singleShot(300, [=] {
+        updatePageButton();
+    });
 }
 void StudyCenterMode::screenRotation()
 {
@@ -387,6 +390,14 @@ void StudyCenterMode::screenRotation()
 //    }
     //note 屏幕变化后，负责将app视图和小组件大小进行调整
     //1.隐藏各个组件
+    for(int i=0;i < m_mainGridLayout->rowCount();i++ )
+    {
+         m_mainGridLayout->setRowStretch(i,0);
+    }
+    for(int i=0;i < m_mainGridLayout->columnCount();i++ )
+    {
+         m_mainGridLayout->setColumnStretch(i,0);
+    }
     if(m_mainGridLayout->count())
     {
         m_mainGridLayout->removeWidget(practiceWidget);
@@ -424,6 +435,12 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(guradWidget,4,0,2,1);
         m_mainGridLayout->addWidget(synWidget,4,1,2,1);
         m_mainGridLayout->addWidget(statusWidget,6,0,3,2);
+        m_mainGridLayout->setRowStretch(3,13);
+        m_mainGridLayout->setRowStretch(4,5);
+        m_mainGridLayout->setRowStretch(6,8);
+        m_mainGridLayout->setColumnStretch(0,1);
+        m_mainGridLayout->setColumnStretch(1,1);
+        m_mainGridLayout->setContentsMargins(72,72,72,72);
     }
     else
     {
@@ -431,6 +448,13 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(guradWidget,0,2,1,1);
         m_mainGridLayout->addWidget(synWidget,0,3,1,1);
         m_mainGridLayout->addWidget(statusWidget,1,2,2,2);
+
+        m_mainGridLayout->setRowStretch(0,5);
+        m_mainGridLayout->setRowStretch(1,8);
+        m_mainGridLayout->setColumnStretch(0,2);
+        m_mainGridLayout->setColumnStretch(2,1);
+        m_mainGridLayout->setColumnStretch(3,1);
+        m_mainGridLayout->setContentsMargins(80,86,80,138);
     }
 
 }
@@ -448,4 +472,80 @@ void StudyCenterMode::centerToScreen(QWidget *widget)
     int x = QApplication::primaryScreen()->geometry().width();
     int y = QApplication::primaryScreen()->geometry().height();
     widget->move(desk_x / 2 - x / 2 + desk_rect.left(), desk_y / 2 - y / 2 + desk_rect.top());
+}
+
+void StudyCenterMode::initPageButton()
+{
+    m_pageButtonWidget = new QWidget(this);
+    m_buttonLayout     = new QHBoxLayout(m_pageButtonWidget);
+
+    m_buttonLayout->setAlignment(Qt::AlignCenter);
+    m_buttonLayout->setSpacing(10);
+
+    m_pageButtonWidget->setLayout(m_buttonLayout);
+
+    m_buttonGroup = new QButtonGroup(m_pageButtonWidget);
+    connect(m_buttonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked), this,
+            &StudyCenterMode::pageButtonClicked);
+
+    updatePageButton();
+}
+
+void StudyCenterMode::updatePageButton()
+{
+    if (!m_isTabletMode) {
+        m_pageButtonWidget->hide();
+        return;
+    };
+
+    QScreen *screen = QApplication::primaryScreen();
+    if (Style::ScreenRotation) {
+        m_buttonLayout->setContentsMargins(0, 0, 0, 26);
+    } else {
+        m_buttonLayout->setContentsMargins(0, 0, 0, 56);
+    }
+    //0.更新切换页面按钮
+    m_pageButtonWidget->setGeometry(QRect(0,
+                                          screen->geometry().height() - Style::ButtonWidgetHeight,
+                                          screen->geometry().width(),
+                                          Style::ButtonWidgetHeight));
+
+    for (auto button: m_buttonGroup->buttons()) {
+        m_buttonGroup->removeButton(button);
+        button->hide();
+        delete button;
+    }
+
+    for (int page = 0; page <= Style::appPage; page++) {
+        QPushButton *button = new QPushButton(m_pageButtonWidget);
+        button->setFocusPolicy(Qt::NoFocus);
+        button->setFixedSize(24, 24);
+
+        if (page == 0) {
+            //学习中心特别图标
+            button->setStyleSheet("QPushButton{border-image:url(:/img/learning-center-selected.svg);}"
+                                  "QPushButton:hover{border-image: url(:/img/learning-center-selected.svg);}"
+                                  "QPushButton:pressed{border-image: url(:/img/learning-center-selected.svg);}");
+
+        } else {
+            button->setStyleSheet("QPushButton{border-image: url(:/img/default.svg);}"
+                                  "QPushButton:hover{border-image: url(:/img/default.svg);}"
+                                  "QPushButton:pressed{border-image:url(:/img/click.svg);}");
+        }
+
+        m_buttonGroup->addButton(button, page);
+        m_buttonLayout->addWidget(button);
+    }
+
+    m_pageButtonWidget->show();
+}
+
+void StudyCenterMode::pageButtonClicked(QAbstractButton *button)
+{
+    int id = m_buttonGroup->id(button);
+
+    if (id <= 0) return;
+    m_pageButtonWidget->hide();
+
+    Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
 }
