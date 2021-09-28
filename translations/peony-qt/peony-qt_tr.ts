@@ -226,32 +226,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="659"/>
+        <location filename="../../src/windows/main-window.cpp" line="662"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="295"/>
+        <location filename="../../src/windows/main-window.cpp" line="297"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="302"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <location filename="../../src/windows/main-window.cpp" line="660"/>
         <source>Search</source>
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1355"/>
+        <location filename="../../src/windows/main-window.cpp" line="1364"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1356"/>
+        <location filename="../../src/windows/main-window.cpp" line="1365"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -272,7 +272,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="672"/>
+        <location filename="../../src/windows/main-window.cpp" line="675"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -288,28 +288,28 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="155"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="163"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="155"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="163"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="192"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="200"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="208"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="242"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="216"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="250"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="226"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="234"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1000,7 +1000,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="540"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="548"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>

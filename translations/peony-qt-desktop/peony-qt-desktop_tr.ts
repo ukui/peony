@@ -369,6 +369,29 @@
     </message>
 </context>
 <context>
+    <name>Peony::StudyCenterMode</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="72"/>
+        <source>math</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="73"/>
+        <source>english</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="74"/>
+        <source>chinese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
+        <source>other</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PeonyDesktopApplication</name>
     <message>
         <source>Close the peony-qt desktop window</source>
@@ -388,28 +411,27 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="314"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="309"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="317"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="312"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="320"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="315"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="323"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="318"/>
         <source>Setup backgrounds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="326"/>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="329"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="321"/>
         <source>Open learning center.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -429,6 +451,34 @@
         <location filename="../../peony-qt-desktop/desktops/desktop/menu/desktop-menu.cpp" line="142"/>
         <location filename="../../peony-qt-desktop/desktops/desktop/menu/desktop-menu.cpp" line="251"/>
         <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StudyStatusWidget</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="76"/>
+        <source>学情中心</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="123"/>
+        <source>今日使用时长</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="124"/>
+        <source>本周使用时长</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="125"/>
+        <source>本月使用时长</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="182"/>
+        <source>最常使用 (本周累计)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

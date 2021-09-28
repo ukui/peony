@@ -381,6 +381,29 @@
     </message>
 </context>
 <context>
+    <name>Peony::StudyCenterMode</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="72"/>
+        <source>math</source>
+        <translation>数学</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="73"/>
+        <source>english</source>
+        <translation>英语</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="74"/>
+        <source>chinese</source>
+        <translation>语文</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
+        <source>other</source>
+        <translation>其它</translation>
+    </message>
+</context>
+<context>
     <name>PeonyDesktopApplication</name>
     <message>
         <source>Close the peony-qt desktop window</source>
@@ -400,28 +423,27 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="314"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="309"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="317"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="312"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="320"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="315"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="323"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="318"/>
         <source>Setup backgrounds</source>
         <translation>Setup backgrounds</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="326"/>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="329"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="321"/>
         <source>Open learning center.</source>
         <translation></translation>
     </message>
@@ -442,6 +464,34 @@
         <location filename="../../peony-qt-desktop/desktops/desktop/menu/desktop-menu.cpp" line="251"/>
         <source>Error</source>
         <translation>错误</translation>
+    </message>
+</context>
+<context>
+    <name>StudyStatusWidget</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="76"/>
+        <source>学情中心</source>
+        <translation>学情中心</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="123"/>
+        <source>今日使用时长</source>
+        <translation>今日使用时长</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="124"/>
+        <source>本周使用时长</source>
+        <translation>本周使用时长</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="125"/>
+        <source>本月使用时长</source>
+        <translation>本月使用时长</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="182"/>
+        <source>最常使用 (本周累计)</source>
+        <translation>最常使用 (本周累计)</translation>
     </message>
 </context>
 <context>

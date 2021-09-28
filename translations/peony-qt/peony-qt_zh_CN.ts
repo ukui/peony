@@ -246,32 +246,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="659"/>
+        <location filename="../../src/windows/main-window.cpp" line="662"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="295"/>
+        <location filename="../../src/windows/main-window.cpp" line="297"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="302"/>
+        <location filename="../../src/windows/main-window.cpp" line="304"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <location filename="../../src/windows/main-window.cpp" line="660"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1355"/>
+        <location filename="../../src/windows/main-window.cpp" line="1364"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1356"/>
+        <location filename="../../src/windows/main-window.cpp" line="1365"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -292,7 +292,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="672"/>
+        <location filename="../../src/windows/main-window.cpp" line="675"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -308,28 +308,28 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="155"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="163"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="155"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="163"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="192"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="200"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="208"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="242"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="216"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="250"/>
         <source>Can not open %1, %2</source>
         <translation>无法打开%1, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="226"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="234"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
@@ -1056,7 +1056,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="540"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="548"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
