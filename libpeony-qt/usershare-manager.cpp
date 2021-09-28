@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QProcess>
 
+#include <glib.h>
+
 using namespace Peony;
 
 UserShareInfoManager* UserShareInfoManager::g_shareInfo = nullptr;
@@ -60,14 +62,17 @@ QString UserShareInfoManager::exectueCommand (QStringList& args, bool* retb /* o
     QProcess proc;
     proc.open();
 
-    args.prepend("/usr/bin/peony-share.sh");
-    args.prepend("pkexec");
+    // Check whether sambashare exists and contains the current user
+    QProcess::execute ("bash pkexec /usr/bin/peony-share.sh", QStringList() << g_get_user_name ());
+
+    // Shared folder
+    args.prepend ("net");
     proc.start("bash");
+//    args.prepend("pkexec");
     proc.waitForStarted();
     QString cmd = args.join(" ");
     proc.write(cmd.toUtf8() + "\n");
     proc.waitForFinished(500);
-
     if (retb) {
         if (proc.readAllStandardError().isEmpty()) {
             *retb = true;
