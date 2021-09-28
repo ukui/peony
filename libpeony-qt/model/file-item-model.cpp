@@ -582,7 +582,11 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //fix drag file to trash issue, #42328
     if (destDirUri.startsWith("trash:///"))
     {
-        FileOperationUtils::trash(srcUris, true);
+        // fix drag filesafe to trash error issue, #81938
+        if(!(srcUris.first().startsWith("filesafe:///") &&
+            (QString(srcUris.first()).remove("filesafe:///").indexOf("/") == -1))) {
+            FileOperationUtils::trash(srcUris, true);
+        }
         return true;
     }
 
