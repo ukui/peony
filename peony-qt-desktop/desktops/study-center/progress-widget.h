@@ -30,6 +30,7 @@ private:
   //  QHBoxLayout* m_iconGridLayout = nullptr;
 public Q_SLOTS:
    void paintSlot(TABLETAPP &applist);
+   void setMaximum(int iMaxValue);
 
 };
 

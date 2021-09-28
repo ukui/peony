@@ -191,6 +191,7 @@ void StudyStatusWidget::initWidget()
         //progress->setFixedSize(this->width()-15*2,50);
         m_progressGridLayout->addWidget(progress,i/2 ,i%2);
 
+        connect(this, SIGNAL(setMaximum(int)), progress, SLOT(setMaximum(int)));
     }
 
     m_scrollArea = new QScrollArea;
@@ -303,6 +304,7 @@ void StudyStatusWidget::paintProgressSlot(QList<TABLETAPP> applist)
         {
             ProgressWidget* progressWid = new ProgressWidget(applist[i],this);
             m_progressGridLayout->addWidget(progressWid,i/2,i%2);
+            connect(this, SIGNAL(setMaximum(int)), progressWid, SLOT(setMaximum(int)));
         }
         else
         {
