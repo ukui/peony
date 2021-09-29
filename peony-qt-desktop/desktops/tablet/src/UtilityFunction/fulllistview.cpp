@@ -124,8 +124,10 @@ void FullListView::updateData(QStringList data)
 //        items->setBackground(Qt::NoBrush);
 //        listmodel->appendRow(items);
 //    }
-    m_delegate= new FullItemDelegate(this,module);
-    this->setItemDelegate(m_delegate);
+    if (!m_delegate) {
+        m_delegate = new FullItemDelegate(this,module);
+        this->setItemDelegate(m_delegate);
+    }
 
 }
 

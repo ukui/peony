@@ -234,15 +234,10 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 {
     if (!desktop) {
         qWarning() << "[DesktopBackgroundWindow::setWindowDesktop] Try to set up a desktop that does not exist !";
-        m_currentDesktop = nullptr;
         return;
     }
     //TODO 尝试实现不同窗口设置不同背景 20210810
-    if (m_currentDesktop) {
-        //取消掉上一个桌面的信号链接
-        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopBackgroundWindow::desktopMoveProcess);
-        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopBackgroundWindow::desktopReboundProcess);
-    }
+    this->takeCurrentDesktop();
 
     m_currentDesktop = desktop;
     m_currentDesktop->setParent(this);
@@ -250,9 +245,9 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     m_currentDesktop->setProperty("useStyleWindowManager", false);
     this->setProperty("useStyleWindowManager", false);
 
-    this->takeCentralWidget();
     this->setCentralWidget(m_currentDesktop);
 
+    m_currentDesktop->setPause(false);
     m_currentDesktop->initDesktop(geometry());
     m_currentDesktop->setActivated(true);
 
@@ -263,7 +258,7 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 
 void DesktopBackgroundWindow::desktopMoveProcess(AnimationType animationType, quint32 moveLength, quint32 duration)
 {
-    if (moveLength <= 0) {
+    if (moveLength <= 0 | m_currentDesktop->isPause()) {
         return;
     }
 
@@ -352,4 +347,23 @@ void DesktopBackgroundWindow::blurBackground(bool blur)
             qDebug() << "[DesktopBackgroundWindow::blurBackground] reset blurEffect success";
         }
     }
+}
+
+DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
+{
+    if (m_currentDesktop) {
+        //取消掉上一个桌面的信号链接
+        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopBackgroundWindow::desktopMoveProcess);
+        disconnect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopBackgroundWindow::desktopReboundProcess);
+        m_currentDesktop->setActivated(false);
+
+        DesktopWidgetBase *desktop = m_currentDesktop;
+
+        m_currentDesktop = nullptr;
+        this->takeCentralWidget();
+
+        return desktop;
+    }
+
+    return nullptr;
 }

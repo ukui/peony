@@ -328,7 +328,7 @@ void TabletMode::buttonClicked(QAbstractButton *button)
     if (id <= 0) {
         this->updatePageButtonStatus(0);
         //goto study center
-        Q_EMIT moveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+        requestMoveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         return;
     }
 
@@ -368,6 +368,9 @@ void TabletMode::updatePageButtonStatus(qint32 page)
 
 void TabletMode::pageNumberChanged(qint32 signal)
 {
+    //fix bug #82786
+    if (!m_isActivated | isPause()) return;
+
     if (signal == 0) {
         returnRawPoint();
         return;
@@ -379,7 +382,7 @@ void TabletMode::pageNumberChanged(qint32 signal)
     if (Style::nowpagenum < 1) {
         Style::nowpagenum = 1;
         this->updatePageButtonStatus(0);
-        Q_EMIT moveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+        requestMoveToOtherDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         return;
     }
 
@@ -626,11 +629,18 @@ TabletMode::~TabletMode()
 
 void TabletMode::changePage(qint32 signal)
 {
-    if (m_exitAnimation) return;
+    if (!m_exitAnimation) {
+        m_exitAnimation = new QPropertyAnimation(this, "pos");
+    }
+
+    if (!m_showAnimation) {
+        m_showAnimation = new QPropertyAnimation(this, "pos");
+    }
+
+    if ((m_exitAnimation->state() != QPropertyAnimation::Stopped) || (m_showAnimation->state() != QPropertyAnimation::Stopped)) return;
     QRect saveRect = this->geometry();
 
     //显示动画
-    m_exitAnimation = new QPropertyAnimation(this, "pos");
     m_exitAnimation->setEasingCurve(QEasingCurve::Linear);
     m_exitAnimation->setStartValue(saveRect.topLeft());
     m_exitAnimation->setDuration(500);
@@ -645,8 +655,7 @@ void TabletMode::changePage(qint32 signal)
     }
 
     connect(m_exitAnimation, &QPropertyAnimation::finished, this, [=] {
-        delete m_exitAnimation;
-        m_exitAnimation = nullptr;
+        m_exitAnimation->stop();
         exitAnimationFinished(signal);
     });
 
@@ -655,7 +664,6 @@ void TabletMode::changePage(qint32 signal)
 
 void TabletMode::exitAnimationFinished(qint32 signal)
 {
-    if (m_showAnimation) return;
     //fix bug #82786
     if (!m_isActivated) return;
 
@@ -695,7 +703,6 @@ void TabletMode::exitAnimationFinished(qint32 signal)
     m_appViewContainer->updatePageData();
 
     //显示动画
-    m_showAnimation = new QPropertyAnimation(this, "pos");
     m_showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     m_showAnimation->setStartValue(endRect.topLeft());
     m_showAnimation->setEndValue(screenRect.topLeft());
@@ -703,9 +710,8 @@ void TabletMode::exitAnimationFinished(qint32 signal)
 
     connect(m_showAnimation, &QVariantAnimation::finished, this, [=] {
         //显示按钮
+        m_showAnimation->stop();
         m_pageButtonWidget->show();
-        delete m_showAnimation;
-        m_showAnimation = nullptr;
     });
 
     m_showAnimation->start();

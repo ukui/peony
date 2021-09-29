@@ -176,7 +176,6 @@ QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEnt
         int nResult = false;
         if((p1.iTime > p2.iTime) || (p1.iTime == p2.iTime && collator.compare(p1.appName, p2.appName) < 0))
         {
-            qDebug()<<"StudyCenterMode::qsort p1.appName:"<<p1.appName<<"  p2.appName:"<< p2.appName <<" p1.iTime:"<<p1.iTime <<" p1.iTime:" <<p2.iTime;
             nResult = true;
         }
         qDebug()<<"StudyCenterMode::qsort p1.appName:"<<p1.appName<<"  p2.appName:"<< p2.appName <<" p1.iTime:"<<p1.iTime <<" p1.iTime:" <<p2.iTime <<" result:"<<nResult;
@@ -279,6 +278,9 @@ void  StudyCenterMode::initTime()
 
 void StudyCenterMode::updateTimeSlot()
 {
+    //暂停响应更新请求，节省资源
+    if (isPause()) return;
+
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     qDebug()<<"StudyCenterMode::updateTimeSlot begin,size:"<<studyCenterDataMap.size();
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
@@ -311,12 +313,12 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
                         QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
                         if (message_a.isValid()) {
                             if ((bool) message_a.value()) {
-                                Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+                                requestMoveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
                             } else {
-                                Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+                                requestMoveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
                             }
                         } else {
-                            Q_EMIT moveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
+                            requestMoveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
                         }
                     } else {
                         Q_EMIT desktopReboundRequest();
@@ -376,9 +378,7 @@ void StudyCenterMode::updateRotationsValue(QString rotation)
     m_pageButtonWidget->hide();
     screenRotation();
 
-    QTimer::singleShot(300, [=] {
-        updatePageButton();
-    });
+    updatePageButton();
 }
 void StudyCenterMode::screenRotation()
 {
@@ -547,5 +547,5 @@ void StudyCenterMode::pageButtonClicked(QAbstractButton *button)
     if (id <= 0) return;
     m_pageButtonWidget->hide();
 
-    Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+    requestMoveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
 }

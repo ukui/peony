@@ -26,7 +26,7 @@ using namespace Peony;
 FullItemDelegate::FullItemDelegate(QObject *parent, int module):
     QStyledItemDelegate(parent)
 {
-    this->module=module;  
+    this->module=module;
 }
 
 FullItemDelegate::~FullItemDelegate()
@@ -74,7 +74,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->setOpacity(1);
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
         QString iconstr= tabletApp.appIcon;
-        qDebug("FullItemDelegate::paint : name:%s, icon:%s/n",tabletApp.appName.toLocal8Bit().data(),iconstr.toLocal8Bit().data());
 
         iconstr.remove(".png");
         iconstr.remove(".svg");
@@ -107,7 +106,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
 
         icon = QIcon(pixmap);
-        icon.paint(painter,iconRect);      
+        icon.paint(painter,iconRect);
         painter->restore();
         painter->save();
         painter->setPen(QPen(Qt::black));
