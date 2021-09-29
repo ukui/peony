@@ -1,3 +1,9 @@
+peony (3.2.2+0929ukui3.1) v101; urgency=medium
+
+  * Intel & Sp1 合并版本
+
+ -- Yue Lan <lanyue@kylinos.cn>  Wed, 29 Sep 2021 18:49:16 +0800
+
 peony (3.2.2+0927ukui3.1.1) v101; urgency=medium
 
   * 修复平台判断问题
