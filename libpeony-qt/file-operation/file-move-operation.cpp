@@ -41,6 +41,8 @@ static void handleDuplicate(FileNode *node)
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
+    if(destDirUri.startsWith("favorite://"))/* favorite://xxx特殊处理,例如本机共享，bug#83353 */
+        destDirUri = FileUtils::getTargetUri(destDirUri);
     m_dest_dir_uri = FileUtils::urlEncode(destDirUri);
     m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
