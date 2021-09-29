@@ -66,7 +66,8 @@ void StudyCenterMode::initUi()
 
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     QStringList strListTitleStyle;
-    strListTitleStyle<<"精准练习"<<"color:#009ACD";
+    strListTitleStyle<<"精准练习"<<"QLabel{background-color: transparent;color:#009ACD;}";
+    strListTitleStyle<< "PRACTICE" << "QLabel{background-color: transparent;color:rgba(0, 154, 205, 0.05);}";
     QList<QPair<QString, QList<TabletAppEntity*>>> dataList;
 
     dataList.append(qMakePair(QString(tr("math")),studyCenterDataMap[STUDY_CENTER_MATH]));
@@ -77,13 +78,15 @@ void StudyCenterMode::initUi()
 
     dataList.clear();
     strListTitleStyle.clear();
-    strListTitleStyle<<"守护中心"<<"color:#43CD80";
+    strListTitleStyle<<"守护中心"<<"QLabel{background-color: transparent;color:#43CD80;}";
+    strListTitleStyle << "GUARDS" << "QLabel{background-color: transparent;color:rgba(67, 205, 128, 0.05);}";
     dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
     guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
     dataList.clear();
     strListTitleStyle.clear();
-    strListTitleStyle<<"同步学习"<<"color:#FF8247";
+    strListTitleStyle<<"同步学习"<<"QLabel{background-color: transparent;color:#FF8247;}";
+    strListTitleStyle << "COURSE" << "QLabel{background-color: transparent;color:rgba(255, 130, 71, 0.05);}";
     dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
     synWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 

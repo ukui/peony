@@ -56,12 +56,18 @@ private:
     QWidget*      m_scrollareawid=nullptr;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
     int m_iMode;
+    QSize m_widgetSize;
+    QPoint m_widgetPoint;
+    QPixmap *m_windowBg;
 
 protected:
     void initWidget(QStringList &strListTitleStyle);
     //初始化应用列表界面
     void initAppListWidget();
     void resizeScrollAreaControls();
+    void resizeEvent(QResizeEvent *event);
+    void moveEvent(QMoveEvent *event);
+    void paintEvent(QPaintEvent *event);
 
 private Q_SLOTS:
     //执行应用程序

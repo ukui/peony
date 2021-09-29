@@ -20,14 +20,22 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <iterator>
+#include <QPixmap>
+#include <QPainter>
+#include <QColor>
+#include <QImage>
+#include <QPainterPath>
 #include "pushbutton.h"
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-list-view.h"
 #include "common.h"
 #include "../../tablet/src/Style/style.h"
+#include "desktop-window.h"
 
 using namespace Peony;
 
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 StudyDirectoryWidget::StudyDirectoryWidget(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleList, int mode, QWidget *parent)
 : QWidget(parent)
@@ -67,7 +75,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
     m_mainLayout=new QVBoxLayout(this);
-    if(strListTitleStyle.size() >= 2)
+    if(strListTitleStyle.size() >= 4)
     {
         QLabel* titleLabel = new QLabel;
         QFont ft;
@@ -77,6 +85,16 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
         titleLabel->setStyleSheet(strListTitleStyle.at(1).toLocal8Bit().constData());
         titleLabel->setText( strListTitleStyle.at(0).toLocal8Bit().constData());
         m_mainLayout->addWidget(titleLabel);
+
+        QLabel* backGroundLabel = new QLabel(this);
+        QFont bft;
+        bft.setPointSize(36);
+        bft.setWeight(100);
+        backGroundLabel->setFont(bft);
+        backGroundLabel->setStyleSheet(strListTitleStyle.at(3).toLocal8Bit().constData());
+        backGroundLabel->setText(strListTitleStyle.at(2).toLocal8Bit().constData());
+        backGroundLabel->setGeometry(15,-25,280,120);
+        backGroundLabel->lower();
     }
 
     m_scrollArea = new QScrollArea;
@@ -272,6 +290,58 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
     }
     m_scrollArea->widget()->adjustSize();
 }
+
+void StudyDirectoryWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if(m_widgetSize != size()){
+        m_widgetSize = size();
+        this->resize(size());
+    }
+}
+
+void StudyDirectoryWidget::moveEvent(QMoveEvent *event)
+{
+    QWidget::moveEvent(event);
+    if(m_widgetPoint != pos()){
+        m_widgetPoint = pos();
+    }
+}
+
+void StudyDirectoryWidget::paintEvent(QPaintEvent *event)
+{
+//    qDebug() << "paintEvent size" << m_widgetSize;
+//    qDebug() << "paintEvent pos" << m_widgetPoint;
+    Q_UNUSED(event);
+    Peony::DesktopWindow *w = qobject_cast<Peony::DesktopWindow*>(window());
+
+    QSize size = m_widgetSize;
+    QPoint point = m_widgetPoint;
+
+    //把需要模糊的图片区域放大，再模糊处理
+    QPixmap pixMap = w->getBgPixmap();
+    pixMap = pixMap.copy(point.x() - 50,
+                         point.y() - 50,
+                         size.width() + 100,
+                         size.height() + 100);
+
+    QPainter painter(this);
+    QImage img = pixMap.toImage();
+    qt_blurImage(img,50,false,false);
+    img = img.copy(50,50,size.width(),size.height());
+
+    QRect rect = this->rect();
+    QPainterPath path;
+    path.addRoundedRect(rect,24,24);
+    painter.setClipPath(path);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    painter.drawImage(0,0,img);
+
+    auto color = QColor(255,255,255);
+    color.setAlphaF(0.85);
+    painter.fillRect(this->rect(), color);
+}
+
 //void StudyDirectoryWidget::valueChangedSlot(int value)
 //{
 //    int index=0;

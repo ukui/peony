@@ -33,6 +33,10 @@ protected:
     void initWidget();
     void initUserInfo();
     void resizeScrollAreaControls();
+    void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void moveEvent(QMoveEvent *event);
+
 private:
     QVBoxLayout* m_mainVboxLayout=nullptr;
     QGridLayout* m_progressGridLayout = nullptr;
@@ -48,6 +52,9 @@ private:
     QDBusInterface* m_userInterface=nullptr;
    // QMap<QString, ProgressWidget*> m_progressMap;
     QList<TABLETAPP> m_appList;
+    QSize m_widgetSize;
+    QPoint m_widgetPoint;
+    QPixmap *m_windowBg;
 
 public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);

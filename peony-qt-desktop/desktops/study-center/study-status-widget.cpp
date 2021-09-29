@@ -17,6 +17,10 @@
 //#include "progress-item-delegate.h"
 
 #include "../../tablet/data/tablet-app-manager.h"
+#include "desktop-window.h"
+
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 StudyStatusWidget::StudyStatusWidget(QList<TABLETAPP> appList, QWidget *parent) :
     QWidget(parent)
@@ -72,7 +76,7 @@ void StudyStatusWidget::initWidget()
     titleLabel->setFont(ft);
 
     //设置颜色
-    titleLabel->setStyleSheet("color:#9370DB");
+    titleLabel->setStyleSheet("QLabel{background-color: transparent;color:#9370DB;}");
     titleLabel->setText(tr("学情中心"));
     titleLabel->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 
@@ -88,6 +92,19 @@ void StudyStatusWidget::initWidget()
     m_userNameLabel->setFont(ft);
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
+
+    //设置学情中心背景字母
+    QLabel* backGroundLabel = new QLabel(this);
+
+    QFont bft;
+    bft.setPointSize(36);
+    bft.setWeight(100);
+    backGroundLabel->setFont(bft);
+
+    backGroundLabel->setStyleSheet("QLabel{background-color: transparent;color:rgba(147, 112, 219, 0.05);}");
+    backGroundLabel->setText(tr("STATISTICS"));
+    backGroundLabel->setGeometry(45,-15,280,120);
+    backGroundLabel->lower();
 
     userInfoLayout->addWidget(titleLabel);
     userInfoLayout->addStretch();
@@ -274,6 +291,58 @@ void StudyStatusWidget::initUserInfo()
         qDebug() << "Connot found avatar image";
     }
 
+}
+
+void StudyStatusWidget::paintEvent(QPaintEvent *event)
+{
+
+//    qDebug() << "paintEvent size" << m_widgetSize;
+//    qDebug() << "paintEvent pos" << m_widgetPoint;
+    Q_UNUSED(event);
+    Peony::DesktopWindow *w = qobject_cast<Peony::DesktopWindow*>(window());
+
+    QSize size = m_widgetSize;
+    QPoint point = m_widgetPoint;
+
+    //把需要模糊的图片区域放大，再模糊处理
+    QPixmap pixMap = w->getBgPixmap();
+    pixMap = pixMap.copy(point.x() - 50,
+                         point.y() - 50,
+                         size.width() + 100,
+                         size.height() + 100);
+
+    QPainter painter(this);
+    QImage img = pixMap.toImage();
+    qt_blurImage(img,50,false,false);
+    img = img.copy(50,50,size.width(),size.height());
+
+    QRect rect = this->rect();
+    QPainterPath path;
+    path.addRoundedRect(rect,24,24);
+    painter.setClipPath(path);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    painter.drawImage(0,0,img);
+
+    auto color = QColor(255,255,255);
+    color.setAlphaF(0.85);
+    painter.fillRect(this->rect(), color);
+}
+
+void StudyStatusWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if(m_widgetSize != size()){
+        m_widgetSize = size();
+        this->resize(size());
+    }
+}
+
+void StudyStatusWidget::moveEvent(QMoveEvent *event)
+{
+    QWidget::moveEvent(event);
+    if(m_widgetPoint != pos()){
+        m_widgetPoint = pos();
+    }
 }
 
 QPixmap StudyStatusWidget::PixmapToRound(const QString &src, int radius)
