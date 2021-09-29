@@ -201,7 +201,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             if(bigIcon)
             {
                 pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);//wgx
-                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<pixmap.size();
             }else {
                 pixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize),QIcon::Disabled,QIcon::Off);//wgx
             }
@@ -214,7 +213,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             {
                 mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
                 mPixmap = mPixmap.scaled(108,108);
-                qDebug() << "pixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12),QIcon::Disabled,QIcon::Off);"<<mPixmap.size();
             }else {
                 mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
             }

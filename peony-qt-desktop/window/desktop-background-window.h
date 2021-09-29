@@ -22,6 +22,8 @@ public:
      */
     void setWindowDesktop(DesktopWidgetBase *desktop);
 
+    DesktopWidgetBase *takeCurrentDesktop();
+
     DesktopWidgetBase *getCurrentDesktop()
     {
         return m_currentDesktop;

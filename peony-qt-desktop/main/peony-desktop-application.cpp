@@ -508,12 +508,9 @@ void PeonyDesktopApplication::primaryScreenChangedProcess(QScreen *screen)
         rawPrimaryWindow->hide();
         currentPrimaryWindow->hide();
         //主桌面
-        DesktopWidgetBase *primaryDesktop = rawPrimaryWindow->getCurrentDesktop();
+        DesktopWidgetBase *primaryDesktop = rawPrimaryWindow->takeCurrentDesktop();
         //副桌面
-        DesktopWidgetBase *secondaryDesktop = currentPrimaryWindow->getCurrentDesktop();
-
-        rawPrimaryWindow->takeCentralWidget();
-        currentPrimaryWindow->takeCentralWidget();
+        DesktopWidgetBase *secondaryDesktop = currentPrimaryWindow->takeCurrentDesktop();
 
         rawPrimaryWindow->setWindowDesktop(secondaryDesktop);
         currentPrimaryWindow->setWindowDesktop(primaryDesktop);
@@ -737,12 +734,14 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     if (!nextDesktop) {
         m_animationIsRunning = false;
+        currentDesktop->setPause(false);
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is nullptr!";
         return;
     }
 
     if (nextDesktop->isActivated()) {
         m_animationIsRunning = false;
+        currentDesktop->setPause(false);
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
         return;
     }
@@ -776,25 +775,21 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     animationGroup->addAnimation(showAnimation);
 
     connect(animationGroup, &QSequentialAnimationGroup::finished, this, [=] {
+        qDebug() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] animation is stop";
+        m_animationIsRunning = false;
+        //nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
+        primaryWindow->setWindowDesktop(nextDesktop);
+        //m_windowManager->updateAllWindowGeometry();
+        connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+        //delete nextEffectBackup;
         animationGroup->clear();
         animationGroup->deleteLater();
     });
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
-//        currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
+        //currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
         currentDesktop->setActivated(false);
-//        delete currentEffectBackup;
-    });
-
-    //TODO 在退出动画完成前将下一个桌面设置为低透明度，在桌面退出完成后，使用动画设置为不透明
-    connect(showAnimation, &QPropertyAnimation::finished, this, [=] {
-//        nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
-        primaryWindow->setWindowDesktop(nextDesktop);
-
-        m_windowManager->updateAllWindowGeometry();
-        connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
-//        delete nextEffectBackup;
-        m_animationIsRunning = false;
+        //delete currentEffectBackup;
     });
 
     if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {

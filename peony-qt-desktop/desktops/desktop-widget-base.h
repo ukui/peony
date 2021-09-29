@@ -39,6 +39,7 @@ public:
     virtual void setActivated(bool activated)
     {
         this->setHidden(!activated);
+        this->setPause(!activated);
         m_isActivated = activated;
     }
 
@@ -85,6 +86,14 @@ public:
         m_currentDesktopType = desktopType;
     }
 
+    void setPause(bool isPause) {
+        m_isPause = isPause;
+    }
+
+    bool isPause() {
+        return m_isPause;
+    }
+
 protected:
 
     /**
@@ -106,6 +115,22 @@ protected:
      * \brief 当前桌面的退出动画，根据系统的桌面模式设置
      */
     AnimationType m_exitAnimationType = AnimationType::LeftToRight;
+
+    /**
+     * @brief 发送切换桌面请求后，进入暂停状态
+     *        通过该属性屏蔽一些在切换过程中的动作
+     */
+    bool m_isPause = false;
+
+    /**
+     * @brief 发送切换桌面请求，并设置暂停状态，在1000ms后自动恢复
+     * @param targetType
+     * @param targetAnimation
+     */
+    virtual void requestMoveToOtherDesktop(DesktopType targetType, AnimationType targetAnimation) {
+        setPause(true);
+        Q_EMIT moveToOtherDesktop(targetType, targetAnimation);
+    }
 
 Q_SIGNALS:
 
