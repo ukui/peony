@@ -87,6 +87,11 @@ public:
 
     void blurBackground(bool blur);
 
+    QPixmap getBgPixmap(){
+        return m_bg_font_cache_pixmap;
+    }
+
+
 Q_SIGNALS:
     void changeBg(const QString &bgPath);
     void checkWindow();
