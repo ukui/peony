@@ -89,14 +89,12 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_search_box->setCompleter(completer);
 
     m_search_trigger.setInterval(500);
+    m_clear_action = true;
     connect(&m_search_trigger, SIGNAL(timeout()), this, SLOT(startSearch()));
     connect(m_search_box, &QLineEdit::textChanged, [=]()
     {
-        if (m_search_trigger.isActive())
-        {
-            m_search_trigger.stop();
-        }
-        if (! m_clear_action)
+        //fix input key words can not search issue, link to bug#77977
+        if (m_clear_action && ! m_search_trigger.isActive())
             m_search_trigger.start();
         else
             m_clear_action = false;
@@ -142,6 +140,7 @@ void SearchBarContainer::startSearch()
     if (! l.contains(m_search_box->text()))
         l.prepend(m_search_box->text());
 
+    //qDebug() << "SearchBarContainer::startSearch:" <<m_search_box->text();
     m_model->setStringList(l);
     Q_EMIT this->returnPressed();
 }
@@ -150,4 +149,6 @@ void SearchBarContainer::clearSearchBox()
 {
     m_search_box->deselect();
     m_clear_action = true;
+    //need stop search action
+    m_search_trigger.stop();
 }

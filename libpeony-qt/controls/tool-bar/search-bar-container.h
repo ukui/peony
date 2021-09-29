@@ -87,7 +87,7 @@ private:
 
     QTimer m_search_trigger;
 
-    bool m_clear_action = false;
+    bool m_clear_action = true;
 
     QStringList m_file_type_list = {tr("all"), tr("file folder"), tr("image"),
                                     tr("video"), tr("text file"), tr("audio"), tr("wps file"), tr("others")
