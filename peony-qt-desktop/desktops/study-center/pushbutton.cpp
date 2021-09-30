@@ -48,13 +48,12 @@ void PushButton::initAppBtn()
     layout->setContentsMargins(0,0,0,0);
    // layout->setSpacing(6);
 
-    char style[100];
-    sprintf(style,"color:#000000;");
     QFont font;
-    font.setWeight(70);
+    font.setBold(true);
     QLabel* textlabel=new QLabel(this);
+    textlabel->setAttribute(Qt::WA_TranslucentBackground);
     textlabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-    textlabel->setStyleSheet(style);
+    textlabel->setStyleSheet("QLabel{color: palette(text);font-size:24px}");
     textlabel->setFont(font);
     qDebug()<<"PushButton::initAppBtn name:"<<name;
     textlabel->setText(tr(name.toLocal8Bit().data()));
@@ -63,11 +62,30 @@ void PushButton::initAppBtn()
     QFrame* line=new QFrame(this);
     line->setFrameShape(QFrame::HLine);
     line->setFixedHeight(1);
-    line->setStyleSheet("background-color:rgba(0, 0, 0, 0.06)");
-    line->setFixedSize(this->width-textlabel->width()-15,1);
 
+
+    layout->setSizeConstraint(QLayout::SetMaximumSize);
     layout->addWidget(textlabel);
     layout->addWidget(line);
+
+    layout->setStretch(0, 0);
+    layout->setStretch(1, 1);
+
+    layout->setSpacing(28);
+    layout->setContentsMargins(0, 0, 48, 0);
     this->setLayout(layout);
     this->setEnabled(false);
+    connect(this, &PushButton::changeTheme,  [=](QString strTheme)
+    {
+        if (strTheme == "ukui-dark")
+        {
+            //深色主题
+           line->setStyleSheet("background-color:rgba(255, 255, 255, 0.05)");
+        }
+        else
+        {
+            //浅色主题
+           line->setStyleSheet("background-color:rgba(38, 38, 40, 0.05)");
+        }
+    });
 }

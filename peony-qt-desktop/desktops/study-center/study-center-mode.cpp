@@ -89,7 +89,10 @@ void StudyCenterMode::initUi()
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);
-
+    if(0 < appList.size())
+    {
+        Q_EMIT statusWidget->setMaximum(appList[0].iTime);
+    }
     connect(this,SIGNAL(valueChangedSingal(QList<TABLETAPP>)),statusWidget,SLOT(paintProgressSlot(QList<TABLETAPP>)));
     connect(this,SIGNAL(timeChangedSingal(QString,QString)),statusWidget,SLOT(timeChangeSlot(QString,QString)));
     connect(statusWidget,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
@@ -103,6 +106,7 @@ void StudyCenterMode::initUi()
     statusWidget->installEventFilter(this);
     m_mainGridLayout = new QGridLayout(this);
 
+    changeTheme();
     screenRotation();
 
     m_mainGridLayout->setSpacing(16);
@@ -284,6 +288,10 @@ void StudyCenterMode::updateTimeSlot()
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     qDebug()<<"StudyCenterMode::updateTimeSlot begin,size:"<<studyCenterDataMap.size();
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
+    if(0 < appList.size())
+    {
+        Q_EMIT statusWidget->setMaximum(appList[0].iTime);
+    }
     Q_EMIT valueChangedSingal(appList);
     qDebug()<<"StudyCenterMode::valueChangedSingal end,size:"<<appList.size();
     initTime();
@@ -548,4 +556,30 @@ void StudyCenterMode::pageButtonClicked(QAbstractButton *button)
     m_pageButtonWidget->hide();
 
     requestMoveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+}
+void StudyCenterMode::changeTheme()
+{
+    qDebug()<<"StudyCenterMode::changeTheme";
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        QGSettings *settings = new QGSettings("org.ukui.style");
+
+        connect(settings, &QGSettings::changed, this, [=](const QString &key)
+        {
+            if (key == "styleName")
+            {
+                QString strTheme = settings->get(key).toString();
+
+                Q_EMIT practiceWidget->changeTheme(strTheme);
+                Q_EMIT guradWidget->changeTheme(strTheme);
+                Q_EMIT synWidget->changeTheme(strTheme);
+                Q_EMIT statusWidget->changeTheme(strTheme);
+            }
+
+        });
+        Q_EMIT practiceWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT guradWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT synWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT statusWidget->changeTheme(settings->get("styleName").toString());
+    }
 }

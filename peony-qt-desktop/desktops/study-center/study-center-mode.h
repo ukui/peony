@@ -38,6 +38,7 @@ private:
     void screenRotation();
     void initPageButton();
     void updatePageButton();
+    void changeTheme();
 
 private:
     QGridLayout* m_mainGridLayout=nullptr;

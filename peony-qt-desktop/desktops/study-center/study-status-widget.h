@@ -61,7 +61,8 @@ Q_SIGNALS:
      * @param btnname存放按钮名称
      */
     void updateTimeSignal();
-
+    void setMaximum(int);
+    void changeTheme(QString);
 
 };
 
