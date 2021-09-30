@@ -66,6 +66,9 @@ protected:
 private Q_SLOTS:
     //执行应用程序
     void execApplication(QModelIndex appname);
+
+Q_SIGNALS:
+    void changeTheme( QString);
 };
 }
 

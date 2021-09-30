@@ -80,6 +80,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     }
 
     m_scrollArea = new QScrollArea;
+    m_scrollArea->setAttribute(Qt::WA_TranslucentBackground);
     m_scrollArea->horizontalScrollBar()->setVisible(false);
     m_scrollArea->verticalScrollBar()->setVisible(true);
     m_scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:3px;padding-top:0px;padding-bottom:0px;background:transparent;border-radius:6px;}"
@@ -90,6 +91,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
                                              "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
                                              );
     QWidget* scrollAreaWid=new QWidget;
+    scrollAreaWid->setAttribute(Qt::WA_TranslucentBackground);
     scrollAreaWid->setMinimumSize(Style::itemWidth,Style::itemHeight);
     m_scrollArea->setWidget(scrollAreaWid);
     m_scrollArea->setWidgetResizable(true);
@@ -105,20 +107,26 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
 //            this,SLOT(valueChangedSlot(int)));
 
     initAppListWidget();
-    //m_mainLayout->setMargin(20);
-   // m_mainLayout->setSpacing(20);
     this->setLayout(m_mainLayout);
+    connect(this, &StudyDirectoryWidget::changeTheme, [=](QString strTheme)
+    {
+        QString styleSheetDark = QString("QWidget{border-radius:24px;background-color:rgba(38, 38, 40,0.85)}"
+                                         "QLabel,QListView,QPushButton,QScrollArea{background:transparent}");
 
-    //pUkuiMenuInterface=new UkuiMenuInterface;
+        QString styleSheetLight = QString("QWidget{border-radius:24px;background:rgba(255, 255, 255,0.85)}"
+                                          "QLabel,QListView,QPushButton,QScrollArea{background:transparent");
 
-    //?????????
-//    QString path=QDir::homePath()+"/.config/ukui/ukui-menu.ini";
-//    m_setting=new QSettings(path,QSettings::IniFormat);
-
-//    for(int i = 1; i < strListTitle.size(); i++)
-//    {
-//        //fillAppList(strListTitle.at(i));
-//    }
+        if (strTheme == "ukui-dark")
+        {
+            //深色主题
+           this->setStyleSheet(styleSheetDark);
+        }
+        else
+        {
+            //浅色主题
+           this->setStyleSheet(styleSheetLight);
+        }
+    });
 }
 
 void StudyDirectoryWidget::initAppListWidget()
@@ -129,8 +137,9 @@ void StudyDirectoryWidget::initAppListWidget()
         {
             //设置子标题
             QString  strTitle = m_studyCenterDataList.at(i).first;
-            PushButton* titleBtn = new PushButton(this,strTitle,m_scrollArea->width()-12,20);
+            PushButton* titleBtn = new PushButton(this,strTitle,m_scrollArea->width()-12,40);
             m_scrollAreaWidLayout->addWidget(titleBtn);
+            connect(this, SIGNAL(changeTheme( QString)), titleBtn, SIGNAL(changeTheme( QString)));
         }
 
         //插入应用列表

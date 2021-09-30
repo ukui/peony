@@ -62,6 +62,7 @@ Q_SIGNALS:
      */
     void updateTimeSignal();
     void setMaximum(int);
+    void changeTheme(QString);
 
 };
 

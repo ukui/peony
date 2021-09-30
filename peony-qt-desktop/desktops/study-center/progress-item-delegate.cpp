@@ -110,7 +110,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         icon.paint(painter,iconRect);      
         painter->restore();
         painter->save();
-        painter->setPen(QPen(Qt::black));
+        painter->setPen(QPen(qApp->palette().color(QPalette::Text)));
 
         QFontMetrics fm=painter->fontMetrics();
         QString appnameElidedText=fm.elidedText(appname,Qt::ElideRight,textRect.width(),Qt::TextShowMnemonic);
