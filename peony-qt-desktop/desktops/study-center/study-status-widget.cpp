@@ -58,7 +58,7 @@ void StudyStatusWidget::initWidget()
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("background-color:rgba(255, 255, 255,0.85);backdrop-filter: blur(27.1828px);border-radius:24px;");
+    this->setStyleSheet("background-color:rgba(255, 255, 255,0.85);border-radius:24px;");
      //widget->setWindowOpacity(0.9);
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -94,6 +94,7 @@ void StudyStatusWidget::initWidget()
     userInfoLayout->addWidget(m_userIconLabel);
     userInfoLayout->addSpacing(10);
     userInfoLayout->addWidget(m_userNameLabel);
+    userInfoLayout->addSpacing(40);
    // userInfoLayout->addSpacing(10);
    // userInfoLayout->setAlignment(Qt::AlignRight);
     //userInfoWidget->setLayout(userInfoLayout);
