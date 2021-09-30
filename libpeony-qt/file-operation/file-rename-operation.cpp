@@ -85,7 +85,7 @@ void FileRenameOperation::run()
             except.op = FileOpRename;
             except.dlgType = ED_WARNING;
             except.title = tr("File Rename warning");
-            except.errorStr = tr("The file %1%2%3 will be hidden!").arg("\“").arg(m_new_name).arg("\”");
+            except.errorStr = tr("The file %1%2%3 will be hidden when you refresh or change directory!").arg("\“").arg(m_new_name).arg("\”");
 
             Q_EMIT errored(except);
         }
