@@ -69,6 +69,7 @@
 //桌面配置 - Desktop setting
 #define LAST_DESKTOP_SORT_ORDER     "lastDesktopSortOrder"
 #define TEMPLATES_DIR               "templatesDir"
+#define DEFAULT_DESKTOP_ZOOM_LEVEL  "defaultDesktopZoomLevel"
 
 //收藏的服务器IP - favorite ip
 #define REMOTE_SERVER_REMOTE_IP     "remote-server/favorite-ip"

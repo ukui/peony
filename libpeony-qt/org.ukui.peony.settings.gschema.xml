@@ -120,5 +120,11 @@
       <description>determe wether status bar zoom slider is visible</description>
     </key>
 
+    <key type="i" name="default-desktop-zoom-level">
+      <default>2</default>
+      <summary>default desktop icon view zoom level</summary>
+      <description>1 is smallest, 4 is largest</description>
+    </key>
+
   </schema>
 </schemalist>

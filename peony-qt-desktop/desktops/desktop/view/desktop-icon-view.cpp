@@ -1579,6 +1579,8 @@ void DesktopIconView::setDefaultZoomLevel(ZoomLevel level)
 
     }
 
+    GlobalSettings::getInstance()->setGSettingValue(DEFAULT_DESKTOP_ZOOM_LEVEL, m_zoom_level);
+
     resetAllItemPositionInfos();
     if (m_model) {
         m_model->clearFloatItems();
@@ -1590,6 +1592,12 @@ DesktopIconView::ZoomLevel DesktopIconView::zoomLevel() const
     //FIXME:
     if (m_zoom_level != Invalid)
         return m_zoom_level;
+
+    bool ok = false;
+    int zl = GlobalSettings::getInstance()->getValue(DEFAULT_DESKTOP_ZOOM_LEVEL).toInt(&ok);
+    if (ok) {
+        return ZoomLevel(zl);
+    }
 
     auto metaInfo = FileMetaInfo::fromUri("computer:///");
     if (metaInfo) {

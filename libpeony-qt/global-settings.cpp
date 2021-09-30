@@ -87,27 +87,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
         connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "showTrashDialog") {
-                m_cache.remove(SHOW_TRASH_DIALOG);
-                m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
-            } else if (SHOW_HIDDEN_PREFERENCE == key) {
-                if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
-                {
-                    m_cache.remove(key);
-                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());
-                }
-                /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
-                 *  but the other document management does not take effect in real time.modified by 2021/06/15  */
-                Q_EMIT this->valueChanged(key);
-            } else if (key == MULTI_SELECT) {
-                m_cache.remove(key);
-                m_cache.insert(key, m_peony_gsettings->get(key).toBool());
-                Q_EMIT this->valueChanged(key);
-            } else if (key == ZOOM_SLIDER_VISIBLE) {
-                m_cache.remove(key);
-                m_cache.insert(key, m_peony_gsettings->get(key).toBool());
-                Q_EMIT this->valueChanged(key);
-            }
+            m_cache.remove(key);
+            m_cache.insert(key, m_peony_gsettings->get(key));
+            Q_EMIT this->valueChanged(key);
         });
 
         for (auto key : m_peony_gsettings->keys()) {
