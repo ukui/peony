@@ -305,7 +305,7 @@ void FullListView::dragMoveEvent(QDragMoveEvent *event)
         qint32 dragPos = Style::AppListViewWidth - event->pos().x();
         if (dragPos < 100) {
             //向右翻页
-            insertApplicationToTop();
+            insertApplicationToEnd();
             Q_EMIT pagenumchanged(1);
         }
     } else {
