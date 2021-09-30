@@ -164,32 +164,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="728"/>
+        <location filename="../../src/windows/main-window.cpp" line="723"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="324"/>
+        <location filename="../../src/windows/main-window.cpp" line="319"/>
         <source>Undo</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="331"/>
+        <location filename="../../src/windows/main-window.cpp" line="326"/>
         <source>Redo</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="726"/>
+        <location filename="../../src/windows/main-window.cpp" line="721"/>
         <source>Search</source>
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1520"/>
+        <location filename="../../src/windows/main-window.cpp" line="1515"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1521"/>
+        <location filename="../../src/windows/main-window.cpp" line="1516"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -198,12 +198,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1510"/>
+        <location filename="../../src/windows/main-window.cpp" line="1505"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1511"/>
+        <location filename="../../src/windows/main-window.cpp" line="1506"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -212,7 +212,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="741"/>
+        <location filename="../../src/windows/main-window.cpp" line="736"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -228,28 +228,28 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="154"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="154"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="191"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="199"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="207"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="241"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="215"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="249"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="225"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="233"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -261,7 +261,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="456"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="467"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>

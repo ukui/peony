@@ -184,32 +184,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="728"/>
+        <location filename="../../src/windows/main-window.cpp" line="723"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="324"/>
+        <location filename="../../src/windows/main-window.cpp" line="319"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="331"/>
+        <location filename="../../src/windows/main-window.cpp" line="326"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="726"/>
+        <location filename="../../src/windows/main-window.cpp" line="721"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1520"/>
+        <location filename="../../src/windows/main-window.cpp" line="1515"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1521"/>
+        <location filename="../../src/windows/main-window.cpp" line="1516"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -218,12 +218,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1510"/>
+        <location filename="../../src/windows/main-window.cpp" line="1505"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1511"/>
+        <location filename="../../src/windows/main-window.cpp" line="1506"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="741"/>
+        <location filename="../../src/windows/main-window.cpp" line="736"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -248,28 +248,28 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="154"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="154"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="191"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="199"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="207"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="241"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="215"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="249"/>
         <source>Can not open %1, %2</source>
         <translation>无法打开%1, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="225"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="233"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="456"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="467"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
