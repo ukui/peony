@@ -310,6 +310,10 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
         }
     } else if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        //fix bug 83728
+        if (!m_isTabletMode) {
+            return false;
+        }
         if (mouseEvent->button() == Qt::LeftButton) {
             if (m_leftButtonPressed) {
                 m_releasePoint = mouseEvent->globalPos();
