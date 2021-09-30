@@ -46,30 +46,6 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         rect.setWidth(option.rect.width());
         rect.setHeight(option.rect.height());
 
-        //QPainterPath画圆角矩形
-        const qreal radius = 4;
-        QPainterPath path;
-        path.moveTo(rect.topRight() - QPointF(radius, 0));
-        path.lineTo(rect.topLeft() + QPointF(radius, 0));
-        path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
-        path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
-        path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
-        path.lineTo(rect.bottomRight() - QPointF(radius, 0));
-        path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
-        path.lineTo(rect.topRight() + QPointF(0, radius));
-        path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
-
-        painter->setRenderHint(QPainter::Antialiasing);
-        if(option.state & QStyle::State_MouseOver)
-        {
-            painter->setPen(QPen(Qt::NoPen));
-            QColor color;
-            color.setNamedColor("black");
-            painter->setBrush(QBrush(color));
-
-            painter->setOpacity(0.14);
-            painter->drawPath(path);
-        }
 
         painter->setOpacity(1);
         TABLETAPP tabletApp = index.data(Qt::DisplayRole).value<TABLETAPP>();
@@ -120,20 +96,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
         if(option.state & QStyle::State_MouseOver)
         {
-            painter->setPen(QPen(Qt::NoPen));
-            QColor color;
-            color.setNamedColor(QString::fromLocal8Bit(AppBtnHover));
-            painter->setBrush(QBrush(color));
-
-            painter->setOpacity(0.14);
-            painter->drawPath(path);
-
-            if(fm.boundingRect(appname).width()>rect.width())
-            {
-                QToolTip::showText(QCursor::pos(),appname);
-            }
-            QToolTip::showText(QPoint(QCursor::pos().x(),option.rect.bottom()),appname);
-
+            QToolTip::showText(QCursor::pos(),appname);
         }
         else {
             QToolTip::hideText();
