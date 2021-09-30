@@ -47,6 +47,8 @@ private:
 protected:
     void initAppBtn();
 
+Q_SIGNALS:
+    void changeTheme( QString);
 };
 
 #endif // PUSHBUTTON_H

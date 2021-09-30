@@ -109,6 +109,7 @@ void StudyCenterMode::initUi()
     statusWidget->installEventFilter(this);
     m_mainGridLayout = new QGridLayout(this);
 
+    changeTheme();
     screenRotation();
 
     m_mainGridLayout->setSpacing(16);
@@ -558,4 +559,30 @@ void StudyCenterMode::pageButtonClicked(QAbstractButton *button)
     m_pageButtonWidget->hide();
 
     Q_EMIT moveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
+}
+void StudyCenterMode::changeTheme()
+{
+    qDebug()<<"StudyCenterMode::changeTheme";
+    if (QGSettings::isSchemaInstalled("org.ukui.style"))
+    {
+        QGSettings *settings = new QGSettings("org.ukui.style");
+
+        connect(settings, &QGSettings::changed, this, [=](const QString &key)
+        {
+            if (key == "styleName")
+            {
+                QString strTheme = settings->get(key).toString();
+
+                Q_EMIT practiceWidget->changeTheme(strTheme);
+                Q_EMIT guradWidget->changeTheme(strTheme);
+                Q_EMIT synWidget->changeTheme(strTheme);
+                Q_EMIT statusWidget->changeTheme(strTheme);
+            }
+
+        });
+        Q_EMIT practiceWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT guradWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT synWidget->changeTheme(settings->get("styleName").toString());
+        Q_EMIT statusWidget->changeTheme(settings->get("styleName").toString());
+    }
 }

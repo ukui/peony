@@ -89,7 +89,7 @@ void StudyStatusWidget::initWidget()
     m_userIconLabel->setAttribute(Qt::WA_TranslucentBackground);
     m_userNameLabel->setAttribute(Qt::WA_TranslucentBackground);
 
-    m_userNameLabel->setFont(ft);
+    m_userNameLabel->setStyleSheet("QLabel{color: palette(text);font-size:24px}");
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
 
@@ -149,17 +149,12 @@ void StudyStatusWidget::initWidget()
     m_weekTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
     m_monthTimeLabel->setAttribute(Qt::WA_TranslucentBackground);
 
-    ft.setPointSize(14);
-    m_todayTimeLabel->setFont(ft);
-    m_weekTimeLabel->setFont(ft);
-    m_monthTimeLabel->setFont(ft);
-
-    m_todayTimeLabel->setStyleSheet("color:#1C1C1C");
-    m_weekTimeLabel->setStyleSheet("color:#1C1C1C");
-    m_monthTimeLabel->setStyleSheet("color:#1C1C1C");
+    m_todayTimeLabel->setStyleSheet("QLabel{color: palette(text);font-size:20px}");
+    m_weekTimeLabel->setStyleSheet("QLabel{color: palette(text);font-size:20px}");
+    m_monthTimeLabel->setStyleSheet("QLabel{color: palette(text);font-size:20px}");
 
     QGridLayout* timeGridLayout = new QGridLayout;
-    timeGridLayout->setSpacing(10);
+    timeGridLayout->setSpacing(8);
    // timeGridLayout->addWidget(titleLabel,0,0,1,1);
    // timeGridLayout->addWidget(userInfoWidget,0,2,1,1);
     timeGridLayout->addWidget(todayTitleLabel,0,0);
@@ -185,7 +180,6 @@ void StudyStatusWidget::initWidget()
     QFrame* line=new QFrame(this);
     line->setFrameShape(QFrame::HLine);
     line->setFixedHeight(1);
-    line->setStyleSheet("background-color:rgba(0, 0, 0, 0.06)");
     //line->setFixedSize(this->width()-15*2, 1);
     m_mainVboxLayout->addSpacing(30);
     m_mainVboxLayout->addWidget(line);
@@ -239,6 +233,7 @@ void StudyStatusWidget::initWidget()
     m_updateTimeBt->setText(QString("更新于：") + curTime.toString("MM.dd HH:mm"));
     m_updateTimeBt->setIcon(QIcon("/home/user_23799a/yyw/yyw/refresh.svg"));
     m_updateTimeBt->setLayoutDirection(Qt::RightToLeft);
+    m_updateTimeBt->setAttribute(Qt::WA_TranslucentBackground);
     //m_progressGridLayout->addWidget(m_updateTimeBt,2 ,1);
 
     m_mainVboxLayout->addWidget(m_scrollArea);
@@ -249,13 +244,36 @@ void StudyStatusWidget::initWidget()
     QHBoxLayout* updateTimeLayout = new QHBoxLayout;
     updateTimeLayout->addItem(space);
     updateTimeLayout->addWidget(m_updateTimeBt);
+    updateTimeLayout->setContentsMargins(0, 0, 40, 0);
+
     m_mainVboxLayout->addSpacing(18);
     m_mainVboxLayout->addLayout(updateTimeLayout);
 
-    m_mainVboxLayout->setContentsMargins(50, 32, 50, 16);
+    m_mainVboxLayout->setContentsMargins(48, 33, 8, 16);
 
     this->setLayout(m_mainVboxLayout);
 
+    connect(this, &StudyStatusWidget::changeTheme, [=](QString strTheme)
+    {
+        QString styleSheetDark = QString("QWidget{border-radius:24px;background-color:rgba(38, 38, 40,0.85)}"
+                                         "QLabel,QListView,QPushButton,QScrollArea{background:transparent}");
+
+        QString styleSheetLight = QString("QWidget{border-radius:24px;background:rgba(255, 255, 255,0.85)}"
+                                          "QLabel,QListView,QPushButton,QScrollArea{background:transparent");
+
+        if (strTheme == "ukui-dark")
+        {
+            //深色主题
+           this->setStyleSheet(styleSheetDark);
+           line->setStyleSheet("background-color:rgba(255, 255, 255, 0.1)");
+        }
+        else
+        {
+            //浅色主题
+           this->setStyleSheet(styleSheetLight);
+           line->setStyleSheet("background-color:rgba(38, 38, 40, 0.1)");
+        }
+    });
     initUserInfo();
 }
 
