@@ -28,6 +28,7 @@
 #include <qabstractitemview.h>
 #include <qlistview.h>
 #include <QGraphicsDropShadowEffect>
+#include <QDragMoveEvent>
 /*初始化*/
 FullListView::FullListView(QWidget *parent, int module):
     QListView(parent)
@@ -297,28 +298,27 @@ void FullListView::mouseMoveEvent(QMouseEvent *event)
 }
 void FullListView::dragMoveEvent(QDragMoveEvent *event)
 {
-    //qDebug() << "-----" << "dragMoveEvent" << "-----";
     moveing_pressedpos=event->pos();
     //拖拽特效绘制
 
-//添加拖动时的自动翻页
-    if(flat == true)
-    {
-//        qDebug()<<"flat"<<flat;
-        flat=false;
-        if(event->pos().y() >= (Style::AppListItemSizeHeight*Style::appLine - 50) || event->pos().y() <= Style::AppListItemSizeHeight)
-        {
-            if(Style::nowpagenum != 1 && event->pos().y() <= 50)
-            {
-//                 Style::nowpagenum = Style::nowpagenum-1;
-                 Q_EMIT pagenumchanged(-1);
-                 this->verticalScrollBar()->setValue((Style::nowpagenum-1)*Style::appLine*(Style::AppListItemSizeHeight));//dis
-            }
-            if(Style::nowpagenum != Style::appPage && event->pos().y() >= (Style::AppListItemSizeHeight*Style::appLine - 50))
-            {
-//                 Style::nowpagenum =Style::nowpagenum+1;
-                 Q_EMIT pagenumchanged(1);
-                 this->verticalScrollBar()->setValue((Style::nowpagenum-1)*Style::appLine*(Style::AppListItemSizeHeight));//dis
+    if (Style::nowpagenum == 1) {
+        qint32 dragPos = Style::AppListViewWidth - event->pos().x();
+        if (dragPos < 100) {
+            //向右翻页
+            insertApplicationToTop();
+            Q_EMIT pagenumchanged(1);
+        }
+    } else {
+        if (event->pos().x() < 100) {
+            //左边拖
+            insertApplicationToTop();
+            Q_EMIT pagenumchanged(-1);
+        } else {
+            qint32 dragPos = qApp->primaryScreen()->geometry().width() - event->pos().x();
+            if (dragPos < 100) {
+                //向右翻页
+                insertApplicationToEnd();
+                Q_EMIT pagenumchanged(1);
             }
         }
     }
@@ -614,5 +614,49 @@ void FullListView::mergeApplication(QPoint pressedpos,QPoint releasepos)
 
 }
 
+void FullListView::insertApplicationToEnd()
+{
+    QVariant var = pressApp;
+    QString appPath = var.toString();
+    QFileInfo fileInfo(appPath);
+    QString appName = fileInfo.fileName();
 
+    setting->beginGroup("application");
+
+    int maxValue = 0;
+    for (QString key : setting->allKeys()) {
+        if (setting->value(key).toInt() > maxValue) {
+            maxValue = setting->value(key).toInt();
+        }
+    }
+
+    setting->setValue(appName, (maxValue + 1));
+    setting->sync();
+    setting->endGroup();
+
+    Q_EMIT sendUpdateAppListSignal();
+}
+
+void FullListView::insertApplicationToTop()
+{
+    QVariant var = pressApp;
+    QString appPath = var.toString();
+    QFileInfo fileInfo(appPath);
+    QString appName = fileInfo.fileName();
+
+    setting->beginGroup("application");
+
+    int minValue = 99999;
+    for (QString key : setting->allKeys()) {
+        if (setting->value(key).toInt() < minValue) {
+            minValue = setting->value(key).toInt();
+        }
+    }
+
+    setting->setValue(appName, (minValue + 1));
+    setting->sync();
+    setting->endGroup();
+
+    Q_EMIT sendUpdateAppListSignal();
+}
 
