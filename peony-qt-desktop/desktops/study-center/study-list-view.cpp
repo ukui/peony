@@ -11,6 +11,8 @@ using namespace Peony;
 
 StudyListView::StudyListView(QWidget *parent): QListView(parent)
 {
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->viewport()->setAttribute(Qt::WA_TranslucentBackground);
     this->setStyleSheet("QListView{border:0px;}\
                         QListView:Item{background:transparent;border:0px;color:#ffffff;font-size:14px;padding-left:0px;}\
                         QListView:Item:hover{background:transparent;}\

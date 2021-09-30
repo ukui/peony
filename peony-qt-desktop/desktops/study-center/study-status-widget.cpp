@@ -189,7 +189,10 @@ void StudyStatusWidget::initWidget()
     }
 
     m_scrollArea = new QScrollArea;
+    m_scrollArea->setAttribute(Qt::WA_TranslucentBackground);
+    m_scrollArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
     QWidget* scrollWid = new QWidget;
+    scrollWid->setAttribute(Qt::WA_TranslucentBackground);
     scrollWid->setStyleSheet("background:transparent;");
     scrollWid->setLayout(m_progressGridLayout);
 

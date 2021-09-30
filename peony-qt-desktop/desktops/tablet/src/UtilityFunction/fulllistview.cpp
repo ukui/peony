@@ -33,6 +33,8 @@
 FullListView::FullListView(QWidget *parent, int module):
     QListView(parent)
 {
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->viewport()->setAttribute(Qt::WA_TranslucentBackground);
 //    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
 //    shadowEffect->setBlurRadius(15);
 //    shadowEffect->setColor(QColor(63, 63, 63, 180));

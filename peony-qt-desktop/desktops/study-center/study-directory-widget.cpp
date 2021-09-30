@@ -70,6 +70,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     if(strListTitleStyle.size() >= 2)
     {
         QLabel* titleLabel = new QLabel;
+        titleLabel->setAttribute(Qt::WA_TranslucentBackground);
         QFont ft;
         ft.setPointSize(18);
         ft.setWeight(70);
