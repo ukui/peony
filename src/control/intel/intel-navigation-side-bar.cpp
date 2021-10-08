@@ -293,7 +293,14 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
 
 QSize NavigationSideBar::sizeHint() const
 {
-    return QTreeView::sizeHint();
+    auto size = QTreeView::sizeHint();
+    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 210;
+    size.setWidth(width);
+    return size;
 }
 
 void NavigationSideBar::keyPressEvent(QKeyEvent *event)
@@ -478,10 +485,7 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
 
 QSize NavigationSideBarContainer::sizeHint() const
 {
-    auto size = QWidget::sizeHint();
-    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
-    size.setWidth(width);
-    return size;
+    return SideBar::sizeHint();
 }
 
 TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)

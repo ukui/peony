@@ -39,6 +39,8 @@ public:
 
     virtual QSize sizeHint() const;
 
+    virtual void resizeEvent(QResizeEvent *event);
+
     FMWindowIface *getWindowIface();
 
 Q_SIGNALS:

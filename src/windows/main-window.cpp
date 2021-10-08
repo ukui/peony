@@ -992,6 +992,8 @@ void MainWindow::resizeEvent(QResizeEvent *e)
     m_header_bar->updateMaximizeState();
     validBorder();
     update();
+
+    last_resize_window = this;
 }
 
 /*!

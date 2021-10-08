@@ -21,8 +21,11 @@
  */
 
 #include "side-bar.h"
+#include "global-settings.h"
 
 using namespace Peony;
+
+SideBar *last_resize_sidebar = nullptr;
 
 SideBar::SideBar(QWidget *parent) : QDockWidget(parent)
 {
@@ -38,14 +41,27 @@ SideBar::SideBar(QWidget *parent) : QDockWidget(parent)
 
 SideBar::~SideBar()
 {
-
+    if (last_resize_sidebar == this) {
+        GlobalSettings::getInstance()->setValue(DEFAULT_SIDEBAR_WIDTH, this->width());
+        last_resize_sidebar = nullptr;
+    }
 }
 
 QSize SideBar::sizeHint() const
 {
     auto size = QWidget::sizeHint();
-    size.setWidth(180);
+    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 210;
+    size.setWidth(width);
     return size;
+}
+
+void SideBar::resizeEvent(QResizeEvent *event)
+{
+    QDockWidget::resizeEvent(event);
+    last_resize_sidebar = this;
 }
 
 FMWindowIface *SideBar::getWindowIface()
