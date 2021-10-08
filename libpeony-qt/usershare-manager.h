@@ -29,7 +29,7 @@ class PEONYCORESHARED_EXPORT UserShareInfoManager : public QObject
     Q_OBJECT
 public:
     static UserShareInfoManager* getInstance ();
-    QString exectueCommand (QStringList& args, QString sharePath, bool* ret /* out */);
+    QString exectueCommand (QStringList& args, bool* ret /* out */, QString sharedPath="");
 
     bool hasSharedInfo (QString& name);
     void removeShareInfo (QString& name);
