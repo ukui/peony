@@ -428,6 +428,7 @@ void TabWidget::addNewConditionBar()
         auto cur = conditionCombox->currentIndex();
         if (cur == 0)
         {
+            classifyCombox->setCurrentIndex(0);
             classifyCombox->hide();
             inputBox->show();
             linkLabel->setText(tr("contains"));
@@ -441,6 +442,8 @@ void TabWidget::addNewConditionBar()
         else
         {
             classifyCombox->show();
+            //clear old filter conditions, fix bug#83559
+            inputBox->setText("");
             inputBox->hide();
             linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
             linkLabel->setText(tr("is"));
