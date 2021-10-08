@@ -145,6 +145,7 @@ DesktopWidgetBase *TabletMode::initDesktop(const QRect &rect)
 {
 //    //继续上一次屏幕变化的更改
     screenRotation();
+    m_appViewContainer->updateListViewSlot();
     return DesktopWidgetBase::initDesktop(rect);
 }
 
