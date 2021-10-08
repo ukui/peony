@@ -56,6 +56,7 @@ private:
     QSettings* setting;
     static QVector<QString> keyVector;
     static QVector<int> keyValueVector;
+    static QMap<QString, qint32> m_appMap;
     int m_width=0;
     int m_height=0;
     QSettings* settt;
@@ -71,6 +72,11 @@ protected:
      * @brief Initialize the application list interface
      */
     void initAppListWidget();
+
+    /**
+     * @brief 从setting文件中加载app数据
+     */
+    void loadAllApp();
 
     static bool cmpApp(QString &arg_1,QString &arg_2);
 

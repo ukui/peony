@@ -38,6 +38,7 @@
 #include <QtDBus/QtDBus>
 #include <recent-vfs-manager.h>
 
+#include <ukuisdk/kylin-com4cxx.h>
 #include <QDebug>
 
 using namespace Peony;
@@ -254,7 +255,8 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         FileInfoJob j(fileInfo);
         j.querySync();
     }
-    bool intel = false;
+    //TODO 修改为通用接口
+    bool intel = (QString::compare("V10SP1-edu", QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
     if (intel) {
         //intel应用禁用
         if (fileInfo->isExecDisable()) return;

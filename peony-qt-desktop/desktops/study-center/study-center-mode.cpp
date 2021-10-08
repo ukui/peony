@@ -310,8 +310,8 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
         }
     } else if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        //fix bug 83728
-        if (!m_isTabletMode) {
+        //fix bug 83738
+        if (!m_isTabletMode || isPause()) {
             return false;
         }
         if (mouseEvent->button() == Qt::LeftButton) {
@@ -322,16 +322,7 @@ bool StudyCenterMode::eventFilter(QObject *watched, QEvent *event)
                     qDebug() << "[StudyCenterMode::mouseReleaseEvent] " << m_releasePoint << m_pressPoint << moveLength;
                     if (moveLength < -200) {
                         //下一页
-                        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
-                        if (message_a.isValid()) {
-                            if ((bool) message_a.value()) {
-                                requestMoveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
-                            } else {
-                                requestMoveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
-                            }
-                        } else {
-                            requestMoveToOtherDesktop(DesktopType::Desktop, AnimationType::RightToLeft);
-                        }
+                        requestMoveToOtherDesktop(DesktopType::Tablet, AnimationType::RightToLeft);
                     } else {
                         Q_EMIT desktopReboundRequest();
                     }

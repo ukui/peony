@@ -93,6 +93,7 @@ void StudyStatusWidget::initWidget()
     userInfoLayout->addWidget(m_userIconLabel);
     userInfoLayout->addSpacing(10);
     userInfoLayout->addWidget(m_userNameLabel);
+    userInfoLayout->addSpacing(40);
    // userInfoLayout->addSpacing(10);
    // userInfoLayout->setAlignment(Qt::AlignRight);
     //userInfoWidget->setLayout(userInfoLayout);
