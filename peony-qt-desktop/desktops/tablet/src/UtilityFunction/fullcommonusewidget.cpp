@@ -18,6 +18,7 @@ FullCommonUseWidget::FullCommonUseWidget(QWidget *parent, int w, int h) : QWidge
 
 QVector<QString> FullCommonUseWidget::keyVector=QVector<QString>();
 QVector<int> FullCommonUseWidget::keyValueVector=QVector<int>();
+QMap<QString, qint32> FullCommonUseWidget::m_appMap = QMap<QString, qint32>();
 
 void FullCommonUseWidget::initUi()
 {
@@ -67,17 +68,7 @@ void FullCommonUseWidget::fillAppList()
         setting->endGroup();
 
     } else {
-        setting->beginGroup("application");
-        QStringList keyList = setting->childKeys();
-
-        Q_FOREACH(QString desktopfn, keyList) {
-                keyVector.append(desktopfn);
-                keyValueVector.append(setting->value(desktopfn).toInt());
-            }
-        setting->endGroup();
-        qSort(keyList.begin(), keyList.end(), cmpApp);
-
-        Q_FOREACH(QString desktopfn, keyList)m_data.append("/usr/share/applications/" + desktopfn);
+        this->loadAllApp();
     }
 
 //    updatePageData();
@@ -85,7 +76,7 @@ void FullCommonUseWidget::fillAppList()
 
 bool FullCommonUseWidget::cmpApp(QString &arg_1, QString &arg_2)
 {
-    if(keyValueVector.at(keyVector.indexOf(arg_1)) < keyValueVector.at(keyVector.indexOf(arg_2)))
+    if(m_appMap.value(arg_1) < m_appMap.value(arg_2))
         return true;
     else
         return false;
@@ -162,26 +153,31 @@ void FullCommonUseWidget::execApplication(QString desktopfp)
 
 void FullCommonUseWidget::updateListViewSlot()
 {
-    m_data.clear();
-    keyVector.clear();
-    keyValueVector.clear();
-    setting->beginGroup("application");
-    QStringList keyList=setting->childKeys();
-
-    Q_FOREACH(QString desktopfn,keyList)
-    {
-        keyVector.append(desktopfn);
-        keyValueVector.append(setting->value(desktopfn).toInt());
-    }
-    setting->endGroup();
-    qSort(keyList.begin(),keyList.end(),cmpApp);
-
-    Q_FOREACH(QString desktopfn,keyList)
-        m_data.append("/usr/share/applications/"+desktopfn);
-
+    this->loadAllApp();
     updatePageData();
 }
 
+void FullCommonUseWidget::loadAllApp()
+{
+    m_data.clear();
+    m_appMap.clear();
+
+    //同步一次，及时同步开始菜单的改动
+    setting->sync();
+    setting->beginGroup("application");
+    QStringList keyList = setting->childKeys();
+    for (QString &key: keyList) {
+        m_appMap.insert(key, setting->value(key).toInt());
+    }
+    setting->endGroup();
+
+    qSort(keyList.begin(), keyList.end(), cmpApp);
+
+    //TODO 安卓app，第三方app呢？？？
+    for (QString &key: keyList) {
+        m_data.append("/usr/share/applications/" + key);
+    }
+}
 
 void FullCommonUseWidget::updateListView(QString desktopfp)
 {
