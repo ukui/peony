@@ -20,6 +20,7 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <iterator>
+#include <QPainter>
 #include "pushbutton.h"
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-list-view.h"
@@ -34,6 +35,7 @@ StudyDirectoryWidget::StudyDirectoryWidget(QStringList &strListTitleStyle, QList
 {
     m_iMode = mode;
     m_studyCenterDataList = subtitleList;
+    m_strListTitleStyle = strListTitleStyle;
     initWidget(strListTitleStyle);
 }
 
@@ -61,7 +63,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
 {
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
-    this->setStyleSheet("background-color:rgba(255, 255, 255, 0.85);backdrop-filter: blur(27.1828px);\
+    this->setStyleSheet("background-color:rgba(255, 255, 255, 0.85);\
                         border-radius:24px;");
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
@@ -69,15 +71,14 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     m_mainLayout=new QVBoxLayout(this);
     if(strListTitleStyle.size() >= 2)
     {
-        QLabel* titleLabel = new QLabel;
-        titleLabel->setAttribute(Qt::WA_TranslucentBackground);
+        m_titleLabel = new QLabel;
         QFont ft;
-        ft.setPointSize(18);
-        ft.setWeight(70);
-        titleLabel->setFont(ft);
-        titleLabel->setStyleSheet(strListTitleStyle.at(1).toLocal8Bit().constData());
-        titleLabel->setText( strListTitleStyle.at(0).toLocal8Bit().constData());
-        m_mainLayout->addWidget(titleLabel);
+        ft.setBold(true);
+        m_titleLabel->setFont(ft);
+        m_titleLabel->setAttribute(Qt::WA_TranslucentBackground);
+        m_titleLabel->setStyleSheet(QString("color:%1;font-size:32px").arg(strListTitleStyle.at(1)));
+        m_titleLabel->setText( strListTitleStyle.at(0).toLocal8Bit().constData());
+        m_mainLayout->addWidget(m_titleLabel);
     }
 
     m_scrollArea = new QScrollArea;
@@ -329,3 +330,29 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
 ////    }
 
 //}
+void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
+{
+    QPainter painter;
+    //QPainterPath画圆角矩形
+    const qreal radius = 8;
+    QPainterPath path;
+    QRect rect(0,m_titleLabel->pos().y()+7,8,32);
+    path.moveTo(rect.topRight() - QPointF(radius, 0));
+    path.lineTo(rect.topLeft());
+    path.lineTo(rect.bottomLeft());
+    path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+    path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+    path.lineTo(rect.topRight() + QPointF(0, radius));
+    path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.begin(this);
+    painter.setPen(QPen(Qt::NoPen));
+    QColor color(m_strListTitleStyle.at(1).toLocal8Bit().constData());
+    painter.setBrush(QBrush(color));
+
+    painter.drawPath(path);
+
+
+}
+

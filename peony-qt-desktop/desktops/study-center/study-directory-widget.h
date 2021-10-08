@@ -54,6 +54,8 @@ private:
     QVBoxLayout*  m_scrollAreaWidLayout=nullptr;
     QScrollArea*  m_scrollArea=nullptr;
     QWidget*      m_scrollareawid=nullptr;
+    QLabel*       m_titleLabel=nullptr;
+    QStringList   m_strListTitleStyle;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
     int m_iMode;
 
@@ -62,6 +64,8 @@ protected:
     //初始化应用列表界面
     void initAppListWidget();
     void resizeScrollAreaControls();
+
+    void paintEvent(QPaintEvent *);
 
 private Q_SLOTS:
     //执行应用程序
