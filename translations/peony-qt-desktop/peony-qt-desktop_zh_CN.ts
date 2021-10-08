@@ -400,7 +400,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
         <source>other</source>
-        <translation>其它</translation>
+        <translation>更多</translation>
     </message>
 </context>
 <context>
