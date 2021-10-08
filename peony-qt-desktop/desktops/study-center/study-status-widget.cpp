@@ -375,6 +375,7 @@ void StudyStatusWidget::accountSlots(QString property, QMap<QString, QVariant> p
 void StudyStatusWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter;
+    painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
     QPainterPath path;
@@ -395,5 +396,6 @@ void StudyStatusWidget::paintEvent(QPaintEvent* event)
 
     painter.drawPath(path);
 
-
+    painter.save();
+    painter.restore();
 }

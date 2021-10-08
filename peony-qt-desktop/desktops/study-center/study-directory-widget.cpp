@@ -333,6 +333,7 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
 void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter;
+    painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
     QPainterPath path;
@@ -353,6 +354,8 @@ void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
 
     painter.drawPath(path);
 
+    painter.save();
+    painter.restore();
 
 }
 
