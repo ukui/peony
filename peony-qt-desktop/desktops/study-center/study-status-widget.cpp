@@ -63,18 +63,17 @@ void StudyStatusWidget::initWidget()
 
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
-    QLabel* titleLabel = new QLabel(this);
-    titleLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_titleLabel = new QLabel(this);
+    m_titleLabel->setAttribute(Qt::WA_TranslucentBackground);
     //设置字号
     QFont ft;
-    ft.setPointSize(18);
-    ft.setWeight(70);
-    titleLabel->setFont(ft);
+    ft.setBold(true);
+    m_titleLabel->setFont(ft);
 
     //设置颜色
-    titleLabel->setStyleSheet("color:#9370DB");
-    titleLabel->setText(tr("学情中心"));
-    titleLabel->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+    m_titleLabel->setStyleSheet("color:#8869D5;font-size:32px");
+    m_titleLabel->setText(tr("学情中心"));
+    m_titleLabel->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 
    // QWidget*  userInfoWidget = new QWidget(this);
     QHBoxLayout* userInfoLayout = new QHBoxLayout;
@@ -89,7 +88,7 @@ void StudyStatusWidget::initWidget()
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
 
-    userInfoLayout->addWidget(titleLabel);
+    userInfoLayout->addWidget(m_titleLabel);
     userInfoLayout->addStretch();
     userInfoLayout->addWidget(m_userIconLabel);
     userInfoLayout->addSpacing(10);
@@ -109,17 +108,10 @@ void StudyStatusWidget::initWidget()
     weekTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
     monthTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
 
-    //设置字号
-    ft.setPointSize(12);
-    ft.setWeight(50);
-    todayTitleLabel->setFont(ft);
-    weekTitleLabel->setFont(ft);
-    monthTitleLabel->setFont(ft);
-
     //设置字体颜色
-    todayTitleLabel->setStyleSheet("color:#9C9C9C");
-    weekTitleLabel->setStyleSheet("color:#9C9C9C");
-    monthTitleLabel->setStyleSheet("color:#9C9C9C");
+    todayTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
+    weekTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
+    monthTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
 
     todayTitleLabel->setText(tr("今日使用时长"));
     weekTitleLabel->setText(tr("本周使用时长"));
@@ -380,4 +372,31 @@ void StudyStatusWidget::accountSlots(QString property, QMap<QString, QVariant> p
         QString userName = "Hi, " + m_userInterface->property("RealName").value<QString>() + "同学";
         m_userNameLabel->setText(userName);
     }
+}
+void StudyStatusWidget::paintEvent(QPaintEvent* event)
+{
+    QPainter painter;
+    painter.setRenderHint(QPainter::Antialiasing,true);
+    //QPainterPath画圆角矩形
+    const qreal radius = 8;
+    QPainterPath path;
+    QRect rect(0,m_titleLabel->pos().y()+7,8,32);
+    path.moveTo(rect.topRight() - QPointF(radius, 0));
+    path.lineTo(rect.topLeft());
+    path.lineTo(rect.bottomLeft());
+    path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+    path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+    path.lineTo(rect.topRight() + QPointF(0, radius));
+    path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.begin(this);
+    painter.setPen(QPen(Qt::NoPen));
+    QColor color("#8869D5");
+    painter.setBrush(QBrush(color));
+
+    painter.drawPath(path);
+
+    painter.save();
+    painter.restore();
 }
