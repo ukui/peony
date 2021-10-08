@@ -66,7 +66,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
         if(bigIcon)
         {
-            iconRect=QRect(rect.x(), rect.y()+Style::topSpace-5, Style::BigIconSize,Style::BigIconSize);
+            iconRect=QRect(rect.x(), rect.y()+Style::topSpace-5, rect.width(),Style::BigIconSize);
             textRect=QRect(rect.x(),iconRect.bottom()+5, rect.width(),rect.height()-iconRect.height()-10-5);
             pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
             pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::IgnoreAspectRatio);
@@ -74,15 +74,14 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
         else
         {
-            iconRect=QRect(rect.x(), rect.y()+Style::topSpace, Style::SmallIconSize,Style::SmallIconSize);
+            iconRect=QRect(rect.x(), rect.y()+Style::topSpace, rect.width(),Style::SmallIconSize);
             textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::topSpace);
             pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
             pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::IgnoreAspectRatio);
 
         }
+        QApplication::style()->drawItemPixmap(painter,iconRect,Qt::AlignHCenter|Qt::AlignBottom,pixmap);
 
-        icon = QIcon(pixmap);
-        icon.paint(painter,iconRect);
         painter->restore();
         painter->save();
         painter->setPen(QPen(qApp->palette().color(QPalette::Text)));
