@@ -57,13 +57,13 @@ static void parseShareInfo (ShareInfo& shareInfo, QString& content)
     }
 }
 
-QString UserShareInfoManager::exectueCommand (QStringList& args, bool* retb /* out */)
+QString UserShareInfoManager::exectueCommand (QStringList& args, QString sharePath, bool* retb /* out */)
 {
     QProcess proc;
     proc.open();
 
     // Check whether sambashare exists and contains the current user
-    QProcess::execute ("bash pkexec /usr/bin/peony-share.sh", QStringList() << g_get_user_name ());
+    QProcess::execute ("bash pkexec /usr/bin/peony-share.sh", QStringList() << g_get_user_name () << sharePath);
 
     // Shared folder
     args.prepend ("net");
