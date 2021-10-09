@@ -45,6 +45,7 @@ Depends: ${misc:Depends},
          peony-common (= ${source:Version}),
          accountsservice,
          bamfdaemon,
+         kylin-status-manager
 Recommends: gvfs-backends,
             peony-extensions
 Description: file Manager for the UKUI desktop
