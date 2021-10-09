@@ -6,7 +6,9 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <QVariantAnimation>
 #include "common.h"
+#include "statuspushbutton.h"
 
 class QVBoxLayout;
 class QLabel;
@@ -51,6 +53,9 @@ private:
    // QMap<QString, ProgressWidget*> m_progressMap;
     QList<TABLETAPP> m_appList;
     QLabel* m_titleLabel=nullptr;
+    QVariantAnimation* m_animation;
+    StatusPushButton* m_updateIconBt=nullptr;
+
 public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);
    void timeChangeSlot(QString strMethod ,QString strTime);
