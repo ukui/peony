@@ -5,7 +5,8 @@
 
 StatusPushButton::StatusPushButton(QWidget *parent)
 {
-
+    disc = QPixmap(":/img/refresh.svg");
+    this->setFixedSize(disc.width(),disc.height());
 }
 
 StatusPushButton::~StatusPushButton()
@@ -22,7 +23,6 @@ void StatusPushButton::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     //QPixmap disc("/home/user_0ec802/refresh.svg");
-    QPixmap disc(":/img/refresh.svg");
     qDebug() << "m_val" << m_val;
     painter.save();
     painter.translate(disc.width()/2,disc.height()/2);
