@@ -67,15 +67,19 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri,
         m_uri = uri;
         m_info = FileInfo::fromUri(uri);
         //FIXME: replace BLOCKING api in ui thread.
+        if (m_info.get()->isEmptyInfo()) {
+            FileInfoJob j(m_info);
+            j.querySync();
+        }
         m_display_name = FileUtils::getFileDisplayName(uri);
         m_icon_name = FileUtils::getFileIconName(uri);
 
         // display name is a read only attribute， so i change it here
         if (m_display_name == tr("文件系统")) {
             m_display_name = tr("System Disk");
+        } else {
+            FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
         }
-
-        FileUtils::queryVolumeInfo(m_uri, m_volume_name, m_unix_device, m_display_name);
     }
 }
 
