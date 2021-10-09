@@ -101,10 +101,28 @@ void StudyStatusWidget::initWidget()
     userInfoLayout->addWidget(m_userIconLabel);
     userInfoLayout->addSpacing(10);
     userInfoLayout->addWidget(m_userNameLabel);
-    userInfoLayout->addSpacing(40);
+    userInfoLayout->setContentsMargins(0, 0, 40, 0);
    // userInfoLayout->addSpacing(10);
    // userInfoLayout->setAlignment(Qt::AlignRight);
     //userInfoWidget->setLayout(userInfoLayout);
+
+    m_scrollArea = new QScrollArea;
+    QWidget* scrollWid = new QWidget;
+    scrollWid->setStyleSheet("background:transparent;");
+    m_scrollArea->setStyleSheet("background:transparent;");
+    m_scrollArea->setWidget(scrollWid);
+    m_scrollArea->horizontalScrollBar()->setVisible(false);
+    m_scrollArea->verticalScrollBar()->setVisible(true);
+
+    m_scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:12px;height:172px;padding-top:0px;padding-bottom:0px;border-radius:2px;border:2px solid transparent;}"
+                                             "QScrollBar::handle{background-color:#B6BDC6; width:12px;height:172px;border-radius:2px;border:2px solid transparent;}"
+                                             "QScrollBar::handle:hover{background-color:#CDD2D8;border-radius:2px;height:172px;border:none;}"
+                                             "QScrollBar::handle:pressed{background-color:#9CA6B2;border-radius:2px;}"
+                                             "QScrollBar::sub-line{background-color:transparent;height:0px;width:0px;}"
+                                             "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
+                                             );
+    m_scrollArea->setWidgetResizable(true);
+    m_scrollArea->adjustSize();
 
     QLabel* todayTitleLabel = new QLabel(this);
     //todayTitleLabel->setFixedSize();
@@ -156,64 +174,43 @@ void StudyStatusWidget::initWidget()
 
     m_mainVboxLayout = new QVBoxLayout;
     m_mainVboxLayout->addLayout(userInfoLayout);
-    m_mainVboxLayout->addSpacing(55);
-    m_mainVboxLayout->addLayout(timeGridLayout);
-
-    m_mainVboxLayout->addStretch();
+    m_mainVboxLayout->addSpacing(45);
 
     QFrame* line=new QFrame(this);
     line->setFrameShape(QFrame::HLine);
     line->setFixedHeight(1);
-    //line->setFixedSize(this->width()-15*2, 1);
-    m_mainVboxLayout->addSpacing(30);
-    m_mainVboxLayout->addWidget(line);
-    m_mainVboxLayout->addSpacing(30);
+
+    QVBoxLayout* ScrollVboxLayout = new QVBoxLayout;
+    ScrollVboxLayout->addLayout(timeGridLayout);
+    ScrollVboxLayout->addSpacing(27);
+    ScrollVboxLayout->addWidget(line);
+    ScrollVboxLayout->addSpacing(27);
 
     QLabel* timeTitleLabel = new QLabel;
     timeTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
-    // timeTitleLabel->setFixedSize(this->width()-15*2, 12);
-    ft.setPointSize(12);
-    timeTitleLabel->setFont(ft);
     timeTitleLabel->setText(tr("最常使用 (本周累计)"));
-    timeTitleLabel->setStyleSheet("color:#9C9C9C");
-    m_mainVboxLayout->addWidget(timeTitleLabel);
-    m_mainVboxLayout->addSpacing(15);
+    timeTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px;background:transparent;}");
+    ScrollVboxLayout->addWidget(timeTitleLabel);
+    ScrollVboxLayout->addSpacing(10);
 
     m_progressGridLayout = new QGridLayout;
     for(int i = 0 ; i < m_appList.size(); ++i)
     {
         ProgressWidget* progress = new ProgressWidget(m_appList[i]);
-        //progress->setFixedSize(this->width()-15*2,50);
         m_progressGridLayout->addWidget(progress,i/2 ,i%2);
 
         connect(this, SIGNAL(setMaximum(int)), progress, SLOT(setMaximum(int)));
     }
 
-    m_scrollArea = new QScrollArea;
-    m_scrollArea->setAttribute(Qt::WA_TranslucentBackground);
-    m_scrollArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    QWidget* scrollWid = new QWidget;
-    scrollWid->setAttribute(Qt::WA_TranslucentBackground);
-    scrollWid->setStyleSheet("background:transparent;");
-    scrollWid->setLayout(m_progressGridLayout);
+    m_progressGridLayout->setSpacing(18);
+    m_progressGridLayout->setContentsMargins(0, 0, 40, 0);
+    ScrollVboxLayout->addLayout(m_progressGridLayout);
+    ScrollVboxLayout->setContentsMargins(0, 0, 8, 0);
+    scrollWid->setLayout(ScrollVboxLayout);
 
-    m_scrollArea->setWidget(scrollWid);
-    m_scrollArea->horizontalScrollBar()->setVisible(false);
-    m_scrollArea->verticalScrollBar()->setVisible(true);
-    m_scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:3px;padding-top:0px;padding-bottom:0px;background:transparent;border-radius:6px;}"
-                                             "QScrollBar::handle{background-color:rgba(190, 190, 190 ,0.5); width:4px;border-radius:1.5px;}"
-                                             "QScrollBar::handle:hover{background-color:#BEBEBE;border-radius:1.5px;}"
-                                             "QScrollBar::handle:pressed{background-color:#BEBEBE;border-radius:1.5px;}"
-                                             "QScrollBar::sub-line{background-color:transparent;height:0px;width:0px;}"
-                                             "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
-                                             );
-    m_scrollArea->setWidgetResizable(true);
-    m_scrollArea->adjustSize();
-
-    m_progressGridLayout->setSpacing(20);
     m_updateTimeBt = new QPushButton(this);
-    m_updateTimeBt->setFont(ft);
-    m_updateTimeBt->setStyleSheet("color:#9C9C9C;background:transparent;");
+    //m_updateTimeBt->setFont(ft);
+    m_updateTimeBt->setStyleSheet("QPushButton{color:#9C9C9C;font-size:16px;background:transparent;}");
 
     connect(m_updateTimeBt,SIGNAL(clicked()), this,SIGNAL(updateTimeSignal()));
     QDateTime curTime = QDateTime::currentDateTime();//获取当前时间
@@ -247,7 +244,7 @@ void StudyStatusWidget::initWidget()
     updateTimeLayout->addWidget(m_updateIconBt);
     updateTimeLayout->setContentsMargins(0, 0, 40, 0);
 
-    m_mainVboxLayout->addSpacing(18);
+    m_mainVboxLayout->addSpacing(15);
     m_mainVboxLayout->addLayout(updateTimeLayout);
 
     m_mainVboxLayout->setContentsMargins(48, 33, 8, 16);
