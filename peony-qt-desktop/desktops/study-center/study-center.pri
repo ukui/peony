@@ -2,6 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/common.h \
+    $$PWD/statuspushbutton.h \
     $$PWD/study-center-mode.h \
     $$PWD/study-center-factory.h \
     $$PWD/progress-item-delegate.h \
@@ -12,6 +13,7 @@ HEADERS += \
     $$PWD/study-status-widget.h
 
 SOURCES += \
+    $$PWD/statuspushbutton.cpp \
     $$PWD/study-center-mode.cpp \
     $$PWD/study-center-factory.cpp \
     $$PWD/progress-item-delegate.cpp \

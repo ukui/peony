@@ -22,6 +22,14 @@ StudyStatusWidget::StudyStatusWidget(QList<TABLETAPP> appList, QWidget *parent) 
     QWidget(parent)
 {
     m_appList= appList;
+    m_animation = new QVariantAnimation;
+    m_animation->setDuration(500);
+    m_animation->setStartValue(0.0);
+    m_animation->setEndValue(360.0);
+    connect(m_animation,&QVariantAnimation::valueChanged,[=](){
+        m_updateIconBt->update();
+        m_updateIconBt->setValue(m_animation->currentValue().toDouble());
+    });
     initWidget();
 }
 
@@ -210,10 +218,23 @@ void StudyStatusWidget::initWidget()
     connect(m_updateTimeBt,SIGNAL(clicked()), this,SIGNAL(updateTimeSignal()));
     QDateTime curTime = QDateTime::currentDateTime();//获取当前时间
     m_updateTimeBt->setText(QString("更新于：") + curTime.toString("MM.dd HH:mm"));
-    m_updateTimeBt->setIcon(QIcon("/home/user_23799a/yyw/yyw/refresh.svg"));
+    //m_updateTimeBt->setIcon(QIcon("/home/user_23799a/yyw/yyw/refresh.svg"));
     m_updateTimeBt->setLayoutDirection(Qt::RightToLeft);
     m_updateTimeBt->setAttribute(Qt::WA_TranslucentBackground);
     //m_progressGridLayout->addWidget(m_updateTimeBt,2 ,1);
+
+    m_updateIconBt = new StatusPushButton(this);
+    m_updateIconBt->setStyleSheet("color:#9C9C9C;background:transparent;");
+
+    connect(m_updateTimeBt,&QPushButton::clicked,[=](){
+        m_animation->start();
+    });
+
+    connect(m_updateIconBt,&StatusPushButton::clicked,[=](){
+        m_animation->start();
+    });
+
+    connect(m_updateIconBt,&StatusPushButton::clicked,this,&StudyStatusWidget::updateTimeSignal);
 
     m_mainVboxLayout->addWidget(m_scrollArea);
 
@@ -223,6 +244,7 @@ void StudyStatusWidget::initWidget()
     QHBoxLayout* updateTimeLayout = new QHBoxLayout;
     updateTimeLayout->addItem(space);
     updateTimeLayout->addWidget(m_updateTimeBt);
+    updateTimeLayout->addWidget(m_updateIconBt);
     updateTimeLayout->setContentsMargins(0, 0, 40, 0);
 
     m_mainVboxLayout->addSpacing(18);
