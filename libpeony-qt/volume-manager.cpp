@@ -330,12 +330,19 @@ QString Drive::iconName()
 {
     if (!m_drive)
         return nullptr;
-    GThemedIcon *g_icon = G_THEMED_ICON(g_drive_get_icon(m_drive));
+    GIcon *g_icon = g_drive_get_icon(m_drive);
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    QString iconName;
+    if(icon_names) {
+        iconName= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(g_icon);
+        iconName = icon_name;
+    }
     g_object_unref(g_icon);
-    if (! icon_names)
+    if (iconName.isEmpty())
         return "drive-harddisk";
-    return *icon_names;
+    return iconName;
 }
 
 QString Drive::symbolicIconName()
@@ -360,12 +367,19 @@ QString Volume::name()
 
 QString Volume::iconName()
 {
-    GThemedIcon *g_icon = G_THEMED_ICON(g_volume_get_icon(m_volume));
+    GIcon *g_icon = g_volume_get_icon(m_volume);
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    QString iconName;
+    if(icon_names) {
+        iconName= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(g_icon);
+        iconName = icon_name;
+    }
     g_object_unref(g_icon);
-    if (! icon_names)
+    if (iconName.isEmpty())
         return "drive-harddisk";
-    return *icon_names;
+    return iconName;
 }
 
 QString Volume::symbolicIconName()
@@ -388,12 +402,19 @@ QString Mount::name()
 
 QString Mount::iconName()
 {
-    GThemedIcon *g_icon = G_THEMED_ICON(g_mount_get_icon(m_mount));
+    GIcon *g_icon = g_mount_get_icon(m_mount);
     const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+    QString iconName;
+    if(icon_names) {
+        iconName= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(g_icon);
+        iconName = icon_name;
+    }
     g_object_unref(g_icon);
-    if (! icon_names)
+    if (iconName.isEmpty())
         return "drive-harddisk";
-    return *icon_names;
+    return iconName;
 }
 
 QString Mount::symbolicIconName()

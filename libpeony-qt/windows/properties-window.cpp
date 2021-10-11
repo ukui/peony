@@ -213,7 +213,7 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 
     this->notDir();
 
-    if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
+    if (!m_uris.isEmpty() && !PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
         m_destroyThis = true;
@@ -405,6 +405,9 @@ void PropertiesWindow::initStatusBar()
 
 void PropertiesWindow::initTabPage(const QStringList &uris)
 {
+    if(uris.isEmpty())
+        return;
+
     auto window = new PropertiesWindowPrivate(uris, this);
     window->tabBar()->setStyle(new tabStyle);
     //Warning: 不要设置tab高度，否则会导致tab页切换上下跳动

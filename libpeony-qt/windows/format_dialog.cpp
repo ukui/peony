@@ -27,7 +27,9 @@
 #include "ui_format_dialog.h"
 #include "side-bar-abstract-item.h"
 #include "linux-pwd-helper.h"
-
+#include "volumeManager.h"
+#include "file-info.h"
+#include "file-info-job.h"
 #include <QObject>
 #include <QMessageBox>
 #include <KWindowSystem>
@@ -202,25 +204,33 @@ void Format_Dialog::acceptFormat(bool)
 
     full_clean = ui->checkBox_clean_or_not->isChecked();
 
-    // umount device
-    //fm_item ->unmount();
-
-    auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
-    g_file_unmount_mountable_with_operation(files.get()->get(),
-                                            G_MOUNT_UNMOUNT_NONE,
-                                            nullptr,
-                                            nullptr,
-                                            GAsyncReadyCallback(unmount_finished),
-                                            this);
-
-
-    //get device name
     QString volname, devName, voldisplayname ,devtype;
-
-    //FIXME: replace BLOCKING api in ui thread.
+    bool bEnsureFormat = false;
+    auto info = FileInfo::fromUri(fm_uris);
+    if (info.get()->isEmptyInfo()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
+    auto targetUri = FileUtils::getTargetUri(fm_uris);
+    auto mount = VolumeManager::getInstance()->getMountFromUri(targetUri);
+    if(mount){
+       /* unmount */
+       auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
+       g_file_unmount_mountable_with_operation(files.get()->get(),
+                                               G_MOUNT_UNMOUNT_NONE,
+                                               nullptr,
+                                               nullptr,
+                                               GAsyncReadyCallback(unmount_finished),
+                                               this);
+    }else{
+        bEnsureFormat = true;
+    }
+       //get device name
+       //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
-    strcpy(dev_name,devName.toUtf8().constData());
 
+
+    strcpy(dev_name,devName.toUtf8().constData());
     devtype = rom_type;
 
     //do format
@@ -268,6 +278,10 @@ void Format_Dialog::acceptFormat(bool)
         kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
                      full_clean?"zero":NULL, rom_name,&format_value);
     });
+    if(bEnsureFormat){
+        Q_EMIT ensure_format(true);
+        bEnsureFormat = false;
+    }
 }
 
 double Format_Dialog::get_format_bytes_done(const gchar * device_name)

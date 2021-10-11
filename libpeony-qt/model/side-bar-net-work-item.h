@@ -62,17 +62,19 @@ public:
 
     bool hasChildren() override;
 
-    bool isRemoveable() override
-    {
+    bool isRemoveable() override{
         return true;
     }
 
-    bool isEjectable() override
-    {
+    bool isEjectable() override{
         return false;
     }
 
-    bool isMountable() override;
+    bool isMountable() override{
+        return false;
+    }
+
+    bool isUnmountable() override;
 
     bool isMounted() override;
 
@@ -116,10 +118,6 @@ protected:
     void stopWatcher();
 
 private:
-    QString m_uri;
-    QString m_iconName;
-    QString m_displayName;
-
     SideBarAbstractItem *m_parentItem  = nullptr;
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
 };

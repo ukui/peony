@@ -31,6 +31,7 @@
 
 #include <QStandardPaths>
 #include <QUrl>
+#include <QDir>
 
 using namespace Peony;
 
@@ -40,9 +41,10 @@ static const char* localFileSystemPath = "file://";
 
 SideBarFavoriteItem::SideBarFavoriteItem(QString uri,SideBarFavoriteItem *parentItem,
                                          SideBarModel *model, QObject *parent) :
-    SideBarAbstractItem (model, parent),m_parent(parentItem),m_uri(uri)
+    SideBarAbstractItem (model, parent),m_parent(parentItem)
 
 {
+    m_uri = uri;
     m_is_root_child = m_parent == nullptr;
     if (m_is_root_child) {
         initChildren();
@@ -56,18 +58,18 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,SideBarFavoriteItem *parent
         if (nullptr != fileInfo) {
             const char* displayName = g_file_info_get_attribute_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
             if (nullptr != displayName) {
-                m_display_name = displayName;
+                m_displayName = displayName;
             }
             g_object_unref(fileInfo);
         }
         g_object_unref(file);
     }
 
-    if (m_display_name.isEmpty() || "" == m_display_name) {
-        m_display_name = FileUtils::getFileDisplayName(m_uri);
+    if (m_displayName.isEmpty() || "" == m_displayName) {
+        m_displayName = FileUtils::getFileDisplayName(m_uri);
     }
 
-    m_icon_name = FileUtils::getFileIconName(m_uri);
+    m_iconName = FileUtils::getFileIconName(m_uri);
 
     m_info = FileInfo::fromUri(m_uri);
     auto infoJob = new FileInfoJob(m_info);
@@ -81,7 +83,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,SideBarFavoriteItem *parent
 void SideBarFavoriteItem::initChildren()
 {
     m_uri = "favorite:///";
-    m_display_name = tr("Favorite");
+    m_displayName = tr("Favorite");
 
     QString desktopUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     QString videoUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
@@ -161,14 +163,14 @@ QString SideBarFavoriteItem::uri()
 QString SideBarFavoriteItem::displayName()
 {
     if (!m_info)
-        return m_display_name;
+        return m_displayName;
     return m_info.get()->displayName();
 }
 
 QString SideBarFavoriteItem::iconName()
 {
     if (!m_info)
-        return m_icon_name;
+        return m_iconName;
     return m_info.get()->iconName();
 }
 
@@ -188,8 +190,6 @@ QModelIndex SideBarFavoriteItem::lastColumnIndex()
     //TODO: bind with model
     return m_model->lastColumnIndex(this);
 }
-
-
 
 void SideBarFavoriteItem::syncBookMark()
 {
