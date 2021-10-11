@@ -13,10 +13,6 @@
 //keys
 #define TABLET_MODE "tabletMode"
 
-//platform keys
-#define V10_SP1                   "V10SP1"
-#define V10_SP1_EDU               "V10SP1-edu"
-
 #include <QObject>
 
 namespace Peony {
