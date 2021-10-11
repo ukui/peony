@@ -48,7 +48,7 @@ private:
     QVariantAnimation *m_floatWidgetWidthAnimation = nullptr;
 
     int m_floatWidgetWidthHint = 200;
-    const int FLOAT_WIDGET_MIN_WIDTH = 296;
+    const int FLOAT_WIDGET_MIN_WIDTH = 596/*296*/;
 };
 
 #endif // FLOATPANEWIDGET_H
