@@ -61,6 +61,7 @@ void StudyListView::setData(QList<TabletAppEntity*> tabletAppList)
 void StudyListView::mousePressEvent(QMouseEvent *event)
 {
     QPoint pressedpos = event->pos();
+    m_pressedPos = QPoint(0, 0);
     m_iconClicked = false;
     if(event->button() == Qt::LeftButton) {//左键
         m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole);
@@ -72,6 +73,7 @@ void StudyListView::mousePressEvent(QMouseEvent *event)
         m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
     }
     if (m_iconClicked) {
+        m_pressedPos = pressedpos;
         event->accept();
     } else {
         //让父组件获取按下事件
@@ -80,25 +82,24 @@ void StudyListView::mousePressEvent(QMouseEvent *event)
 }
 void StudyListView::mouseReleaseEvent(QMouseEvent *event)
 {
- //  QAbstractItemModel* listmodel = this->model();
     if (!m_iconClicked) {
         //没有按在图标上，忽略事件
         event->ignore();
         return;
     }
-   QPoint pressedpos = event->pos();
-   QPoint pressedGlobalPos = event->globalPos();
-   if(event->button() == Qt::LeftButton)
-   {//左键
-       m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
-       Q_EMIT(clicked(this->indexAt(pressedpos)));
-   }
-   else if(event->button() == Qt::RightButton)
-   {//右键
-       m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
-   }
-   event->accept();
+    //去除按下图标的放大效果
+    m_listmodel->setData(this->indexAt(m_pressedPos),QVariant::fromValue<bool>(0),Qt::UserRole);
 
+    QPoint pressedpos = event->pos();
+    //QPoint pressedGlobalPos = event->globalPos();
+    if (event->button() == Qt::LeftButton) {
+        m_listmodel->setData(this->indexAt(pressedpos), QVariant::fromValue<bool>(0), Qt::UserRole);
+        Q_EMIT(clicked(this->indexAt(pressedpos)));
+
+    } else if (event->button() == Qt::RightButton) {
+        m_listmodel->setData(this->indexAt(pressedpos), QVariant::fromValue<bool>(0), Qt::UserRole);
+    }
+    event->accept();
 }
 void StudyListView::mouseMoveEvent(QMouseEvent *event)
 {
