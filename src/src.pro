@@ -21,7 +21,7 @@ include(control/control.pri)
 #include(view/view.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra openssl
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11 -lukui-log4qt
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
