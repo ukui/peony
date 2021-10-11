@@ -72,7 +72,7 @@ void MountOperation::start()
     gchar* urit = g_file_get_uri(m_volume);
     QUrl uri = QUrl(urit);
     if (uri.scheme() != "mtp") {
-        ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
+        ConnectServerLogin* dlg = new ConnectServerLogin(urit);
         m_dlg = dlg;
         //block ui
         auto code = dlg->exec();
