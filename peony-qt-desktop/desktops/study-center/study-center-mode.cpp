@@ -452,8 +452,8 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->addWidget(synWidget,0,3,1,1);
         m_mainGridLayout->addWidget(statusWidget,1,2,2,2);
 
-        m_mainGridLayout->setRowStretch(0,5);
-        m_mainGridLayout->setRowStretch(1,8);
+        m_mainGridLayout->setRowStretch(0,8);
+        m_mainGridLayout->setRowStretch(1,13);
         m_mainGridLayout->setColumnStretch(0,2);
         m_mainGridLayout->setColumnStretch(2,1);
         m_mainGridLayout->setColumnStretch(3,1);

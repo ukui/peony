@@ -29,16 +29,16 @@ void ProgressWidget::initUi()
     m_processBar->setRange(0,100);
     m_processBar->setValue(m_iTime);
     m_processBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;"
-                                "background-color:rgba(232, 232, 232 );}"
-                                "QProgressBar::chunk{background-color:rgba(99, 184, 255 );border:none;border-radius:4px;}");
-
+                                "background-color:rgba(118,118,124,0.25 );}"
+                                "QProgressBar::chunk{background-color:#2FB3E8;border:none;border-radius:4px;}");
+    m_processBar->setAlignment(Qt::AlignTop);
 
     m_processBar->setTextVisible(false);
 
     m_nameLabel = new QLabel(this);
     m_nameLabel->setText(m_strAppName);
     //m_nameLabel->setFixedSize(this->width()/5*2,this->height()/2);
-    m_nameLabel->setAlignment(Qt::AlignLeft);
+    m_nameLabel->setAlignment(Qt::AlignLeft|Qt::AlignBottom);
 
     m_iconLabel = new QLabel(this);
     QString iconstr= m_strAppIcon;
@@ -51,15 +51,15 @@ void ProgressWidget::initUi()
     m_timeLabel = new QLabel(this);
     m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
    // m_timeLabel->setFixedSize(this->width()/5*2,this->height()/2);
-    m_timeLabel->setAlignment(Qt::AlignRight);
+    m_timeLabel->setAlignment(Qt::AlignRight|Qt::AlignBottom);
 
     m_timeGridLayout = new QGridLayout;
     m_timeGridLayout->addWidget(m_iconLabel,0,0,4,1);
     m_timeGridLayout->addWidget(m_nameLabel,0,1,1,2);
     m_timeGridLayout->addWidget(m_timeLabel,0,3,1,2);
     m_timeGridLayout->addWidget(m_processBar,2,1,1,4);
-   // gridLayout->setMargin(80);
-    m_timeGridLayout->setSpacing(1);
+    m_timeGridLayout->setContentsMargins(0,0,0,0);
+   // m_timeGridLayout->setSpacing(1);
     this->setLayout(m_timeGridLayout);
 }
 void  ProgressWidget::paintSlot(TABLETAPP &app)
