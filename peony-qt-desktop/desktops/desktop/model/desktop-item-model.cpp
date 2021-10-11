@@ -56,11 +56,15 @@
 #include <pwd.h>
 #include <unistd.h>
 
+#include <ukuisdk/kylin-com4cxx.h>
+
 #include <QDebug>
 
 using namespace Peony;
 
 static bool uriLittleThan(std::shared_ptr<FileInfo> &p1, std::shared_ptr<FileInfo> &p2);
+
+static bool g_isEdu = QString::fromStdString(KDKGetPrjCodeName()) == V10_SP1_EDU;
 
 DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
     : QAbstractListModel(parent)
@@ -549,6 +553,9 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             auto displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
             return displayName;
         }
+        if (g_isEdu && info->displayName() == m_userName) {
+            return tr("My Document");
+        }
         return info->displayName();
     case Qt::ToolTipRole:
         //fix bug#53504, desktop files not show same name issue
@@ -556,6 +563,9 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
         {
             auto displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
             return displayName;
+        }
+        if (g_isEdu && info->displayName() == m_userName) {
+            return tr("My Document");
         }
         return info->displayName();
     case Qt::DecorationRole: {
