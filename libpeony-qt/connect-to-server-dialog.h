@@ -81,7 +81,7 @@ private:
     QPushButton*    m_btn_conn              = nullptr;
     QHBoxLayout*    m_btn_layout            = nullptr;
 
-    QSet<QString>                   m_favorite_uri;
+    QMap<QString, QVariant>         m_favorite_uri;
     QMap<QString, QListWidgetItem*> m_favorite_widgets;
 };
 
@@ -91,7 +91,7 @@ class PEONYCORESHARED_EXPORT ConnectServerLogin : public QDialog
     friend class MountOperation;
     Q_OBJECT
 public:
-    explicit ConnectServerLogin(QString remoteIP, QWidget* parent = nullptr);
+    explicit ConnectServerLogin(QString uri, QWidget* parent = nullptr);
     ~ConnectServerLogin();
 
     QString user();
@@ -118,7 +118,7 @@ private:
 
     QLabel*         m_reg_usr_name_label    = nullptr;
     QLabel*         m_reg_usr_passwd_label  = nullptr;
-    QLineEdit*      m_reg_usr_name_editor   = nullptr;
+    QComboBox*      m_reg_usr_name_editor   = nullptr;
     QLineEdit*      m_reg_usr_passwd_editor = nullptr;
     QCheckBox*      m_reg_usr_combox        = nullptr;
     QGridLayout*    m_reg_usr_layout        = nullptr;
@@ -128,6 +128,8 @@ private:
     QHBoxLayout*    m_btn_layout            = nullptr;
 
     QString m_remoteIP;
+
+    QMap<QString, QVariant> m_userInfo;
 
 };
 

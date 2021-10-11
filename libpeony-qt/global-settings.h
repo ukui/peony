@@ -45,7 +45,7 @@
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
 
-#define REMOTE_SERVER_REMOTE_IP   "remote-server/favorite-ip"
+#define REMOTE_SERVER_REMOTE_IP     "remote-server/favorite-ip"
 //#define REMOTE_SERVER_CONNECT_IP   "remote-server/connecte-ip"
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
