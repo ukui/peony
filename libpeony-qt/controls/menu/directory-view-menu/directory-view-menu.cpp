@@ -599,6 +599,11 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         sortTypeAction->setMenu(sortTypeMenu);
 
+        //fix bug#82685
+        if(m_is_computer){
+            sortTypeAction->setEnabled(false);
+        }
+
         //sort order
         auto sortOrderAction = addAction(tr("Sort Order..."));
         l<<sortOrderAction;

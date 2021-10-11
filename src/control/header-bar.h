@@ -98,6 +98,7 @@ private Q_SLOTS:
     void closeSearch();
     void initFocus();
     void updateHeaderState();
+    void updateSortTypeEnable();
 
 private:
     const QString m_uri;
