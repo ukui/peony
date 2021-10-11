@@ -800,6 +800,8 @@ void MainWindow::updateHeaderBar()
 {
     m_header_bar->setLocation(getCurrentUri());
     m_header_bar->updateIcons();
+    //fix bug#82685
+    m_header_bar->updateSortTypeEnable();
     //m_status_bar->update();
 }
 

@@ -72,6 +72,7 @@
 #include <QDBusConnectionInterface>
 #include <QDBusMessage>
 #include <QDBusReply>
+#include <QPainter>
 
 #include <QDebug>
 
@@ -87,6 +88,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     setMouseTracking(true);
     setStyle(HeaderBarStyle::getStyle());
+    setFocusPolicy(Qt::TabFocus);
 
     m_window = parent;
     //disable default menu
@@ -121,8 +123,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    openTerminal->setFixedSize(QSize(40, 40));
 //    openTerminal->setIconSize(QSize(16, 16));
 
-//    addSpacing(9);
-//    m_create_folder = createFolder;
 
     auto goBack = new HeadBarPushButton(this);
     m_go_back = goBack;
@@ -577,6 +577,25 @@ void HeaderBar::updateIcons()
 
     //maximize & restore
     updateMaximizeState();
+}
+
+void HeaderBar::updateHeaderState()
+{
+//    if (! m_window->getFilterWorking())
+//        m_create_folder->setEnabled(true);
+//    else
+//        m_create_folder->setEnabled(false);
+}
+
+void HeaderBar::updateSortTypeEnable()
+{
+    auto url = m_window->getCurrentUri();
+    qDebug() << "url:" << url;
+    if(url == "computer:///"){
+        m_sort_type_menu->setEnabled(false);
+    }else{
+        m_sort_type_menu->setEnabled(true);
+    }
 }
 
 void HeaderBar::updateMaximizeState()
