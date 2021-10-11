@@ -61,22 +61,31 @@ void StudyListView::setData(QList<TabletAppEntity*> tabletAppList)
 void StudyListView::mousePressEvent(QMouseEvent *event)
 {
     QPoint pressedpos = event->pos();
-    QPoint pressedGlobalPos = event->globalPos();
-    if(event->button() == Qt::LeftButton)
-    {//左键
+    m_iconClicked = false;
+    if(event->button() == Qt::LeftButton) {//左键
         m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(1),Qt::UserRole);
-    }
-    else if(event->button() == Qt::RightButton)
-    {//右键
+        if (this->indexAt(pressedpos).isValid()) {
+            //滑动的起点在图标上
+            m_iconClicked = true;
+        }
+    } else if(event->button() == Qt::RightButton) {//右键
         m_listmodel->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole);
     }
-    event->accept();
-
+    if (m_iconClicked) {
+        event->accept();
+    } else {
+        //让父组件获取按下事件
+        event->ignore();
+    }
 }
 void StudyListView::mouseReleaseEvent(QMouseEvent *event)
 {
  //  QAbstractItemModel* listmodel = this->model();
-
+    if (!m_iconClicked) {
+        //没有按在图标上，忽略事件
+        event->ignore();
+        return;
+    }
    QPoint pressedpos = event->pos();
    QPoint pressedGlobalPos = event->globalPos();
    if(event->button() == Qt::LeftButton)

@@ -6,6 +6,7 @@
 #include <QWidget>
 
 #include "../../tablet/data/tablet-app-manager.h"
+#include "progress-item-delegate.h"
 
 class QMouseEvent;
 class QStandardItemModel;
@@ -24,13 +25,14 @@ private:
     //QStandardItemModel* listmodel=nullptr;
 
 protected:
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *e) override;
+    void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *e) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
     QStandardItemModel* m_listmodel=nullptr;
+    bool m_iconClicked = false;
 };
 
 }
