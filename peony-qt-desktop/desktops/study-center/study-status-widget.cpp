@@ -202,10 +202,11 @@ void StudyStatusWidget::initWidget()
         connect(this, SIGNAL(setMaximum(int)), progress, SLOT(setMaximum(int)));
     }
 
-    m_progressGridLayout->setSpacing(18);
-    m_progressGridLayout->setContentsMargins(0, 0, 40, 0);
+    m_progressGridLayout->setVerticalSpacing(25);
+    m_progressGridLayout->setHorizontalSpacing(48);
+    m_progressGridLayout->setContentsMargins(0, 0, 32, 0);
     ScrollVboxLayout->addLayout(m_progressGridLayout);
-    ScrollVboxLayout->setContentsMargins(0, 0, 8, 0);
+    ScrollVboxLayout->setContentsMargins(0, 0, 0, 0);
     scrollWid->setLayout(ScrollVboxLayout);
 
     m_updateTimeBt = new QPushButton(this);
@@ -242,7 +243,7 @@ void StudyStatusWidget::initWidget()
     updateTimeLayout->addItem(space);
     updateTimeLayout->addWidget(m_updateTimeBt);
     updateTimeLayout->addWidget(m_updateIconBt);
-    updateTimeLayout->setContentsMargins(0, 0, 40, 0);
+    updateTimeLayout->setContentsMargins(0, 0, 32, 0);
 
     m_mainVboxLayout->addSpacing(15);
     m_mainVboxLayout->addLayout(updateTimeLayout);
