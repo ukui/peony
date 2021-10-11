@@ -30,7 +30,7 @@
 #include "file-operation-manager.h"
 #include "file-info.h"
 #include "volume-manager.h"
-
+#include "volumeManager.h"
 #include <QDebug>
 
 using namespace Peony;
@@ -128,13 +128,19 @@ void FileWatcher::startMonitor()
             Q_EMIT directoryUnmounted(uri);
         }
     });
+    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](bool success){
+        /* volume卸载完成跳转到计算机目录 */
+        if (success) {
+            Q_EMIT directoryUnmounted("computer:///");
+        }
+    });
 }
 
 void FileWatcher::stopMonitor()
 {
     disconnect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, 0);
     disconnect(VolumeManager::getInstance(), &VolumeManager::fileUnmounted, this, 0);
-
+    disconnect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, 0);
     if (m_file_handle > 0) {
         g_signal_handler_disconnect(m_monitor, m_file_handle);
         m_file_handle = 0;

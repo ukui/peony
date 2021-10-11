@@ -87,7 +87,7 @@ SideBarModel::SideBarModel(QObject *parent)
 //    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator3);
 
-    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
+    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,nullptr,
             nullptr,
             this);
     m_root_children->append(computerItem);
@@ -230,11 +230,9 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     if (index.column() == 1) {
         if(role == Qt::DecorationRole){
             bool unmountAble,ejectAble;
-            unmountAble = item->isMountable();
-            ejectAble = item->isEjectable();
-            if(unmountAble && ejectAble)
-                return QVariant(QIcon::fromTheme("media-eject-symbolic"));
-            else if(unmountAble){
+            unmountAble = item->isUnmountable();
+            ejectAble = item->isEjectable()||item->isStopable();
+            if(unmountAble || ejectAble){
                 if(item->isMounted())
                     return QVariant(QIcon::fromTheme("media-eject-symbolic"));
                 else
@@ -314,7 +312,7 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
     bool isEmpty = true;
     for (auto child : *item->m_children) {
         auto info = FileInfo::fromUri(child->uri());
-        if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume()))
+        if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())||item->uri()=="computer:///")
             isEmpty = false;
         if (child->type() == SideBarAbstractItem::SeparatorItem) {
             removeRows(item->m_children->indexOf(child), 1, index);

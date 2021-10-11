@@ -32,6 +32,7 @@
 namespace Peony {
 class SideBarModel;
 class SideBarProxyFilterSortModel;
+class SideBarAbstractItem;
 }
 
 class QPushButton;
@@ -54,6 +55,7 @@ public:
     void dropEvent(QDropEvent *e);
 
     QSize sizeHint() const;
+    void JumpDirectory(const QString& uri);/* 跳转目录 */
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool force = false);
@@ -68,6 +70,7 @@ protected:
 private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model;
     Peony::SideBarModel *m_model;
+    Peony::SideBarAbstractItem* m_currSelectedItem =nullptr;
 };
 
 class NavigationSideBarContainer : public Peony::SideBar

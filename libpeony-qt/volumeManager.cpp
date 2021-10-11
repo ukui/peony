@@ -2,8 +2,10 @@
 #include <QDebug>
 #include <QTimer>
 #include <QThread>
+#include<QMessageBox>
+#include"sync-thread.h"
 
-using namespace Experimental;
+using namespace Experimental_Peony;
 static VolumeManager* m_globalManager = nullptr;
 
 void VolumeManager::printVolumeList(){
@@ -45,8 +47,8 @@ VolumeManager::~VolumeManager(){
         g_signal_handler_disconnect(m_volumeMonitor, m_mountRemoveHandle);
         g_signal_handler_disconnect(m_volumeMonitor, m_volumeChangeHandle);
         g_signal_handler_disconnect(m_volumeMonitor, m_volumeRemoveHandle);
+        g_signal_handler_disconnect(m_volumeMonitor, m_driveConnectHandle);
         g_signal_handler_disconnect(m_volumeMonitor, m_driveDisconnectHandle);
-
         g_object_unref(m_volumeMonitor);
         m_volumeMonitor = nullptr;
     }
@@ -73,6 +75,7 @@ void VolumeManager::initManagerInfo(){
     m_mountRemoveHandle = g_signal_connect(m_volumeMonitor,"mount-removed",G_CALLBACK(mountRemoveCallback),this);
     m_volumeRemoveHandle = g_signal_connect(m_volumeMonitor,"volume-removed",G_CALLBACK(volumeRemoveCallback),this);
     m_volumeChangeHandle = g_signal_connect(m_volumeMonitor,"volume-changed",G_CALLBACK(volumeChangeCallback),this);
+    m_driveConnectHandle = g_signal_connect(m_volumeMonitor,"drive-connected",G_CALLBACK(driveConnectCallback),this);
     m_driveDisconnectHandle = g_signal_connect(m_volumeMonitor,"drive-disconnected",G_CALLBACK(driveDisconnectCallback),this);
 }
 
@@ -210,7 +213,7 @@ void VolumeManager::mountRemoveCallback(GVolumeMonitor *monitor,
     QHash<QString,Volume*>::iterator item = pThis->m_volumeList->begin();
     QHash<QString,Volume*>::iterator end = pThis->m_volumeList->end();
     //qDebug()<<__func__<<__LINE__<<mountPoint<<endl;
-
+    g_signal_connect(gmount, "changed", G_CALLBACK(mountChangedCallback),pThis);/* 监听mount的changed信号，获取mountPoint */
     //查看gparted进程是否存在,以便确定是否要移除设备
     pThis->gpartedIsOpening();
 
@@ -246,6 +249,7 @@ void VolumeManager::mountAddCallback(GVolumeMonitor *monitor,
     GMount* mount = (GMount*)g_object_ref(gmount);
     Mount* mountItem = new Mount(mount);
     QString device = mountItem->device();
+    g_signal_connect(gmount, "changed", G_CALLBACK(mountChangedCallback),pThis);/* 监听mount的changed信号，获取mountPoint */
     //qDebug()<<__func__<<__LINE__<<device<<mountItem->name()<<endl;
     if(device.isEmpty()){
         //情景5、数据线连接的手机状态改变："仅充电"->"mtp"或"gphoto" 时会挂载一个没有dev设备的GMount*
@@ -262,13 +266,53 @@ void VolumeManager::mountAddCallback(GVolumeMonitor *monitor,
         //情景1、2、3在volumeAddCallback()情景2中已添加至链表，更新挂载点信息即可
         pThis->m_volumeList->value(device)->setMountPoint(mountItem->mountPoint());
         Q_EMIT pThis->mountAdd(Volume(*volume));
-    }else{
+    }/*else{
         //情景4、重新显示设备
         pThis->m_volumeList->insert(volume->device(),volume);
         Q_EMIT pThis->volumeAdd(Volume(*volume));
+    }*/
+
+    delete mountItem;
+}
+
+void VolumeManager::mountChangedCallback(GMount *mount, VolumeManager *pThis)
+{
+    /* 获取mountPoint 挂载点 */
+     GFile* rootFile = g_mount_get_root(mount);
+    if(!rootFile)
+        return;
+
+    QString mountPoint = g_file_get_uri(rootFile);
+    Mount* mountItem = new Mount(mount);
+
+    QString device = mountItem->device();
+    if( pThis->m_volumeList->contains(device) && pThis->m_volumeList->value(device)->getMountPoint().isEmpty()){
+        pThis->m_volumeList->value(device)->setMountPoint(mountPoint);/* 更新m_volumeList中volume的mounpoint */
+        Q_EMIT pThis->mountAdd(*(pThis->m_volumeList->value(device)));/* 发出更新item的moun属性的信号，手机挂载 */
+    }
+    else{
+        Q_EMIT pThis->mountRemove(mountPoint);/* 发出更新item的moun属性的信号,手机卸载时 */
     }
 
     delete mountItem;
+    g_object_unref(rootFile);
+}
+
+
+void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
+                                         GDrive *gdrive,VolumeManager *pThis)
+{
+    /* 添加光驱设备，例如空光驱插入 */
+    Drive* dirve = new Drive(gdrive);
+    QString device = dirve->device();
+
+    if(!pThis->m_volumeList->contains(device) && !device.isEmpty() && device.contains("/dev/sr"))
+    {
+        Volume* volume = new Volume(nullptr);
+        volume->setFromDrive(*dirve);
+        pThis->m_volumeList->insert(device, volume);
+        Q_EMIT pThis->volumeAdd(Volume(*volume));
+    }
 }
 
 /* 使用drive-connected信号处理暴力拔出的情况
@@ -373,6 +417,20 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         m_volumeList->insert(volumeItem->device(),volumeItem);
     }
 
+    /* 添加光驱设备 */
+    QList<Drive*> driveList = allDrives();
+    for(auto entry : driveList)
+    {
+        Volume* volumeItem = new Volume(nullptr);
+        volumeItem->setFromDrive(*entry);
+        QString device = volumeItem->device();
+        if(m_volumeList->contains(volumeItem->device()))
+            continue;
+        if(device.contains("/dev/sr")){/* 判断是否为光驱设备 */
+            m_volumeList->insert(volumeItem->device(), volumeItem);
+        }
+    }
+
     //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
     if(!m_gpartedIsOpening){ //gparted未打开时，才考虑卷设备未挂载的情况
         for(int i=0; i<volumeCount; ++i){
@@ -425,7 +483,6 @@ QList<Mount*> VolumeManager::allMounts(){
     if(gMounts.isEmpty())
         return mounts;
 
-
     mountCount = gMounts.count();
     for(int i=0; i<mountCount; ++i){
         Mount* mountItem =  new Mount(gMounts.at(i));
@@ -436,12 +493,48 @@ QList<Mount*> VolumeManager::allMounts(){
             continue;
         }
         mounts.append(mountItem);
+        g_object_unref(gMounts.at(i));
     }
     //qDebug()<<"=================================>>>>>"<<endl;
 
     return mounts;
 }
 
+QList<GDrive *> VolumeManager::allGDrives()
+{
+    GDrive* gdrive = nullptr;
+    GList *gdrives = nullptr, *l = nullptr;
+    QList<GDrive*> gdriveList;
+    if(m_volumeMonitor)
+        gdrives = g_volume_monitor_get_connected_drives(m_volumeMonitor);
+
+    for(l = gdrives; l != nullptr;l = l->next){
+        gdrive = (GDrive*)l->data;
+        gdriveList.push_back(gdrive);
+    }
+
+    if(gdrives)
+        g_list_free(gdrives);
+
+    return gdriveList;
+}
+
+QList<Drive *> VolumeManager::allDrives()
+{
+    QList<Drive*> drives;
+    QList<GDrive*> gdrives = allGDrives();
+    if(gdrives.size()<=0)
+        return drives;
+
+    for(auto entry: gdrives)
+    {
+        Drive* drive = new Drive(entry);
+        drives.append(drive);
+        g_object_unref(entry);
+    }
+
+    return drives;
+}
 //QString VolumeManager::guessContentType(GMount* gmount){
 //    char** guessType;
 //}
@@ -457,7 +550,11 @@ Volume::Volume(const Volume& other){
     m_icon = other.m_icon;
     m_mountPoint = other.m_mountPoint;
     m_canEject = other.m_canEject;
-
+    m_canStop = other.m_canStop;
+    m_canUnmount = other.m_canUnmount;
+    m_canMount = other.m_canMount;
+    m_gMount = other.m_gMount == nullptr? nullptr : (GMount*)g_object_ref(other.m_gMount);
+    m_gdrive = other.m_gdrive == nullptr? nullptr : (GDrive*)g_object_ref(other.m_gdrive);
     m_volume = nullptr;
     if(other.m_volume)
         m_volume = (GVolume*)g_object_ref(other.m_volume);
@@ -466,28 +563,40 @@ Volume::Volume(const Volume& other){
 Volume::~Volume(){
     if(m_volume)
         g_object_unref(m_volume);
+
+    if (m_gMount) {
+        g_object_unref(m_gMount);
+    }
+    if (m_gdrive) {
+        g_object_unref(m_gdrive);
+    }
 }
 
-void Volume::initVolumeInfo(){
-    GMount* gmount;
-    GFile* rootFile = nullptr;
-
+void Volume::initVolumeInfo()
+{
     if(!m_volume)   //如果m_volume为nullptr，可能会是一种用Mount来填充Volume数据的方式
         return;
 
+    m_gMount = nullptr;
+    m_canUnmount = false;
     char* gname = g_volume_get_name(m_volume);
     char* guuid = g_volume_get_uuid(m_volume);
-    char* gdevice = g_volume_get_identifier(m_volume,G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+    char* gdevice = g_volume_get_identifier(m_volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
     //挂载点
+    GMount* gmount = nullptr;
+    GFile* rootFile = nullptr;
     gmount = g_volume_get_mount(m_volume);
-    if(gmount)
+    if(gmount){
+        m_gMount = gmount;
         rootFile = g_mount_get_root(gmount);
+        m_canUnmount = g_mount_can_unmount(gmount);//是否可卸载
+    }
     if(rootFile){
         char* gmountPoint = g_file_get_uri(rootFile);
         m_mountPoint = gmountPoint;
         g_free(gmountPoint);
-        gmountPoint = g_filename_from_uri(m_mountPoint.toUtf8().constData(),nullptr,nullptr);
+        gmountPoint = g_filename_from_uri(m_mountPoint.toUtf8().constData(), nullptr, nullptr);
         m_mountPoint = gmountPoint;
         g_free(gmountPoint);
         g_object_unref(rootFile);
@@ -497,6 +606,7 @@ void Volume::initVolumeInfo(){
     //qDebug()<<__func__<<__LINE__<<(gdrive==nullptr)<<endl;
     if(gdrive){
         m_canEject = g_drive_can_eject(gdrive);
+        m_canStop = g_drive_can_stop(gdrive);
         g_object_unref(gdrive);
     }
     //TODO... icon
@@ -504,13 +614,23 @@ void Volume::initVolumeInfo(){
     m_name = gname;
     m_uuid = guuid;
     m_device = gdevice;
+    GIcon* gicon = g_volume_get_icon(m_volume);
+    const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
+    if(icon_names) {
+        m_icon= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(gicon);
+        m_icon = icon_name;
+    }
 
+    if(m_volume)
+        m_canMount = g_volume_can_mount(m_volume);
 
     g_free(gname);
     g_free(guuid);
     g_free(gdevice);
-    if(gmount && G_IS_OBJECT(gmount))
-        g_object_unref(gmount);
+    /*if(gmount && G_IS_OBJECT(gmount))//放在析构中释放
+        g_object_unref(gmount);*/
 }
 
 //利用设备路径(也可用uuid)判断设备是否相同
@@ -526,28 +646,95 @@ bool Volume::operator==(const Volume* other) const{
 //    return m_device == m_device;
 //}
 
-void Volume::eject() const{
-    //GDrive* gdrive;
-    if(!m_volume)
+void Volume::eject(GMountUnmountFlags ejectFlag)
+{
+    GDrive* gdrive =nullptr;
+    if(m_volume)
+        gdrive = g_volume_get_drive(m_volume);
+    else if(m_gMount)
+        gdrive = g_mount_get_drive(m_gMount);
+    else if(m_gdrive)
+        gdrive = m_gdrive;
+    else
         return;
 
-    //弹出的逻辑得细看
-//    gdrive = g_volume_get_drive(m_volume);
-//    Drive drive(gdrive);
-//    drive.eject();
+    if(!gdrive)
+        return;
+
+    Drive drive(gdrive);
+    drive.eject(ejectFlag);
+
 }
+
+void Volume::unmount()
+{
+    if(m_volume)
+        m_gMount = (GMount*) g_object_ref(g_volume_get_mount(m_volume));
+
+    if(!m_gMount)
+        return;
+    Mount mount(m_gMount);
+    mount.unmount();
+}
+
+static void mount_async_callback(GVolume *volume, GAsyncResult *res, Volume *p_this)
+{
+    GError *err = nullptr;
+    bool successed = g_volume_mount_finish(volume, res, &err);
+    if (err) {
+        //QMessageBox::critical(0, 0, err->message);
+        g_error_free(err);
+    }
+
+    if (successed) {
+        QString unmountNotify = QObject::tr("The device has been mount successfully!");
+        Peony::SyncThread::notifyUser(unmountNotify);
+        Q_EMIT VolumeManager::getInstance()->signal_mountFinished();
+    }
+}
+void Volume::mount()
+{
+    if(m_volume)
+        g_volume_mount(m_volume,
+                       G_MOUNT_MOUNT_NONE,
+                       nullptr,
+                       nullptr,
+                       GAsyncReadyCallback(mount_async_callback),
+                       this);
+}
+
 
 void Volume::setFromMount(const Mount& mount){
     m_name = mount.name();
     m_uuid = mount.uuid();
+    m_icon = mount.icon();
     m_device = mount.device();
     m_canEject = mount.canEject();
+    m_canStop = mount.canStop();
+    m_canUnmount = mount.canUnmount();
     m_mountPoint = mount.mountPoint();
+    m_gMount =(GMount*) g_object_ref(mount.getGMount());
+    m_volume = g_mount_get_volume(m_gMount);
+}
+
+void Volume::setFromDrive(const Drive &drive)
+{
+    m_name = drive.name();
+    m_canEject = drive.canEject();
+    m_canStop = drive.canStop();
+    m_icon = drive.icon();
+    m_device = drive.device();
+    m_gdrive = (GDrive*)g_object_ref(drive.getGDrive());
 }
 
 void Volume::setMountPoint(QString point){
     m_mountPoint.clear();
     m_mountPoint = point;
+}
+
+QString Volume::getMountPoint()
+{
+    return m_mountPoint;
 }
 
 void Volume::setLabel(const QString &label){
@@ -559,6 +746,7 @@ Volume* Volume::initRootVolume(){
     m_uuid = "";
     m_mountPoint = "/";
     m_canEject = false;
+    m_canStop = false;
     m_volume = nullptr;
     m_name = "File System";
 
@@ -591,19 +779,101 @@ void Drive::initDriveInfo(){
         return;
 
     m_canEject = g_drive_can_eject(m_drive);
+    m_canStop = g_drive_can_stop(m_drive);
+    m_name=g_drive_get_name(m_drive);
+    GIcon* gicon = g_drive_get_icon(m_drive);
+    const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
+    if(icon_names) {
+        m_icon= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(gicon);
+        m_icon = icon_name;
+    }
+    m_device = g_drive_get_identifier(m_drive, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
 }
 
-bool Drive::canEject(){
-   return m_canEject;
+QString Drive::name() const
+{
+    return m_name;
 }
 
-void Drive::eject(){
-    if(!m_canEject)
-        return;
-    //g_drive_eject_with_operation(m_drive,G_MOUNT_UNMOUNT_NONE,)
+QString Drive::icon() const
+{
+    return m_icon;
 }
 
-Mount::Mount(GMount* gmount):m_mount(gmount){
+QString Drive::device() const
+{
+    return m_device;
+}
+
+bool Drive::canEject()const{
+    return m_canEject;
+}
+
+bool Drive::canStop() const
+{
+    return m_canStop;
+}
+
+GDrive *Drive::getGDrive() const
+{
+    return m_drive;
+}
+
+static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result)
+{
+    GError *error = nullptr;
+    bool successed = g_drive_eject_with_operation_finish(gDrive, result, &error);
+    qDebug()<<successed;
+    if (error) {
+        qDebug()<<error->message;
+        if(! strcmp(error->message,"Not authorized to perform operation")){//umount /data need permissions.
+            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
+            g_error_free(error);
+            return nullptr;
+        }
+
+        QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"), QString(error->message), QMessageBox::Ok);
+        warningBox.exec();
+        g_error_free(error);
+
+    } else {
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
+        /* 弹出完成信息提示 */
+        QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
+        Peony::SyncThread::notifyUser(ejectNotify);
+    }
+
+    return nullptr;
+}
+
+/* Eject some device by stop it's drive. Such as: mobile harddisk. */
+static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThis)
+{
+    GError *error = nullptr;
+    if(!g_drive_poll_for_media_finish(G_DRIVE(object), result, &error)){
+        if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
+            QString errorMsg = QObject::tr("Unable to eject %1").arg(pThis->name());
+            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), errorMsg, QMessageBox::Ok);
+            warningBox.exec();
+            g_error_free(error);
+        }
+    }
+}
+
+void Drive::eject(GMountUnmountFlags ejectFlag)
+{
+    if(m_canEject){
+        g_drive_eject_with_operation(m_drive,ejectFlag,nullptr,nullptr, GAsyncReadyCallback(eject_cb),nullptr);
+    }
+    else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
+        g_drive_stop(m_drive,ejectFlag,NULL,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
+    }
+}
+
+Mount::Mount(GMount* gmount) {
+    m_mount = static_cast<GMount *>(g_object_ref(gmount));
     initMountInfo();
 }
 
@@ -653,13 +923,28 @@ void Mount::initMountInfo(){
     m_name = g_mount_get_name(m_mount);
 
     //4、can eject? 是否可弹出
-    GDrive* gdrive = g_mount_get_drive(m_mount);//gdrive为nullptr表示gparted打开状态
+    GDrive* gdrive = g_mount_get_drive(m_mount);/* gdrive为nullptr表示gparted打开状态 */
     //qDebug()<<__func__<<__LINE__<<(gdrive==nullptr)<<endl;
     if(gdrive){
         m_canEject = g_drive_can_eject(gdrive);
+        m_canStop = g_drive_can_stop(gdrive);
         //g_object_unref(gdrive);
-    }else
-        m_canEject = false;//gpartedd打开时gio无法判断设备是否可弹出
+    }else{
+        m_canEject = g_mount_can_eject(m_mount);/* gpartedd打开时gio获取到设备均不可弹出 */
+        m_canStop = false;
+    }
+
+    //5、can unmount? 是否可卸载
+    m_canUnmount = g_mount_can_unmount(m_mount);
+    /* 获取图标 */
+    GIcon* gicon = g_mount_get_icon(m_mount);
+    const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
+    if(icon_names) {
+        m_icon= *icon_names;
+    } else {
+        g_autofree gchar *icon_name = g_icon_to_string(gicon);
+        m_icon = icon_name;
+    }
 }
 
 
@@ -717,6 +1002,20 @@ bool Volume::canEject() const{
     return m_canEject;
 }
 
+bool Volume::canStop() const
+{
+   return m_canStop;
+}
+
+bool Volume::canUnmount() const{
+    return m_canUnmount;
+}
+
+bool Volume::canMount() const
+{
+    return m_canMount;
+}
+
 /*==================Mount property==============*/
 QString Mount::name() const{
     return m_name;
@@ -724,6 +1023,11 @@ QString Mount::name() const{
 
 QString Mount::uuid() const{
     return m_uuid;
+}
+
+QString Mount::icon() const
+{
+    return m_icon;
 }
 
 QString Mount::device() const{
@@ -734,8 +1038,80 @@ QString Mount::mountPoint() const{
     return m_mountPoint;
 }
 
+GMount *Mount::getGMount() const
+{
+    return m_mount;
+}
+
 bool Mount::canEject() const{
     return m_canEject;
 }
+
+bool Mount::canStop() const{
+    return m_canStop;
+}
+
+bool Mount::canUnmount() const{
+    return m_canUnmount;
+}
+
+static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata) {
+
+    GError *err = nullptr;
+    g_mount_unmount_with_operation_finish(mount, result, &err);
+    if (err) {
+        QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
+        g_error_free(err);
+    } else {
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
+        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        Peony::SyncThread::notifyUser(unmountNotify);
+    }
+
+}
+
+static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result)
+{
+    GError *err = nullptr;
+    g_mount_unmount_with_operation_finish(mount, result, &err);
+    if (err) {
+        if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
+            g_error_free(err);
+            return nullptr;
+        }
+        if(strstr(err->message,"umount: ")){
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
+            g_error_free(err);
+            return nullptr;
+        }
+
+        auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
+                                            "Do you want to unmount forcely?").arg(err->message),QMessageBox::Yes, QMessageBox::No);
+        if (button == QMessageBox::Yes) {
+            g_mount_unmount_with_operation(mount,
+                                           G_MOUNT_UNMOUNT_FORCE,
+                                           nullptr,
+                                           nullptr,
+                                           GAsyncReadyCallback(unmount_force_cb),
+                                           nullptr);
+        }
+        g_error_free(err);
+
+    } else {
+        /* 卸载完成信息提示 */
+        QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
+        Peony::SyncThread::notifyUser(unmountNotify);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
+    }
+    return nullptr;
+}
+
+void Mount::unmount()
+{
+    if(m_canUnmount && m_mount)//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)
+        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), nullptr);
+    //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
+}
+
 
 /*==================Drive property==============*/

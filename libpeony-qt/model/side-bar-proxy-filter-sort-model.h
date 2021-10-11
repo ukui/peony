@@ -25,7 +25,8 @@
 
 #include "peony-core_global.h"
 #include <QSortFilterProxyModel>
-
+#include <QLocale>
+#include <QCollator>
 namespace Peony {
 
 class SideBarAbstractItem;
@@ -40,6 +41,10 @@ public:
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
+
+private:
+    QLocale m_locale;
+    QCollator m_comparer;
 };
 
 }

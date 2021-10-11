@@ -25,7 +25,7 @@
 #include "side-bar-proxy-filter-sort-model.h"
 #include "side-bar-abstract-item.h"
 #include "volume-manager.h"
-
+#include "volumeManager.h"
 #include "side-bar-menu.h"
 #include "side-bar-abstract-item.h"
 #include "bookmark-manager.h"
@@ -73,6 +73,8 @@ using namespace Peony;
 NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
     static NavigationSideBarStyle *global_style = new NavigationSideBarStyle;
+
+    setSortingEnabled(true);
 
     setIconSize(QSize(16, 16));
 
@@ -152,26 +154,26 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         item->clearChildren();
     });
 
+    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,[=](){
+        JumpDirectory(m_currSelectedItem->uri());
+        qDebug()<<"挂载后跳转路径："<<m_currSelectedItem->uri();
+    });
+
     connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
         switch (index.column()) {
         case 0: {
-            auto item = m_proxy_model->itemFromIndex(index);
-            auto targetUri = FileUtils::getTargetUri(item->uri());
-            if (targetUri == "" && item->uri().endsWith(".drive") && item->displayName().contains("DVD"))
-            {
-                qDebug() << "empty drive"<<item->uri();
-                QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
-                break;
+            m_currSelectedItem = m_proxy_model->itemFromIndex(index);
+            if(m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
+                m_currSelectedItem->mount();
+            else{
+                JumpDirectory(m_currSelectedItem->uri());
             }
-            //some side bar item doesn't have a uri.
-            //do not emit signal with a null uri to window.
-            if (!item->uri().isNull())
-                Q_EMIT this->updateWindowLocationRequest(item->uri());
             break;
+
         }
         case 1: {
             auto item = m_proxy_model->itemFromIndex(index);
-            if (item->isMounted() || item->isEjectable()) {
+            if (item->isMounted() || item->isEjectable()||item->isStopable()) {
                 auto leftIndex = m_proxy_model->index(index.row(), 0, index.parent());
                 this->collapse(leftIndex);
                 item->ejectOrUnmount();
@@ -269,7 +271,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     if ((0 != QString::compare(item->uri(), "computer:///")) &&
                         (0 != QString::compare(item->uri(), "filesafe:///"))) {
                         for (const auto &actionItem : actionList) {
-                            actionItem->setEnabled(item->isMounted());
+                            if(item->isMountable()||item->isUnmountable())/* 分区才去需要判断是否已挂载 */
+                                actionItem->setEnabled(item->isMounted());
                         }
                     }
                 }
@@ -283,7 +286,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
-    expandAll();
+    expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
@@ -372,6 +375,32 @@ QSize NavigationSideBar::sizeHint() const
         width = 210;
     size.setWidth(width);
     return size;
+}
+
+void NavigationSideBar::JumpDirectory(const QString &uri)
+{
+    auto info = FileInfo::fromUri(uri);
+    if (info.get()->isEmptyInfo()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
+    auto targetUri = FileUtils::getTargetUri(uri);
+    if (targetUri == "" && uri== "burn://" /*&& item->displayName().contains("DVD")*/)
+    {
+        qDebug() << "empty drive"<<uri;
+        QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
+        return;
+    }
+
+    if (!targetUri.isEmpty()) {
+        Q_EMIT this->updateWindowLocationRequest(targetUri);
+        return;
+    }
+
+    //some side bar item doesn't have a uri.
+    //do not emit signal with a null uri to window.
+    if (!uri.isNull())
+        Q_EMIT this->updateWindowLocationRequest(uri);
 }
 
 void NavigationSideBar::keyPressEvent(QKeyEvent *event)
