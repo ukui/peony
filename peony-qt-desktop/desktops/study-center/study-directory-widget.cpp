@@ -144,7 +144,7 @@ void StudyDirectoryWidget::initAppListWidget()
         }
 
         //插入应用列表
-        StudyListView* listView = new StudyListView;
+        StudyListView* listView = new StudyListView(this);
         listView->setData(m_studyCenterDataList.at(i).second);
         m_scrollAreaWidLayout->addWidget(listView);
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));

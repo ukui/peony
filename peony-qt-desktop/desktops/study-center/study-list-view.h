@@ -33,6 +33,7 @@ protected:
 private:
     QStandardItemModel* m_listmodel=nullptr;
     bool m_iconClicked = false;
+    QPoint m_pressedPos;
 };
 
 }
