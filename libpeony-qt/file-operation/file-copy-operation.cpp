@@ -51,13 +51,15 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
 
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
-    } else {
+    }/* else {
+        // fix #83068
+        // windows里的重复复制操作没有备份选项，但是会一直弹框提示，这里和windows的行为靠拢
         auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
         QUrl lastPasteDirectoryUrl = Peony::FileUtils::urlEncode(lastPasteDirectoryUri);
         if (destDirUrl == lastPasteDirectoryUrl) {
             m_is_duplicated_copy = true;
         }
-    }
+    }*/
 
     m_conflict_files.clear();
     m_source_uris = sourceUris;
