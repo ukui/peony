@@ -37,6 +37,9 @@ using namespace Peony;
 SideBarProxyFilterSortModel::SideBarProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(true);
+    m_locale = QLocale(QLocale::system().name());
+    m_comparer = QCollator(m_locale);
+    m_comparer.setNumericMode(true);
 }
 
 bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -72,61 +75,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 //    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
-            //special Volumn of 839 M upgrade part not show process
-            auto targetUri = FileUtils::getTargetUri(item->uri());
-            if (targetUri == "")
-                targetUri = item->uri();
-            //maybe info is not updated, so should add a existed checkment. link to: #67016.
-            if (!FileUtils::isFileExsit(targetUri))
-                return false;
-            if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
-                return false;
-
-            //hide data volumn if /data/usershare exsited.
-            if (targetUri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
-                return false;
-            }
-            //FIXME use display name to hide 839 MB disk
-            if (item->displayName().contains("839 MB"))
-                return false;
-
-            //fix side bar show kylin box issue, bug#45781
-            if (targetUri.startsWith("file:///home/"))
-                return false;
-
-            if (item->uri() != "computer:///root.link") {
-
-                //FIXME: replace BLOCKING api in ui thread.
-                auto gvfsFileInfo = FileInfo::fromUri(item->uri());
-                if (gvfsFileInfo->displayName().isEmpty() || gvfsFileInfo->targetUri().isEmpty()) {
-                        FileInfoJob j(gvfsFileInfo);
-                        j.querySync();
-                }
-                QString gvfsDisplayName = gvfsFileInfo->displayName();
-                QString gvfsUnixDevice = gvfsFileInfo->unixDeviceFile();
-
-                // FIX bug 43701 This filters out mounted FTP file systems
-                if (!gvfsUnixDevice.isNull()
-                        && (gvfsFileInfo->targetUri().startsWith("ftp://")
-                            || gvfsFileInfo->targetUri().startsWith("ftp://")))
-                    return true;
-
-                if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")
-                                                 /*||gvfsDisplayName.contains("CDROM")*/))
-                    return true;
-
-                if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
-                    return false;//Filter some non-mountable drive items
-
-                if (item->isMounted())
-                    return true;
-                if (item->isRemoveable() && item->isMountable()) {
-                    return true;
-                }
-                if (!item->isRemoveable() && !item->isEjectable())
-                    return true;
-                return false;
-            }
+           item->filterShowRow();
         }
     }
 
@@ -136,6 +85,10 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     //qDebug()<<"less than";
+    /* 第一层不排序 */
+    if(!left.parent().isValid() && !right.parent().isValid())
+        return sortOrder() == Qt::AscendingOrder? true: false;
+
     if (!(left.isValid() && right.isValid())) {
         return QSortFilterProxyModel::lessThan(left, right);
     }
@@ -145,7 +98,7 @@ bool SideBarProxyFilterSortModel::lessThan(const QModelIndex &left, const QModel
         return false;
     }
     //qDebug()<<leftItem->displayName()<<rightItem->displayName();
-    return leftItem->displayName().compare(rightItem->displayName()) > 0;
+    return m_comparer.compare(leftItem->displayName(), rightItem->displayName()) > 0;
 }
 
 SideBarAbstractItem *SideBarProxyFilterSortModel::itemFromIndex(const QModelIndex &proxy_index)

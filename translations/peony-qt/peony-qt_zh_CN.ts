@@ -248,28 +248,28 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="199"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="201"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="215"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="249"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="217"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="251"/>
         <source>Can not open %1, %2</source>
         <translation>无法打开%1, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="233"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="235"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="467"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="496"/>
         <source>All tags...</source>
         <translation>所有标记...</translation>
     </message>
@@ -626,7 +626,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="410"/>
         <source>Select Path</source>
-        <translation type="unfinished"></translation>
+        <translation>选择路径</translation>
     </message>
     <message>
         <source>Close advance search.</source>

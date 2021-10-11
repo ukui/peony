@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef VOLUMEMANAGER_H
-#define VOLUMEMANAGER_H
+#ifndef VOLUME_MANAGER_H
+#define VOLUME_MANAGER_H
 
 #include "peony-core_global.h"
 

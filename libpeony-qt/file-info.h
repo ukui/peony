@@ -380,7 +380,7 @@ private:
 
     bool m_can_start = false;
     bool m_can_stop = false;
-    const char *m_unix_device_file = nullptr;
+    QString m_unix_device_file;
 
     //FIXME: should i use smart pointer wrap these data?
     GFile *m_file = nullptr;

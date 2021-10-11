@@ -208,28 +208,28 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="162"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="199"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="201"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="215"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="249"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="217"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="251"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="233"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="235"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -237,7 +237,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="467"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="496"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>

@@ -27,7 +27,8 @@
 #include "file-info-job.h"
 #include "connect-to-server-dialog.h"
 #include "sync-thread.h"
-#include "volume-manager.h"
+//#include "volume-manager.h"
+#include "volumeManager.h"
 #include "gobject-template.h"
 #include "file-utils.h"
 #include "libnotify/notification.h"
@@ -50,11 +51,12 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
                                        SideBarModel *model,
                                        QObject *parent) :
         SideBarAbstractItem(model, parent),
-        m_uri(uri),
-        m_iconName(iconName),
-        m_displayName(displayName),
         m_parentItem(parentItem)
 {
+    m_uri = uri;
+    m_iconName = iconName;
+    m_displayName = displayName;
+
     auto userShareManager = UserShareInfoManager::getInstance();
     connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
     connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
@@ -82,7 +84,8 @@ bool SideBarNetWorkItem::hasChildren()
     return (m_parentItem == nullptr);
 }
 
-bool SideBarNetWorkItem::isMountable()
+
+bool SideBarNetWorkItem::isUnmountable()
 {
     /* 远程服务器返回true */
     if (!m_uri.startsWith("file://")&& m_uri!="network:///"){
@@ -136,8 +139,10 @@ static void unmount_finished(GMount *mount, GAsyncResult *result)
 
 void SideBarNetWorkItem::realUnmount()
 {
-    auto mount = VolumeManager::getMountFromUri(this->uri().toUtf8().constData());  
-    g_mount_unmount_with_operation(mount->getGMount(),
+    //auto mount = Experimental_Peony::VolumeManager::getMountFromUri(this->uri().toUtf8().constData());
+    GFile *gFile= g_file_new_for_uri(this->uri().toUtf8().constData());
+    GMount *gMount = g_file_find_enclosing_mount(gFile, nullptr, nullptr);
+    g_mount_unmount_with_operation(gMount,
                     G_MOUNT_UNMOUNT_NONE,
                     nullptr,
                     nullptr,

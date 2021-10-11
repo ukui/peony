@@ -122,52 +122,56 @@ const QList<QAction *> SideBarMenu::constructPersonalActions()
     return l;
 }
 
+#include "file-enumerator.h"
 const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
-
-    //FIXME: replace BLOCKING api in ui thread.
-    auto info = FileInfo::fromUri(m_uri);
-    if (info->displayName().isEmpty()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
-
-    if (info->canUnmount() || info->canMount()) {
+    /* 卸载 */
+    if (m_item->isUnmountable()) {
         l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
             m_item->unmount();
+        });     
+        l.last()->setEnabled(m_item->isMounted());
+    }
+
+    /* 弹出 */
+    if (m_item->isEjectable()||m_item->isStopable()) {
+        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
+            m_item->eject(G_MOUNT_UNMOUNT_NONE);
         });
-        bool isUmountable = FileUtils::isFileUnmountable(m_item->uri());
-        bool isMounted = isUmountable;
-        auto targetUri = FileUtils::getTargetUri(m_item->uri());
-        if (!targetUri.isEmpty()) {
-            if (targetUri == "burn:///") {
-                isMounted = false;
-            } else {
-                isMounted = (targetUri != "file:///") || isUmountable;
-            }
-        }
 
-        l.last()->setEnabled(isMounted);
+        //l.last()->setEnabled(m_item->isMounted());
     }
-    if(0 != QString::compare(m_uri, "computer:///root.link"))
+
+
+    QString unixDevice = m_item->getDevice();
+    QString uri;
+    if(m_uri=="file:///") /* 文件系统特殊处理 */
+        uri = "computer:///root.link";
+    else if(!unixDevice.isEmpty())/* 由于格式化、属性、插件（例如：发送到移动设备）等未重构，还是需要用之前的computer uri */
+        uri = getComputerUriFromUnixDevice(unixDevice);
+    else
+        uri=m_uri;
+
+    /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
+    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
+            &&!unixDevice.startsWith("/dev/bus/usb")
+            && (m_item->isMountable()||m_item->isUnmountable()))
     {
-        if (m_item->isRemoveable()) {
-            l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Eject"), [=](){
-                m_item->eject(G_MOUNT_UNMOUNT_NONE);
-            });
-
-            l.last()->setEnabled(m_item->isMounted());
-        }
+          l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
+          Format_Dialog *fd  = new Format_Dialog(uri,m_item);
+          fd->show();
+      });
     }
 
+    /* 插件 */
     if(0 != QString::compare(m_uri, "filesafe:///")) {
         auto mgr = MenuPluginManager::getInstance();
         auto ids = mgr->getPluginIds();
         for (auto id : ids) {
             auto factory = mgr->getPlugin(id);
             //qDebug()<<id;
-            auto tmp = factory->menuActions(MenuPluginInterface::SideBar, m_uri, QStringList()<<m_uri);
+            auto tmp = factory->menuActions(MenuPluginInterface::SideBar, uri, QStringList()<<uri);
             addActions(tmp);
             for (auto action : tmp) {
                 action->setParent(this);
@@ -176,6 +180,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         }
     }
 
+    /* 属性 */
     l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
         //fix computer show properties crash issue, link to bug#77789
         if (m_uri == "computer:///" || m_uri == "//")
@@ -183,36 +188,16 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
             gotoAboutComputer();
         }
         else{
-            PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+            PropertiesWindow *w = new PropertiesWindow(QStringList()<<uri);
             w->show();
         }
     });
     if ((0 != QString::compare(m_uri, "computer:///")) &&
-        (0 != QString::compare(m_uri, "filesafe:///"))) {
+        (0 != QString::compare(m_uri, "filesafe:///"))
+            &&(m_item->isMountable()||m_item->isUnmountable())) {
         l.last()->setEnabled(m_item->isMounted());
     }
 
-    /*
-     *  add format function
-     *  provide option for all mountable device
-     *  if can not format, will have prompt
-     */
-    auto targetUri = FileUtils::getTargetUri(m_uri);
-    auto mount = VolumeManager::getMountFromUri(targetUri);
-    QString unixDevice = FileUtils::getUnixDevice(m_uri);
-    //qDebug() << "targetUri:"<<targetUri<<m_uri;
-    //fix erasable optical disk can be format issue, bug#32415
-    //fix bug#52491, CDROM and DVD can format issue
-    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
-       && info->isVolume() && info->canUnmount()){
-          l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
-          Format_Dialog *fd  = new Format_Dialog(m_uri,m_item);
-          fd->show();
-      });
-      //no right u-disk should not be formated, fix bug#
-      if (! mount)
-          l.last()->setEnabled(false);
-    }
     return l;
 }
 
@@ -233,6 +218,7 @@ void SideBarMenu::gotoAboutComputer()
 const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
 {
     QList<QAction *> l;
+    static const QString netWorkUri="network:///";
 
     /* 共享文件夹无右键菜单'卸载' */
     if (!m_uri.startsWith("file://")) {
@@ -241,16 +227,61 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
         });       
         l.last()->setEnabled(m_item->isMounted());
     }
-
-    //fix network items has Properties option issue, link to bug#78617
-    if (! m_uri.startsWith("network://")) {
+    if(netWorkUri != m_uri){
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-            PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
-            w->show();
+            if((m_item->isMountable()||m_item->isUnmountable())){
+                /* 远程服务器 */
+                FileEnumerator e;
+                e.setEnumerateDirectory("computer:///");
+                e.enumerateSync();
+                for (auto fileInfo : e.getChildren()) {
+                    FileInfoJob infoJob(fileInfo);
+                    infoJob.querySync();
+
+                    /* 由远程服务器的targeturi获取uri来调用属性窗口, */
+                    QUrl targetUrl(fileInfo.get()->targetUri());
+                    QUrl sourceUrl(m_uri);
+
+                    if(sourceUrl.scheme()==targetUrl.scheme() && sourceUrl.host()==targetUrl.host()){/* 相同scheme和host，但port不同时怎么处理呢？ */
+                        QString uri = fileInfo.get()->uri();
+                        PropertiesWindow *w = new PropertiesWindow(QStringList()<<uri);
+                        w->show();
+                        break;
+                    }
+                }
+            }else{
+                /* 共享文件夹 */
+                PropertiesWindow *w = new PropertiesWindow(QStringList()<<m_uri);
+                w->show();
+            }
         });
+        if(m_item->isMountable()||m_item->isUnmountable())
+            l.last()->setEnabled(m_item->isMounted());
     }
 
     return l;
 
 }
+
+QString SideBarMenu::getComputerUriFromUnixDevice(const QString &unixDevice){
+    /* volume item,遍历方式获取uri */
+    FileEnumerator e;
+    e.setEnumerateDirectory("computer:///");
+    e.enumerateSync();
+    QString uri;
+    for (auto fileInfo : e.getChildren()) {
+        FileInfoJob infoJob(fileInfo);
+        infoJob.querySync();
+        /* 由volume的unixDevice获取computer uir */
+        auto info = infoJob.getInfo();
+        QString device = fileInfo.get()->unixDeviceFile();
+        if(device==unixDevice){
+            uri = fileInfo.get()->uri();
+            break;
+        }
+    }
+    return uri;
+}
+
+
 
