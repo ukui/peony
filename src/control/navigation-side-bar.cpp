@@ -154,7 +154,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         item->clearChildren();
     });
 
-    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,[=](){
+    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,this,[=](){
         JumpDirectory(m_currSelectedItem->uri());
         qDebug()<<"挂载后跳转路径："<<m_currSelectedItem->uri();
     });
