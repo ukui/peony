@@ -39,6 +39,7 @@ private:
     void initPageButton();
     void updatePageButton();
     void changeTheme();
+    void screenChange();
 
 private:
     QGridLayout* m_mainGridLayout=nullptr;
