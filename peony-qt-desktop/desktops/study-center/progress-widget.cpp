@@ -49,8 +49,17 @@ void ProgressWidget::initUi()
     m_iconLabel->setPixmap(pix);
 
     m_timeLabel = new QLabel(this);
-    m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
-   // m_timeLabel->setFixedSize(this->width()/5*2,this->height()/2);
+    int iHour = m_iTime/60;
+    int iMin = m_iTime%60;
+    if(0 < iHour)
+    {
+        m_timeLabel->setText(QString("%1小时%2分钟").arg(iHour).arg(iMin));
+    }
+    else
+    {
+        m_timeLabel->setText(QString("%1分钟").arg(iMin));
+    }
+
     m_timeLabel->setAlignment(Qt::AlignRight|Qt::AlignBottom);
 
     m_timeGridLayout = new QGridLayout;
@@ -68,7 +77,17 @@ void  ProgressWidget::paintSlot(TABLETAPP &app)
     this->m_iTime = app.iTime;
     this->m_strAppName = app.appName;
     this->m_strAppIcon = app.appIcon;
-    m_timeLabel->setText(QString("%1小时%2分钟").arg(m_iTime/60).arg(m_iTime%60));
+    int iHour = m_iTime/60;
+    int iMin = m_iTime%60;
+    if(0 < iHour)
+    {
+        m_timeLabel->setText(QString("%1小时%2分钟").arg(iHour).arg(iMin));
+    }
+    else
+    {
+        m_timeLabel->setText(QString("%1分钟").arg(iMin));
+    }
+
     m_processBar->setValue(m_iTime);
     m_nameLabel->setText(m_strAppName);
 
@@ -87,4 +106,18 @@ void ProgressWidget::setMaximum(int iMaxValue)
         iMaxValue = 100;
     }
     m_processBar->setMaximum(iMaxValue);
+}
+
+void ProgressWidget::changeThemeSlot(QString strTheme)
+{
+    if (strTheme == "ukui-dark")
+    {
+        //深色主题
+        m_timeLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px}");
+    }
+    else
+    {
+        //浅色主题
+        m_timeLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px}");
+    }
 }

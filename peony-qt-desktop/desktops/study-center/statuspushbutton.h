@@ -14,6 +14,9 @@ public:
 private:
     double m_val = 0.0;
     QPixmap disc;
+
+public Q_SLOTS:
+    void changeTheme(QString);
 };
 
 #endif // STATUSPUSHBUTTON_H

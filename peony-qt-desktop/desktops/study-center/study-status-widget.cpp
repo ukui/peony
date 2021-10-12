@@ -92,6 +92,7 @@ void StudyStatusWidget::initWidget()
     m_userIconLabel->setAttribute(Qt::WA_TranslucentBackground);
     m_userNameLabel->setAttribute(Qt::WA_TranslucentBackground);
 
+    m_userNameLabel->setFont(ft);
     m_userNameLabel->setStyleSheet("QLabel{color: palette(text);font-size:24px}");
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -133,11 +134,6 @@ void StudyStatusWidget::initWidget()
     todayTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
     weekTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
     monthTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
-
-    //设置字体颜色
-    todayTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
-    weekTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
-    monthTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px}");
 
     todayTitleLabel->setText(tr("今日使用时长"));
     weekTitleLabel->setText(tr("本周使用时长"));
@@ -189,7 +185,7 @@ void StudyStatusWidget::initWidget()
     QLabel* timeTitleLabel = new QLabel;
     timeTitleLabel->setAttribute(Qt::WA_TranslucentBackground);
     timeTitleLabel->setText(tr("最常使用 (本周累计)"));
-    timeTitleLabel->setStyleSheet("QLabel{color:#9C9C9C;font-size:16px;background:transparent;}");
+
     ScrollVboxLayout->addWidget(timeTitleLabel);
     ScrollVboxLayout->addSpacing(10);
 
@@ -200,6 +196,7 @@ void StudyStatusWidget::initWidget()
         m_progressGridLayout->addWidget(progress,i/2 ,i%2);
 
         connect(this, SIGNAL(setMaximum(int)), progress, SLOT(setMaximum(int)));
+        connect(this, &StudyStatusWidget::changeTheme, progress, &ProgressWidget::changeThemeSlot);
     }
 
     m_progressGridLayout->setVerticalSpacing(25);
@@ -211,7 +208,6 @@ void StudyStatusWidget::initWidget()
 
     m_updateTimeBt = new QPushButton(this);
     //m_updateTimeBt->setFont(ft);
-    m_updateTimeBt->setStyleSheet("QPushButton{color:#9C9C9C;font-size:16px;background:transparent;}");
 
     connect(m_updateTimeBt,SIGNAL(clicked()), this,SIGNAL(updateTimeSignal()));
     QDateTime curTime = QDateTime::currentDateTime();//获取当前时间
@@ -222,7 +218,9 @@ void StudyStatusWidget::initWidget()
     //m_progressGridLayout->addWidget(m_updateTimeBt,2 ,1);
 
     m_updateIconBt = new StatusPushButton(this);
-    m_updateIconBt->setStyleSheet("color:#9C9C9C;background:transparent;");
+    m_updateIconBt->setStyleSheet("background:transparent;");
+
+    connect(this, &StudyStatusWidget::changeTheme, m_updateIconBt, &StatusPushButton::changeTheme);
 
     connect(m_updateTimeBt,&QPushButton::clicked,[=](){
         m_animation->start();
@@ -265,12 +263,25 @@ void StudyStatusWidget::initWidget()
             //深色主题
            this->setStyleSheet(styleSheetDark);
            line->setStyleSheet("background-color:rgba(255, 255, 255, 0.1)");
+           //设置字体颜色
+           todayTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px}");
+           weekTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px}");
+           monthTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px}");
+           timeTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px;background:transparent;}");
+           m_updateTimeBt->setStyleSheet("QPushButton{color:rgba(255,255,255,0.45);font-size:16px;background:transparent;}");
+
         }
         else
         {
             //浅色主题
            this->setStyleSheet(styleSheetLight);
            line->setStyleSheet("background-color:rgba(38, 38, 40, 0.1)");
+           //设置字体颜色
+           todayTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px}");
+           weekTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px}");
+           monthTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px}");
+           timeTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px;background:transparent;}");
+           m_updateTimeBt->setStyleSheet("QPushButton{color:rgba(38,38,38,0.45);font-size:16px;background:transparent;}");
         }
     });
     initUserInfo();
