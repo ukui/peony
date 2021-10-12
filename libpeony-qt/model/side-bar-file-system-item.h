@@ -44,7 +44,7 @@ public:
                                    SideBarModel *model,
                                    QObject *parent = nullptr);
 
-    ~SideBarFileSystemItem() {}
+    ~SideBarFileSystemItem();
 
     Type type() override {
         return SideBarAbstractItem::FileSystemItem;
@@ -116,7 +116,6 @@ private:
     SideBarFileSystemItem *m_parent = nullptr;
     Experimental_Peony::Volume m_volume = nullptr;
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
-    Experimental_Peony::VolumeManager *m_volumeManager=nullptr;
     FileEnumerator *m_enumerator = nullptr;
 
     bool m_isRootChild = false;
