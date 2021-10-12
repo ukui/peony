@@ -399,7 +399,12 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
                 });
                 return;
             } else {
-                this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+                //fix bug:#84724
+                if (m_windowManager->getWindowByScreen(m_primaryScreen)->getCurrentDesktop()->getDesktopType() == DesktopType::StudyCenter) {
+                    this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::RightToLeft);
+                } else {
+                    this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+                }
             }
         }
 
@@ -830,6 +835,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     } else {
         nextDesktop->setGeometry(nextDesktopStartRect);
         nextDesktop->show();
+        nextDesktop->getRealDesktop()->show();
     }
 
     animationGroup->start();
@@ -1088,7 +1094,6 @@ void PeonyDesktopApplication::initGSettings()
 
 void PeonyDesktopApplication::updateTabletModeValue(bool mode)
 {
-    m_isTabletMode = mode;
     m_isTabletMode = mode;
 
     this->changeDesktop();
