@@ -67,6 +67,8 @@ void StudyCenterMode::initUi()
     QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
     QStringList strListTitleStyle;
     strListTitleStyle<<"精准练习"<<"#009ACD";
+    strListTitleStyle<< "PRACTICE" << "rgba(0, 154, 205, 0.05)";
+
     QList<QPair<QString, QList<TabletAppEntity*>>> dataList;
 
     dataList.append(qMakePair(QString(tr("math")),studyCenterDataMap[STUDY_CENTER_MATH]));
@@ -78,12 +80,16 @@ void StudyCenterMode::initUi()
     dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"守护中心"<<"#43CD80";
+    strListTitleStyle << "GUARDS" << "rgba(67, 205, 128, 0.05)";
+
     dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
     guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
     dataList.clear();
     strListTitleStyle.clear();
     strListTitleStyle<<"同步学习"<<"#FF8247";
+    strListTitleStyle << "COURSE" << "rgba(255, 130, 71, 0.05)";
+
     dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
     synWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
 
