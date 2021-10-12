@@ -68,16 +68,26 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
     m_mainLayout=new QVBoxLayout(this);
-    if(strListTitleStyle.size() >= 2)
+    if(strListTitleStyle.size() >= 4)
     {
         m_titleLabel = new QLabel;
         QFont ft;
         ft.setBold(true);
         m_titleLabel->setFont(ft);
         m_titleLabel->setAttribute(Qt::WA_TranslucentBackground);
-        m_titleLabel->setStyleSheet(QString("color:%1;font-size:32px").arg(strListTitleStyle.at(1)));
+        m_titleLabel->setStyleSheet(QString("QLabel{background-color: transparent;color:%1;font-size:32px}").arg(strListTitleStyle.at(1)));
         m_titleLabel->setText( strListTitleStyle.at(0).toLocal8Bit().constData());
         m_mainLayout->addWidget(m_titleLabel);
+
+        QLabel* backGroundLabel = new QLabel(this);
+        QFont bft;
+        bft.setBold(true);
+        bft.setWeight(QFont::Bold);
+        backGroundLabel->setFont(bft);
+        backGroundLabel->setStyleSheet(QString("QLabel{background-color: transparent;color:%1;font-size:64px}").arg(strListTitleStyle.at(3)));
+        backGroundLabel->setText(strListTitleStyle.at(2).toLocal8Bit().constData());
+        backGroundLabel->setGeometry(15,-15,500,110);
+        backGroundLabel->lower();
     }
 
     m_scrollArea = new QScrollArea;

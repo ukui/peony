@@ -79,7 +79,7 @@ void StudyStatusWidget::initWidget()
     m_titleLabel->setFont(ft);
 
     //设置颜色
-    m_titleLabel->setStyleSheet("color:#8869D5;font-size:32px");
+    m_titleLabel->setStyleSheet("QLabel{background-color: transparent;color:#9370DB; font-size:32px;}");
     m_titleLabel->setText(tr("学情中心"));
     m_titleLabel->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 
@@ -96,6 +96,19 @@ void StudyStatusWidget::initWidget()
     m_userNameLabel->setStyleSheet("QLabel{color: palette(text);font-size:24px}");
     m_userIconLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
     m_userNameLabel->setAlignment(Qt::AlignRight|Qt::AlignTop);
+
+    //设置学情中心背景字母
+    QLabel* backGroundLabel = new QLabel(this);
+
+    QFont bft;
+    bft.setBold(true);
+    bft.setWeight(QFont::Bold);
+    backGroundLabel->setFont(bft);
+
+    backGroundLabel->setStyleSheet("QLabel{background-color: transparent;color:rgba(147, 112, 219, 0.05);font-size:64px;}");
+    backGroundLabel->setText(tr("STATISTICS"));
+    backGroundLabel->setGeometry(45,0,500,110);
+    backGroundLabel->lower();
 
     userInfoLayout->addWidget(m_titleLabel);
     userInfoLayout->addStretch();
