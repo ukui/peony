@@ -65,6 +65,15 @@ SideBarFileSystemItem::SideBarFileSystemItem(QString uri, const Experimental_Peo
     m_children = new QVector<SideBarAbstractItem*>();
 }
 
+SideBarFileSystemItem::~SideBarFileSystemItem()
+{
+    if(m_enumerator)
+    {
+        delete m_enumerator;
+        m_enumerator = nullptr;
+    }
+}
+
 QString SideBarFileSystemItem::uri() {
     return FileUtils::urlEncode(m_uri);
 }
@@ -125,7 +134,6 @@ void SideBarFileSystemItem::initDirInfo(const QString &uri)
 
    m_children    = nullptr;
    m_watcher     = nullptr;
-   m_volumeManager = nullptr;
    m_iconName    = "gtk-directory";
    m_device      = m_mountPoint = "";
 
@@ -430,10 +438,9 @@ void SideBarFileSystemItem::findChildren()
     if (m_parent == nullptr) {
         int volumeCount = 0;
         QList<Experimental_Peony::Volume>* volumeList;
-        m_volumeManager = Experimental_Peony::VolumeManager::getInstance();
-
-        volumeList = m_volumeManager->allVaildVolumes();
+        volumeList = Experimental_Peony::VolumeManager::getInstance()->allVaildVolumes();
         volumeCount = volumeList->count();
+
         for(int i=0; i<volumeCount; ++i){
             auto volume = volumeList->at(i);
 
@@ -455,7 +462,8 @@ void SideBarFileSystemItem::findChildren()
             enumdir = info.get()->targetUri();
         }
 
-        m_enumerator= new FileEnumerator;
+        if(!m_enumerator)
+            m_enumerator= new FileEnumerator();
         m_enumerator->setEnumerateDirectory(enumdir);
         m_enumerator->setEnumerateWithInfoJob();
 
@@ -465,15 +473,17 @@ void SideBarFileSystemItem::findChildren()
     }
     /* 设备动态增减处理 */
     if("computer:///" == m_uri){
-        connect(m_volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd);
-        connect(m_volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove);
-        connect(m_volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount);
-        connect(m_volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount);
-        connect(m_volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate);
+        auto volumeManager = Experimental_Peony::VolumeManager::getInstance();
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate);
 
     }else{
         /* 对挂载目录监听 */
-        m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
+        if(!m_watcher)
+            m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
         m_watcher->setMonitorChildrenChange();
         connect(m_watcher.get(),&FileWatcher::fileCreated,this,&SideBarFileSystemItem::slot_fileCreate);
         connect(m_watcher.get(),&FileWatcher::fileDeleted,this,&SideBarFileSystemItem::slot_fileDelete);
