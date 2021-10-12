@@ -11,6 +11,7 @@
 #include <glib/gerror.h>
 #include <QCollator>
 #include <QTextCodec>
+#include <QDBusInterface>
 
 using namespace Peony;
 
@@ -60,6 +61,7 @@ void TabletAppManager::initSettings()
 
     QString appNameSettingPath   = homePath + "/.config/ukui/desktop-tablet-app.ini";
     QString systemAppSettingPath = homePath + "/.config/ukui/desktop-tablet-system-app.ini";
+    QString disabledSettingPath  = homePath + "/.cache/ukui-menu/ukui-menu.ini";
 //    QString systemAppSettingPath = homePath + "/usr/bin/desktop-tablet-system-app.ini";
 
     //显示在平板桌面的app
@@ -68,6 +70,9 @@ void TabletAppManager::initSettings()
     //系统预置的app
     m_systemAppSetting = new QSettings(systemAppSettingPath, QSettings::IniFormat, this);
     m_systemAppSetting->setIniCodec(QTextCodec::codecForName("utf-8"));
+    //被禁用的app列表
+    m_disabledAppSetting = new QSettings(disabledSettingPath, QSettings::IniFormat, this);
+    m_disabledAppSetting->setIniCodec(QTextCodec::codecForName("utf-8"));
 }
 
 void TabletAppManager::initWatcher()
@@ -117,6 +122,18 @@ void TabletAppManager::fillAppPathList()
     this->filterAppList();
 }
 
+void TabletAppManager::insertNewAppName(const QString &appName)
+{
+    //m_appNameSetting->beginGroup("application");
+    quint32 maxValue = 0;
+    for (const QString &key : m_appNameSetting->allKeys()) {
+        if (m_appNameSetting->value(key).toInt() > maxValue) {
+            maxValue = m_appNameSetting->value(key).toInt();
+        }
+    }
+    m_appNameSetting->setValue(appName, (maxValue + 1));
+}
+
 void TabletAppManager::updateAppNameSetting()
 {
     m_mutex.lock();
@@ -144,8 +161,7 @@ void TabletAppManager::updateAppNameSetting()
     m_appNameSetting->beginGroup("application");
 
     for (const QString &appName : InstalledAppList) {
-        //排序默认值65535
-        m_appNameSetting->setValue(appName, 65535);
+        this->insertNewAppName(appName);
     }
     m_appNameSetting->sync();
 
@@ -700,5 +716,86 @@ QMap<QString, QList<TabletAppEntity *>> TabletAppManager::getStudyCenterData()
     m_studyCenterDataMap = map;
 
     return m_studyCenterDataMap;
+}
+
+bool TabletAppManager::execApp(TabletAppEntity *appEntity)
+{
+    return launchApp(appEntity->execCommand);
+}
+
+bool TabletAppManager::execApp(const QString &appPath)
+{
+    return launchApp(getAppExecCommand(appPath));
+}
+
+bool TabletAppManager::launchApp(const QString &execCommand)
+{
+    if (execCommand.isEmpty()) {
+        qDebug() << "[TabletAppManager::launchApp] launch app : execCommand is empty";
+        return false;
+    }
+
+    if (appIsDisabled(execCommand)) {
+        qDebug() << "[TabletAppManager::launchApp] app" << execCommand << "is disabled, so launch failed";
+        return false;
+    }
+
+    QString exe = execCommand;
+    QStringList parameters;
+    if (exe.indexOf("%") != -1) {
+        exe = exe.left(exe.indexOf("%") - 1);
+    }
+
+    if (exe.contains(" ")) {
+        //排除参数之间多个空格分隔的情况
+        parameters = exe.split(QRegExp("\\s+"));
+        exe = parameters[0];
+        parameters.removeAt(0);
+    }
+
+    for (auto begin = parameters.begin(); begin != parameters.end(); ++begin) {
+        if (begin->contains("%")) {
+            // 命令行最多可包含一个％f，％u，％F或％U字段代码
+            if (begin->count() == 2) {
+                parameters.removeOne(*begin);
+            } else {
+                begin->remove(begin->indexOf("%"), 2);
+            }
+            break;
+        }
+    }
+
+    QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
+    session.call("app_open", exe, parameters);
+
+    return true;
+}
+
+bool TabletAppManager::appIsDisabled(const QString &execCommand)
+{
+    if (execCommand.isEmpty()) {
+        qDebug() << "[TabletAppManager::appIsDisabled] execCommand is empty";
+        return true;
+    }
+
+    m_disabledAppSetting->sync();
+    m_disabledAppSetting->beginGroup("application");
+    bool isExist = m_disabledAppSetting->contains(execCommand);
+    bool notDisable = true;
+    if (isExist) {
+        notDisable = m_disabledAppSetting->value(execCommand).toBool();
+    }
+    m_disabledAppSetting->endGroup();
+
+    if (isExist && !notDisable) {
+        return true;
+    }
+
+    return false;
+}
+
+bool TabletAppManager::appIsDisabled(TabletAppEntity *appEntity)
+{
+    return appIsDisabled(appEntity->execCommand);
 }
 

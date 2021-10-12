@@ -160,15 +160,11 @@ void StudyDirectoryWidget::execApplication(QModelIndex app)
 {
     //  Q_EMIT sendHideMainWindowSignal();
     TABLETAPP tabletApp = app.data(Qt::DisplayRole).value<TABLETAPP>();
-    QString execpath=tabletApp.execCommand;
-    //移除启动参数%u或者%U
-    if(execpath.contains("%"))
-    {
-        int index=execpath.indexOf(QString("%").at(0));
-        execpath.remove(index-1,3);
-    }
-    QProcess::startDetached(execpath);
 
+    TabletAppEntity appEntity;
+    appEntity.execCommand = tabletApp.execCommand;
+
+    TabletAppManager::getInstance()->execApp(&appEntity);
 }
 
 
