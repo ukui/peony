@@ -21,5 +21,6 @@
         <file>img/learning-center-select.svg</file>
         <file>img/learning-center-selected.svg</file>
         <file>img/refresh.svg</file>
+        <file>img/white-refresh.svg</file>
     </qresource>
 </RCC>
