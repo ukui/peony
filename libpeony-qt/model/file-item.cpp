@@ -385,7 +385,7 @@ void FileItem::findChildrenAsync()
                     infoJob->setAutoDelete();
                     connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
                         m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
-                        auto info = FileInfo::fromUri(uri);
+                        //auto info = FileInfo::fromUri(uri);
                         ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
                         /*
                         if (info->isDesktopFile()) {
@@ -489,7 +489,8 @@ void FileItem::findChildrenAsync()
                 this->onChildAdded(uri);
                 Q_EMIT this->childAdded(uri);
                 qDebug() << "positive onChildAdded:" <<uri;
-                ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
+                //file changed, force create thubnail, link tobug#83108
+                ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
             });
             connect(m_watcher.get(), &FileWatcher::fileDeleted, this, [=](QString uri) {
                 this->onChildRemoved(uri);
