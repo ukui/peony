@@ -69,7 +69,8 @@ void VolumeManager::initManagerInfo(){
     m_volumeMonitor = g_volume_monitor_get();
     if(!m_volumeMonitor)
         return;
-
+    if(m_volumeList)
+        return;
     m_mountAddHandle = g_signal_connect(m_volumeMonitor,"mount-added",G_CALLBACK(mountAddCallback),this);
     m_volumeAddHandle = g_signal_connect(m_volumeMonitor,"volume-added",G_CALLBACK(volumeAddCallback),this);
     m_mountRemoveHandle = g_signal_connect(m_volumeMonitor,"mount-removed",G_CALLBACK(mountRemoveCallback),this);

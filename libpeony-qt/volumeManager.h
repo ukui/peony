@@ -62,7 +62,7 @@ private:
     quint64 m_driveConnectHandle;
     quint64 m_driveDisconnectHandle;
     bool m_gpartedIsOpening;
-    QHash<QString,Volume*>* m_volumeList;
+    QHash<QString,Volume*>* m_volumeList = nullptr;
 
     //我应该在检测到信号时更新卷设备列表？还是在用到时重新全部get一次？感觉前者好点?
 Q_SIGNALS:
