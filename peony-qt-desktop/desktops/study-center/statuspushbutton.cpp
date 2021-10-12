@@ -39,3 +39,15 @@ void StatusPushButton::setValue(double value)
 {
     m_val = value;
 }
+
+void StatusPushButton::changeTheme(QString strTheme)
+{
+    if (strTheme == "ukui-dark")
+    {
+        disc.load(":/img/white-refresh.svg");
+    }
+    else
+    {
+        disc.load(":/img/refresh.svg");
+    }
+}

@@ -32,6 +32,12 @@ public Q_SLOTS:
    void paintSlot(TABLETAPP &applist);
    void setMaximum(int iMaxValue);
 
+   /**
+    * 点击主题切换发送信号，字体样式发生改变
+    * @param QString 主题样式
+    */
+   void changeThemeSlot(QString strTheme);
+
 };
 
 #endif // PROGRESSWIDGET_H
