@@ -192,7 +192,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 }
 
                 this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+                //file changed, force create thubnail, link tobug#83108
+                ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher, true);
                 m_files<<info;
                 //this->insertRows(m_files.indexOf(info), 1);
                 this->endInsertRows();
@@ -251,7 +252,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
 
             //this->beginResetModel();
             this->beginInsertRows(QModelIndex(), m_files.count(), m_files.count());
-            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
+            //file changed, force create thubnail, link tobug#83108
+            ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher, true);
             m_files<<info;
             //this->insertRows(m_files.indexOf(info), 1);
             this->endInsertRows();
@@ -294,7 +296,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                 auto job = new FileInfoJob(info);
                 job->setAutoDelete();
                 connect(job, &FileInfoJob::infoUpdated, this, [=]() {
-                    ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher);
+                    //file changed, force create thubnail, link tobug#83108
+                    ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
                     this->dataChanged(indexFromUri(uri), indexFromUri(uri));
                     Q_EMIT this->requestClearIndexWidget(QStringList()<<uri);
 
