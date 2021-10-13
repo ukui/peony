@@ -62,7 +62,7 @@ private:
     quint64 m_driveConnectHandle;
     quint64 m_driveDisconnectHandle;
     bool m_gpartedIsOpening;
-    QHash<QString,Volume*>* m_volumeList;
+    QHash<QString,Volume*>* m_volumeList = nullptr;
 
     //我应该在检测到信号时更新卷设备列表？还是在用到时重新全部get一次？感觉前者好点?
 Q_SIGNALS:
@@ -73,7 +73,7 @@ Q_SIGNALS:
     //void volumeUnmount(const QString& device);
     void mountAdd(const Volume&);     //重设挂载点信息
     void mountRemove(const QString& device);
-    void signal_unmountFinished(bool);/* 卸载完成信号 */
+    void signal_unmountFinished(const QString &uri);/* 卸载完成信号 */
     void signal_mountFinished();/* 挂载完成信号，目前用于侧边栏设备挂载后路径跳转 */
 };
 
@@ -91,6 +91,7 @@ public:
     ~Drive();
     //method
     void eject(GMountUnmountFlags ejectFlag);
+    void setMountPath(const QString& mountPath);
 
 private:
     GDrive* m_drive = nullptr;
@@ -99,6 +100,7 @@ private:
     QString m_name;
     QString m_icon;
     QString m_device;
+    QString m_mountPath;
 
 private:
     void initDriveInfo();

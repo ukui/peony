@@ -128,9 +128,9 @@ void FileWatcher::startMonitor()
             Q_EMIT directoryUnmounted(uri);
         }
     });
-    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](bool success){
+    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](const QString &uri){
         /* volume卸载完成跳转到计算机目录 */
-        if (success) {
+        if (m_uri.contains(uri)||m_target_uri.contains(uri)) {
             Q_EMIT directoryUnmounted("computer:///");
         }
     });

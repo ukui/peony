@@ -69,7 +69,8 @@ void VolumeManager::initManagerInfo(){
     m_volumeMonitor = g_volume_monitor_get();
     if(!m_volumeMonitor)
         return;
-
+    if(m_volumeList)
+        return;
     m_mountAddHandle = g_signal_connect(m_volumeMonitor,"mount-added",G_CALLBACK(mountAddCallback),this);
     m_volumeAddHandle = g_signal_connect(m_volumeMonitor,"volume-added",G_CALLBACK(volumeAddCallback),this);
     m_mountRemoveHandle = g_signal_connect(m_volumeMonitor,"mount-removed",G_CALLBACK(mountRemoveCallback),this);
@@ -662,6 +663,17 @@ void Volume::eject(GMountUnmountFlags ejectFlag)
         return;
 
     Drive drive(gdrive);
+    if(m_gMount){
+        GFile* rootFile = g_mount_get_root(m_gMount);
+        if(rootFile){
+            char* mountPath = g_file_get_uri(rootFile);
+            drive.setMountPath(mountPath);
+            g_object_unref(rootFile);
+            g_free(mountPath);
+        }
+    }else{
+        drive.setMountPath("");
+    }
     drive.eject(ejectFlag);
 
 }
@@ -821,7 +833,7 @@ GDrive *Drive::getGDrive() const
     return m_drive;
 }
 
-static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result)
+static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, gpointer user_data)
 {
     GError *error = nullptr;
     bool successed = g_drive_eject_with_operation_finish(gDrive, result, &error);
@@ -839,10 +851,10 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result)
         g_error_free(error);
 
     } else {
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
         /* 弹出完成信息提示 */
         QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
         Peony::SyncThread::notifyUser(ejectNotify);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(static_cast<char*>(user_data));
     }
 
     return nullptr;
@@ -865,11 +877,16 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThi
 void Drive::eject(GMountUnmountFlags ejectFlag)
 {
     if(m_canEject){
-        g_drive_eject_with_operation(m_drive,ejectFlag,nullptr,nullptr, GAsyncReadyCallback(eject_cb),nullptr);
+        g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb),const_cast<char*>(m_mountPath.toStdString().c_str()));
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
         g_drive_stop(m_drive,ejectFlag,NULL,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
     }
+}
+
+void Drive::setMountPath(const QString &mountPath)
+{
+    m_mountPath = mountPath;
 }
 
 Mount::Mount(GMount* gmount) {
@@ -1063,14 +1080,15 @@ static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata
         QMessageBox::warning(nullptr, QObject::tr("Force unmount failed"), QObject::tr("Error: %1\n").arg(err->message));
         g_error_free(err);
     } else {
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
+        QString uri = static_cast<char*>(udata);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
     }
 
 }
 
-static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result)
+static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, gpointer user_data)
 {
     GError *err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -1093,7 +1111,7 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result)
                                            nullptr,
                                            nullptr,
                                            GAsyncReadyCallback(unmount_force_cb),
-                                           nullptr);
+                                           user_data);
         }
         g_error_free(err);
 
@@ -1101,15 +1119,21 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result)
         /* 卸载完成信息提示 */
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(true);
+        QString uri = static_cast<char*>(user_data);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
     }
     return nullptr;
 }
 
 void Mount::unmount()
 {
-    if(m_canUnmount && m_mount)//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)
-        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), nullptr);
+    if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)
+        GFile* rootFile = g_mount_get_root(m_mount);
+        char* mountPath = g_file_get_uri(rootFile);
+        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), mountPath);
+        g_object_unref(rootFile);
+        g_free(mountPath);
+    }
     //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
 }
 
