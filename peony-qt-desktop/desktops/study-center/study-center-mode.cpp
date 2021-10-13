@@ -33,6 +33,8 @@ StudyCenterMode::StudyCenterMode(QWidget *parent) : DesktopWidgetBase(parent)
     m_statusManagerDBus = new QDBusInterface("com.kylin.statusmanager.interface", "/" ,"com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
     this->m_exitAnimationType = AnimationType::RightToLeft;
     this->installEventFilter(this);
+
+    connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &StudyCenterMode::screenChange);
     initUi();
 }
 
@@ -384,10 +386,11 @@ void StudyCenterMode::updateRotationsValue(QString rotation)
 {
     qDebug() << "StudyCenterMode::updateRotationsValue rotation:" << rotation <<"  m_isTabletMode:"<<m_isTabletMode << "  ScreenRotation:"<< Style::ScreenRotation;
     m_direction = rotation;
-    m_pageButtonWidget->hide();
+    //NOTE 2021-10-12 因为statusManager 的dbus信号到达时，屏幕可能会没有及时更改宽高为旋转后的状态，所以使用Qt的方式监听 见: screenChange()
+//    m_pageButtonWidget->hide();
     screenRotation();
 
-    updatePageButton();
+//    updatePageButton();
 }
 void StudyCenterMode::screenRotation()
 {
@@ -509,10 +512,20 @@ void StudyCenterMode::updatePageButton()
 
     QScreen *screen = QApplication::primaryScreen();
     if (Style::ScreenRotation) {
+        Style::appLine = 7;
         m_buttonLayout->setContentsMargins(0, 0, 0, 26);
     } else {
+        Style::appLine = 4;
         m_buttonLayout->setContentsMargins(0, 0, 0, 56);
     }
+
+    Style::appNum = TabletAppManager::getInstance()->getTabletAppEntityList().count();
+    if (Style::appNum % (Style::appColumn * Style::appLine) == 0) {
+        Style::appPage = Style::appNum / (Style::appColumn * Style::appLine);
+    } else {
+        Style::appPage = Style::appNum / (Style::appColumn * Style::appLine) + 1;
+    }
+
     //0.更新切换页面按钮
     m_pageButtonWidget->setGeometry(QRect(0,
                                           screen->geometry().height() - Style::ButtonWidgetHeight,
@@ -583,4 +596,11 @@ void StudyCenterMode::changeTheme()
         Q_EMIT synWidget->changeTheme(settings->get("styleName").toString());
         Q_EMIT statusWidget->changeTheme(settings->get("styleName").toString());
     }
+}
+
+void StudyCenterMode::screenChange()
+{
+    m_pageButtonWidget->hide();
+    screenRotation();
+    updatePageButton();
 }

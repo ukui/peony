@@ -399,7 +399,12 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
                 });
                 return;
             } else {
-                this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+                //fix bug:#84724
+                if (m_windowManager->getWindowByScreen(m_primaryScreen)->getCurrentDesktop()->getDesktopType() == DesktopType::StudyCenter) {
+                    this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::RightToLeft);
+                } else {
+                    this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
+                }
             }
         }
 
@@ -443,7 +448,8 @@ void PeonyDesktopApplication::setupDesktop()
     for (auto screen : qApp->screens()) {
         addBgWindow(screen);
     }
-    updateDesktop();
+    this->initWindowDesktop();
+    this->raiseWindows();
 
     connect(this, &PeonyDesktopApplication::screenAdded, this, &PeonyDesktopApplication::screenAddedProcess);
     connect(this, &PeonyDesktopApplication::screenRemoved, this, &PeonyDesktopApplication::screenRemovedProcess);
@@ -466,16 +472,47 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
     }
 }
 
+void PeonyDesktopApplication::initWindowDesktop()
+{
+    for (auto window : m_windowManager->windowList()) {
+        DesktopWidgetBase *desktop = nullptr;
+        if (window->screen() == m_primaryScreen) {
+            if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
+                desktop = m_desktopManager->getDesktopByType(DesktopType::StudyCenter, window);
+            } else {
+                desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
+            }
+        } else {
+            //添加副桌面
+            //desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
+        }
+
+        if (desktop) {
+            connect(desktop, &Peony::DesktopWidgetBase::moveToOtherDesktop,
+                    this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+
+            window->setWindowDesktop(desktop);
+        }
+    }
+}
+
 void PeonyDesktopApplication::updateDesktop()
 {
     qDebug() << "[PeonyDesktopApplication::updateDesktop]";
     for (auto window : m_windowManager->windowList()) {
         if (!window->getCurrentDesktop()) {
+            DesktopWidgetBase *desktop = nullptr;
             if (window->screen() == m_primaryScreen) {
-                window->setWindowDesktop(m_desktopManager->getDesktopByType(DesktopType::Desktop, window));
+                desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
             } else {
                 //添加副桌面
                 //window->setWindowDesktop(m_desktopManager->getDesktopByType(DesktopType::Tablet, window));
+            }
+
+            if (desktop) {
+                connect(desktop, &Peony::DesktopWidgetBase::moveToOtherDesktop,
+                        this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
+                window->setWindowDesktop(desktop);
             }
         }
     }
@@ -798,6 +835,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     } else {
         nextDesktop->setGeometry(nextDesktopStartRect);
         nextDesktop->show();
+        nextDesktop->getRealDesktop()->show();
     }
 
     animationGroup->start();
@@ -1056,7 +1094,6 @@ void PeonyDesktopApplication::initGSettings()
 
 void PeonyDesktopApplication::updateTabletModeValue(bool mode)
 {
-    m_isTabletMode = mode;
     m_isTabletMode = mode;
 
     this->changeDesktop();

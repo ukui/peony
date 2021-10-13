@@ -68,6 +68,11 @@ private:
 
     void addBgWindow(QScreen *screen);
 
+    /**
+     * @brief 初始化时，为全部窗口添加桌面
+     */
+    void initWindowDesktop();
+
     void updateDesktop();
 
     /**
