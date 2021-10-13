@@ -120,6 +120,12 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         j.querySync();
     }
 
+    bool readable = fileInfo->canRead();
+    if (!readable) {
+        QMessageBox::critical(0, tr("No Permission"), tr("File is not readable. Please check if file has read permisson."));
+        return;
+    }
+
     if(fileInfo->isExecDisable())return;
 
     if (fileInfo->type() == "application/x-desktop") {
@@ -255,6 +261,13 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         FileInfoJob j(fileInfo);
         j.querySync();
     }
+
+    bool readable = fileInfo->canRead();
+    if (!readable) {
+        QMessageBox::critical(0, tr("No Permission"), tr("File is not readable. Please check if file has read permisson."));
+        return;
+    }
+
     //TODO 修改为通用接口
     bool intel = (QString::compare("V10SP1-edu", QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
     if (intel) {
