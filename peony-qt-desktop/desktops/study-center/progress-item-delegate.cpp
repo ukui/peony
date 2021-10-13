@@ -17,6 +17,7 @@
  */
 
 #include "progress-item-delegate.h"
+#include "tablet-app-manager.h"
 #include <QDebug>
 #include <QColor>
 #include "../../tablet/src/Style/style.h"
@@ -63,12 +64,17 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         QRect textRect;
         QPixmap pixmap;
         bool bigIcon = index.data(Qt::UserRole).toBool();
+        bool appIsDisabled = TabletAppManager::getInstance()->appIsDisabled(tabletApp.execCommand);
 
         if(bigIcon)
         {
             iconRect=QRect(rect.x(), rect.y()+Style::topSpace-5, rect.width(),Style::BigIconSize);
             textRect=QRect(rect.x(),iconRect.bottom()+5, rect.width(),rect.height()-iconRect.height()-10-5);
-            pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
+            if (appIsDisabled) {
+                pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Disabled,QIcon::Off);
+            } else {
+                pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
+            }
             pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::IgnoreAspectRatio);
 
         }
@@ -76,7 +82,11 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         {
             iconRect=QRect(rect.x(), rect.y()+Style::topSpace, rect.width(),Style::SmallIconSize);
             textRect=QRect(rect.x(),iconRect.bottom()+10, rect.width() ,rect.height()-iconRect.height()-10-Style::topSpace);
-            pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
+            if (appIsDisabled) {
+                pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Disabled,QIcon::Off);
+            } else {
+                pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
+            }
             pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::IgnoreAspectRatio);
 
         }

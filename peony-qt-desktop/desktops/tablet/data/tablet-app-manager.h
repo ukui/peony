@@ -26,9 +26,43 @@ class TabletAppEntity : public QObject
 {
 Q_OBJECT
 public:
-    TabletAppEntity(QObject *parent = nullptr) {}
+    explicit TabletAppEntity(QObject *parent = nullptr) {}
 
-    quint32 serialNumber; //排序序号
+    TabletAppEntity(const TabletAppEntity &entity, QObject *parent = nullptr)
+    {
+        copyFields(entity);
+    }
+
+    explicit TabletAppEntity(const TabletAppEntity *entity, QObject *parent = nullptr)
+    {
+        copyFields(*entity);
+    }
+
+    inline TabletAppEntity &operator=(const TabletAppEntity &entity)
+    {
+        copyFields(entity);
+        return *this;
+    }
+
+    inline TabletAppEntity &operator=(const TabletAppEntity *entity)
+    {
+        copyFields(*entity);
+        return *this;
+    }
+
+private:
+    void copyFields(const TabletAppEntity &entity) {
+        this->serialNumber = entity.serialNumber;
+        this->desktopName  = entity.desktopName;
+        this->appName      = entity.appName;
+        this->appIcon      = entity.appIcon;
+        this->execCommand  = entity.execCommand;
+        this->iTime        = entity.iTime;
+    }
+
+public:
+    long int iTime = 0;
+    quint32 serialNumber = 0; //排序序号
     QString desktopName;  //desktop文件名
     QString appName;      //应用名称
     QString appIcon;      //应用图标路径
@@ -50,6 +84,14 @@ public:
     QString getAppIcon(const QString &appPath);
 
     QString getAppExecCommand(const QString &appPath);
+
+    bool appIsDisabled(TabletAppEntity *appEntity);
+
+    bool appIsDisabled(const QString &execCommand);
+
+    bool execApp(TabletAppEntity *appEntity);
+
+    bool execApp(const QString &appPath);
 
     /**
      * @brief 桌面图标拖动时，进行排序
@@ -97,6 +139,12 @@ private:
     void updateAppNameSetting();
 
     /**
+     * @brief 像文件中写入新安装的app,并设置序号为最大值加一
+     * @param appName
+     */
+    void insertNewAppName(const QString &appName);
+
+    /**
      * @brief 加载配置文件
      */
     void initSettings();
@@ -142,9 +190,13 @@ private:
 
     void sortAppEntityList();
 
+    bool launchApp(const QString &execCommand);
+
 private:
     QMutex m_mutex;
     QFileSystemWatcher* m_appPathWatcher;
+    //禁用app列表
+    QSettings *m_disabledAppSetting = nullptr;
 
     //显示在平板桌面的app
     QSettings *m_appNameSetting   = nullptr;
