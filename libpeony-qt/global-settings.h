@@ -88,6 +88,14 @@
 #define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
 #define UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME       "org.ukui.control-center.panel.plugins.time"            // time format key, value is '12' or '24'
 #define UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE       "org.ukui.control-center.panel.plugins.date"            // date format key, value is cn or en
+
+//intel 个性化设置，透明度...
+//schema
+#define UKUI_CONTROL_CENTER_PERSONALISE             "org.ukui.control-center.personalise"
+//keys
+#define PERSONALISE_EFFECT                          "effect"
+#define PERSONALISE_TRANSPARENCY                    "transparency"
+
 #define SETTINGS_DAEMON_SCHEMA_XRANDR        "org.ukui.SettingsDaemon.plugins.xrandr"
 #define DUAL_SCREEN_MODE                     "xrandrMirrorMode"
 #define DUAL_SCREEN_EXPAND_MODE              "expand"
@@ -114,6 +122,7 @@ public:
     static GlobalSettings *getInstance();
     const QVariant getValue(const QString &key);
     bool isExist(const QString &key);
+    QString getProjectName();
 
 Q_SIGNALS:
     void valueChanged(const QString &key);
