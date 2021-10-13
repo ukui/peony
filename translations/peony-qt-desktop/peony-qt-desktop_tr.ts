@@ -44,6 +44,15 @@
     </message>
 </context>
 <context>
+    <name>Peony::DesktopItemModel</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="557"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="568"/>
+        <source>My Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::DesktopMenu</name>
     <message>
         <source>&amp;Open in new Window</source>
@@ -371,22 +380,22 @@
 <context>
     <name>Peony::StudyCenterMode</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="72"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="76"/>
         <source>math</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="73"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="77"/>
         <source>english</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="74"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="78"/>
         <source>chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="79"/>
         <source>other</source>
         <translation type="unfinished"></translation>
     </message>
@@ -457,27 +466,32 @@
 <context>
     <name>StudyStatusWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="76"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="83"/>
         <source>学情中心</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="123"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="109"/>
+        <source>STATISTICS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="151"/>
         <source>今日使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="124"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="152"/>
         <source>本周使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="125"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="153"/>
         <source>本月使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="182"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="200"/>
         <source>最常使用 (本周累计)</source>
         <translation type="unfinished"></translation>
     </message>

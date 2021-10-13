@@ -238,7 +238,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Intel::TitleLabel</name>
     <message>
-        <location filename="../../src/control/intel/intel-navigation-side-bar.cpp" line="492"/>
+        <location filename="../../src/control/intel/intel-navigation-side-bar.cpp" line="496"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
@@ -266,12 +266,12 @@ p, li { white-space: pre-wrap; }
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1364"/>
+        <location filename="../../src/windows/main-window.cpp" line="1366"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1365"/>
+        <location filename="../../src/windows/main-window.cpp" line="1367"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -452,12 +452,12 @@ p, li { white-space: pre-wrap; }
         <translation>计算机</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="74"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="78"/>
         <source>文件系统</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="75"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="79"/>
         <source>System Disk</source>
         <translation>系统盘</translation>
     </message>
@@ -665,74 +665,74 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">无法打开 %1.</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="397"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
         <source>Force unmount failed</source>
         <translation>强制卸载失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="397"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
         <source>Error: %1
 </source>
         <translation>错误：%1</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="440"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="405"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="444"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation>数据同步完成，设备已卸载成功！</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="419"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="424"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
         <source>Unmount failed</source>
         <translation>卸载失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="419"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation>无法卸载，可能需要关闭一些程序，例如：GParted 等。</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="424"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation>错误：%1 你要强行卸载吗？</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="576"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="628"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="580"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="632"/>
         <source>Eject failed</source>
         <translation>弹出失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="577"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="629"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="581"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="633"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="578"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="630"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="582"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="634"/>
         <source>Eject Anyway</source>
         <translation>无论如何都弹出</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="590"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="594"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation>数据同步完成，可以安全拔掉设备！</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="626"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="630"/>
         <source>Unable to eject %1</source>
         <translation>无法弹出 %1</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="644"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="648"/>
         <source>PeonyNotify</source>
         <translation>文件管理器通知</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="645"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="649"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -899,7 +899,7 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="362"/>
-        <location filename="../../src/control/tab-widget.cpp" line="446"/>
+        <location filename="../../src/control/tab-widget.cpp" line="449"/>
         <source>is</source>
         <translation>是</translation>
     </message>
@@ -914,7 +914,7 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="415"/>
-        <location filename="../../src/control/tab-widget.cpp" line="433"/>
+        <location filename="../../src/control/tab-widget.cpp" line="434"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>
