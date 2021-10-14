@@ -189,6 +189,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         g_key_file_free(keyfile);
 
         QString desktopfp1=str;//不带desktop
+        settt->sync();
         settt->beginGroup("application");
         //判断禁用
         bool bo=settt->contains(desktopfp1.toLocal8Bit().data());// iskey

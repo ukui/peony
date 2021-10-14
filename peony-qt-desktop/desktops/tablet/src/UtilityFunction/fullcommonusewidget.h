@@ -59,7 +59,7 @@ private:
     static QMap<QString, qint32> m_appMap;
     int m_width=0;
     int m_height=0;
-    QSettings* settt;
+    QSettings* settt = nullptr;
     QHBoxLayout *m_mainLayout = nullptr;
     QList<FullListView*> m_pageList;
     bool m_backToMain = false;

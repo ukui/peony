@@ -104,7 +104,10 @@ void FullCommonUseWidget::execApplication(QString desktopfp)
     g_key_file_free(keyfile);
     //打开ini文件
     QString pathini=QDir::homePath()+"/.cache/ukui-menu/ukui-menu.ini";
-    settt=new QSettings(pathini,QSettings::IniFormat);
+    if (!settt) {
+        settt=new QSettings(pathini,QSettings::IniFormat);
+    }
+    settt->sync();
     settt->beginGroup("application");
     QString desktopfp1=str;
    //判断
