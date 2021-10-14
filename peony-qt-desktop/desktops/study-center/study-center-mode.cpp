@@ -1,6 +1,4 @@
 #include "study-center-mode.h"
-#include "study-status-widget.h"
-#include "study-directory-widget.h"
 #include <QStandardItemModel>
 #include <QListView>
 #include <QStandardItem>
@@ -85,7 +83,7 @@ void StudyCenterMode::initUi()
     strListTitleStyle << "GUARDS" << "rgba(67, 205, 128, 0.05)";
 
     dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
-    guradWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
+    guradWidget = new SynAndDaemon(strListTitleStyle,dataList, this);
 
     dataList.clear();
     strListTitleStyle.clear();
@@ -93,7 +91,7 @@ void StudyCenterMode::initUi()
     strListTitleStyle << "COURSE" << "rgba(255, 130, 71, 0.05)";
 
     dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
-    synWidget = new StudyDirectoryWidget(strListTitleStyle,dataList, 0, this);
+    synWidget = new SynAndDaemon(strListTitleStyle,dataList, this);
 
     QList<TABLETAPP> appList = getTimeOrder(studyCenterDataMap);
     statusWidget = new StudyStatusWidget(appList,this);

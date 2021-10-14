@@ -6,6 +6,7 @@
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-status-widget.h"
 #include "study-directory-widget.h"
+#include "syn-and-daemon.h"
 #include <QDBusInterface>
 class QGridLayout;
 
@@ -44,8 +45,8 @@ private:
 private:
     QGridLayout* m_mainGridLayout=nullptr;
     StudyDirectoryWidget* practiceWidget=nullptr;
-    StudyDirectoryWidget* guradWidget=nullptr;
-    StudyDirectoryWidget* synWidget=nullptr;
+    SynAndDaemon* guradWidget=nullptr;
+    SynAndDaemon* synWidget=nullptr;
     StudyStatusWidget* statusWidget=nullptr;
 
     TabletAppManager* m_tableAppMangager=nullptr;

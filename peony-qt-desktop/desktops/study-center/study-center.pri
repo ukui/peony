@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/pushbutton.h \
     $$PWD/study-directory-widget.h \
     $$PWD/study-list-view.h \
-    $$PWD/study-status-widget.h
+    $$PWD/study-status-widget.h \
+    $$PWD/syn-and-daemon.h
 
 SOURCES += \
     $$PWD/statuspushbutton.cpp \
@@ -21,5 +22,6 @@ SOURCES += \
     $$PWD/pushbutton.cpp \
     $$PWD/study-directory-widget.cpp \
     $$PWD/study-list-view.cpp \
-    $$PWD/study-status-widget.cpp
+    $$PWD/study-status-widget.cpp \
+    $$PWD/syn-and-daemon.cpp
 
