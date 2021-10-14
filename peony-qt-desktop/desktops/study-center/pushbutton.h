@@ -18,17 +18,12 @@
 
 #ifndef PUSHBUTTON_H
 #define PUSHBUTTON_H
-#include <QPushButton>
+#include <QWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPixmap>
-#include <QSettings>
-//#include "src/Style/style.h"
-//#include "src/Interface/ukuimenuinterface.h"
-//#include "src/Style/style.h"
-//#include "src/RightClickMenu/rightclickmenu.h"
 
-class PushButton : public QPushButton
+class TitleWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -36,8 +31,8 @@ public:
      * @param classify为0时为分类按钮、1为应用按钮
      * @param module为0时为常用模块，1为字母模块、2为功能模块
      */
-    PushButton(QWidget *parent,QString name,int width,int height);
-    ~PushButton();
+    TitleWidget(QWidget *parent,QString name,int width,int height);
+    ~TitleWidget();
 
 private:
     QString name;

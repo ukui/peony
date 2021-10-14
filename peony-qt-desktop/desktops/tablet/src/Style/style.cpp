@@ -67,7 +67,7 @@ int Style::Margin=74;
 int Style::topSpace=16;
 int Style::GridSize=170;
 int Style::itemWidth=120;
-int Style::itemHeight=120;
+int Style::itemHeight=145;
 
 void Style::initWidStyle()
 {
