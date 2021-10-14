@@ -66,6 +66,11 @@ public:
         m_mutex.unlock();
     }
 
+    /*!
+     * \brief isAutoParted
+     * true if using kylin-installer's default pareted strategy.
+     */
+    bool isAutoParted();
     void showState();
 
 protected:

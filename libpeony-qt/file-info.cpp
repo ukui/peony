@@ -89,6 +89,12 @@ FileInfo::~FileInfo()
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 {
     FileInfoManager *info_manager = FileInfoManager::getInstance();
+    // avoid using binding mount original uri. link to: #48982.
+    if (info_manager->isAutoParted()) {
+        if (uri.contains("file:///data/home")) {
+            uri.replace("file:///data/home", "file:///home");
+        }
+    }
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
     if (info != nullptr) {
