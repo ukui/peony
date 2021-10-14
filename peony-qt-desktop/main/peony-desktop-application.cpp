@@ -836,6 +836,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         nextDesktop->setGeometry(nextDesktopStartRect);
         nextDesktop->show();
         nextDesktop->getRealDesktop()->show();
+        nextDesktop->onPrimaryScreenChanged();
     }
 
     animationGroup->start();
