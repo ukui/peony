@@ -95,7 +95,7 @@ Q_SIGNALS:
      */
     void sendHideMainWindowSignal();
     void sendSortApplistSignal();
-    void pagenumchanged(qint32 signal); //翻页信号
+    void pagenumchanged(qint32 signal, bool hide = false); //翻页信号
     void sendUpdateAppListSignal(); //更新应用顺序信号
     void sendGroupClickSignal(QString desktopfn); //点击应用组信号
     void drawButtonWidgetAgain(); //重画按钮信号

@@ -111,7 +111,7 @@ Q_SIGNALS:
     void sendGroupClickSignal(QString desktopfn);//发送组合框点击信号
     void sendHideMainWindowSignal();//界面隐藏信号
     void sendUpdateAppListSignal();//界面更新信号
-    void pagenumchanged(qint32 signal);//页面数改变信号
+    void pagenumchanged(qint32 signal, bool hide = false);//页面数改变信号
     void pageCollapse(); //左滑页面收纳
     void pageSpread(); //右滑页面展开
 

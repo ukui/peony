@@ -307,7 +307,7 @@ void FullCommonUseWidget::updatePageData()
     if (m_backToMain) {
         Style::appPage = 2;
         Style::nowpagenum = 2;
-        Q_EMIT pagenumchanged(-1);
+        Q_EMIT pagenumchanged(-1, true);
     } else {
         this->insertPageToLayout();
     }
