@@ -21,6 +21,9 @@
  */
 
 #include "global-settings.h"
+//ukui-interface
+#include <ukuisdk/kylin-com4cxx.h>
+
 #include <QtConcurrent>
 
 #include <QGSettings>
@@ -159,17 +162,33 @@ GlobalSettings::~GlobalSettings()
 void GlobalSettings::getUkuiStyle()
 {
     m_cache.insert(SIDEBAR_BG_OPACITY, 50);
-    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "peonySideBarTransparency") {
-                m_cache.remove(SIDEBAR_BG_OPACITY);
-                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
-            }
-        });
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
+    if (getProjectName() == V10_SP1_EDU) {
+        if (QGSettings::isSchemaInstalled(UKUI_CONTROL_CENTER_PERSONALISE)) {
+            m_gsettings = new QGSettings(UKUI_CONTROL_CENTER_PERSONALISE);
+            connect(m_gsettings, &QGSettings::changed, [this](const QString &key) {
+                if (key == PERSONALISE_EFFECT) {
+                    qreal opacity = 100.0;
+                    if (m_gsettings->get(PERSONALISE_EFFECT).toBool()) {
+                        opacity *= m_gsettings->get(PERSONALISE_TRANSPARENCY).toReal();
+                    }
+                    m_cache.remove(SIDEBAR_BG_OPACITY);
+                    m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
+                }
+            });
+        }
+    } else {
+        if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+            m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+            connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+                if (key == "peonySideBarTransparency") {
+                    m_cache.remove(SIDEBAR_BG_OPACITY);
+                    m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
+                    qApp->paletteChanged(qApp->palette());
+                }
+            });
+            m_cache.remove(SIDEBAR_BG_OPACITY);
+            m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
+        }
     }
 }
 
@@ -331,4 +350,9 @@ void GlobalSettings::setGSettingValue(const QString &key, const QVariant &value)
     m_peony_gsettings->set(key, value);
     m_cache.remove(key);
     m_cache.insert(key, m_peony_gsettings->get(key));
+}
+
+QString GlobalSettings::getProjectName()
+{
+    return QString::fromStdString(KDKGetPrjCodeName());
 }

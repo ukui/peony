@@ -367,7 +367,7 @@ void TabletMode::updatePageButtonStatus(qint32 page)
     }
 }
 
-void TabletMode::pageNumberChanged(qint32 signal)
+void TabletMode::pageNumberChanged(qint32 signal, bool hide)
 {
     //fix bug #82786
     if (!m_isActivated | isPause()) return;
@@ -398,7 +398,7 @@ void TabletMode::pageNumberChanged(qint32 signal)
 
     if (Style::appPage != 1) {
         m_pageButtonWidget->hide();
-        this->changePage(signal);
+        this->changePage(signal, hide);
         this->updatePageButtonStatus(Style::nowpagenum);
     }
 }
@@ -628,7 +628,7 @@ TabletMode::~TabletMode()
     m_exitAnimation = nullptr;
 }
 
-void TabletMode::changePage(qint32 signal)
+void TabletMode::changePage(qint32 signal, bool hide)
 {
     if (!m_exitAnimation) {
         m_exitAnimation = new QPropertyAnimation(this, "pos");
@@ -640,7 +640,8 @@ void TabletMode::changePage(qint32 signal)
 
     if ((m_exitAnimation->state() != QPropertyAnimation::Stopped) || (m_showAnimation->state() != QPropertyAnimation::Stopped)) return;
     QRect saveRect = this->geometry();
-
+    //当app页面数量发生变化时，会跳转到第一页，添加该处的目的是可以选择不显示动画，在显示完毕后直接显示。
+    this->setHidden(hide);
     //显示动画
     m_exitAnimation->setEasingCurve(QEasingCurve::Linear);
     m_exitAnimation->setStartValue(saveRect.topLeft());
@@ -657,13 +658,13 @@ void TabletMode::changePage(qint32 signal)
 
     connect(m_exitAnimation, &QPropertyAnimation::finished, this, [=] {
         m_exitAnimation->stop();
-        exitAnimationFinished(signal);
+        exitAnimationFinished(signal, hide);
     });
 
     m_exitAnimation->start();
 }
 
-void TabletMode::exitAnimationFinished(qint32 signal)
+void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
 {
     //fix bug #82786
     if (!m_isActivated) return;
@@ -698,7 +699,7 @@ void TabletMode::exitAnimationFinished(qint32 signal)
         m_appViewContainer->setGeometry(QRect(0, 0, m_width, m_height - Style::ButtonWidgetHeight));
     }
 
-    this->show();
+    this->setHidden(hide);
     //更新大小，设置数据
     m_appViewContainer->repaintWid(Style::ScreenRotation);
     m_appViewContainer->updatePageData();
@@ -707,11 +708,13 @@ void TabletMode::exitAnimationFinished(qint32 signal)
     m_showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     m_showAnimation->setStartValue(endRect.topLeft());
     m_showAnimation->setEndValue(screenRect.topLeft());
-    m_showAnimation->setDuration(500);
+    //hide 相当于不显示动画
+    m_showAnimation->setDuration(hide ? 50 : 500);
 
     connect(m_showAnimation, &QVariantAnimation::finished, this, [=] {
         //显示按钮
         m_showAnimation->stop();
+        show();
         m_pageButtonWidget->show();
     });
 

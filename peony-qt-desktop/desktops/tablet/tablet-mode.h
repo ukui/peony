@@ -59,7 +59,7 @@ public:
     void updatePageButton();
     void moveWindow(qint32 length);
     void setToolsOpacityEffect(const qreal& num);
-    void exitAnimationFinished(qint32 signal);
+    void exitAnimationFinished(qint32 signal, bool hide);
 
 protected:
     void screenVertical();
@@ -68,7 +68,7 @@ protected:
     bool appListFile();
     void centerToScreen(QWidget* widget);
 
-    void changePage(qint32 signal);
+    void changePage(qint32 signal, bool hide);
     void returnRawPoint();
 
 private:
@@ -86,7 +86,7 @@ public Q_SLOTS:
     void requestDeleteAppSlot();
     void screenRotation();
     void buttonClicked(QAbstractButton *button);
-    void pageNumberChanged(qint32 signal);
+    void pageNumberChanged(qint32 signal, bool hide = false);
 
     void client_get(QString str);
     /**
