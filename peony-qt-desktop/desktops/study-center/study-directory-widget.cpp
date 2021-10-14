@@ -86,7 +86,7 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
         backGroundLabel->setFont(bft);
         backGroundLabel->setStyleSheet(QString("QLabel{background-color: transparent;color:%1;font-size:64px}").arg(strListTitleStyle.at(3)));
         backGroundLabel->setText(strListTitleStyle.at(2).toLocal8Bit().constData());
-        backGroundLabel->setGeometry(15,-15,500,110);
+        backGroundLabel->setGeometry(48,m_titleLabel->pos().y()-3,500,110);
         backGroundLabel->lower();
 
         if(1 == m_iMode)
