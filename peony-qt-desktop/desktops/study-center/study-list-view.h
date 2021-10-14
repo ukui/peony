@@ -29,6 +29,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    int horizontalOffset() const override;
 
 private:
     QStandardItemModel* m_listmodel=nullptr;

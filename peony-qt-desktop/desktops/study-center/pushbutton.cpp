@@ -20,8 +20,8 @@
 #include <QFont>
 #include <QDebug>
 
-PushButton::PushButton(QWidget *parent, QString name, int width, int height):
-    QPushButton(parent)
+TitleWidget::TitleWidget(QWidget *parent, QString name, int width, int height):
+    QWidget(parent)
 {
     qDebug()<<"PushButton::PushButton name:"<<name;
     this->name=name;
@@ -30,11 +30,11 @@ PushButton::PushButton(QWidget *parent, QString name, int width, int height):
     initAppBtn();
 }
 
-PushButton::~PushButton()
+TitleWidget::~TitleWidget()
 {
 }
 
-void PushButton::initAppBtn()
+void TitleWidget::initAppBtn()
 {
     char btnstyle[300];
     sprintf(btnstyle,"QPushButton{background:transparent;border:0px;color:#ffffff;font-size:14px;padding-left:0px;text-align: left center;}\
@@ -45,7 +45,6 @@ void PushButton::initAppBtn()
     this->setStyleSheet(btnstyle);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout* layout=new QHBoxLayout(this);
-    layout->setContentsMargins(0,0,0,0);
    // layout->setSpacing(6);
 
     QFont font;
@@ -72,10 +71,9 @@ void PushButton::initAppBtn()
     layout->setStretch(1, 1);
 
     layout->setSpacing(28);
-    layout->setContentsMargins(0, 0, 48, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
-    this->setEnabled(false);
-    connect(this, &PushButton::changeTheme,  [=](QString strTheme)
+    connect(this, &TitleWidget::changeTheme,  [=](QString strTheme)
     {
         if (strTheme == "ukui-dark")
         {

@@ -88,32 +88,40 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
         backGroundLabel->setText(strListTitleStyle.at(2).toLocal8Bit().constData());
         backGroundLabel->setGeometry(15,-15,500,110);
         backGroundLabel->lower();
+
+        if(1 == m_iMode)
+        {
+            m_mainLayout->addSpacing(56);
+        }
+        else
+        {
+            m_mainLayout->addSpacing(25);
+        }
     }
 
     m_scrollArea = new QScrollArea;
-    m_scrollArea->setAttribute(Qt::WA_TranslucentBackground);
+    m_scrollArea->setStyleSheet("background:transparent;");
     m_scrollArea->horizontalScrollBar()->setVisible(false);
     m_scrollArea->verticalScrollBar()->setVisible(true);
-    m_scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:3px;padding-top:0px;padding-bottom:0px;background:transparent;border-radius:6px;}"
-                                             "QScrollBar::handle{background-color:rgba(0,0,0,0.25); width:3px;border-radius:1.5px;}"
-                                             "QScrollBar::handle:hover{background-color:#697883;border-radius:1.5px;}"
-                                             "QScrollBar::handle:pressed{background-color:#8897a3;border-radius:1.5px;}"
+    m_scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:12px;height:172px;padding-top:0px;padding-bottom:0px;border-radius:2px;border:2px solid transparent;}"
+                                             "QScrollBar::handle{background-color:#B6BDC6; width:12px;height:172px;border-radius:2px;border:2px solid transparent;}"
+                                             "QScrollBar::handle:hover{background-color:#CDD2D8;border-radius:2px;height:172px;border:none;}"
+                                             "QScrollBar::handle:pressed{background-color:#9CA6B2;border-radius:2px;}"
                                              "QScrollBar::sub-line{background-color:transparent;height:0px;width:0px;}"
                                              "QScrollBar::add-line{background-color:transparent;height:0px;width:0px;}"
                                              );
     QWidget* scrollAreaWid=new QWidget;
-    scrollAreaWid->setAttribute(Qt::WA_TranslucentBackground);
+    scrollAreaWid->setStyleSheet("background:transparent;");
     scrollAreaWid->setMinimumSize(Style::itemWidth,Style::itemHeight);
     m_scrollArea->setWidget(scrollAreaWid);
-    m_scrollArea->setWidgetResizable(true);
+    //m_scrollArea->setWidgetResizable(true);
     m_scrollAreaWidLayout = new QVBoxLayout;
     m_scrollAreaWidLayout->setContentsMargins(0,0,0,0);
     m_scrollAreaWidLayout->setSpacing(0);
     scrollAreaWid->setLayout(m_scrollAreaWidLayout);
 
     m_mainLayout->addWidget(m_scrollArea);
-    m_mainLayout->setMargin(20);
-    m_mainLayout->setSpacing(20);
+    m_mainLayout->setContentsMargins(48,33,8,0);
 //    connect(m_scrollArea->verticalScrollBar(),SIGNAL(valueChanged(int)),
 //            this,SLOT(valueChangedSlot(int)));
 
@@ -148,9 +156,9 @@ void StudyDirectoryWidget::initAppListWidget()
         {
             //设置子标题
             QString  strTitle = m_studyCenterDataList.at(i).first;
-            PushButton* titleBtn = new PushButton(this,strTitle,m_scrollArea->width()-12,40);
-            m_scrollAreaWidLayout->addWidget(titleBtn);
-            connect(this, SIGNAL(changeTheme( QString)), titleBtn, SIGNAL(changeTheme( QString)));
+            TitleWidget* titleWid = new TitleWidget(this,strTitle,m_scrollArea->width()-12,40);
+            m_scrollAreaWidLayout->addWidget(titleWid);
+            connect(this, SIGNAL(changeTheme( QString)), titleWid, SIGNAL(changeTheme( QString)));
         }
 
         //插入应用列表
