@@ -25,8 +25,7 @@ DesktopWidgetBase *DesktopMode::initDesktop(const QRect &rect)
 {
     DesktopWidgetBase::initDesktop(rect);
 
-    m_view->refresh();
-    qDebug() << "DesktopMode::initDesktop:" << this->geometry() << m_view->geometry() << m_view->pos();
+//    m_view->refresh();
 
     return this;
 }
