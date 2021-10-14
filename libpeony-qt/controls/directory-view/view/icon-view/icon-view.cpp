@@ -393,10 +393,9 @@ void IconView::paintEvent(QPaintEvent *e)
 
 void IconView::resizeEvent(QResizeEvent *e)
 {
-    //FIXME: first resize is disfluency.
-    //but I have to reset the index widget in view's resize.
     QListView::resizeEvent(e);
-    setIndexWidget(m_last_index, nullptr);
+    // fix 85058
+    updateEditorGeometries();
 }
 
 void IconView::wheelEvent(QWheelEvent *e)
