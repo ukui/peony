@@ -40,13 +40,13 @@ public Q_SLOTS:
     void updateMenu();
 
 private:
-    QAction *m_show_hidden;
-    QAction *m_forbid_thumbnailing;
-    QAction *m_resident_in_backend;
+    QAction *m_show_hidden = nullptr;
+    QAction *m_forbid_thumbnailing = nullptr;
+    QAction *m_resident_in_backend = nullptr;
 
 private:
-    MainWindow *m_window;
-    OperationMenuEditWidget *m_edit_widget;
+    MainWindow *m_window = nullptr;
+    OperationMenuEditWidget *m_edit_widget = nullptr;
 };
 
 class OperationMenuEditWidget : public QWidget
@@ -63,10 +63,10 @@ private:
 
     void updateActions(const QString &currentDirUri, const QStringList &selections);
 
-    QToolButton *m_copy;
-    QToolButton *m_paste;
-    QToolButton *m_cut;
-    QToolButton *m_trash;
+    QToolButton *m_copy = nullptr;
+    QToolButton *m_paste = nullptr;
+    QToolButton *m_cut = nullptr;
+    QToolButton *m_trash = nullptr;
 };
 
 #endif // OPERATIONMENU_H

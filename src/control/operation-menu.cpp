@@ -114,7 +114,8 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addAction(/*QIcon::fromTheme("gtk-about"),*/ tr("About"), this, [=]() {
         //PeonyApplication::about();
-        AboutDialog dlg (m_window);
+        AboutDialog dlg(m_window);
+        dlg.setWindowModality(Qt::WindowModal);
         dlg.exec();
     });
 }
