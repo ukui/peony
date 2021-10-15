@@ -1110,6 +1110,7 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
     if (err) {
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
             g_error_free(err);
+            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
             return nullptr;
         }
         if(strstr(err->message,"umount: ")){
