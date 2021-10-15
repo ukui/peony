@@ -69,8 +69,7 @@ void VolumeManager::initManagerInfo(){
     m_volumeMonitor = g_volume_monitor_get();
     if(!m_volumeMonitor)
         return;
-    if(m_volumeList)
-        return;
+
     m_mountAddHandle = g_signal_connect(m_volumeMonitor,"mount-added",G_CALLBACK(mountAddCallback),this);
     m_volumeAddHandle = g_signal_connect(m_volumeMonitor,"volume-added",G_CALLBACK(volumeAddCallback),this);
     m_mountRemoveHandle = g_signal_connect(m_volumeMonitor,"mount-removed",G_CALLBACK(mountRemoveCallback),this);
@@ -114,6 +113,8 @@ bool VolumeManager::gpartedIsOpening(){
 /*使用volume-changed信号处理设备的name属性更新*/
 void VolumeManager::volumeChangeCallback(GVolumeMonitor *monitor,
         GVolume *gvolume,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     QString device,name;
     char *gdevice,*gname;
     QHash<QString,Volume*>::iterator findItem,end;
@@ -135,6 +136,8 @@ void VolumeManager::volumeChangeCallback(GVolumeMonitor *monitor,
 
 void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
         GVolume *gvolume,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     bool itemIsExisted = false;
     int volumeCount = pThis->m_volumeList->count();
     GVolume* volume = (GVolume*)g_object_ref(gvolume);
@@ -156,6 +159,8 @@ void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
 
 void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
         GVolume *gvolume,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     //情景1、未打开gparted时正常弹出设备
     //情景2、打开gparted瞬间所有可卸载的分区均会触发volume-removed信号
     //      这种情景下设备需要继续支持访问,不能够移除
@@ -205,6 +210,8 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
 //收到mount-removed时使用挂载点属性更新设备的状态
 void VolumeManager::mountRemoveCallback(GVolumeMonitor *monitor,
         GMount *gmount,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     //情景1、卸载或弹出操作（不区分有无gparted进程）
     //情景2、直接暴力拔出操作 (不区分有无gparted进程)
     //上述2种情境下GMount*只能获取到设备的挂载点，无法获取设备路径，因此尝试采用挂载点区分设备?
@@ -243,6 +250,8 @@ void VolumeManager::mountRemoveCallback(GVolumeMonitor *monitor,
 
 void VolumeManager::mountAddCallback(GVolumeMonitor *monitor,
         GMount *gmount,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     //情景1、未打开gparted时插入新设备的自动挂载操作
     //情景2、未打开gparted时用户手动从卸载状态转为挂载状态
     //情景3、打开gparted后->插入新设备不拔出->关闭gparted 此时新设备会自动挂载
@@ -278,6 +287,8 @@ void VolumeManager::mountAddCallback(GVolumeMonitor *monitor,
 
 void VolumeManager::mountChangedCallback(GMount *mount, VolumeManager *pThis)
 {
+    if(!pThis->m_volumeList)
+        return;
     /* 获取mountPoint 挂载点 */
      GFile* rootFile = g_mount_get_root(mount);
     if(!rootFile)
@@ -303,6 +314,8 @@ void VolumeManager::mountChangedCallback(GMount *mount, VolumeManager *pThis)
 void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
                                          GDrive *gdrive,VolumeManager *pThis)
 {
+    if(!pThis->m_volumeList)
+        return;
     /* 添加光驱设备，例如空光驱插入 */
     Drive* dirve = new Drive(gdrive);
     QString device = dirve->device();
@@ -321,6 +334,8 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
 */
 void VolumeManager::driveDisconnectCallback(GVolumeMonitor *monitor,
                                             GDrive *gdrive,VolumeManager *pThis){
+    if(!pThis->m_volumeList)
+        return;
     char* gdevice = g_drive_get_identifier(gdrive,G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
     //qDebug()<<__func__<<__LINE__<<gdevice<<endl;
     QString device = gdevice;
