@@ -513,7 +513,7 @@
     <message>
         <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="115"/>
         <source>Search</source>
-        <translation>搜索</translation>
+        <translation>全局搜索</translation>
     </message>
 </context>
 </TS>
