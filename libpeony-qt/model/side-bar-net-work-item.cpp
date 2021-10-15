@@ -209,9 +209,9 @@ void SideBarNetWorkItem::findRemoteServers()
 {
     if (m_parentItem == nullptr) {
         //获取连接过的服务器
-        QStringList remoteServerList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toStringList();
+        QMap <QString, QVariant> remoteServer = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toMap ();
 
-        for (const QString& remoteServer : remoteServerList) {
+        for (const QString& remoteServer : remoteServer.keys ()) {
             if (!remoteServer.isEmpty()) {
 
                 SideBarNetWorkItem *item = new SideBarNetWorkItem(remoteServer,
