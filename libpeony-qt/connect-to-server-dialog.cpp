@@ -500,6 +500,7 @@ void ConnectServerLogin::syncRemoteServer(const QUrl& url)
             }
 
             uriList.insert (remoteUri, userInfo);
+            GlobalSettings::getInstance()->slot_updateRemoteServer(remoteUri, true);
         } else {
             userInfo = uriList[remoteUri].toMap ();
             if (savePassword ()  && !m_reg_usr_passwd_editor->text().isEmpty ()) {
@@ -514,7 +515,6 @@ void ConnectServerLogin::syncRemoteServer(const QUrl& url)
 
         GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP,uriList);
         GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
-        GlobalSettings::getInstance()->slot_updateRemoteServer(remoteUri, true);
     }
 }
 
