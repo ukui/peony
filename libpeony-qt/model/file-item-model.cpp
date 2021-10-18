@@ -40,8 +40,9 @@
 #include <QUrl>
 
 #include <QTimer>
-
 #include <QDebug>
+#include <QDateTime>
+#include <QGSettings>
 
 using namespace Peony;
 
@@ -250,8 +251,19 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         case Qt::DisplayRole:
             //can not sort, comment this
             //trash files show delete Date
-//            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull())
-//                return QVariant(item->m_info->deletionDate());
+            if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull()) {
+                QDateTime deleteTime = QDateTime::fromMSecsSinceEpoch(item->m_info->deletionTime (), Qt::LocalTime);
+                if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+                    QGSettings setting("org.ukui.control-center.panel.plugins");
+                    QString val = setting.get ("date").toString ();
+                    if ("cn" == val) {
+                        return QVariant(deleteTime.toString ("yyyy/MM/dd HH:mm:ss"));
+                    } else {
+                        return QVariant(deleteTime.toString ("yyyy-MM-dd HH:mm:ss"));
+                    }
+                }
+                return QVariant(item->m_info->deletionDate());
+            }
             return QVariant(item->m_info->modifiedDate());
         default:
             return QVariant();
@@ -565,12 +577,26 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     //fix drag file to trash issue, #42328
     if (destDirUri.startsWith("trash:///"))
     {
-        FileOperationUtils::trash(srcUris, true);
+        // fix drag filesafe to trash error issue, #81938
+        if(!(srcUris.first().startsWith("filesafe:///") &&
+            (QString(srcUris.first()).remove("filesafe:///").indexOf("/") == -1))) {
+            FileOperationUtils::trash(srcUris, true);
+        }
         return true;
     }
 
     qDebug() << "dropMimeData:" <<action<<destDirUri;
     bool addHistory = true;
+    //krme files can not move to other place, default set as copy action
+    if (srcUris.first().startsWith("kmre:///") || srcUris.first().startsWith("kydroid:///"))
+        action = Qt::CopyAction;
+
+    //filesafe files can not move to other place, default set as copy action
+    if (srcUris.first().startsWith("filesafe:///") && destDirUri.startsWith("favorite:///"))
+        return false;
+    if (srcUris.first().startsWith("filesafe:///"))
+        action = Qt::CopyAction;
+
     auto op = FileOperationUtils::moveWithAction(srcUris, destDirUri, addHistory, action);
     connect(op, &FileOperation::operationFinished, this, [=](){
         auto opInfo = op->getOperationInfo();

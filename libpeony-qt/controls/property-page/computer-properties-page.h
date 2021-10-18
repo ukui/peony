@@ -41,6 +41,7 @@ public:
 
 protected:
     void addSeparator();
+
     /**
      * \brief dbus获取文件系统函数
      * \param uri

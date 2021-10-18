@@ -37,11 +37,16 @@ class PEONYCORESHARED_EXPORT SideBarMenu : public QMenu
 public:
     explicit SideBarMenu(SideBarAbstractItem *item, SideBar *sideBar, QWidget *parent = nullptr);
 
+    void gotoAboutComputer();
+
 protected:
     const QList<QAction *> constructFavoriteActions();
     const QList<QAction *> constructPersonalActions();
     const QList<QAction *> constructFileSystemItemActions();
+    const QList<QAction *> constructNetWorkItemActions();
 
+private:
+    QString getComputerUriFromUnixDevice(const QString& unixDevice);
 private:
     SideBarAbstractItem *m_item;
     SideBar *m_side_bar;

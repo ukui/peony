@@ -31,7 +31,19 @@
 #include <QSpacerItem>
 #include <QButtonGroup>
 
+#include <openssl/aes.h>
+#include <glib.h>
+
 using namespace Peony;
+static const QString ftpTypeStr="ftp";
+static const QString sftpTypeStr="sftp";
+static const QString sambaTypeStr="samba";
+static const QString ftpDefaultPortStr="21";
+static const QString sftpDefaultPortStr="22";
+static const QString sambaDefaultPortStr="445";
+
+static QString passwdEncode (QString p);
+static QString passwdDecode (QString p);
 
 ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 {
@@ -55,11 +67,13 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
     m_main_layout->addSpacing(12);
 
-    m_remote_type->append("ftp");
-    m_remote_type->append("samba");
+    m_remote_type->append(ftpTypeStr);
+    m_remote_type->append(sftpTypeStr);
+    m_remote_type->append(sambaTypeStr);
     m_remote_port->append("20");
-    m_remote_port->append("21");
-    m_remote_port->append("445");
+    m_remote_port->append(ftpDefaultPortStr);
+    m_remote_port->append(sftpDefaultPortStr);
+    m_remote_port->append(sambaDefaultPortStr);
     m_ip_label->setText(tr("ip"));
     m_port_editor->setEditable(true);
     m_port_label->setText(tr("port"));
@@ -71,6 +85,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     m_ip_edit->setFixedWidth(194);
     m_port_label->setFixedHeight(36);
     m_port_editor->setFixedHeight(36);
+    m_port_editor->setFixedWidth(65);
     m_remote_type_label->setFixedHeight(36);
     m_remote_type_edit->setFixedHeight(36);
     m_remote_type_edit->addItems(*m_remote_type);
@@ -119,15 +134,17 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 
     setLayout(m_main_layout);
 
-    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_IP)) {
-        QStringList uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_IP).toStringList();
+    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
+
+        QMap<QString, QVariant> uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toMap();
         for (auto uri = uriList.constBegin(); uri != uriList.constEnd(); ++uri) {
-            QUrl url(*uri);
-            if ("" != *uri) {
-                QString urit = *uri == url.toDisplayString() ? *uri : url.toDisplayString();
+            QUrl url(uri.key ());
+            if ("" != uri.key ()) {
+                QString urit = uri.key () == url.toDisplayString() ? uri.key() : url.toDisplayString();
                 QListWidgetItem* item = new QListWidgetItem;
                 item->setText(urit);
-                m_favorite_uri += urit;
+
+                m_favorite_uri.insert (urit, uri.value ());
                 m_favorite_list->addItem(item);
                 m_favorite_widgets.insert(urit, item);
             }
@@ -137,30 +154,30 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     }
 
     connect(m_btn_add, &QPushButton::clicked, this, [=] (bool checked) {
-        addUri(uri());
-
+        addUri(uri());        
         Q_UNUSED(checked);
     });
 
     connect(m_remote_type_edit, &QComboBox::currentTextChanged, this, [=] (const QString& type) {
-        if ("samba" == type.toLower()) {
-            m_port_editor->setEditText("445");
-        } else if ("ftp" == type.toLower()) {
-            m_port_editor->setEditText("21");
+        if (sambaTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sambaDefaultPortStr);
+        } else if (ftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(ftpDefaultPortStr);
+        }else if (sftpTypeStr == type.toLower()) {
+            m_port_editor->setEditText(sftpDefaultPortStr);
         }
     });
-    Q_EMIT m_remote_type_edit->currentTextChanged("ftp");
+    Q_EMIT m_remote_type_edit->currentTextChanged(ftpTypeStr);
 
     connect(m_btn_del, &QPushButton::clicked, this, [=] (bool checked) {
         removeUri(uri());
         if (m_favorite_uri.count() <= 0) {
             m_favorite_list->clear();
         } else {
-            setUri(*(m_favorite_uri.begin()));
-            m_favorite_list->setCurrentItem(m_favorite_widgets[*(m_favorite_uri.begin())]);
+            setUri((m_favorite_uri.firstKey ()));
+            m_favorite_list->setCurrentItem(m_favorite_widgets[m_favorite_uri.firstKey ()]);
         }
         m_favorite_list->update();
-
         Q_UNUSED(checked);
     });
 
@@ -186,10 +203,12 @@ QString ConnectServerDialog::uri()
 {
     QString uuri = "";
 
-    if (m_remote_type_edit->currentText() == "samba") {
+    if (m_remote_type_edit->currentText() == sambaTypeStr) {
         uuri = "smb://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
-    } else if (m_remote_type_edit->currentText() == "ftp") {
+    } else if (m_remote_type_edit->currentText() == ftpTypeStr) {
         uuri = "ftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
+    }else if (m_remote_type_edit->currentText() == sftpTypeStr) {
+        uuri = "sftp://" + m_ip_edit->text() + ":" + m_port_editor->currentText();
     }
 
     return uuri;
@@ -202,8 +221,9 @@ QString ConnectServerDialog::getIP()
 
 void ConnectServerDialog::syncUri()
 {
-    GlobalSettings::getInstance()->setValue(REMOTE_SERVER_IP, QStringList(m_favorite_uri.values()));
-    GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_IP);
+    GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP, m_favorite_uri);
+    GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
+
 }
 
 void ConnectServerDialog::setUri(QString uri)
@@ -213,7 +233,7 @@ void ConnectServerDialog::setUri(QString uri)
     QString     schema = rl.scheme();
 
     if ("smb" == schema) {
-        m_remote_type_edit->setCurrentText("samba");
+        m_remote_type_edit->setCurrentText(sambaTypeStr);
     } else {
         m_remote_type_edit->setCurrentText(rl.scheme());
     }
@@ -233,7 +253,7 @@ void ConnectServerDialog::addUri(QString uri)
     }
 
     if (canInsert) {
-        m_favorite_uri.insert(url.toDisplayString());
+        m_favorite_uri.insert(url.toDisplayString(), QMap<QString, QVariant>());
 
         QListWidgetItem* item = new QListWidgetItem;
         item->setText(url.toDisplayString());
@@ -242,6 +262,7 @@ void ConnectServerDialog::addUri(QString uri)
         m_favorite_list->setCurrentItem(item);
 
         syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(url.toDisplayString(), true);
     }
 }
 
@@ -259,6 +280,7 @@ void ConnectServerDialog::removeUri(QString uri)
     if (m_favorite_uri.contains(removeUrl)) {
         m_favorite_uri.remove(removeUrl);
         syncUri();
+        GlobalSettings::getInstance()->slot_updateRemoteServer(removeUrl,false);
     }
 
     if (m_favorite_widgets.contains(removeUrl)) {
@@ -269,7 +291,8 @@ void ConnectServerDialog::removeUri(QString uri)
     }
 }
 
-ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDialog(parent)
+ConnectServerLogin::ConnectServerLogin(QString uri, QWidget *parent)
+    : QDialog(parent),m_remoteIP(uri)
 {
     setFixedSize(m_widget_size);
     setWindowIcon(QIcon::fromTheme("network-server"));
@@ -280,9 +303,10 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     m_main_layout->addSpacing(12);
     m_main_layout->setMargin(m_widget_margin);
 
+    QUrl url(uri);
     m_tip                   = new QLabel;
     m_tip->setWordWrap(true);
-    m_tip->setText(QString(tr("Please enter the %1's user name and password of the server.")).arg(remoteIP));
+    m_tip->setText(QString(tr("Please enter the %1's user name and password of the server.")).arg(url.host ()));
     m_main_layout->addWidget(m_tip);
 
     m_usr_label             = new QLabel;
@@ -304,11 +328,12 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
 
     m_reg_usr_name_label    = new QLabel;
     m_reg_usr_passwd_label  = new QLabel;
-    m_reg_usr_name_editor   = new QLineEdit;
+    m_reg_usr_name_editor   = new QComboBox;
     m_reg_usr_passwd_editor = new QLineEdit;
     m_reg_usr_combox        = new QCheckBox;
     m_reg_usr_layout        = new QGridLayout;
 
+    m_reg_usr_name_editor->setEditable (true);
     m_reg_usr_name_label->setText(tr("name"));
     m_reg_usr_passwd_label->setText(tr("password"));
     m_reg_usr_combox->setText(tr("Remember the password"));
@@ -343,6 +368,46 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
     setLayout(m_main_layout);
 
     m_usr_btn_usr->setChecked(true);
+    m_reg_usr_combox->setChecked (false);
+
+    QMap<QString, QVariant> uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toMap();
+    QString portStr = QString::number(url.port());
+    QString type = url.scheme();
+    if (portStr.toInt() < 0) {
+        if (ftpTypeStr == type.toLower()) {
+            portStr = ftpDefaultPortStr;
+        } else if (sftpTypeStr == type.toLower()) {
+            portStr = sftpDefaultPortStr;
+        } else if ("smb"==type.toLower()) {/* samba服务是smb */
+            portStr = sambaDefaultPortStr;
+        }
+    }
+
+    QString remoteUri= type.append("://").append(url.host()).append(":").append(portStr);
+
+    if (uriList.contains (remoteUri)) {
+        QMap<QString, QVariant> userInfo = uriList[remoteUri].toMap ();
+        if (!userInfo.isEmpty ()) {
+            m_userInfo = userInfo;
+            for (auto u : userInfo.keys ()) {
+                m_reg_usr_name_editor->addItem (u);
+            }
+
+            // set default passwd
+            QString du = m_reg_usr_name_editor->currentText ();
+            if (m_userInfo.contains (du)) {
+                m_reg_usr_passwd_editor->setText (passwdDecode (m_userInfo[du].toByteArray ()));
+                m_reg_usr_combox->setChecked(true);
+            }
+        }
+    }
+
+    connect (m_reg_usr_name_editor, &QComboBox::currentTextChanged, this, [=] (const QString& u) {
+        if (m_userInfo.contains (u) && !m_userInfo[u].toString ().isEmpty ()) {
+            m_reg_usr_passwd_editor->setText (passwdDecode (m_userInfo[u].toByteArray ()));
+            m_reg_usr_combox->setChecked(true);
+        }
+    });
 
     connect(m_usr_btn_guest, &QRadioButton::clicked, [=] () {
         setFixedSize(m_widget_size_little);
@@ -355,12 +420,17 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
 
     connect(m_usr_btn_usr, &QRadioButton::clicked, [=] () {
         setFixedSize(m_widget_size);
-        // FIXME://
-        m_reg_usr_combox->setHidden(true);
+        m_reg_usr_combox->setHidden(false);
         m_reg_usr_name_label->setHidden(false);
         m_reg_usr_name_editor->setHidden(false);
         m_reg_usr_passwd_label->setHidden(false);
         m_reg_usr_passwd_editor->setHidden(false);
+    });
+
+    connect (m_reg_usr_combox, &QCheckBox::clicked, this, [=] (bool checked) {
+        if (!checked) {
+            // FIXME:// 是否清楚已保存的用户名和密码?
+        }
     });
 
     connect(m_btn_cancel, &QPushButton::clicked, [=] () {
@@ -369,6 +439,8 @@ ConnectServerLogin::ConnectServerLogin(QString remoteIP, QWidget *parent) : QDia
 
     connect(m_btn_ok, &QPushButton::clicked, [=] () {
         accept();
+        QUrl url(m_remoteIP);
+        syncRemoteServer(url);
     });
 }
 
@@ -379,7 +451,7 @@ ConnectServerLogin::~ConnectServerLogin()
 
 QString ConnectServerLogin::user()
 {
-    return m_reg_usr_name_editor->text();
+    return m_reg_usr_name_editor->currentText ();
 }
 
 QString ConnectServerLogin::domain()
@@ -402,3 +474,106 @@ bool ConnectServerLogin::savePassword()
     return m_reg_usr_combox->isChecked();
 }
 
+void ConnectServerLogin::syncRemoteServer(const QUrl& url)
+{
+    if (GlobalSettings::getInstance()->isExist(REMOTE_SERVER_REMOTE_IP)) {
+
+        QMap<QString, QVariant> uriList = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toMap();
+        QString portStr = QString::number(url.port());
+        QString type = url.scheme();
+        if(portStr.toInt()< 0)
+        {
+            if(ftpTypeStr==type.toLower()){
+                portStr = ftpDefaultPortStr;
+            }else if(sftpTypeStr==type.toLower()){
+                portStr = sftpDefaultPortStr;
+            }else if("smb"==type.toLower()){/* samba服务是smb */
+                portStr = sambaDefaultPortStr;
+            }
+        }
+
+        QString remoteUri= type.append("://").append(url.host()).append(":").append(portStr);
+        QMap<QString, QVariant> userInfo;
+        if (!uriList.contains (remoteUri)) {
+            if (savePassword () && !m_reg_usr_passwd_editor->text().isEmpty ()) {
+                userInfo.insert (m_reg_usr_name_editor->currentText (), passwdEncode (m_reg_usr_passwd_editor->text().toUtf8 ()));
+            }
+
+            uriList.insert (remoteUri, userInfo);
+            GlobalSettings::getInstance()->slot_updateRemoteServer(remoteUri, true);
+        } else {
+            userInfo = uriList[remoteUri].toMap ();
+            if (savePassword ()  && !m_reg_usr_passwd_editor->text().isEmpty ()) {
+                userInfo[m_reg_usr_name_editor->currentText ()] = passwdEncode (m_reg_usr_passwd_editor->text().toUtf8 ());
+            } /*else {
+                if (userInfo.contains (m_reg_usr_name_editor->currentText ())) {
+                    userInfo.remove (m_reg_usr_name_editor->currentText ());
+                }
+            }*/
+            uriList[remoteUri] = userInfo;
+        }
+
+        GlobalSettings::getInstance()->setValue(REMOTE_SERVER_REMOTE_IP,uriList);
+        GlobalSettings::getInstance()->forceSync(REMOTE_SERVER_REMOTE_IP);
+    }
+}
+
+
+static const unsigned char PEONY_AES_KEY[] = "peony key";
+
+static QString passwdEncode (QString p)
+{
+    g_return_val_if_fail (!p.isEmpty (), "");
+
+    unsigned char aesKey[AES_BLOCK_SIZE] = {0};
+    unsigned char ivc[AES_BLOCK_SIZE] = {0};
+
+    int passwdLength = p.toUtf8().size () + 1;
+    if (passwdLength % AES_BLOCK_SIZE) passwdLength += (passwdLength % AES_BLOCK_SIZE);
+    g_autofree unsigned char* tmp = (unsigned char*) g_malloc0 (passwdLength);
+
+    memcpy (tmp, p.toUtf8 ().constData (), p.toUtf8 ().size ());
+
+    int encslength = ((passwdLength + AES_BLOCK_SIZE) / AES_BLOCK_SIZE) * AES_BLOCK_SIZE;
+    g_autofree unsigned char* encodeOut = (unsigned char*) g_malloc0 (encslength + 1);
+
+    memset (ivc, 0, sizeof (ivc));
+    AES_KEY encKey;
+    memcpy (aesKey, PEONY_AES_KEY, sizeof (PEONY_AES_KEY));
+    AES_set_encrypt_key (aesKey, 128, &encKey);
+    AES_cbc_encrypt (tmp, encodeOut, p.toUtf8 ().size (), &encKey, ivc, AES_ENCRYPT);
+
+    return QString("%1|%2").arg (p.toUtf8 ().size ()).arg (QString (QByteArray::fromRawData ((char*) encodeOut, encslength).toBase64 ()));
+}
+
+static QString passwdDecode (QString p)
+{
+    g_return_val_if_fail (!p.isEmpty (), "");
+
+    QStringList ls = p.split ("|");
+
+    g_return_val_if_fail (ls.length () == 2, "");
+
+    unsigned char aesKey[AES_BLOCK_SIZE] = {0};
+    unsigned char ivc[AES_BLOCK_SIZE] = {0};
+
+    int srcPasswdLength = ls.first ().toInt ();
+    QByteArray data = QByteArray::fromBase64 (ls.last ().toUtf8 ());
+    int encodePasswdLength = data.length ();
+
+    if (encodePasswdLength % AES_BLOCK_SIZE) encodePasswdLength += (encodePasswdLength % AES_BLOCK_SIZE);
+    g_autofree unsigned char* tmp = (unsigned char*) g_malloc0 (encodePasswdLength);
+
+    memcpy (tmp, data.constData (), data.length ());
+
+    g_autofree unsigned char* decodeOut = (unsigned char*) g_malloc0 (srcPasswdLength + 1);
+
+    memset (ivc, 0, sizeof (ivc));
+    memcpy (aesKey, PEONY_AES_KEY, sizeof (PEONY_AES_KEY));
+
+    AES_KEY decKey;
+    AES_set_decrypt_key (aesKey, 128, &decKey);
+    AES_cbc_encrypt (tmp, decodeOut, srcPasswdLength, &decKey, ivc, AES_DECRYPT);
+
+    return (char*) decodeOut;
+}

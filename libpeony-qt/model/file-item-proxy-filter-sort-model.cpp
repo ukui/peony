@@ -52,6 +52,12 @@ FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QS
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
     m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_HIDDEN_PREFERENCE == key) {
+            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
+            invalidateFilter();
+        }
+    });
     m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
     m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
 }
@@ -127,10 +133,11 @@ default_sort:
                 QString leftDisplayName = leftItem->m_info->displayName();
                 QString rightDisplayName = rightItem->m_info->displayName();
 
-                if(startWithChinese(leftDisplayName)&&!startWithChinese(rightDisplayName))
-                    return true;
-                else if(!startWithChinese(leftDisplayName)&&startWithChinese(rightDisplayName))
+                //fix chinese first sort wrong issue, link to bug#70836
+                if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
                     return false;
+                else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                    return true;
                 else
                     return comparer.compare(leftDisplayName, rightDisplayName) < 0;
             }
@@ -185,6 +192,10 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
         if (targetUri == "")
             targetUri = item->uri();
         if (targetUri.startsWith("file:///media/") && targetUri.endsWith("/2691-6AB8"))
+            return false;
+
+        //FIXME use display name to hide 839 MB disk
+        if (item->m_info->displayName().contains("839 MB"))
             return false;
 
         //check the file info filter conditions
@@ -505,7 +516,7 @@ void FileItemProxyFilterSortModel::update()
 
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
     m_show_hidden = showHidden;
     invalidateFilter();
 }

@@ -41,6 +41,7 @@ UserdirManager::UserdirManager(QObject *parent) : QObject(parent)
         connect(timer,&QTimer::timeout,[=](){
             if(QFile(path0).exists())
             {
+                qWarning()<<"m_times............."<<m_times;
                 getUserdir();
                 m_user_dir_watcher->addPath(path0);
                 timer->stop();
@@ -127,12 +128,10 @@ void UserdirManager::getUserdir()
     GlobalSettings::getInstance()->setValue(TEMPLATES_DIR,m_current_user_dir.value("XDG_TEMPLATES_DIR"));
     //fix non Chinese desktop enviroment templates empty issue, bug#42484
     //FIXME need system integration process
-    //if (! QLocale::system().name().contains("zh"))
-    //{
     QString homePath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString templateDir = homePath + "/模板/";
     GlobalSettings::getInstance()->setValue(TEMPLATES_DIR, templateDir);
-    //}
+
 }
 
 //rename the old paths to overwrire new one.

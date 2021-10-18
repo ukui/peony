@@ -42,6 +42,7 @@ class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
     friend class SideBarFileSystemItem;
     friend class SideBarAbstractItem;
     friend class SideBarFavoriteItem;
+    friend class SideBarNetWorkItem;
     Q_OBJECT
 
 public:

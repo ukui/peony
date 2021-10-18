@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets gui concurrent xml KWindowSystem
+QT       += core widgets gui concurrent xml KWindowSystem dbus
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
@@ -12,11 +12,15 @@ include(../common.pri)
 
 TARGET = peony
 TEMPLATE = lib
+CONFIG += create_pc create_prl no_install_prl
 QMAKE_CXXFLAGS += -Werror=return-type -Werror=return-local-addr -Werror=uninitialized -Werror=unused-label
 CONFIG += link_pkgconfig no_keywords c++11 lrelease hide_symbols
-PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
+PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra openssl
 
 DEFINES += PEONYCORE_LIBRARY
+
+schemes.files += org.ukui.peony.settings.gschema.xml
+schemes.path = /usr/share/glib-2.0/schemas/
 
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/peony-extensions
 DEFINES += PLUGIN_INSTALL_DIRS='\\"$${PLUGIN_INSTALL_DIRS}\\"'
@@ -44,11 +48,23 @@ DESTDIR += $$PWD
 
 unix {
     target.path = $$[QT_INSTALL_LIBS]
-    INSTALLS += target
+
+    QMAKE_PKGCONFIG_NAME = peony
+    QMAKE_PKGCONFIG_DESCRIPTION = Peony Header files
+    QMAKE_PKGCONFIG_VERSION = $$VERSION
+    QMAKE_PKGCONFIG_LIBDIR = $$target.path
+    QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+    QMAKE_PKGCONFIG_INCDIR = /usr/include/peony-qt
+    QMAKE_PKGCONFIG_CFLAGS += -I/usr/include/peony-qt/fileop -I/usr/include/peony-qt/model -I/usr/include/peony-qt/controls
+    QMAKE_PKGCONFIG_REQUIRES = Qt5Widgets Qt5Network glib-2.0 gio-2.0 gio-unix-2.0 poppler-qt5 gsettings-qt udisks2 libnotify libcanberra
+
+    INSTALLS += target \
+                schemes
 
     # fixme:// format_dialog.h
     header.path = /usr/include/peony-qt
-    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h convenient-utils/*.h windows/format_dialog.h
+    header.files += *.h model/*.h file-operation/*.h vfs/*.h controls/ ../plugin-iface/*.h convenient-utils/*.h windows/format_dialog.h \
+                    libpeony-qt/usershare-manager.h
 #    header.depends = header2
     header.files += development-files/header-files/*
     INSTALLS += header
@@ -58,9 +74,9 @@ unix {
 
 #    QMAKE_EXTRA_TARGETS += header header2
 
-    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
-    pcfile.files = development-files/peony.pc
-    INSTALLS += pcfile
+#    pcfile.path = $$[QT_INSTALL_LIBS]/pkgconfig
+#    pcfile.files = development-files/peony.pc
+#    INSTALLS += pcfile
 
     #QM_FILES_RESOURCE_PREFIX = ../translations/libpeony-qt
     QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
@@ -71,3 +87,4 @@ HEADERS += \
 
 SOURCES += \
     file-copy.cpp
+

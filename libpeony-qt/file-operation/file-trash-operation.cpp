@@ -37,12 +37,20 @@ FileTrashOperation::FileTrashOperation(QStringList srcUris, QObject *parent) : F
 {
     m_src_uris = srcUris;
     m_info = std::make_shared<FileOperationInfo>(srcUris, "trash:///", FileOperationInfo::Trash);
+    m_total_count = m_src_uris.length ();
 }
 
 void FileTrashOperation::run()
 {
     Q_EMIT operationStarted();
     Peony::ExceptionResponse response = Invalid;
+
+    for (auto src : m_src_uris) {
+        Q_EMIT operationPreparedOne (src, 1);
+    }
+
+    Q_EMIT operationPrepared ();
+
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
@@ -53,28 +61,28 @@ void FileTrashOperation::run()
 retry:
         GError *err = nullptr;
         auto srcFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(src).toUtf8().constData()));
-        //
-        FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
-        if (fileInfoJob.querySync()) {
-            FileInfo* fileInfo = fileInfoJob.getInfo().get();
-            if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
-                FileOperationError except;
-                except.srcUri = src;
-                except.destDirUri = tr("trash:///");
-                except.isCritical = true;
-                except.op = FileOpTrash;
-                except.title = tr("Trash file error");
-                except.errorCode = G_IO_ERROR_FAILED;
-                except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
-                except.errorType = ET_GIO;
-                except.dlgType = ED_WARNING;
-                Q_EMIT errored(except);
-                if (Cancel == except.respCode) {
-                    cancel();
-                }
-                continue;
-            }
-        }
+        //fix can trash files prompt error dialog issue
+//        FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
+//        if (fileInfoJob.querySync()) {
+//            FileInfo* fileInfo = fileInfoJob.getInfo().get();
+//            if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
+//                FileOperationError except;
+//                except.srcUri = src;
+//                except.destDirUri = tr("trash:///");
+//                except.isCritical = true;
+//                except.op = FileOpTrash;
+//                except.title = tr("Trash file error");
+//                except.errorCode = G_IO_ERROR_FAILED;
+//                except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
+//                except.errorType = ET_GIO;
+//                except.dlgType = ED_WARNING;
+//                Q_EMIT errored(except);
+//                if (Cancel == except.respCode) {
+//                    cancel();
+//                }
+//                continue;
+//            }
+//        }
 
         g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
@@ -183,6 +191,8 @@ retry:
             auto info = FileInfo::fromUri(src);
             info.get()->setProperty(TRASH_TIME, time);
         }
+
+        FileProgressCallback("trash:///", src, "", ++m_current_count, m_total_count);
     }
 
     // judge if the operation should sync.
@@ -248,7 +258,7 @@ void FileTrashOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    g_autoptr(GFile) file = g_file_new_for_uri(node->uri().toUtf8().constData());
+    g_autoptr(GFile) file = g_file_new_for_uri(FileUtils::urlEncode(node->uri()).toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);

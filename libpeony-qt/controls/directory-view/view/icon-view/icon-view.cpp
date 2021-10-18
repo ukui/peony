@@ -67,6 +67,9 @@ IconView::IconView(QWidget *parent) : QListView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
+    setAutoScroll(true);
+    setAutoScrollMargin(100);
+
     setStyle(IconViewStyle::getStyle());
     //FIXME: do not create proxy in view itself.
     IconViewDelegate *delegate = new IconViewDelegate(this);
@@ -124,12 +127,16 @@ DirectoryViewProxyIface *IconView::getProxy()
 void IconView::setSelections(const QStringList &uris)
 {
     clearSelection();
+    QItemSelection selection;
     for (auto uri: uris) {
         const QModelIndex index = m_sort_filter_proxy_model->indexFromUri(uri);
         if (index.isValid()) {
-            selectionModel()->select(index, QItemSelectionModel::Select);
+            QItemSelection selectionToBeMerged(index, index);
+            selection.merge(selectionToBeMerged, QItemSelectionModel::Select);
         }
     }
+
+    selectionModel()->select(selection, QItemSelectionModel::Select);
 }
 
 const QStringList IconView::getSelections()
@@ -386,6 +393,30 @@ void IconView::wheelEvent(QWheelEvent *e)
 
 void IconView::updateGeometries()
 {
+#if QT_VERSION_CHECK(5, 15, 0)
+    //try fix #55341
+    int verticalValue = verticalOffset();
+
+    QListView::updateGeometries();
+
+    if (!model() || model()->columnCount() == 0 || model()->rowCount() == 0) {
+        return;
+    }
+
+    int itemCount = model()->rowCount();
+    QRegion itemRegion;
+    for (int row = 0; row < itemCount; row++) {
+        auto index = model()->index(row, 0);
+        itemRegion += visualRect(index);
+    }
+    if (itemRegion.boundingRect().bottom() + gridSize().height() < viewport()->height()) {
+        verticalScrollBar()->setRange(0, 0);
+    } else {
+        int vertiacalMax = verticalScrollBar()->maximum();
+        verticalScrollBar()->setMaximum(vertiacalMax + gridSize().height());
+        verticalScrollBar()->setValue(verticalValue);
+    }
+#else
     horizontalScrollBar()->setRange(0, 0);
     if (!model()) {
         verticalScrollBar()->setRange(0, 0);
@@ -410,12 +441,13 @@ void IconView::updateGeometries()
         verticalScrollBar()->setPageStep(viewport()->height());
         verticalScrollBar()->setRange(0, itemRegion.boundingRect().bottom() - viewport()->height() + gridSize().height());
     }
+#endif
 }
 
 void IconView::focusInEvent(QFocusEvent *e)
 {
     QListView::focusInEvent(e);
-    if (e->reason() == Qt::TabFocus) {
+    if (e->reason() == Qt::TabFocusReason) {
         if (selectedIndexes().isEmpty()) {
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
@@ -629,6 +661,17 @@ void IconView::editUris(const QStringList uris)
 {
     //FIXME:
     //implement batch rename.
+}
+
+void IconView::selectAll()
+{
+    // fix: #62397
+//    for (int i = 0; i < model()->rowCount(); i++) {
+//        selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
+//    }
+    // optimize selectAll(). do not trigger selection changed signal to many times.
+    QItemSelection selection(model()->index(0, 0), model()->index(model()->rowCount() - 1, 0));
+    selectionModel()->select(selection, QItemSelectionModel::Select);
 }
 
 void IconView::clearIndexWidget()

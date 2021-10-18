@@ -208,6 +208,10 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     form2->addRow(tr("Name"), m_displayNameEdit);
     form2->addRow(tr("Location"), m_locationEdit);
 
+    if(uris.first() == "filesafe:///"){
+        form2->itemAt(1,QFormLayout::LabelRole)->widget()->setEnabled(false);
+    }
+
     //select multiplefiles
     if (fileType == BP_MultipleFIle || !m_info->canRename())
         m_displayNameEdit->setReadOnly(true);
@@ -266,9 +270,14 @@ void BasicPropertiesPage::initFloorOne(const QStringList &uris,BasicPropertiesPa
     }
 
     QString fileUri = uris.at(0);
+    //filesafe插件中保护箱下目录不能移动——fix bug 76864
+    //fix show properties in filesafe path crash issue, link to bug#74350
+    if(fileUri.startsWith("filesafe:///") && m_moveButton) {
+        m_moveButton->setVisible(false);
+    }
+
     if(fileUri.startsWith("filesafe:///") && (fileUri.remove("filesafe:///").indexOf("/") == -1)) {
         disconnect(m_iconButton, &QPushButton::clicked, this, &BasicPropertiesPage::chooseFileIcon);
-        m_moveButton->setVisible(false);
         m_displayNameEdit->setReadOnly(true);
     }
 
@@ -297,6 +306,10 @@ void BasicPropertiesPage::initFloorTwo(const QStringList &uris,BasicPropertiesPa
         //FIX:At present, only the file shortcuts are judged and displayed here. This is not appropriate.
         //I hope to directly add shortcuts to the underlying file file Type.
         m_fileTypeLabel->setText(m_info->isSymbolLink() ? tr("symbolLink") : m_info.get()->fileType());
+    }
+
+    if(fileType == BP_Folder && uris.first() == "filesafe:///"){
+        m_fileTypeLabel->setText(tr("Folder"));
     }
 
     //根据文件类型添加组件 - Add components based on file type
@@ -558,7 +571,7 @@ void BasicPropertiesPage::countFilesAsync(const QStringList &uris)
             //某些带空格的文件名称会导致命令错误，加上引号解决此问题。
             QString path;
             if(uri == "filesafe:///") {
-                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/box";
+                path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.box";
             } else {
                 path = QString("%1%2%3").arg("\"").arg(url.path()).arg("\"");
             }
@@ -665,8 +678,10 @@ void BasicPropertiesPage::moveFile(){
  */
 void BasicPropertiesPage::saveAllChange()
 {
-    m_watcher->stopMonitor();
-    m_thumbnail_watcher->stopMonitor();
+    if (m_watcher)
+        m_watcher->stopMonitor();
+    if (m_thumbnail_watcher)
+        m_thumbnail_watcher->stopMonitor();
     //未发生修改
     if (!this->m_thisPageChanged)
         return;
@@ -810,7 +825,8 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
     connect(fileInfoJob, &FileInfoJob::queryAsyncFinished, this, [=](){
         QUrl url(uri);
         //FIXME:暂时不处理除了本地文件外的文件信息,希望添加对其他文件的支持
-        if (url.isLocalFile()) {
+        //if (url.isLocalFile()) {
+        if(m_info->accessTime() != 0 && m_info->modifiedTime() != 0){
 //            if(m_timeModifiedLabel) {
 //                QDateTime date2 = qFileInfo.lastModified();
 //                QString time2 = date2.toString(m_systemTimeFormat);
@@ -876,8 +892,12 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             g_object_unref(info);
 
         } else {
-            if (m_timeCreatedLabel)
-                m_timeCreatedLabel->setText(tr("Can't get remote file information"));
+            if (m_timeCreatedLabel){
+                QFontMetrics fontWidth(m_timeCreatedLabel->font());
+                QString elideNote = fontWidth.elidedText(tr("Can't get remote file information"),Qt::ElideRight,260);
+                m_timeCreatedLabel->setText(elideNote);
+                m_timeCreatedLabel->setToolTip(tr("Can't get remote file information"));
+            }
         }
 
         //FIXME:GVFS底层暂未实现文件创建时间获取API,暂时使用QT获取文件创建时间

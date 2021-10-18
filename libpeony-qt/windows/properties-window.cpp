@@ -170,13 +170,31 @@ const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100, 32);
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow(parent)
 {
+    if (uris.count() == 0) {
+        m_destroyThis = true;
+        return;
+    }
+
     //将uri编码统一解码,解决uri的不一致问题。from bug:53504
     for (QString uri : uris) {
-        m_uris.append(FileUtils::urlDecode(uri));
+        uri = FileUtils::urlDecode(uri);
+
+        if (uri.startsWith("favorite://")) {
+            rebuildUriBySchema(uri);
+        }
+
+        if (uri.startsWith("network://")) {
+            m_destroyThis = true;
+            return;
+        }
+        //fix bug:70565,将已被编码的字符串解码后从新编码，保证在属性窗口中的编码中特殊字符为%xx形式。
+        //编码时排除'()',防止 FileUtils::handleDesktopFileName 方法匹配不到(),避免出现bug:53504.
+        m_uris.append(uri.toUtf8().toPercentEncoding(":/()"));
     }
 //    m_uris = uris;
     m_uris.removeDuplicates();
     qDebug() << __FUNCTION__ << m_uris.count() << m_uris;
+    setWindowOpacity(0);
 
     if (qApp->property("showProperties").isValid() && qApp->property("showProperties").toBool()) {
         PropertiesWindowPluginManager::getInstance()->setOpenFromDesktop();
@@ -193,21 +211,9 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
         m_uris.removeAt(m_uris.indexOf("computer:///"));
     }
 
-    if (m_uris.count() == 0) {
-        m_destroyThis = true;
-        return;
-    }
-
-    for (QString uri : m_uris) {
-        if (uri.startsWith("network://")) {
-            m_destroyThis = true;
-            return;
-        }
-    }
-
     this->notDir();
 
-    if (!PropertiesWindow::checkUriIsOpen(m_uris, this)) {
+    if (!m_uris.isEmpty() && !PropertiesWindow::checkUriIsOpen(m_uris, this)) {
         this->init();
     } else {
         m_destroyThis = true;
@@ -234,6 +240,12 @@ void PropertiesWindow::init()
     this->initStatusBar();
 
     this->initTabPage(m_uris);
+
+    QTimer::singleShot(400, Qt::PreciseTimer, this, [=]{
+        //fix bug:58167
+        setFocus(Qt::OtherFocusReason);
+        setWindowOpacity(1);
+    });
 }
 
 /*!
@@ -393,6 +405,9 @@ void PropertiesWindow::initStatusBar()
 
 void PropertiesWindow::initTabPage(const QStringList &uris)
 {
+    if(uris.isEmpty())
+        return;
+
     auto window = new PropertiesWindowPrivate(uris, this);
     window->tabBar()->setStyle(new tabStyle);
     //Warning: 不要设置tab高度，否则会导致tab页切换上下跳动
@@ -516,6 +531,34 @@ void PropertiesWindow::saveAllChanged()
     this->close();
 }
 
+QString PropertiesWindow::rebuildUriBySchema(QString &uri)
+{
+    QUrl url(uri);
+
+    if (!url.isValid()) {
+        return uri;
+    }
+    QMap<QString, QString> queryMap;
+    QStringList queryList = url.query().split("&");
+
+    for (QString str : queryList) {
+        QStringList query = str.split("=");
+        queryMap.insert(query.first(), query.last());
+    }
+
+    QString schema = queryMap.value("schema");
+
+    if (schema.isEmpty()) {
+        return uri;
+    }
+
+    uri.replace(0, QString("favorite").length(), schema);
+    //删除uri '?'及之后的信息
+    uri.remove(uri.lastIndexOf("?"), (url.query().length() + 1));
+
+    return uri;
+}
+
 //properties window
 PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
 {
@@ -542,6 +585,10 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
 void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter,
                            const QWidget *widget) const
 {
+    /**
+     * FIX:需要修复颜色不能跟随主题的问题
+     * \brief
+     */
     if (element == CE_TabBarTab) {
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
@@ -564,6 +611,18 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->save();
                 painter->setPen(palette.color(QPalette::Highlight));
                 painter->setBrush(palette.brush(QPalette::Highlight));
+
+                painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                painter->drawRoundedRect(rect, 4, 4);
+                painter->restore();
+
+                //选中时文字颜色 - Text color when selected
+                painter->setPen(palette.color(QPalette::BrightText));
+            } else if (tab->state & QStyle::State_MouseOver) {
+                painter->save();
+                QColor color = palette.color(QPalette::Highlight).lighter(140);
+                painter->setPen(color);
+                painter->setBrush(color);
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
                 painter->drawRoundedRect(rect,4,4);

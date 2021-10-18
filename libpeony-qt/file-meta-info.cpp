@@ -91,8 +91,6 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value,
     m_meta_hash.insert(realKey, value);
     GFile *file = g_file_new_for_uri(m_uri.toUtf8().constData());
 //    GFileInfo *info = g_file_info_new();
-    std::string tmp = realKey.toStdString();
-    auto data = value.toString().toUtf8().data();
 //    g_file_info_set_attribute(info, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data);
     //FIXME: should i add callback?
 //    g_file_set_attributes_async(file,
@@ -105,7 +103,8 @@ void FileMetaInfo::setMetaInfoVariant(const QString &key, const QVariant &value,
     //qDebug()<<tmp.c_str()<<value;
     if (syncToFile) {
         GError *err = nullptr;
-        g_file_set_attribute(file, tmp.c_str(), G_FILE_ATTRIBUTE_TYPE_STRING, (gpointer)data,
+        g_file_set_attribute(file, realKey.toLatin1().data(), G_FILE_ATTRIBUTE_TYPE_STRING,
+                             (gpointer)value.toString().toUtf8().data(),
                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &err);
 
         if (err) {

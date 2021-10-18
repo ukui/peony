@@ -72,7 +72,7 @@ void MountOperation::start()
     gchar* urit = g_file_get_uri(m_volume);
     QUrl uri = QUrl(urit);
     if (uri.scheme() != "mtp") {
-        ConnectServerLogin* dlg = new ConnectServerLogin(uri.host());
+        ConnectServerLogin* dlg = new ConnectServerLogin(urit);
         m_dlg = dlg;
         //block ui
         auto code = dlg->exec();
@@ -102,6 +102,7 @@ void MountOperation::start()
     if (nullptr != urit)  g_free(urit);
 }
 
+#include "global-settings.h"
 GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volume,
         GAsyncResult *res,
         MountOperation *p_this)
@@ -113,8 +114,12 @@ GAsyncReadyCallback MountOperation::mount_enclosing_volume_callback(GFile *volum
         qDebug()<<err->code<<err->message<<err->domain;
         auto errWarpper = GErrorWrapper::wrapFrom(err);
         p_this->finished(errWarpper);
+    } else{
+        QUrl url = QUrl(g_file_get_uri(volume));
+        p_this->m_dlg->syncRemoteServer(url);
+        p_this->finished(nullptr);
     }
-    p_this->finished(nullptr);
+
     if (p_this->m_auto_delete) {
         p_this->disconnect();
         p_this->deleteLater();

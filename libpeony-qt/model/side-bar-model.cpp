@@ -25,6 +25,7 @@
 #include "side-bar-personal-item.h"
 #include "side-bar-file-system-item.h"
 #include "side-bar-separator-item.h"
+#include "side-bar-net-work-item.h"
 
 #include "file-info.h"
 #include "file-info-job.h"
@@ -79,20 +80,22 @@ SideBarModel::SideBarModel(QObject *parent)
 //        m_root_children->append(userShareItem);
 //    }
 
-    SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
-    m_root_children->append(personal_root_item);
+//    SideBarPersonalItem *personal_root_item = new SideBarPersonalItem(nullptr, nullptr, this);
+//    m_root_children->append(personal_root_item);
     //personal_root_item->findChildren();
 
 //    SideBarSeparatorItem *separator3 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
 //    m_root_children->append(separator3);
 
-    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,
+    SideBarFileSystemItem *computerItem = new SideBarFileSystemItem(nullptr,nullptr,
             nullptr,
             this);
     m_root_children->append(computerItem);
     //computerItem->findChildren();
 
-    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+//    SideBarSingleItem *networkItem = new SideBarSingleItem("network:///", "network-workgroup-symbolic", tr("Network"), this);
+    SideBarNetWorkItem *networkItem = new SideBarNetWorkItem("network:///", "network-workgroup-symbolic",
+                                                             tr("Network"), nullptr, this);
     m_root_children->append(networkItem);
 
     endResetModel();
@@ -227,11 +230,9 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     if (index.column() == 1) {
         if(role == Qt::DecorationRole){
             bool unmountAble,ejectAble;
-            unmountAble = item->isMountable();
-            ejectAble = item->isEjectable();
-            if(unmountAble && ejectAble)
-                return QVariant(QIcon::fromTheme("media-eject-symbolic"));
-            else if(unmountAble){
+            unmountAble = item->isUnmountable();
+            ejectAble = item->isEjectable()||item->isStopable();
+            if(unmountAble || ejectAble){
                 if(item->isMounted())
                     return QVariant(QIcon::fromTheme("media-eject-symbolic"));
                 else
@@ -311,7 +312,7 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
     bool isEmpty = true;
     for (auto child : *item->m_children) {
         auto info = FileInfo::fromUri(child->uri());
-        if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume()))
+        if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())||item->uri()=="computer:///")
             isEmpty = false;
         if (child->type() == SideBarAbstractItem::SeparatorItem) {
             removeRows(item->m_children->indexOf(child), 1, index);
@@ -334,13 +335,13 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     if (data->hasFormat("peony-qt/encoded-uris")) {
         srcUris = data->text().split(" ");
         for (QString uri : srcUris) {
-            if (uri.startsWith("recent://"))
+            if (uri.startsWith("recent://") || uri.startsWith("filesafe://"))
                 srcUris.removeOne(uri);
         }
     } else {
         for (auto url : urls) {
             //can not drag file from recent
-            if (url.url().startsWith("recent://"))
+            if (url.url().startsWith("recent://") || url.url().startsWith("filesafe://"))
                 return false;
             srcUris<<url.url();
         }
@@ -407,7 +408,13 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             //can not drag file from recent
             if (uri.startsWith("recent://"))
                 return false;
+
+            //如果源文件路径是filesafe保护箱下的文件只支持复制，不支持移动；
+            if(uri.startsWith("filesafe:///")) {
+                action = Qt::CopyAction;
+            }
         }
+
         if (action == Qt::MoveAction)
         {
             FileOperationUtils::move(uris, item->uri(), true, true);

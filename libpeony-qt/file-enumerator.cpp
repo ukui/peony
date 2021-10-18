@@ -34,6 +34,7 @@
 #include "audio-play-manager.h"
 
 #include "vfs-plugin-manager.h"
+#include "custom-error-handler.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -296,6 +297,41 @@ void FileEnumerator::enumerateSync()
  */
 void FileEnumerator::handleError(GError *err)
 {
+    if (!m_is_custom_error_handler_initialized) {
+        auto vfsManager = VFSPluginManager::getInstance();
+        for (auto plugin : vfsManager->registeredPlugins()) {
+            auto customErrorHandler = plugin->customErrorHandler();
+            if (customErrorHandler) {
+                customErrorHandler->setParent(this);
+                for (int supportedErrorCode : customErrorHandler->errorCodeSupportHandling()) {
+                    m_custom_error_handlers.insert(supportedErrorCode, customErrorHandler);
+                }
+
+                //FIXME:
+                connect(customErrorHandler, &CustomErrorHandler::finished, this, [=]{
+                    this->prepared(nullptr, this->getEnumerateUri());
+                });
+                connect(customErrorHandler, &CustomErrorHandler::cancelled, this, [=]{
+                    cancel();
+                    deleteLater();
+                });
+                connect(customErrorHandler, &CustomErrorHandler::failed, this, [=](const QString &message){
+                    cancel();
+                    deleteLater();
+                    QMessageBox::critical(0, 0, message);
+                });
+            }
+        }
+        m_is_custom_error_handler_initialized = true;
+    }
+
+    if (m_custom_error_handlers.contains(err->code)) {
+        // enter custom error handler.
+        auto customErrorHandler = m_custom_error_handlers.value(err->code);
+        customErrorHandler->handleCustomError(getEnumerateUri(), err->code);
+        return;
+    }
+
     qDebug()<<"handleError"<<err->code<<err->message;
     switch (err->code) {
     case G_IO_ERROR_NOT_DIRECTORY: {

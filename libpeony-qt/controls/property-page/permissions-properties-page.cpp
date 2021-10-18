@@ -136,16 +136,17 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
     //开启手动设置宽度 - Enable manual width setting
     m_table->horizontalHeader()->setMinimumSectionSize(30);
+    m_table->horizontalHeader()->setMaximumSectionSize(400);
 
     m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    m_table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
 
     m_table->setColumnWidth(0, 150);
-
-    m_layout->addWidget(m_table);
+    m_layout->addWidget(m_table);   
 }
 
 void PermissionsPropertiesPage::queryPermissionsAsync(const QString &, const QString &uri)
@@ -203,9 +204,9 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
             bool current_user_writeable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
             bool current_user_executable = g_file_info_get_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
 
-            bool has_unix_mode = g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_UNIX_MODE);
+            p_this->m_has_unix_mode = g_file_info_has_attribute(info, G_FILE_ATTRIBUTE_UNIX_MODE);
             guint32 mode = 0;
-            if (has_unix_mode)
+            if (p_this->m_has_unix_mode)
                 mode = g_file_info_get_attribute_uint32(info, G_FILE_ATTRIBUTE_UNIX_MODE);
 
             auto owner_readable  = mode & S_IRUSR;
@@ -455,14 +456,9 @@ void PermissionsPropertiesPage::savePermissions()
         }
     }
 
-    QUrl url = m_uri;
-    if (url.isLocalFile()) {
-        int ret = g_chmod(url.path().toUtf8(), mod);
-        if (ret < 0) {
-            qDebug()<<"uri"<<url.path().toUtf8()<<"chmod" <<mod<<"failed";
-        } else {
-            qDebug()<<"chmod uri"<<url.path().toUtf8() <<"mod"<<mod <<"success";
-        }
+    if (m_has_unix_mode) {
+        g_autoptr(GFile) pfile = g_file_new_for_uri(m_uri.toUtf8().constData());
+        g_file_set_attribute_uint32(pfile, G_FILE_ATTRIBUTE_UNIX_MODE, (guint32)mod, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
     }
 }
 
@@ -495,8 +491,18 @@ void PermissionsPropertiesPage::updateCheckBox()
             checkbox->setChecked(this->m_permissions[i][j]);
 
             //disable home path
+            bool check_enable = true;
+            QString uri = m_uri;
+
+            if(uri.startsWith("filesafe:///")){
+                QStringList list = uri.split("/");
+                if(list.size()==4){
+                    check_enable = false;
+                }
+            }
+
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (this->m_uri == homeUri)
+            if (this->m_uri == homeUri || !check_enable)
                 checkbox->setDisabled(true);
             else
                 checkbox->setDisabled(false);

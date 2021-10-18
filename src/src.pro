@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gui-private x11extras dbus KWindowSystem concurrent
+QT       += core gui x11extras dbus KWindowSystem concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets widgets-private
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include(../common.pri)
 
@@ -21,9 +21,9 @@ include(control/control.pri)
 #include(view/view.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra
-#LIBS +=-lgio-2.0 -lglib-2.0 -lX11 -lukui-log4qt
-LIBS +=-lgio-2.0 -lglib-2.0 -lX11
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra openssl
+LIBS +=-lgio-2.0 -lglib-2.0 -lX11 -lukui-log4qt
+
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony

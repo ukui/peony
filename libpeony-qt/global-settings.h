@@ -30,7 +30,7 @@
 #include "peony-core_global.h"
 
 #define FORBID_THUMBNAIL_IN_VIEW    "do-not-thumbnail"
-#define SHOW_HIDDEN_PREFERENCE      "show-hidden"
+#define SHOW_HIDDEN_PREFERENCE      "showHiddenFile"
 #define SORT_CHINESE_FIRST          "chinese-first"
 #define SORT_FOLDER_FIRST           "folder-first"
 #define SORT_ORDER                  "sort-order"
@@ -45,8 +45,8 @@
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
 
-#define REMOTE_SERVER_IP            "remote-server/favorite-ip"
-
+#define REMOTE_SERVER_REMOTE_IP     "remote-server/favorite-ip"
+//#define REMOTE_SERVER_CONNECT_IP   "remote-server/connecte-ip"
 //gsettings
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
@@ -87,6 +87,7 @@ public:
 
 Q_SIGNALS:
     void valueChanged(const QString &key);
+    void signal_updateRemoteServer(const QString& server, bool add);
 
 public Q_SLOTS:
     void setValue(const QString &key, const QVariant &value);
@@ -97,6 +98,13 @@ public Q_SLOTS:
     QString getSystemTimeFormat();
 
     /*!
+     * \brief 通过GSetting保存设置
+     * \param key
+     * \param value
+     */
+    void setGSettingValue(const QString &key, const QVariant &value);
+
+    /*!
      * \brief forceSync
      * \param key
      * \details
@@ -104,6 +112,7 @@ public Q_SLOTS:
      * keep same. this may be used in out progress, such as peony-qt-desktop.
      */
     void forceSync(const QString &key = nullptr);
+    void slot_updateRemoteServer(const QString& server, bool add);
 
 private:
     explicit GlobalSettings(QObject *parent = nullptr);
@@ -114,6 +123,7 @@ private:
 
     QGSettings*                 m_gsettings = nullptr;
     QGSettings*                 m_control_center_plugin = nullptr;
+    QGSettings*                 m_peony_gsettings  = nullptr;
 
     QMutex                      m_mutex;
 

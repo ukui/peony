@@ -46,6 +46,7 @@ public:
     bool holdInSideBar () override {return false;}
     QString uriScheme () override {return "favorite://";}
     void* parseUriToVFSFile (const QString &uri) override;
+    CustomErrorHandler *customErrorHandler() override {return nullptr;}
 };
 
 class PEONYCORESHARED_EXPORT FavoriteVFSRegister

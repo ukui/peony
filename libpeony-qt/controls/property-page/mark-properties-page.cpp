@@ -68,7 +68,8 @@ void MarkPropertiesPage::initTableWidget()
     m_tableWidget->setShowGrid(false);
 
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    m_tableWidget->rowHeight(34);
+    m_tableWidget->resizeRowsToContents();
+
     //隔行换色
     m_tableWidget->setAlternatingRowColors(false);
     m_layout->addWidget(m_tableWidget);

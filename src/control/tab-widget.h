@@ -77,6 +77,7 @@ public:
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
+    /* Function:Get all file information under the current path */
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentAllFileInfos();
 
     const QStringList getBackList();
@@ -183,6 +184,7 @@ public Q_SLOTS:
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
+    void enableSearchBar(bool enable);
 
 protected:
     void changeCurrentIndex(int index);
@@ -253,7 +255,8 @@ private:
     bool m_search_child_flag = false;
 
     //Button size macro definition
-    const int TRASH_BUTTON_HEIGHT = 28;
+    //change height to 36 to ensure max size font can show complete, link to bug#58824
+    const int TRASH_BUTTON_HEIGHT = 36;
     const int TRASH_BUTTON_WIDTH = 65;
 
     //advance search filter options
@@ -264,6 +267,8 @@ private:
     QStringList m_file_size_list = {tr("all"),tr("empty(0K)"), tr("tiny(0-16K)"), tr("small(16k-1M)"), tr("medium(1M-128M)"), tr("big(128M-1G)"),tr("large(1-4G)"),tr("great(>4G)")};
 
     bool m_first_add_page = true;
+
+    std::shared_ptr<Peony::FileInfo> m_search_button_info;
 };
 
 class PreviewPageContainer : public QStackedWidget

@@ -114,7 +114,8 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     addAction(/*QIcon::fromTheme("gtk-about"),*/ tr("About"), this, [=]() {
         //PeonyApplication::about();
-        AboutDialog dlg (m_window);
+        AboutDialog dlg(m_window);
+        dlg.setWindowModality(Qt::WindowModal);
         dlg.exec();
     });
 }
@@ -255,11 +256,13 @@ void OperationMenuEditWidget::updateActions(const QString &currentDirUri, const 
     bool isSearch = currentDirUri.startsWith("search://");
     bool isRecent = currentDirUri.startsWith("recent://");
     bool isTrash = currentDirUri.startsWith("trash://");
+    bool isComputer = currentDirUri.startsWith("computer:///");
+    bool isFileBox = currentDirUri == "filesafe:///";
 
-    m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash);
-    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash);
-    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch);
+    m_copy->setEnabled(!isSelectionEmpty && !isSearch && !isRecent && !isTrash && !isComputer);
+    m_cut->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isRecent && !isTrash && !isComputer);
+    m_trash->setEnabled(!isSelectionEmpty && !isDesktop && !isHome && !isSearch && !isComputer);
 
     bool isClipboradHasFile = Peony::ClipboardUtils::isClipboardHasFiles();
-    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash);
+    m_paste->setEnabled(isClipboradHasFile && !isSearch && !isRecent && !isTrash && !isComputer && !isFileBox);
 }

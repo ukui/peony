@@ -40,13 +40,13 @@ static QString handleDuplicate(QString name)
 FileRenameOperation::FileRenameOperation(QString uri, QString newName)
 {
     m_uri = uri;
-    m_new_name = newName;
+    m_new_name = FileUtils::urlDecode(newName);
     m_old_name = FileUtils::getFileDisplayName(uri);
     QStringList srcUris;
     srcUris<<uri;
-    QString destUri = FileUtils::getParentUri(uri);
+    QString destUri = FileUtils::getParentUri(FileUtils::urlEncode(uri));
     if (destUri != nullptr) {
-        destUri = destUri + "/" + newName;
+        destUri = FileUtils::urlEncode(FileUtils::urlDecode(destUri) + "/" + m_new_name);
     }
 
     m_info = std::make_shared<FileOperationInfo>(srcUris, destUri, FileOperationInfo::Rename);
@@ -69,7 +69,7 @@ void FileRenameOperation::run()
         except.op = FileOpRename;
         except.dlgType = ED_WARNING;
         except.title = tr("File Rename error");
-        except.errorStr = tr("Invalid file name \"%1\" ").arg(m_new_name);
+        except.errorStr = tr("Invalid file name %1%2%3 .").arg("\“").arg(m_new_name).arg("\”");
 
         Q_EMIT errored(except);
 
@@ -82,16 +82,16 @@ void FileRenameOperation::run()
             FileOperationError except;
             except.srcUri = m_uri;
             except.errorType = ET_GIO;
-            except.op = FileOpRename;
+            except.op = FileOpRenameToHideFile;
             except.dlgType = ED_WARNING;
             except.title = tr("File Rename warning");
-            except.errorStr = tr("The file \"%1\" will be hidden!").arg(m_new_name);
+            except.errorStr = tr("The file %1%2%3 will be hidden when you refresh or change directory!").arg("\“").arg(m_new_name).arg("\”");
 
             Q_EMIT errored(except);
         }
     }
 
-    auto file = wrapGFile(g_file_new_for_uri(m_uri.toUtf8().constData()));
+    auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_uri).toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                               getCancellable().get()->get(),
@@ -246,13 +246,13 @@ retry:
                         newFile = FileUtils::resolveRelativePath(parent, FileUtils::getUriBaseName(fileUri));
                         getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
                     }
-                    break;
+                    goto retry;
                 }
                 case OverWriteAll:
                     setAutoOverwrite();
                 case OverWriteOne:
                     g_file_delete(newFile.get()->get(), nullptr, nullptr);
-                    break;
+                    goto retry;
                 case IgnoreAll:
                     setAutoIgnore();
                 case IgnoreOne:

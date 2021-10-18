@@ -50,6 +50,8 @@
 
 #include <QHBoxLayout>
 #include <QToolButton>
+#include <QPainter>
+#include <QPainterPath>
 
 #include <QProxyStyle>
 #include <QStyleOptionToolButton>
@@ -58,6 +60,7 @@
 using namespace Peony;
 
 class LocationBarButtonStyle;
+class IndicatorToolButton;
 
 static LocationBarButtonStyle *buttonStyle = nullptr;
 
@@ -75,6 +78,16 @@ public:
     void polish(QWidget *widget) override;
     void unpolish(QWidget *widget) override;
     void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget = nullptr) const override;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+};
+
+class IndicatorToolButton : public QToolButton
+{
+public:
+    explicit IndicatorToolButton(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *) override;
 };
 
 LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
@@ -82,8 +95,9 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_Hover);
     setMouseTracking(true);
 
-    setStyleSheet("padding-right: 15;"
-                  "margin-left: 2");
+    //comment to fix button text show incomplete issue, link to bug#72080
+//    setStyleSheet("padding-right: 15;"
+//                  "margin-left: 2");
     m_styled_edit = new QLineEdit;
     qDebug()<<sizePolicy();
     //connect(this, &LocationBar::groupChangedRequest, this, &LocationBar::setRootUri);
@@ -91,15 +105,16 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
     m_layout = new QHBoxLayout;
     setLayout(m_layout);
 
-    m_indicator = new QToolButton(this);
+    m_indicator = new IndicatorToolButton(this);
+    m_indicator->setObjectName("peony_location_bar_indicator");
     m_indicator->setFocusPolicy(Qt::FocusPolicy(m_indicator->focusPolicy() & ~Qt::TabFocus));
     m_indicator->setAutoRaise(true);
-    m_indicator->setStyle(LocationBarButtonStyle::getStyle());
+    //m_indicator->setStyle(LocationBarButtonStyle::getStyle());
     m_indicator->setPopupMode(QToolButton::InstantPopup);
     m_indicator->setArrowType(Qt::RightArrow);
     m_indicator->setCheckable(true);
     m_indicator->setFixedSize(this->height() - 2, this->height() - 2);
-    m_indicator->move(-2, 1);
+    m_indicator->move(0, 1);
 
     m_indicator_menu = new QMenu(m_indicator);
     m_indicator->setMenu(m_indicator_menu);
@@ -120,7 +135,14 @@ LocationBar::LocationBar(QWidget *parent) : QWidget(parent)
         QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
         connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
             if (key == "systemFontSize") {
-                updateButtons();
+                // note that updateButtons() will cost more time.
+                // there is no need to query file infos again here.
+                // use doLayout() is enough.
+                // btw, Bug#76858 is directly caused by info querying
+                // due to updateButtons().
+
+                //updateButtons();
+                doLayout();
             }
         });
     }
@@ -142,7 +164,7 @@ void LocationBar::setRootUri(const QString &uri)
     //clear buttons
     clearButtons();
     if (m_current_uri.startsWith("search://")) {
-        m_indicator->setArrowType(Qt::NoArrow);
+        //m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
         return;
     }
@@ -209,7 +231,7 @@ void LocationBar::updateButtons()
     clearButtons();
 
     if (m_current_uri.startsWith("search://")) {
-        m_indicator->setArrowType(Qt::NoArrow);
+        //m_indicator->setArrowType(Qt::NoArrow);
         addButton(m_current_uri, false, false);
         return;
     }
@@ -272,7 +294,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     auto displayName = FileUtils::getFileDisplayName(uri);
     button->setToolTip(displayName);
-    m_buttons.insert(uri, button);
+    m_buttons.insert(QUrl(uri).toEncoded(), button);
     if (m_current_uri.startsWith("search://")) {
         QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
@@ -291,7 +313,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         button->setIcon(icon);
     }
 
-	button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
+    //comment to fix button text show incomplete issue, link to bug#72080
+    //button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
     if (!url.fileName().isEmpty()) {
         if (FileUtils::getParentUri(uri).isNull()) {
             setMenu = false;
@@ -307,7 +330,8 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             //fix bug#47597, show as root.link issue
             QString text = tr("File System");
             button->setText(text);
-	        button->setStyleSheet("QToolButton{padding-left: 15px; padding-right: 15px}");
+            //comment to fix button text show incomplete issue, link to bug#72080
+            //button->setStyleSheet("QToolButton{padding-left: 15px; padding-right: 15px}");
         } else {
             button->setText(displayName);
         }
@@ -419,7 +443,7 @@ void LocationBar::paintEvent(QPaintEvent *e)
     fopt.initFrom(this);
     fopt.state |= QStyle::State_HasFocus;
     //fopt.state.setFlag(QStyle::State_HasFocus);
-    fopt.rect.adjust(-2, 0, 0, 0);
+    fopt.rect.adjust(0, 0, 0, 0);
     fopt.palette.setColor(QPalette::Highlight, fopt.palette.button().color());
     fopt.palette.setColor(QPalette::Base, fopt.palette.window().color());
 
@@ -469,7 +493,7 @@ void LocationBar::doLayout()
     bool indicatorVisible = visibleButtonCount < sizeHints.count();
     if (indicatorVisible) {
         m_indicator->setVisible(true);
-        offset += m_indicator->width();
+        offset += m_indicator->width() + 2;
     } else {
         m_indicator->setVisible(false);
     }
@@ -522,6 +546,9 @@ void LocationBar::doLayout()
 
 void LocationBarButtonStyle::polish(QWidget *widget)
 {
+    if (widget->objectName() == "peony_location_bar_indicator") {
+        return;
+    }
     QProxyStyle::polish(widget);
 
     widget->setProperty("useIconHighlightEffect", true);
@@ -541,11 +568,31 @@ void LocationBarButtonStyle::drawComplexControl(QStyle::ComplexControl control, 
     if (control == QStyle::CC_ToolButton) {
         auto toolButton = qstyleoption_cast<const QStyleOptionToolButton *>(option);
         auto opt = *toolButton;
-        if (toolButton->arrowType == Qt::NoArrow)
-            opt.rect.adjust(0, 1, 0, -1);
-        else
-            opt.rect.adjust(-2, 1, 2, -1);
+        if (widget && widget->objectName() == "peony_location_bar_indicator") {
+            opt.features.setFlag(QStyleOptionToolButton::HasMenu, false);
+            return QProxyStyle::drawComplexControl(control, &opt, painter);
+        } else {
+            opt.rect.adjust(1, 1, -1, -1);
+        }
         return QProxyStyle::drawComplexControl(control, &opt, painter, widget);
     }
     return QProxyStyle::drawComplexControl(control, option, painter, widget);
+}
+
+void LocationBarButtonStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    return QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+IndicatorToolButton::IndicatorToolButton(QWidget *parent) : QToolButton(parent)
+{
+
+}
+
+void IndicatorToolButton::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    QStyleOptionToolButton opt;
+    initStyleOption(&opt);
+    LocationBarButtonStyle::getStyle()->drawComplexControl(QStyle::CC_ToolButton, &opt, &p, this);
 }

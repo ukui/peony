@@ -28,6 +28,8 @@
 #include "directory-view-widget.h"
 
 #include "file-info.h"
+#include "file-utils.h"
+#include "file-info-job.h"
 #include "file-launch-manager.h"
 #include "search-vfs-uri-parser.h"
 #include "properties-window.h"
@@ -98,8 +100,14 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &QTabBar::currentChanged, this, &TabWidget::changeCurrentIndex);
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
     connect(m_tab_bar, &QTabBar::tabCloseRequested, this, &TabWidget::removeTab);
+    connect(m_tab_bar, &NavigationTabBar::pageRemoved, this, [this]{
+        updateTabBarGeometry();
+    });
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
+    connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, [this]{
+        updateTabBarGeometry();
+    });
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
 
@@ -199,7 +207,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_trash_label = Label;
     QPushButton *clearAll = new QPushButton(tr("Clear"), trashButtons);
     clearAll->setFixedWidth(TRASH_BUTTON_WIDTH);
-    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT + 10);/* Fix the bug:62841,the font of the clear button is not displayed completely */
     m_clear_button = clearAll;
     QPushButton *recover = new QPushButton(tr("Recover"), trashButtons);
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);
@@ -397,7 +405,21 @@ void TabWidget::searchChildUpdate()
 
 void TabWidget::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
+    // use window modal dialog, fix #56549
+    QFileDialog f(this->topLevelWidget());
+    f.setWindowTitle(tr("Select Path"));
+    f.setDirectoryUrl(QUrl(getCurrentUri()));
+    f.setWindowModality(Qt::WindowModal);
+    f.setAcceptMode(QFileDialog::AcceptOpen);
+    f.setOption(QFileDialog::ShowDirsOnly);
+    f.setFileMode(QFileDialog::DirectoryOnly);
+    auto result = f.exec();
+    if (result != QDialog::Accepted) {
+        return;
+    }
+
+    QString target_path = f.directoryUrl().toString();
+//    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://") && target_path != "")
@@ -406,7 +428,10 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        Q_EMIT this->updateSearch(target_path);
+        /* get search key */
+        MainWindow *mainWindow = dynamic_cast<MainWindow *>(this->topLevelWidget());
+        QString key=mainWindow->getLastSearchKey();
+        Q_EMIT this->updateSearch(target_path,key);
     }
 }
 
@@ -497,9 +522,10 @@ void TabWidget::addNewConditionBar()
         classifyCombox->hide();
         linkLabel->setText(tr("contains"));
         //adjust label width to language
+        //use 1.5 rate width to fix big size font issue, link to bug#58824
         QLocale locale;
         if (locale.language() == QLocale::Chinese)
-            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+            linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
         else
             linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
@@ -514,19 +540,23 @@ void TabWidget::addNewConditionBar()
         auto cur = conditionCombox->currentIndex();
         if (cur%4 >= 3)
         {
+            classifyCombox->setCurrentIndex(0);
             classifyCombox->hide();
             inputBox->show();
             linkLabel->setText(tr("contains"));
             //adjust label width to language
+            //use 1.5 rate width to fix big size font issue, link to bug#58824
             QLocale locale;
             if (locale.language() == QLocale::Chinese)
-                linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
+                linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
             else
                 linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         }
         else
         {
             classifyCombox->show();
+            //clear old filter conditions, fix bug#83559
+            inputBox->setText("");
             inputBox->hide();
             linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
             linkLabel->setText(tr("is"));
@@ -655,6 +685,35 @@ void TabWidget::handleZoomLevel(int zoomLevel)
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     }
 }
+#include"windows/FMWindowIface.h"
+void TabWidget::enableSearchBar(bool enable)
+{
+    //qDebug() << "enable:" <<enable;
+    m_search_path->setEnabled(enable);
+    //m_search_close->setEnabled(enable);
+    m_search_title->setEnabled(enable);
+    m_search_bar->setEnabled(enable);
+    if (m_search_bar_count >0)
+    {
+        //already had a list,just set to show
+        for(int i=0; i<m_search_bar_list.count(); i++)
+        {
+            m_conditions_list[i]->setEnabled(enable);
+            m_link_label_list[i]->setEnabled(enable);
+            if (m_conditions_list[i]->currentIndex()%4 < 3)
+                m_classify_list[i]->setEnabled(enable);
+            else
+                m_input_list[i]->setEnabled(enable);
+            m_search_bar_list[i]->setEnabled(enable);
+            m_add_button_list[i]->setEnabled(enable);
+            /* When there is only one filter item,remove button set disable */
+            if(m_search_bar_count==1)
+                m_remove_button_list[0]->setEnabled(false);
+            else
+                m_remove_button_list[i]->setEnabled(enable);
+        }
+    }
+}
 
 void TabWidget::updateSearchBar(bool showSearch)
 {
@@ -694,6 +753,9 @@ void TabWidget::updateSearchBar(bool showSearch)
         clearConditions();
         updateFilter();
     }
+
+    //9X0 changes, set default as true, fix bug#70916
+    enableSearchBar(true);
 }
 
 void TabWidget::updateButtons()
@@ -733,6 +795,13 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         curUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
+    }
+    auto info = Peony::FileInfo::fromUri(curUri);
+    m_search_button_info = info;
+    if (info.get()->isEmptyInfo()) {
+        // TODO: use async method.
+        Peony::FileInfoJob j(info);
+        j.querySync();
     }
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
@@ -921,8 +990,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
     infoJob->setAutoDelete();
 
     connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        QString rootDir = info.get()->uri();
+        if (!info.get()->isDir()) {
+            rootDir = Peony::FileUtils::getParentUri(rootDir);
+        }
+
         auto enumerator = new Peony::FileEnumerator;
-        enumerator->setEnumerateDirectory(info.get()->uri());
+        enumerator->setEnumerateDirectory(rootDir);
         enumerator->setAutoDelete();
         connect(enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed){
             if (!successed) {
@@ -978,14 +1052,24 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
             //process open symbolic link
             auto realUri = uri;
-            if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://"))
+            if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://")) {
                 realUri = "file://" + info->symlinkTarget();
+            } else if (!info->isDir()) {
+                realUri = Peony::FileUtils::getParentUri(uri);
+            }
 
             //m_stack->addWidget(viewContainer);
             viewContainer->goToUri(realUri, false, true);
 
+            if (!info->isDir() && Peony::FileUtils::isFileExsit(uri)) {
+                QTimer::singleShot(500, [=] {
+                    viewContainer->getView()->setSelections(QStringList() << uri);
+                });
+            }
+
             bindContainerSignal(viewContainer);
             updateTrashBarVisible(uri);
+
 
             if (zoomLevel > 0)
                 viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
@@ -1232,7 +1316,7 @@ void TabWidget::removeTab(int index)
     if (m_stack->count() > 0)
         Q_EMIT activePageChanged();
 
-    updateTabBarGeometry();
+    //updateTabBarGeometry();
 }
 
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
@@ -1283,15 +1367,15 @@ void TabWidget::updateTabBarGeometry()
 
     int tabBarWidth = qMin(m_tab_bar->sizeHint().width() + 4, m_tab_bar_bg->width() - minRightPadding - 5);
 
-    m_add_page_button->move(tabBarWidth + 8, 5);
-    m_add_page_button->raise();
-
     m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 5, 6);
     m_tool_bar->raise();
 
-    m_tab_bar->setGeometry(2, 2, tabBarWidth, m_tab_bar->sizeHint().height());
+    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width() - m_tool_bar->width() - 5, m_tab_bar->sizeHint().height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
+
+    m_add_page_button->move(tabBarWidth + 8, 5);
+    m_add_page_button->raise();
 }
 
 void TabWidget::updateStatusBarGeometry()

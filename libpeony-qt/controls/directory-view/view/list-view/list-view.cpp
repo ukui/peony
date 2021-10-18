@@ -68,6 +68,9 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     setAttribute(Qt::WA_TranslucentBackground);
     setStyle(Peony::DirectoryView::ListViewStyle::getStyle());
 
+    setAutoScroll(true);
+    setAutoScrollMargin(100);
+
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setSelectionBehavior(QTreeView::SelectRows);
@@ -695,13 +698,16 @@ const QStringList ListView::getSelections()
 void ListView::setSelections(const QStringList &uris)
 {
     clearSelection();
+    QItemSelection selection;
     for (auto uri: uris) {
         const QModelIndex index = m_proxy_model->indexFromUri(uri);
         if (index.isValid()) {
-            auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
-            selectionModel()->select(index, flags);
+            QItemSelection selectionToBeMerged(index, index);
+            selection.merge(selectionToBeMerged, QItemSelectionModel::Select);
         }
     }
+    auto flags = QItemSelectionModel::Select|QItemSelectionModel::Rows;
+    selectionModel()->select(selection, flags);
 }
 
 const QStringList ListView::getAllFileUris()
@@ -771,6 +777,8 @@ int ListView::getSortType()
 
 void ListView::setSortType(int sortType)
 {
+    //fix indicator not agree with actual sort order issue, link to bug#71475
+    header()->setSortIndicator(sortType, Qt::SortOrder(getSortOrder()));
     m_proxy_model->sort(sortType, Qt::SortOrder(getSortOrder()));
 }
 
@@ -781,6 +789,8 @@ int ListView::getSortOrder()
 
 void ListView::setSortOrder(int sortOrder)
 {
+    //fix indicator not agree with actual sort order issue, link to bug#71475
+    header()->setSortIndicator(getSortType(), Qt::SortOrder(sortOrder));
     m_proxy_model->sort(getSortType(), Qt::SortOrder(sortOrder));
 }
 

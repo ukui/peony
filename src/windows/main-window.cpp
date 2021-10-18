@@ -25,7 +25,6 @@
 #include "global-settings.h"
 
 #include "border-shadow-effect.h"
-#include <private/qwidgetresizehandler_p.h>
 
 #include <QVariant>
 #include <QMouseEvent>
@@ -129,11 +128,6 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     //setWindowFlags(flags |Qt::FramelessWindowHint);
     //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
     //setContentsMargins(4, 4, 4, 4);
-
-    //bind resize handler
-    auto handler = new QWidgetResizeHandler(this);
-    handler->setMovingEnabled(false);
-    m_resize_handler = handler;
 
     //disable style window manager
     setProperty("useStyleWindowManager", false);
@@ -342,14 +336,11 @@ void MainWindow::setShortCuts()
         connect(trashAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("search://")
-                    || currentUri.startsWith("favorite://"))
+                    || currentUri.startsWith("favorite://") || currentUri == "filesafe:///"
+                    || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
             auto uris = this->getCurrentSelections();
-
-            if(currentUri == "filesafe:///" && uris.count() > 1) {
-                return ;
-            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
@@ -376,14 +367,11 @@ void MainWindow::setShortCuts()
         addAction(deleteAction);
         connect(deleteAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
-            if (currentUri.startsWith("search://"))
+            if (currentUri.startsWith("search://") || currentUri == "filesafe:///"
+                    || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
             auto uris = this->getCurrentSelections();
-
-            if(currentUri == "filesafe:///" && uris.count() > 1) {
-                return ;
-            }
 
             QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
             QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
@@ -665,7 +653,7 @@ void MainWindow::setShortCuts()
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
                 || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
-                || currentUri.startsWith("search://"))
+                || currentUri.startsWith("search://") || currentUri == "filesafe:///")
             {
                 return;
             }
@@ -679,6 +667,10 @@ void MainWindow::setShortCuts()
                         auto targetUirs = opInfo->dests();
                         setCurrentSelectionUris(targetUirs);
                     }, Qt::BlockingQueuedConnection);
+                }
+                else{
+                    //fix paste file in old path not update issue, link to bug#71627
+                    this->getCurrentPage()->getView()->repaintView();
                 }
             }
         });
@@ -874,6 +866,8 @@ void MainWindow::updateHeaderBar()
 {
     m_header_bar->setLocation(getCurrentUri());
     m_header_bar->updateIcons();
+    //fix bug#82685
+    m_header_bar->updateSortTypeEnable();
     //m_status_bar->update();
 }
 
@@ -947,6 +941,8 @@ void MainWindow::updateSearch(const QString &uri, const QString &key, bool updat
 {
     qDebug() << "updateSearch:" <<uri <<key <<updateKey;
     bool needUpdate = false;
+    //coment 9X0 changes, fix bug#70916
+    //m_tab->enableSearchBar(key.length() != 0);
     if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
     {
        //qDebug() << "updateSearch:" <<uri;
@@ -1035,7 +1031,8 @@ void MainWindow::setShowHidden()
     if (!getCurrentPage()) {
         return;
     }
-    m_show_hidden_file = !m_show_hidden_file;
+
+    m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     getCurrentPage()->setShowHidden(m_show_hidden_file);
 }
 
@@ -1103,6 +1100,11 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
 {
     if (currentViewSupportZoom())
         m_tab->m_status_bar->m_slider->setValue(zoomLevel);
+}
+
+QString MainWindow::getLastSearchKey()
+{
+    return m_last_key;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e)
@@ -1175,7 +1177,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     m_effect->setWindowBackground(color);
     QPainter p(this);
 
-    m_effect->drawWindowShadowManually(&p, this->rect(), m_resize_handler->isButtonDown());
+    m_effect->drawWindowShadowManually(&p, this->rect(), false);
     QMainWindow::paintEvent(e);
 }
 

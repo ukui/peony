@@ -34,7 +34,8 @@
 #include "clipboard-utils.h"
 #include <QProcess>
 #include <QDebug>
-#include <file-copy.h>
+#include "file-copy.h"
+#include <gio/gdesktopappinfo.h>
 
 using namespace Peony;
 
@@ -50,13 +51,15 @@ FileCopyOperation::FileCopyOperation(QStringList sourceUris, QString destDirUri,
 
     if (destDirUrl.isParentOf(firstSrcUrl)) {
         m_is_duplicated_copy = true;
-    } else {
+    }/* else {
+        // fix #83068
+        // windows里的重复复制操作没有备份选项，但是会一直弹框提示，这里和windows的行为靠拢
         auto lastPasteDirectoryUri = ClipboardUtils::getInstance()->getLastTargetDirectoryUri();
         QUrl lastPasteDirectoryUrl = Peony::FileUtils::urlEncode(lastPasteDirectoryUri);
         if (destDirUrl == lastPasteDirectoryUrl) {
             m_is_duplicated_copy = true;
         }
-    }
+    }*/
 
     m_conflict_files.clear();
     m_source_uris = sourceUris;
@@ -250,14 +253,64 @@ fallback_retry:
         }
     } else {
         GError *err = nullptr;
-//        GFileWrapperPtr sourceFile = wrapGFile(g_file_new_for_uri(node->uri().toUtf8().constData()));
-//        g_file_copy(sourceFile.get()->get(),
-//                    destFile.get()->get(),
-//                    m_default_copy_flag,
-//                    getCancellable().get()->get(),
-//                    GFileProgressCallback(progress_callback),
-//                    this,
-//                    &err);
+        QUrl url = node->uri();
+
+        bool is_desktop_file = false;
+        g_autoptr(GFile)        src = g_file_new_for_uri(node->uri().toUtf8().constData());
+        g_autoptr(GFileInfo) srcInfo = nullptr;
+        if (src) {
+            srcInfo = g_file_query_info(src, "unix::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+        }
+
+        if (url.isLocalFile() && node->uri().endsWith(".desktop")) {
+            GDesktopAppInfo* desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+            if (G_IS_DESKTOP_APP_INFO(desktop_info)) {
+                is_desktop_file = true;
+
+                GKeyFile* key_file = g_key_file_new();
+                QRegExp regExp (QString("\\ -\\ %1\\(\\d+\\)(\\.[0-9a-zA-Z\\.]+|)$").arg(QObject::tr("duplicate")));
+                g_key_file_load_from_file(key_file, url.path().toUtf8().constData(), G_KEY_FILE_KEEP_COMMENTS, nullptr);
+                QString locale_name = QLocale::system().name();
+                QString local_generic_name_key = QString("Name[%1]").arg(locale_name);
+                GError* error = NULL;
+                if (g_key_file_has_key(key_file, G_KEY_FILE_DESKTOP_GROUP, local_generic_name_key.toUtf8().constData(), nullptr)) {
+                    g_autofree char* val = g_key_file_get_value(key_file, G_KEY_FILE_DESKTOP_GROUP, local_generic_name_key.toUtf8().constData(), &error);
+                    if (error) {
+                        qWarning() << "get desktop file:" << node->uri() << " name error:" << error->code << " -- " << error->message;
+                        g_error_free(error);
+                        error = nullptr;
+                    } else {
+                        if (node->destBaseName().contains(regExp)) {
+                            QString name1 = regExp.cap(0).replace(".desktop", "");
+                            QString name = QString("%1%2.desktop").arg(val).arg(name1);
+                            node->setDestFileName(name);
+                        } else {
+                            QString name = QString("%1 - %2(1).desktop").arg(val).arg(QObject::tr("duplicate"));
+                            node->setDestFileName(name);
+                        }
+                    }
+                } else if (g_key_file_has_key(key_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, nullptr)) {
+                    g_autofree char* val = g_key_file_get_value(key_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, &error);
+                    if (error) {
+                        qWarning() << "get desktop file:" << node->uri() << " name error:" << error->code << " -- " << error->message;
+                        g_error_free(error);
+                        error = nullptr;
+                    } else {
+                        if (node->destBaseName().contains(regExp)) {
+                            QString name1 = regExp.cap(0).replace(".desktop", "");
+                            QString name = QString("%1%2.desktop").arg(val).arg(name1);
+                            node->setDestFileName(name);
+                        } else {
+                            QString name = QString("%1 - %2(1).desktop").arg(val).arg(QObject::tr("duplicate"));
+                            node->setDestFileName(name);
+                        }
+                    }
+                }
+
+                g_key_file_free(key_file);
+                g_object_unref(desktop_info);
+            }
+        }
 
 
         FileCopy fileCopy (node->uri(), destFileUri, m_default_copy_flag,
@@ -340,13 +393,6 @@ fallback_retry:
                 break;
             }
             case OverWriteOne: {
-//                FileCopy fileCopy(sourceFile.get()->get(),
-//                            destFile.get()->get(),
-//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-//                            getCancellable().get()->get(),
-//                            GFileProgressCallback(progress_callback),
-//                            this,
-//                            nullptr);
                 FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
                                    (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
                                    getCancellable().get()->get(),
@@ -364,13 +410,6 @@ fallback_retry:
                 break;
             }
             case OverWriteAll: {
-//                g_file_copy(sourceFile.get()->get(),
-//                            destFile.get()->get(),
-//                            GFileCopyFlags(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
-//                            getCancellable().get()->get(),
-//                            GFileProgressCallback(progress_callback),
-//                            this,
-//                            nullptr);
                 FileCopy fileOverWriteOneCopy (node->uri(), destFileUri,
                                    (GFileCopyFlags)(m_default_copy_flag | G_FILE_COPY_OVERWRITE),
                                    getCancellable().get()->get(),
@@ -435,6 +474,56 @@ fallback_retry:
         } else {
             node->setState(FileNode::Handled);
         }
+
+        if (is_desktop_file) {
+            QUrl url(node->destUri());
+            QRegExp regExp (QString("\\ -\\ %1\\(\\d+\\)(\\.[0-9a-zA-Z\\.]+|)$").arg(QObject::tr("duplicate")));
+            GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+            if (G_IS_DESKTOP_APP_INFO(desktop_info)) {
+                GKeyFile *key_file = g_key_file_new();
+                g_key_file_load_from_file(key_file, url.path().toUtf8().constData(), G_KEY_FILE_KEEP_COMMENTS, nullptr);
+                QString locale_name = QLocale::system().name();
+                QString ext;
+                QString local_generic_name_key = QString("Name[%1]").arg(locale_name);
+
+                g_autofree char* nameStr = nullptr;
+
+                if (node->destBaseName().contains(regExp)) {
+                    ext = regExp.cap(0).replace(".desktop", "");
+                }
+
+                if (g_key_file_has_key(key_file, G_KEY_FILE_DESKTOP_GROUP, local_generic_name_key.toUtf8().constData(), nullptr)) {
+                    nameStr = g_key_file_get_value(key_file, G_KEY_FILE_DESKTOP_GROUP, local_generic_name_key.toUtf8().constData(), nullptr);
+                    g_key_file_set_value(key_file, G_KEY_FILE_DESKTOP_GROUP, local_generic_name_key.toUtf8().constData(), QString(nameStr + ext).toUtf8().constData());
+                } else {
+                    nameStr = g_key_file_get_value(key_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, nullptr);
+                    g_key_file_set_value(key_file, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, QString(nameStr + ext).toUtf8().constData());
+                }
+
+                qDebug() << "set desktop name:" << nameStr + ext << "  -- " << url.path();
+
+                GError*         error = NULL;
+                g_key_file_save_to_file(key_file, url.path().toUtf8().constData(), &error);
+                if (error) {
+                    qWarning() << "save file error:" << error->code << "  --  " << error->message;
+                    g_error_free(error);
+                    error = nullptr;
+                }
+                g_key_file_free(key_file);
+                g_object_unref(desktop_info);
+
+                if (nullptr != srcInfo) {
+                    g_autoptr(GFile) destFile = g_file_new_for_uri(node->destUri().toUtf8().constData());
+                    if (destFile) {
+                        g_file_set_attribute_uint32(destFile, G_FILE_ATTRIBUTE_UNIX_MODE, g_file_info_get_attribute_uint32(srcInfo, G_FILE_ATTRIBUTE_UNIX_MODE), G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
+                    }
+                }
+            } else {
+                qDebug() << "desktop file:" << node->destUri() << " is wrong";
+            }
+        }
+
+
         m_current_offset += node->size();
         fileSync(srcUri, destFileUri);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());

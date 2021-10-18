@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.ukui.peony.settings" path="/org/ukui/peony/settings/">
+    <!--General-->
+    <key type="b" name="show-trash-dialog">
+      <default>true</default>
+      <summary>show trash dialog</summary>
+      <description>Displays the delete to recycle bin dialog box</description>
+    </key>
+
+    <key type="b" name="show-hidden-file">
+      <default>false</default>
+      <summary>show hide file</summary>
+      <description>show hide files in peony and peony-desktop</description>
+    </key>
+    <!--directory-view-->
+
+    <!--remote-server-->
+
+  </schema>
+</schemalist>

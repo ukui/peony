@@ -135,17 +135,39 @@ void DirectoryViewMenu::fillActions()
         m_is_ftp = true;
     }
 
-    if(m_directory == "filesafe:///") {
+    if (m_directory.startsWith("filesafe:///")){
+        m_is_filebox_file = true;
+    }
+
+    if(m_directory == "filesafe:///" || m_directory.startsWith("search:///search_uris=filesafe:///&")) {
         m_is_filesafe = true;
     }
 
+    if(m_directory.startsWith("smb://")){
+        m_is_smb_file = true;
+    }
+
+    QString homeUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString musicUri = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString videoUri = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    QString docUri = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString pictureUri = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString downloadUri = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 
     for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
         qDebug() << desktop;
         if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                || m_selections.at(uriIndex) == "favorite:///?schema=kmre"
                 || m_selections.at(uriIndex) == "favorite:///?schema=recent"
-                || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file") {
+                || m_selections.at(uriIndex) == "favorite:///data/usershare?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + homeUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + musicUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + videoUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + docUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + pictureUri + "?schema=file"
+                || m_selections.at(uriIndex) == "favorite://" + downloadUri + "?schema=file") {
             m_can_delete = false;
             break;
         }
@@ -245,7 +267,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
             }
             if (info->isDir()) {
                 //add to bookmark option
-                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe)
+                if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe && !m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -318,11 +340,15 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 QMenu *openWithMenu = new QMenu(this);
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
-                //auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
-                auto targetUri = FileUtils::getTargetUri(m_selections.first());
-                auto recommendActions = FileLaunchManager::getRecommendActions(targetUri);
+
+                //auto targetUri = FileUtils::getTargetUri(m_selections.first());
+                //use origin uri instead of target uri, fix recommand menu not same with desktop issue
+                //link to bug#80207
+                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
                 //fix has default open app but no recommend actions issue, link to bug#61365
-                if (recommendActions.count() == 0)
+                //fix open options has two same app issue, linkto bug#74480
+                if (recommendActions.count() == 0 && fallbackActions.count() == 0)
                 {
                     auto action = FileLaunchManager::getDefaultAction(m_selections.first());
                     if (action != NULL && action->getAppInfoDisplayName().length() > 0)
@@ -332,7 +358,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
-                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+
                 for (auto action : fallbackActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -398,7 +424,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
 const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
 {
     QList<QAction *> l;
-    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe) {
+    if (!m_is_favorite && m_selections.isEmpty() && !m_is_filesafe && !m_is_trash) {
         auto createAction = new QAction(tr("New..."), this);
         if (m_is_cd) {
             createAction->setEnabled(false);
@@ -427,6 +453,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
         //enumerate template dir
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        qWarning()<<"tempalte Path is"<<templatePath;
         if(!templatePath.isEmpty())
         {
             QDir templateDir(templatePath);
@@ -434,6 +461,7 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
             if (!templates.isEmpty()) {
                 for (auto t : templates) {
                     QFileInfo qinfo(templateDir, t);
+                    qWarning()<<"template entry is"<<qinfo.filePath();
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
                     std::shared_ptr<FileInfo> info = FileInfo::fromUri(uri_str);
@@ -480,10 +508,10 @@ const QList<QAction *> DirectoryViewMenu::constructCreateTemplateActions()
                 }
                 subMenu->addSeparator();
             } else {
-                qWarning()<<"the template dir is empty";
+                qWarning()<<"template entries is empty";
             }
         } else {
-            qWarning()<<"the template dir is not exsit";
+            qWarning()<<"template path is empty";
         }
 
         QList<QAction *> actions;
@@ -570,6 +598,11 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         }
 
         sortTypeAction->setMenu(sortTypeMenu);
+
+        //fix bug#82685
+        if(m_is_computer){
+            sortTypeAction->setEnabled(false);
+        }
 
         //sort order
         auto sortOrderAction = addAction(tr("Sort Order..."));
@@ -687,8 +720,9 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     if (! info->canDelete())
                         canDelete = false;
                 }
-                //fix bug#67932, file can not trash, use delete forever
-                if (canTrash && ! m_selections.first().startsWith("file:///data/usershare"))
+
+                //fix unencrypted box file can delete to trash issue, link to bug#72948
+                if (canTrash && ! m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -698,7 +732,14 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 else if(m_can_delete && canDelete)
                 {
                     hasDeleteForever = true;
-                    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+
+                    //fix the bug 77131;
+                    if(m_is_filebox_file){
+                        l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
+                    }else {
+                        l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                    }
+
                     connect(l.last(), &QAction::triggered, [=]() {
                         FileOperationUtils::executeRemoveActionWithDialog(m_selections);
                     });
@@ -706,6 +747,13 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
             }
 
             if (m_is_favorite && m_can_delete && !m_is_filesafe && !hasDeleteForever) {
+                l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
+                connect(l.last(), &QAction::triggered, [=]() {
+                    FileOperationUtils::executeRemoveActionWithDialog(m_selections);
+                });
+            }
+
+            if (m_is_smb_file && m_can_delete && !hasDeleteForever) {
                 l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                 connect(l.last(), &QAction::triggered, [=]() {
                     FileOperationUtils::executeRemoveActionWithDialog(m_selections);
@@ -734,6 +782,10 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                             auto targetUirs = opInfo->dests();
                             iface->setCurrentSelectionUris(targetUirs);
                         }, Qt::BlockingQueuedConnection);
+                    }
+                    else{
+                        //fix paste file in old path not update issue, link to bug#71627
+                        m_top_window->getCurrentPage()->getView()->repaintView();
                     }
                 });
             }
@@ -801,6 +853,10 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
     if (m_selections.count() > 1 && (m_is_trash || m_is_recent))
         return l;
 
+    //favorite is should not show property
+    if (m_selections.isEmpty() && m_directory == "favorite:///")
+        return l;
+
     if (! m_is_search) {
         //包含network的情况下，不显示属性选项
         if (m_is_network) {
@@ -823,9 +879,29 @@ const QList<QAction *> DirectoryViewMenu::constructFilePropertiesActions()
                 p->setAttribute(Qt::WA_DeleteOnClose);
                 p->show();
             } else {
-                PropertiesWindow *p = new PropertiesWindow(m_selections);
-                p->setAttribute(Qt::WA_DeleteOnClose);
-                p->show();
+                QStringList selectUriList;
+                if (m_selections.first().contains("favorite:///")) {
+                    for (auto uriIndex = 0; uriIndex < m_selections.count(); ++uriIndex) {
+                        if (m_selections.at(uriIndex) == "favorite:///?schema=trash"
+                        || m_selections.at(uriIndex) == "favorite:///?schema=recent") {
+                            QStringList urisList;
+                            urisList << FileUtils::getTargetUri(m_selections.at(uriIndex));
+                            PropertiesWindow *p = new PropertiesWindow(urisList);
+                            p->setAttribute(Qt::WA_DeleteOnClose);
+                            p->show();
+                        } else {
+                            selectUriList<< m_selections.at(uriIndex);
+                        }
+                    }
+                }else {
+                    selectUriList = m_selections;
+                }
+
+                if (selectUriList.count() > 0) {
+                    PropertiesWindow *p = new PropertiesWindow(selectUriList);
+                    p->setAttribute(Qt::WA_DeleteOnClose);
+                    p->show();
+                }
             }
         });
     } else if (m_selections.count() == 1) {
@@ -980,7 +1056,7 @@ const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()
         for (auto id : pluginIds) {
             auto plugin = MenuPluginManager::getInstance()->getPlugin(id);
 
-            if(m_is_filesafe) {
+            if(m_is_filesafe||m_is_filebox_file) {
                 if(plugin->name() == tr("Peony-Qt filesafe menu Extension")) {
                     auto actions = plugin->menuActions(MenuPluginInterface::DirectoryView, m_directory, m_selections);
                     l<<actions;

@@ -85,6 +85,8 @@ private:
     bool m_can_delete = true;           // if contains computer:/// trash:/// recent:/// and desktop path
     bool m_is_kydroid = false;
     bool m_is_filesafe = false;
+    bool m_is_filebox_file = false;     //filesafe path files operation flag
+    bool m_is_smb_file = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 

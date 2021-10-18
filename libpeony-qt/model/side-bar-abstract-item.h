@@ -46,6 +46,7 @@ public:
         FavoriteItem,
         PersonalItem,
         FileSystemItem,
+        NetWorkItem,
         SeparatorItem,
         VFSItem,
         SingleItem
@@ -56,27 +57,64 @@ public:
 
     virtual Type type() = 0;
 
-    virtual QString uri() = 0;
-    virtual QString displayName() = 0;
-    virtual QString iconName() = 0;
-    virtual bool hasChildren() = 0;
-    virtual bool isRemoveable() = 0;
-    virtual bool isEjectable() = 0;
-    virtual bool isMountable() = 0;
-
-    virtual bool isMounted() {
-        return false;
+    virtual QString uri(){
+        return m_uri;
     }
-
+    virtual QString displayName(){
+        return m_displayName;
+    }
+    virtual QString iconName(){
+        return m_iconName;
+    }
+    virtual bool isRemoveable(){
+        return m_removeable;
+    }
+    virtual bool isEjectable() {
+        return m_ejectable;
+    }
+    virtual bool isStopable() {
+        return m_stopable;
+    }
+    virtual bool isMountable() {
+        return m_mountable;
+    }
+    virtual bool isUnmountable(){
+        return m_unmountable;
+	}
+    virtual bool isMounted() {
+        return m_mounted;
+    }
+    virtual QString getDevice() {
+        return m_device;
+    }
+    virtual bool hasChildren() = 0;
     virtual QModelIndex firstColumnIndex() = 0;
     virtual QModelIndex lastColumnIndex() = 0;
 
     virtual SideBarAbstractItem *parent() = 0;
 
+    virtual bool filterShowRow(){
+        return true;
+    }
+
 protected:
     QVector<SideBarAbstractItem*> *m_children = nullptr;
     SideBarModel *m_model = nullptr;
     std::shared_ptr<FileInfo> m_info;
+
+    QString m_uri;
+    QString m_displayName;
+    QString m_iconName;
+
+    QString m_device;
+    QString m_mountPoint;
+
+    bool m_removeable = false;
+    bool m_ejectable = false;
+    bool m_stopable = false;
+    bool m_mountable = false;
+    bool m_unmountable = false;
+    bool m_mounted = false;
 
 Q_SIGNALS:
     void queryInfoFinished();
@@ -91,7 +129,7 @@ public Q_SLOTS:
     virtual void format() = 0;
 
     virtual void ejectOrUnmount() {}
-
+    virtual void mount(){}
     virtual void findChildren() = 0;
     virtual void findChildrenAsync() = 0;
     virtual void clearChildren();

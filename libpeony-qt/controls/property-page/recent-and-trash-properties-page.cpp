@@ -26,6 +26,8 @@
 #include "file-info-job.h"
 #include "file-utils.h"
 #include "global-settings.h"
+#include "file-count-operation.h"
+
 #include <QFormLayout>
 #include <QPushButton>
 #include <QLineEdit>
@@ -142,6 +144,26 @@ void RecentAndTrashPropertiesPage::init()
 //            g_object_unref(file);
             m_layout->addRow(tr("Origin Path: "), label);
 
+            QLabel *size_label =new QLabel(this);
+            if (m_fileInfo->isDir()) {
+                FileCountOperation *fileCountOp = new FileCountOperation(QStringList() << m_fileInfo->uri());
+                fileCountOp->setAutoDelete(true);
+
+                connect(fileCountOp, &FileCountOperation::countDone, [=](quint64 file_count, quint64 hidden_file_count, quint64 total_size) {
+                    char *fileTotalSizeFormat = g_format_size_full(total_size, G_FORMAT_SIZE_IEC_UNITS);
+
+                    QString fileTotalSizeFormatString(fileTotalSizeFormat);
+
+                    size_label->setText(fileTotalSizeFormatString.replace("iB", "B"));
+
+                    g_free(fileTotalSizeFormat);
+                });
+                QThreadPool::globalInstance()->start(fileCountOp);
+            } else {
+                size_label->setText(m_fileInfo->fileSize());
+            }
+
+            m_layout->addRow(tr("Size: "), size_label);
             //add delete date label
             QLabel *delete_label =new QLabel(this);
             info = g_file_query_info(file,
@@ -189,6 +211,5 @@ void RecentAndTrashPropertiesPage::addSeparator()
 void RecentAndTrashPropertiesPage::saveAllChange()
 {
     bool check = this->property("check").toBool();
-    GlobalSettings::getInstance()->setValue("showTrashDialog", check);
-    GlobalSettings::getInstance()->forceSync("showTrashDialog");
+    GlobalSettings::getInstance()->setGSettingValue("showTrashDialog", check);
 }

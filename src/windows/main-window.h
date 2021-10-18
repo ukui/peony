@@ -147,6 +147,7 @@ public Q_SLOTS:
     void editUris(const QStringList &uris);
 
     void setCurrentViewZoomLevel(int zoomLevel);
+    QString getLastSearchKey();
 
 protected:
     void resizeEvent(QResizeEvent *e);
@@ -166,8 +167,6 @@ protected:
 
 private:
     BorderShadowEffect *m_effect;
-
-    QWidgetResizeHandler *m_resize_handler;
 
     HeaderBar *m_header_bar;
     NavigationSideBar *m_side_bar;

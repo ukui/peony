@@ -30,7 +30,7 @@
 #include "file-operation-manager.h"
 #include "file-info.h"
 #include "volume-manager.h"
-
+#include "volumeManager.h"
 #include <QDebug>
 
 using namespace Peony;
@@ -128,13 +128,19 @@ void FileWatcher::startMonitor()
             Q_EMIT directoryUnmounted(uri);
         }
     });
+    connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](const QString &uri){
+        /* volume卸载完成跳转到计算机目录 */
+        if (m_uri.contains(uri)||m_target_uri.contains(uri)) {
+            Q_EMIT directoryUnmounted("computer:///");
+        }
+    });
 }
 
 void FileWatcher::stopMonitor()
 {
     disconnect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, 0);
     disconnect(VolumeManager::getInstance(), &VolumeManager::fileUnmounted, this, 0);
-
+    disconnect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, 0);
     if (m_file_handle > 0) {
         g_signal_handler_disconnect(m_monitor, m_file_handle);
         m_file_handle = 0;
@@ -285,7 +291,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_IN: {
         char *uri = g_file_get_uri(file);
         QString createdFileUri = uri;       
-         qDebug()<<"***create uri***"<<createdFileUri;
+        //qDebug()<<"***create uri***"<<createdFileUri;
         g_free(uri);
 
         Q_EMIT p_this->fileCreated(createdFileUri);
@@ -295,7 +301,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_OUT: {
         char *uri = g_file_get_uri(file);
         QString deletedFileUri = uri;
-        qDebug()<<"***delete uri***"<<deletedFileUri;
+        //qDebug()<<"***delete uri***"<<deletedFileUri;
         g_free(uri);
 
         Q_EMIT p_this->fileDeleted(deletedFileUri);

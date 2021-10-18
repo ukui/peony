@@ -33,6 +33,8 @@
 #include <QIcon>
 #include <sys/stat.h>
 #include <udisks/udisks.h>
+#include <QDBusConnection>
+#include <QDBusInterface>
 
 using namespace Peony;
 
@@ -103,13 +105,13 @@ QString FileUtils::urlEncode(const QString& url)
 
     if (!decodeUrl.isEmpty()) {
         g_autofree gchar* encodeUrl = g_uri_escape_string (decodeUrl.toUtf8().constData(), ":/", true);
-        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+//        qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
         return encodeUrl;
     }
 
     g_autofree gchar* encodeUrl = g_uri_escape_string (url.toUtf8().constData(), ":/", true);
 
-    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
+//    qDebug() << "encode url from:'" << url <<"' to '" << encodeUrl << "'";
 
     return encodeUrl;
 }
@@ -118,11 +120,11 @@ QString FileUtils::urlDecode(const QString &url)
 {
     g_autofree gchar* decodeUrl = g_uri_unescape_string(url.toUtf8(), ":/");
     if (!decodeUrl) {
-        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
+//        qDebug() << "decode url from:'" << url <<"' to '" << url << "'";
         return url;
     }
 
-    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
+//    qDebug() << "decode url from:'" << url <<"' to '" << decodeUrl << "'";
 
     return decodeUrl;
 }
@@ -193,6 +195,9 @@ QString FileUtils::handleDuplicateName(const QString& uri)
 
 QString FileUtils::handleDesktopFileName(const QString& uri, const QString& displayName)
 {
+    //no need self handle, add return to fix bug#72642
+    return displayName;
+
     QString name = QUrl(uri).toDisplayString().split("/").last();
     QRegExp regExpNum("\\(\\d+\\)");
     auto showName = displayName;
@@ -266,15 +271,16 @@ QStringList FileUtils::getChildrenUris(const QString &directoryUri)
         auto child = g_file_enumerator_get_child(e, child_info);
 
         auto uri = g_file_get_uri(child);
-        auto path = g_file_get_path(child);
-        QString urlString = uri;
-        QUrl url = urlString;
-        if (path && !url.isLocalFile()) {
-            urlString = QString("file://%1").arg(path);
-            g_free(path);
-        } else {
-            urlString = uri;
-        }
+        QString urlString = FileUtils::urlEncode(uri);
+        // BUG: 65889
+//        auto path = g_file_get_path(child);
+//        QUrl url = urlString;
+//        if (path && !url.isLocalFile()) {
+//            urlString = QString("file://%1").arg(path);
+//            g_free(path);
+//        } else {
+//            urlString = uri;
+//        }
 
         uris<<urlString;
         g_free(uri);
@@ -318,6 +324,8 @@ QString FileUtils::getNonSuffixedBaseNameFromUri(const QString &uri)
 QString FileUtils::getFileDisplayName(const QString &uri)
 {
     auto fileInfo = FileInfo::fromUri(uri);
+    if (uri == "file:///data")
+        return QObject::tr("data");
     return fileInfo.get()->displayName();
 }
 
@@ -438,7 +446,7 @@ bool FileUtils::isMountPoint(const QString &uri)
     }
 
     if (nullptr != mounts) {
-        g_list_free(mounts);
+        g_list_free_full(mounts, g_object_unref);
     }
 
     if (nullptr != file) {
@@ -540,16 +548,15 @@ const QStringList FileUtils::toDisplayUris(const QStringList &args)
     for (QString path : args) {
         QUrl url = path;
         if (url.scheme().isEmpty()) {
-            auto current_dir = g_get_current_dir();
-            QDir currentDir = QDir(current_dir);
-            g_free(current_dir);
-            //currentDir.cd(path);
-            auto absPath = currentDir.absoluteFilePath(path);
-            path = absPath;
-            url = QUrl::fromLocalFile(absPath);
-            uris << url.toDisplayString();
+            if (path.startsWith ("/")) {
+                uris << ("file://" + path);
+            } else {
+                g_autofree gchar* currentDir = g_get_current_dir();
+                g_autofree gchar* file = g_strdup_printf ("file://%s/%s", currentDir, path.toUtf8 ().constData ());
+                uris << file;
+            }
         } else {
-            uris << QString(url.toEncoded());
+            uris << FileUtils::urlEncode (path);
         }
     }
 
@@ -723,6 +730,7 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
     }
 
     name = QTextCodec::codecForName("GBK")->toUnicode(dest);
+    //name = QTextCodec::codecForLocale()->toUnicode(dest);
     return name;
 }
 
@@ -731,6 +739,26 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
  * @unixDeviceName  a device name. eg: /dev/sdb
  */
 void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &unixDeviceName){
+    if (unixDeviceName.isEmpty())
+        return;
+
+    GVolumeMonitor *vm = g_volume_monitor_get();
+    GList *volumes = g_volume_monitor_get_volumes(vm);
+    GList *l = volumes;
+    while (l) {
+        GVolume *volume = static_cast<GVolume *>(l->data);
+        g_autofree char *volume_unix_dev = g_volume_get_identifier(volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (unixDeviceName == volume_unix_dev) {
+            g_autofree char *volume_name = g_volume_get_name(volume);
+            volumeName = volume_name;
+            break;
+        }
+        l = l->next;
+    }
+    g_list_free_full(volumes, g_object_unref);
+    g_object_unref(vm);
+    return;
+
     QFileInfoList diskList;
     QFileInfo diskLabel;
     QDir diskDir;
@@ -765,7 +793,7 @@ void FileUtils::handleVolumeLabelForFat32(QString &volumeName,const QString &uni
         if(tmpName == volumeName || !tmpName.contains(rx)){      //ntfs、exfat格式或者非纯中文名的fat32设备,这个设备的名字不需要转码
             volumeName = tmpName;
             return;
-        }else{
+        } else {
             finalName = transcodeForGbkCode(tmpName.toLocal8Bit(), volumeName);
             if(!finalName.isEmpty())
                 volumeName = finalName;
@@ -866,4 +894,56 @@ double FileUtils::getDeviceSize(const gchar * device_name)
     g_object_unref(block);
 
     return volume_size;
+}
+
+quint64 FileUtils::getFileSystemSize(QString uri)
+{
+    QString unixDevice,dbusPath;
+    quint64 total = 0;
+
+    unixDevice = FileUtils::getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return total;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return total;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Filesystem",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        total = blockInterface.property("Size").toULongLong();
+
+    return total;
+}
+
+QString FileUtils::getFileSystemType(QString uri)
+{
+    QString unixDevice,dbusPath;
+    QString fsType = "";
+
+    unixDevice = getUnixDevice(uri);
+
+    if (unixDevice.isEmpty()) {
+        return fsType;
+    }
+    dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
+    if (! QDBusConnection::systemBus().isConnected())
+        return fsType;
+    QDBusInterface blockInterface("org.freedesktop.UDisks2",
+                                  dbusPath,
+                                  "org.freedesktop.UDisks2.Block",
+                                  QDBusConnection::systemBus());
+
+    if(blockInterface.isValid())
+        fsType = blockInterface.property("IdType").toString();
+
+    //if need diff FAT16 and FAT32, should use IdVersion
+//    if(fsType == "" && blockInterface.isValid())
+//        fsType = blockInterface.property("IdVersion").toString();
+
+    return fsType;
 }

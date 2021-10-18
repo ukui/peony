@@ -50,8 +50,8 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    auto fileIconName = FileUtils::getFileIconName(node->uri(), false);
-    GFile *file = g_file_new_for_uri(node->uri().toUtf8().constData());
+    auto fileIconName = FileUtils::getFileIconName(FileUtils::urlEncode(node->uri()), false);
+    GFile *file = g_file_new_for_uri(FileUtils::urlEncode(node->uri()).toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {
             deleteRecursively(child);

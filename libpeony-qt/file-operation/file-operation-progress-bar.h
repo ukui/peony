@@ -102,6 +102,7 @@ public:
     bool getStatus();
     float getProgress();
     float getTotalSize();
+    QString getFileName();
     bool isPause();
     void setPause();
     void setResume();
@@ -135,6 +136,7 @@ public Q_SLOTS:
     void onFileRollbacked(const QString &destUri, const QString &srcUri);
 
 private:
+
     bool m_has_finished = false;
     bool m_sync = false;
 
@@ -199,6 +201,9 @@ public:
     void setTitle (QString title);
     void setPause();
     void setResume();
+    void setIsSync(bool);
+    void setProgress(float);
+    void setFileName(QString);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

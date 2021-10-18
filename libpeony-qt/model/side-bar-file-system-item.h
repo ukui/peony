@@ -27,30 +27,33 @@
 #include "side-bar-abstract-item.h"
 #include <memory>
 #include <gio/gio.h>
+#include "volumeManager.h"
+#include "gerror-wrapper.h"
 
 namespace Peony {
 
 class FileWatcher;
-
+class FileEnumerator;
+class FileUtils;
 class PEONYCORESHARED_EXPORT SideBarFileSystemItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:
-    explicit SideBarFileSystemItem(QString uri,
+    explicit SideBarFileSystemItem(QString uri,const Experimental_Peony::Volume& volume,
                                    SideBarFileSystemItem *parentItem,
                                    SideBarModel *model,
                                    QObject *parent = nullptr);
+
+    ~SideBarFileSystemItem();
 
     Type type() override {
         return SideBarAbstractItem::FileSystemItem;
     }
 
-    QString uri() override {
-        return m_uri;
-    }
+    QString uri() override;
     QString displayName() override;
     QString iconName() override {
-        return m_icon_name;
+        return m_iconName;
     }
     bool hasChildren() override {
         return true;
@@ -59,7 +62,7 @@ public:
     bool isRemoveable() override;
     bool isEjectable() override;
     bool isMountable() override;
-
+    bool isUnmountable() override;
     //TODO: monitoring the mount state
     bool isMounted() override;
 
@@ -69,15 +72,23 @@ public:
     SideBarAbstractItem *parent() override {
         return m_parent;
     }
+    Experimental_Peony::Volume getVolume(){
+        return m_volume;
+    }
 
-public Q_SLOTS:
-    void eject(GMountUnmountFlags ejectFlag) override;
-    void realEject(GMountUnmountFlags ejectFlag);
+    bool filterShowRow();
+
+private:
+    void initDirInfo(const QString& uri);           //普通目录
+    void initComputerInfo();                        //计算机Computer
+    void initVolumeInfo(const Experimental_Peony::Volume& volumeItem);  //分区设备
+
+public Q_SLOTS:    
+    void eject(GMountUnmountFlags ejectFlag) override;    
     void unmount() override;
-    void realUnmount();
-    void format() override {}
-
     void ejectOrUnmount() override;
+    void mount()override;
+    void format() override {}
 
     void onUpdated() override {}
 
@@ -85,31 +96,29 @@ public Q_SLOTS:
     void findChildrenAsync() override;
     void clearChildren() override;
 
-protected:
-    void initWatcher();
-    void startWatcher();
-    void stopWatcher();
+    void slot_volumeDeviceAdd(const Experimental_Peony::Volume& addItem);/*设备增加：插入、关闭gparted */
+    void slot_volumeDeviceRemove(const QString& removeDevice);/*设备移除需要匹配device或者mountPoint属性,移除：弹出、拔出、打开gparted */
+    void slot_volumeDeviceMount(const Experimental_Peony::Volume& volume);/*设备挂载 */
+    void slot_volumeDeviceUnmount(const QString& unmountDevice);/*设备卸载 */
+    void slot_volumeDeviceUpdate(const Experimental_Peony::Volume& updateDevice,QString property);/*设备的属性更新：如重设卷标*/
 
-    static GAsyncReadyCallback eject_cb(GFile *file,
-                                        GAsyncResult *res,
-                                        SideBarFileSystemItem *p_this);
+    void slot_fileCreate(const QString& uri);
+    void slot_fileDelete(const QString& uri);
+    void slot_fileRename(const QString &oldUri, const QString &newUri);
+
+    void slot_enumeratorPrepared(const std::shared_ptr<GErrorWrapper>& err, const QString& targetUri, bool critical);
+    void slot_enumeratorFinish(bool successed);
+
+protected:
     void updateFileInfo(SideBarFileSystemItem *pThis);
-    static void ejectDevicebyDrive(GObject* object,GAsyncResult* res,SideBarFileSystemItem *pThis);
 
 private:
     SideBarFileSystemItem *m_parent = nullptr;
-
-    bool m_is_root_child = false;
-    QString m_uri = nullptr;
-    QString m_display_name = nullptr;
-    QString m_icon_name = nullptr;
-
-    bool m_is_removeable = false;
-    bool m_is_ejectable = false;
-    bool m_is_mountable = false;
-
-    bool m_is_mounted = false;
+    Experimental_Peony::Volume m_volume = nullptr;
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
+    FileEnumerator *m_enumerator = nullptr;
+
+    bool m_isRootChild = false;
 
     QString m_unix_device; // sdb1, etc...
     QString m_volume_name; // Windows, Data etc...

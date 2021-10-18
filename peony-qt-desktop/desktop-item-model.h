@@ -76,6 +76,9 @@ public:
     Qt::DropActions supportedDropActions() const override;
     Qt::DropActions supportedDragActions() const override;
 
+    bool acceptDropAction() const;
+    void setAcceptDropAction(bool acceptDropAction);
+
 Q_SIGNALS:
     void requestLayoutNewItem(const QString &uri);
     void requestClearIndexWidget(const QStringList &uris = QStringList());
@@ -112,6 +115,8 @@ private:
     std::shared_ptr<FileOperationInfo> m_renaming_operation_info;
 
     QPair<QString, QPoint> m_renaming_file_pos;
+
+    bool m_accept_drop_action = true;
 
     void refreshInternal();
 };

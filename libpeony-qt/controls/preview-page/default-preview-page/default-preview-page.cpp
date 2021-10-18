@@ -46,6 +46,7 @@
 #include <QImageReader>
 
 #include <QPainter>
+#include <QGSettings>
 
 #include "icon-container.h"
 
@@ -83,6 +84,19 @@ DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent
     addWidget(m_empty_tab_widget);
 
     setCurrentWidget(m_empty_tab_widget);
+
+    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+        QGSettings *gSetting = new QGSettings("org.ukui.style", QByteArray(), this);
+        connect(gSetting, &QGSettings::changed, this, [=](const QString &key) {
+            if ("systemFontSize" == key) {
+                if (m_support && m_preview_tab_widget) {
+                    if (m_info) {
+                        m_preview_tab_widget->updateInfo(m_info.get());
+                    }
+                }
+            }
+        });
+    }
 }
 
 DefaultPreviewPage::~DefaultPreviewPage()
@@ -260,8 +274,8 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     auto access = QDateTime::fromMSecsSinceEpoch(info->accessTime()*1000);
     auto modify = QDateTime::fromMSecsSinceEpoch(info->modifiedTime()*1000);
 
-    m_time_access_label->setText(access.toString(Qt::SystemLocaleShortDate));
-    m_time_modified_label->setText(modify.toString(Qt::SystemLocaleShortDate));
+    wrapData(m_time_access_label, access.toString(Qt::SystemLocaleShortDate));
+    wrapData(m_time_modified_label, modify.toString(Qt::SystemLocaleShortDate));
 
     m_file_count_label->setText(tr(""));
     if (info->isDir()) {
@@ -301,7 +315,7 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 
     }
 
-    if (!info->symlinkTarget().isEmpty()) {
+    if (info->isSymbolLink()&&!info->symlinkTarget().isEmpty()){
         countAsync("file:///" + info->symlinkTarget());
     } else {
         countAsync(info->uri());

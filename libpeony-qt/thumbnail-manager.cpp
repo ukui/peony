@@ -245,6 +245,16 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
                thumbnail=QIcon(path_svg);
             }
         }
+
+        //still not find icon, default find 64*64 png
+        //link to bug#69429, after install app not show icon issue
+        if (thumbnail.isNull())
+        {
+            path = QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(_icon_string).arg("png");
+            if(QFile::exists(path)){
+                thumbnail=QIcon(path);
+            }
+        }
     }
 
     g_free(_icon_string);
@@ -420,6 +430,15 @@ void ThumbnailManager::releaseThumbnail(const QString &uri)
 {
     m_semaphore->acquire();
     m_hash.remove(uri);
+    m_semaphore->release();
+}
+
+void ThumbnailManager::releaseThumbnail(const QStringList &uris)
+{
+    m_semaphore->acquire();
+    for (auto uri : uris) {
+        m_hash.remove(uri);
+    }
     m_semaphore->release();
 }
 

@@ -72,6 +72,18 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
     connect(m_progressbar, &FileOperationProgressBar::canceled, [=] () {
         m_progressbar->removeAllProgressbar();
     });
+
+    // 休眠检测
+    GDBusConnection* pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
+    if (pconnection) {
+        g_dbus_connection_signal_subscribe(pconnection,
+                       "org.freedesktop.login1",
+                       "org.freedesktop.login1.Manager",
+                       "PrepareForSleep",
+                       "/org/freedesktop/login1", NULL,
+                       G_DBUS_SIGNAL_FLAGS_NONE,
+                       systemSleep, this, NULL);
+    }
 }
 
 FileOperationManager::~FileOperationManager()
@@ -469,6 +481,16 @@ void FileOperationManager::manuallyNotifyDirectoryChanged(FileOperationInfo *inf
             auto srcDir = info->m_src_dir_uri;
             auto destDir = info->m_dest_dir_uri;
             auto firstUri = info->m_src_uris.first();
+            
+            //'file:///run/user/1000/gvfs/smb-share:server=xxx,share=xxx/' converted to 'smb://xxx'
+            GFile * file  = g_file_new_for_uri(destDir.toLatin1().data());
+            char *uri = g_file_get_uri(file);	
+            if (uri) {
+                destDir = uri;
+            }
+            g_object_unref(file);
+            g_free(uri);
+            
             if (info->operationType() == FileOperationInfo::Link || info->operationType() == FileOperationInfo::Rename) {
                 srcDir = FileUtils::getParentUri(firstUri);
             }
@@ -656,4 +678,19 @@ std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperat
     oppositeInfo->m_oldname = this->m_newname;
 
     return oppositeInfo;
+}
+
+void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar *senderName, const gchar *objectPath, const gchar *interfaceName, const gchar *signalName, GVariant *parameters, gpointer udata)
+{
+    FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;
+    if (pb) {
+        Q_EMIT pb->pause();
+    }
+
+    Q_UNUSED(connection)
+    Q_UNUSED(senderName)
+    Q_UNUSED(objectPath)
+    Q_UNUSED(signalName)
+    Q_UNUSED(parameters)
+    Q_UNUSED(interfaceName)
 }

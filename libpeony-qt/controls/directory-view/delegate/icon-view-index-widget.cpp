@@ -47,6 +47,8 @@ using namespace Peony::DirectoryView;
 
 IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const QStyleOptionViewItem &option, const QModelIndex &index, QWidget *parent) : QWidget(parent)
 {
+    installEventFilter(parent);
+
     setMouseTracking(true);
 
     m_edit_trigger.setInterval(3000);
@@ -139,13 +141,31 @@ IconViewIndexWidget::~IconViewIndexWidget()
     delete m_edit;
 }
 
+bool IconViewIndexWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (event->type() == QEvent::Resize) {
+        adjustPos();
+        update();
+    }
+    return false;
+}
+
 void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 {
+    IconView *view = m_delegate->getView();
+    auto expectedRect = view->visualRect(m_index);
+    auto rectPos = this->mapToParent(QPoint(0, 0));
+    if (expectedRect.topLeft() != rectPos) {
+        adjustPos();
+        update();
+        return;
+    }
+
     QWidget::paintEvent(e);
     QPainter p(this);
     //p.fillRect(0, 0, 999, 999, Qt::red);
 
-    adjustPos();
+    //adjustPos();
 
     //qDebug()<<m_option.backgroundBrush;
     //qDebug()<<this->size() << m_delegate->getView()->iconSize();

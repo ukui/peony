@@ -171,8 +171,10 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                 //FIXME: add sub menu for open with action.
                 QMenu *openWithMenu = new QMenu(this);
                 auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
+                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
                 //fix has default open app but no recommend actions issue, link to bug#61365
-                if (recommendActions.count() == 0)
+                //fix open options has two same app issue, linkto bug#74480, 69977
+                if (recommendActions.count() == 0 && fallbackActions.count() ==0)
                 {
                     auto action = FileLaunchManager::getDefaultAction(m_selections.first());
                     if (action != NULL && action->getAppInfoDisplayName().length() > 0)
@@ -182,7 +184,7 @@ const QList<QAction *> DesktopMenu::constructOpenOpActions()
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
                 }
-                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+
                 for (auto action : fallbackActions) {
                     action->setParent(openWithMenu);
                     openWithMenu->addAction(static_cast<QAction*>(action));
@@ -255,6 +257,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
         //enumerate template dir
 //        QDir templateDir(g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES));
         QString templatePath = GlobalSettings::getInstance()->getValue(TEMPLATES_DIR).toString();
+        qWarning()<<"tempalte Path is"<<templatePath;
         if(!templatePath.isEmpty())
         {
             QDir templateDir(templatePath);
@@ -262,6 +265,7 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
             if (!templates.isEmpty()) {
                 for (auto t : templates) {
                     QFileInfo qinfo(templateDir, t);
+                    qWarning()<<"template entry is"<<qinfo.filePath();
                     GFile *gtk_file = g_file_new_for_path(qinfo.filePath().toUtf8().data());
                     char *uri_str = g_file_get_uri(gtk_file);
                     //FIXME: replace BLOCKING api in ui thread.
@@ -306,10 +310,10 @@ const QList<QAction *> DesktopMenu::constructCreateTemplateActions()
                 }
                 subMenu->addSeparator();
             } else {
-                qWarning()<<"the template dir is empty";
+                qWarning()<<"template entries is empty";
             }
         } else {
-            qWarning()<<"the template dir is not exsit";
+            qWarning()<<"template path is empty";
         }
 
         QList<QAction *> actions;
