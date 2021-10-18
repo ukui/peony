@@ -112,6 +112,7 @@ void SynAndDaemon::initAppListWidget()
         //插入应用列表
         StudyListView* listView = new StudyListView(this);
         listView->setData(m_studyCenterDataList.at(i).second);
+        m_viewMap.insert(m_studyCenterDataList.at(i).first, listView);
         m_mainLayout->addWidget(listView);
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));
     }
@@ -157,5 +158,15 @@ void SynAndDaemon::paintEvent(QPaintEvent* event)
     painter.save();
     painter.restore();
 
+}
+
+void SynAndDaemon::updateAppData(QList<QPair<QString, QList<TabletAppEntity *>>> &subAppMap)
+{
+    m_studyCenterDataList.clear();
+    m_studyCenterDataList = subAppMap;
+
+    for (int i = 0; i < m_studyCenterDataList.size(); ++i) {
+        m_viewMap.value(m_studyCenterDataList.at(i).first)->setData(m_studyCenterDataList.at(i).second);
+    }
 }
 

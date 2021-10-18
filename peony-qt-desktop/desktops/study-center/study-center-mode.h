@@ -36,6 +36,7 @@ public:
 
 private:
     void initUi();
+    void updateAppData();
     void screenRotation();
     void initPageButton();
     void updatePageButton();

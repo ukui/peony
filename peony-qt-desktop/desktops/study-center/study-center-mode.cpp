@@ -50,6 +50,7 @@ DesktopWidgetBase *StudyCenterMode::initDesktop(const QRect &rect)
 {
     updateTimeSlot();
     updatePageButton();
+    updateAppData();
     return DesktopWidgetBase::initDesktop(rect);
 }
 void StudyCenterMode::initUi()
@@ -112,6 +113,8 @@ void StudyCenterMode::initUi()
     statusWidget->installEventFilter(this);
     m_mainGridLayout = new QGridLayout(this);
 
+    connect(m_tableAppMangager, &TabletAppManager::appEntityListChanged, this, &StudyCenterMode::updateAppData);
+
     changeTheme();
     screenRotation();
 
@@ -154,6 +157,34 @@ void StudyCenterMode::initUi()
     }
 
     initPageButton();
+}
+
+void StudyCenterMode::updateAppData()
+{
+    if (!practiceWidget || !guradWidget || !synWidget || !statusWidget) {
+        return;
+    }
+
+    QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap = m_tableAppMangager->getStudyCenterData();
+    QList<QPair<QString, QList<TabletAppEntity*>>> dataList;
+
+    dataList.append(qMakePair(QString(tr("math")),studyCenterDataMap[STUDY_CENTER_MATH]));
+    dataList.append(qMakePair(QString(tr("english")),studyCenterDataMap[STUDY_CENTER_ENGLISH]));
+    dataList.append(qMakePair(QString(tr("chinese")),studyCenterDataMap[STUDY_CENTER_CHINESE]));
+    dataList.append(qMakePair(QString(tr("other")),studyCenterDataMap[STUDY_CENTER_OTHER]));
+    practiceWidget->updateAppData(dataList);
+
+    dataList.clear();
+
+    dataList.append(qMakePair(QString(STUDY_CENTER_STUDENT_GUARD),studyCenterDataMap[STUDY_CENTER_STUDENT_GUARD]));
+    guradWidget->updateAppData(dataList);
+
+    dataList.clear();
+
+    dataList.append(qMakePair(QString(STUDY_CENTER_SYNCHRONIZED),studyCenterDataMap[STUDY_CENTER_SYNCHRONIZED]));
+    synWidget->updateAppData(dataList);
+
+    dataList.clear();
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )

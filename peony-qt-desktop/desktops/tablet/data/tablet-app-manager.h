@@ -129,7 +129,7 @@ private:
     static void initSystemAppPath();
 
 private Q_SLOTS:
-    void directoryChangedSlot();
+    void directoryChangedSlot(QString string = QString());
 
 private:
     explicit TabletAppManager(QObject *parent = nullptr);
