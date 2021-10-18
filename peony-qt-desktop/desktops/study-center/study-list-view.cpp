@@ -39,6 +39,7 @@ StudyListView::StudyListView(QWidget *parent): QListView(parent)
 }
 void StudyListView::setData(QList<TabletAppEntity*> tabletAppList)
 {
+    m_listmodel->clear();
     for(int i = 0; i < tabletAppList.size(); ++i)
     {
         QStandardItem* item=new QStandardItem;
@@ -54,8 +55,10 @@ void StudyListView::setData(QList<TabletAppEntity*> tabletAppList)
         m_listmodel->appendRow(item);
     }
 
-    FullItemDelegate* delegate= new FullItemDelegate(this,0);
-    this->setItemDelegate(delegate);
+    if (!m_delegate) {
+        m_delegate = new FullItemDelegate(this, 0);
+    }
+    this->setItemDelegate(m_delegate);
 
 }
 

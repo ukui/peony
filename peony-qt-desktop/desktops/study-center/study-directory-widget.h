@@ -19,6 +19,8 @@
 #ifndef STUDYDIRECTORYWIDGET_H
 #define STUDYDIRECTORYWIDGET_H
 
+#include "study-list-view.h"
+
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QTableWidget>
@@ -44,7 +46,7 @@ class StudyDirectoryWidget : public QWidget
 public:
     explicit StudyDirectoryWidget(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleMap, int mode = 0, QWidget *parent = nullptr);
     ~StudyDirectoryWidget();
-
+    void updateAppData(QList<QPair<QString, QList<TabletAppEntity*>>> &subAppMap);
 private:
 //    UkuiMenuInterface* pUkuiMenuInterface=nullptr;
 
@@ -56,6 +58,7 @@ private:
     QWidget*      m_scrollareawid=nullptr;
     QLabel*       m_titleLabel=nullptr;
     QStringList   m_strListTitleStyle;
+    QMap<QString, StudyListView*> m_viewMap;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
     int m_iMode;
 

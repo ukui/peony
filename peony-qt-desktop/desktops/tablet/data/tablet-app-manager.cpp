@@ -77,6 +77,10 @@ void TabletAppManager::initSettings()
 
 void TabletAppManager::initWatcher()
 {
+    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
+                                         "com.ukui.desktop.software", "send_to_client",
+                                         this, SLOT(directoryChangedSlot(QString)));
+
     m_appPathWatcher = new QFileSystemWatcher(this);
 
     for (const QString &path : TabletAppManager::g_appPathList) {
@@ -86,7 +90,7 @@ void TabletAppManager::initWatcher()
     connect(m_appPathWatcher, &QFileSystemWatcher::directoryChanged, this, &TabletAppManager::directoryChangedSlot);
 }
 
-void TabletAppManager::directoryChangedSlot()
+void TabletAppManager::directoryChangedSlot(QString)
 {
     //TODO 2021-0822 在目录发生变化时，只加载发生变化的目录
     this->fillAppPathList();

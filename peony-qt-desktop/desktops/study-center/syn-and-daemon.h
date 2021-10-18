@@ -19,6 +19,8 @@
 #ifndef SYNANDDAEMON_H
 #define SYNANDDAEMON_H
 
+#include "study-list-view.h"
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -35,6 +37,7 @@ class SynAndDaemon : public QWidget
 public:
     explicit SynAndDaemon(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleMap, QWidget *parent = nullptr);
     ~SynAndDaemon();
+    void updateAppData(QList<QPair<QString, QList<TabletAppEntity*>>> &subAppMap);
 
 private:
 
@@ -43,6 +46,7 @@ private:
     QLabel*       m_titleLabel=nullptr;
     QStringList   m_strListTitleStyle;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
+    QMap<QString, StudyListView*> m_viewMap;
 
 protected:
     void initWidget(QStringList &strListTitleStyle);
