@@ -392,22 +392,26 @@
 <context>
     <name>Peony::StudyCenterMode</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="76"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="171"/>
         <source>math</source>
         <translation>数学</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="77"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="76"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="172"/>
         <source>english</source>
         <translation>英语</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="78"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="77"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="173"/>
         <source>chinese</source>
         <translation>语文</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="79"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="78"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="174"/>
         <source>other</source>
         <translation>更多</translation>
     </message>

@@ -2488,24 +2488,24 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::GlobalSettings</name>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="56"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="310"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="59"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="329"/>
         <source>yyyy/MM/dd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="57"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="303"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="60"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="322"/>
         <source>HH:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="300"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="319"/>
         <source>hh:mm:ss AP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="313"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="332"/>
         <source>yyyy-MM-dd</source>
         <translation type="unfinished"></translation>
     </message>

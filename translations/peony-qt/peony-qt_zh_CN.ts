@@ -117,62 +117,67 @@ p, li { white-space: pre-wrap; }
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="199"/>
+        <location filename="../../src/control/header-bar.cpp" line="146"/>
+        <source>Go Up</source>
+        <translation>上级目录</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="211"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="211"/>
+        <location filename="../../src/control/header-bar.cpp" line="223"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="220"/>
+        <location filename="../../src/control/header-bar.cpp" line="232"/>
         <source>Details</source>
         <translation>预览视图</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="263"/>
+        <location filename="../../src/control/header-bar.cpp" line="275"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="291"/>
+        <location filename="../../src/control/header-bar.cpp" line="303"/>
         <source>&amp;Copy</source>
         <translation>&amp;复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="294"/>
+        <location filename="../../src/control/header-bar.cpp" line="306"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="307"/>
+        <location filename="../../src/control/header-bar.cpp" line="319"/>
         <source>&amp;Cut</source>
         <translation>&amp;剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="310"/>
+        <location filename="../../src/control/header-bar.cpp" line="322"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="317"/>
+        <location filename="../../src/control/header-bar.cpp" line="329"/>
         <source>&amp;Select All</source>
         <translation>&amp;全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="321"/>
+        <location filename="../../src/control/header-bar.cpp" line="333"/>
         <source>Select All</source>
         <translation>全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="328"/>
+        <location filename="../../src/control/header-bar.cpp" line="340"/>
         <source>&amp;Delete to trash</source>
         <translation>&amp;删除到回收箱</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="331"/>
+        <location filename="../../src/control/header-bar.cpp" line="343"/>
         <source>Delete to trash</source>
         <translation>删除到回收箱</translation>
     </message>
@@ -181,12 +186,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="375"/>
+        <location filename="../../src/control/header-bar.cpp" line="387"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="376"/>
+        <location filename="../../src/control/header-bar.cpp" line="388"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -1064,17 +1069,17 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="721"/>
+        <location filename="../../src/control/header-bar.cpp" line="736"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="734"/>
+        <location filename="../../src/control/header-bar.cpp" line="749"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="757"/>
+        <location filename="../../src/control/header-bar.cpp" line="772"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
