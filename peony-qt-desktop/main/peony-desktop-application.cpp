@@ -723,7 +723,7 @@ void PeonyDesktopApplication::initManager()
     DesktopBackgroundManager::globalInstance();
 
     m_windowManager  = WindowManager::getInstance(this);
-    m_desktopManager = DesktopManager::getInstance(true,this);
+    m_desktopManager = DesktopManager::getInstance(false,this);
 }
 
 QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
