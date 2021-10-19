@@ -132,6 +132,7 @@ private:
     bool m_search_mode = false;
     bool m_search_recursive = true;
     bool m_search_global = false;
+    bool m_is_intel = false;
 
     // save the actions to show or hide
     QHash<HeaderBarAction, QAction*> m_actions;
