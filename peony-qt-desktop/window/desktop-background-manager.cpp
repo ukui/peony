@@ -51,7 +51,7 @@ void DesktopBackgroundManager::initGSettings()
     setBackground();
     if (m_backgroundSettings) {
         connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "pictureFilename" || key == "primaryColor") {
+            if (key == "pictureFilename" || key == "primaryColor" || key == "pictureOptions") {
                 switchBackground();
             }
         });
