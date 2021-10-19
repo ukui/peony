@@ -159,9 +159,14 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
             && (m_item->isMountable()||m_item->isUnmountable()))
     {
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
-          Format_Dialog *fd  = new Format_Dialog(uri,m_item);
-          fd->show();
-      });
+            auto info = FileInfo::fromUri(uri);
+            if (info->targetUri ().isEmpty ()) {
+                FileInfoJob job (uri, this);
+                job.querySync ();
+            }
+            Format_Dialog *fd  = new Format_Dialog(uri,m_item);
+            fd->show();
+          });
     }
 
     /* 插件 */
