@@ -60,6 +60,7 @@
 
 #include <KWindowSystem>
 #include "global-settings.h"
+#include <ukuisdk/kylin-com4cxx.h>
 
 #include <QtConcurrent>
 #include <QAction>
@@ -139,6 +140,23 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     connect(goForward, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goForward();
     });
+
+    m_is_intel = (QString::compare("V10SP1-edu", QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
+    if (! m_is_intel)
+    {
+        //non intel project, show go up button
+        auto goUp = new HeadBarPushButton(this);
+        m_go_up = goUp;
+        goUp->setEnabled(true);
+        goUp->setToolTip(tr("Go Up"));
+        goUp->setFixedSize(QSize(36, 28));
+        goUp->setIcon(QIcon::fromTheme("go-up-symbolic"));
+        a = addWidget(goUp);
+        m_actions.insert(HeaderBarAction::GoForward, a);
+        connect(goUp, &QPushButton::clicked, m_window, [=]() {
+            m_window->getCurrentPage()->cdUp();
+        });
+    }
 
     addSpacing(9);
     //close search button,set current location icon
@@ -526,6 +544,12 @@ void HeaderBar::updateIcons()
     //go back & go forward
     m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
     m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+    if (! m_is_intel)
+    {
+        m_go_up->setEnabled(m_window->getCurrentPage()->canCdUp());
+        m_go_up->setProperty("useIconHighlightEffect", true);
+        m_go_up->setProperty("iconHighlightEffectMode", 1);
+    }
 
     //fix create folder fail issue in special path
 //    auto curUri = m_window->getCurrentUri();

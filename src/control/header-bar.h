@@ -123,6 +123,7 @@ private:
     QToolButton *m_create_folder;
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
+    QPushButton *m_go_up;
     //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
     QAction *m_search_action;
@@ -131,6 +132,7 @@ private:
     bool m_search_mode = false;
     bool m_search_recursive = true;
     bool m_search_global = false;
+    bool m_is_intel = false;
 
     // save the actions to show or hide
     QHash<HeaderBarAction, QAction*> m_actions;
