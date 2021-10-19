@@ -381,5 +381,7 @@ void StudyDirectoryWidget::updateAppData(QList<QPair<QString, QList<TabletAppEnt
     for (int i = 0; i < m_studyCenterDataList.size(); ++i) {
         m_viewMap.value(m_studyCenterDataList.at(i).first)->setData(m_studyCenterDataList.at(i).second);
     }
+
+    resizeScrollAreaControls();
 }
 

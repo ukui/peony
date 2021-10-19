@@ -185,6 +185,8 @@ void StudyCenterMode::updateAppData()
     synWidget->updateAppData(dataList);
 
     dataList.clear();
+
+    updateTimeSlot();
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )
