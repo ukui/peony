@@ -127,7 +127,8 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
     /* 卸载 */
-    if (m_item->isUnmountable()) {
+    /*  可用的U盘、外接移动硬盘、外接移动光盘, 右键菜单里不允许有“卸载”选项，bug#83206 */
+    if (!(m_item->isEjectable() || m_item->isStopable()) && m_item->isUnmountable()) {
         l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
             m_item->unmount();
         });     
