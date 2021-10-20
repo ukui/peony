@@ -128,6 +128,12 @@ void SideBarFileSystemItem::findChildren()
     }
     clearChildren();
 
+    auto parentItem = qobject_cast<SideBarFileSystemItem *>(m_parent);
+    if (!parentItem) {
+        auto userDiskItem = new SideBarUserDiskItem(this, m_model);
+        m_children->append(userDiskItem);
+    }
+
     FileEnumerator *e = new FileEnumerator;
     e->setEnumerateDirectory(m_uri);
     connect(e, &FileEnumerator::prepared, this, [=](const GErrorWrapperPtr &err, const QString &targetUri) {
@@ -653,4 +659,44 @@ void notifyUser(QString notifyContent)
 
     notify_uninit();
     g_object_unref(G_OBJECT(notify));
+}
+
+SideBarUserDiskItem::SideBarUserDiskItem(SideBarFileSystemItem *item, SideBarModel *model, QObject *parent) : SideBarFileSystemItem(nullptr, item, model, parent)
+{
+    m_parent = item;
+}
+
+QString SideBarUserDiskItem::uri()
+{
+    return "file:///home";
+}
+
+QString SideBarUserDiskItem::displayName()
+{
+    return tr("User Disk");
+}
+
+QString SideBarUserDiskItem::iconName()
+{
+    return "drive-harddisk";
+}
+
+SideBarAbstractItem *SideBarUserDiskItem::parent()
+{
+    return m_parent;
+}
+
+void SideBarUserDiskItem::findChildren()
+{
+
+}
+
+void SideBarUserDiskItem::findChildrenAsync()
+{
+    findChildren();
+}
+
+void SideBarUserDiskItem::clearChildren()
+{
+    SideBarAbstractItem::clearChildren();
 }

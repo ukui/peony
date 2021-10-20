@@ -87,77 +87,77 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Uçbirim Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="120"/>
+        <location filename="../../src/control/header-bar.cpp" line="121"/>
         <source>Go Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="134"/>
+        <location filename="../../src/control/header-bar.cpp" line="135"/>
         <source>Go Forward</source>
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="146"/>
+        <location filename="../../src/control/header-bar.cpp" line="151"/>
         <source>Go Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="211"/>
+        <location filename="../../src/control/header-bar.cpp" line="217"/>
         <source>Search</source>
         <translation>Ara</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="223"/>
+        <location filename="../../src/control/header-bar.cpp" line="229"/>
         <source>View Type</source>
         <translation>Görünüm Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="232"/>
+        <location filename="../../src/control/header-bar.cpp" line="238"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="275"/>
+        <location filename="../../src/control/header-bar.cpp" line="281"/>
         <source>Sort Type</source>
         <translation>Sıralama Türü</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="303"/>
+        <location filename="../../src/control/header-bar.cpp" line="309"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="306"/>
+        <location filename="../../src/control/header-bar.cpp" line="312"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="319"/>
+        <location filename="../../src/control/header-bar.cpp" line="325"/>
         <source>&amp;Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="322"/>
+        <location filename="../../src/control/header-bar.cpp" line="328"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="329"/>
+        <location filename="../../src/control/header-bar.cpp" line="335"/>
         <source>&amp;Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="333"/>
+        <location filename="../../src/control/header-bar.cpp" line="339"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="340"/>
+        <location filename="../../src/control/header-bar.cpp" line="346"/>
         <source>&amp;Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="343"/>
+        <location filename="../../src/control/header-bar.cpp" line="349"/>
         <source>Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -166,12 +166,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Seçenek</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="387"/>
+        <location filename="../../src/control/header-bar.cpp" line="393"/>
         <source>Operate Tips</source>
         <translation>İşlet İpuçları</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="388"/>
+        <location filename="../../src/control/header-bar.cpp" line="394"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>Herhangi bir uçbirim bulunamadı, lütfen en az bir uçbirim kurun!</translation>
     </message>
@@ -498,6 +498,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Peony::Intel::SideBarUserDiskItem</name>
+    <message>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="676"/>
+        <source>User Disk</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::Intel::TabletSideBarFactory</name>
     <message>
         <location filename="../../src/control/intel/tablet-side-bar-factory.cpp" line="38"/>
@@ -642,74 +650,74 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="407"/>
         <source>Force unmount failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="407"/>
         <source>Error: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="405"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="444"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="411"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="450"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="429"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="434"/>
         <source>Unmount failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="429"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="434"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="580"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="632"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="586"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="638"/>
         <source>Eject failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="581"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="633"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="587"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="639"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="582"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="634"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="588"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="640"/>
         <source>Eject Anyway</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="594"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="600"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="630"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="636"/>
         <source>Unable to eject %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="648"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="654"/>
         <source>PeonyNotify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="649"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="655"/>
         <source>File Manager</source>
         <translation type="unfinished">Dosya Yöneticisi</translation>
     </message>
@@ -1013,17 +1021,17 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="736"/>
+        <location filename="../../src/control/header-bar.cpp" line="745"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="749"/>
+        <location filename="../../src/control/header-bar.cpp" line="758"/>
         <source>Maximize/Restore</source>
         <translation type="unfinished">Büyüt/Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="772"/>
+        <location filename="../../src/control/header-bar.cpp" line="781"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
