@@ -120,6 +120,47 @@ private:
     std::shared_ptr<FileInfo> m_info = nullptr;
 };
 
+class SideBarUserDiskItem : public SideBarFileSystemItem
+{
+    Q_OBJECT
+public:
+    explicit SideBarUserDiskItem(SideBarFileSystemItem *item, SideBarModel *model, QObject *parent = nullptr);
+    Type type() override {
+        return SideBarAbstractItem::FileSystemItem;
+    }
+
+    QString uri() override;
+    QString displayName() override;
+    QString iconName();
+    bool hasChildren() override {
+        return true;
+    }
+
+    bool isRemoveable() {return false;}
+    bool isEjectable() {return false;}
+    bool isMountable() {return false;}
+
+    //TODO: monitoring the mount state
+    bool isMounted() override {return true;}
+
+    SideBarAbstractItem *parent() override;
+public Q_SLOTS:
+    void eject(GMountUnmountFlags ejectFlag) override {}
+    void unmount() override {}
+    void format() override {}
+
+    void ejectOrUnmount() override {}
+
+    void onUpdated() override {}
+
+    void findChildren() override;
+    void findChildrenAsync() override;
+    void clearChildren() override;
+
+private:
+    SideBarAbstractItem *m_parent = nullptr;
+};
+
 }
 
 }
