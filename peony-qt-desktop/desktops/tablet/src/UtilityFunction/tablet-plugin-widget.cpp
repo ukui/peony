@@ -18,6 +18,7 @@ TabletPluginWidget::TabletPluginWidget(QWidget *parent) : QWidget(parent)
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setSpacing(0);
     m_mainLayout->setContentsMargins(Style::TimeWidgetLeft,Style::TimeWidgetTop,0,0);
+    this->setAttribute(Qt::WA_TranslucentBackground);
     this->setLayout(m_mainLayout);
 
     this->initDateTimeWidget();
