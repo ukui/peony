@@ -36,13 +36,8 @@ TitleWidget::~TitleWidget()
 
 void TitleWidget::initAppBtn()
 {
-    char btnstyle[300];
-    sprintf(btnstyle,"QPushButton{background:transparent;border:0px;color:#ffffff;font-size:14px;padding-left:0px;text-align: left center;}\
-            QPushButton:hover{background-color:rgba(255, 255 ,255, 0.14);}\
-            QPushButton:pressed{background-color:rgba(255, 255, 255, 0.14);}");
 
     this->setFixedSize(this->width,this->height);
-    this->setStyleSheet(btnstyle);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout* layout=new QHBoxLayout(this);
    // layout->setSpacing(6);

@@ -133,7 +133,8 @@ void SynAndDaemon::execApplication(QModelIndex app)
 
 void SynAndDaemon::paintEvent(QPaintEvent* event)
 {
-    QPainter painter;
+    QPainter painter(this);
+    painter.save();
     painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
@@ -147,15 +148,12 @@ void SynAndDaemon::paintEvent(QPaintEvent* event)
     path.lineTo(rect.topRight() + QPointF(0, radius));
     path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
 
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.begin(this);
     painter.setPen(QPen(Qt::NoPen));
     QColor color(m_strListTitleStyle.at(1).toLocal8Bit().constData());
     painter.setBrush(QBrush(color));
 
     painter.drawPath(path);
 
-    painter.save();
     painter.restore();
 
 }
