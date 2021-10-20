@@ -22,6 +22,7 @@
 
 #include "file-info-manager.h"
 #include "thumbnail-manager.h"
+#include <gio/gio.h>
 #include <QMap>
 #include <QDebug>
 
@@ -29,12 +30,16 @@ using namespace Peony;
 
 static FileInfoManager* global_file_info_manager = nullptr;
 static QMap<QString, std::weak_ptr<FileInfo>> *global_info_list = nullptr;
+static bool g_is_auto_parted = false;
 
 static QMutex m_op_lock;
 
 FileInfoManager::FileInfoManager()
 {
     global_info_list = new QMap<QString, std::weak_ptr<FileInfo>>();
+    GFile *file = g_file_new_for_uri("file:///data/usershare");
+    g_is_auto_parted = g_file_query_exists(file, nullptr);
+    g_object_unref(file);
 }
 
 FileInfoManager::~FileInfoManager()
@@ -56,6 +61,11 @@ std::shared_ptr<FileInfo> FileInfoManager::findFileInfoByUri(const QString &uri)
     auto info = global_info_list->value(uri).lock();//.lock();
     m_op_lock.unlock();
     return info;
+}
+
+bool FileInfoManager::isAutoParted()
+{
+    return g_is_auto_parted;
 }
 
 std::shared_ptr<FileInfo> FileInfoManager::insertFileInfo(std::shared_ptr<FileInfo> info)
