@@ -9,6 +9,12 @@ namespace Peony {
 
 /**
  * \brief 桌面插件抽象基类
+ * 生命周期：
+ *               beforeInitDesktop                setPause(false)    initDesktop     setActivated(true)
+ * |-未激活-| ---> |-预加载数据-| ------------------> |-取消暂停-| ---> |-初始化桌面-| ---> |-激活桌面-|
+ *                          \ (可选)                 /
+ *                           \ --> |-显示桌面-| --> /
+ *                                   show()
  */
 class DesktopWidgetBase : public QWidget
 {
@@ -39,6 +45,7 @@ public:
     virtual void setActivated(bool activated)
     {
         this->setHidden(!activated);
+        this->getRealDesktop()->setHidden(!activated);
         this->setPause(!activated);
         m_isActivated = activated;
     }
@@ -51,6 +58,15 @@ public:
     {
         return m_exitAnimationType;
     }
+
+    /**
+     * @brief beforeInitDesktop
+     * @return
+     * 桌面生命周期函数。
+     * 在初始化桌面之前做一些处理，该方法会在桌面显示出来之前被调用。
+     * 一些需要在桌面可见之前就完成的操作应该在该方法中调用。
+     */
+    virtual void beforeInitDesktop() {}
 
     /**
      * @brief initDesktop

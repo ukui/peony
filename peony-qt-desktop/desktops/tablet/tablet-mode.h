@@ -45,6 +45,8 @@ public:
 
     void setActivated(bool activated) override;
 
+    void beforeInitDesktop() override;
+
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
     void initGSettings();

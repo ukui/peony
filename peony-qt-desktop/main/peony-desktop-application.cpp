@@ -829,6 +829,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         //delete currentEffectBackup;
     });
 
+    nextDesktop->beforeInitDesktop();
     if (this->getPropertyNameByAnimation(targetAnimation) == PropertyName::WindowOpacity) {
         //透明度动画的开始位置就在屏幕上
         nextDesktop->setGeometry(primaryScreenRect);
