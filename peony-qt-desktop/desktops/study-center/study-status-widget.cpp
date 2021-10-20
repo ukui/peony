@@ -13,10 +13,14 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QPaintEvent>
 #include "progress-widget.h"
+#include "desktop-background-manager.h"
 //#include "progress-item-delegate.h"
 
 #include "../../tablet/data/tablet-app-manager.h"
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 StudyStatusWidget::StudyStatusWidget(QList<TABLETAPP> appList, QWidget *parent) :
     QWidget(parent)
@@ -282,7 +286,7 @@ void StudyStatusWidget::initWidget()
            monthTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px}");
            timeTitleLabel->setStyleSheet("QLabel{color:rgba(255,255,255,0.45);font-size:16px;background:transparent;}");
            m_updateTimeBt->setStyleSheet("QPushButton{color:rgba(255,255,255,0.45);font-size:16px;background:transparent;}");
-
+           m_colorMask = QColor(38,38,40);
         }
         else
         {
@@ -295,6 +299,7 @@ void StudyStatusWidget::initWidget()
            monthTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px}");
            timeTitleLabel->setStyleSheet("QLabel{color:rgba(38,38,38,0.45);font-size:16px;background:transparent;}");
            m_updateTimeBt->setStyleSheet("QPushButton{color:rgba(38,38,38,0.45);font-size:16px;background:transparent;}");
+           m_colorMask = QColor(255,255,255);
         }
     });
     initUserInfo();
@@ -420,8 +425,29 @@ void StudyStatusWidget::accountSlots(QString property, QMap<QString, QVariant> p
 void StudyStatusWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-
     painter.save();
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    auto manager = DesktopBackgroundManager::globalInstance();
+    QSize size = this->size();
+    QPoint point = this->pos();
+    QRect widgetRect = this->rect();
+
+    //把需要模糊的图片区域放大，再模糊处理
+    QImage img = manager->getBlurImage();
+    //img = img.copy(point.x(),point.y(),size.width(),size.height());
+    QRect source(point.x(),point.y(),size.width(),size.height());
+
+    QPainterPath roundPath;
+    roundPath.addRoundedRect(widgetRect,24,24);
+    painter.setClipPath(roundPath);
+    //painter.drawImage(0,0,img);
+    painter.drawImage(widgetRect,img,source);
+
+    //auto colorMask = QColor(255,255,255);
+    m_colorMask.setAlphaF(0.85);
+    painter.fillRect(widgetRect, m_colorMask);
+    painter.end();
+
     painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
