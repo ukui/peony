@@ -107,77 +107,77 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">打开终端</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="120"/>
+        <location filename="../../src/control/header-bar.cpp" line="121"/>
         <source>Go Back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="134"/>
+        <location filename="../../src/control/header-bar.cpp" line="135"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="146"/>
+        <location filename="../../src/control/header-bar.cpp" line="151"/>
         <source>Go Up</source>
         <translation>上级目录</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="211"/>
+        <location filename="../../src/control/header-bar.cpp" line="217"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="223"/>
+        <location filename="../../src/control/header-bar.cpp" line="229"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="232"/>
+        <location filename="../../src/control/header-bar.cpp" line="238"/>
         <source>Details</source>
         <translation>预览视图</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="275"/>
+        <location filename="../../src/control/header-bar.cpp" line="281"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="303"/>
+        <location filename="../../src/control/header-bar.cpp" line="309"/>
         <source>&amp;Copy</source>
         <translation>&amp;复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="306"/>
+        <location filename="../../src/control/header-bar.cpp" line="312"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="319"/>
+        <location filename="../../src/control/header-bar.cpp" line="325"/>
         <source>&amp;Cut</source>
         <translation>&amp;剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="322"/>
+        <location filename="../../src/control/header-bar.cpp" line="328"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="329"/>
+        <location filename="../../src/control/header-bar.cpp" line="335"/>
         <source>&amp;Select All</source>
         <translation>&amp;全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="333"/>
+        <location filename="../../src/control/header-bar.cpp" line="339"/>
         <source>Select All</source>
         <translation>全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="340"/>
+        <location filename="../../src/control/header-bar.cpp" line="346"/>
         <source>&amp;Delete to trash</source>
         <translation>&amp;删除到回收箱</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="343"/>
+        <location filename="../../src/control/header-bar.cpp" line="349"/>
         <source>Delete to trash</source>
         <translation>删除到回收箱</translation>
     </message>
@@ -186,12 +186,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="387"/>
+        <location filename="../../src/control/header-bar.cpp" line="393"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="388"/>
+        <location filename="../../src/control/header-bar.cpp" line="394"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -518,6 +518,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Peony::Intel::SideBarUserDiskItem</name>
+    <message>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="676"/>
+        <source>User Disk</source>
+        <translation>用户盘</translation>
+    </message>
+</context>
+<context>
     <name>Peony::Intel::TabletSideBarFactory</name>
     <message>
         <location filename="../../src/control/intel/tablet-side-bar-factory.cpp" line="38"/>
@@ -670,74 +678,74 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
         <translation type="vanished">无法打开 %1.</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="407"/>
         <source>Force unmount failed</source>
         <translation>强制卸载失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="401"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="407"/>
         <source>Error: %1
 </source>
         <translation>错误：%1</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="405"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="444"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="411"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="450"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation>数据同步完成，设备已卸载成功！</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="429"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="434"/>
         <source>Unmount failed</source>
         <translation>卸载失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="423"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="429"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation>无法卸载，可能需要关闭一些程序，例如：GParted 等。</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="428"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="434"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation>错误：%1 你要强行卸载吗？</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="580"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="632"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="586"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="638"/>
         <source>Eject failed</source>
         <translation>弹出失败</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="581"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="633"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="587"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="639"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="582"/>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="634"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="588"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="640"/>
         <source>Eject Anyway</source>
         <translation>无论如何都弹出</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="594"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="600"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation>数据同步完成，可以安全拔掉设备！</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="630"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="636"/>
         <source>Unable to eject %1</source>
         <translation>无法弹出 %1</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="648"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="654"/>
         <source>PeonyNotify</source>
         <translation>文件管理器通知</translation>
     </message>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="649"/>
+        <location filename="../../src/control/intel/intel-side-bar-file-system-item.cpp" line="655"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -1069,17 +1077,17 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="736"/>
+        <location filename="../../src/control/header-bar.cpp" line="745"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="749"/>
+        <location filename="../../src/control/header-bar.cpp" line="758"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="772"/>
+        <location filename="../../src/control/header-bar.cpp" line="781"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
