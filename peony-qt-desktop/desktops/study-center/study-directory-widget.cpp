@@ -21,7 +21,6 @@
 #include <QDebug>
 #include <iterator>
 #include <QPainter>
-#include "pushbutton.h"
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-list-view.h"
 #include "common.h"
@@ -64,8 +63,6 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_StyledBackground,true);
     this->setStyleSheet("background-color:rgba(255, 255, 255, 0.85);border-radius:24px;");
-
-    //this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
     m_mainLayout=new QVBoxLayout(this);
     if(strListTitleStyle.size() >= 4)
@@ -112,9 +109,10 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
                                              );
     QWidget* scrollAreaWid=new QWidget;
     scrollAreaWid->setStyleSheet("background:transparent;");
-    scrollAreaWid->setMinimumSize(Style::itemWidth,Style::itemHeight);
     m_scrollArea->setWidget(scrollAreaWid);
-    //m_scrollArea->setWidgetResizable(true);
+    m_scrollArea->setWidgetResizable(true);
+    m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     m_scrollAreaWidLayout = new QVBoxLayout;
     m_scrollAreaWidLayout->setContentsMargins(0,0,0,0);
     m_scrollAreaWidLayout->setSpacing(0);
@@ -122,8 +120,6 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
 
     m_mainLayout->addWidget(m_scrollArea);
     m_mainLayout->setContentsMargins(48,33,8,0);
-//    connect(m_scrollArea->verticalScrollBar(),SIGNAL(valueChanged(int)),
-//            this,SLOT(valueChangedSlot(int)));
 
     initAppListWidget();
     this->setLayout(m_mainLayout);
@@ -157,8 +153,13 @@ void StudyDirectoryWidget::initAppListWidget()
             //设置子标题
             QString  strTitle = m_studyCenterDataList.at(i).first;
             TitleWidget* titleWid = new TitleWidget(this,strTitle,m_scrollArea->width()-12,40);
+            m_titleMap.insert(strTitle,titleWid);
             m_scrollAreaWidLayout->addWidget(titleWid);
             connect(this, SIGNAL(changeTheme( QString)), titleWid, SIGNAL(changeTheme( QString)));
+            if(m_studyCenterDataList.at(i).second.size() < 1)
+            {
+                titleWid->hide();
+            }
         }
 
         //插入应用列表
@@ -168,9 +169,8 @@ void StudyDirectoryWidget::initAppListWidget()
         m_scrollAreaWidLayout->addWidget(listView);
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));
     }
-
+    m_scrollAreaWidLayout->addStretch();
     resizeScrollAreaControls();
-
 }
 /**
  * 执行应用程序
@@ -186,167 +186,42 @@ void StudyDirectoryWidget::execApplication(QModelIndex app)
     TabletAppManager::getInstance()->execApp(&appEntity);
 }
 
-
-/**
- * 更新应用列表
- */
-//void StudyDirectoryWidget::updateListViewSlot(QString desktopfp, int type)
-//{
-//    for(int i=0;i<listview->model()->rowCount();i++)
-//    {
-//        QVariant var=listview->model()->index(i,0).m_strListData(Qt::DisplayRole);
-//        QString path=var.value<QString>();
-//        if(QString::compare(path,desktopfp)==0)
-//        {
-//            listview->model()->removeRow(i);
-//            break;
-//        }
-//    }
-//    setting->beginGroup("lockapplication");
-//    QStandardItem* item=new QStandardItem;
-//    item->setData(QVariant::fromValue<QString>(desktopfp),Qt::DisplayRole);
-//    QStandardItemModel* listmodel=qobject_cast<QStandardItemModel*>(listview->model());
-//    if(type==0)
-//        listmodel->insertRow(setting->allKeys().size()-1,item);
-//    else
-//        listmodel->insertRow(setting->allKeys().size(),item);
-//    setting->endGroup();
-//}
-
-//void StudyDirectoryWidget::updateListViewAllSlot()
-//{
-//    getCommonUseAppList();
-//    listview->updateData(m_strListData);
-//}
-
-//void StudyDirectoryWidget::removeListItemSlot(QString desktopfp)
-//{
-//    for(int i=0;i<listview->model()->rowCount();i++)
-//    {
-//        QVariant var=listview->model()->index(i,0).m_strListData(Qt::DisplayRole);
-//        QString path=var.value<QString>();
-//        if(QString::compare(path,desktopfp)==0)
-//        {
-//            listview->model()->removeRow(i);
-//            break;
-//        }
-//    }
-//}
-
-//void StudyDirectoryWidget::removeListAllItemSlot()
-//{
-//    setting->beginGroup("lockapplication");
-//    for(int i=listview->model()->rowCount()-1;i>=0;i--)
-//    {
-//        QVariant var=listview->model()->index(i,0).m_strListData(Qt::DisplayRole);
-//        QString desktopfp=var.value<QString>();
-//        QFileInfo fileInfo(desktopfp);
-//        QString desktopfn=fileInfo.fileName();
-//        if(!setting->contains(desktopfn))
-//            listview->model()->removeRow(i);
-//    }
-//    setting->endGroup();
-//}
-
-//void StudyDirectoryWidget::getUseAppList(QString &strModuleName)
-//{
-//    m_setting->beginGroup(strModuleName);
-//    QStringList lockdesktopfnList=m_setting->allKeys();
-//    m_setting->endGroup();
-
-//    m_strListData.clear();
-//    Q_FOREACH(QString desktopfn,lockdesktopfnList)
-//    {
-//        QString desktopfp=QString("/usr/share/applications/"+desktopfn);
-//        m_strListData.append(desktopfp);
-//    }
-//}
 /**
  * 设置scrollarea所填充控件大小
  */
 void StudyDirectoryWidget::resizeScrollAreaControls()
 {
-    int iIndex = 0;
-    int iCount = m_iMode == 1? m_scrollAreaWidLayout->count()/2:m_scrollAreaWidLayout->count();
-    qDebug()<<"mode: " <<m_iMode<<" count: "<<iCount;
-    while(iIndex<iCount)
+    for (int i = 0; i < m_studyCenterDataList.size(); ++i)
     {
-        //应用界面
-        int iRow = m_iMode == 1? iIndex*2+1:iIndex;
+        StudyListView* listview = m_viewMap.value(m_studyCenterDataList.at(i).first);
 
-        QLayoutItem* widItem=m_scrollAreaWidLayout->itemAt(iRow);
-        QWidget* wid=widItem->widget();
-        StudyListView* listview=qobject_cast<StudyListView*>(wid);
+        if(nullptr == listview)
+        {
+            continue;
+        }
         listview->adjustSize();
-        int iDividend=(m_scrollArea->width())/Style::GridSize;
-        qDebug()<<"resizeScrollAreaControls iRow: " <<iRow <<" iDividend:"<<iDividend;
-        int iRowCount=0;
+        int iDividend = (m_scrollArea->width())/Style::GridSize;
+        qDebug()<<"标题: " <<m_studyCenterDataList.at(i).first <<" 每行应用个数:"<<iDividend;
+        int iRowCount = 0;
         if(listview->model()->rowCount()%iDividend>0)
         {
-            iRowCount = listview->model()->rowCount()/iDividend+1;
+            iRowCount=listview->model()->rowCount()/iDividend+1;
         }
         else
         {
-            iRowCount = listview->model()->rowCount()/iDividend;
+            iRowCount=listview->model()->rowCount()/iDividend;
 
         }
 
-        listview->setFixedSize(m_scrollArea->width(),listview->gridSize().height()*iRowCount);
-
-        iIndex++;
+        listview->setFixedSize(m_scrollArea->width() - 50,listview->gridSize().height()*iRowCount);
     }
     m_scrollArea->widget()->adjustSize();
 }
-//void StudyDirectoryWidget::valueChangedSlot(int value)
-//{
-//    int index=0;
-//    while(index<=m_letterList.count()-1)
-//    {
-//        int min=m_scrollAreaWidLayout->itemAt(2*index)->widget()->y();
-//        int max=0;
-//        if(index==m_letterList.count()-1)
-//            max=m_scrollAreaWid->height();
-//        else
-//            max=m_scrollAreaWidLayout->itemAt(2*(index+1))->widget()->y();
 
-//        if(value>=min && value <max)
-//        {
-//            Q_FOREACH (QAbstractButton* button, m_buttonList) {
-//                LetterClassifyButton* letterbtn=qobject_cast<LetterClassifyButton*>(button);
-//                if(index==m_buttonList.indexOf(button))
-//                {
-//                    letterbtn->setChecked(true);
-//                }
-//                else
-//                {
-//                    letterbtn->setChecked(false);
-//                }
-//            }
-//            break;
-//        }
-//        else
-//            index++;
-//    }
-
-////    //向下滚动
-////    if((m_buttonList.at(index)->pos().y()+m_buttonList.at(index)->height()+m_letterListScrollArea->widget()->pos().y()) >= m_letterListScrollArea->height())
-////    {
-////        int val=m_letterListScrollArea->verticalScrollBar()->sliderPosition()+m_buttonList.at(index)->height();
-////        m_letterListScrollArea->verticalScrollBar()->setSliderPosition(val);
-////    }
-
-////    //向上滚动
-////    if((m_buttonList.at(index)->pos().y()+m_letterListScrollArea->widget()->pos().y()) <= 0)
-////    {
-
-////        int val=m_letterListScrollArea->verticalScrollBar()->value()-m_buttonList.at(index)->height();
-////        m_letterListScrollArea->verticalScrollBar()->setSliderPosition(val);
-////    }
-
-//}
 void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
 {
-    QPainter painter;
+    QPainter painter(this);
+    painter.save();
     painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
@@ -360,19 +235,20 @@ void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
     path.lineTo(rect.topRight() + QPointF(0, radius));
     path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
 
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.begin(this);
     painter.setPen(QPen(Qt::NoPen));
     QColor color(m_strListTitleStyle.at(1).toLocal8Bit().constData());
     painter.setBrush(QBrush(color));
 
     painter.drawPath(path);
 
-    painter.save();
     painter.restore();
 
 }
 
+
+/**
+ * 更新应用列表
+ */
 void StudyDirectoryWidget::updateAppData(QList<QPair<QString, QList<TabletAppEntity*>>> &subAppMap)
 {
     m_studyCenterDataList.clear();
@@ -380,6 +256,23 @@ void StudyDirectoryWidget::updateAppData(QList<QPair<QString, QList<TabletAppEnt
 
     for (int i = 0; i < m_studyCenterDataList.size(); ++i) {
         m_viewMap.value(m_studyCenterDataList.at(i).first)->setData(m_studyCenterDataList.at(i).second);
+        TitleWidget* titleWid =  m_titleMap.value(m_studyCenterDataList.at(i).first);
+        if(nullptr != titleWid)
+        {
+            if(m_studyCenterDataList.at(i).second.size() < 1 )
+            {
+                titleWid->hide();
+            }
+            else
+            {
+                titleWid->show();
+            }
+        }
+        else
+        {
+             qDebug()<<"get title fail";
+        }
+
     }
 
     resizeScrollAreaControls();

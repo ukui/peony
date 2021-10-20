@@ -22,20 +22,12 @@
 #include "study-list-view.h"
 
 #include <QWidget>
-#include <QHBoxLayout>
-#include <QTableWidget>
+#include <QVBoxLayout>
 #include <QScrollBar>
 #include <QLabel>
-#include <QPushButton>
-#include <QDir>
-#include <QProcess>
-//#include <QSvgRenderer>
 #include <QStringList>
 #include <QScrollArea>
-
-//#include "../tablet/src/Interface/ukuimenuinterface.h"
-//#include "../tablet/src/RightClickMenu/rightclickmenu.h"
-//#include "../tablet/src/Style/style.h"
+#include "pushbutton.h"
 namespace Peony {
 
 class TabletAppEntity;
@@ -48,9 +40,6 @@ public:
     ~StudyDirectoryWidget();
     void updateAppData(QList<QPair<QString, QList<TabletAppEntity*>>> &subAppMap);
 private:
-//    UkuiMenuInterface* pUkuiMenuInterface=nullptr;
-
-//    QSettings *m_setting=nullptr;
     //主界面
     QVBoxLayout*  m_mainLayout=nullptr;
     QVBoxLayout*  m_scrollAreaWidLayout=nullptr;
@@ -60,6 +49,8 @@ private:
     QStringList   m_strListTitleStyle;
     QMap<QString, StudyListView*> m_viewMap;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
+    QMap<QString, TitleWidget*> m_titleMap;
+
     int m_iMode;
 
 protected:
