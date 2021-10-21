@@ -55,6 +55,7 @@ private:
     QLabel* m_titleLabel=nullptr;
     QVariantAnimation* m_animation;
     StatusPushButton* m_updateIconBt=nullptr;
+    QColor m_colorMask;
 
 public Q_SLOTS:
    void paintProgressSlot(QList<TABLETAPP> applist);

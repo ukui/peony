@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QScreen>
+#include <QImage>
 
 class QGSettings;
 class QVariantAnimation;
@@ -28,6 +30,10 @@ public:
     bool getPaintBackground() const;
 
     const QString &getBackgroundOption();
+
+    void setBgPixmapToBlurImage(QPixmap &bgPixmap);
+
+    QImage getBlurImage();
 
 Q_SIGNALS:
     void screensUpdated();
@@ -60,6 +66,12 @@ protected:
 
     QString m_current_bg_path;
     QString m_backgroundOption;
+    QScreen *m_screen;
+    QImage m_backBlurImage;
+
+protected Q_SLOTS:
+    void backgroundUpdate(const QRect &geometry);
+
 };
 
 #endif // DESKTOPBACKGROUNDMANAGER_H

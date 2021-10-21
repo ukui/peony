@@ -23,8 +23,12 @@
 #include "study-list-view.h"
 #include "common.h"
 #include "../../tablet/src/Style/style.h"
+#include "desktop-background-manager.h"
 
 using namespace Peony;
+
+//qt's global function
+extern void qt_blurImage(QImage &blurImage, qreal radius, bool quality, int transposed);
 
 SynAndDaemon::SynAndDaemon(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleList, QWidget *parent)
 : QWidget(parent)
@@ -96,11 +100,13 @@ void SynAndDaemon::initWidget(QStringList &strListTitleStyle)
         {
             //深色主题
            this->setStyleSheet(styleSheetDark);
+           m_colorMask = QColor(38,38,40);
         }
         else
         {
             //浅色主题
            this->setStyleSheet(styleSheetLight);
+           m_colorMask = QColor(255,255,255);
         }
     });
 }
@@ -135,6 +141,28 @@ void SynAndDaemon::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.save();
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    auto manager = DesktopBackgroundManager::globalInstance();
+    QSize size = this->size();
+    QPoint point = this->pos();
+    QRect widgetRect = this->rect();
+
+    //把需要模糊的图片区域放大，再模糊处理
+    QImage img = manager->getBlurImage();
+    //img = img.copy(point.x(),point.y(),size.width(),size.height());
+    QRect source(point.x(),point.y(),size.width(),size.height());
+
+    QPainterPath roundPath;
+    roundPath.addRoundedRect(widgetRect,24,24);
+    painter.setClipPath(roundPath);
+    //painter.drawImage(0,0,img);
+    painter.drawImage(widgetRect,img,source);
+
+//    auto colorMask = QColor(255,255,255);
+    m_colorMask.setAlphaF(0.85);
+    painter.fillRect(widgetRect, m_colorMask);
+    painter.end();
+
     painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
@@ -155,7 +183,6 @@ void SynAndDaemon::paintEvent(QPaintEvent* event)
     painter.drawPath(path);
 
     painter.restore();
-
 }
 
 void SynAndDaemon::updateAppData(QList<QPair<QString, QList<TabletAppEntity *>>> &subAppMap)

@@ -52,6 +52,7 @@ private:
     QMap<QString, TitleWidget*> m_titleMap;
 
     int m_iMode;
+    QColor m_colorMask;
 
 protected:
     void initWidget(QStringList &strListTitleStyle);

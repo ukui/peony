@@ -47,6 +47,7 @@ private:
     QStringList   m_strListTitleStyle;
     QList<QPair<QString, QList<TabletAppEntity*>>> m_studyCenterDataList;
     QMap<QString, StudyListView*> m_viewMap;
+    QColor m_colorMask;
 
 protected:
     void initWidget(QStringList &strListTitleStyle);
