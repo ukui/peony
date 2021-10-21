@@ -158,25 +158,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="680"/>
+        <location filename="../../src/control/header-bar.cpp" line="691"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="692"/>
         <source>Maximize/Restore</source>
-        <translation>最大化/还原</translation>
+        <translation type="vanished">最大化/还原</translation>
     </message>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="715"/>
         <source>Restore</source>
-        <translation type="vanished">还原</translation>
+        <translation>还原</translation>
     </message>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="704"/>
+        <location filename="../../src/control/header-bar.cpp" line="718"/>
         <source>Maximize</source>
-        <translation type="vanished">最大化</translation>
+        <translation>最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="713"/>
+        <location filename="../../src/control/header-bar.cpp" line="725"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -204,12 +206,12 @@ p, li { white-space: pre-wrap; }
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1515"/>
+        <location filename="../../src/windows/main-window.cpp" line="1518"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1516"/>
+        <location filename="../../src/windows/main-window.cpp" line="1519"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -218,12 +220,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1505"/>
+        <location filename="../../src/windows/main-window.cpp" line="1508"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1506"/>
+        <location filename="../../src/windows/main-window.cpp" line="1509"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -339,27 +341,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="146"/>
+        <location filename="../../src/control/operation-menu.cpp" line="147"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="157"/>
+        <location filename="../../src/control/operation-menu.cpp" line="158"/>
         <source>copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="166"/>
+        <location filename="../../src/control/operation-menu.cpp" line="167"/>
         <source>paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="175"/>
+        <location filename="../../src/control/operation-menu.cpp" line="176"/>
         <source>cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="184"/>
+        <location filename="../../src/control/operation-menu.cpp" line="185"/>
         <source>trash</source>
         <translation>删除</translation>
     </message>
@@ -660,7 +662,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="460"/>
-        <location filename="../../src/control/tab-widget.cpp" line="559"/>
+        <location filename="../../src/control/tab-widget.cpp" line="562"/>
         <source>is</source>
         <translation>是</translation>
     </message>
@@ -675,7 +677,7 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="523"/>
-        <location filename="../../src/control/tab-widget.cpp" line="545"/>
+        <location filename="../../src/control/tab-widget.cpp" line="546"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>

@@ -138,25 +138,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="680"/>
+        <location filename="../../src/control/header-bar.cpp" line="691"/>
         <source>Minimize</source>
         <translation>Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="692"/>
         <source>Maximize/Restore</source>
-        <translation>Büyüt/Onar</translation>
+        <translation type="vanished">Büyüt/Onar</translation>
     </message>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="715"/>
         <source>Restore</source>
-        <translation type="vanished">Onar</translation>
+        <translation>Onar</translation>
     </message>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="704"/>
+        <location filename="../../src/control/header-bar.cpp" line="718"/>
         <source>Maximize</source>
-        <translation type="vanished">Büyüt</translation>
+        <translation>Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="713"/>
+        <location filename="../../src/control/header-bar.cpp" line="725"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
@@ -184,12 +186,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1515"/>
+        <location filename="../../src/windows/main-window.cpp" line="1518"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1516"/>
+        <location filename="../../src/windows/main-window.cpp" line="1519"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -198,12 +200,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1505"/>
+        <location filename="../../src/windows/main-window.cpp" line="1508"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1506"/>
+        <location filename="../../src/windows/main-window.cpp" line="1509"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -319,27 +321,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OperationMenuEditWidget</name>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="146"/>
+        <location filename="../../src/control/operation-menu.cpp" line="147"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="157"/>
+        <location filename="../../src/control/operation-menu.cpp" line="158"/>
         <source>copy</source>
         <translation type="unfinished">Kopyala</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="166"/>
+        <location filename="../../src/control/operation-menu.cpp" line="167"/>
         <source>paste</source>
         <translation type="unfinished">Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="175"/>
+        <location filename="../../src/control/operation-menu.cpp" line="176"/>
         <source>cut</source>
         <translation type="unfinished">Kes</translation>
     </message>
     <message>
-        <location filename="../../src/control/operation-menu.cpp" line="184"/>
+        <location filename="../../src/control/operation-menu.cpp" line="185"/>
         <source>trash</source>
         <translation type="unfinished">Çöp</translation>
     </message>
@@ -613,7 +615,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="460"/>
-        <location filename="../../src/control/tab-widget.cpp" line="559"/>
+        <location filename="../../src/control/tab-widget.cpp" line="562"/>
         <source>is</source>
         <translation>de</translation>
     </message>
@@ -628,7 +630,7 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
     </message>
     <message>
         <location filename="../../src/control/tab-widget.cpp" line="523"/>
-        <location filename="../../src/control/tab-widget.cpp" line="545"/>
+        <location filename="../../src/control/tab-widget.cpp" line="546"/>
         <source>contains</source>
         <translation>İçerik</translation>
     </message>
