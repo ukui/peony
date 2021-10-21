@@ -179,12 +179,17 @@ public:
 protected:
     void addWindowButtons();
 
+private Q_SLOTS:
+    void updateTabletMode(bool isTabletMode);
+
 private:
     QWidget *m_top_menu_internal_widget;
     QHBoxLayout *m_top_menu_layout;
     MainWindow *m_window;
     QToolButton *m_max_or_restore = nullptr;
-    bool m_tablet_mode;
+    QToolButton *m_minimize = nullptr;
+    QToolButton *m_close = nullptr;
+    bool m_tablet_mode = false;
 };
 
 #endif // HEADERBAR_H
