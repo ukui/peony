@@ -67,10 +67,19 @@
 
 #include <QX11Info>
 
+#include <QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDBusMessage>
+#include <QDBusReply>
+
 #include <QDebug>
+
+#define DBUS_STATUS_MANAGER_IF "com.kylin.statusmanager.interface"
 
 static HeaderBarStyle *global_instance = nullptr;
 static QString terminal_cmd = nullptr;
+static QDBusInterface *g_statusManagerDBus = nullptr;
 
 HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 {
@@ -791,33 +800,19 @@ void TopMenuBar::addWindowButtons()
     palette.setColor(QPalette::Highlight, QColor("#E54A50"));
     close->setPalette(palette);
 
-    m_tablet_mode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-    if(m_tablet_mode)
-    {
-        minimize->hide();
-        maximizeAndRestore->hide();
-        close->hide();
+    m_minimize = minimize;
+    m_close = close;
+
+    if (!g_statusManagerDBus) {
+        g_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
     }
-    connect(qApp, &QApplication::paletteChanged, close, [=](){
-        m_tablet_mode = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
-        if(m_tablet_mode)
-        {
-            minimize->hide();
-            maximizeAndRestore->hide();
-            close->hide();
-        }
-        else
-        {
-            minimize->setVisible(true);
-            maximizeAndRestore->setVisible(true);
-            close->setVisible(true);
-        }
-        QTimer::singleShot(100, this, [=](){
-            auto palette = qApp->palette();
-            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-            close->setPalette(palette);
-        });
-    });
+    QDBusReply<bool> message_a = g_statusManagerDBus->call("get_current_tabletmode");
+    if (message_a.isValid()) {
+        m_tablet_mode = message_a.value();
+    }
+    updateTabletMode(m_tablet_mode);
+
+    connect(g_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletMode(bool)));
 
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);
@@ -841,6 +836,28 @@ void TopMenuBar::addWindowButtons()
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
     }
+}
+
+void TopMenuBar::updateTabletMode(bool isTabletMode)
+{
+    m_tablet_mode = isTabletMode;
+    if(m_tablet_mode)
+    {
+        m_minimize->hide();
+        m_max_or_restore->hide();
+        m_close->hide();
+    }
+    else
+    {
+        m_minimize->setVisible(true);
+        m_max_or_restore->setVisible(true);
+        m_close->setVisible(true);
+    }
+    QTimer::singleShot(100, this, [=](){
+        auto palette = qApp->palette();
+        palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+        m_close->setPalette(palette);
+    });
 }
 
 bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
