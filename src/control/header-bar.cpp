@@ -796,7 +796,8 @@ void TopMenuBar::addWindowButtons()
     //window-maximize-symbolic
     //window-restore-symbolic
     auto maximizeAndRestore = new QToolButton(m_top_menu_internal_widget);
-    maximizeAndRestore->setToolTip(tr("Maximize/Restore"));
+    //switch tips with button status, fix bug#77604
+    maximizeAndRestore->setToolTip(tr("Maximize"));
     maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
     maximizeAndRestore->setAutoRaise(true);
     maximizeAndRestore->setFixedSize(QSize(48, 48));
@@ -808,11 +809,10 @@ void TopMenuBar::addWindowButtons()
         bool maximized = m_window->isMaximized();
         if (maximized) {
             maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-            //maximizeAndRestore->setToolTip(tr("Restore"));
+            maximizeAndRestore->setToolTip(tr("Restore"));
         } else {
             maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-            //maximizeAndRestore->setToolTip(tr("Maximize"));
-
+            maximizeAndRestore->setToolTip(tr("Maximize"));
         }
     });
     m_max_or_restore = maximizeAndRestore;
