@@ -225,6 +225,7 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
 
 void StudyDirectoryWidget::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     QPainter painter(this);
     painter.save();
     painter.begin(this);

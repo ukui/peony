@@ -424,6 +424,7 @@ void StudyStatusWidget::accountSlots(QString property, QMap<QString, QVariant> p
 }
 void StudyStatusWidget::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     QPainter painter(this);
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
