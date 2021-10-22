@@ -465,17 +465,13 @@ void MainWindow::setShortCuts()
     addAction(helpAction);
 
     auto maxAction = new QAction(this);
-    maxAction->setShortcut(QKeySequence(Qt::Key_F11));
-    connect(maxAction, &QAction::triggered, this, [=]() {
-        //showFullScreen has some issue, change to showMaximized, fix #20043
-        m_header_bar->cancelEdit();
-        if (!this->isMaximized()) {
-            this->showMaximized();
-        } else {
-            this->showNormal();
-        }
-    });
-    addAction(maxAction);
+        maxAction->setShortcut(QKeySequence(Qt::Key_F11));
+        connect(maxAction, &QAction::triggered, this, [=]() {
+            //showFullScreen has some issue, change to showMaximized, fix #20043
+            m_header_bar->cancelEdit();
+            maximizeOrRestore();
+        });
+        addAction(maxAction);
 
 //    auto previewPageAction = new QAction(this);
 //    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
@@ -789,7 +785,9 @@ void MainWindow::maximizeOrRestore()
     } else {
         this->showNormal();
     }
-    m_header_bar->updateIcons();
+    //maybe not need update icons? comment to try fix bug#77966
+    //m_header_bar->updateIcons();
+    m_header_bar->updateMaximizeState();
 }
 
 void MainWindow::syncControlsLocation(const QString &uri)
@@ -992,7 +990,8 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);
-    m_header_bar->updateMaximizeState();
+    //may not need update? comment to try fix bug#77966
+    //m_header_bar->updateMaximizeState();
     validBorder();
     update();
 
