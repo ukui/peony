@@ -501,7 +501,7 @@ void HeaderBar::updateIcons()
 //        m_create_folder->setEnabled(false);
 
     //maximize & restore
-    updateMaximizeState();
+    //updateMaximizeState();
 }
 
 void HeaderBar::updateHeaderState()
@@ -526,7 +526,14 @@ void HeaderBar::updateSortTypeEnable()
 void HeaderBar::updateMaximizeState()
 {
     //maximize & restore
-    //do it in container
+    bool maximized = m_window->isMaximized();
+    if (maximized) {
+        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+        m_maximize_restore_button->setToolTip(tr("Restore"));
+    } else {
+        m_maximize_restore_button->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+        m_maximize_restore_button->setToolTip(tr("Maximize"));
+    }
 }
 
 //HeaderBarToolButton
@@ -625,22 +632,20 @@ bool HeaderBarContainer::eventFilter(QObject *obj, QEvent *e)
     Q_UNUSED(obj)
     auto window = qobject_cast<MainWindow *>(obj);
     if (window) {
-        if (e->type() == QEvent::Resize || QEvent::WindowStateChange == e->type()) {
-            if (window->isMaximized()) {
-                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-                //m_max_or_restore->setToolTip(tr("Restore"));
-            } else {
-                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-                //m_max_or_restore->setToolTip(tr("Maximize"));
-            }
-        }
+        //use updateMaximizeState function, comment those code
+//        if (e->type() == QEvent::Resize || QEvent::WindowStateChange == e->type()) {
+//            if (window->isMaximized()) {
+//                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
+//                //m_max_or_restore->setToolTip(tr("Restore"));
+//            } else {
+//                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+//                //m_max_or_restore->setToolTip(tr("Maximize"));
+//            }
+//        }
         //fix double click space window has no change issue, bug#38499
-        else if (e->type() == QEvent::MouseButtonDblClick)
+        if (e->type() == QEvent::MouseButtonDblClick)
         {
-            if (window->isMaximized())
-                window->showNormal();
-            else
-                window->showMaximized();
+            m_header_bar->m_window->maximizeOrRestore();
         }
         return false;
     } else {
@@ -700,23 +705,14 @@ void HeaderBarContainer::addWindowButtons()
     //window-maximize-symbolic
     //window-restore-symbolic
     auto maximizeAndRestore = new QToolButton(m_internal_widget);
+    m_header_bar->m_maximize_restore_button = maximizeAndRestore;
     //switch tips with button status, fix bug#77604
-    maximizeAndRestore->setToolTip(tr("Maximize"));
-    maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
+    m_header_bar->updateMaximizeState();
     maximizeAndRestore->setAutoRaise(false);
     maximizeAndRestore->setFixedSize(QSize(40, 40));
     maximizeAndRestore->setIconSize(QSize(16, 16));
     connect(maximizeAndRestore, &QToolButton::clicked, this, [=]() {
         m_header_bar->m_window->maximizeOrRestore();
-
-        bool maximized = m_header_bar->m_window->isMaximized();
-        if (maximized) {
-            maximizeAndRestore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-            maximizeAndRestore->setToolTip(tr("Restore"));
-        } else {
-            maximizeAndRestore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-            maximizeAndRestore->setToolTip(tr("Maximize"));
-        }
     });
     m_max_or_restore = maximizeAndRestore;
 

@@ -115,6 +115,16 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/control/header-bar.cpp" line="532"/>
+        <source>Restore</source>
+        <translation type="unfinished">Onar</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/header-bar.cpp" line="535"/>
+        <source>Maximize</source>
+        <translation type="unfinished">Büyüt</translation>
+    </message>
+    <message>
         <source>Minimize</source>
         <translation type="vanished">Küçült</translation>
     </message>
@@ -126,23 +136,20 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="691"/>
+        <location filename="../../src/control/header-bar.cpp" line="696"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="715"/>
         <source>Restore</source>
-        <translation>Onar</translation>
+        <translation type="vanished">Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="704"/>
-        <location filename="../../src/control/header-bar.cpp" line="718"/>
         <source>Maximize</source>
-        <translation>Büyüt</translation>
+        <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="725"/>
+        <location filename="../../src/control/header-bar.cpp" line="721"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
@@ -160,32 +167,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="721"/>
+        <location filename="../../src/windows/main-window.cpp" line="717"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="723"/>
+        <location filename="../../src/windows/main-window.cpp" line="719"/>
         <source>File Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1508"/>
+        <location filename="../../src/windows/main-window.cpp" line="1507"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1509"/>
+        <location filename="../../src/windows/main-window.cpp" line="1508"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1518"/>
+        <location filename="../../src/windows/main-window.cpp" line="1517"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1519"/>
+        <location filename="../../src/windows/main-window.cpp" line="1518"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -194,7 +201,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="736"/>
+        <location filename="../../src/windows/main-window.cpp" line="732"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
