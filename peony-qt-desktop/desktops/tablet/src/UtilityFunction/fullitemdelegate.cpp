@@ -228,12 +228,12 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         iconShadowPainter.fillRect(iconPixmap.rect(),QColor(0,0,0,80));
         iconShadowPainter.end();
 
-        QImage iconShadowImage(iconSize + QSize(6,6), QImage::Format_ARGB32_Premultiplied);
+        QImage iconShadowImage(iconSize + QSize(10,10), QImage::Format_ARGB32_Premultiplied);
         iconShadowImage.fill(Qt::transparent);
         iconShadowPainter.begin(&iconShadowImage);
-        iconShadowPainter.drawPixmap(3,3,iconPixmap);
+        iconShadowPainter.drawPixmap(5,5,iconPixmap);
 
-        qt_blurImage(iconShadowImage,12,false,false);
+        qt_blurImage(iconShadowImage,10,false,false);
         for (int x = 0; x < iconShadowImage.width(); x++) {
               for (int y = 0; y < iconShadowImage.height(); y++) {
                   auto color = iconShadowImage.pixelColor(x, y);
@@ -245,8 +245,8 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
           }
 
         iconShadowPainter.end();
-        painter->drawImage(iconRect.x() - 3,
-                          iconRect.y() - 3,
+        painter->drawImage(iconRect.x() - 5,
+                          iconRect.y() - 5,
                           iconShadowImage);
 
 //        qDebug()<<"iconRect"<<iconRect;

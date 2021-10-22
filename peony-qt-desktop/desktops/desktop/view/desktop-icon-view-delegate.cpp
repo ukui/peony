@@ -139,6 +139,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         maxTextHight = 0;
     }
 
+    //绘制图标阴影
     painter->save();
 
     auto iconSize = opt.decorationSize;
@@ -146,12 +147,12 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     QPainter iconShadowPainter(&iconPixmap);
     iconShadowPainter.end();
 
-    QImage iconShadowImage(iconSize + QSize(6,6), QImage::Format_ARGB32_Premultiplied);
+    QImage iconShadowImage(iconSize + QSize(10,10), QImage::Format_ARGB32_Premultiplied);
     iconShadowImage.fill(Qt::transparent);
     iconShadowPainter.begin(&iconShadowImage);
     auto tmpRect = opt.rect;
-    opt.rect = QRect(-(iconRect.x() - opt.rect.x()) + 3,
-                     -(iconRect.y() - opt.rect.y()) + 3,
+    opt.rect = QRect(-(iconRect.x() - opt.rect.x()) +5,
+                     -(iconRect.y() - opt.rect.y()) +5,
                      opt.rect.width(),
                      opt.rect.height());
     auto tmpText = opt.text;
@@ -159,11 +160,11 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     style->drawControl(QStyle::CE_ItemViewItem, &opt, &iconShadowPainter, opt.widget);
     iconShadowPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    iconShadowPainter.fillRect(iconPixmap.rect(),QColor(0,0,0,80));
+    iconShadowPainter.fillRect(iconShadowImage.rect(),QColor(0,0,0,80));
 
     opt.rect = tmpRect;
     opt.text = tmpText;
-    qt_blurImage(iconShadowImage, 12, false, false);
+    qt_blurImage(iconShadowImage, 10, false, false);
 
     for (int x = 0; x < iconShadowImage.width(); x++) {
         for (int y = 0; y < iconShadowImage.height(); y++) {
@@ -176,8 +177,8 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     }
 
     iconShadowPainter.end();
-    painter->drawImage(opt.rect.x() + (iconRect.x() - opt.rect.x()) -3,
-                      opt.rect.y() + (iconRect.y() - opt.rect.y()) -3,
+    painter->drawImage(opt.rect.x() + (iconRect.x() - opt.rect.x()) -5,
+                      opt.rect.y() + (iconRect.y() - opt.rect.y()) -5,
                      iconShadowImage);
 
     painter->restore();

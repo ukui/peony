@@ -139,6 +139,7 @@ void SynAndDaemon::execApplication(QModelIndex app)
 
 void SynAndDaemon::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     QPainter painter(this);
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
