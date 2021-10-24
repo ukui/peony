@@ -27,8 +27,8 @@
 #include "file-info-job.h"
 #include "connect-to-server-dialog.h"
 #include "sync-thread.h"
-//#include "volume-manager.h"
-#include "volumeManager.h"
+#include "volume-manager.h"
+//#include "volumeManager.h"
 #include "gobject-template.h"
 #include "file-utils.h"
 #include "libnotify/notification.h"
@@ -111,7 +111,7 @@ QModelIndex SideBarNetWorkItem::lastColumnIndex()
     return m_model->lastColumnIndex(this);
 }
 
-static void unmount_finished(GMount *mount, GAsyncResult *result)
+static void unmount_finished(GMount *mount, GAsyncResult *result, QString *mountPath)
 {
     GError *err = nullptr;   
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -131,23 +131,30 @@ static void unmount_finished(GMount *mount, GAsyncResult *result)
 
     } else {
         /* 卸载完成信息提示 */
+        Q_EMIT Peony::VolumeManager::getInstance()->fileUnmounted(*mountPath);
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         SyncThread::notifyUser(unmountNotify);
     }
-
+    if(mountPath){
+        delete mountPath;
+        mountPath = nullptr;
+    }
 }
 
 void SideBarNetWorkItem::realUnmount()
 {
-    //auto mount = Experimental_Peony::VolumeManager::getMountFromUri(this->uri().toUtf8().constData());
     GFile *gFile= g_file_new_for_uri(this->uri().toUtf8().constData());
+    auto mountPath = new QString;
+    *mountPath = m_uri;
     GMount *gMount = g_file_find_enclosing_mount(gFile, nullptr, nullptr);
     g_mount_unmount_with_operation(gMount,
                     G_MOUNT_UNMOUNT_NONE,
                     nullptr,
                     nullptr,
                     GAsyncReadyCallback(unmount_finished),
-                    nullptr);
+                    mountPath);
+    g_object_unref(gFile);
+    g_object_unref(gMount);
 }
 
 void SideBarNetWorkItem::ejectOrUnmount()
