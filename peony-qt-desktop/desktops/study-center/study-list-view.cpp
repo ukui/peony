@@ -17,6 +17,7 @@ StudyListView::StudyListView(QWidget *parent): QListView(parent)
                         QListView:Item{background:transparent;border:0px;color:#ffffff;font-size:14px;padding-left:0px;}\
                         QListView:Item:hover{background:transparent;}\
                         QListView:Item:pressed{background:transparent;}");
+    this->setProperty("notUseSlideGesture", true);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
