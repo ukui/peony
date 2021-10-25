@@ -470,32 +470,32 @@
 <context>
     <name>StudyStatusWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="83"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="87"/>
         <source>学情中心</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="109"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="113"/>
         <source>STATISTICS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="151"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="155"/>
         <source>今日使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="152"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="156"/>
         <source>本周使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="153"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="157"/>
         <source>本月使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="200"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="204"/>
         <source>最常使用 (本周累计)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -503,7 +503,7 @@
 <context>
     <name>TabletPluginWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="115"/>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="116"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>

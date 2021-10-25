@@ -43,7 +43,7 @@ SideBarFavoriteItem::SideBarFavoriteItem(QString uri,
     m_is_root_child = m_parent == nullptr;
     if (m_is_root_child) {
         m_uri = "favorite:///";
-        m_display_name = tr("Favorite");
+        m_display_name = tr("Favorites");
         //m_icon_name = "emblem-favorite";
         //top dir don't show icon
         m_icon_name = "";
