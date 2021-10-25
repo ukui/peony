@@ -107,6 +107,8 @@ Q_SIGNALS:
      * Once a location change finished, we can start a new location change.
      */
     void locationChangeEnd();
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
 
 public Q_SLOTS:
     void maximizeOrRestore();
@@ -200,6 +202,7 @@ private:
     bool m_do_not_thumbnail = false;
 
     const int WINDOW_MINIMUM_WIDTH = 596;
+    QStringList m_uris_to_edit;/* 新建文件/文件夹，可编辑文件名list */
 };
 
 #endif // MAINWINDOW_H

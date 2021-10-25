@@ -160,13 +160,13 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
 
-    QTimer::singleShot(1, parent, [=]() {
-        this->updateEditorGeometry(edit, option, index);
-    });
+//    QTimer::singleShot(1, parent, [=]() {
+//        this->updateEditorGeometry(edit, option, index);
+//    });
 
-    connect(edit, &TextEdit::textChanged, this, [=]() {
-        updateEditorGeometry(edit, option, index);
-    });
+//    connect(edit, &TextEdit::textChanged, this, [=]() {
+//        updateEditorGeometry(edit, option, index);
+//    });
 
     connect(edit, &TextEdit::finishEditRequest, this, [=]() {
         setModelData(edit, nullptr, index);
@@ -203,13 +203,13 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     edit->setTextCursor(cursor);
 }
 
-void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
-    TextEdit *edit = qobject_cast<TextEdit*>(editor);
-    edit->setFixedHeight(editor->height());
-    edit->resize(edit->document()->size().width(), -1);
-}
+//void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+//    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+//    TextEdit *edit = qobject_cast<TextEdit*>(editor);
+//    edit->setFixedHeight(editor->height());
+//    edit->resize(edit->document()->size().width(), -1);
+//}
 
 void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
@@ -256,14 +256,14 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     fileOpMgr->startOperation(renameOp, true);
 }
 
-QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
-{
-    QSize size = QStyledItemDelegate::sizeHint(option, index);
-    auto view = qobject_cast<DirectoryView::ListView *>(parent());
-    int expectedHeight = view->iconSize().height() + 4;
-    size.setHeight(qMax(expectedHeight, size.height()));
-    return size;
-}
+//QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
+//{
+//    QSize size = QStyledItemDelegate::sizeHint(option, index);
+//    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+//    int expectedHeight = view->iconSize().height() + 4;
+//    size.setHeight(qMax(expectedHeight, size.height()));
+//    return size;
+//}
 
 //TextEdit
 TextEdit::TextEdit(QWidget *parent) : QTextEdit (parent)
