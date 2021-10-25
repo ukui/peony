@@ -120,6 +120,7 @@ Q_SIGNALS:
     void closeSearch();
     void recoverFromTrash();
     void currentSelectionChanged();
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
 
 public Q_SLOTS:
     void setCurrentIndex(int index);

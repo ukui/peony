@@ -1287,7 +1287,7 @@ void MainWindow::validBorder()
         KWindowEffects::enableBlurBehind(this->winId(), true);
     }
 }
-
+#include "file-utils.h"
 void MainWindow::initUI(const QString &uri)
 {
     auto size = sizeHint();
@@ -1465,18 +1465,26 @@ void MainWindow::initUI(const QString &uri)
         // check slider zoom level
         setCurrentViewZoomLevel(currentViewZoomLevel());
     });
+
+    connect(m_tab, &TabWidget::signal_itemAdded, this, [=](const QString& uri){
+        /* 新建文件/文件夹，可编辑文件名，copy时不能编辑 */
+        if(this->m_uris_to_edit.isEmpty())
+            return;
+        QString editUri = Peony::FileUtils::urlDecode(this->m_uris_to_edit.first());
+        QString infoUri = Peony::FileUtils::urlDecode(uri);
+        if (editUri == infoUri ) {
+            this->getCurrentPage()->getView()->scrollToSelection(uri);
+            this->editUri(uri);
+        }
+        this->m_uris_to_edit.clear();
+    });
+
     connect(m_tab, &TabWidget::menuRequest, this, [=]() {
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
-        auto urisToEdit = menu.urisToEdit();
-        if (!urisToEdit.isEmpty())
-        {
-            QTimer::singleShot(100, this, [=]() {
-                this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
-                this->editUri(urisToEdit.first());
-            });
-        }
+        m_uris_to_edit = menu.urisToEdit();
     });
+
     connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
         setCurrentSelectionUris(uris);
     });
