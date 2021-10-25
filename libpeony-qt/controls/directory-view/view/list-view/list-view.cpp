@@ -690,9 +690,13 @@ void ListView::editUri(const QString &uri)
 {
     setState(QTreeView::NoState);
     auto origin = FileUtils::getOriginalUri(uri);
-    setIndexWidget(m_proxy_model->indexFromUri(origin), nullptr);
-    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
-    edit(m_proxy_model->indexFromUri(origin));
+    if(uri.startsWith("mtp://"))/* Fixbug#82649:在手机内部存储里新建文件/文件夹时，名称不是可编辑状态,都是默认文件名/文件夹名 */
+        origin = uri;
+    QModelIndex index =m_proxy_model->indexFromUri(origin);
+    setIndexWidget(index, nullptr);
+    //注释该行以修复bug:#60474
+//    QTreeView::scrollTo(m_proxy_model->indexFromUri(origin));
+    edit(index);
 }
 
 void ListView::editUris(const QStringList uris)
@@ -740,6 +744,9 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     m_view->bindModel(model, proxyModel);
     connect(m_model, &FileItemModel::selectRequest, this, &DirectoryViewWidget::updateWindowSelectionRequest);
+    connect(m_model,&FileItemModel::signal_itemAdded, this, [=](const QString& uri){
+        Q_EMIT this->signal_itemAdded(uri);
+    });
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
 

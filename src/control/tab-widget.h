@@ -126,6 +126,8 @@ Q_SIGNALS:
     void viewSelectStatus(bool isSelected);
     void globalSearch(bool isGlobal);
 
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setPreviewPage(Peony::PreviewPageIface *previewPage = nullptr);

@@ -247,6 +247,8 @@ Q_SIGNALS:
     */
     void changePathRequest(const QString& uri, bool addHistory, bool forceUpdate);
 
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
 public Q_SLOTS:
     /*!
      * \brief onFoundChildren

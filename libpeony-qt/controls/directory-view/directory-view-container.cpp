@@ -320,6 +320,9 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     connect(m_view, &DirectoryViewWidget::updateWindowLocationRequest, this, [=](const QString &uri) {
         Q_EMIT this->updateWindowLocationRequest(uri, true);
     });
+    connect(m_view, &DirectoryViewWidget::signal_itemAdded, this, [=](const QString& uri) {
+        Q_EMIT this->signal_itemAdded(uri);
+    });
 
     //m_proxy->switchView(view);
     m_layout->addWidget(dynamic_cast<QWidget*>(view), Qt::AlignBottom);

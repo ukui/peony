@@ -615,11 +615,14 @@ void FileItem::onChildAdded(const QString &uri)
             m_children->append(item);
             m_model->endInsertRows();
             qDebug() <<"successfully added child:" <<uri;
-            //Q_EMIT m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
-            //Q_EMIT m_model->updated();
+
+            /* Fixbug#82649:在手机内部存储里新建文件/文件夹时，名称不是可编辑状态,都是默认文件名/文件夹名 */
+            Q_EMIT m_model->signal_itemAdded(uri);//end
+
             QTimer::singleShot(1000, this, [=](){
                 ThumbnailManager::getInstance()->createThumbnail(info->uri(), m_thumbnail_watcher);
             });
+
         } else {
             qInfo()<<"file"<<uri<<"has arealy in file item model";
         }

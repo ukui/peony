@@ -1187,6 +1187,10 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
             Q_EMIT this->updateWindowSelectionRequest(uris);
         }
     });
+    connect(container, &Peony::DirectoryViewContainer::signal_itemAdded, this, [=](const QString& uri){
+        if (container == currentPage())
+            Q_EMIT this->signal_itemAdded(uri);
+    });
 }
 
 void TabWidget::updatePreviewPage()

@@ -113,13 +113,13 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     edit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     edit->setWordWrapMode(QTextOption::NoWrap);
 
-    QTimer::singleShot(1, this, [=]() {
-        this->updateEditorGeometry(edit, option, index);
-    });
+//    QTimer::singleShot(1, parent, [=]() {
+//        this->updateEditorGeometry(edit, option, index);
+//    });
 
-    connect(edit, &TextEdit::textChanged, [=]() {
-        updateEditorGeometry(edit, option, index);
-    });
+//    connect(edit, &TextEdit::textChanged, this, [=]() {
+//        updateEditorGeometry(edit, option, index);
+//    });
 
     connect(edit, &TextEdit::finishEditRequest, [=]() {
         setModelData(edit, nullptr, index);
@@ -149,13 +149,13 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     edit->setTextCursor(cursor);
 }
 
-void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
-    TextEdit *edit = qobject_cast<TextEdit*>(editor);
-    edit->setFixedHeight(editor->height());
-    edit->resize(edit->document()->size().width(), -1);
-}
+//void ListViewDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+//    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+//    TextEdit *edit = qobject_cast<TextEdit*>(editor);
+//    edit->setFixedHeight(editor->height());
+//    edit->resize(edit->document()->size().width(), -1);
+//}
 
 void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {

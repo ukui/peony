@@ -119,6 +119,8 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri);
 
     void updateWindowSelectionRequest(const QStringList &uris);
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
 
 public Q_SLOTS:
     virtual void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel) {}
