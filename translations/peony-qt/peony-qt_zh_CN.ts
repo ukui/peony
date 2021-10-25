@@ -107,77 +107,77 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">打开终端</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="121"/>
+        <location filename="../../src/control/header-bar.cpp" line="130"/>
         <source>Go Back</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="135"/>
+        <location filename="../../src/control/header-bar.cpp" line="144"/>
         <source>Go Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="151"/>
+        <location filename="../../src/control/header-bar.cpp" line="160"/>
         <source>Go Up</source>
         <translation>上级目录</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="217"/>
+        <location filename="../../src/control/header-bar.cpp" line="226"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="229"/>
+        <location filename="../../src/control/header-bar.cpp" line="238"/>
         <source>View Type</source>
         <translation>视图类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="238"/>
+        <location filename="../../src/control/header-bar.cpp" line="247"/>
         <source>Details</source>
         <translation>预览视图</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="281"/>
+        <location filename="../../src/control/header-bar.cpp" line="290"/>
         <source>Sort Type</source>
         <translation>排序类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="309"/>
+        <location filename="../../src/control/header-bar.cpp" line="318"/>
         <source>&amp;Copy</source>
         <translation>&amp;复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="312"/>
+        <location filename="../../src/control/header-bar.cpp" line="321"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="325"/>
+        <location filename="../../src/control/header-bar.cpp" line="334"/>
         <source>&amp;Cut</source>
         <translation>&amp;剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="328"/>
+        <location filename="../../src/control/header-bar.cpp" line="337"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="335"/>
+        <location filename="../../src/control/header-bar.cpp" line="344"/>
         <source>&amp;Select All</source>
         <translation>&amp;全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="339"/>
+        <location filename="../../src/control/header-bar.cpp" line="348"/>
         <source>Select All</source>
         <translation>全选</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="346"/>
+        <location filename="../../src/control/header-bar.cpp" line="355"/>
         <source>&amp;Delete to trash</source>
         <translation>&amp;删除到回收箱</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="349"/>
+        <location filename="../../src/control/header-bar.cpp" line="358"/>
         <source>Delete to trash</source>
         <translation>删除到回收箱</translation>
     </message>
@@ -186,12 +186,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="393"/>
+        <location filename="../../src/control/header-bar.cpp" line="402"/>
         <source>Operate Tips</source>
         <translation>操作提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="394"/>
+        <location filename="../../src/control/header-bar.cpp" line="403"/>
         <source>Don&apos;t find any terminal, please install at least one terminal!</source>
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
@@ -444,9 +444,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Peony::Intel::SideBarFavoriteItem</name>
     <message>
-        <location filename="../../src/control/intel/intel-side-bar-favorite-item.cpp" line="46"/>
         <source>Favorite</source>
-        <translation>快速访问</translation>
+        <translation type="vanished">快速访问</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/intel/intel-side-bar-favorite-item.cpp" line="46"/>
+        <source>Favorites</source>
+        <translation>收藏夹</translation>
     </message>
 </context>
 <context>
@@ -1077,17 +1081,17 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="745"/>
+        <location filename="../../src/control/header-bar.cpp" line="754"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="758"/>
+        <location filename="../../src/control/header-bar.cpp" line="767"/>
         <source>Maximize/Restore</source>
         <translation>最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="781"/>
+        <location filename="../../src/control/header-bar.cpp" line="790"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
