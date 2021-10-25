@@ -483,7 +483,7 @@ void StudyCenterMode::screenRotation()
         m_mainGridLayout->setRowStretch(6,8);
         m_mainGridLayout->setColumnStretch(0,1);
         m_mainGridLayout->setColumnStretch(1,1);
-        m_mainGridLayout->setContentsMargins(72,72,72,72);
+        m_mainGridLayout->setContentsMargins(72,72,72,120);
     }
     else
     {
@@ -544,7 +544,7 @@ void StudyCenterMode::updatePageButton()
     QScreen *screen = QApplication::primaryScreen();
     if (Style::ScreenRotation) {
         Style::appLine = 7;
-        m_buttonLayout->setContentsMargins(0, 0, 0, 26);
+        m_buttonLayout->setContentsMargins(0, 0, 0, 54);
     } else {
         Style::appLine = 4;
         m_buttonLayout->setContentsMargins(0, 0, 0, 56);
