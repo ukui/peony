@@ -23,6 +23,8 @@
 #include "peony-search-vfs-file-enumerator.h"
 #include "peony-search-vfs-file.h"
 #include "file-enumerator.h"
+#include "file-info.h"
+#include "file-info-job.h"
 #include "search-vfs-manager.h"
 #include <QDebug>
 #include <QFile>
@@ -318,6 +320,15 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
     g_object_unref(info);
     QString displayName = file_display_name;
     g_free(file_display_name);
+
+    // fix #83327
+    if (uri.endsWith(".desktop")) {
+        auto fileInfo = Peony::FileInfo::fromUri(uri);
+        Peony::FileInfoJob job(fileInfo);
+        job.querySync();
+        displayName = fileInfo.get()->displayName();
+    }
+
     if (details->name_regexp) {
         if (details->use_regexp && details->match_name_or_content
                 && displayName.contains(*enumerator->priv->name_regexp))
