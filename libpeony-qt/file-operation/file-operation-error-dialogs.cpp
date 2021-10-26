@@ -33,6 +33,9 @@
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
+static QString formatGerrorString (const Peony::FileOperationError* error);
+
+
 Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
 {
@@ -198,12 +201,12 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
     QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
         QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(m_error->errorStr/*.toHtmlEscaped()*/, Qt::ElideMiddle, 480).toHtmlEscaped());
-        setText(htmlString);
+                                 .arg(opt.fontMetrics.elidedText(formatGerrorString (m_error), Qt::ElideMiddle, 500).toHtmlEscaped());
+        m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
-        setText(htmlString);
+                .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 500).toHtmlEscaped());
+        m_text->setText(htmlString);
     }
 
     if (m_error->op && FileOpRenameToHideFile == m_error->op) {
@@ -347,4 +350,33 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
     } else if (QDialog::Rejected == ret) {
         error.respCode = Cancel;
     }
+}
+
+
+// @note 希望错误提示定制化暂时先在这里统一处理，后续需要优化时候可以统一从这里迁移。
+static QString formatGerrorString (const Peony::FileOperationError* error)
+{
+    QStyleOptionViewItem opt;
+    using namespace Peony;
+
+    QString errorStr = error->errorStr;
+
+    switch (error->op) {
+    case FileOpCreateTemp:
+        if (ET_GIO == error->errorType) {
+            switch (error->errorCode) {
+            case G_IO_ERROR_PERMISSION_DENIED: {
+                QString fileName = error->srcUri.split ("/").last ();
+                QString filePath = error->destDirUri + (fileName.isEmpty () ? "" : ("/" + error->srcUri.split ("/").last ()));
+                errorStr = QString(QObject::tr("Failed to open file \"%1\": insufficient permissions.")).arg (opt.fontMetrics.elidedText(FileUtils::urlDecode (filePath), Qt::ElideMiddle, 380));
+                break;
+            }
+            }
+        }
+        break;
+    default:
+        break;
+    }
+
+    return errorStr;
 }
