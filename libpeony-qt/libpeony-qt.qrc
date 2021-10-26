@@ -7,5 +7,6 @@
         <file>icons/icon-selected.png</file>
         <file>icons/icon-select@2x.png</file>
         <file>icons/icon-select.png</file>
+        <file>icons/icon-transparent.png</file>
     </qresource>
 </RCC>
