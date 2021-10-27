@@ -275,13 +275,22 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe && !m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
-                    connect(l.last(), &QAction::triggered, [=]() {
-                        //qDebug() <<"add to bookmark:" <<info->uri();
-                        auto bookmark = BookMarkManager::getInstance();
-                        if (bookmark->isLoaded()) {
-                            bookmark->addBookMark(info->uri());
-                        }
-                    });
+
+                    if(BookMarkManager::getInstance()->existsInBookMarks(info->uri()))
+                    {
+                        l.last()->setEnabled(false);
+                    }
+                    else
+                    {
+                        connect(l.last(), &QAction::triggered, [=]() {
+
+                            //qDebug() <<"add to bookmark:" <<info->uri();
+                            auto bookmark = BookMarkManager::getInstance();
+                            if (bookmark->isLoaded()) {
+                                bookmark->addBookMark(info->uri());
+                            }
+                        });
+                    }
                 }
 
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
