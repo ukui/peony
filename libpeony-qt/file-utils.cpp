@@ -512,6 +512,20 @@ bool FileUtils::isStandardPath(const QString &uri)
     return false;
 }
 
+/* @func: 判断文件是否属于移动设备上的文件，是的话，提示为永久删除
+ * FIXME 目前根据挂载路径进行判断的，可能不准确，目前暂未找到好的判断方法
+ * 其他系统分区文件可能也会判断为移动设备文件
+ * 目前的定位为，判断是否非本系统文件更为合适
+*/
+bool FileUtils::isMobileDeviceFile(const QString &uri)
+{
+    auto targetUri = getTargetUri(uri);
+    if (uri.startsWith("file:///media") || targetUri.startsWith("file:///media"))
+        return true;
+
+    return false;
+}
+
 bool FileUtils::isSamePath(const QString &uri, const QString &targetUri)
 {
     //computer:/// and file:///, favorite:/// path check
@@ -732,6 +746,41 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
     name = QTextCodec::codecForName("GBK")->toUnicode(dest);
     //name = QTextCodec::codecForLocale()->toUnicode(dest);
     return name;
+}
+
+/* @func:           calculate all files size, recursively calculate folder files size
+ * @uri             file uri 文件uri, 如果是文件夹将会递归计算子文件大小
+ */
+quint64 FileUtils::getFileTotalSize(const QString &uri)
+{
+    auto info = FileInfo::fromUri(uri);
+    if (info->isDir())
+    {
+        guint64 disk_usage, num_dirs, num_files;
+        GFile          *m_file = g_file_new_for_uri(uri.toUtf8().constData());
+        GCancellable   *m_cancel = g_cancellable_new();
+        GError         *err = nullptr;
+        g_file_measure_disk_usage (m_file,
+                                   G_FILE_MEASURE_NONE,
+                                   m_cancel,
+                                   nullptr,
+                                   nullptr,
+                                   &disk_usage,
+                                   &num_dirs,
+                                   &num_files,
+                                   &err);
+
+        if (err){
+            qWarning()<< "getFileTotalSize has error:" <<err->code<<err->message<<disk_usage;
+        }
+
+        g_object_unref(m_file);
+        g_object_unref(m_cancel);
+
+        return disk_usage;
+    }
+
+    return info->size();
 }
 
 /* @func:           determines whether the @volumeName needs to be transcoded. 判断字符串是否需要转码.
