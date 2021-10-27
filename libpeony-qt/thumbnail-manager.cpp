@@ -214,6 +214,12 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
     thumbnail = QIcon::fromTheme(_icon_string);
     QString string = _icon_string;
 
+    //fix desktop file set customer icon issue, link to bug#77638
+    auto info = FileInfo::fromUri(uri);
+    if (! info->customIcon().isEmpty()){
+        thumbnail = GenericThumbnailer::generateThumbnail(info->customIcon(), true);
+    }
+
     if (thumbnail.isNull()) {
         if (string.startsWith("/")) {
             thumbnail = GenericThumbnailer::generateThumbnail(_icon_string, true);
