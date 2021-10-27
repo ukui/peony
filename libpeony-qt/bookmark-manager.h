@@ -50,6 +50,8 @@ public:
         return m_is_loaded;
     }
 
+   bool existsInBookMarks(const QString &uri);
+
 Q_SIGNALS:
     void urisLoaded();
     void bookMarkAdded(const QString &uri, bool successed);
