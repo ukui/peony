@@ -2505,21 +2505,31 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileTrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="99"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="103"/>
         <source>trash:///</source>
         <translation>trash:///</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="102"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="106"/>
         <source>Trash file error</source>
         <translation>刪除文件到回收站错误</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="112"/>
+        <source>Can not trash</source>
+        <translation>不能回收</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="113"/>
+        <source>Can not trash files more than 10GB, would you like to delete it permanently?</source>
+        <translation>无法回收大于10G的文件，是否需要永久删除？</translation>
     </message>
     <message>
         <source>The user does not have read and write rights to the file &apos;%1&apos; and cannot delete it to the Recycle Bin.</source>
         <translation type="vanished">用户对当前文件 %1 没有读写权限，无法删除到回收站。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="127"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="153"/>
         <source>Can not trash this file, would you like to delete it permanently?</source>
         <translation>不能回收该文件, 是否要永久删除?</translation>
     </message>
@@ -3428,24 +3438,29 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation>查看和修改文件的权限。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="125"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="152"/>
         <source>Can not trash</source>
         <translation>不能回收</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="125"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="146"/>
         <source>Can not trash these files. You can delete them permanently. Are you sure doing that?</source>
         <translation>这些文件不能完全放入回收站，可以选择永久删除这些文件，确定这样做吗？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="246"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="248"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="150"/>
+        <source>Can not trash files more than 10GB, would you like to delete it permanently?</source>
+        <translation>无法回收大于10G的文件，是否需要永久删除？</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="270"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="272"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="246"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="248"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="270"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="272"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>

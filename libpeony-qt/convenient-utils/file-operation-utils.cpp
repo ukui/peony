@@ -31,6 +31,7 @@
 #include "file-link-operation.h"
 
 #include "file-untrash-operation.h"
+#include "file-count-operation.h"
 
 #include "file-info-job.h"
 #include "file-info.h"
@@ -39,6 +40,7 @@
 
 #include <QUrl>
 #include <QFileInfo>
+#include <gio/gio.h>
 
 #include <QMessageBox>
 
@@ -89,6 +91,7 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
 {
     FileOperation *op = nullptr;
     bool canNotTrash = false;
+    bool isBigFile = false;
     for (auto uri : uris) {
         if (!uri.startsWith("file:/")) {
             canNotTrash = true;
@@ -96,6 +99,8 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
     }
 
     if (!canNotTrash) {
+        quint64 total_size = 0;
+        const quint64 TEN_GIB_SIZE = 10*1024*1024*1024;
         for (auto uri : uris) {
             QUrl url(uri);
             QFile file(url.path());
@@ -104,7 +109,23 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
             auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink())
                 continue;
-            if (file.size() > 1024*1024*1024) {
+
+            //folder need recursive calculate file size
+            if(! info->isDir()){
+                total_size += file.size();
+            }
+
+            //file total size more than 10G, not trash but delete, task#56444
+            if (total_size > TEN_GIB_SIZE) {
+                canNotTrash = true;
+                isBigFile = true;
+                break;
+            }
+
+            //file total size more than 10G, not trash but delete, task#56444
+            //FIXME 判断是否是移动设备文件，可能不准确, 目前暂未找到好的判断方法
+            bool isMobileDeviece = FileUtils::isMobileDeviceFile(uri);
+            if(isMobileDeviece){
                 canNotTrash = true;
                 break;
             }
@@ -122,10 +143,13 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
 
     if (canNotTrash) {
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
-        auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), QObject::tr("Can not trash these files. "
-                                            "You can delete them permanently. "
-                                            "Are you sure doing that?"));
+        QString message = QObject::tr("Can not trash these files. "
+                                      "You can delete them permanently. "
+                                      "Are you sure doing that?");
+        if (isBigFile)
+           message = QObject::tr("Can not trash files more than 10GB, would you like to delete it permanently?");
 
+        auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), message);
         if (result == QMessageBox::Yes) {
             op = FileOperationUtils::remove(uris);
         }

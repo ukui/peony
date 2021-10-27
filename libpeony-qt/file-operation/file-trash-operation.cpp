@@ -51,6 +51,20 @@ void FileTrashOperation::run()
 
     Q_EMIT operationPrepared ();
 
+    quint64 total_size = 0;
+    const quint64 TEN_GIB_SIZE = /*10**/1024*1024*1024;
+    for (auto src : m_src_uris) {
+        if (isCancelled())
+            break;
+
+        auto info = FileInfo::fromUri(src);
+        if(info->isDir()){
+            total_size = FileUtils::getFileTotalSize(src);
+        }else{
+            total_size = info->size();
+        }
+    }
+
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
@@ -84,6 +98,24 @@ retry:
 //            }
 //        }
 
+        FileOperationError except;
+        except.srcUri = src;
+        except.destDirUri = tr("trash:///");
+        except.isCritical = true;
+        except.op = FileOpTrash;
+        except.title = tr("Trash file error");
+        except.errorType = ET_GIO;
+
+        //file total size more than 10G, not trash but delete, task#56444
+        if (total_size > TEN_GIB_SIZE){
+            except.dlgType = ED_NOT_SUPPORTED;
+            except.title = tr("Can not trash");
+            except.errorStr = tr("Can not trash files more than 10GB, would you like to delete it permanently?");
+
+            Q_EMIT errored(except);
+            break;
+        }
+
         g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
         if (err) {
             if (response == IgnoreAll) {
@@ -94,15 +126,9 @@ retry:
             // ref the error, released after error handling.
             auto refPtr = GErrorWrapper::wrapFrom(err);
 
-            FileOperationError except;
-            except.srcUri = src;
-            except.destDirUri = tr("trash:///");
-            except.isCritical = true;
-            except.op = FileOpTrash;
-            except.title = tr("Trash file error");
             except.errorCode = err->code;
             except.errorStr = err->message;
-            except.errorType = ET_GIO;
+
             if (G_IO_ERROR_EXISTS == err->code) {
                 except.dlgType = ED_CONFLICT;
                 Q_EMIT errored(except);
@@ -123,11 +149,11 @@ retry:
             } else {
                 if (err->code == G_IO_ERROR_NOT_SUPPORTED) {
                     except.dlgType = ED_NOT_SUPPORTED;
-                    auto fileName = g_file_get_basename(srcFile.get()->get());
+                    //auto fileName = g_file_get_basename(srcFile.get()->get());
                     except.errorStr = tr("Can not trash this file, would you like to delete it permanently?");
-                    if (fileName) {
-                        g_free(fileName);
-                    }
+//                    if (fileName) {
+//                        g_free(fileName);
+//                    }
                 } else if (err->code == G_IO_ERROR_FILENAME_TOO_LONG) {
                     char *orig_path = g_file_get_path(srcFile.get()->get());
                     char *basename = g_file_get_basename(srcFile.get()->get());
