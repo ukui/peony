@@ -590,7 +590,7 @@ static UDisksObject *get_object_from_block_device (UDisksClient *client,const gc
 
 void SideBarFileSystemItem::ejectOrUnmount()
 {
-    if (isRemoveable())
+    if (isRemoveable()||isStopable())
         eject(G_MOUNT_UNMOUNT_NONE);
 
     else if (isUnmountable())
