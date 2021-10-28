@@ -162,8 +162,9 @@ void SynAndDaemon::paintEvent(QPaintEvent* event)
 //    auto colorMask = QColor(255,255,255);
     m_colorMask.setAlphaF(0.85);
     painter.fillRect(widgetRect, m_colorMask);
-    painter.end();
+    painter.restore();
 
+    painter.save();
     painter.setRenderHint(QPainter::Antialiasing,true);
     //QPainterPath画圆角矩形
     const qreal radius = 8;
