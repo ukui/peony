@@ -110,6 +110,7 @@ private Q_SLOTS:
     void cancleSelect();
     void setGlobalFlag(bool isGlobal);
     void updateSortTypeEnable();
+    void updateViewTypeEnable();
 
 private:
     const QString m_uri;

@@ -579,6 +579,17 @@ void HeaderBar::updateIcons()
     //updateMaximizeState();
 }
 
+void HeaderBar::updateViewTypeEnable()
+{
+    auto url = m_window->getCurrentUri();
+    //qDebug() << "updateViewTypeEnable url:" << url;
+    if(url == "computer:///"){
+        m_view_type_menu->setEnabled(false);
+    }else{
+        m_view_type_menu->setEnabled(true);
+    }
+}
+
 void HeaderBar::updateHeaderState()
 {
 //    if (! m_window->getFilterWorking())
