@@ -989,6 +989,10 @@ void MainWindow::addNewTabs(const QStringList &uris)
 
 void MainWindow::beginSwitchView(const QString &viewId)
 {
+    //not allow change to other view when in computer, link to bug#83711
+    if (getCurrentUri() == "computer:///")
+        return;
+
     auto selection = getCurrentSelections();
 //    int sortType = getCurrentSortColumn();
 //    Qt::SortOrder sortOrder = getCurrentSortOrder();
