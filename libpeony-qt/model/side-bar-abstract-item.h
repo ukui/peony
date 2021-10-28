@@ -87,6 +87,9 @@ public:
     virtual QString getDevice() {
         return m_device;
     }
+    virtual bool isVolume() {
+        return m_isVolume;
+    }
     virtual bool hasChildren() = 0;
     virtual QModelIndex firstColumnIndex() = 0;
     virtual QModelIndex lastColumnIndex() = 0;
@@ -115,7 +118,7 @@ protected:
     bool m_mountable = false;
     bool m_unmountable = false;
     bool m_mounted = false;
-
+    bool m_isVolume = false;
 Q_SIGNALS:
     void queryInfoFinished();
     void findChildrenFinished();

@@ -226,6 +226,7 @@ void SideBarNetWorkItem::findRemoteServers()
                                                                   remoteServer,
                                                                   this,
                                                                   m_model, this);
+                item->m_isVolume = true;
                 m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
                 m_model->endInsertRows();
@@ -301,7 +302,7 @@ void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
                                                          server,
                                                          this,
                                                          m_model, this);
-
+       item->m_isVolume = true;
        m_children->append(item);
        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
     }

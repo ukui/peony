@@ -157,7 +157,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
     if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
             &&!unixDevice.startsWith("/dev/bus/usb")
-            && (m_item->isMountable()||m_item->isUnmountable()))
+            && (m_item->isVolume()))
     {
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
             auto info = FileInfo::fromUri(uri);
@@ -200,7 +200,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     });
     if ((0 != QString::compare(m_uri, "computer:///")) &&
         (0 != QString::compare(m_uri, "filesafe:///"))
-            &&(m_item->isMountable()||m_item->isUnmountable())) {
+            &&(m_item->isVolume())) {
         l.last()->setEnabled(m_item->isMounted());
     }
 
@@ -235,7 +235,7 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
     }
     if(netWorkUri != m_uri){
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-            if((m_item->isMountable()||m_item->isUnmountable())){
+            if((m_item->isVolume())){
                 /* 远程服务器 */
                 FileEnumerator e;
                 e.setEnumerateDirectory("computer:///");
@@ -261,7 +261,7 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
                 w->show();
             }
         });
-        if(m_item->isMountable()||m_item->isUnmountable())
+        if(m_item->isVolume())
             l.last()->setEnabled(m_item->isMounted());
     }
 

@@ -271,7 +271,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     if ((0 != QString::compare(item->uri(), "computer:///")) &&
                         (0 != QString::compare(item->uri(), "filesafe:///"))) {
                         for (const auto &actionItem : actionList) {
-                            if(item->isMountable()||item->isUnmountable())/* 分区才去需要判断是否已挂载 */
+                            if(item->isVolume())/* 分区才去需要判断是否已挂载 */
                                 actionItem->setEnabled(item->isMounted());
                         }
                     }
