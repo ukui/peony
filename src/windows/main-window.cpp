@@ -867,6 +867,8 @@ void MainWindow::updateHeaderBar()
     m_header_bar->updateIcons();
     //fix bug#82685
     m_header_bar->updateSortTypeEnable();
+    //fix bug#66336, 83711
+    m_header_bar->updateViewTypeEnable();
     //m_status_bar->update();
 }
 

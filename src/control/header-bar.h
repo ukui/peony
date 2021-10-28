@@ -99,6 +99,7 @@ private Q_SLOTS:
     void initFocus();
     void updateHeaderState();
     void updateSortTypeEnable();
+    void updateViewTypeEnable();
 
 private:
     const QString m_uri;
