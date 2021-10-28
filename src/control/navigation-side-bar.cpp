@@ -379,13 +379,19 @@ QSize NavigationSideBar::sizeHint() const
 
 void NavigationSideBar::JumpDirectory(const QString &uri)
 {
+    if(uri=="" && m_currSelectedItem->getDevice().startsWith("/dev/sd"))
+    {/* 异常U盘 */
+        QMessageBox::information(nullptr, tr("Tips"), tr("This is an abnormal Udisk, please fix it or format it"));
+        return;
+    }
+
     auto info = FileInfo::fromUri(uri);
     if (info.get()->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
     }
     auto targetUri = FileUtils::getTargetUri(uri);
-    if (targetUri == "" && uri== "burn://" /*&& item->displayName().contains("DVD")*/)
+    if (targetUri == "" && uri== "burn://")
     {
         qDebug() << "empty drive"<<uri;
         QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
