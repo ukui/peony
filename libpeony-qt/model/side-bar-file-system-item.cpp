@@ -173,7 +173,7 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
     m_uri = m_mountPoint = volumeItem.mountPoint();
     m_mounted   = !m_uri.isEmpty();
     m_displayName = volumeItem.name() + "(" + m_device + ")";
-
+    m_isVolume = true;
     /* 手机和空光盘的m_uri需要额外设置 */
     if(m_uri.isEmpty()){
         if(m_device.startsWith("/dev/bus/usb")){
