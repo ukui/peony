@@ -270,7 +270,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     if ((0 != QString::compare(item->uri(), "computer:///")) &&
                         (0 != QString::compare(item->uri(), "filesafe:///"))) {
                         for (const auto &actionItem : actionList) {
-                            if(item->isMountable()||item->isUnmountable())/* 分区才去需要判断是否已挂载 */
+                            if(item->isVolume())/* 分区才去需要判断是否已挂载 */
                                 actionItem->setEnabled(item->isMounted());
                         }
                     }
@@ -371,13 +371,19 @@ QSize NavigationSideBar::sizeHint() const
 
 void NavigationSideBar::JumpDirectory(const QString &uri)
 {
+    if(uri=="" && m_currSelectedItem->getDevice().startsWith("/dev/sd"))
+    {/* 异常U盘 */
+        QMessageBox::information(nullptr, tr("Tips"), tr("This is an abnormal Udisk, please fix it or format it"));
+        return;
+    }
+
     auto info = FileInfo::fromUri(uri);
     if (info.get()->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
     }
     auto targetUri = FileUtils::getTargetUri(uri);
-    if (targetUri == "" && uri== "burn://" /*&& item->displayName().contains("DVD")*/)
+    if (targetUri == "" && uri== "burn://")
     {
         qDebug() << "empty drive"<<uri;
         QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));

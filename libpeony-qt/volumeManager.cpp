@@ -146,6 +146,12 @@ void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
     itemIsExisted = pThis->m_volumeList->contains(addItem->device());
     qDebug()<<__func__<<__LINE__<<addItem->device()<<itemIsExisted<<endl;
     if(itemIsExisted){
+        /* 先删除后添加，更新volume,例如异常U盘格式化 */
+        QString device = addItem->device();
+        pThis->m_volumeList->remove(device);
+        Q_EMIT pThis->volumeRemove(device);
+        pThis->m_volumeList->insert(device, addItem);
+        Q_EMIT pThis->volumeAdd(Volume(*addItem));
         //情景1、关闭gparted时，所有具有卸载属性的设备均会触发volume-added信号
         //      该情景似乎不需要更新属性信息，确认一下name属性？
     }else{
@@ -320,12 +326,15 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
     Drive* dirve = new Drive(gdrive);
     QString device = dirve->device();
 
-    if(!pThis->m_volumeList->contains(device) && !device.isEmpty() && device.contains("/dev/sr"))
+    if(!pThis->m_volumeList->contains(device) && !device.isEmpty() &&
+            (device.contains("/dev/sr")||device.startsWith("/dev/sd")))/* 异常U盘也需要显示 */
     {
         Volume* volume = new Volume(nullptr);
         volume->setFromDrive(*dirve);
-        pThis->m_volumeList->insert(device, volume);
-        Q_EMIT pThis->volumeAdd(Volume(*volume));
+        if(volume->canEject()){
+            pThis->m_volumeList->insert(device, volume);
+            Q_EMIT pThis->volumeAdd(Volume(*volume));
+        }
     }
 }
 
@@ -445,6 +454,10 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         if(device.contains("/dev/sr")){/* 判断是否为光驱设备 */
             m_volumeList->insert(volumeItem->device(), volumeItem);
         }
+        if(volumeItem->canEject()&&device.contains("/dev/sd")){/* 异常U盘设备 */
+            m_volumeList->insert(volumeItem->device(), volumeItem);
+        }
+
     }
 
     //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
@@ -891,7 +904,7 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThi
 
 void Drive::eject(GMountUnmountFlags ejectFlag)
 {
-    if(m_canEject){
+    if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
         g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb),const_cast<char*>(m_mountPath.toStdString().c_str()));
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.

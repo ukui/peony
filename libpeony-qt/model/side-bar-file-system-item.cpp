@@ -173,7 +173,7 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
     m_uri = m_mountPoint = volumeItem.mountPoint();
     m_mounted   = !m_uri.isEmpty();
     m_displayName = volumeItem.name() + "(" + m_device + ")";
-
+    m_isVolume = true;
     /* 手机和空光盘的m_uri需要额外设置 */
     if(m_uri.isEmpty()){
         if(m_device.startsWith("/dev/bus/usb")){
@@ -590,7 +590,7 @@ static UDisksObject *get_object_from_block_device (UDisksClient *client,const gc
 
 void SideBarFileSystemItem::ejectOrUnmount()
 {
-    if (isRemoveable())
+    if (isRemoveable()||isStopable())
         eject(G_MOUNT_UNMOUNT_NONE);
 
     else if (isUnmountable())
