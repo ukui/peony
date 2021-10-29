@@ -146,6 +146,12 @@ void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
     itemIsExisted = pThis->m_volumeList->contains(addItem->device());
     qDebug()<<__func__<<__LINE__<<addItem->device()<<itemIsExisted<<endl;
     if(itemIsExisted){
+        /* 先删除后添加，更新volume,例如异常U盘格式化 */
+        QString device = addItem->device();
+        pThis->m_volumeList->remove(device);
+        Q_EMIT pThis->volumeRemove(device);
+        pThis->m_volumeList->insert(device, addItem);
+        Q_EMIT pThis->volumeAdd(Volume(*addItem));
         //情景1、关闭gparted时，所有具有卸载属性的设备均会触发volume-added信号
         //      该情景似乎不需要更新属性信息，确认一下name属性？
     }else{
