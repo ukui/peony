@@ -256,7 +256,10 @@ void FilePreviewPage::wrapData(QLabel *p_label, const QString &text)
 
 void FilePreviewPage::updateInfo(FileInfo *info)
 {
-    if (info->displayName().isEmpty()) {
+    if (info->displayName().isEmpty() ||
+            info->fileType().isEmpty() ||
+            info->accessTime() == 0 ||
+            info->modifiedTime() == 0) {
         FileInfoJob j(info->uri());
         j.querySync();
     }
