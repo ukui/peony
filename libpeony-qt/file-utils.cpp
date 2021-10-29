@@ -532,7 +532,9 @@ bool FileUtils::isSamePath(const QString &uri, const QString &targetUri)
     if (uri.endsWith(":///") && targetUri.endsWith(":///"))
         return uri == targetUri;
 
-    return QUrl(uri).path() == QUrl(targetUri).path();
+    //return QUrl(uri).path() == QUrl(targetUri).path();
+    //fix bug#84324
+    return QUrl(urlEncode(uri)).path() == QUrl(urlEncode(targetUri)).path();
 }
 
 bool FileUtils::containsStandardPath(const QStringList &list)
