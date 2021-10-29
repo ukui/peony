@@ -305,7 +305,9 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         return;
     }
 
-    QUrl url = uri;
+//    QUrl url = uri;
+    //fix bug#84324
+    QUrl url = FileUtils::urlEncode(uri);
 
     auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
