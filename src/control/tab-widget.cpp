@@ -1006,6 +1006,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                 return;
             }
         });
+        connect(enumerator, &Peony::FileEnumerator::cancelled, this, [=](){
+            if (!currentPage()) {
+                QTimer::singleShot(100, topLevelWidget(), &QWidget::close);
+            }else{
+                this->refresh();
+            }
+        });
         connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
             if (critical) {
                 QMessageBox::critical(0, 0, err.get()->message());
