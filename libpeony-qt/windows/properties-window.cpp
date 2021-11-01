@@ -279,7 +279,12 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
         } else {
             qDebug() << __FILE__ << __FUNCTION__ << "fileInfo is null :" << (m_fileInfo.get() == nullptr);
             if (m_fileInfo) {
-                windowTitle = m_fileInfo.get()->displayName();
+                //fix bug:#82320
+                if (QRegExp("^file:///data/usershare(/{,1})$").exactMatch(m_fileInfo->uri())) {
+                    windowTitle = tr("usershare");
+                } else {
+                    windowTitle = m_fileInfo.get()->displayName();
+                }
                 iconName = m_fileInfo.get()->iconName();
             }
         }
