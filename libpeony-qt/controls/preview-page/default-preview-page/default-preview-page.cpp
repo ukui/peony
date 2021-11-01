@@ -274,7 +274,12 @@ void FilePreviewPage::updateInfo(FileInfo *info)
     }
     auto icon = QIcon::fromTheme(info->iconName(), QIcon::fromTheme("text-x-generic"));
     m_icon->setIcon(thumbnail.isNull()? icon: thumbnail);
-    wrapData(m_display_name_label, info->displayName());
+    //fix bug:#82320
+    QString displayName = info->displayName();
+    if (QRegExp("^file:///data/usershare(/{,1})$").exactMatch(info->uri())) {
+        displayName = tr("usershare");
+    }
+    wrapData(m_display_name_label, displayName);
 
     wrapData(m_type_label, info->fileType());
 
