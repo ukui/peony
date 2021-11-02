@@ -349,14 +349,14 @@ void PropertiesWindow::gotoAboutComputer()
 {
     QProcess p;
     p.setProgram("ukui-control-center");
-    //-a para to show about computer infos
-    p.setArguments(QStringList() << "-a");
+    //-m About para to show about computer infos, related to bug#88258
+    p.setArguments(QStringList()<<"-m" << "About");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
 #else
-    p.startDetached("ukui-control-center", QStringList()<<"-a");
-    p.waitForFinished(-1);
+    p.startDetached("ukui-control-center", QStringList()<<"-m" << "About");
 #endif
+    p.waitForFinished(-1);
 }
 
 /*!
