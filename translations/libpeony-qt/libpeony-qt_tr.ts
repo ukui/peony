@@ -215,7 +215,6 @@
     </message>
     <message>
         <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.cpp" line="331"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="297"/>
         <source>starting ...</source>
         <translation>Başlatılıyor...</translation>
     </message>
@@ -253,9 +252,8 @@
 <context>
     <name>OtherButton</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-progress-bar.h" line="323"/>
         <source>Other queue</source>
-        <translation type="unfinished">Diğer sıra</translation>
+        <translation type="obsolete">Diğer sıra</translation>
     </message>
 </context>
 <context>
@@ -376,96 +374,76 @@
         <translation type="vanished">İçeriği veya dosya adını en az birini seçin!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>all</source>
-        <translation>Tümü</translation>
+        <translation type="vanished">Tümü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>file folder</source>
-        <translation>Dosya klasör</translation>
+        <translation type="vanished">Dosya klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>image</source>
-        <translation>Resim</translation>
+        <translation type="vanished">Resim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="57"/>
         <source>video</source>
-        <translation>Video</translation>
+        <translation type="vanished">Video</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>text file</source>
-        <translation>Metin dosyası</translation>
+        <translation type="vanished">Metin dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>audio</source>
-        <translation>Ses</translation>
+        <translation type="vanished">Ses</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>others</source>
-        <translation>Diğerleri</translation>
+        <translation type="vanished">Diğerleri</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="58"/>
         <source>wps file</source>
-        <translation type="unfinished">Wps Dosyası</translation>
+        <translation type="obsolete">Wps Dosyası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>today</source>
-        <translation>Bugün</translation>
+        <translation type="vanished">Bugün</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this week</source>
-        <translation>Bu hafta</translation>
+        <translation type="vanished">Bu hafta</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this month</source>
-        <translation>Bu ay</translation>
+        <translation type="vanished">Bu ay</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>this year</source>
-        <translation>Bu yıl</translation>
+        <translation type="vanished">Bu yıl</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="59"/>
         <source>year ago</source>
-        <translation>Önceki yıl</translation>
+        <translation type="vanished">Önceki yıl</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>tiny(0-16K)</source>
-        <translation>Çok küçük(0-16K)</translation>
+        <translation type="vanished">Çok küçük(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>small(16k-1M)</source>
-        <translation>Küçük(16k-1M)</translation>
+        <translation type="vanished">Küçük(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>medium(1M-100M)</source>
-        <translation>Orta(1M-100M)</translation>
+        <translation type="vanished">Orta(1M-100M)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>big(100M-1G)</source>
-        <translation>Büyük(100M-1G)</translation>
+        <translation type="vanished">Büyük(100M-1G)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/tool-bar/advance-search-bar.h" line="60"/>
         <source>large(&gt;1G)</source>
-        <translation>Çok büyük(&gt;1G)</translation>
+        <translation type="vanished">Çok büyük(&gt;1G)</translation>
     </message>
 </context>
 <context>
@@ -514,7 +492,7 @@
 <context>
     <name>Peony::BasicPropertiesPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="765"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="777"/>
         <source>Choose a custom icon</source>
         <translation>Özel bir simge seçin</translation>
     </message>
@@ -643,41 +621,46 @@
         <translation>Özellik:</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="602"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="806"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="519"/>
+        <source>usershare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="614"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="818"/>
         <source>%1 (%2 Bytes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="638"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="650"/>
         <source>Choose a new folder:</source>
         <translation>Yeni bir klasör seçin:</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="645"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="650"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="657"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="662"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="645"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="650"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="657"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="662"/>
         <source>cannot move a folder to itself !</source>
         <translation>Bir klasör kendisine taşınamaz!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="799"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="811"/>
         <source>%1 Bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="815"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="827"/>
         <source>%1 files, %2 folders</source>
         <translation>%1 dosya, %2 klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="897"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="899"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="909"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="911"/>
         <source>Can&apos;t get remote file information</source>
         <translation>Uzak dosya bilgisi alınamıyor</translation>
     </message>
@@ -887,14 +870,12 @@
         <translation>Bağlantı Oluşturmak İçin Bir Dizin Seçin</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="61"/>
         <source>Peony-Qt Create Link Extension</source>
-        <translation>Dosya Yöneticisi Bağlantı Uzantısı Oluştur</translation>
+        <translation type="vanished">Dosya Yöneticisi Bağlantı Uzantısı Oluştur</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="64"/>
         <source>Create Link Menu Extension.</source>
-        <translation>Bağlantı Menüsü Uzantısı Oluştur.</translation>
+        <translation type="vanished">Bağlantı Menüsü Uzantısı Oluştur.</translation>
     </message>
 </context>
 <context>
@@ -1072,9 +1053,8 @@
 <context>
     <name>Peony::DirectoryView::IconView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.h" line="66"/>
         <source>Icon View</source>
-        <translation>Simge Görünümü</translation>
+        <translation type="vanished">Simge Görünümü</translation>
     </message>
 </context>
 <context>
@@ -1087,9 +1067,8 @@
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
-        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.h" line="56"/>
         <source>List View</source>
-        <translation>Liste Görünümü</translation>
+        <translation type="vanished">Liste Görünümü</translation>
     </message>
 </context>
 <context>
@@ -1166,7 +1145,7 @@
         <translation type="vanished">&amp;Klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="534"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="543"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
@@ -1179,137 +1158,137 @@
         <translation type="vanished">Liste Görünümü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="560"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="569"/>
         <source>View Type...</source>
         <translation>Görünüm Türü...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="579"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="588"/>
         <source>Sort By...</source>
         <translation>Sırala...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="584"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="593"/>
         <source>Name</source>
         <translation>İsim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="586"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="595"/>
         <source>File Type</source>
         <translation>Dosya Türü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="587"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="596"/>
         <source>File Size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="428"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="437"/>
         <source>New...</source>
         <translation>Yeni...</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="238"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="313"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="322"/>
         <source>Open in New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="246"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="321"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="330"/>
         <source>Open in New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="282"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="328"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="373"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="291"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="337"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="382"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="292"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="339"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="301"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="348"/>
         <source>Open with...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="306"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="367"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="315"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="376"/>
         <source>More applications...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="381"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="390"/>
         <source>Open %1 selected files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="518"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="527"/>
         <source>Empty File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="530"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="539"/>
         <source>Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="585"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="594"/>
         <source>Modified Date</source>
         <translation>Değiştirme Saati</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="608"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="617"/>
         <source>Sort Order...</source>
         <translation>Sıralama Düzeni...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="612"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="621"/>
         <source>Ascending Order</source>
         <translation>Artan Düzen</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="613"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="622"/>
         <source>Descending Order</source>
         <translation>Azalan Düzen</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="626"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="635"/>
         <source>Sort Preferences...</source>
         <translation>Tercihleri Sırala...</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="630"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="639"/>
         <source>Folder First</source>
         <translation>Önce Klasör</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="639"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="648"/>
         <source>Chinese First</source>
         <translation>Önce Çince</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="649"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="658"/>
         <source>Show Hidden</source>
         <translation>Gizlileri Göster</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="684"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="691"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="800"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="838"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="693"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="700"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="809"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="847"/>
         <source>Copy</source>
         <translation type="unfinished">Kopyala</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1040"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1049"/>
         <source>File:&quot;%1&quot; is not exist, did you moved or deleted it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1060"/>
         <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1069"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1078"/>
         <source>Peony-Qt filesafe menu Extension</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1318,55 +1297,55 @@
         <translation type="vanished">&amp;Kopyala</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="704"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="713"/>
         <source>Cut</source>
         <translation>Kes</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="727"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="736"/>
         <source>Delete to trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="772"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="781"/>
         <source>Paste</source>
         <translation type="unfinished">Yapıştır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="812"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="821"/>
         <source>Refresh</source>
         <translation type="unfinished">Yenile</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="822"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="831"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="872"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="908"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="881"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="917"/>
         <source>Properties</source>
         <translation>Özellikler</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="938"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="947"/>
         <source>format</source>
         <translation type="unfinished">Biçim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="975"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="984"/>
         <source>Restore</source>
         <translation type="unfinished">Onar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="738"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="795"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="983"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="747"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="804"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="992"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1039"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1048"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
@@ -1383,14 +1362,14 @@
         <translation type="vanished">Çöp Kutus&amp;una Gönder</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="740"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="750"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="757"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="749"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="759"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="766"/>
         <source>Delete forever</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="764"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="773"/>
         <source>Rename</source>
         <translation>Yeniden Adlandır</translation>
     </message>
@@ -1399,7 +1378,7 @@
         <translation type="vanished">&amp;Tümünü Seç</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="830"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="839"/>
         <source>Reverse Select</source>
         <translation>Seçimi Ters Çevir</translation>
     </message>
@@ -1428,7 +1407,7 @@
         <translation type="vanished">Özellikler</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="962"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="971"/>
         <source>&amp;Clean the Trash</source>
         <translation>Çö&amp;pü Temizle</translation>
     </message>
@@ -1437,14 +1416,14 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="966"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="986"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="975"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="995"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="966"/>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="986"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="975"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="995"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -1453,12 +1432,12 @@
         <translation type="vanished">O&amp;nar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="995"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1004"/>
         <source>Clean All</source>
         <translation>Tümünü Temizle</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1011"/>
+        <location filename="../../libpeony-qt/controls/menu/directory-view-menu/directory-view-menu.cpp" line="1020"/>
         <source>Open Parent Folder in New Window</source>
         <translation>Üst Klasörü Yeni Pencerede Aç</translation>
     </message>
@@ -1763,14 +1742,12 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Tüm Etiketleri Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="95"/>
         <source>Peony File Labels Menu Extension</source>
-        <translation>Peony Dosya Etiketleri Menü Uzantısı</translation>
+        <translation type="vanished">Peony Dosya Etiketleri Menü Uzantısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/menu/menu-plugin-manager.h" line="98"/>
         <source>Tag a File with Menu.</source>
-        <translation>Dosyayı Menü ile etiketleyin.</translation>
+        <translation type="vanished">Dosyayı Menü ile etiketleyin.</translation>
     </message>
 </context>
 <context>
@@ -2353,6 +2330,11 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="276"/>
+        <source>usershare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Image size:</source>
         <translation type="vanished">Resim Boyutu:</translation>
     </message>
@@ -2361,12 +2343,12 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="vanished">Resim Formatı:</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="295"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="303"/>
         <source>%1x%2</source>
         <translation>%1x%2</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="345"/>
+        <location filename="../../libpeony-qt/controls/preview-page/default-preview-page/default-preview-page.cpp" line="353"/>
         <source>%1 total, %2 hidden</source>
         <translation>toplam %1, %2 gizli</translation>
     </message>
@@ -2430,21 +2412,31 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::FileTrashOperation</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="99"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="103"/>
         <source>trash:///</source>
         <translation>Çöp:///</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="102"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="106"/>
         <source>Trash file error</source>
         <translation>Çöp dosyası hatası</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="112"/>
+        <source>Can not trash</source>
+        <translation type="unfinished">Çöp Silinemez</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="113"/>
+        <source>Can not trash files more than 10GB, would you like to delete it permanently?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The user does not have read and write rights to the file &apos;%1&apos; and cannot delete it to the Recycle Bin.</source>
         <translation type="vanished">Kullanıcının &apos;%1&apos; dosyası için okuma ve yazma hakları yok ve onu Geri Dönüşüm Kutusu&apos;na silemiyor.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="127"/>
+        <location filename="../../libpeony-qt/file-operation/file-trash-operation.cpp" line="153"/>
         <source>Can not trash this file, would you like to delete it permanently?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2510,7 +2502,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation>%2 de %1 ara</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="331"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="333"/>
         <source>File System</source>
         <translation>Dosya Sistemi</translation>
     </message>
@@ -2519,12 +2511,12 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="vanished">&amp;Dizini Kopyala</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="405"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="407"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="409"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="411"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2537,7 +2529,7 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="vanished">Yeni Penc&amp;erede Aç</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="403"/>
+        <location filename="../../libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp" line="405"/>
         <source>Copy Directory</source>
         <translation>Dizini Kopyala</translation>
     </message>
@@ -2778,17 +2770,22 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation> %1 Dosyalar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="288"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="284"/>
+        <source>usershare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="293"/>
         <source>Properties</source>
         <translation>Özellikler</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="384"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="389"/>
         <source>Ok</source>
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="385"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="390"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
@@ -2800,31 +2797,31 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
 <context>
     <name>Peony::RecentAndTrashPropertiesPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="116"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="117"/>
         <source>Show confirm dialog while trashing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="139"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="145"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="140"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="146"/>
         <source>Origin Path: </source>
         <translation>Kaynak Yolu: </translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="177"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="183"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="178"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="202"/>
         <source>Deletion Date: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="166"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="198"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="167"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="217"/>
         <source>Size: </source>
         <translation>Boyut: </translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="192"/>
-        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="199"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="211"/>
+        <location filename="../../libpeony-qt/controls/property-page/recent-and-trash-properties-page.cpp" line="218"/>
         <source>Original Location: </source>
         <translation>Orjinal Konum: </translation>
     </message>
@@ -3321,24 +3318,29 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Dosya iznini, sahibini ve grubunu göster ve değiştir.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="125"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="152"/>
         <source>Can not trash</source>
         <translation>Çöp Silinemez</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="125"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="146"/>
         <source>Can not trash these files. You can delete them permanently. Are you sure doing that?</source>
         <translation>Bu dosyalar çöp kutusuna gönderilemiyor. Bunları kalıcı olarak silebilirsiniz. Bunu yaptığınızdan emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="246"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="248"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="150"/>
+        <source>Can not trash files more than 10GB, would you like to delete it permanently?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="270"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="272"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="246"/>
-        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="248"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="270"/>
+        <location filename="../../libpeony-qt/convenient-utils/file-operation-utils.cpp" line="272"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished">Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -3439,18 +3441,17 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation>Dosya Yöneticisi</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/vfs/search-vfs-register.h" line="40"/>
         <source>Default search vfs of peony</source>
-        <translation type="unfinished">Peony için varsayılan arama vfs&apos;si</translation>
+        <translation type="obsolete">Peony için varsayılan arama vfs&apos;si</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1095"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1108"/>
         <source>Force unmount failed</source>
         <translation>Zorla ayrılma başarısız oldu</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1095"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1108"/>
         <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="152"/>
         <source>Error: %1
 </source>
@@ -3459,43 +3460,43 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="135"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1098"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1136"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1111"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1149"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1117"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1122"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1130"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1135"/>
         <source>Unmount failed</source>
         <translation>Ayrılma Hatası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="859"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1113"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="872"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1126"/>
         <source>Not authorized to perform operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1117"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1130"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation>Bağlantısını kesemiyorsanız, bazı programları kapatmanız gerekebilir, örneğin: GParted vb.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1122"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1135"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation>Hata: %1
 Zorla ayrılmak ister misin?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="859"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="864"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="885"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1113"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="872"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="877"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="898"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1126"/>
         <source>Eject failed</source>
         <translation>Çıkarma hatalı</translation>
     </message>
@@ -3508,17 +3509,17 @@ Zorla ayrılmak ister misin?</translation>
         <translation type="vanished">Yine de Çıkar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="717"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="730"/>
         <source>The device has been mount successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="870"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="883"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="884"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="897"/>
         <source>Unable to eject %1</source>
         <translation>%1 çıkarılamıyor</translation>
     </message>
