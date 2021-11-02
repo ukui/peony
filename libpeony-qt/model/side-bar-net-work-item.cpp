@@ -274,9 +274,9 @@ void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool s
                                                           shareInfo.name,
                                                           this,
                                                           m_model, this);
-
+        m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
         m_children->append(item);
-        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+        m_model->endInsertRows();
     }
     return;
 }
@@ -288,8 +288,12 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
     for (auto item : *m_children){
         if(item->uri()!="file://" + originalPath)
             continue;
-        m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+        int index = m_children->indexOf(item);
+        m_model->beginRemoveRows(firstColumnIndex(), index, index);
         m_children->removeOne(item);
+        m_model->endRemoveRows();
+        item->deleteLater();
+        break;
     }
     return;
 }
@@ -303,15 +307,21 @@ void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
                                                          this,
                                                          m_model, this);
        item->m_isVolume = true;
+       m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
        m_children->append(item);
-       m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+       m_model->endInsertRows();
     }
    else{
        for (auto item : *m_children){
            if(item->uri()!= server)
                continue;
-           m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+           int index = m_children->indexOf(item);
+           m_model->beginRemoveRows(firstColumnIndex(), index, index);
            m_children->removeOne(item);
+           m_model->endRemoveRows();
+           item->deleteLater();
+           break;
+
    }
    }
 }
