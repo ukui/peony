@@ -186,7 +186,11 @@ void OpenWithPropertiesPage::initFloorThree()
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
             p.startDetached();
 #else
-            p.startDetached("ukui-control-center", QStringList()<<"-a");
+            if (COMMERCIAL_VERSION)
+                p.startDetached("kylin-software-center");
+            else
+                p.startDetached("ubuntu-kylin-software-center");
+
 #endif
         });
     });
