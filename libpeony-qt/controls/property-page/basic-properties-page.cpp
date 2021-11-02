@@ -514,6 +514,11 @@ void BasicPropertiesPage::onSingleFileChanged(const QString &oldUri, const QStri
     if (m_info->isDesktopFile() && !fileName.endsWith(".desktop")) {
         fileName = FileUtils::handleDesktopFileName(m_info->uri(), fileName);
     }
+    //fix bug:#82320
+    if (QRegExp("^file:///data/usershare(/{,1})$").exactMatch(m_info->uri())) {
+        fileName = tr("usershare");
+    }
+
     m_displayNameEdit->setText(fileName);
 
     if (thumbnail.isNull()) {
