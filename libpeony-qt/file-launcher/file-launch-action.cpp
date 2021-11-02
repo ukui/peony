@@ -56,11 +56,16 @@ FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool 
     if (!isValid())
         return;
 
-    GThemedIcon *icon = G_THEMED_ICON(g_app_info_get_icon(m_app_info));
-    const char * const * icon_names = g_themed_icon_get_names(icon);
+    GIcon *icon = g_app_info_get_icon(m_app_info);
+    const char * const * icon_names = g_themed_icon_get_names(G_THEMED_ICON (icon));
 
-    if (icon_names)
+    if (icon_names) {
         m_icon = QIcon::fromTheme(*icon_names);
+    } else {
+        // fix #68592
+        g_autofree gchar *icon_path = g_icon_to_string(icon);
+        m_icon.addFile(icon_path);
+    }
     setIcon(m_icon);
     m_info_name = g_app_info_get_name(m_app_info);
     setText(m_info_name);
