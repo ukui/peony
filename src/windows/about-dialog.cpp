@@ -78,11 +78,11 @@ void AboutDialog::initUI()
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
 
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
-
-//    ui->nameLabel->setFont(font18);
+    auto font = qApp->font();
+    ui->nameLabel->setFont(font);
     ui->nameLabel->setText(tr("Peony"));
 
-//    ui->versionLabel->setFont(font14);
+    ui->versionLabel->setFont(font);
 //    ui->versionLabel->setStyleSheet("color:#595959;");
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
