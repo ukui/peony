@@ -177,6 +177,13 @@ public:
      */
     QString rebuildUriBySchema(QString &uri);
 
+    /**
+     * @brief 对kmre-vfs中的文件进行特殊处理，以获取真实路径
+     * @param uri
+     * @return
+     */
+    bool handleKMREUri(QString &uri);
+
 protected:
     /**
      * 在窗口关闭时，将存储的窗口指针从openPropertiesWindows中删除
