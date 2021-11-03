@@ -47,15 +47,7 @@ QString RecentAndTrashPropertiesPage::getIconName() {
         return "application-x-desktop";
 
     QString realPath;
-    bool startWithTrash = m_fileInfo->uri().startsWith("trash:///");
-
-    if (startWithTrash) {
-        realPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
-                + "/.local/share/Trash/files/"
-                + m_fileInfo->displayName();
-    } else {
-        realPath = m_fileInfo->targetUri();
-    }
+    realPath = m_fileInfo->targetUri();
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(QUrl(realPath).path().toUtf8().constData());
     if (_desktop_file) {
@@ -82,6 +74,11 @@ void RecentAndTrashPropertiesPage::init()
         delete m_futureWatcher;
         m_futureWatcher = nullptr;
     }
+
+    auto targetFileInfo = FileInfo::fromUri(m_fileInfo.get()->targetUri());
+    FileInfoJob j(targetFileInfo);
+    j.querySync();
+
     m_layout = new QFormLayout(this);
     m_layout->setRowWrapPolicy(QFormLayout::WrapLongRows);
     m_layout->setFormAlignment(Qt::AlignLeft|Qt::AlignHCenter);
@@ -101,6 +98,9 @@ void RecentAndTrashPropertiesPage::init()
     auto name = new QLineEdit(this);
     name->setReadOnly(true);
     name->setText(m_fileInfo->displayName());
+    if (!targetFileInfo.get()->displayName().isEmpty()) {
+        name->setText(targetFileInfo.get()->displayName());
+    }
 
     boxLayout->addWidget(name);
     boxLayout->setAlignment(Qt::AlignBottom);

@@ -404,6 +404,15 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
     info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     info->m_symlink_target = g_file_info_get_symlink_target(new_info);
 
+    // fix #81862
+    auto uri = m_info.get()->uri();
+    if (uri.startsWith("trash:///") && uri != "trash:///") {
+        auto targetInfo = FileInfo::fromUri(info->m_target_uri);
+        FileInfoJob j(targetInfo);
+        j.querySync();
+        info->m_display_name = targetInfo.get()->displayName();
+    }
+
     Q_EMIT info->updated();
 //    m_info->m_mutex.unlock();
 }
