@@ -127,12 +127,12 @@ p, li { white-space: pre-wrap; }
         <translation>Herhangi bir uçbirim bulunamadı, lütfen en az bir uçbirim kurun!</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="532"/>
+        <location filename="../../src/control/header-bar.cpp" line="543"/>
         <source>Restore</source>
         <translation type="unfinished">Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="535"/>
+        <location filename="../../src/control/header-bar.cpp" line="546"/>
         <source>Maximize</source>
         <translation type="unfinished">Büyüt</translation>
     </message>
@@ -148,7 +148,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="696"/>
+        <location filename="../../src/control/header-bar.cpp" line="707"/>
         <source>Minimize</source>
         <translation>Küçült</translation>
     </message>
@@ -165,7 +165,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="721"/>
+        <location filename="../../src/control/header-bar.cpp" line="732"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
@@ -193,12 +193,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1525"/>
+        <location filename="../../src/windows/main-window.cpp" line="1531"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1526"/>
+        <location filename="../../src/windows/main-window.cpp" line="1532"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,12 +207,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1515"/>
+        <location filename="../../src/windows/main-window.cpp" line="1521"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1516"/>
+        <location filename="../../src/windows/main-window.cpp" line="1522"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>

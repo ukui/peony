@@ -147,12 +147,12 @@ p, li { white-space: pre-wrap; }
         <translation>没有找到任何终端插件，请确认您至少安装了一个！</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="532"/>
+        <location filename="../../src/control/header-bar.cpp" line="543"/>
         <source>Restore</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="535"/>
+        <location filename="../../src/control/header-bar.cpp" line="546"/>
         <source>Maximize</source>
         <translation>最大化</translation>
     </message>
@@ -168,7 +168,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="696"/>
+        <location filename="../../src/control/header-bar.cpp" line="707"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
@@ -185,7 +185,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">最大化</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="721"/>
+        <location filename="../../src/control/header-bar.cpp" line="732"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -213,12 +213,12 @@ p, li { white-space: pre-wrap; }
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1525"/>
+        <location filename="../../src/windows/main-window.cpp" line="1531"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1526"/>
+        <location filename="../../src/windows/main-window.cpp" line="1532"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -227,12 +227,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1515"/>
+        <location filename="../../src/windows/main-window.cpp" line="1521"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1516"/>
+        <location filename="../../src/windows/main-window.cpp" line="1522"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
