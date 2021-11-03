@@ -33,6 +33,7 @@
 #include "details-properties-page-factory.h"
 #include "thumbnail-manager.h"
 #include "file-utils.h"
+#include "vfs-plugin-manager.h"
 
 #include <QToolBar>
 #include <QPushButton>
@@ -51,6 +52,7 @@
 
 #include <glib/gstdio.h>
 #include <gio/gdesktopappinfo.h>
+#include <pwd.h>
 
 #include "file-info-job.h"
 
@@ -181,9 +183,14 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 
         if (uri.startsWith("favorite://")) {
             rebuildUriBySchema(uri);
-        }
 
-        if (uri.startsWith("network://")) {
+        } else if (uri.startsWith("kmre://")) {
+            if (!handleKMREUri(uri)) {
+                m_destroyThis = true;
+                return;
+            }
+
+        } else if (uri.startsWith("network://")) {
             m_destroyThis = true;
             return;
         }
@@ -562,6 +569,39 @@ QString PropertiesWindow::rebuildUriBySchema(QString &uri)
     uri.remove(uri.lastIndexOf("?"), (url.query().length() + 1));
 
     return uri;
+}
+
+bool PropertiesWindow::handleKMREUri(QString &uri)
+{
+//    bool kmreIsInstalled = false;
+//    for (VFSPluginIface *vfs : VFSPluginManager::getInstance()->registeredPlugins()) {
+//        if (vfs->uriScheme() == "kmre://") {
+//            kmreIsInstalled = true;
+//            break;
+//        }
+//    }
+//
+//    if (!kmreIsInstalled) {
+//        return false;
+//    }
+
+    if (uri == "kmre:///") {
+        uid_t uid = geteuid();
+        struct passwd *pw = getpwuid(uid);
+        if (!pw) {
+            return false;
+        }
+        uri = QString("file:///var/lib/kmre/data/kmre-%1-%2").arg(QString::number(uid)).arg(QString(pw->pw_name));
+
+    } else if (uri.contains("&real-path:")) {
+        //kmre:///picture&real-path:/var/lib
+        uri = "file://" + uri.split("&real-path:").last();
+
+    } else {
+
+    }
+
+    return true;
 }
 
 //properties window
