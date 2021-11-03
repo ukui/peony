@@ -52,7 +52,7 @@ void FileTrashOperation::run()
     Q_EMIT operationPrepared ();
 
     quint64 total_size = 0;
-    const quint64 TEN_GIB_SIZE = /*10**/1024*1024*1024;
+    const quint64 TEN_GIB_SIZE = 10*1024*1024*1024;
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
