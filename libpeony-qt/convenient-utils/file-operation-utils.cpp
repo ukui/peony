@@ -44,6 +44,8 @@
 
 #include <QMessageBox>
 
+#include <QStandardPaths>
+
 using namespace Peony;
 
 FileOperationUtils::FileOperationUtils()
@@ -92,8 +94,28 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
     FileOperation *op = nullptr;
     bool canNotTrash = false;
     bool isBigFile = false;
+
+    QString userPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    QString newBoxPath;
+    QString oldBoxPath;
+
+    //1.0保护箱路径为“/box/用户名/保护箱名称”,2.1保护箱路径为“/home/用户名/.box/保护箱名称”，只要包含这些路径就是保护箱下文件，是不可以删除到回收站的；
+    //root下没有home；
+    if(userPath.startsWith("/home")){
+        newBoxPath = userPath+"/.box";
+
+        QString user = userPath.remove("/home/");
+
+        oldBoxPath = "/box/"+user;
+
+    } else {
+        newBoxPath = userPath+"/.box";
+        oldBoxPath = "/box/root";
+    }
+
     for (auto uri : uris) {
-        if (!uri.startsWith("file:/")) {
+        if (!uri.startsWith("file:/") || (uri.contains(newBoxPath)) || (uri.contains(oldBoxPath))) {
             canNotTrash = true;
         }
     }
