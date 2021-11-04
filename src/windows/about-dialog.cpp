@@ -79,7 +79,11 @@ void AboutDialog::initUI()
 
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
     auto font = qApp->font();
-    ui->nameLabel->setFont(font);
+    QFont namefont = font;
+    namefont.setBold(true);
+    namefont.setPointSize(font.pointSize()*1.28);
+
+    ui->nameLabel->setFont(namefont);
     ui->nameLabel->setText(tr("Peony"));
 
     ui->versionLabel->setFont(font);
@@ -104,6 +108,14 @@ void AboutDialog::initUI()
         connect(m_gSettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "styleName") {
                 setSupportText();
+            }
+            else if("systemFontSize" == key)
+            {
+                auto appfont = qApp->font();
+                QFont namefont = appfont;
+                namefont.setBold(true);
+                namefont.setPointSize(appfont.pointSize()*1.28);
+                ui->nameLabel->setFont(namefont);
             }
         });
     }
