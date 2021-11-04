@@ -44,6 +44,19 @@
     </message>
 </context>
 <context>
+    <name>Peony::DesktopItemModel</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="531"/>
+        <source>Computer</source>
+        <translation>计算机</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="533"/>
+        <source>Trash</source>
+        <translation>回收站</translation>
+    </message>
+</context>
+<context>
     <name>Peony::DesktopMenu</name>
     <message>
         <source>&amp;Open in new Window</source>
