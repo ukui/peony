@@ -362,17 +362,24 @@ void HeaderBar::addSpacing(int pixel)
 
 void HeaderBar::addMenuButtons()
 {
-    QToolButton *viewType = new QToolButton(this);
-    viewType->setIcon(QIcon::fromTheme("view-grid-symbolic"));
-    viewType->setToolTip(tr("View Type"));
-    viewType->setAutoRaise(false);
+    //占位widget,5个widget共同组成拖动区域,共宽150px
+    for (int i = 1; i <= 5; ++i) {
+        QWidget *widget = new QWidget(this);
+        widget->setFixedSize(QSize(i * 10, 40));
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+        addWidget(widget);
+    }
+
+    QAction *action = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
+    QToolButton *viewType = qobject_cast<QToolButton *>(widgetForAction(action));
+    viewType->setAutoRaise(true);
     viewType->setFixedSize(QSize(57, 40));
     viewType->setIconSize(QSize(16, 16));
     viewType->setPopupMode(QToolButton::InstantPopup);
 
     ViewTypeMenu* viewTypeMenu = new ViewTypeMenu(viewType);
     m_view_type_menu = viewTypeMenu;
-    viewType->setMenu(viewTypeMenu);
+    action->setMenu(viewTypeMenu);
 
     connect(viewTypeMenu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
         viewType->setText(id);
@@ -389,17 +396,16 @@ void HeaderBar::addMenuButtons()
 
     connect(viewTypeMenu, &ViewTypeMenu::updateZoomLevelHintRequest, this, &HeaderBar::updateZoomLevelHintRequest);
 
-    QToolButton *sortType = new QToolButton(this);
-    sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
-    sortType->setToolTip(tr("Sort Type"));
-    sortType->setAutoRaise(false);
+    action = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
+    QToolButton *sortType = qobject_cast<QToolButton *>(widgetForAction(action));
+    sortType->setAutoRaise(true);
     sortType->setFixedSize(QSize(57, 40));
     sortType->setIconSize(QSize(16, 16));
     sortType->setPopupMode(QToolButton::InstantPopup);
 
     SortTypeMenu *sortTypeMenu = new SortTypeMenu(sortType);
     m_sort_type_menu = sortTypeMenu;
-    sortType->setMenu(sortTypeMenu);
+    action->setMenu(sortTypeMenu);
 
     connect(sortTypeMenu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
     connect(sortTypeMenu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
@@ -415,9 +421,8 @@ void HeaderBar::addMenuButtons()
         sortTypeMenu->setSortOrder(m_window->getCurrentSortOrder());
     });
 
-    QToolButton *popMenu = new QToolButton(this);
-    popMenu->setIcon(QIcon::fromTheme("open-menu-symbolic"));
-    popMenu->setToolTip(tr("Option"));
+    action = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
+    QToolButton *popMenu = qobject_cast<QToolButton *>(widgetForAction(action));
     popMenu->setAutoRaise(false);
     popMenu->setFixedSize(QSize(40, 40));
     popMenu->setIconSize(QSize(16, 16));
@@ -426,7 +431,7 @@ void HeaderBar::addMenuButtons()
 
     OperationMenu *operationMenu = new OperationMenu(m_window, popMenu);
     m_operation_menu = operationMenu;
-    popMenu->setMenu(operationMenu);
+    action->setMenu(operationMenu);
 
     viewType->setProperty("isWindowButton", 1);
     viewType->setProperty("useIconHighlightEffect", 0x2);
@@ -439,18 +444,6 @@ void HeaderBar::addMenuButtons()
     popMenu->setProperty("isWindowButton", 1);
     popMenu->setProperty("useIconHighlightEffect", 0x2);
     popMenu->setAutoRaise(true);
-
-    //占位widget,5个widget共同组成拖动区域,共宽150px
-    for (int i = 1; i <= 5; ++i) {
-        QWidget *widget = new QWidget(this);
-        widget->setFixedSize(QSize(i * 10, 40));
-        widget->setAttribute(Qt::WA_TranslucentBackground);
-        addWidget(widget);
-    }
-
-    addWidget(viewType);
-    addWidget(sortType);
-    addWidget(popMenu);
 
     m_focus_list << (viewType);
     m_focus_list << (sortType);
