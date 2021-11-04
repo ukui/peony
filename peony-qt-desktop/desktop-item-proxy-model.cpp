@@ -127,11 +127,11 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
 
     auto leftUri = source_left.data(Qt::UserRole).toString();
     auto leftInfo = FileInfo::fromUri(leftUri);
-    auto leftMetaInfo = FileMetaInfo::fromUri(leftUri);
+    //auto leftMetaInfo = FileMetaInfo::fromUri(leftUri);
 
     auto rightUri = source_right.data(Qt::UserRole).toString();
     auto rightInfo = FileInfo::fromUri(rightUri);
-    auto rightMetaInfo = FileMetaInfo::fromUri(rightUri);
+    //auto rightMetaInfo = FileMetaInfo::fromUri(rightUri);
 
     //computer home and trash first
     if (source_left.row() < 3) {
@@ -150,7 +150,9 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
     //dir first
     if (leftInfo->isDir()) {
         if (rightInfo->isDir()) {
-            //do nothing
+            //fix bug#89115, folders not sort by name
+            if (m_sort_type == FileName)
+               return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
         } else {
             return (sortOrder()==Qt::AscendingOrder)? true: false;
         }
