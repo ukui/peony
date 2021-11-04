@@ -78,11 +78,15 @@ void AboutDialog::initUI()
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
 
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
+    auto font = qApp->font();
+    QFont namefont = font;
+    namefont.setBold(true);
+    namefont.setPointSize(font.pointSize()*1.28);
 
-//    ui->nameLabel->setFont(font18);
+    ui->nameLabel->setFont(namefont);
     ui->nameLabel->setText(tr("Peony"));
 
-//    ui->versionLabel->setFont(font14);
+    ui->versionLabel->setFont(font);
 //    ui->versionLabel->setStyleSheet("color:#595959;");
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
@@ -104,6 +108,14 @@ void AboutDialog::initUI()
         connect(m_gSettings, &QGSettings::changed, this, [=](const QString &key) {
             if (key == "styleName") {
                 setSupportText();
+            }
+            else if("systemFontSize" == key)
+            {
+                auto appfont = qApp->font();
+                QFont namefont = appfont;
+                namefont.setBold(true);
+                namefont.setPointSize(appfont.pointSize()*1.28);
+                ui->nameLabel->setFont(namefont);
             }
         });
     }
