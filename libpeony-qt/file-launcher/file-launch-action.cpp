@@ -129,11 +129,18 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     if(fileInfo->isExecDisable())return;
 
     if (fileInfo->type() == "application/x-desktop") {
-        QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
-        desktop_file.setIniCodec("UTF8");
-        desktop_file.beginGroup("Desktop Entry");
-        QString key = "Exec";
-        QString exe = desktop_file.value(key).toString();
+        //! \note Sometimes garbled characters appear when QSettings reads Chinese,
+        //! even though QSettings::setIniCodec("UTF8") is used
+        GKeyFileFlags flags=G_KEY_FILE_NONE;
+        GKeyFile* keyfile=g_key_file_new ();
+        QByteArray fpbyte=fileInfo->filePath().toLocal8Bit();
+        char* filepath=fpbyte.data();
+        g_key_file_load_from_file(keyfile, filepath, flags, nullptr);
+        char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Exec", nullptr, nullptr);
+        QString exe=QString::fromLocal8Bit(name);
+        g_key_file_free(keyfile);
+        g_free(filepath);
+        g_free(name);
 
         if (exe.isEmpty()) {
             qDebug() << "Get desktop file Exec value error";
@@ -275,11 +282,19 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         if (fileInfo->isExecDisable()) return;
 
         if (isDesktopFileAction()) {
-            QSettings desktop_file(fileInfo->filePath(), QSettings::IniFormat);
-            desktop_file.setIniCodec("UTF8");
-            desktop_file.beginGroup("Desktop Entry");
-            QString key = "Exec";
-            QString exe = desktop_file.value(key).toString();
+
+            //! \note Sometimes garbled characters appear when QSettings reads Chinese,
+            //! even though QSettings::setIniCodec("UTF8") is used
+            GKeyFileFlags flags=G_KEY_FILE_NONE;
+            GKeyFile* keyfile=g_key_file_new ();
+            QByteArray fpbyte=fileInfo->filePath().toLocal8Bit();
+            char* filepath=fpbyte.data();
+            g_key_file_load_from_file(keyfile, filepath, flags, nullptr);
+            char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Exec", nullptr, nullptr);
+            QString exe=QString::fromLocal8Bit(name);
+            g_key_file_free(keyfile);
+            g_free(filepath);
+            g_free(name);
 
             if (exe.isEmpty()) {
                 qDebug() << "Get desktop file Exec value error";
