@@ -130,7 +130,8 @@ void FileCopyOperation::copyRecursively(FileNode *node)
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
-    QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
+    //QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
+    destFileUri = FileUtils::urlEncode(destFileUri);
     node->setDestUri(destFileUri);
     QString srcUri = node->uri();
     qDebug()<<"dest file uri:"<<destFileUri;
