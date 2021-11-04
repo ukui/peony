@@ -211,72 +211,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     addWidget(search);
     connect(search, &QPushButton::clicked, this, &HeaderBar::searchButtonClicked);
 
-    addSpacing(DRAG_AREA_DEFAULT_WIDTH);
-
-    auto a = addAction(QIcon::fromTheme("view-grid-symbolic"), tr("View Type"));
-    auto viewType = qobject_cast<QToolButton *>(widgetForAction(a));
-    viewType->setAutoRaise(false);
-    viewType->setFixedSize(QSize(57, 40));
-    viewType->setIconSize(QSize(16, 16));
-    viewType->setPopupMode(QToolButton::InstantPopup);
-
-    m_view_type_menu = new ViewTypeMenu(viewType);
-    a->setMenu(m_view_type_menu);
-
-    connect(m_view_type_menu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
-        viewType->setText(id);
-        viewType->setIcon(icon);
-        this->viewTypeChangeRequest(id);
-        if (resetToZoomLevel) {
-            auto viewId = m_window->getCurrentPage()->getView()->viewId();
-            auto factoryManger = Peony::DirectoryViewFactoryManager2::getInstance();
-            auto factory = factoryManger->getFactory(viewId);
-            int zoomLevelHint = factory->zoom_level_hint();
-            m_window->getCurrentPage()->setZoomLevelRequest(zoomLevelHint);
-        }
-    });
-
-    connect(m_view_type_menu, &ViewTypeMenu::updateZoomLevelHintRequest, this, &HeaderBar::updateZoomLevelHintRequest);
-
-    addSpacing(2);
-
-    a = addAction(QIcon::fromTheme("view-sort-ascending-symbolic"), tr("Sort Type"));
-    auto sortType = qobject_cast<QToolButton *>(widgetForAction(a));
-    sortType->setAutoRaise(false);
-    sortType->setFixedSize(QSize(57, 40));
-    sortType->setIconSize(QSize(16, 16));
-    sortType->setPopupMode(QToolButton::InstantPopup);
-
-    m_sort_type_menu = new SortTypeMenu(this);
-    a->setMenu(m_sort_type_menu);
-
-    connect(m_sort_type_menu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
-    connect(m_sort_type_menu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
-        if (order == Qt::AscendingOrder) {
-            sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
-        } else {
-            sortType->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
-        }
-        m_window->setCurrentSortOrder(order);
-    });
-    connect(m_sort_type_menu, &QMenu::aboutToShow, m_sort_type_menu, [=]() {
-        m_sort_type_menu->setSortType(m_window->getCurrentSortColumn());
-        m_sort_type_menu->setSortOrder(m_window->getCurrentSortOrder());
-    });
-
-    addSpacing(2);
-
-    a = addAction(QIcon::fromTheme("open-menu-symbolic"), tr("Option"));
-    auto popMenu = qobject_cast<QToolButton *>(widgetForAction(a));
-    popMenu->setProperty("isOptionButton", true);
-    popMenu->setAutoRaise(false);
-    popMenu->setFixedSize(QSize(40, 40));
-    popMenu->setIconSize(QSize(16, 16));
-    popMenu->setPopupMode(QToolButton::InstantPopup);
-
-    m_operation_menu = new OperationMenu(m_window, this);
-    a->setMenu(m_operation_menu);
-
 //    createFolder->setFlat(true);
 //    createFolder->setProperty("isWindowButton", 1);
 //    createFolder->setProperty("useIconHighlightEffect", 2);
@@ -301,18 +235,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     goForward->setProperty("useIconHighlightEffect", 2);
     goForward->setProperty("isIcon", true);
 
-    for (auto action : actions()) {
-        auto w = widgetForAction(action);
-
-        if (w != search && qobject_cast<QToolButton *>(w)) {
-            w->setProperty("isWindowButton", 1);
-            if (auto toolButton = qobject_cast<QToolButton *>(w)) {
-                toolButton->setAutoRaise(true);
-            }
-            w->setProperty("useIconHighlightEffect", 2);
-        }
-    }
-
+    addMenuButtons();
     setMinimumWidth(GBACK_BTN_WIDTH * 2
                     + ADDRESS_BAR_LEFT_WIDTH + ADDRESS_BAR_MINIMUN_WIDTH + ADDRESS_BAR_RIGHT_WIDTH
                     + SEARCH_BTN_WIDTH
@@ -322,9 +245,6 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_focus_list<<(goBack);
     m_focus_list<<(goForward);
     m_focus_list<<(search);
-    m_focus_list<<(viewType);
-    m_focus_list<<(sortType);
-    m_focus_list<<(popMenu);
 }
 
 void HeaderBar::findDefaultTerminal()
@@ -430,9 +350,111 @@ void HeaderBar::updateSearchRecursive(bool recursive)
 
 void HeaderBar::addSpacing(int pixel)
 {
-    for (int i = 0; i < pixel; i++) {
-        addSeparator();
+    QWidget *widget = new QWidget(this);
+    widget->setFixedSize(QSize((pixel < 1 ? 1 : pixel), 40));
+    widget->setAttribute(Qt::WA_TranslucentBackground);
+
+    addWidget(widget);
+//    for (int i = 0; i < pixel; i++) {
+//        addSeparator();
+//    }
+}
+
+void HeaderBar::addMenuButtons()
+{
+    QToolButton *viewType = new QToolButton(this);
+    viewType->setIcon(QIcon::fromTheme("view-grid-symbolic"));
+    viewType->setToolTip(tr("View Type"));
+    viewType->setAutoRaise(false);
+    viewType->setFixedSize(QSize(57, 40));
+    viewType->setIconSize(QSize(16, 16));
+    viewType->setPopupMode(QToolButton::InstantPopup);
+
+    ViewTypeMenu* viewTypeMenu = new ViewTypeMenu(viewType);
+    m_view_type_menu = viewTypeMenu;
+    viewType->setMenu(viewTypeMenu);
+
+    connect(viewTypeMenu, &ViewTypeMenu::switchViewRequest, this, [=](const QString &id, const QIcon &icon, bool resetToZoomLevel) {
+        viewType->setText(id);
+        viewType->setIcon(icon);
+        viewTypeChangeRequest(id);
+        if (resetToZoomLevel) {
+            auto viewId = m_window->getCurrentPage()->getView()->viewId();
+            auto factoryManger = Peony::DirectoryViewFactoryManager2::getInstance();
+            auto factory = factoryManger->getFactory(viewId);
+            int zoomLevelHint = factory->zoom_level_hint();
+            m_window->getCurrentPage()->setZoomLevelRequest(zoomLevelHint);
+        }
+    });
+
+    connect(viewTypeMenu, &ViewTypeMenu::updateZoomLevelHintRequest, this, &HeaderBar::updateZoomLevelHintRequest);
+
+    QToolButton *sortType = new QToolButton(this);
+    sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+    sortType->setToolTip(tr("Sort Type"));
+    sortType->setAutoRaise(false);
+    sortType->setFixedSize(QSize(57, 40));
+    sortType->setIconSize(QSize(16, 16));
+    sortType->setPopupMode(QToolButton::InstantPopup);
+
+    SortTypeMenu *sortTypeMenu = new SortTypeMenu(sortType);
+    m_sort_type_menu = sortTypeMenu;
+    sortType->setMenu(sortTypeMenu);
+
+    connect(sortTypeMenu, &SortTypeMenu::switchSortTypeRequest, m_window, &MainWindow::setCurrentSortColumn);
+    connect(sortTypeMenu, &SortTypeMenu::switchSortOrderRequest, m_window, [=](Qt::SortOrder order) {
+        if (order == Qt::AscendingOrder) {
+            sortType->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+        } else {
+            sortType->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
+        }
+        m_window->setCurrentSortOrder(order);
+    });
+    connect(sortTypeMenu, &QMenu::aboutToShow, sortTypeMenu, [=]() {
+        sortTypeMenu->setSortType(m_window->getCurrentSortColumn());
+        sortTypeMenu->setSortOrder(m_window->getCurrentSortOrder());
+    });
+
+    QToolButton *popMenu = new QToolButton(this);
+    popMenu->setIcon(QIcon::fromTheme("open-menu-symbolic"));
+    popMenu->setToolTip(tr("Option"));
+    popMenu->setAutoRaise(false);
+    popMenu->setFixedSize(QSize(40, 40));
+    popMenu->setIconSize(QSize(16, 16));
+    popMenu->setProperty("isOptionButton", true);
+    popMenu->setPopupMode(QToolButton::InstantPopup);
+
+    OperationMenu *operationMenu = new OperationMenu(m_window, popMenu);
+    m_operation_menu = operationMenu;
+    popMenu->setMenu(operationMenu);
+
+    viewType->setProperty("isWindowButton", 1);
+    viewType->setProperty("useIconHighlightEffect", 0x2);
+    viewType->setAutoRaise(true);
+
+    sortType->setProperty("isWindowButton", 1);
+    sortType->setProperty("useIconHighlightEffect", 0x2);
+    sortType->setAutoRaise(true);
+
+    popMenu->setProperty("isWindowButton", 1);
+    popMenu->setProperty("useIconHighlightEffect", 0x2);
+    popMenu->setAutoRaise(true);
+
+    //占位widget,5个widget共同组成拖动区域,共宽150px
+    for (int i = 1; i <= 5; ++i) {
+        QWidget *widget = new QWidget(this);
+        widget->setFixedSize(QSize(i * 10, 40));
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+        addWidget(widget);
     }
+
+    addWidget(viewType);
+    addWidget(sortType);
+    addWidget(popMenu);
+
+    m_focus_list << (viewType);
+    m_focus_list << (sortType);
+    m_focus_list << (popMenu);
 }
 
 void HeaderBar::mouseMoveEvent(QMouseEvent *e)

@@ -81,6 +81,7 @@ Q_SIGNALS:
 protected:
     void addSpacing(int pixel);
     void mouseMoveEvent(QMouseEvent *e);
+    void addMenuButtons();
 
 private Q_SLOTS:
     void setLocation(const QString &uri);
