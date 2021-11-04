@@ -177,8 +177,8 @@ void FullCommonUseWidget::loadAllApp()
     qSort(keyList.begin(), keyList.end(), cmpApp);
 
     //TODO 安卓app，第三方app呢？？？
-    for (QString &key: keyList) {
-        m_data.append("/usr/share/applications/" + key);
+    for (QString &key: m_ukuiMenuInterface->getAllApp()) {
+        m_data.append(key);
     }
 }
 

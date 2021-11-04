@@ -169,6 +169,8 @@ QStringList UkuiMenuInterface::getDesktopFilePath()
     filePathList.clear();
     //getAndroidApp();
     recursiveSearchFile("/usr/share/applications/");
+    //安卓app path
+    getAndroidApp();
     filePathList.removeAll("/usr/share/applications/software-properties-livepatch.desktop");
     filePathList.removeAll("/usr/share/applications/mate-color-select.desktop");
     filePathList.removeAll("/usr/share/applications/blueman-adapters.desktop");
@@ -685,9 +687,9 @@ QVector<QString> UkuiMenuInterface::getLockApp()
     Q_FOREACH(QString desktopfn,lockdesktopfnList)
     {
         QString desktopfp;
-//        if(androidDesktopfnList.contains(desktopfn))//如果锁的应用在安卓列表
-//            desktopfp=QString(QDir::homePath()+"/.local/share/applications/"+desktopfn);
-//        else
+        if(androidDesktopfnList.contains(desktopfn))//如果锁的应用在安卓列表
+            desktopfp=QString(QDir::homePath()+"/.local/share/applications/"+desktopfn);
+        else
             desktopfp=QString("/usr/share/applications/"+desktopfn);
 //        QFileInfo fileInfo(desktopfp);
 //        if(!fileInfo.isFile())//判断是否存在
@@ -700,6 +702,7 @@ QVector<QString> UkuiMenuInterface::getCommonUseApp()//常用的app
 {
     initAppIni();
     //qDebug()<<"getCommonUseApp";
+    setting->sync();
     setting->beginGroup("application");
     QStringList desktopfnList=setting->allKeys();
     for(int i=0;i<desktopfnList.count()-1;i++)
@@ -723,9 +726,9 @@ QVector<QString> UkuiMenuInterface::getCommonUseApp()//常用的app
     Q_FOREACH(QString desktopfn,desktopfnList)
     {
         QString desktopfp;
-//        if(androidDesktopfnList.contains(desktopfn))//如果常用的是安卓
-//            desktopfp=QString(QDir::homePath()+"/.local/share/applications/"+desktopfn);
-//        else
+        if(androidDesktopfnList.contains(desktopfn))//如果常用的是安卓
+            desktopfp=QString(QDir::homePath()+"/.local/share/applications/"+desktopfn);
+        else
             desktopfp=QString("/usr/share/applications/"+desktopfn);
 
 
@@ -1000,17 +1003,18 @@ void UkuiMenuInterface::getAndroidApp()
         char* ret_1=g_key_file_get_locale_string(keyfile,"Desktop Entry","Categories", nullptr, nullptr);
         if(ret_1!=nullptr)
         {
-            QString str=QString::fromLocal8Bit(ret_1);
-            if(!str.contains("Android"))
-            {
-                i++;
-                continue;
-            }
-            else
-            {
+            //注释掉的原因是：安卓应用还没有加上 Android 标记
+//            QString str=QString::fromLocal8Bit(ret_1);
+//            if(!str.contains("Android"))
+//            {
+//                i++;
+//                continue;
+//            }
+//            else
+//            {
                 filePathList.append(filePathStr);
                 androidDesktopfnList.append(fileInfo.fileName());
-            }
+//            }
         }
 
         i++;
