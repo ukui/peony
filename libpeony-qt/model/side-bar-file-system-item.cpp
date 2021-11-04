@@ -616,5 +616,12 @@ void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
     FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
     //icon name.
     pThis->m_iconName = FileUtils::getFileIconName(pThis->m_uri,false);
-}
 
+    // fix #81852, refer to #57660, #70014, task #25343
+    if (pThis->m_iconName == "drive-harddisk-usb") {
+        double size = FileUtils::getDeviceSize(pThis->m_unix_device.toUtf8().constData());
+        if (size < 128) {
+            pThis->m_iconName = "drive-removable-media-usb";
+        }
+    }
+}
