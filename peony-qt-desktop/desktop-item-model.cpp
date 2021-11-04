@@ -524,6 +524,17 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     auto info = m_files.at(index.row());
     switch (role) {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole: {
+        // fix #80257
+        switch (index.row()) {
+        case 0:
+            return tr("Computer");
+        case 1:
+            return tr("Trash");
+        default:
+            break;
+        }
+
         //fix bug#53504, desktop files not show same name issue
         if (info->isDesktopFile())
         {
@@ -531,14 +542,7 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
             return displayName;
         }
         return info->displayName();
-    case Qt::ToolTipRole:
-        //fix bug#53504, desktop files not show same name issue
-        if (info->isDesktopFile())
-        {
-            auto displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
-            return displayName;
-        }
-        return info->displayName();
+    }
     case Qt::DecorationRole: {
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         if (!thumbnail.isNull()) {
