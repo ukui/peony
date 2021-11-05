@@ -99,6 +99,8 @@ public:
 
     QTimer *my_time;
 
+    bool renameOK = true;
+
     QWidget *m_parent;
 
     int m_cost_seconds = 0;
