@@ -134,12 +134,11 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         GKeyFileFlags flags=G_KEY_FILE_NONE;
         GKeyFile* keyfile=g_key_file_new ();
         QByteArray fpbyte=fileInfo->filePath().toLocal8Bit();
-        char* filepath=fpbyte.data();
+        const char* filepath=fpbyte.constData();
         g_key_file_load_from_file(keyfile, filepath, flags, nullptr);
         char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Exec", nullptr, nullptr);
         QString exe=QString::fromLocal8Bit(name);
         g_key_file_free(keyfile);
-        g_free(filepath);
         g_free(name);
 
         if (exe.isEmpty()) {
@@ -288,12 +287,11 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
             GKeyFileFlags flags=G_KEY_FILE_NONE;
             GKeyFile* keyfile=g_key_file_new ();
             QByteArray fpbyte=fileInfo->filePath().toLocal8Bit();
-            char* filepath=fpbyte.data();
+            const char* filepath=fpbyte.constData();
             g_key_file_load_from_file(keyfile, filepath, flags, nullptr);
             char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Exec", nullptr, nullptr);
             QString exe=QString::fromLocal8Bit(name);
             g_key_file_free(keyfile);
-            g_free(filepath);
             g_free(name);
 
             if (exe.isEmpty()) {
