@@ -33,6 +33,9 @@
 #include <gio/gio.h>
 #include <peony-core_global.h>
 
+#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
+#define ITEM_GEOMETRY_ATTRIBUTE "metadata::peony-qt-desktop-item-geometry"
+
 namespace Peony {
 
 /*!

@@ -35,6 +35,7 @@
 
 #include <QIcon>
 #include <QColor>
+#include <QRect>
 
 namespace Peony {
 
@@ -322,6 +323,7 @@ public:
     const QString unixDeviceFile();
 
     const QString customIcon();
+    const QRect iconGeometry();
 
     quint64 getDeletionDateUInt64();
 
