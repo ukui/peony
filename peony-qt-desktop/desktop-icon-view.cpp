@@ -80,6 +80,9 @@
 #include <QPixmap>
 #include <QPainter>
 
+#include <QtX11Extras/QX11Info>
+#include <kstartupinfo.h>
+
 using namespace Peony;
 
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
@@ -856,7 +859,22 @@ void DesktopIconView::openFileByUri(QString uri)
             QUrl url = uri;
             p.setProgram("peony");
             p.setArguments(QStringList() << url.toEncoded() <<"%U&");
-            p.startDetached();
+            qint64 pid;
+            p.startDetached(&pid);
+
+            // send startinfo to kwindowsystem
+            quint32 timeStamp = QX11Info::isPlatformX11() ? QX11Info::appUserTime() : 0;
+            KStartupInfoId startInfoId;
+            startInfoId.initId(KStartupInfo::createNewStartupIdForTimestamp(timeStamp));
+            startInfoId.setupStartupEnv();
+            KStartupInfoData data;
+            data.setHostname();
+            data.addPid(pid);
+            QRect rect = info.get()->property("iconGeometry").toRect();
+            if (rect.isValid())
+                data.setIconGeometry(rect);
+            data.setLaunchedBy(getpid());
+            KStartupInfo::sendStartup(startInfoId, data);
 #else
             QProcess p;
             QString strq;
@@ -901,6 +919,9 @@ void DesktopIconView::saveAllItemPosistionInfos()
         if (metaInfo) {
             //qDebug()<<"save real"<<index.data()<<topLeft;
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+
+            QRect rect(mapToGlobal(indexRect.topLeft()), indexRect.size());
+            FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", rect);
         }
     }
     //qDebug()<<"======================save finished";
@@ -929,6 +950,8 @@ void DesktopIconView::resetAllItemPositionInfos()
             QStringList tmp;
             tmp<<"-1"<<"-1";
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, tmp);
+
+            FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", QVariant());
         }
     }
 }
@@ -972,6 +995,9 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
     auto index = m_proxy_model->mapFromSource(srcIndex);
     m_item_rect_hash.remove(uri);
     m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
+
+    QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
+    FileInfo::fromUri(uri).get()->setProperty("iconGeometry", rect);
 
     auto metaInfo = FileMetaInfo::fromUri(uri);
     if (metaInfo) {
