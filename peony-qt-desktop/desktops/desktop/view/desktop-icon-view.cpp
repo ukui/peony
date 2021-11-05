@@ -85,6 +85,7 @@
 
 using namespace Peony;
 
+#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 #define PANEL_SETTINGS "org.ukui.panel.settings"
 #define UKUI_STYLE_SETTINGS "org.ukui.style"
 
@@ -888,7 +889,7 @@ void DesktopIconView::openFileByUri(QString uri)
             KStartupInfoData data;
             data.setHostname();
             data.addPid(pid);
-            QRect rect = info->iconGeometry();
+            QRect rect = info.get()->property("iconGeometry").toRect();
             if (rect.isValid())
                 data.setIconGeometry(rect);
             data.setLaunchedBy(getpid());
@@ -939,12 +940,7 @@ void DesktopIconView::saveAllItemPosistionInfos()
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
 
             QRect rect(mapToGlobal(indexRect.topLeft()), indexRect.size());
-            QStringList gemotry;
-            gemotry<<QString::number(rect.x());
-            gemotry<<QString::number(rect.y());
-            gemotry<<QString::number(rect.width());
-            gemotry<<QString::number(rect.height());
-            metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, gemotry);
+            FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", rect);
         }
     }
     //qDebug()<<"======================save finished";
@@ -974,9 +970,7 @@ void DesktopIconView::resetAllItemPositionInfos()
             tmp<<"-1"<<"-1";
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, tmp);
 
-            QStringList tmp1;
-            tmp1<<"0"<<"0"<<"0"<<"0";
-            metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, tmp1);
+            FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", QVariant());
         }
     }
 }
@@ -1029,12 +1023,7 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
         metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
 
         QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
-        QStringList gemotry;
-        gemotry<<QString::number(rect.x());
-        gemotry<<QString::number(rect.y());
-        gemotry<<QString::number(rect.width());
-        gemotry<<QString::number(rect.height());
-        metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, gemotry);
+        FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", rect);
     }
 }
 
