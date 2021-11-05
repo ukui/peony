@@ -40,8 +40,12 @@
 
 #include <ukuisdk/kylin-com4cxx.h>
 #include <QDebug>
+#include <QtX11Extras/QX11Info>
+#include <kstartupinfo.h>
 
 using namespace Peony;
+
+#define USE_STARTUP_INFO true
 
 FileLaunchAction::FileLaunchAction(const QString &uri, GAppInfo *app_info, bool forceWithArg, QObject *parent) : QAction(parent)
 {
@@ -264,6 +268,22 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     }
 }
 
+#if USE_STARTUP_INFO
+void pid_callback(GDesktopAppInfo *appinfo, GPid pid, gpointer user_data) {
+    KStartupInfoId* startInfoId = static_cast<KStartupInfoId*>(user_data);
+    if (!startInfoId)
+        return;
+
+    KStartupInfoData data;
+    data.addPid(pid);
+    data.setIconGeometry(QRect(0, 0, 1, 1));  // ugly
+
+    KStartupInfo::sendChange(*startInfoId, data);
+    KStartupInfo::resetStartupEnv();
+    delete startInfoId;
+}
+#endif
+
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
     //FIXME: replace BLOCKING api in ui thread.
@@ -444,8 +464,29 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         return;
     }
 
+#if USE_STARTUP_INFO
+    // send startup info to kwindowsystem
+    bool needCleanStartInfoId = true;
+    quint32 timeStamp = QX11Info::isPlatformX11() ? QX11Info::appUserTime() : 0;
+    KStartupInfoId* startInfoId = new KStartupInfoId();
+    startInfoId->initId(KStartupInfo::createNewStartupIdForTimestamp(timeStamp));
+    startInfoId->setupStartupEnv();
+    KStartupInfoData data;
+    data.setHostname();
+    QRect rect = fileInfo->iconGeometry();
+    if (rect.isValid())
+        data.setIconGeometry(rect);
+    data.setLaunchedBy(getpid());
+
+    KStartupInfo::sendStartup(*startInfoId, data);
+#endif
+
     if (isDesktopFileAction() && !forceWithArg) {
-#if GLIB_CHECK_VERSION(2, 60, 0)
+#if USE_STARTUP_INFO
+        needCleanStartInfoId = !g_desktop_app_info_launch_uris_as_manager(G_DESKTOP_APP_INFO(m_app_info), nullptr, nullptr,
+                                                  GSpawnFlags::G_SPAWN_DEFAULT, nullptr, nullptr,
+                                                  pid_callback, (gpointer)startInfoId, nullptr);
+#elif GLIB_CHECK_VERSION(2, 60, 0)
         g_app_info_launch_uris_async(m_app_info, nullptr,
                                      nullptr, nullptr,
                                      nullptr, nullptr);
@@ -456,7 +497,12 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         GList *l = nullptr;
         char *uri = g_strdup(m_uri.toUtf8().constData());
         l = g_list_prepend(l, uri);
-#if GLIB_CHECK_VERSION(2, 60, 0)
+#if USE_STARTUP_INFO
+        needCleanStartInfoId = !g_desktop_app_info_launch_uris_as_manager(G_DESKTOP_APP_INFO(m_app_info), l, nullptr, 
+                                                  GSpawnFlags::G_SPAWN_DEFAULT, nullptr, nullptr, 
+                                                  pid_callback, (gpointer)startInfoId, nullptr);
+        RecentVFSManager::getInstance()->insert(fileInfo.get()->uri(), fileInfo.get()->mimeType(), fileInfo.get()->displayName(), g_app_info_get_name(m_app_info));
+#elif GLIB_CHECK_VERSION(2, 60, 0)
         g_app_info_launch_uris_async(m_app_info, l,
                                      nullptr, nullptr,
                                      nullptr, nullptr);
@@ -466,6 +512,10 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         g_app_info_launch_uris(m_app_info, l, nullptr, nullptr);
 #endif
         g_list_free_full(l, g_free);
+#if USE_STARTUP_INFO
+        if (needCleanStartInfoId && startInfoId)
+            delete startInfoId;
+#endif
     }
 
     return;

@@ -80,9 +80,11 @@
 #include <QPainter>
 #include <QGraphicsDropShadowEffect>
 
+#include <QtX11Extras/QX11Info>
+#include <kstartupinfo.h>
+
 using namespace Peony;
 
-#define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 #define PANEL_SETTINGS "org.ukui.panel.settings"
 #define UKUI_STYLE_SETTINGS "org.ukui.style"
 
@@ -875,7 +877,22 @@ void DesktopIconView::openFileByUri(QString uri)
             QUrl url = uri;
             p.setProgram("peony");
             p.setArguments(QStringList() << url.toEncoded() <<"%U&");
-            p.startDetached();
+            qint64 pid;
+            p.startDetached(&pid);
+
+            // send startinfo to kwindowsystem
+            quint32 timeStamp = QX11Info::isPlatformX11() ? QX11Info::appUserTime() : 0;
+            KStartupInfoId startInfoId;
+            startInfoId.initId(KStartupInfo::createNewStartupIdForTimestamp(timeStamp));
+            startInfoId.setupStartupEnv();
+            KStartupInfoData data;
+            data.setHostname();
+            data.addPid(pid);
+            QRect rect = info->iconGeometry();
+            if (rect.isValid())
+                data.setIconGeometry(rect);
+            data.setLaunchedBy(getpid());
+            KStartupInfo::sendStartup(startInfoId, data);
 #else
             QProcess p;
             QString strq;
