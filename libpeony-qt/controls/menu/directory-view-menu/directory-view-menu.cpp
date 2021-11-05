@@ -147,6 +147,15 @@ void DirectoryViewMenu::fillActions()
         m_is_smb_file = true;
     }
 
+    auto dev = VolumeManager::getDriveFromUri(m_directory);
+    if(dev != nullptr){
+        bool canEject = g_drive_can_eject(dev.get()->getGDrive());
+        if(canEject){
+            m_is_mobile_file = true;
+        }
+        qDebug() << "canEject :" << canEject;
+    }
+
     QString homeUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString musicUri = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
@@ -736,7 +745,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 }
 
                 //fix unencrypted box file can delete to trash issue, link to bug#72948
-                if (canTrash && ! m_is_filebox_file)
+                if (canTrash && ! m_is_filebox_file && !m_is_mobile_file)
                 {
                     l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -750,7 +759,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     //fix the bug 77131;
                     if(m_is_filebox_file){
                         l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
-                    }else {
+                    }else if(!m_is_filebox_file || m_is_mobile_file){
                         l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                     }
 
