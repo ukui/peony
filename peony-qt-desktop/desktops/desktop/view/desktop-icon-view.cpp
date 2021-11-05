@@ -1015,15 +1015,15 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
     m_item_rect_hash.remove(uri);
     m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
 
+    QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
+    FileInfo::fromUri(uri).get()->setProperty("iconGeometry", rect);
+
     auto metaInfo = FileMetaInfo::fromUri(uri);
     if (metaInfo) {
         QStringList topLeft;
         topLeft<<QString::number(pos.y());
         topLeft<<QString::number(pos.x());
         metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
-
-        QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
-        FileInfo::fromUri(index.data(Qt::UserRole).toString()).get()->setProperty("iconGeometry", rect);
     }
 }
 
