@@ -214,21 +214,6 @@ const QString FileInfo::symlinkTarget()
     return m_symlink_target;
 }
 
-const QRect FileInfo::iconGeometry()
-{
-    if (!m_meta_info)
-        return QRect();
-    QStringList list = m_meta_info.get()->getMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE);
-    if (!list.isEmpty() && list.count() == 4) {
-        int x = list.at(0).toInt();
-        int y = list.at(1).toInt();
-        int w = list.at(2).toInt();
-        int h = list.at(3).toInt();
-        return QRect(x, y, w, h);
-    }
-    return QRect();
-}
-
 const QString FileInfo::customIcon()
 {
     if (!m_meta_info)

@@ -334,7 +334,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     startInfoId->setupStartupEnv();
     KStartupInfoData data;
     data.setHostname();
-    QRect rect = fileInfo->iconGeometry();
+    QRect rect = fileInfo.get()->property("iconGeometry").toRect();
     if (rect.isValid())
         data.setIconGeometry(rect);
     data.setLaunchedBy(getpid());
