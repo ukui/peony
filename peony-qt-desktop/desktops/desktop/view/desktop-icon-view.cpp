@@ -920,6 +920,14 @@ void DesktopIconView::saveAllItemPosistionInfos()
         if (metaInfo) {
             //qDebug()<<"save real"<<index.data()<<topLeft;
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+
+            QRect rect(mapToGlobal(indexRect.topLeft()), indexRect.size());
+            QStringList gemotry;
+            gemotry<<QString::number(rect.x());
+            gemotry<<QString::number(rect.y());
+            gemotry<<QString::number(rect.width());
+            gemotry<<QString::number(rect.height());
+            metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, gemotry);
         }
     }
     //qDebug()<<"======================save finished";
@@ -948,6 +956,10 @@ void DesktopIconView::resetAllItemPositionInfos()
             QStringList tmp;
             tmp<<"-1"<<"-1";
             metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, tmp);
+
+            QStringList tmp1;
+            tmp1<<"0"<<"0"<<"0"<<"0";
+            metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, tmp1);
         }
     }
 }
@@ -998,6 +1010,14 @@ void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
         topLeft<<QString::number(pos.y());
         topLeft<<QString::number(pos.x());
         metaInfo->setMetaInfoStringList(ITEM_POS_ATTRIBUTE, topLeft);
+
+        QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
+        QStringList gemotry;
+        gemotry<<QString::number(rect.x());
+        gemotry<<QString::number(rect.y());
+        gemotry<<QString::number(rect.width());
+        gemotry<<QString::number(rect.height());
+        metaInfo->setMetaInfoStringList(ITEM_GEOMETRY_ATTRIBUTE, gemotry);
     }
 }
 
