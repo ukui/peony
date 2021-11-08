@@ -680,11 +680,35 @@ std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperat
     return oppositeInfo;
 }
 
+// S3/S4
 void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar *senderName, const gchar *objectPath, const gchar *interfaceName, const gchar *signalName, GVariant *parameters, gpointer udata)
 {
     FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;
     if (pb) {
         Q_EMIT pb->pause();
+        if (pb->hasFileOperation()) {
+            g_autoptr(GDBusConnection) pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
+            if (pconnection) {
+                g_autoptr(GError) error = nullptr;
+                g_autoptr(GVariantType) rtype = g_variant_type_new("(h)");
+                g_dbus_connection_call_sync(pconnection,
+                                           "org.freedesktop.login1",
+                                            "/org/freedesktop/login1",
+                                            "org.freedesktop.login1.Manager",
+                                            "Inhibit",
+                                            g_variant_new("(ssss)", "sleep", "peony", "block", "block"),
+                                            rtype, G_DBUS_CALL_FLAGS_NONE, G_MAXINT, nullptr, &error);
+                if (error) {
+                    qWarning() << "cannot block S3/S4: " << error->message;
+                } else {
+                    QMessageBox::warning(nullptr,
+                                         tr("The system cannot hibernate or sleep"),
+                                         tr("The file operation is in progress. \
+                                        Ensure that the file operation is complete or canceled before hibernating or sleeping"),
+                                         QMessageBox::Ok);
+                }
+            }
+        }
     }
 
     Q_UNUSED(connection)

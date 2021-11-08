@@ -148,6 +148,11 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     showMore();
 }
 
+bool FileOperationProgressBar::hasFileOperation()
+{
+    return m_progress_size > 0;
+}
+
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
     m_current_main = nullptr;
