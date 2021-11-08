@@ -195,6 +195,15 @@ void RecentAndTrashPropertiesPage::init()
                         }
                     }
                 });
+
+                QString current_text = delete_label->text();
+                QString new_date_type = settings->get("date").toString();
+                if ((new_date_type == "cn") && current_text.contains("-")) {
+                    delete_label->setText(current_text.replace("-", "/"));
+
+                } else if ((new_date_type == "en") && current_text.contains("/")) {
+                    delete_label->setText(current_text.replace("/", "-"));
+                }
             }
 
             g_object_unref(info);
