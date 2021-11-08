@@ -722,22 +722,20 @@ QVector<QString> UkuiMenuInterface::getCommonUseApp()//常用的app
     setting->endGroup();
 
     QVector<QString> data;
-
+    //从新读取安装路径应用列表，以获取安卓app
+    getDesktopFilePath();
     Q_FOREACH(QString desktopfn,desktopfnList)
     {
         QString desktopfp;
-        if(androidDesktopfnList.contains(desktopfn))//如果常用的是安卓
-            desktopfp=QString(QDir::homePath()+"/.local/share/applications/"+desktopfn);
-        else
-            desktopfp=QString("/usr/share/applications/"+desktopfn);
+        if (androidDesktopfnList.contains(desktopfn)) {
+            desktopfp = QString(QDir::homePath() + "/.local/share/applications/" + desktopfn);
+        } else {
+            desktopfp = QString("/usr/share/applications/" + desktopfn);
+        }
 
-
-//        QFileInfo fileInfo(desktopfp);
-//        if(!fileInfo.isFile() /*|| !desktopfpVector.contains(desktopfp)*/)
-//        {
-//            continue;
-//        }
-        data.append(desktopfp);
+        if (filePathList.contains(desktopfp)) {
+            data.append(desktopfp);
+        }
     }
     return data;
 }
