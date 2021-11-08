@@ -2040,7 +2040,8 @@ void DesktopIconView::startDrag(Qt::DropActions supportedActions)
         QRect realRect = rect.boundingRect();
 
         // fix #78263, text displayment is not completed.
-        realRect.adjust(-5, -5, 5, 5);
+        //realRect.adjust(-5, -5, 5, 5);
+        realRect.adjust(-15, -15, 15, 15);
 
         QPixmap pixmap(realRect.size() * scale);
         pixmap.fill(Qt::transparent);
