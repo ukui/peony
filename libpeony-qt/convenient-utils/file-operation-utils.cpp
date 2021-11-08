@@ -122,7 +122,7 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
 
     if (!canNotTrash) {
         quint64 total_size = 0;
-        const quint64 TEN_GIB_SIZE = 10*1024*1024*1024;
+        const quint64 ONE_GIB_SIZE = 1024*1024*1024;
         for (auto uri : uris) {
             QUrl url(uri);
             QFile file(url.path());
@@ -137,12 +137,13 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
                 total_size += file.size();
             }
 
-            //file total size more than 10G, not trash but delete, task#56444
-            if (total_size > TEN_GIB_SIZE) {
+            //file total size more than 10G, not trash but delete, task#56444,  bug#88871, bug#88894
+            if (total_size/10 > ONE_GIB_SIZE) {
                 canNotTrash = true;
                 isBigFile = true;
                 break;
             }
+            qDebug() <<"total_size:" <<total_size<<ONE_GIB_SIZE<<canNotTrash<<isBigFile;
 
             //file total size more than 10G, not trash but delete, task#56444
             //FIXME 判断是否是移动设备文件，可能不准确, 目前暂未找到好的判断方法
