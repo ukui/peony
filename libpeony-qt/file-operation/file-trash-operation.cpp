@@ -52,16 +52,16 @@ void FileTrashOperation::run()
     Q_EMIT operationPrepared ();
 
     quint64 total_size = 0;
-    const quint64 TEN_GIB_SIZE = 10*1024*1024*1024;
+    const quint64 ONE_GIB_SIZE = 1024*1024*1024;
     for (auto src : m_src_uris) {
         if (isCancelled())
             break;
 
         auto info = FileInfo::fromUri(src);
         if(info->isDir()){
-            total_size = FileUtils::getFileTotalSize(src);
+            total_size += FileUtils::getFileTotalSize(src);
         }else{
-            total_size = info->size();
+            total_size += info->size();
         }
     }
 
@@ -106,8 +106,9 @@ retry:
         except.title = tr("Trash file error");
         except.errorType = ET_GIO;
 
-        //file total size more than 10G, not trash but delete, task#56444
-        if (total_size > TEN_GIB_SIZE){
+        //file total size more than 10G, not trash but delete, task#56444, bug#88871, bug#88894
+        qDebug() <<"total_size in trash operation:" <<total_size<<ONE_GIB_SIZE;
+        if (total_size/10 > ONE_GIB_SIZE){
             except.dlgType = ED_NOT_SUPPORTED;
             except.title = tr("Can not trash");
             except.errorStr = tr("Can not trash files more than 10GB, would you like to delete it permanently?");
