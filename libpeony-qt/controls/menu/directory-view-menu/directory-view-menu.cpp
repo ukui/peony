@@ -947,6 +947,13 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
             j.querySync();
         }
 
+        //not allow format data block, fix bug#66471，66479
+        QString targetUri = FileUtils::getTargetUri(uri);
+        if (uri == "file:///data" || targetUri == "file:///data"
+            || (uri.startsWith("file:///media") && uri.endsWith("/data"))
+            || (targetUri.startsWith("file:///media") && targetUri.endsWith("/data")))
+            return l;
+
         auto mount = VolumeManager::getMountFromUri(info->targetUri());
         //fix bug#52491, CDROM and DVD can format issue
         if (nullptr != mount) {
