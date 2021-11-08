@@ -40,6 +40,7 @@ public:
     ProgressBar* addFileOperation();
     void showProgress (ProgressBar& progress);
     void removeFileOperation(ProgressBar* progress);
+    bool hasFileOperation();
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
