@@ -154,6 +154,13 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     else
         uri=m_uri;
 
+    //not allow format data block, fix bug#66471，66479
+    QString targetUri = FileUtils::getTargetUri(m_uri);
+    if (m_uri == "file:///data" || targetUri == "file:///data"
+        || (m_uri.startsWith("file:///media") && m_uri.endsWith("/data"))
+        || (targetUri.startsWith("file:///media") && targetUri.endsWith("/data")))
+        return l;
+
     /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
     if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
             &&!unixDevice.startsWith("/dev/bus/usb")
