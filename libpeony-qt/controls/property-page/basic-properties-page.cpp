@@ -47,6 +47,7 @@
 
 #include <QFileDialog>
 #include <QtConcurrent>
+#include <QGSettings>
 
 #include "file-info.h"
 #include "file-info-job.h"
@@ -905,8 +906,21 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
 
         } else {
             if (m_timeCreatedLabel){
+                if (QGSettings::isSchemaInstalled("org.ukui.style"))
+                {
+                    //font monitor
+                    QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
+                    connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
+                        if (key == "systemFontSize") {
+                            QFontMetrics fontWidth(m_timeCreatedLabel->font());
+                            QString elideNote = fontWidth.elidedText(tr("Can't get remote file information"),Qt::ElideRight,280);
+                            m_timeCreatedLabel->setText(elideNote);
+                            m_timeCreatedLabel->setToolTip(tr("Can't get remote file information"));
+                        }
+                    });
+                }
                 QFontMetrics fontWidth(m_timeCreatedLabel->font());
-                QString elideNote = fontWidth.elidedText(tr("Can't get remote file information"),Qt::ElideRight,260);
+                QString elideNote = fontWidth.elidedText(tr("Can't get remote file information"),Qt::ElideRight,280);
                 m_timeCreatedLabel->setText(elideNote);
                 m_timeCreatedLabel->setToolTip(tr("Can't get remote file information"));
             }
