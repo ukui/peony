@@ -4,6 +4,7 @@
 #include <QThread>
 #include<QMessageBox>
 #include"sync-thread.h"
+#include "file-utils.h"
 
 using namespace Experimental_Peony;
 static VolumeManager* m_globalManager = nullptr;
@@ -650,6 +651,14 @@ void Volume::initVolumeInfo()
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(icon_name) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
 
     if(m_volume)
