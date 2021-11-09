@@ -605,23 +605,23 @@ void SideBarFileSystemItem::mount()
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
-    //FIXME: replace BLOCKING api in ui thread.
-    auto fileInfo = FileInfo::fromUri(pThis->m_uri);
-    FileInfoJob fileJob(fileInfo);
-    fileJob.querySync();
+//    //FIXME: replace BLOCKING api in ui thread.
+//    auto fileInfo = FileInfo::fromUri(pThis->m_uri);
+//    FileInfoJob fileJob(fileInfo);
+//    fileJob.querySync();
 
-    QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
+//    QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
 
-    //old's drive name -> now's volume name. fix #17968
-    FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
-    //icon name.
-    pThis->m_iconName = FileUtils::getFileIconName(pThis->m_uri,false);
+//    //old's drive name -> now's volume name. fix #17968
+//    FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
+//    //icon name.
+//    pThis->m_iconName = FileUtils::getFileIconName(pThis->m_uri,false);
 
-    // fix #81852, refer to #57660, #70014, task #25343
-    if (pThis->m_iconName == "drive-harddisk-usb") {
-        double size = FileUtils::getDeviceSize(pThis->m_unix_device.toUtf8().constData());
-        if (size < 128) {
-            pThis->m_iconName = "drive-removable-media-usb";
-        }
-    }
+//    // fix #81852, refer to #57660, #70014, task #25343
+//    if (pThis->m_iconName == "drive-harddisk-usb") {
+//        double size = FileUtils::getDeviceSize(pThis->m_unix_device.toUtf8().constData());
+//        if (size < 128) {
+//            pThis->m_iconName = "drive-removable-media-usb";
+//        }
+//    }
 }
