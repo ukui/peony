@@ -54,6 +54,8 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     m_file = g_file_new_for_uri(uri.toUtf8().data());
     m_parent = g_file_get_parent(m_file);
     m_is_remote = !g_file_is_native(m_file);
+    m_is_dir = false;
+    m_is_volume = false;
     GFileType type = g_file_query_file_type(m_file, G_FILE_QUERY_INFO_NONE, nullptr);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
@@ -106,6 +108,8 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = ! g_file_is_native(newly_info->m_file);
+        newly_info->m_is_dir = false;
+        newly_info->m_is_volume = false;
         if (! newly_info->m_is_remote && false) {
             GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
             switch (type) {
