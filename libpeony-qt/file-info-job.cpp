@@ -193,6 +193,8 @@ void FileInfoJob::queryFileType(GFileInfo* new_info){
     } else {
         return;
     }
+    info->m_is_dir = false;
+    info->m_is_volume = false;
     GFileType type = g_file_info_get_file_type (new_info);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
