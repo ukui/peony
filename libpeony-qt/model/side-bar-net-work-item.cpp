@@ -301,6 +301,12 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
 void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
 {
    if(add){
+       /* 防止一个远程服务器多次添加 */
+       for (auto item : *m_children) {
+           if (item->uri() == server) {
+               return;
+           }
+       }
        SideBarNetWorkItem *item = new SideBarNetWorkItem(server,
                                                          "network-workgroup-symbolic",
                                                          server,
