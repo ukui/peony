@@ -65,6 +65,85 @@
 
 using namespace Peony;
 
+static PushButtonStyle *global_instance = nullptr;
+
+PushButtonStyle *PushButtonStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new PushButtonStyle;
+    }
+    return global_instance;
+}
+
+void PushButtonStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case CE_PushButton:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            proxy()->drawControl(CE_PushButtonBevel, option, painter, widget);
+            QStyleOptionButton subopt = *button;
+            subopt.rect = proxy()->subElementRect(SE_PushButtonContents, option, widget);
+            proxy()->drawControl(CE_PushButtonLabel, &subopt, painter, widget);
+
+            return;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+int PushButtonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (metric) {
+    case PM_ButtonMargin:
+    {
+        return 0;
+    }
+    default:
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+QRect PushButtonStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_PushButtonContents:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            const bool icon = !button->icon.isNull();
+            const bool text = !button->text.isEmpty();
+            QRect rect = option->rect;
+            int Margin_Height = 2;
+            int ToolButton_MarginWidth = 10;
+            int Button_MarginWidth = proxy()->pixelMetric(PM_ButtonMargin, option, widget);
+            if (text && !icon && !(button->features & QStyleOptionButton::HasMenu)) {
+                rect.adjust(Button_MarginWidth, 0, -Button_MarginWidth, 0);
+            } else if (!text && icon && !(button->features & QStyleOptionButton::HasMenu)) {
+
+            } else {
+                rect.adjust(ToolButton_MarginWidth, Margin_Height, -ToolButton_MarginWidth, -Margin_Height);
+            }
+            if (button->features & (QStyleOptionButton::AutoDefaultButton | QStyleOptionButton::DefaultButton)) {
+                int dbw = proxy()->pixelMetric(PM_ButtonDefaultIndicator, option, widget);
+                rect.adjust(dbw, dbw, -dbw, -dbw);
+            }
+            return rect;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    return QProxyStyle::subElementRect(element, option, widget);
+}
+
 BasicPropertiesPage::BasicPropertiesPage(const QStringList &uris, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
     m_uris = uris;
@@ -151,6 +230,7 @@ void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
         m_openWithLayout->addStretch(1);
 
         QPushButton *moreAppButton = new QPushButton(parent);
+        moreAppButton->setStyle(PushButtonStyle::getStyle());
         moreAppButton->setText(tr("Change"));
         moreAppButton->setMinimumSize((moreAppButton->fontMetrics().width(tr("Change")) + 5), 30);
         m_openWithLayout->addWidget(moreAppButton);

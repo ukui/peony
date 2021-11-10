@@ -32,6 +32,7 @@
 #include <QThread>
 #include <memory>
 #include <QtConcurrent>
+#include <QProxyStyle>
 
 #include "properties-window-tab-iface.h"
 #include "open-with-properties-page.h"
@@ -199,6 +200,28 @@ private:
     //
     FileCountOperation *m_countOp = nullptr;
 
+};
+
+class PushButtonStyle : public QProxyStyle
+{
+
+public:
+    static PushButtonStyle *getStyle();
+
+    PushButtonStyle() : QProxyStyle() {}
+
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
+
+    int pixelMetric(PixelMetric metric,
+                    const QStyleOption *option = nullptr,
+                    const QWidget *widget = nullptr) const override;
+
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
 };
 
 }
