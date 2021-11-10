@@ -173,6 +173,8 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
                 return (sortOrder()==Qt::AscendingOrder)? true: false;
             } else {
                 //chinese pinyin sort order is reversed compared with english.
+                //return !QSortFilterProxyModel::lessThan(source_left, source_right);
+                //fix bug#89115, chinese files not sort by name pinyin
                 return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
             }
         } else {
