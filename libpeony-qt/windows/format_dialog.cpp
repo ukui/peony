@@ -52,6 +52,20 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        m_parent = parent;
        b_canClose = true;
 
+       /*!
+         如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
+         */
+       if (fm_uris.isEmpty() && !fm_item->getDevice().isEmpty()) {
+           auto itemUris = FileUtils::getChildrenUris("computer:///");
+           for (auto itemUri : itemUris) {
+               auto unixDevice = FileUtils::getUnixDevice(itemUri);
+               if (unixDevice == fm_item->getDevice()) {
+                   fm_uris = itemUri;
+                   break;
+               }
+           }
+       }
+
        //from uris get the rom size
        //FIXME: replace BLOCKING api in ui thread.
        auto targetUri = FileUtils::getTargetUri(fm_uris);
