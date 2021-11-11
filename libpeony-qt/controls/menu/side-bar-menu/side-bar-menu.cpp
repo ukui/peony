@@ -162,9 +162,10 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         return l;
 
     /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
+    /* 没有uri的item不能格式化，FormatDialog需要uri走流程，否则会导致崩溃问题 */
     if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
             &&!unixDevice.startsWith("/dev/bus/usb")
-            && (m_item->isVolume()))
+            && (m_item->isVolume()) && !m_item->uri().isEmpty())
     {
           l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
             auto info = FileInfo::fromUri(uri);

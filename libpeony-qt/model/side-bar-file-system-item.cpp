@@ -186,6 +186,16 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
             m_mounted=true;
             m_unmountable = m_mountable=false;
             m_uri = "burn://";
+        } else {
+            /* 未挂载的volume尝试匹配computer:///的uri */
+            auto itemUris = FileUtils::getChildrenUris("computer:///");
+            for (auto itemUri : itemUris) {
+                auto unixDevice = FileUtils::getUnixDevice(itemUri);
+                if (unixDevice == m_device) {
+                    m_uri = itemUri;
+                    break;
+                }
+            }
         }
 
     }else{
@@ -283,7 +293,15 @@ void SideBarFileSystemItem::slot_volumeDeviceUnmount(const QString &unmountDevic
     //更新model,元素信息更新
     for(auto& item:*m_children){
         if(item->m_mountPoint == unmountDevice){/* 依靠挂载点属性匹配 */
-            item->m_uri = "";                   /* 分区卸载后不可以做枚举操作 */
+            item->m_uri = nullptr;                   /* 分区卸载后不可以做枚举操作 */
+            auto itemUris = FileUtils::getChildrenUris("computer:///");   /*  重新寻找匹配卸载点的computer uri，避免item被过滤  */
+            for (auto itemUri : itemUris) {
+                auto unixDevice = FileUtils::getUnixDevice(itemUri);
+                if (unixDevice == item->m_device) {
+                    item->m_uri = itemUri;
+                    break;
+                }
+            }
             item->m_mountPoint = "";            /*挂载点置空，属性页会用到? */
             item->m_mounted = false;            /* 分区已卸载 */
             item->m_unmountable = false;

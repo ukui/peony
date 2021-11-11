@@ -47,6 +47,14 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
     auto index = sourceModel()->index(sourceRow, 0, sourceParent);
     auto item = static_cast<SideBarAbstractItem*>(index.internalPointer());
 
+    /*!
+      所有的volumeitem必须要有一个对应的uri才能显示，这个uri或者是mountpoint（已挂载的）或者是computer:///xxx（未挂载的），
+      否则会出现drive和volume同时存在的bug，参考#90081
+      */
+    if (item->uri().isEmpty()) {
+        return false;
+    }
+
     if (item->type() != SideBarAbstractItem::SeparatorItem) {
         if (item->displayName().isNull() && item->type() == SideBarAbstractItem::FileSystemItem)
             return false;
