@@ -161,9 +161,9 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
         || (targetUri.startsWith("file:///media") && targetUri.endsWith("/data")))
         return l;
 
-    /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
+    /* 光盘暂时没有格式化功能以及文件系统、手机要求不能格式化 */
     /* 没有uri的item不能格式化，FormatDialog需要uri走流程，否则会导致崩溃问题 */
-    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
+    if(m_uri!="file:///" && (!unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
             &&!unixDevice.startsWith("/dev/bus/usb")
             && (m_item->isVolume()) && !m_item->uri().isEmpty())
     {
