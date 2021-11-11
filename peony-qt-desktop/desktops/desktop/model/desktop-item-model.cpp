@@ -429,11 +429,25 @@ DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
                     m_renaming_file_pos.second = QPoint();
                     return;
                 }
-                m_renaming_file_pos.first = renamingUri;
-                m_items_need_relayout.removeOne(renamingUri);
-                m_items_need_relayout.removeOne(renamingUri + ".desktop");
-                m_view->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
-                m_view->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
+
+                QPoint target_pos = m_view->getCurrentItemRects().value(renamingUri).topLeft();
+                //desktop文件重命名时，如果存在相同文件则不会重命名成功。由于该文件uri不会变，所以pos不变，无需更新pos
+                if (target_pos.isNull() || (m_renaming_file_pos.second == target_pos)) {
+                    //desktop文件重命名成功
+                    m_renaming_file_pos.first = renamingUri;
+                    m_items_need_relayout.removeOne(renamingUri);
+                    m_items_need_relayout.removeOne(renamingUri + ".desktop");
+                    m_view->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+                    m_view->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
+                } else {
+                    //desktop文件(uri)重命名失败
+                    QString &src_uri = info->m_src_uris.first();
+                    QTimer::singleShot(100, m_view, [=]() {
+                        m_view->setSelections(QStringList() << src_uri);
+                        m_view->scrollToSelection(src_uri);
+                        m_view->setFocus();
+                    });
+                }
             } else {
                 // restore/relayout?
             }
