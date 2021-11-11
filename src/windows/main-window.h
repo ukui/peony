@@ -194,7 +194,8 @@ private:
 
     bool m_do_not_thumbnail = false;
 
-    const int WINDOW_MINIMUM_WIDTH = 596;
+    //change minimum width to avoid bug#90366
+    const int WINDOW_MINIMUM_WIDTH = 740;
     QStringList m_uris_to_edit;/* 新建文件/文件夹，可编辑文件名list */
 };
 
