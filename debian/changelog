@@ -1,3 +1,11 @@
+peony (3.2.2+1111ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      #77017 【S】【腾讯EDU应用】【开始菜单】【教育专区】在开始菜单和教育专区里点击腾讯应用图标时，放大的时候图标周围有点毛角，不光滑，需要腾讯提供应用大图标样式(必现)（仅教育中心，向文杰）
+
+ -- Yue Lan <lanyue@kylinos.cn>  Thu, 11 Nov 2021 17:33:26 +0800
+
 peony (3.2.2+1108ukui3.1) v101; urgency=medium
 
   * ntel & 3.1 合并版本
