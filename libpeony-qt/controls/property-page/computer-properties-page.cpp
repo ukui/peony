@@ -109,12 +109,15 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
     } else {
         //FIXME: replace BLOCKING api in ui thread.
         auto targetUri = FileUtils::getTargetUri(uri);
+        if (uri == "computer:///ukui-data-volume") {
+            targetUri = "file:///data";
+        }
         if (targetUri.isNull()) {
             m_layout->addRow(new QLabel(tr("You should mount this volume first"), nullptr));
             return;
         }
 
-        if (targetUri == "file:///") {
+        if (targetUri == "file:///" || targetUri == "file:///data") {
             //NOTE: file:/// has not mount.
             GFile *file = g_file_new_for_uri(targetUri.toUtf8().constData());
             GFileInfo *info = g_file_query_filesystem_info(file, "*", nullptr, nullptr);
@@ -123,7 +126,7 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
             quint64 available = g_file_info_get_attribute_uint64(info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
             char *fs_type = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-            m_layout->addRow(tr("Name: "), new QLabel(tr("File System"), this));
+            m_layout->addRow(tr("Name: "), new QLabel(targetUri == "file:///" ? tr("File System") : tr("Data"), this));
             m_layout->addRow(tr("Total Space: "), new QLabel(formatCapacityString(total), this));
             m_layout->addRow(tr("Used Space: "), new QLabel(formatCapacityString(used), this));
             m_layout->addRow(tr("Free Space: "), new QLabel(formatCapacityString(available), this));
