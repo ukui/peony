@@ -213,7 +213,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             if(bigIcon)
             {
                 mPixmap = icon.pixmap((Style::AppListIconSize+12,Style::AppListIconSize+12));//wgx
-                mPixmap = mPixmap.scaled(108,108);
+                mPixmap = mPixmap.scaled(108,108,Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
             }else {
                 mPixmap = icon.pixmap((Style::AppListIconSize,Style::AppListIconSize));//wgx
             }
