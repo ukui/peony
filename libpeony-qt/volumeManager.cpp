@@ -827,6 +827,7 @@ void Drive::initDriveInfo(){
     if(!m_drive)
         return;
 
+    m_device = g_drive_get_identifier(m_drive, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
     m_canEject = g_drive_can_eject(m_drive);
     m_canStop = g_drive_can_stop(m_drive);
     m_name=g_drive_get_name(m_drive);
@@ -837,8 +838,15 @@ void Drive::initDriveInfo(){
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(icon_name) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
-    m_device = g_drive_get_identifier(m_drive, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
 }
 
 QString Drive::name() const
@@ -998,6 +1006,14 @@ void Mount::initMountInfo(){
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(icon_name) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
 }
 
