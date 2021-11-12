@@ -411,11 +411,25 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     m_renaming_file_pos.second = QPoint();
                     return;
                 }
-                m_renaming_file_pos.first = renamingUri;
-                m_items_need_relayout.removeOne(renamingUri);
-                m_items_need_relayout.removeOne(renamingUri + ".desktop");
-                PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
-                PeonyDesktopApplication::getIconView()->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
+
+                QPoint target_pos = PeonyDesktopApplication::getIconView()->getCurrentItemRects().value(renamingUri).topLeft();
+                //desktop文件重命名时，如果存在相同文件则不会重命名成功。由于该文件uri不会变，所以pos不变，无需更新pos
+                if (target_pos.isNull() || (m_renaming_file_pos.second == target_pos)) {
+                    //desktop文件重命名成功
+                    m_renaming_file_pos.first = renamingUri;
+                    m_items_need_relayout.removeOne(renamingUri);
+                    m_items_need_relayout.removeOne(renamingUri + ".desktop");
+                    PeonyDesktopApplication::getIconView()->updateItemPosByUri(renamingUri, m_renaming_file_pos.second);
+                    PeonyDesktopApplication::getIconView()->setFileMetaInfoPos(renamingUri, m_renaming_file_pos.second);
+                } else {
+                    //desktop文件(uri)重命名失败
+                    QString &src_uri = info->m_src_uris.first();
+                    QTimer::singleShot(100, PeonyDesktopApplication::getIconView(), [=]() {
+                        PeonyDesktopApplication::getIconView()->setSelections(QStringList() << src_uri);
+                        PeonyDesktopApplication::getIconView()->scrollToSelection(src_uri);
+                        PeonyDesktopApplication::getIconView()->setFocus();
+                    });
+                }
             } else {
                 // restore/relayout?
             }
