@@ -146,7 +146,8 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
                   */
 
                 //m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
-                m_model->dataChanged(item->firstColumnIndex(), item->firstColumnIndex());
+                //m_model->dataChanged(item->firstColumnIndex(), item->firstColumnIndex());
+                m_model->updated();
             }
         }
     });
@@ -768,7 +769,8 @@ void FileItem::updateInfoSync()
 {
     FileInfoJob *job = new FileInfoJob(m_info);
     if (job->querySync()) {
-        m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        //m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        m_model->updated();
         ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     }
     job->deleteLater();
@@ -779,7 +781,8 @@ void FileItem::updateInfoAsync()
     FileInfoJob *job = new FileInfoJob(m_info);
     job->setAutoDelete();
     job->connect(job, &FileInfoJob::infoUpdated, this, [=]() {
-        m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        //m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+        m_model->updated();
         ThumbnailManager::getInstance()->createThumbnail(this->uri(), m_thumbnail_watcher, true);
     });
     job->queryAsync();
