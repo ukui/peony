@@ -91,8 +91,8 @@ public:
         return m_isVolume;
     }
     virtual bool hasChildren() = 0;
-    virtual QModelIndex firstColumnIndex() = 0;
-    virtual QModelIndex lastColumnIndex() = 0;
+    virtual QModelIndex firstColumnIndex();
+    virtual QModelIndex lastColumnIndex();
 
     virtual SideBarAbstractItem *parent() = 0;
 
@@ -125,11 +125,11 @@ Q_SIGNALS:
     void updated();
 
 public Q_SLOTS:
-    virtual void onUpdated() = 0;
+    virtual void onUpdated(){}
 
-    virtual void eject(GMountUnmountFlags ejectFlag) = 0;
-    virtual void unmount() = 0;
-    virtual void format() = 0;
+    virtual void eject(GMountUnmountFlags ejectFlag){};
+    virtual void unmount(){}
+    virtual void format(){}
 
     virtual void ejectOrUnmount() {}
     virtual void mount(){}

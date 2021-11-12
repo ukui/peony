@@ -25,20 +25,23 @@
 
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
+#include "gerror-wrapper.h"
 
 namespace Peony {
 
 class SideBarModel;
 class VFSPluginIface;
+class FileEnumerator;
 
 class PEONYCORESHARED_EXPORT SideBarVFSItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:
-    explicit SideBarVFSItem(VFSPluginIface *plugin, SideBarModel *model, QObject *parent = nullptr);
+    explicit SideBarVFSItem(const QString& uri, SideBarModel *model, QObject *parent = nullptr);
+    ~SideBarVFSItem();
 
     Type type() override {
-        return SideBarAbstractItem::FileSystemItem;
+        return SideBarAbstractItem::VFSItem;
     }
 
     QString uri() override;
@@ -46,50 +49,24 @@ public:
     QString iconName() override;
 
     bool hasChildren() override {
-        return false;
+        return true;
     }
-
-    bool isRemoveable() override {
-        return false;
-    }
-    bool isEjectable() override {
-        return false;
-    }
-    bool isMountable() override {
-        return false;
-    }
-
-    //TODO: monitoring the mount state
-    bool isMounted() override {
-        return false;
-    }
-
-    QModelIndex firstColumnIndex() override;
-    QModelIndex lastColumnIndex() override;
-
     SideBarAbstractItem *parent() override {
-        return nullptr;
+        return m_parent;
     }
 
 public Q_SLOTS:
-    void eject(GMountUnmountFlags ejectFlag) override {}
-    void unmount() override {}
-    void format() override {}
-
-    void ejectOrUnmount() override {}
-
-    void onUpdated() override {}
-
-    void findChildren() override {}
-    void findChildrenAsync() override {}
-    void clearChildren() override {}
+    void findChildren() override;
+    void findChildrenAsync() override;
+    //void clearChildren() override;
+    void slot_enumeratorPrepared(const std::shared_ptr<GErrorWrapper>& err, const QString& targetUri, bool critical);
+    void slot_enumeratorFinish(bool successed);
 
 private:
+    SideBarVFSItem *m_parent = nullptr;
     VFSPluginIface *m_plugin = nullptr;
+    FileEnumerator *m_enumerator = nullptr;
 
-    QString m_uri;
-    QString m_display_name;
-    SideBarModel *m_model = nullptr;
 };
 
 }
