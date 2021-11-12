@@ -753,6 +753,7 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     connect(m_model, &FileItemModel::updated, m_view, &ListView::resort);
+    connect(m_model, &FileItemModel::updated, m_view->viewport(), QOverload<>::of(&QWidget::update));
 
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
         Q_EMIT viewSelectionChanged();
