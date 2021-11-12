@@ -745,7 +745,20 @@ void TopMenuBar::addWindowButtons()
     auto layout = new QHBoxLayout;
 
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
+    layout->setSpacing(4);
+
+    auto optionButton = new QToolButton(m_top_menu_internal_widget);
+    optionButton->setIcon(QIcon::fromTheme("open-menu-symbolic"));
+    optionButton->setToolTip(tr("Option"));
+    optionButton->setAutoRaise(true);
+    optionButton->setFixedSize(QSize(48, 48));
+    optionButton->setIconSize(QSize(16, 16));
+    optionButton->setPopupMode(QToolButton::InstantPopup);
+    optionButton->setProperty("isOptionButton", true);
+    optionButton->setProperty("isWindowButton", 1);
+
+    OperationMenu *operationMenu = new OperationMenu(m_window, optionButton);
+    optionButton->setMenu(operationMenu);
 
     //minimize, maximize and close
     //  最小化，最大化，关闭
@@ -814,6 +827,7 @@ void TopMenuBar::addWindowButtons()
 
     connect(g_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletMode(bool)));
 
+    layout->addWidget(optionButton);
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);
     layout->addWidget(close);
@@ -824,6 +838,8 @@ void TopMenuBar::addWindowButtons()
     m_top_menu_layout->addSpacerItem(spacer);
     m_top_menu_layout->addWidget(m_top_menu_internal_widget);
 
+    optionButton->setMouseTracking(true);
+    optionButton->installEventFilter(this);
     minimize->setMouseTracking(true);
     minimize->installEventFilter(this);
     maximizeAndRestore->setMouseTracking(true);
@@ -831,11 +847,13 @@ void TopMenuBar::addWindowButtons()
     close->setMouseTracking(true);
     close->installEventFilter(this);
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < layout->count(); i++) {
         auto w = layout->itemAt(i)->widget();
         w->setProperty("useIconHighlightEffect", true);
         w->setProperty("iconHighlightEffectMode", 1);
     }
+
+    optionButton->setVisible((Peony::GlobalSettings::getInstance()->getProjectName() != V10_SP1_EDU));
 }
 
 void TopMenuBar::updateTabletMode(bool isTabletMode)
