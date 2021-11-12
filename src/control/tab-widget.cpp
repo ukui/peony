@@ -1210,7 +1210,12 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(0, 1, this->width()-136,48);
+    //204 = 48 * 4 + 12   4个按钮每个48px，相互间隔4px
+    quint32 windowButtonsWidth = 204;
+    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        windowButtonsWidth -= 52;
+    }
+    m_tab_bar->setGeometry(0, 1, this->width() - windowButtonsWidth, 48);
 //    m_tab_bar->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 }
