@@ -1201,14 +1201,14 @@ void MainWindow::initUI(const QString &uri)
 
     //HeaderBar
     auto views = new TabWidget;
-    TopMenuBar *top = new TopMenuBar(this);
-
-    views->setMenuBar(top);
 
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
+
+    TopMenuBar *top = new TopMenuBar(headerBar, this);
+    views->setMenuBar(top);
 //    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
     views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);

@@ -590,14 +590,6 @@ void HeaderBar::updateViewTypeEnable()
     }
 }
 
-void HeaderBar::updateHeaderState()
-{
-//    if (! m_window->getFilterWorking())
-//        m_create_folder->setEnabled(true);
-//    else
-//        m_create_folder->setEnabled(false);
-}
-
 void HeaderBar::updateSortTypeEnable()
 {
     auto url = m_window->getCurrentUri();
@@ -723,9 +715,10 @@ HeaderBarContainer::HeaderBarContainer(QWidget *parent) : QToolBar(parent)
     m_internal_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-TopMenuBar::TopMenuBar(MainWindow *parent) : QMenuBar(parent)
+TopMenuBar::TopMenuBar(HeaderBar *headerBar, MainWindow *parent) : QMenuBar(parent)
 {
     m_window = parent;
+    m_header_bar = headerBar;
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     setStyleSheet(".TopMenuBar"

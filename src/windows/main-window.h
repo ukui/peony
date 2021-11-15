@@ -192,8 +192,6 @@ private:
 
     bool m_shortcuts_set = false;
 
-
-    QFileSystemWatcher *m_thumbnail_watcher;
     bool m_do_not_thumbnail = false;
 
     const int WINDOW_MINIMUM_WIDTH = 596;

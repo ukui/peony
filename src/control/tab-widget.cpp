@@ -57,6 +57,8 @@
 #include "file-info-job.h"
 #include "file-info.h"
 
+#include "volume-manager.h"
+
 #include <QApplication>
 #include <QStandardPaths>
 

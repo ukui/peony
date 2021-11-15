@@ -64,6 +64,7 @@ class HeaderBar : public QToolBar
 {
     friend class HeaderBarContainer;
     friend class MainWindow;
+    friend class TopMenuBar;
     Q_OBJECT
     enum HeaderBarAction {
         GoBack,
@@ -138,6 +139,8 @@ private:
 
     // save the actions to show or hide
     QHash<HeaderBarAction, QAction*> m_actions;
+
+    QToolButton *m_maximize_restore_button;
 };
 
 class HeaderBarToolButton : public QToolButton
@@ -174,7 +177,7 @@ class TopMenuBar : public QMenuBar
 {
     Q_OBJECT
 public:
-    explicit TopMenuBar(MainWindow *parent = nullptr);
+    explicit TopMenuBar(HeaderBar *headerBar, MainWindow *parent = nullptr);
 
     bool eventFilter(QObject *obj, QEvent *e);
 
@@ -192,6 +195,8 @@ private:
     QToolButton *m_minimize = nullptr;
     QToolButton *m_close = nullptr;
     bool m_tablet_mode = false;
+
+    HeaderBar *m_header_bar = nullptr;
 };
 
 #endif // HEADERBAR_H
