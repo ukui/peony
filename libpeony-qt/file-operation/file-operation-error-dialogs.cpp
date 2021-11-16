@@ -197,9 +197,9 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
-        QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(m_error->errorStr/*.toHtmlEscaped()*/, Qt::ElideMiddle, 480).toHtmlEscaped());
-        setText(htmlString);
+        // 字符串长度限制改到了 函数 formatGerrorString 里，只针对文件名/路径。
+        QString htmlString = QString("<p>%1</p>").arg(formatGerrorString (m_error).toHtmlEscaped());
+        m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
                                  .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
@@ -336,6 +336,43 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
     case G_IO_ERROR_CANT_CREATE_BACKUP:
     case G_IO_ERROR_TOO_MANY_OPEN_FILES:
         error.respCode = Cancel;
+    }
+}
+
+
+// @note 希望错误提示定制化暂时先在这里统一处理，后续需要优化时候可以统一从这里迁移。
+static QString formatGerrorString (const Peony::FileOperationError* error)
+{
+    QStyleOptionViewItem opt;
+    using namespace Peony;
+
+    qDebug() << "error code:" << error->errorCode << "  error msg:" << error->errorStr;
+
+    QString errorStr = error->errorStr;
+
+    switch (error->op) {
+    case FileOpCreateTemp:
+        if (ET_GIO == error->errorType) {
+            switch (error->errorCode) {
+            case G_IO_ERROR_PERMISSION_DENIED: {
+                QString fileName = error->srcUri.split ("/").last ();
+                QString filePath = error->destDirUri + (fileName.isEmpty () ? "" : ("/" + error->srcUri.split ("/").last ()));
+                errorStr = QString(QObject::tr("Failed to open file \"%1\": insufficient permissions.")).arg (opt.fontMetrics.elidedText(FileUtils::urlDecode (filePath), Qt::ElideMiddle, 380));
+                break;
+            }
+            }
+        }
+        break;
+    case FileOpCopy:
+        if (ET_GIO == error->errorType) {
+            switch (error->errorCode) {
+            case G_IO_ERROR_NOT_FOUND: {
+                QString filePath = QUrl(FileUtils::urlDecode (error->srcUri)).path ();
+                errorStr = QString(QObject::tr("File “%1” does not exist. Please check whether the file has been deleted.")).arg (opt.fontMetrics.elidedText(filePath, Qt::ElideMiddle, 380));
+                break;
+            }
+            }
+        }
         break;
     default:
         error.respCode = IgnoreOne;
