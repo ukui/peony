@@ -88,46 +88,37 @@ public:
 
     explicit BasicPropertiesPage(const QStringList &uris, QWidget *parent = nullptr);
     ~BasicPropertiesPage();
-    void init();
 
-
-    // PropertiesWindowTabIface interface
-public:
     void saveAllChange();
 
 protected:
+    /**
+     * @brief 初始化ui组件
+     */
+    void initUI();
+
+    /**
+     * @brief 顶部图标，名称和地址信息区域
+     */
+    void initFloorOne();
+
+    /**
+     * @brief 日期，大小信息区域
+     */
+    void initFloorTwo();
+
     void addSeparator();
 
-    /*!
-     *
-     * \brief formLayout 左侧label栏
-     * \param minWidth
-     * \param minHeight
-     * \param text
-     * \param parent
-     * \return
-     */
-    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QString text, QWidget *parent = nullptr);
-    QLabel *createFixedLabel(quint64 minWidth, quint64 minHeight, QWidget *parent = nullptr);
+    void loadData();
+    void loadPartOne();
+    void loadPartTwo();
+    void loadOptionalData();
+
+    void updateCountInfo(bool isDone = false);
     void addOpenWithLayout(QWidget *parent = nullptr);
-    /*!
-     * 初始化第一层显示区域
-     * \brief
-     * \param uris
-     * \param fileType
-     */
-    void initFloorOne(const QStringList &uris,BasicPropertiesPage::FileType fileType);
-    void initFloorTwo(const QStringList &uris,BasicPropertiesPage::FileType fileType);
-    void initFloorThree(BasicPropertiesPage::FileType fileType);
-    void initFloorFour();
     BasicPropertiesPage::FileType checkFileType(const QStringList &uris);
     void chooseFileIcon();
     void changeFileIcon();
-    void moveFile();
-    /**
-     * \brief
-     * \return 如果对名称进行了修改，返回true
-     */
     bool isNameChanged();
     void setSysTimeFormat(QString format) {
         this->m_systemTimeFormat = format;
@@ -139,21 +130,18 @@ protected Q_SLOTS:
     void countFilesAsync(const QStringList &uris);
     void onFileCountOne(const QString &uri, quint64 size);
     void cancelCount();
-
     void updateInfo(const QString &uri);
 
 private:
     QVBoxLayout                 *m_layout = nullptr;
     std::shared_ptr<FileInfo>    m_info   = nullptr;
     QStringList                  m_uris;
-//    QFutureWatcher<void>        *m_futureWatcher = nullptr;
+    QFutureWatcher<void>        *m_futureWatcher = nullptr;
     std::shared_ptr<FileWatcher> m_watcher;
     std::shared_ptr<FileWatcher> m_thumbnail_watcher;
 
-    void updateCountInfo(bool isDone = false);
-
-    qint64 m_fileDoneCount     = 0;
-    qint64 m_labelWidth        = 0;  //左侧label宽度
+    FileType m_fileType        = BP_File;
+    qint64   m_fileDoneCount   = 0;
 
     //floor1
     QPushButton *m_iconButton       = nullptr;    //文件图标
@@ -161,7 +149,6 @@ private:
     //**new version
     QLineEdit   *m_displayNameEdit  = nullptr;    //文件名称
     QLineEdit   *m_locationEdit     = nullptr;    //文件路径
-    QPushButton *m_moveButton = nullptr;    //移动位置按钮
 
     //floor2  --  public
     QLabel *m_fileTypeLabel         = nullptr;    //文件类型
