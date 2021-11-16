@@ -67,7 +67,7 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
-    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::updateWindowLocationRequest);
+    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::signal_responseUnmounted);
 
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
         refresh();
