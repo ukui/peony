@@ -1138,7 +1138,7 @@ static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata
         QString uri = static_cast<char*>(udata);
         Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
     }
-
+    g_free(udata);
 }
 
 static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, gpointer user_data)
@@ -1166,6 +1166,8 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
                                            nullptr,
                                            GAsyncReadyCallback(unmount_force_cb),
                                            user_data);
+        } else {
+            g_free (user_data);
         }
         g_error_free(err);
 
@@ -1175,6 +1177,7 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
         Peony::SyncThread::notifyUser(unmountNotify);
         QString uri = static_cast<char*>(user_data);
         Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
+        g_free(user_data);
     }
     return nullptr;
 }
@@ -1186,7 +1189,7 @@ void Mount::unmount()
         char* mountPath = g_file_get_uri(rootFile);
         g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), mountPath);
         g_object_unref(rootFile);
-        g_free(mountPath);
+        //g_free(mountPath);
     }
     //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
 }

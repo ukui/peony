@@ -155,6 +155,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     });
 
     connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,this,[=](){
+        if(!m_currSelectedItem)
+            return;
         JumpDirectory(m_currSelectedItem->uri());
         qDebug()<<"挂载后跳转路径："<<m_currSelectedItem->uri();
     });
@@ -163,7 +165,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         switch (index.column()) {
         case 0: {
             m_currSelectedItem = m_proxy_model->itemFromIndex(index);
-            if(m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
+            if(m_currSelectedItem && m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
                 m_currSelectedItem->mount();
             else{
                 JumpDirectory(m_currSelectedItem->uri());
@@ -393,7 +395,7 @@ QSize NavigationSideBar::sizeHint() const
 
 void NavigationSideBar::JumpDirectory(const QString &uri)
 {
-    if(uri=="" && m_currSelectedItem->getDevice().startsWith("/dev/sd"))
+    if(uri=="" && m_currSelectedItem && m_currSelectedItem->getDevice().startsWith("/dev/sd"))
     {/* 异常U盘 */
         QMessageBox::information(nullptr, tr("Tips"), tr("This is an abnormal Udisk, please fix it or format it"));
         return;

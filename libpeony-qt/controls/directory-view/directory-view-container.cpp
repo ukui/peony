@@ -27,17 +27,20 @@
 #include "directory-view-widget.h"
 #include "directory-view-factory-manager.h"
 #include "file-utils.h"
+#include "global-settings.h"
+
+#include "file-label-model.h"
 
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
 #include "global-settings.h"
+#include "file-info.h"
 
 #include <QVBoxLayout>
 #include <QAction>
 
 #include <QApplication>
-
 
 using namespace Peony;
 
@@ -66,7 +69,20 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
-    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::goToUri);
+    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::signal_responseUnmounted);
+
+    connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
+        refresh();
+    });
+
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        m_control_center_plugin = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(m_control_center_plugin, &QGSettings::changed, this, [=](const QString &key) {
+           qDebug() << "panel settings changed:" <<key;
+           if (getView()->viewId() == "List View" && (key == "date" || key == "hoursystem"))
+              refresh();
+        });
+    }
 }
 
 DirectoryViewContainer::~DirectoryViewContainer()
@@ -220,15 +236,17 @@ void DirectoryViewContainer::goToUri(const QString &uri, bool addHistory, bool f
 update:
     if (addHistory) {
         m_forward_list.clear();
-        //avoid same uri add twice
-        int count = m_back_list.count();
-        if (! getCurrentUri().contains("search://")
-            && (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        //qDebug() << "getCurrentUri():" <<getCurrentUri()<<uri;
+        //fix bug 41094, avoid go back to same path issue
+        if (! getCurrentUri().startsWith("search://")
+            && !FileUtils::isSamePath(getCurrentUri(), uri)) {
             m_back_list.append(getCurrentUri());
+        }
     }
 
     auto viewId = DirectoryViewFactoryManager2::getInstance()->getDefaultViewId(zoomLevel, uri);
     switchViewType(viewId);
+
     //update status bar zoom level
     updateStatusBarSliderStateRequest();
     if (zoomLevel < 0)
@@ -303,7 +321,20 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     view->setSortOrder(sortOrder);
 
     connect(m_view, &DirectoryViewWidget::menuRequest, this, &DirectoryViewContainer::menuRequest);
-    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, &DirectoryViewContainer::directoryChanged);
+    connect(m_view, &DirectoryViewWidget::viewDirectoryChanged, this, [=](){
+        if (DirectoryViewFactoryManager2::getInstance()->internalViews().contains(m_view->viewId())) {
+            auto dirInfo = FileInfo::fromUri(m_current_uri);
+            if (dirInfo.get()->isEmptyInfo() && !dirInfo.get()->uri().startsWith("search://")) {
+                goBack();
+                if (!m_forward_list.isEmpty())
+                    m_forward_list.takeFirst();
+            } else {
+                Q_EMIT this->directoryChanged();
+            }
+        } else {
+            Q_EMIT this->directoryChanged();
+        }
+    });
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::viewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewDoubleClicked, this, &DirectoryViewContainer::onViewDoubleClicked);
     connect(m_view, &DirectoryViewWidget::viewSelectionChanged, this, &DirectoryViewContainer::selectionChanged);
@@ -356,7 +387,13 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     editAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_E)<<Qt::Key_F2);
     connect(editAction, &QAction::triggered, this, [=]() {
         auto selections = m_view->getSelections();
-        if (selections.count() == 1) {
+
+        bool hasStandardPath = FileUtils::containsStandardPath(selections);
+        if (selections.count() == 1 && !hasStandardPath) {
+            QString one = selections.first();
+            if(one.startsWith("filesafe:///") && one.remove("filesafe:///").indexOf("/") == -1) {
+                return ;
+            }
             m_view->editUri(selections.first());
         }
     });

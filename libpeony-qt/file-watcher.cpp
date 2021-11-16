@@ -131,8 +131,8 @@ void FileWatcher::startMonitor()
     connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](const QString &uri){
         /* volume卸载完成跳转到计算机目录(只有进入volume内部目录，卸载时才跳转，空光盘比较特殊) */
         auto fixedUri = uri;
-        if (m_uri == uri || m_target_uri == uri || m_uri + "/" == fixedUri||m_uri=="burn:///") {
-            Q_EMIT directoryUnmounted("computer:///");
+        if (m_uri == uri || m_target_uri == uri || m_uri + "/" == fixedUri) {
+            Q_EMIT directoryUnmounted(uri);
         }
     });
 }
@@ -226,12 +226,6 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_MOVED_IN:
     case G_FILE_MONITOR_EVENT_MOVED_OUT:
     case G_FILE_MONITOR_EVENT_RENAMED: {
-        /*!
-         * \bug
-         * renaming a desktop file can not get new uri correctly.
-         *
-         * we have to consider trigger it by another way.
-         */
         char *new_uri = g_file_get_uri(other_file);
         QString uri = new_uri;
         //QUrl url =  uri;
@@ -258,6 +252,15 @@ void FileWatcher::file_changed_callback(GFileMonitor *monitor,
         qDebug()<<uri;
         Q_EMIT p_this->fileChanged(uri);
         g_free(uri);
+        break;
+    }
+    case G_FILE_MONITOR_EVENT_UNMOUNTED: {
+        char *uri = g_file_get_uri(file);
+        QString deletedFileUri = uri;
+        //QUrl url = deletedFileUri;
+        //deletedFileUri = url.toDisplayString();
+        g_free(uri);
+        Q_EMIT p_this->directoryUnmounted(deletedFileUri);
         break;
     }
     default:
@@ -310,6 +313,12 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     }
 
     case G_FILE_MONITOR_EVENT_RENAMED: {
+        /*!
+         * \bug
+         * renaming a desktop file can not get new uri correctly.
+         *
+         * we have to consider trigger it by another way.
+         */
         char *old_uri = g_file_get_uri (file);
         char *new_uri = g_file_get_uri(other_file);
         Q_EMIT p_this->fileRenamed(old_uri,new_uri);     
@@ -324,7 +333,8 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
         //QUrl url = deletedFileUri;
         //deletedFileUri = url.toDisplayString();
         g_free(uri);
-        Q_EMIT p_this->directoryUnmounted(deletedFileUri);
+        //Q_EMIT p_this->directoryUnmounted(deletedFileUri);
+        Q_EMIT p_this->fileChanged(deletedFileUri);
         break;
     }
     default:

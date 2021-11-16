@@ -196,6 +196,9 @@ public Q_SLOTS:
     void updateCurrentSearchPath();
     void switchSearchPath (bool isCurrent);
 
+    /* 设备卸载、弹出后，其所在标签页跳转到计算机页（保护箱标签除外），其余标签页均关闭 */
+    void slot_responseUnmounted(const QString &destUri, const QString &sourceUri);
+
 protected:
     void changeCurrentIndex(int index);
     void moveTab(int from, int to);

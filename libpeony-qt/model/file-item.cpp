@@ -254,7 +254,7 @@ void FileItem::findChildrenAsync()
 
             //! \note fix direct setRootUri() prevents view switch error
             // m_model->setRootUri(target);
-            m_model->sendPathChangeRequest(target);
+            m_model->sendPathChangeRequest(target, this->uri());
             return;
         }
         if (err) {
@@ -266,15 +266,13 @@ void FileItem::findChildrenAsync()
                 if (this->uri().startsWith("file:///media"))
                 {
                     //check bookmark and delete
-                    BookMarkManager::getInstance()->removeBookMark(this->uri());
-                    //! \note fix direct setRootUri() prevents view switch error
-                    // m_model->setRootUri("computer:///");
-                    m_model->sendPathChangeRequest("computer:///");
+                    BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(this->uri()));
+                    m_model->sendPathChangeRequest("computer:///", this->uri());
                 }
                 else
                     //! \note fix direct setRootUri() prevents view switch error
                     // m_model->setRootUri(FileUtils::getParentUri(this->uri()));
-                    m_model->sendPathChangeRequest(FileUtils::getParentUri(this->uri()));
+                    m_model->sendPathChangeRequest(FileUtils::getParentUri(this->uri()), this->uri());
 
                 auto fileInfo = FileInfo::fromUri(this->uri());
                 if (err.get()->code() == G_IO_ERROR_NOT_FOUND && fileInfo->isSymbolLink())
@@ -417,10 +415,8 @@ void FileItem::findChildrenAsync()
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                //! \note fix direct setRootUri() prevents view switch error
-                // m_model->setRootUri("computer:///");
-                m_model->sendPathChangeRequest("computer:///");
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](const QString &sourceUri) {
+                m_model->sendPathChangeRequest("computer:///", sourceUri);
             });
             //qDebug()<<"startMonitor";
 
@@ -531,10 +527,8 @@ void FileItem::findChildrenAsync()
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                //! \note Fix direct setRootUri() prevents view switch error
-                // m_model->setRootUri("computer:///");
-                m_model->sendPathChangeRequest("computer:///");
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](const QString &sourceUri) {
+                m_model->sendPathChangeRequest("computer:///", sourceUri);
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
@@ -682,13 +676,13 @@ void FileItem::onDeleted(const QString &thisUri)
         }
         if (!tmpUri.isNull()) {
             if(tmpUri.startsWith("file:///media"))
-                m_model->sendPathChangeRequest("computer:///");
+                m_model->sendPathChangeRequest("computer:///", tmpItem->uri());
             else
                 m_model->setRootUri(tmpUri);
         } else {
             //! \note Fix direct setRootUri() prevents view switch error
             // m_model->setRootUri("file:///");
-            m_model->sendPathChangeRequest("file:///");
+            m_model->sendPathChangeRequest("file:///, tmpItem->uri()");
         }
     }
     m_model->updated();

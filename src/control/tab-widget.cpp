@@ -583,6 +583,31 @@ void TabWidget::handleZoomLevel(int zoomLevel)
     }
 }
 
+#include <KWindowSystem>
+void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &sourceUri)
+{
+    int  currentIndex = this->currentIndex();
+    for(int index = 0; index < m_stack->count(); index++)
+    {
+        QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
+        if(sourceUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///" )/* 文件保护箱tab页特殊处理 */
+        {
+            if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId() && index == currentIndex){
+                /* 当前活动窗口当前tab页 */
+                currentIndex = -1;
+                qDebug()<<"sourceUri:"<<sourceUri<<"jump to computer,"<<" index:"<<currentIndex;
+                this->goToUri(destUri, true, true);/* 跳转到计算机页 */
+            }
+            else{/* 其余tab页关闭 */
+                qDebug()<<"remove tab  uri:"<<uri<<", index:"<<index;
+                removeTab(index);
+                index--;
+                currentIndex--;
+            }
+        }
+    }
+}
+
 void TabWidget::updateSearchBar(bool showSearch)
 {
     qDebug() << "updateSearchBar:" <<showSearch;
@@ -1185,8 +1210,10 @@ void TabWidget::removeTab(int index)
         Q_EMIT activePageChanged();
 }
 
+#include <KWindowSystem>
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
 {
+    connect(container, &Peony::DirectoryViewContainer::signal_responseUnmounted, this,&TabWidget::slot_responseUnmounted);
     connect(container, &Peony::DirectoryViewContainer::updateWindowLocationRequest, this, &TabWidget::updateWindowLocationRequest);
     connect(container, &Peony::DirectoryViewContainer::directoryChanged, this, &TabWidget::activePageLocationChanged);
     connect(container, &Peony::DirectoryViewContainer::selectionChanged, this, &TabWidget::activePageSelectionChanged);

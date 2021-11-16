@@ -60,10 +60,12 @@
 #include "create-template-operation.h"
 #include "file-operation-error-dialog.h"
 #include "clipboard-utils.h"
+#include "search-vfs-uri-parser.h"
 
 #include "directory-view-menu.h"
 #include "directory-view-widget.h"
 #include "main-window-factory.h"
+#include "thumbnail-manager.h"
 
 #include "peony-application.h"
 

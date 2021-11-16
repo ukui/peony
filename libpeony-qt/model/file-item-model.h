@@ -207,7 +207,7 @@ public:
 
     Qt::DropActions supportedDropActions() const override;
     Qt::DropActions supportedDragActions() const override;
-    void sendPathChangeRequest(const QString &uri);
+    void sendPathChangeRequest(const QString &destUri, const QString &sourceUri);
 
 Q_SIGNALS:
     /*!
@@ -239,13 +239,7 @@ Q_SIGNALS:
     void updated();
 
     void selectRequest(const QStringList &uris);
-
-    /*!
-     * \brief changePathRequest
-     * \note request path change from window to fix direct setRootUri() prevents
-     * view switch error
-    */
-    void changePathRequest(const QString& uri, bool addHistory, bool forceUpdate);
+    void changePathRequest(const QString &destUri, const QString &sourceUri);
 
     void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
 

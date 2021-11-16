@@ -89,6 +89,7 @@ Q_SIGNALS:
     void selectionChanged();
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
+    void signal_responseUnmounted(const QString &destUri, const QString &sourceUri);
 
     void updateWindowSelectionRequest(const QStringList &uris);
 
