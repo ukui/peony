@@ -1409,7 +1409,7 @@ void TabWidget::updateTabBarGeometry()
     m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 5, 6);
     m_tool_bar->raise();
 
-    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width() - m_tool_bar->width() - 5, m_tab_bar->sizeHint().height());
+    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width() - m_tool_bar->width() - m_add_page_button->width() - 20, m_tab_bar->sizeHint().height());
     m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
     m_tab_bar->raise();
 

@@ -328,28 +328,27 @@ TabBarStyle *TabBarStyle::getStyle()
 
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
-    switch (metric) {
-    case PM_TabBarScrollButtonWidth:
-    case PM_TabBarTabShiftVertical:
-    case PM_TabBarBaseHeight:
-        return 0;
-    case PM_TabBarBaseOverlap:
-        return 0;
-    default:
-        return QProxyStyle::pixelMetric(metric, option, widget);
-    }
+    return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
 QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
 {
     switch (element) {
     case SE_TabBarScrollLeftButton:
-    case SE_TabBarScrollRightButton:
-        return QRect();
-    default:
-        break;
+    case SE_TabBarTearIndicatorLeft: {
+        QRect tabRect = option->rect;
+        tabRect.setRight(tabRect.left() + 8);
+        return tabRect;
     }
-    return QProxyStyle::subElementRect(element, option, widget);
+    case SE_TabBarScrollRightButton:
+    case SE_TabBarTearIndicatorRight: {
+        QRect tabRect = option->rect;
+        tabRect.setLeft(tabRect.right() - 8);
+        return tabRect;
+    }
+    default:
+        return QProxyStyle::subElementRect(element, option, widget);
+    }
 }
 
 void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
