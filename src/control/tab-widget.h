@@ -108,7 +108,6 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void updateSearch(const QString &uri, const QString &key="", bool updateKey=false);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
-
     void updateWindowSelectionRequest(const QStringList &uris);
 
     void menuRequest(const QPoint &pos);
@@ -186,6 +185,8 @@ public Q_SLOTS:
 
     void handleZoomLevel(int zoomLevel);
     void enableSearchBar(bool enable);
+    /* 设备卸载、弹出后，其所在标签页跳转到计算机页（保护箱标签除外），其余标签页均关闭 */
+    void slot_responseUnmounted(const QString &destUri, const QString &sourceUri);
 
 protected:
     void changeCurrentIndex(int index);

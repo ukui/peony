@@ -1112,6 +1112,7 @@ QString MainWindow::getLastSearchKey()
     return m_last_key;
 }
 
+
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);

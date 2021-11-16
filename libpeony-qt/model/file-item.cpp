@@ -264,7 +264,7 @@ void FileItem::findChildrenAsync()
                 {
                     //check bookmark and delete
                     BookMarkManager::getInstance()->removeBookMark(uri2FavoriteUri(this->uri()));
-                    m_model->sendPathChangeRequest("computer:///");
+                    m_model->sendPathChangeRequest("computer:///", this->uri());
                 }
                 else {
                     m_model->setRootUri(FileUtils::getParentUri(this->uri()));
@@ -410,8 +410,8 @@ void FileItem::findChildrenAsync()
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->sendPathChangeRequest("computer:///");
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](const QString &sourceUri) {
+                m_model->sendPathChangeRequest("computer:///", sourceUri);
             });
             //qDebug()<<"startMonitor";
 
@@ -522,8 +522,8 @@ void FileItem::findChildrenAsync()
                 this->onRenamed(oldUri, newUri);
             });
 
-            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=]() {
-                m_model->sendPathChangeRequest("computer:///");
+            connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, [=](const QString &sourceUri) {
+                m_model->sendPathChangeRequest("computer:///", sourceUri);
             });
             //qDebug()<<"startMonitor";
             connect(m_watcher.get(), &FileWatcher::requestUpdateDirectory, this, &FileItem::onUpdateDirectoryRequest);
@@ -671,7 +671,7 @@ void FileItem::onDeleted(const QString &thisUri)
         }
         if (!tmpUri.isNull()) {
             if(tmpUri.startsWith("file:///media"))
-                m_model->sendPathChangeRequest("computer:///");
+                m_model->sendPathChangeRequest("computer:///", tmpItem->uri());
             else
                 m_model->setRootUri(tmpUri);
         } else {
