@@ -278,8 +278,8 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
 
     QStyleOptionViewItem opt;
     if (nullptr != m_error->errorStr) {
-        QString htmlString = QString("<p>%1</p>")
-                                 .arg(opt.fontMetrics.elidedText(formatGerrorString (m_error), Qt::ElideMiddle, 500).toHtmlEscaped());
+        // 字符串长度限制改到了 函数 formatGerrorString 里，只针对文件名/路径。
+        QString htmlString = QString("<p>%1</p>").arg(formatGerrorString (m_error).toHtmlEscaped());
         m_text->setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
@@ -452,6 +452,8 @@ static QString formatGerrorString (const Peony::FileOperationError* error)
     QStyleOptionViewItem opt;
     using namespace Peony;
 
+    qDebug() << "error code:" << error->errorCode << "  error msg:" << error->errorStr;
+
     QString errorStr = error->errorStr;
 
     switch (error->op) {
@@ -462,6 +464,17 @@ static QString formatGerrorString (const Peony::FileOperationError* error)
                 QString fileName = error->srcUri.split ("/").last ();
                 QString filePath = error->destDirUri + (fileName.isEmpty () ? "" : ("/" + error->srcUri.split ("/").last ()));
                 errorStr = QString(QObject::tr("Failed to open file \"%1\": insufficient permissions.")).arg (opt.fontMetrics.elidedText(FileUtils::urlDecode (filePath), Qt::ElideMiddle, 380));
+                break;
+            }
+            }
+        }
+        break;
+    case FileOpCopy:
+        if (ET_GIO == error->errorType) {
+            switch (error->errorCode) {
+            case G_IO_ERROR_NOT_FOUND: {
+                QString filePath = QUrl(FileUtils::urlDecode (error->srcUri)).path ();
+                errorStr = QString(QObject::tr("File “%1” does not exist. Please check whether the file has been deleted.")).arg (opt.fontMetrics.elidedText(filePath, Qt::ElideMiddle, 380));
                 break;
             }
             }

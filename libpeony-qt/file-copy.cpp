@@ -196,7 +196,7 @@ void FileCopy::run ()
     srcFileInfo = g_file_query_info(srcFile, "standard::*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, mCancel ? mCancel : nullptr, &error);
     if (nullptr != error) {
         mTotalSize = 0;
-        qDebug() << "srcFile: " << mSrcUri << " querry info error: " << error->message;
+        qDebug() << "srcFile: " << mSrcUri << " querry info error: " << error->message << "  code:" << error->code;
         detailError(&error);
     } else {
         mTotalSize = g_file_info_get_size(srcFileInfo);
