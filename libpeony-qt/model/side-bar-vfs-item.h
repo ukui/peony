@@ -59,7 +59,6 @@ public Q_SLOTS:
     void findChildren() override;
     void findChildrenAsync() override;
     //void clearChildren() override;
-    void slot_enumeratorPrepared(const std::shared_ptr<GErrorWrapper>& err, const QString& targetUri, bool critical);
     void slot_enumeratorFinish(bool successed);
 
 private:

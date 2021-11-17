@@ -29,6 +29,7 @@
 #include "file-enumerator.h"
 #include "side-bar-separator-item.h"
 #include "file-info.h"
+#include "file-info-job.h"
 
 using namespace Peony;
 
@@ -67,7 +68,10 @@ QString SideBarVFSItem::displayName()
 
 QString SideBarVFSItem::iconName()
 {
-    return /*m_plugin->icon().name()*/"";
+    if (m_iconName.isEmpty()) {
+        m_iconName = FileUtils::getFileIconName(m_uri);
+    }
+    return m_iconName;
 }
 
 void SideBarVFSItem::findChildren()
@@ -78,8 +82,8 @@ void SideBarVFSItem::findChildren()
         m_enumerator= new FileEnumerator();
     m_enumerator->setEnumerateDirectory(m_uri);
 
-    connect(m_enumerator,&FileEnumerator::prepared,this,&SideBarVFSItem::slot_enumeratorPrepared);
-    m_enumerator->prepare();
+    connect(m_enumerator,&FileEnumerator::enumerateFinished,this, &SideBarVFSItem::slot_enumeratorFinish);
+    m_enumerator->enumerateAsync();
 
 }
 
@@ -87,12 +91,6 @@ void SideBarVFSItem::findChildrenAsync()
 {
     //TODO add async method.
     findChildren();
-}
-
-void SideBarVFSItem::slot_enumeratorPrepared(const std::shared_ptr<GErrorWrapper> &err, const QString &targetUri, bool critical)
-{
-    connect(m_enumerator,&FileEnumerator::enumerateFinished,this, &SideBarVFSItem::slot_enumeratorFinish);
-    m_enumerator->enumerateAsync();
 }
 
 void SideBarVFSItem::slot_enumeratorFinish(bool successed)
@@ -113,10 +111,14 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
             isEmpty = false;
         }
 
-        if (!(info->isDir())){
+        if (!(info->isDir())){/* 只显示文件夹，文件不显示 */
             real_children_count--;
             continue;
         }
+
+        /* 更新fileinfo */
+        FileInfoJob job(info);
+        job.querySync();
 
         SideBarVFSItem *item = new SideBarVFSItem(info->uri(), this, m_model);
 
