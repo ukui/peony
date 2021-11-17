@@ -45,6 +45,8 @@ protected:
 private:
     QLocale m_locale;
     QCollator m_comparer;
+
+    bool m_show_hidden = false;
 };
 
 }

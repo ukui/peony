@@ -393,8 +393,12 @@ void SideBarFileSystemItem::slot_enumeratorPrepared(const std::shared_ptr<GError
 
 void SideBarFileSystemItem::slot_enumeratorFinish(bool successed)
 {
-    if(!successed)
+    if(!successed) {
+        auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+        this->m_children->prepend(separator);
+        m_model->insertRows(0, 1, this->firstColumnIndex());
         return;
+    }
 
     auto infos = m_enumerator->getChildren();
     bool isEmpty = true;
@@ -480,8 +484,14 @@ void SideBarFileSystemItem::findChildren()
             enumdir = info.get()->targetUri();
         }
 
-        if(!m_enumerator)
+        if (!m_enumerator) {
             m_enumerator= new FileEnumerator();
+        } else {
+            m_enumerator->cancel();
+            m_enumerator->deleteLater();
+            m_enumerator = new FileEnumerator();
+        }
+
         m_enumerator->setEnumerateDirectory(enumdir);
         m_enumerator->setEnumerateWithInfoJob();
 

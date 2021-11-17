@@ -199,6 +199,8 @@ void FileEnumerator::cancel()
     m_cancellable = g_cancellable_new();
 
     m_children_uris->clear();
+    m_cache_uris->clear();
+    m_cached_infos.clear();
 
     Q_EMIT this->cancelled();
     //Q_EMIT enumerateFinished(false);
