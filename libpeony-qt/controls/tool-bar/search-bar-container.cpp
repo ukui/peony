@@ -83,9 +83,11 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_list_view->setModel(m_model);
     completer->setPopup(m_list_view);
 
-    //change QCompleter Mode form UnfilteredPopupCompletion to PopupCompletion
-    //to fix can not input chinese continuous issue
+    //change QCompleter Mode from PopupCompletion to InlineCompletion，
+    //show list in pop up window way will effect the input method
+    //to fix can not input chinese continuous issue,link to bug#90621
     completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_search_box->setCompleter(completer);
 
     m_search_trigger.setInterval(500);
@@ -127,17 +129,19 @@ void SearchBarContainer::onTableClicked(const QModelIndex &index)
         return;
     }
 
+    m_search_box->setText("");
     auto l = m_model->stringList();
     l.clear();
     l.prepend(tr("Clear"));
     m_model->setStringList(l);
-    m_search_box->setText("");
 }
 
 void SearchBarContainer::startSearch()
 {
     auto l = m_model->stringList();
-    if (! l.contains(m_search_box->text()))
+    //fix has empty key words issue
+    if (m_search_box->text() != nullptr && m_search_box->text().length() >0
+         && ! l.contains(m_search_box->text()))
         l.prepend(m_search_box->text());
 
     //qDebug() << "SearchBarContainer::startSearch:" <<m_search_box->text();
