@@ -32,8 +32,9 @@
 
 using namespace Peony;
 
-SideBarVFSItem::SideBarVFSItem(const QString& uri, SideBarModel *model, QObject *parent) :
+SideBarVFSItem::SideBarVFSItem(const QString& uri, SideBarVFSItem* parentItem, SideBarModel *model, QObject *parent) :
     SideBarAbstractItem(model, parent)
+  ,m_parentItem(parentItem)
 {
    m_uri = uri;
 }
@@ -66,7 +67,7 @@ QString SideBarVFSItem::displayName()
 
 QString SideBarVFSItem::iconName()
 {
-    return m_plugin->icon().name();
+    return /*m_plugin->icon().name()*/"";
 }
 
 void SideBarVFSItem::findChildren()
@@ -76,7 +77,6 @@ void SideBarVFSItem::findChildren()
     if(!m_enumerator)
         m_enumerator= new FileEnumerator();
     m_enumerator->setEnumerateDirectory(m_uri);
-    m_enumerator->setEnumerateWithInfoJob();
 
     connect(m_enumerator,&FileEnumerator::prepared,this,&SideBarVFSItem::slot_enumeratorPrepared);
     m_enumerator->prepare();
@@ -103,6 +103,9 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
     bool isEmpty = true;
     int real_children_count = infos.count();
     if (infos.isEmpty()) {
+        auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+        this->m_children->prepend(separator);
+        m_model->insertRows(0, 1, this->firstColumnIndex());
         return;
     }
     for (auto info: infos) {
@@ -115,7 +118,7 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
             continue;
         }
 
-        SideBarVFSItem *item = new SideBarVFSItem(info->uri(), m_model);
+        SideBarVFSItem *item = new SideBarVFSItem(info->uri(), this, m_model);
 
         bool isUmountable = FileUtils::isFileUnmountable(info->uri());
         auto targetUri = FileUtils::getTargetUri(info->uri());

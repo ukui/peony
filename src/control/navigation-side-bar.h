@@ -68,9 +68,9 @@ protected:
     int sizeHintForColumn(int column) const override;
 
 private:
-    Peony::SideBarProxyFilterSortModel *m_proxy_model;
-    Peony::SideBarModel *m_model;
-    Peony::SideBarAbstractItem* m_currSelectedItem =nullptr;
+    Peony::SideBarProxyFilterSortModel *m_proxy_model = nullptr;
+    Peony::SideBarModel *m_model = nullptr;
+    Peony::SideBarAbstractItem* m_currSelectedItem = nullptr;
 };
 
 class NavigationSideBarContainer : public Peony::SideBar

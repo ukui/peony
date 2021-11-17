@@ -119,6 +119,7 @@ protected:
     bool m_unmountable = false;
     bool m_mounted = false;
     bool m_isVolume = false;
+
 Q_SIGNALS:
     void queryInfoFinished();
     void findChildrenFinished();

@@ -37,11 +37,11 @@ class PEONYCORESHARED_EXPORT SideBarVFSItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:
-    explicit SideBarVFSItem(const QString& uri, SideBarModel *model, QObject *parent = nullptr);
+    explicit SideBarVFSItem(const QString& uri, SideBarVFSItem* parentItem, SideBarModel *model, QObject *parent = nullptr);
     ~SideBarVFSItem();
 
     Type type() override {
-        return SideBarAbstractItem::VFSItem;
+        return SideBarAbstractItem::FileSystemItem;
     }
 
     QString uri() override;
@@ -52,7 +52,7 @@ public:
         return true;
     }
     SideBarAbstractItem *parent() override {
-        return m_parent;
+        return m_parentItem;
     }
 
 public Q_SLOTS:
@@ -63,10 +63,8 @@ public Q_SLOTS:
     void slot_enumeratorFinish(bool successed);
 
 private:
-    SideBarVFSItem *m_parent = nullptr;
-    VFSPluginIface *m_plugin = nullptr;
+    SideBarVFSItem *m_parentItem = nullptr;
     FileEnumerator *m_enumerator = nullptr;
-
 };
 
 }
