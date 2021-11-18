@@ -30,8 +30,8 @@
 namespace Peony {
 
 class SideBarModel;
-class VFSPluginIface;
 class FileEnumerator;
+class FileWatcher;
 
 class PEONYCORESHARED_EXPORT SideBarVFSItem : public SideBarAbstractItem
 {
@@ -58,12 +58,15 @@ public:
 public Q_SLOTS:
     void findChildren() override;
     void findChildrenAsync() override;
-    //void clearChildren() override;
+    void clearChildren() override;
     void slot_enumeratorFinish(bool successed);
+    void slot_fileCreate(const QString& uri);
+    void slot_fileDelete(const QString& uri);
 
 private:
     SideBarVFSItem *m_parentItem = nullptr;
     FileEnumerator *m_enumerator = nullptr;
+    std::shared_ptr<FileWatcher> m_watcher = nullptr;
 };
 
 }

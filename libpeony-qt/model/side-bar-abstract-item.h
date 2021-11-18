@@ -40,6 +40,7 @@ class PEONYCORESHARED_EXPORT SideBarAbstractItem : public QObject
 {
     friend class SideBarFileSystemItem;
     friend class SideBarModel;
+    friend class SideBarVFSItem;
     Q_OBJECT
 public:
     enum Type {

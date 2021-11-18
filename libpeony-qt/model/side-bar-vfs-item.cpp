@@ -30,6 +30,7 @@
 #include "side-bar-separator-item.h"
 #include "file-info.h"
 #include "file-info-job.h"
+#include "file-watcher.h"
 
 using namespace Peony;
 
@@ -85,12 +86,26 @@ void SideBarVFSItem::findChildren()
     connect(m_enumerator,&FileEnumerator::enumerateFinished,this, &SideBarVFSItem::slot_enumeratorFinish);
     m_enumerator->enumerateAsync();
 
+    if(!m_watcher)
+        m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
+    m_watcher->setMonitorChildrenChange();
+    connect(m_watcher.get(), &FileWatcher::fileCreated, this, &SideBarVFSItem::slot_fileCreate);
+    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, &SideBarVFSItem::slot_fileDelete);
+    m_watcher->startMonitor();
+
 }
 
 void SideBarVFSItem::findChildrenAsync()
 {
     //TODO add async method.
     findChildren();
+}
+
+void SideBarVFSItem::clearChildren()
+{
+    if(m_watcher)
+        m_watcher->stopMonitor();
+    SideBarAbstractItem::clearChildren();
 }
 
 void SideBarVFSItem::slot_enumeratorFinish(bool successed)
@@ -136,3 +151,35 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
     }
 
 }
+
+void SideBarVFSItem::slot_fileCreate(const QString &uri)
+{
+    qDebug()<<"created:"<<uri;
+    for (auto item : *m_children) {
+        if (item->uri() == uri) {
+            return;
+        }
+    }
+
+    SideBarVFSItem *item = new SideBarVFSItem(uri, this, m_model);
+    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+    m_children->append(item);
+    m_model->endInsertRows();
+    m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+}
+
+void SideBarVFSItem::slot_fileDelete(const QString &uri)
+{
+    qDebug()<<"deleted:"<<uri;
+    for (auto child : *m_children) {
+        if (child->uri() == uri) {
+            int index = m_children->indexOf(child);
+            m_model->beginRemoveRows(firstColumnIndex(), index, index);
+            m_children->removeOne(child);
+            m_model->endRemoveRows();
+            child->deleteLater();
+            break;
+        }
+    }
+}
+
