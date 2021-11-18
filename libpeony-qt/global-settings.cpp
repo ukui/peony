@@ -77,7 +77,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             }
         });
 
-        QString timeValue = m_control_center_plugin->get("time").toString();
+        QString timeValue = m_control_center_plugin->get("hoursystem").toString();
         QString dateValue = m_control_center_plugin->get("date").toString();
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, timeValue);
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, dateValue);

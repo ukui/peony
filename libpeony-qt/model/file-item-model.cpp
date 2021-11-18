@@ -32,6 +32,7 @@
 #include "file-utils.h"
 
 #include "thumbnail-manager.h"
+#include "global-settings.h"
 
 #include "file-operation-utils.h"
 
@@ -259,16 +260,8 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             //trash files show delete Date
             if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull()) {
                 QDateTime deleteTime = QDateTime::fromMSecsSinceEpoch(item->m_info->deletionTime (), Qt::LocalTime);
-                if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
-                    QGSettings setting("org.ukui.control-center.panel.plugins");
-                    QString val = setting.get ("date").toString ();
-                    if ("cn" == val) {
-                        return QVariant(deleteTime.toString ("yyyy/MM/dd HH:mm:ss"));
-                    } else {
-                        return QVariant(deleteTime.toString ("yyyy-MM-dd HH:mm:ss"));
-                    }
-                }
-                return QVariant(item->m_info->deletionDate());
+                QString format = GlobalSettings::getInstance()->getSystemTimeFormat();
+                return QVariant(deleteTime.toString(format));
             }
             return QVariant(item->m_info->modifiedDate());
         default:
