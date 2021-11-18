@@ -838,6 +838,9 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 
     QUrl url(uri);
     auto realUri = uri;
+    if (uri == "computer:///ukui-data-volume") {
+        realUri = "file:///data";
+    }
     if (url.scheme().isEmpty()) {
         if (uri.startsWith("/")) {
             realUri = "file://" + uri;
