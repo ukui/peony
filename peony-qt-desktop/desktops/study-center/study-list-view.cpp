@@ -33,7 +33,7 @@ StudyListView::StudyListView(QWidget *parent): QListView(parent)
     this->setFlow(QListView::LeftToRight);
     this->setViewMode(QListView::IconMode);
     this->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    this->setGridSize(QSize(Style::GridSize,Style::GridSize));
+    this->setGridSize(QSize(Style::GridWidth,Style::GridHeight));
 
     m_listmodel=new QStandardItemModel;
     this->setModel(m_listmodel);
@@ -119,5 +119,5 @@ void StudyListView::mouseDoubleClickEvent(QMouseEvent *event)
 
 int StudyListView::horizontalOffset() const
 {
-    return 25;
+    return 15;
 }

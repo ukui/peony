@@ -39,6 +39,7 @@ public:
     explicit StudyDirectoryWidget(QStringList &strListTitleStyle, QList<QPair<QString, QList<TabletAppEntity*>>> &subtitleMap, int mode = 0, QWidget *parent = nullptr);
     ~StudyDirectoryWidget();
     void updateAppData(QList<QPair<QString, QList<TabletAppEntity*>>> &subAppMap);
+    void setSize();
 private:
     //主界面
     QVBoxLayout*  m_mainLayout=nullptr;

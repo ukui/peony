@@ -175,7 +175,6 @@ void StudyDirectoryWidget::initAppListWidget()
         connect(listView,SIGNAL(clicked(QModelIndex)),this,SLOT(execApplication(QModelIndex)));
     }
     m_scrollAreaWidLayout->addStretch();
-    resizeScrollAreaControls();
 }
 /**
  * 执行应用程序
@@ -205,7 +204,7 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
             continue;
         }
         listview->adjustSize();
-        int iDividend = (m_scrollArea->width())/Style::GridSize;
+        int iDividend = (m_scrollArea->width()-16)/Style::GridWidth;
         qDebug()<<"标题: " <<m_studyCenterDataList.at(i).first <<" 每行应用个数:"<<iDividend;
         int iRowCount = 0;
         if(listview->model()->rowCount()%iDividend>0)
@@ -218,7 +217,7 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
 
         }
 
-        listview->setFixedSize(m_scrollArea->width() - 50,listview->gridSize().height()*iRowCount);
+        listview->setFixedHeight(listview->gridSize().height()*iRowCount);
     }
     m_scrollArea->widget()->adjustSize();
 }
@@ -306,3 +305,21 @@ void StudyDirectoryWidget::updateAppData(QList<QPair<QString, QList<TabletAppEnt
     resizeScrollAreaControls();
 }
 
+void StudyDirectoryWidget::setSize()
+{
+
+    int ScreenWidth=QApplication::primaryScreen()->geometry().width();
+    int ScreenHeight=QApplication::primaryScreen()->geometry().height();
+    if(Style::ScreenRotation)
+    {
+        m_scrollArea->setFixedWidth(ScreenWidth-72*2-48-8);
+        qDebug()<<" ScreenRotation1 m_scrollArea->width() = "<<ScreenWidth-72*2-48-8;
+    }
+    else
+    {
+        qDebug()<<" ScreenRotation1 m_scrollArea->width() = "<<(ScreenWidth-80*2-16)/2-48-8;
+        m_scrollArea->setFixedWidth((ScreenWidth-80*2-16)/2-48-8);
+    }
+
+    resizeScrollAreaControls();
+}
