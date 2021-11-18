@@ -286,6 +286,11 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
+    connect(m_model, &SideBarModel::signal_collapsedChildren, this, [=](const QModelIndex &index){
+        QModelIndex modelIndex = m_proxy_model->mapFromSource(index);
+        collapse(modelIndex);
+    });
+
     //expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
     for(int row =0; row < model()->rowCount();row++)
     {

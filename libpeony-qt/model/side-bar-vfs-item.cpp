@@ -90,7 +90,10 @@ void SideBarVFSItem::findChildren()
         m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
     m_watcher->setMonitorChildrenChange();
     connect(m_watcher.get(), &FileWatcher::fileCreated, this, &SideBarVFSItem::slot_fileCreate);
-    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, &SideBarVFSItem::slot_fileDelete);
+    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, &SideBarVFSItem::slot_fileDelete);    
+    connect(m_watcher.get(), &FileWatcher::fileChanged, this, &SideBarVFSItem::slot_fileSafeUpdate);
+    connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, &SideBarVFSItem::slot_fileSafeLocked);
+
     m_watcher->startMonitor();
 
 }
@@ -178,6 +181,31 @@ void SideBarVFSItem::slot_fileDelete(const QString &uri)
             m_children->removeOne(child);
             m_model->endRemoveRows();
             child->deleteLater();
+            break;
+        }
+    }
+}
+
+void SideBarVFSItem::slot_fileSafeLocked(const QString &uri)
+{
+    /* 锁定后折叠子项 */
+    auto index = this->firstColumnIndex();
+    Q_EMIT m_model->signal_collapsedChildren(index);
+    m_model->dataChanged(this->firstColumnIndex(), this->lastColumnIndex());
+}
+
+void SideBarVFSItem::slot_fileSafeUpdate(const QString &uri)
+{
+    /* 更新iconName */
+    for (auto item : *m_children){
+        if (item->uri() == uri){
+            auto info = FileInfo::fromUri(item->m_uri);
+            /* 更新file info */
+            FileInfoJob j(info);
+            j.querySync();
+
+            item->m_iconName = info.get()->iconName();
+            m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
         }
     }

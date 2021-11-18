@@ -60,8 +60,10 @@ public Q_SLOTS:
     void findChildrenAsync() override;
     void clearChildren() override;
     void slot_enumeratorFinish(bool successed);
-    void slot_fileCreate(const QString& uri);
-    void slot_fileDelete(const QString& uri);
+    void slot_fileCreate(const QString& uri);/* 增加 */
+    void slot_fileDelete(const QString& uri);/* 删除 */
+    void slot_fileSafeLocked(const QString& uri);/* 锁定 */
+    void slot_fileSafeUpdate(const QString& uri);/* 用于文件保护箱解锁/锁定时更新icon */
 
 private:
     SideBarVFSItem *m_parentItem = nullptr;
