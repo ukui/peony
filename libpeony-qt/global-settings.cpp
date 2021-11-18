@@ -77,7 +77,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             }
         });
 
-        QString timeValue = m_control_center_plugin->get("time").toString();
+        QString timeValue = m_control_center_plugin->get("hoursystem").toString();
         QString dateValue = m_control_center_plugin->get("date").toString();
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, timeValue);
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, dateValue);
@@ -97,7 +97,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
                 {
                     m_cache.remove(key);
-                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());                  
+                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());
                 }
                 /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
                  *  but the other document management does not take effect in real time.modified by 2021/06/15  */
