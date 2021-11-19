@@ -65,7 +65,8 @@ int Style::BigIconSize=106;
 int Style::SmallIconSize=96;
 int Style::Margin=74;
 int Style::topSpace=16;
-int Style::GridSize=170;
+int Style::GridHeight=170;
+int Style::GridWidth=155;
 int Style::itemWidth=120;
 int Style::itemHeight=145;
 

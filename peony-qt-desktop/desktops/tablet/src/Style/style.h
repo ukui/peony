@@ -133,7 +133,8 @@ public:
     static int BigIconSize;
     static int SmallIconSize;
     static int Margin;
-    static int GridSize;
+    static int GridWidth;
+    static int GridHeight;
     static int itemWidth;
     static int itemHeight;
     static int topSpace;
