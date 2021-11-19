@@ -470,6 +470,7 @@ void StudyCenterMode::screenRotation()
     qDebug() << "StudyCenterMode::screenRotation widget width:" << this->width()  <<"  height:"<<this->height();
 
     Style::initWidStyle();
+    practiceWidget->setSize();
 
     //5.显示全部组件
     if(Style::ScreenRotation)
