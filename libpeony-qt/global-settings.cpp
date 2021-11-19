@@ -316,7 +316,7 @@ void GlobalSettings::slot_updateRemoteServer(const QString& server, bool add)
 void GlobalSettings::setTimeFormat(const QString &value)
 {
     if (value == "12"){
-        m_time_format = tr("hh:mm:ss AP");
+        m_time_format = tr("AP hh:mm:ss");
     }
     else{
         m_time_format = tr("HH:mm:ss");

@@ -440,18 +440,17 @@ void BasicPropertiesPage::loadPartTwo()
 
 void BasicPropertiesPage::loadOptionalData()
 {
-    this->setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+    this->setSysTimeFormat();
     // set time
-    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
-        if (UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME == key) {
-            if ("12" == GlobalSettings::getInstance()->getValue(key)) {
-                setSysTimeFormat(tr("yyyy-MM-dd, hh:mm:ss AP"));
-            } else if ("24" == GlobalSettings::getInstance()->getValue(key)) {
-                setSysTimeFormat(tr("yyyy-MM-dd, HH:mm:ss"));
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        QGSettings* settings = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(settings, &QGSettings::changed, this, [=](const QString &key) {
+            if ("hoursystem" == key || "date" == key) {
+                setSysTimeFormat();
+                updateInfo(m_info->uri());
             }
-            updateInfo(m_info.get()->uri());
-        }
-    });
+        });
+    }
 
     updateInfo(m_info.get()->uri());
     connect(m_watcher.get(), &FileWatcher::locationChanged, [=](const QString&, const QString &uri) {
@@ -937,6 +936,11 @@ bool BasicPropertiesPage::isNameChanged()
     }
 
     return false;
+}
+
+void BasicPropertiesPage::setSysTimeFormat()
+{
+    this->m_systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
 }
 
 void FileNameThread::run()

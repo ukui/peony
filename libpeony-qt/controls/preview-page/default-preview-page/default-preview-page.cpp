@@ -97,6 +97,24 @@ DefaultPreviewPage::DefaultPreviewPage(QWidget *parent) : QStackedWidget (parent
             }
         });
     }
+
+    if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+        QGSettings* settings = new QGSettings("org.ukui.control-center.panel.plugins", QByteArray(), this);
+        connect(settings, &QGSettings::changed, this, [=](const QString &key) {
+            if ("hoursystem" == key || "date" == key) {
+                if (m_support && m_preview_tab_widget) {
+                    if (m_info) {
+                        FileInfoJob* infoJob = new FileInfoJob(m_info, this);
+                        infoJob->setAutoDelete(true);
+                        connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=] {
+                            m_preview_tab_widget->updateInfo(m_info.get());
+                        });
+                        infoJob->queryAsync();
+                    }
+                }
+            }
+        });
+    }
 }
 
 DefaultPreviewPage::~DefaultPreviewPage()
@@ -283,11 +301,8 @@ void FilePreviewPage::updateInfo(FileInfo *info)
 
     wrapData(m_type_label, info->fileType());
 
-    auto access = QDateTime::fromMSecsSinceEpoch(info->accessTime()*1000);
-    auto modify = QDateTime::fromMSecsSinceEpoch(info->modifiedTime()*1000);
-
-    wrapData(m_time_access_label, access.toString(Qt::SystemLocaleShortDate));
-    wrapData(m_time_modified_label, modify.toString(Qt::SystemLocaleShortDate));
+    wrapData(m_time_access_label, info->accessDate());
+    wrapData(m_time_modified_label, info->modifiedDate());
 
     m_file_count_label->setText(tr(""));
     if (info->isDir()) {

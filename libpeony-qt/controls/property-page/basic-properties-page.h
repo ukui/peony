@@ -120,9 +120,7 @@ protected:
     void chooseFileIcon();
     void changeFileIcon();
     bool isNameChanged();
-    void setSysTimeFormat(QString format) {
-        this->m_systemTimeFormat = format;
-    }
+    void setSysTimeFormat();
 
 protected Q_SLOTS:
     void getFIleInfo(QString uri);
