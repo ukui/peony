@@ -177,6 +177,7 @@ void SideBarVFSItem::slot_fileCreate(const QString &uri)
     }
     /* 新增项 */
     SideBarVFSItem *item = new SideBarVFSItem(info->uri(), this, m_model);
+    item->m_iconName =info->iconName();/* 解决有时候没有图标的情况 */
     m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
     m_children->append(item);
     m_model->endInsertRows();
