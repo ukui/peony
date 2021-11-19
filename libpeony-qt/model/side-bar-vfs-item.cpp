@@ -45,6 +45,7 @@ SideBarVFSItem::~SideBarVFSItem()
 {
     if(m_enumerator)
     {
+        m_enumerator->cancel();
         delete m_enumerator;
         m_enumerator = nullptr;
     }
@@ -81,19 +82,24 @@ void SideBarVFSItem::findChildren()
     /* 枚举操作 */
     if(!m_enumerator)
         m_enumerator= new FileEnumerator();
+    else {
+        m_enumerator->cancel();
+        m_enumerator->deleteLater();
+        m_enumerator = new FileEnumerator();
+    }
     m_enumerator->setEnumerateDirectory(m_uri);
 
     connect(m_enumerator,&FileEnumerator::enumerateFinished,this, &SideBarVFSItem::slot_enumeratorFinish);
     m_enumerator->enumerateAsync();
 
-    if(!m_watcher)
+    if(!m_watcher){
         m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
+        connect(m_watcher.get(), &FileWatcher::fileCreated, this, &SideBarVFSItem::slot_fileCreate);
+        connect(m_watcher.get(), &FileWatcher::fileDeleted, this, &SideBarVFSItem::slot_fileDelete);
+        connect(m_watcher.get(), &FileWatcher::fileChanged, this, &SideBarVFSItem::slot_fileSafeUpdate);
+        connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, &SideBarVFSItem::slot_fileSafeLocked);
+    }
     m_watcher->setMonitorChildrenChange();
-    connect(m_watcher.get(), &FileWatcher::fileCreated, this, &SideBarVFSItem::slot_fileCreate);
-    connect(m_watcher.get(), &FileWatcher::fileDeleted, this, &SideBarVFSItem::slot_fileDelete);    
-    connect(m_watcher.get(), &FileWatcher::fileChanged, this, &SideBarVFSItem::slot_fileSafeUpdate);
-    connect(m_watcher.get(), &FileWatcher::directoryUnmounted, this, &SideBarVFSItem::slot_fileSafeLocked);
-
     m_watcher->startMonitor();
 
 }
@@ -115,15 +121,16 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
 {
     if(!successed)
         return;
-    auto infos = m_enumerator->getChildren();
-    bool isEmpty = true;
-    int real_children_count = infos.count();
+    auto infos = m_enumerator->getChildren();    
     if (infos.isEmpty()) {
         auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
         this->m_children->prepend(separator);
         m_model->insertRows(0, 1, this->firstColumnIndex());
         return;
     }
+
+    int real_children_count = infos.count();
+    bool isEmpty = true;
     for (auto info: infos) {
         if (!info->displayName().startsWith(".") && (info->isDir())) {
             isEmpty = false;
@@ -139,15 +146,11 @@ void SideBarVFSItem::slot_enumeratorFinish(bool successed)
         job.querySync();
 
         SideBarVFSItem *item = new SideBarVFSItem(info->uri(), this, m_model);
-
-        bool isUmountable = FileUtils::isFileUnmountable(info->uri());
-        auto targetUri = FileUtils::getTargetUri(info->uri());
-        item->m_mounted = !targetUri.isEmpty()|| isUmountable;
         m_children->append(item);
     }
     m_model->insertRows(0, real_children_count, firstColumnIndex());
 
-    if (isEmpty) {
+    if (isEmpty) {/* 目录下只有文件的情形 */
         auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
         this->m_children->prepend(separator);
         m_model->insertRows(0, 1, this->firstColumnIndex());
@@ -164,11 +167,22 @@ void SideBarVFSItem::slot_fileCreate(const QString &uri)
         }
     }
 
-    SideBarVFSItem *item = new SideBarVFSItem(uri, this, m_model);
+    /* 更新fileinfo */
+    auto info = FileInfo::fromUri(uri);
+    FileInfoJob job(uri, this);
+    job.querySync();
+
+    if (!(info->isDir())){/* 只显示文件夹，文件不显示 */
+        return;
+    }
+    /* 新增项 */
+    SideBarVFSItem *item = new SideBarVFSItem(info->uri(), this, m_model);
     m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
     m_children->append(item);
     m_model->endInsertRows();
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果添加了非空项，则需要删除空项 */
     m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+
 }
 
 void SideBarVFSItem::slot_fileDelete(const QString &uri)
@@ -184,6 +198,7 @@ void SideBarVFSItem::slot_fileDelete(const QString &uri)
             break;
         }
     }
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果删除了所有项，则需要添加空项 */
 }
 
 void SideBarVFSItem::slot_fileSafeLocked(const QString &uri)

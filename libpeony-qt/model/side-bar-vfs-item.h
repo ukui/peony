@@ -59,7 +59,7 @@ public Q_SLOTS:
     void findChildren() override;
     void findChildrenAsync() override;
     void clearChildren() override;
-    void slot_enumeratorFinish(bool successed);
+    void slot_enumeratorFinish(bool successed);/* 遍历完成 */
     void slot_fileCreate(const QString& uri);/* 增加 */
     void slot_fileDelete(const QString& uri);/* 删除 */
     void slot_fileSafeLocked(const QString& uri);/* 锁定 */
