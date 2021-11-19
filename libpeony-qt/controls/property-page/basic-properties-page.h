@@ -129,9 +129,7 @@ protected:
      * \return 如果对名称进行了修改，返回true
      */
     bool isNameChanged();
-    void setSysTimeFormat(QString format) {
-        this->m_systemTimeFormat = format;
-    }
+    void setSysTimeFormat();
 
 protected Q_SLOTS:
     void getFIleInfo(QString uri);
