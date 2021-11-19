@@ -214,7 +214,7 @@ retry:
             }
         } else {
             // fileinfo关联删除时间
-            quint64 time = QDateTime::currentSecsSinceEpoch();
+            quint64 time = QDateTime::currentMSecsSinceEpoch();
             auto info = FileInfo::fromUri(src);
             info.get()->setProperty(TRASH_TIME, time);
         }
@@ -254,7 +254,10 @@ retry:
         for (auto info : m_src_infos) {
             if (info.get()->displayName() == trashFileInfo.get()->displayName()) {
                 // allow 5 seconds deviation
-                if (qAbs(trashFileInfo.get()->getDeletionDateUInt64() - info.get()->property(TRASH_TIME).toUInt()) < 5) {
+                int a = trashFileInfo.get()->getDeletionDateUInt64();
+                int b = info.get()->property(TRASH_TIME).toUInt();
+                int abs = qAbs(a - b);
+                if (abs < 5000) {
                     destUris<<trashFileInfo.get()->uri();
                 }
             }
