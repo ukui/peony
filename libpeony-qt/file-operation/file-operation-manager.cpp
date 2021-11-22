@@ -282,6 +282,18 @@ start:
        }
    }, Qt::BlockingQueuedConnection);
 
+   // fix #92481
+   if (auto trashOp = qobject_cast<FileTrashOperation *>(operation)) {
+       connect(trashOp, &FileTrashOperation::deleteRequest, this, [=](const QStringList &srcUris){
+           auto deleteOperation = new FileDeleteOperation(srcUris);
+           // wait trash operation finished. otherwise manager will asume
+           // the operation is invalid due to deletion checkment.
+           QTimer::singleShot(1000, this, [=]{
+               startOperation(deleteOperation, true);
+           });
+       }, Qt::BlockingQueuedConnection);
+   }
+
     if (!allowParallel) {
         if (m_thread_pool->activeThreadCount() > 0) {
             QMessageBox::warning(nullptr,
