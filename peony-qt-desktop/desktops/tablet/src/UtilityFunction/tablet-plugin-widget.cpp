@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QDebug>
 #include <QPluginLoader>
+#include <QDBusInterface>
 
 #define TIME_FORMAT "org.ukui.control-center.panel.plugins"
 #define TABLED_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
@@ -177,7 +178,6 @@ void TabletPluginWidget::setSearchOpacityEffect(const qreal &num)
 
 void TabletPluginWidget::startUKUISearch()
 {
-    QProcess p;
-    p.setProgram(QString("ukui-search"));
-    p.startDetached(p.program());
+    QDBusInterface session("com.ukui.search.service", "/", "org.ukui.search.service");
+    session.call("showWindow");
 }
