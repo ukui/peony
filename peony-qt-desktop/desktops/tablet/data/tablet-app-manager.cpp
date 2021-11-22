@@ -669,13 +669,13 @@ QMap<QString, QList<TabletAppEntity *>> TabletAppManager::getStudyCenterData()
             appEntity->execCommand  = entity->execCommand;
 
             //TODO 区分精准练习应用与其他应用 20210826
-            if (entity->desktopName.contains("math")) {
+            if (entity->desktopName.contains("tencent-math")) {
                 mathList.append(appEntity);
 
-            } else if (entity->desktopName.contains("english")) {
+            } else if (entity->desktopName.contains("tencent-english")) {
                 englishList.append(appEntity);
 
-            } else if (entity->desktopName.contains("chinese")) {
+            } else if (entity->desktopName.contains("tencent-chinese")) {
                 chineseList.append(appEntity);
 
             } else if ((QString::compare("tencent-course-center.desktop", entity->desktopName) == 0)
