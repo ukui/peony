@@ -43,6 +43,7 @@ class PEONYCORESHARED_EXPORT SideBarModel : public QAbstractItemModel
     friend class SideBarAbstractItem;
     friend class SideBarFavoriteItem;
     friend class SideBarNetWorkItem;
+    friend class SideBarVFSItem;
     Q_OBJECT
 
 public:
@@ -97,6 +98,7 @@ public:
 
 Q_SIGNALS:
     void indexUpdated(const QModelIndex &index);
+    void signal_collapsedChildren(const QModelIndex &index);/* signal:collapse children; index:Own index */
 
 protected:
     QVector<SideBarAbstractItem*> *m_root_children = nullptr;

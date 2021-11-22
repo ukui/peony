@@ -286,7 +286,21 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         this->viewport()->update();
     });
 
-    expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
+    connect(m_model, &SideBarModel::signal_collapsedChildren, this, [=](const QModelIndex &index){
+        QModelIndex modelIndex = m_proxy_model->mapFromSource(index);
+        collapse(modelIndex);
+    });
+
+    //expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
+    for(int row =0; row < model()->rowCount();row++)
+    {
+        auto index = model()->index(row,0);
+        auto srcIndex = m_proxy_model->mapToSource(index);
+        auto item = m_model->itemFromIndex(srcIndex);
+        if(item->uri()=="filesafe:///")/* 文件保护箱默认不展开 */
+            continue;
+        expand(index);
+    }
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)

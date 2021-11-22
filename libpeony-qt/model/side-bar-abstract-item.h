@@ -40,6 +40,7 @@ class PEONYCORESHARED_EXPORT SideBarAbstractItem : public QObject
 {
     friend class SideBarFileSystemItem;
     friend class SideBarModel;
+    friend class SideBarVFSItem;
     Q_OBJECT
 public:
     enum Type {
@@ -91,8 +92,8 @@ public:
         return m_isVolume;
     }
     virtual bool hasChildren() = 0;
-    virtual QModelIndex firstColumnIndex() = 0;
-    virtual QModelIndex lastColumnIndex() = 0;
+    virtual QModelIndex firstColumnIndex();
+    virtual QModelIndex lastColumnIndex();
 
     virtual SideBarAbstractItem *parent() = 0;
 
@@ -119,17 +120,18 @@ protected:
     bool m_unmountable = false;
     bool m_mounted = false;
     bool m_isVolume = false;
+
 Q_SIGNALS:
     void queryInfoFinished();
     void findChildrenFinished();
     void updated();
 
 public Q_SLOTS:
-    virtual void onUpdated() = 0;
+    virtual void onUpdated(){}
 
-    virtual void eject(GMountUnmountFlags ejectFlag) = 0;
-    virtual void unmount() = 0;
-    virtual void format() = 0;
+    virtual void eject(GMountUnmountFlags ejectFlag){};
+    virtual void unmount(){}
+    virtual void format(){}
 
     virtual void ejectOrUnmount() {}
     virtual void mount(){}
