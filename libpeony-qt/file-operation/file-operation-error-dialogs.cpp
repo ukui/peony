@@ -33,6 +33,8 @@
 
 static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
 
+static QString formatGerrorString (const Peony::FileOperationError* error);
+
 Peony::FileOperationErrorDialogConflict::FileOperationErrorDialogConflict(FileOperationErrorDialogBase *parent)
     : FileOperationErrorDialogBase(parent)
 {
@@ -199,7 +201,7 @@ void Peony::FileOperationErrorDialogWarning::handle(Peony::FileOperationError &e
     if (nullptr != m_error->errorStr) {
         // 字符串长度限制改到了 函数 formatGerrorString 里，只针对文件名/路径。
         QString htmlString = QString("<p>%1</p>").arg(formatGerrorString (m_error).toHtmlEscaped());
-        m_text->setText(htmlString);
+        setText(htmlString);
     } else {
         QString htmlString = QString("<p>%1</p>")
                                  .arg(opt.fontMetrics.elidedText(tr("Make sure the disk is not full or write protected and that the file is not protected"), Qt::ElideMiddle, 480).toHtmlEscaped());
@@ -336,6 +338,14 @@ void Peony::FileOperationErrorDialogNotSupported::handle(Peony::FileOperationErr
     case G_IO_ERROR_CANT_CREATE_BACKUP:
     case G_IO_ERROR_TOO_MANY_OPEN_FILES:
         error.respCode = Cancel;
+    default:
+        error.respCode = IgnoreOne;
+        break;
+    }
+    if (QDialog::Accepted == ret && m_error->op == FileOpTrash && G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode) {
+        error.respCode = m_do_same ? error.respCode = ForceAll : error.respCode = Force;
+    } else if (QDialog::Rejected == ret) {
+        error.respCode = Cancel;
     }
 }
 
@@ -375,13 +385,8 @@ static QString formatGerrorString (const Peony::FileOperationError* error)
         }
         break;
     default:
-        error.respCode = IgnoreOne;
         break;
     }
 
-    if (QDialog::Accepted == ret && m_error->op == FileOpTrash && G_IO_ERROR_NOT_SUPPORTED == m_error->errorCode) {
-        error.respCode = m_do_same ? error.respCode = ForceAll : error.respCode = Force;
-    } else if (QDialog::Rejected == ret) {
-        error.respCode = Cancel;
-    }
+    return errorStr;
 }

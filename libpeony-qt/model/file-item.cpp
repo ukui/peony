@@ -682,7 +682,7 @@ void FileItem::onDeleted(const QString &thisUri)
         } else {
             //! \note Fix direct setRootUri() prevents view switch error
             // m_model->setRootUri("file:///");
-            m_model->sendPathChangeRequest("file:///, tmpItem->uri()");
+            m_model->sendPathChangeRequest("file:///", tmpItem->uri());
         }
     }
     m_model->updated();
