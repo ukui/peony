@@ -261,32 +261,32 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="658"/>
+        <location filename="../../src/windows/main-window.cpp" line="660"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="297"/>
+        <location filename="../../src/windows/main-window.cpp" line="299"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="304"/>
+        <location filename="../../src/windows/main-window.cpp" line="306"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="656"/>
+        <location filename="../../src/windows/main-window.cpp" line="658"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1382"/>
+        <location filename="../../src/windows/main-window.cpp" line="1384"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1383"/>
+        <location filename="../../src/windows/main-window.cpp" line="1385"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="671"/>
+        <location filename="../../src/windows/main-window.cpp" line="673"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
@@ -323,34 +323,34 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="384"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="397"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="384"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation>这是一个异常U盘, 请先格式化</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="397"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="202"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="204"/>
         <source>Open In New Window</source>
         <translation>在新窗口中打开</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="218"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="252"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="220"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="254"/>
         <source>Can not open %1, %2</source>
         <translation>无法打开%1, %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="236"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="238"/>
         <source>Open In New Tab</source>
         <translation>在新标签页中打开</translation>
     </message>
@@ -952,124 +952,124 @@ Do you want to unmount forcely?</source>
         <translation>包含</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="278"/>
+        <location filename="../../src/control/tab-widget.h" line="281"/>
         <source>name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="278"/>
+        <location filename="../../src/control/tab-widget.h" line="281"/>
         <source>type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="278"/>
+        <location filename="../../src/control/tab-widget.h" line="281"/>
         <source>modify time</source>
         <translation>修改时间</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="278"/>
+        <location filename="../../src/control/tab-widget.h" line="281"/>
         <source>file size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="279"/>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
         <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>all</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="279"/>
+        <location filename="../../src/control/tab-widget.h" line="282"/>
         <source>file folder</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="279"/>
+        <location filename="../../src/control/tab-widget.h" line="282"/>
         <source>image</source>
         <translation>图片</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="279"/>
+        <location filename="../../src/control/tab-widget.h" line="282"/>
         <source>video</source>
         <translation>视频</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="280"/>
+        <location filename="../../src/control/tab-widget.h" line="283"/>
         <source>text file</source>
         <translation>文本文档</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="280"/>
+        <location filename="../../src/control/tab-widget.h" line="283"/>
         <source>audio</source>
         <translation>音频</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="280"/>
+        <location filename="../../src/control/tab-widget.h" line="283"/>
         <source>others</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="280"/>
+        <location filename="../../src/control/tab-widget.h" line="283"/>
         <source>wps file</source>
         <translation>WPS文件</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
         <source>today</source>
         <translation>今天</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
         <source>this week</source>
         <translation>本周</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
         <source>this month</source>
         <translation>本月</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
         <source>this year</source>
         <translation>今年</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="281"/>
+        <location filename="../../src/control/tab-widget.h" line="284"/>
         <source>year ago</source>
         <translation>一年前</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>tiny(0-16K)</source>
         <translation>极小(0-16K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>small(16k-1M)</source>
         <translation>很小(16k-1M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>empty(0K)</source>
         <translation>空(0K)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>medium(1M-128M)</source>
         <translation>中等(1M-128M)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>big(128M-1G)</source>
         <translation>大(128M-1G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>large(1-4G)</source>
         <translation>巨大(1-4G)</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="282"/>
+        <location filename="../../src/control/tab-widget.h" line="285"/>
         <source>great(&gt;4G)</source>
         <translation>极大(&gt;4G)</translation>
     </message>
@@ -1089,7 +1089,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="583"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="599"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
