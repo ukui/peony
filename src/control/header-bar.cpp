@@ -368,8 +368,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     for (auto action : actions()) {
         auto w = widgetForAction(action);
-        w->setProperty("useIconHighlightEffect", true);
-        w->setProperty("iconHighlightEffectMode", 1);
+        w->setProperty("isWindowButton", 1);
+        w->setProperty("useIconHighlightEffect", 0x2);
     }
 }
 
@@ -556,8 +556,8 @@ void HeaderBar::updateIcons()
     if (! m_is_intel)
     {
         m_go_up->setEnabled(m_window->getCurrentPage()->canCdUp());
-        m_go_up->setProperty("useIconHighlightEffect", true);
-        m_go_up->setProperty("iconHighlightEffectMode", 1);
+        m_go_up->setProperty("useIconHighlightEffect", 0x2);
+        m_go_up->setProperty("isWindowButton", 1);
     }
 
     //fix create folder fail issue in special path
@@ -570,10 +570,10 @@ void HeaderBar::updateIcons()
 //    else
 //        m_create_folder->setEnabled(false);
 
-    m_go_back->setProperty("useIconHighlightEffect", true);
-    m_go_back->setProperty("iconHighlightEffectMode", 1);
-    m_go_forward->setProperty("useIconHighlightEffect", true);
-    m_go_forward->setProperty("iconHighlightEffectMode", 1);
+    m_go_back->setProperty("useIconHighlightEffect", 0x2);
+    m_go_back->setProperty("isWindowButton", 1);
+    m_go_forward->setProperty("useIconHighlightEffect", 0x2);
+    m_go_forward->setProperty("isWindowButton", 1);
 
     //maximize & restore
     //updateMaximizeState();
@@ -877,9 +877,11 @@ void TopMenuBar::addWindowButtons()
 
     for (int i = 0; i < layout->count(); i++) {
         auto w = layout->itemAt(i)->widget();
-        w->setProperty("useIconHighlightEffect", true);
-        w->setProperty("iconHighlightEffectMode", 1);
+        w->setProperty("isWindowButton", 1);
+        w->setProperty("useIconHighlightEffect", 0x2);
     }
+    close->setProperty("isWindowButton", 2);
+    close->setProperty("useIconHighlightEffect", 0x8);
 
     optionButton->setVisible((Peony::GlobalSettings::getInstance()->getProjectName() != V10_SP1_EDU));
 }
