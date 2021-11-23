@@ -758,7 +758,7 @@ void HeaderBarContainer::addWindowButtons()
     maximizeAndRestore->setAutoRaise(true);
 
     close->setProperty("isWindowButton", 2);
-    close->setProperty("useIconHighlightEffect", 0x2);
+    close->setProperty("useIconHighlightEffect", 0x8);
     close->setAutoRaise(true);
 
     connect(close, &QToolButton::clicked, this, [=]() {
