@@ -151,6 +151,8 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
     opt.text = text;
+    opt.font = qApp->font();
+    opt.fontMetrics = qApp->fontMetrics();
 
     painter->save();
     //painter->translate(visualRect.topLeft());
@@ -313,20 +315,18 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
 QSize DesktopIconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    auto view = qobject_cast<Peony::DesktopIconView*>(parent());
-    auto zoomLevel = view->zoomLevel();
-    switch (zoomLevel) {
-    case DesktopIconView::Small:
-        return QSize(60, 70);
-    case DesktopIconView::Normal:
-        return QSize(90, 100);
-    case DesktopIconView::Large:
-        return QSize(105, 128);
-    case DesktopIconView::Huge:
-        return QSize(120, 150);
-    default:
-        return QSize(90, 100);
-    }
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+
+    auto view = qobject_cast<DesktopIconView*>(this->parent());
+    auto iconSize = view->iconSize();
+    auto font = view->font();
+    // asume max text size.
+    font.setPointSize(15);
+    auto fm = QFontMetrics(font);
+    int width = iconSize.width() + 41;
+    int height = iconSize.height() + fm.ascent()*2 + 20;
+    return QSize(width, height);
 }
 
 QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
