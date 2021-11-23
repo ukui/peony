@@ -161,7 +161,7 @@ void FileWatcher::creatorMonitor()
 {
     GError *err1 = nullptr;
     m_monitor = g_file_monitor_file(m_file,
-                                    G_FILE_MONITOR_WATCH_MOVES,
+                                    GFileMonitorFlags(G_FILE_MONITOR_WATCH_MOVES | G_FILE_MONITOR_WATCH_MOUNTS),
                                     m_cancellable,
                                     &err1);
     if (err1) {
@@ -294,7 +294,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
     case G_FILE_MONITOR_EVENT_CREATED:
     case G_FILE_MONITOR_EVENT_MOVED_IN: {
         char *uri = g_file_get_uri(file);
-        QString createdFileUri = uri;       
+        QString createdFileUri = uri;
         //qDebug()<<"***create uri***"<<createdFileUri;
         g_free(uri);
 
@@ -321,7 +321,7 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
          */
         char *old_uri = g_file_get_uri (file);
         char *new_uri = g_file_get_uri(other_file);
-        Q_EMIT p_this->fileRenamed(old_uri,new_uri);     
+        Q_EMIT p_this->fileRenamed(old_uri,new_uri);
         qDebug()<<"***oldUri***newUri***"<<old_uri<<" "<<new_uri;
         g_free(old_uri);
         g_free(new_uri);
@@ -335,10 +335,12 @@ void FileWatcher::dir_changed_callback(GFileMonitor *monitor,
         g_free(uri);
         //Q_EMIT p_this->directoryUnmounted(deletedFileUri);
         Q_EMIT p_this->fileChanged(deletedFileUri);
+        if (FileUtils::urlDecode(deletedFileUri) == FileUtils::urlDecode(p_this->m_uri)) {
+            Q_EMIT p_this->directoryUnmounted(deletedFileUri);
+        }
         break;
     }
     default:
         break;
     }
 }
-
