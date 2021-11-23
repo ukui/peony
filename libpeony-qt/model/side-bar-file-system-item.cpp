@@ -142,6 +142,11 @@ void SideBarFileSystemItem::initDirInfo(const QString &uri)
    m_displayName = info.get()->displayName();
    m_mounted = m_ejectable = m_stopable = m_removeable = m_mountable = false;
    m_unmountable = false;
+
+   if (uri == "computer:///ukui-data-volume") {
+       m_displayName = tr("Data");
+       m_iconName = "drive-harddisk";
+   }
 }
 
 void SideBarFileSystemItem::initComputerInfo()
@@ -474,10 +479,19 @@ void SideBarFileSystemItem::findChildren()
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         }
 
+        if (FileUtils::isFileExsit("file:///data/usershare")) {
+            m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+            SideBarFileSystemItem* item = new SideBarFileSystemItem("computer:///ukui-data-volume", nullptr, this, m_model);
+            m_children->append(item);
+            m_model->endInsertRows();
+        }
+
     }else{
         //对挂载点进行已存在文件的枚举操作
         QString enumdir = m_uri;
-        if(m_uri.startsWith("computer:///")){//GFileEnumerator不识别computer:///，只识别file:///
+        if (m_uri == "computer:///ukui-data-volume") {
+            enumdir = "file:///data";
+        } else if(m_uri.startsWith("computer:///")){//GFileEnumerator不识别computer:///，只识别file:///
             auto info = FileInfo::fromUri(m_uri);
             FileInfoJob job(info);
             job.querySync();

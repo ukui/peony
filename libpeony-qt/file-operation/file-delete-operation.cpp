@@ -24,6 +24,7 @@
 #include "file-operation-manager.h"
 #include "file-node.h"
 #include "file-node-reporter.h"
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -125,6 +126,30 @@ void FileDeleteOperation::run()
         return;
 
     Q_EMIT operationStarted();
+
+    for (auto src : m_source_uris) {
+        // pre-check for delete special directory
+        if (src == "file:///data/home" || src == "file:///data/usershare" ||
+                src == "file:///data/root" || src == "file:///home" ||
+                FileUtils::isStandardPath(src) || src == "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation)) {
+            FileOperationError except;
+            except.srcUri = src;
+            except.destDirUri = nullptr;
+            except.isCritical = true;
+            except.op = FileOpTrash;
+            except.title = tr("Delete file error");
+            except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
+            except.errorStr = tr("Invalid Operation! Can not delete \"%1\".").arg(FileUtils::urlDecode(src));
+            errored(except);
+            cancel();
+        }
+
+        if (isCancelled()) {
+            Q_EMIT operationFinished();
+            return;
+        }
+    }
 
     Q_EMIT operationRequestShowWizard();
 

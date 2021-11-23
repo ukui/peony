@@ -501,10 +501,11 @@ bool FileUtils::isStandardPath(const QString &uri)
     QString videoPath= QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString publicPath = g_get_user_special_dir(G_USER_DIRECTORY_PUBLIC_SHARE);
     QStringList mStandardPaths;
     //qDebug() << "isStandardPath :" <<templateDir.path();
     mStandardPaths <<desktopPath <<documentPath <<picturePath <<videoPath
-                  <<downloadPath <<musicPath <<templateDir.path();
+                  <<downloadPath <<musicPath <<templateDir.path()<<publicPath;
 
     if (mStandardPaths.contains(url.path()))
         return true;
@@ -758,7 +759,7 @@ quint64 FileUtils::getFileTotalSize(const QString &uri)
     auto info = FileInfo::fromUri(uri);
     if (info->isDir())
     {
-        guint64 disk_usage, num_dirs, num_files;
+        guint64 disk_usage = 0, num_dirs = 0, num_files = 0;
         GFile          *m_file = g_file_new_for_uri(uri.toUtf8().constData());
         GCancellable   *m_cancel = g_cancellable_new();
         GError         *err = nullptr;
