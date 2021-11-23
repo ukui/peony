@@ -147,7 +147,7 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     pixmap.fill(Qt::transparent);
     QPainter shadowPainter(&pixmap);
     shadowPainter.setPen(Qt::black);
-    Peony::DirectoryView::IconViewTextHelper::paintText(&shadowPainter, m_option, m_index, maxTextHight, 2, 0, false, Qt::black);
+    Peony::DirectoryView::IconViewTextHelper::paintText(&shadowPainter, m_option, m_index, maxTextHight, 2, 4, false, Qt::black);
     shadowPainter.end();
 
     QImage shadowImage(expectedSize + QSize(4, 4), QImage::Format_ARGB32_Premultiplied);
@@ -175,10 +175,11 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
 
     // draw text
     p.setPen(m_option.palette.highlightedText().color());
+    p.setFont(qApp->font());
     Peony::DirectoryView::IconViewTextHelper::paintText(&p,
             m_option,
             m_index,
-            9999,
+            maxTextHight,
             2,
             4,
             false);
