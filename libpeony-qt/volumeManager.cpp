@@ -186,7 +186,6 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
         // 可能是光驱，弹出之后drive还在
         g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
         if (pThis->m_volumeList->contains(gdevice)) {
-            auto driveItem = pThis->m_volumeList->value(gdevice);
             // 如果没有volume，这个drive应该显示出来，参考volumeAddedCallback流程
             GList *volumes = g_drive_get_volumes(gdrive);
             if (volumes) {
@@ -197,6 +196,9 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
                 auto addItem = new Volume(nullptr);
                 auto drive = new Drive(gdrive);
                 addItem->setFromDrive(*drive);
+                if (device.startsWith("/dev/sr")) {
+                    addItem->setHidden(false);
+                }
                 pThis->m_volumeList->remove(device);
                 Q_EMIT pThis->volumeRemove(device);
                 pThis->m_volumeList->insert(device, addItem);
