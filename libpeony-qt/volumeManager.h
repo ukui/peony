@@ -167,6 +167,9 @@ public:
     void unmount();
     void mount();
     void format() const;
+    bool getHidden() const;
+    void setHidden(bool hidden);
+
 private:
     bool m_canEject = false ;
     bool m_canStop = false;
@@ -180,6 +183,8 @@ private:
     QString  m_icon;
     QString  m_device;
     QString  m_mountPoint;
+
+    bool m_hidden = false;
 private:
     void initVolumeInfo();
 };

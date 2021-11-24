@@ -286,6 +286,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     connect(m_model, &QAbstractItemModel::dataChanged, this, [=](){
         this->viewport()->update();
+        m_proxy_model->invalidate();
     });
 
     connect(m_model, &SideBarModel::signal_collapsedChildren, this, [=](const QModelIndex &index){

@@ -98,7 +98,7 @@ public:
     virtual SideBarAbstractItem *parent() = 0;
 
     virtual bool filterShowRow(){
-        return true;
+        return !m_hidden;
     }
 
 protected:
@@ -120,6 +120,7 @@ protected:
     bool m_unmountable = false;
     bool m_mounted = false;
     bool m_isVolume = false;
+    bool m_hidden = false;
 
 Q_SIGNALS:
     void queryInfoFinished();
