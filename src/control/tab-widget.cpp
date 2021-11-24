@@ -721,8 +721,10 @@ void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &so
     int  currentIndex = this->currentIndex();
     for(int index = 0; index < m_stack->count(); index++)
     {
+        QString decodedSrcUri = Peony::FileUtils::urlDecode(sourceUri);
         QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
-        if(sourceUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///" )/* 文件保护箱tab页特殊处理 */
+        uri = Peony::FileUtils::urlDecode(uri);
+        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///" )/* 文件保护箱tab页特殊处理 */
         {
             if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId() && index == currentIndex){
                 /* 当前活动窗口当前tab页 */
