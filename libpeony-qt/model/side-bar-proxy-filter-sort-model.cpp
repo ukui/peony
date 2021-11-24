@@ -87,9 +87,7 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 //        if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
 //           item->filterShowRow();
 //        }
-        if (!item->filterShowRow()) {
-            qDebug()<<"hidden";
-        }
+
         return item->filterShowRow();
 
         /*!
