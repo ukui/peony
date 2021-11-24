@@ -131,6 +131,11 @@ default_sort:
             return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) < 0;
         }
         case FileItemModel::FileSize: {
+            //fix refresh sort order change issue, use file name to compare, link to bug#92525
+            if (leftItem->hasChildren() && rightItem->hasChildren())
+            {
+                return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) < 0;
+            }
             return leftItem->m_info->size() < rightItem->m_info->size();
         }
         case FileItemModel::FileType: {
