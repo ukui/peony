@@ -285,6 +285,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     connect(m_model, &QAbstractItemModel::dataChanged, this, [=](){
         this->viewport()->update();
+        m_proxy_model->invalidate();
     });
 
     expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
