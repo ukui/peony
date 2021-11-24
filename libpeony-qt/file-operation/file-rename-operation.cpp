@@ -30,6 +30,8 @@
 
 #include <QProcess>
 
+static QString set_desktop_name (QString file, QString& name, GError** error);
+
 using namespace Peony;
 
 static QString handleDuplicate(QString name)
@@ -99,6 +101,7 @@ void FileRenameOperation::run()
 
     bool is_local_desktop_file = false;
     QUrl url = m_uri;
+    QString oldDesktopName = "";
     //change the content of .desktop file;
     if (url.isLocalFile() && m_uri.endsWith(".desktop")) {
         GDesktopAppInfo *desktop_info = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
@@ -106,47 +109,17 @@ void FileRenameOperation::run()
             bool is_executable = g_file_test (url.path().toUtf8().constData(), G_FILE_TEST_IS_EXECUTABLE);
             is_local_desktop_file = is_executable;
             if (is_executable) {
-                //rename the generic name
-                GKeyFile *key_file = g_key_file_new();
-                g_key_file_load_from_file(key_file,
-                                          url.path().toUtf8().constData(),
-                                          G_KEY_FILE_KEEP_COMMENTS,
-                                          nullptr);
-                QString locale_name = QLocale::system().name();
-                QString local_generic_name_key = QString("Name[%1]").arg(locale_name);
-                if (g_key_file_has_key(key_file,
-                                       G_KEY_FILE_DESKTOP_GROUP,
-                                       local_generic_name_key.toUtf8().constData(),
-                                       nullptr)) {
-                    //qDebug() << "local_generic_name_key:" <<local_generic_name_key<<m_new_name;
-                    g_key_file_set_value(key_file,
-                                         G_KEY_FILE_DESKTOP_GROUP,
-                                         local_generic_name_key.toUtf8().constData(),
-                                         m_new_name.toUtf8().constData());
-                } else {
-                    //qDebug() << "m_new_name:" <<m_new_name;
-                    g_key_file_set_value(key_file,
-                                         G_KEY_FILE_DESKTOP_GROUP,
-                                         G_KEY_FILE_DESKTOP_KEY_NAME,
-                                         m_new_name.toUtf8().constData());
+                g_autoptr (GError) error = nullptr;
+                oldDesktopName = set_desktop_name (url.path (), m_new_name, &error);
+                if (error) {
+                    qDebug() << "set_desktop_name error code: " << error->code << " msg:" << error->message;
                 }
-
-                g_key_file_save_to_file(key_file,
-                                        url.path().toUtf8().constData(),
-                                        nullptr);
 
                 //set attributes again.
-                GError *set_err = nullptr;
-                g_file_set_attributes_from_info(file.get()->get(),
-                                                info.get()->get(),
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                nullptr,
-                                                &set_err);
-                if (set_err) {
-                    qDebug()<<set_err->message;
-                    g_error_free(set_err);
+                g_file_set_attributes_from_info(file.get()->get(), info.get()->get(), G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
+                if (error) {
+                    qDebug() << "g_file_set_attributes_from_info error code: " << error->code << " msg: " << error->message;
                 }
-                g_key_file_free(key_file);
             }
             g_object_unref(desktop_info);
         }
@@ -162,7 +135,6 @@ void FileRenameOperation::run()
     getOperationInfo().get()->m_dest_dir_uri = FileUtils::getFileUri(newFile);
 
     if (is_local_desktop_file) {
-fallback_retry:
         GError *err = nullptr;
         g_file_move(file.get()->get(),
                     newFile.get()->get(),
@@ -180,34 +152,25 @@ fallback_retry:
             except.op = FileOpRename;
             except.title = tr("Rename file error");
             except.errorType = ET_GIO;
+            except.dlgType = ED_WARNING;
             except.errorCode = err->code;
             except.errorStr = err->message;
-            if (G_IO_ERROR_EXISTS == err->code) {
-                except.dlgType = ED_CONFLICT;
-                auto responseType = except.respCode;
-                switch (responseType) {
-                case Retry:
-                    goto fallback_retry;
-                case Cancel:
-                    cancel();
-                    break;
-                default:
-                    break;
-                }
-            } else {
-                except.dlgType = ED_WARNING;
-                auto responseType = except.respCode;
-                switch (responseType) {
-                case Retry:
-                    goto fallback_retry;
-                case Cancel:
-                    cancel();
-                    break;
-                default:
-                    break;
-                }
+
+            errored (except);
+
+            // fallback
+            g_autoptr (GError) error = nullptr;
+            set_desktop_name (url.path (), oldDesktopName, &error);
+            if (error) {
+                qDebug() << "fallback error: " << error->code << "  msg: " << error->message;
             }
 
+            g_file_set_attributes_from_info(file.get()->get(), info.get()->get(), G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, &error);
+            if (error) {
+                qDebug() << "g_file_set_attributes_from_info error code: " << error->code << " msg: " << error->message;
+            }
+
+            cancel ();
         }
     } else {
 retry:
@@ -308,3 +271,32 @@ ExceptionResponse FileRenameOperation::prehandle(GError *err)
 }
 
 
+/**
+ * @brief
+ *  If the desktop shortcut rename fails, you need to roll back to the original name.
+ * @param file: .desktop file path
+ * @param name: .desktop file's Name[Local]=name
+ * @param error: out param
+ *
+ * @return oldName
+ */
+static QString set_desktop_name (QString file, QString& name, GError** error)
+{
+    QString oldName = "";
+    GKeyFile *keyFile = g_key_file_new();
+    g_key_file_load_from_file(keyFile, file.toUtf8().constData(), G_KEY_FILE_KEEP_COMMENTS, nullptr);
+    QString locale_name = QLocale::system().name();
+    QString local_name_key = QString("Name[%1]").arg(locale_name);
+    if (g_key_file_has_key(keyFile, G_KEY_FILE_DESKTOP_GROUP, local_name_key.toUtf8().constData(), nullptr)) {
+        oldName = g_key_file_get_string (keyFile, G_KEY_FILE_DESKTOP_GROUP, local_name_key.toUtf8().constData(), nullptr);
+        g_key_file_set_value(keyFile, G_KEY_FILE_DESKTOP_GROUP, local_name_key.toUtf8().constData(), name.toUtf8().constData());
+    } else {
+        g_key_file_set_value(keyFile, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_NAME, name.toUtf8().constData());
+    }
+
+    g_key_file_save_to_file(keyFile, file.toUtf8().constData(), error);
+
+    if (keyFile)    g_key_file_free(keyFile);
+
+    return oldName;
+}
