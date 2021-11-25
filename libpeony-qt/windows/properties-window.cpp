@@ -668,6 +668,10 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
 
             }
+            else if(tab->position == QStyleOptionTab::OnlyOneTab)
+            {
+                path.addRoundedRect(rect, radius, radius);
+            }
             else
             {
                 path.addRect(rect);
