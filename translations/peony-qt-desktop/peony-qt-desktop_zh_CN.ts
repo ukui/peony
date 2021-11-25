@@ -524,7 +524,7 @@
 <context>
     <name>TabletPluginWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="116"/>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="117"/>
         <source>Search</source>
         <translation>全局搜索</translation>
     </message>

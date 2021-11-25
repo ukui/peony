@@ -261,12 +261,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1384"/>
+        <location filename="../../src/windows/main-window.cpp" line="1387"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1385"/>
+        <location filename="../../src/windows/main-window.cpp" line="1388"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -303,18 +303,18 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1029,7 +1029,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="599"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="600"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>

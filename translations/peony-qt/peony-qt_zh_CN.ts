@@ -281,12 +281,12 @@ p, li { white-space: pre-wrap; }
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1384"/>
+        <location filename="../../src/windows/main-window.cpp" line="1387"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1385"/>
+        <location filename="../../src/windows/main-window.cpp" line="1388"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -323,18 +323,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="400"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation>这是一个异常U盘, 请先格式化</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="413"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
@@ -1089,7 +1089,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="599"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="600"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>

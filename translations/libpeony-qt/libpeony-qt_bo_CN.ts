@@ -554,6 +554,10 @@
         <source>Used Space: </source>
         <translation>བཀོལ་གསྤྱོད་བར་སྟོངས།</translation>
     </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::ConnectServerDialog</name>
@@ -1087,6 +1091,14 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     <message>
         <source>File delete error</source>
         <translation>ཡིག་ཆ་གསུབས་པ་ནོར་བ།</translation>
+    </message>
+    <message>
+        <source>Delete file error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Operation! Can not delete &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1667,6 +1679,10 @@ Do you want to delete the link file?</source>
         <source>Can not trash files more than 10GB, would you like to delete it permanently?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Invalid Operation! Can not trash &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::FileUntrashOperation</name>
@@ -2010,6 +2026,10 @@ Do you want to delete the link file?</source>
     <message>
         <source>Computer</source>
         <translation type="vanished">རྩིས་ཆས།</translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
