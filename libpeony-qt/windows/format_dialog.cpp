@@ -192,6 +192,8 @@ void Format_Dialog::acceptFormat(bool)
 
     //check format or not 
     if(!format_makesure_dialog()){
+        ui->pushButton_ok->setDisabled(false);
+        ui->pushButton_close->setDisabled(false);
         return;
     };
 
@@ -626,9 +628,12 @@ bool Format_Dialog::format_makesure_dialog(){
         ui->pushButton_ok->setDisabled(false);
         ui->pushButton_close->setDisabled(false);
         return false;
+    }else if(message_format.clickedButton() == okButton){
+        return true;
     }
 
-    return true;
+    //close window, return false, link to bug#92330
+    return false;
 }
 
 /* ensure_format_cb ,function ensure to do format
