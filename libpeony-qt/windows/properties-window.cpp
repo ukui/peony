@@ -610,6 +610,8 @@ PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidge
     setTabsClosable(false);
     setMovable(false);
     setContentsMargins(0, 0, 0, 0);
+    //重写subElementRect设置居中
+    setStyle(new tabWidgetStyle);
 
     //监听悬浮事件
     this->tabBar()->setAttribute(Qt::WA_Hover, true);
@@ -638,15 +640,38 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
             QRect rect = tab->rect;
-            //顶部下移8px
-            rect.setTop(rect.y() + 8);
-            //底部上移8px
-            rect.setBottom((rect.y() + rect.height()) - 8);
-            //左侧移动4px
-            rect.setLeft(rect.x() + 4);
-            //右侧移动2px
-            rect.setRight((rect.x() + rect.width()) - 2);
+            //左侧移动1px
+            rect.setLeft(rect.x() + 1);
+            //右侧移动1px
+            rect.setRight((rect.x() + rect.width())-2);
+            QPainterPath path;
+            const qreal radius = 6;
+            if(tab->position == QStyleOptionTab::Beginning)
+            {
+                path.moveTo(rect.topRight());
+                path.lineTo(rect.topLeft() + QPointF(radius, 0));
+                path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+                path.lineTo(rect.bottomLeft() - QPointF(0, radius));
+                path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+                path.lineTo(rect.bottomRight());
+                path.lineTo(rect.topRight());
 
+            }
+            else if(tab->position == QStyleOptionTab::End)
+            {
+                path.moveTo(rect.topRight() - QPointF(radius, 0));
+                path.lineTo(rect.topLeft());
+                path.lineTo(rect.bottomLeft() );
+                path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+                path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+                path.lineTo(rect.topRight() + QPointF(0, radius));
+                path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+            }
+            else
+            {
+                path.addRect(rect);
+            }
             const QPalette &palette = widget->palette();
 
             //未选中时文字颜色 - Text color when not selected
@@ -654,11 +679,11 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
 
             if (tab->state & QStyle::State_Selected) {
                 painter->save();
-                painter->setPen(palette.color(QPalette::Highlight));
+                painter->setPen(Qt::NoPen);
                 painter->setBrush(palette.brush(QPalette::Highlight));
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect, 4, 4);
+                painter->drawPath(path);
                 painter->restore();
 
                 //选中时文字颜色 - Text color when selected
@@ -666,23 +691,21 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
             } else if (tab->state & QStyle::State_MouseOver) {
                 painter->save();
                 QColor color = palette.color(QPalette::Highlight).lighter(140);
-                painter->setPen(color);
+                painter->setPen(Qt::NoPen);
                 painter->setBrush(color);
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect,4,4);
-
+                painter->drawPath(path);
                 painter->restore();
                 //选中时文字颜色 - Text color when selected
                 painter->setPen(palette.color(QPalette::BrightText));
-            } else if (tab->state & QStyle::State_MouseOver) {
+            } else {
                 painter->save();
-                QColor color = palette.color(QPalette::Highlight).lighter(140);
-                painter->setPen(color);
-                painter->setBrush(color);
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(palette.color(QPalette::Button));
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect, 4, 4);
+                painter->drawPath(path);
                 painter->restore();
             }
 
@@ -714,4 +737,28 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
     }
 
     return barSize;
+}
+
+QRect tabWidgetStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch(element)
+    {
+        case SE_TabWidgetTabBar:
+        {
+            //解决QTabBar设置为居中
+            if (const QStyleOptionTabWidgetFrame *twf = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
+            {
+                QRect rect = QRect(QPoint(0, 0), twf->tabBarSize);
+
+                rect.moveLeft((twf->rect.size() - twf->leftCornerWidgetSize - twf->rightCornerWidgetSize - twf->tabBarSize).width() / 2);
+                return rect;
+            }
+            break;
+
+        }
+    default:
+        break;
+
+    }
+    return QProxyStyle::subElementRect(element, option, widget);
 }
