@@ -155,7 +155,19 @@ void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
         Q_EMIT pThis->volumeAdd(Volume(*addItem));
         //情景1、关闭gparted时，所有具有卸载属性的设备均会触发volume-added信号
         //      该情景似乎不需要更新属性信息，确认一下name属性？
-    }else{
+    } else {
+        // 判断volume的drive是否存在与列表中，如果是就要将其drive隐藏
+        GDrive *gdrive = g_volume_get_drive(gvolume);
+        if (gdrive) {
+            g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+            if (pThis->m_volumeList->contains(gdevice)) {
+                auto driveItem = pThis->m_volumeList->value(gdevice);
+                driveItem->setHidden(true);
+                Q_EMIT pThis->volumeUpdate(*driveItem, "name");
+            }
+            g_object_unref(gdrive);
+        }
+
         //情景1、未打开gparted时插入新设备
         //情景2、已打开gparted->插入新设备不拔出->关闭gparted后触发volume-added信号
         //情景3、默认用数据线连接的手机("仅充电")
@@ -168,6 +180,42 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
         GVolume *gvolume,VolumeManager *pThis){
     if(!pThis->m_volumeList)
         return;
+
+    GDrive *gdrive = g_volume_get_drive(gvolume);
+    if (gdrive) {
+        // 可能是光驱，弹出之后drive还在
+        g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (pThis->m_volumeList->contains(gdevice)) {
+            // 如果没有volume，这个drive应该显示出来，参考volumeAddedCallback流程
+            GList *volumes = g_drive_get_volumes(gdrive);
+            if (volumes) {
+                // noop
+            } else {
+                // 由于旧的volume信息不好更新，所以移除旧的volume，重新添加
+                QString device = gdevice;
+                auto addItem = new Volume(nullptr);
+                auto drive = new Drive(gdrive);
+                addItem->setFromDrive(*drive);
+                if (device.startsWith("/dev/sr")) {
+                    addItem->setHidden(false);
+                }
+                pThis->m_volumeList->remove(device);
+                Q_EMIT pThis->volumeRemove(device);
+                pThis->m_volumeList->insert(device, addItem);
+                Q_EMIT pThis->volumeAdd(Volume(*addItem));
+            }
+        }
+        g_object_unref(gdrive);
+    } else {
+        // drive已经disconnect，从volume进行索引
+        g_autofree char *gdevice = g_volume_get_identifier(gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (pThis->m_volumeList->contains(gdevice)) {
+            auto volumeItem = pThis->m_volumeList->value(gdevice);
+            pThis->m_volumeList->remove(gdevice);
+            Q_EMIT pThis->volumeRemove(gdevice);
+        }
+    }
+
     //情景1、未打开gparted时正常弹出设备
     //情景2、打开gparted瞬间所有可卸载的分区均会触发volume-removed信号
     //      这种情景下设备需要继续支持访问,不能够移除
@@ -204,10 +252,12 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
     if(gmount)
         g_object_unref(gmount);
 
+    if (blankCDFlag)
+        return;
+
     //情景1、确定可以删除设备
     //情景5、数据线连接的手机状态改变： "传输文件(mtp)" 与 "传输图片(gphoto)" 相互转换(即/dev/bus/xxx设备只能保留一个)
     //情景6、数据线连接的手机状态改变："mtp"或"gphoto" -> "仅充电"
-    //情景7、光盘正常弹出
     //情景9、手机(mtp或gphoto2状态)暴力拔出
     pThis->m_volumeList->remove(device);
 
@@ -332,6 +382,13 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
     {
         Volume* volume = new Volume(nullptr);
         volume->setFromDrive(*dirve);
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(gdrive);
+        if (volumes) {
+            volume->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
+
         if(volume->canEject()){
             pThis->m_volumeList->insert(device, volume);
             Q_EMIT pThis->volumeAdd(Volume(*volume));
@@ -449,6 +506,12 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
     {
         Volume* volumeItem = new Volume(nullptr);
         volumeItem->setFromDrive(*entry);
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(entry->getGDrive());
+        if (volumes) {
+            volumeItem->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
         QString device = volumeItem->device();
         if(m_volumeList->contains(volumeItem->device()))
             continue;
@@ -586,6 +649,7 @@ Volume::Volume(const Volume& other){
     m_gMount = other.m_gMount == nullptr? nullptr : (GMount*)g_object_ref(other.m_gMount);
     m_gdrive = other.m_gdrive == nullptr? nullptr : (GDrive*)g_object_ref(other.m_gdrive);
     m_volume = nullptr;
+    m_hidden = other.m_hidden;
     if(other.m_volume)
         m_volume = (GVolume*)g_object_ref(other.m_volume);
 }
@@ -648,6 +712,14 @@ void Volume::initVolumeInfo()
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
@@ -752,6 +824,16 @@ void Volume::mount()
                        this);
 }
 
+bool Volume::getHidden() const
+{
+    return m_hidden;
+}
+
+void Volume::setHidden(bool hidden)
+{
+    m_hidden = hidden;
+}
+
 
 void Volume::setFromMount(const Mount& mount){
     m_name = mount.name();
@@ -835,6 +917,14 @@ void Drive::initDriveInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
@@ -1003,6 +1093,14 @@ void Mount::initMountInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;

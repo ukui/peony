@@ -95,35 +95,37 @@ QModelIndex SideBarFileSystemItem::lastColumnIndex()
 
 bool SideBarFileSystemItem::filterShowRow()
 {
-    if (m_uri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
-        return false;
-    }
-    if (m_uri.startsWith("file:///home/")){
-        return false;
-    }
-    if (m_uri != "file:///") {
+    return SideBarAbstractItem::filterShowRow();
 
-        QString gvfsDisplayName = m_mountPoint;
-        QString gvfsUnixDevice = m_device;
+//    if (m_uri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
+//        return false;
+//    }
+//    if (m_uri.startsWith("file:///home/")){
+//        return false;
+//    }
+//    if (m_uri != "file:///") {
+
+//        QString gvfsDisplayName = m_mountPoint;
+//        QString gvfsUnixDevice = m_device;
 
 
-        if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")))
-            return true;
+//        if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")))
+//            return true;
 
-        if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
-            return false;//Filter some non-mountable drive items
+//        if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
+//            return false;//Filter some non-mountable drive items
 
-        if (isMounted())
-            return true;
-        if (isRemoveable() && isUnmountable()) {
-            return true;
-        }
-        if (!isRemoveable() && !isEjectable() && !isStopable())
-            return true;
-        return false;
-    }
+//        if (isMounted())
+//            return true;
+//        if (isRemoveable() && isUnmountable()) {
+//            return true;
+//        }
+//        if (!isRemoveable() && !isEjectable() && !isStopable())
+//            return true;
+//        return false;
+//    }
 
-    return true;
+//    return true;
 }
 
 void SideBarFileSystemItem::initDirInfo(const QString &uri)
@@ -179,6 +181,8 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
     m_mounted   = !m_uri.isEmpty();
     m_displayName = volumeItem.name() + "(" + m_device + ")";
     m_isVolume = true;
+    m_hidden = volumeItem.getHidden();
+
     /* 手机和空光盘的m_uri需要额外设置 */
     if(m_uri.isEmpty()){
         if(m_device.startsWith("/dev/bus/usb")){
@@ -282,6 +286,7 @@ void SideBarFileSystemItem::slot_volumeDeviceMount(const Experimental_Peony::Vol
             {
                 item->m_uri="burn:///";
             }
+            item->m_iconName = volume.icon();
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
         }
@@ -328,6 +333,8 @@ void SideBarFileSystemItem::slot_volumeDeviceUpdate(const Experimental_Peony::Vo
     for(auto& item:*m_children){
         if(item->m_device == device){
             item->m_displayName = updateDevice.name() + "(" + device + ")";
+            item->m_hidden = updateDevice.getHidden();
+            item->m_iconName = updateDevice.icon();
             //model更新
              m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
@@ -516,11 +523,11 @@ void SideBarFileSystemItem::findChildren()
     /* 设备动态增减处理 */
     if("computer:///" == m_uri){
         auto volumeManager = Experimental_Peony::VolumeManager::getInstance();
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate, Qt::DirectConnection);
 
     }else{
         /* 对挂载目录监听 */
