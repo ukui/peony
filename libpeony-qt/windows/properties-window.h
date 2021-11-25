@@ -229,7 +229,20 @@ class PropertiesWindowPrivate : public QTabWidget
 Q_OBJECT
 private:
     explicit PropertiesWindowPrivate(const QStringList &uris, QWidget *parent = nullptr);
+};
 
+class tabWidgetStyle : public QProxyStyle
+{
+public:
+    /**
+     * QTabBar设置居中
+     * @brief subElementRect
+     * @param element
+     * @return 返回QTabBar的矩形
+     */
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
 };
 
 }
