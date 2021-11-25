@@ -286,6 +286,7 @@ void SideBarFileSystemItem::slot_volumeDeviceMount(const Experimental_Peony::Vol
             {
                 item->m_uri="burn:///";
             }
+            item->m_iconName = volume.icon();
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
         }
@@ -333,6 +334,7 @@ void SideBarFileSystemItem::slot_volumeDeviceUpdate(const Experimental_Peony::Vo
         if(item->m_device == device){
             item->m_displayName = updateDevice.name() + "(" + device + ")";
             item->m_hidden = updateDevice.getHidden();
+            item->m_iconName = updateDevice.icon();
             //model更新
              m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;

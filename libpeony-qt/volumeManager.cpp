@@ -382,6 +382,13 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
     {
         Volume* volume = new Volume(nullptr);
         volume->setFromDrive(*dirve);
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(gdrive);
+        if (volumes) {
+            volume->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
+
         if(volume->canEject()){
             pThis->m_volumeList->insert(device, volume);
             Q_EMIT pThis->volumeAdd(Volume(*volume));
@@ -499,6 +506,12 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
     {
         Volume* volumeItem = new Volume(nullptr);
         volumeItem->setFromDrive(*entry);
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(entry->getGDrive());
+        if (volumes) {
+            volumeItem->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
         QString device = volumeItem->device();
         if(m_volumeList->contains(volumeItem->device()))
             continue;
@@ -699,6 +712,14 @@ void Volume::initVolumeInfo()
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
@@ -835,15 +856,6 @@ void Volume::setFromDrive(const Drive &drive)
     m_icon = drive.icon();
     m_device = drive.device();
     m_gdrive = (GDrive*)g_object_ref(drive.getGDrive());
-
-    // 如果没有volume，应该被隐藏
-    GList *volumes = g_drive_get_volumes(m_gdrive);
-    if (volumes) {
-        setHidden(true);
-        g_list_free_full(volumes, g_object_unref);
-    }
-
-    VolumeManager::getInstance()->volumeUpdate(*this, "name");
 }
 
 void Volume::setMountPoint(QString point){
@@ -905,6 +917,14 @@ void Drive::initDriveInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
@@ -1073,6 +1093,14 @@ void Mount::initMountInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
