@@ -579,6 +579,7 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
         break;
     }
     case QStyle::PE_PanelItemViewRow: {
+        painter->restore();
         return;
         break;
     }
