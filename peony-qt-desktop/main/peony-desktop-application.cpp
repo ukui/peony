@@ -292,12 +292,12 @@ void PeonyDesktopApplication::gotoSetBackground()
 {
     QProcess p;
     p.setProgram("ukui-control-center");
-    //old version use -a, new version use -b as para
-    p.setArguments(QStringList()<<"-b");
+    //old version use -b, new version use -m Wallpaper as para，fix bug#94132
+    p.setArguments(QStringList()<<"-m" <<"Wallpaper");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
 #else
-    p.startDetached("ukui-control-center", QStringList()<<"-b");
+    p.startDetached("ukui-control-center", QStringList()<<"-m" <<"Wallpaper");
 #endif
     p.waitForFinished(-1);
 }
