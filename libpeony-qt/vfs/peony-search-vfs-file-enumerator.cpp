@@ -23,13 +23,13 @@
 #include "peony-search-vfs-file-enumerator.h"
 #include "peony-search-vfs-file.h"
 #include "file-enumerator.h"
-#include "file-info.h"
-#include "file-info-job.h"
 #include "search-vfs-manager.h"
 #include <QDebug>
 #include <QFile>
 #include <QUrl>
 #include <QTextStream>
+
+#include <gio/gdesktopappinfo.h>
 
 //G_DEFINE_TYPE(PeonySearchVFSFileEnumerator, peony_search_vfs_file_enumerator, G_TYPE_FILE_ENUMERATOR)
 
@@ -156,7 +156,7 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
 {
     auto manager = Peony::SearchVFSManager::getInstance();
 
-    qDebug()<<"next file";
+    //qDebug()<<"next file";
     if (cancellable) {
         if (g_cancellable_is_cancelled(cancellable)) {
             //FIXME: how to add translation here? do i have to use gettext?
@@ -323,10 +323,18 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
 
     // fix #83327
     if (uri.endsWith(".desktop")) {
-        auto fileInfo = Peony::FileInfo::fromUri(uri);
-        Peony::FileInfoJob job(fileInfo);
-        job.querySync();
-        displayName = fileInfo.get()->displayName();
+        g_autoptr(GFile) gfile = g_file_new_for_uri(uri.toUtf8().constData());
+        g_autofree gchar *desktop_file_path = g_file_get_path(gfile);
+        g_autoptr(GDesktopAppInfo) gdesktopappinfo = g_desktop_app_info_new_from_filename(desktop_file_path);
+        if (gdesktopappinfo) {
+            g_autofree gchar *desktop_name = g_desktop_app_info_get_locale_string(gdesktopappinfo, "Name");
+            if (!desktop_name) {
+                desktop_name = g_desktop_app_info_get_string(gdesktopappinfo, "Name");
+            }
+            if (desktop_name) {
+                displayName = desktop_name;
+            }
+        }
     }
 
     if (details->name_regexp) {
