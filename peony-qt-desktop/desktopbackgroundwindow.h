@@ -2,6 +2,7 @@
 #define DESKTOPBACKGROUNDWINDOW_H
 
 #include <QMainWindow>
+#include <QGSettings>
 
 class DesktopBackgroundWindow : public QMainWindow
 {
@@ -21,10 +22,12 @@ protected Q_SLOTS:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    QPoint getRelativePos(const QPoint &pos);
 
 private:
     int m_id = -1;
     QScreen *m_screen = nullptr;
+    QGSettings *m_panelSetting = nullptr;
 };
 
 #endif // DESKTOPBACKGROUNDWINDOW_H

@@ -34,9 +34,14 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     auto manager = DesktopBackgroundManager::globalInstance();
     connect(manager, &DesktopBackgroundManager::screensUpdated, this, QOverload<>::of(&DesktopBackgroundWindow::update));
 
+    if (QGSettings::isSchemaInstalled("org.ukui.panel.settings")) {
+        m_panelSetting = new QGSettings("org.ukui.panel.settings", QByteArray(), this);
+    }
+
     connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
+        QPoint relativePos = getRelativePos(pos);
         qInfo()<<pos;
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(pos);
+        auto index = PeonyDesktopApplication::getIconView()->indexAt(relativePos);
         if (!index.isValid()) {
             PeonyDesktopApplication::getIconView()->clearSelection();
         } else {
@@ -57,7 +62,7 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
             }
 
             for (auto screen : qApp->screens()) {
-                if (screen->geometry().contains(pos));
+                if (screen->geometry().contains(relativePos));
                 //menu.windowHandle()->setScreen(screen);
             }
             menu.exec(QCursor::pos());
@@ -128,4 +133,35 @@ void DesktopBackgroundWindow::updateWindowGeometry()
 int DesktopBackgroundWindow::id() const
 {
     return m_id;
+}
+
+//获取iconview中图标的相对位置
+QPoint DesktopBackgroundWindow::getRelativePos(const QPoint &pos)
+{
+    QPoint relativePos = pos;
+    if (m_screen == QApplication::primaryScreen()) {
+        if (m_panelSetting) {
+            int position = m_panelSetting->get("panelposition").toInt();
+            int offset = m_panelSetting->get("panelsize").toInt();
+
+            switch (position) {
+                case 1: {
+                    relativePos -= QPoint(0, offset);
+                    break;
+                }
+                case 2: {
+                    relativePos -= QPoint(offset, 0);
+                    break;
+                }
+                case 3: {
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    }
+
+    return relativePos;
 }
