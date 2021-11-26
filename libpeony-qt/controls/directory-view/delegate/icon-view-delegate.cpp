@@ -70,8 +70,8 @@ IconViewDelegate::~IconViewDelegate()
 
 QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItem opt = option;
-    initStyleOption(&opt, index);
+    //QStyleOptionViewItem opt = option;
+    //initStyleOption(&opt, index);
 
     auto view = qobject_cast<IconView*>(this->parent());
     auto iconSize = view->iconSize();
