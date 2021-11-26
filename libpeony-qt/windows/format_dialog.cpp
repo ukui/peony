@@ -72,9 +72,9 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
        if (targetUri.isEmpty()) {
            targetUri = fm_uris;
        }
-       GFile *fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
+       g_autoptr(GFile) fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
-       GFileInfo *fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
+       g_autoptr(GFileInfo) fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
        quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
        //add the rom size value into  rom_size combox
@@ -118,6 +118,17 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
        ui->progressBar_process->setValue(0);
 
+       // vfat/fat32 格式存在卷标相关问题，目前无法解决只能规避，参考#83826
+       // 如果是可移动设备，格式化时默认使用ntfs格式，可以支持长卷标名，不可移动设备默认按Ext4格式格式化
+       g_autoptr(GFile) computer_file = g_file_new_for_uri(m_uris.toUtf8().constData());
+       g_autoptr(GFileInfo) gfileinfo = g_file_query_info(computer_file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
+       bool isRemoveable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT) || g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
+       bool mountable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT) || g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
+       if (isRemoveable && mountable) {
+           ui->comboBox_system->setCurrentText("NTFS");
+       } else {
+           ui->comboBox_system->setCurrentText("Ext4");
+       }
 
        connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
 
