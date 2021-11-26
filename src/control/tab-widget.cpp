@@ -59,6 +59,9 @@
 
 #include "volume-manager.h"
 
+#include "global-settings.h"
+
+
 #include <QApplication>
 #include <QStandardPaths>
 
@@ -898,12 +901,28 @@ bool TabWidget::canCdUp()
 
 int TabWidget::getSortType()
 {
-    return currentPage()->getSortType();
+    //fix switch to computer view and back change to default sort issue, link to bug#92261
+    auto settings = Peony::GlobalSettings::getInstance();
+    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
+
+    return sortType;
+
+//    if (!currentPage())
+//        return 0;
+//    return currentPage()->getSortType();
 }
 
 Qt::SortOrder TabWidget::getSortOrder()
 {
-    return currentPage()->getSortOrder();
+    //fix switch to computer view and back change to default sort issue, link to bug#92261
+    auto settings = Peony::GlobalSettings::getInstance();
+    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
+
+    return Qt::SortOrder(sortOrder);
+
+//    if (!currentPage())
+//        return Qt::AscendingOrder;
+//    return currentPage()->getSortOrder();
 }
 
 bool TabWidget::eventFilter(QObject *obj, QEvent *e)
