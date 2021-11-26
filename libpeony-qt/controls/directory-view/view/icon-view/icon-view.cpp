@@ -104,8 +104,8 @@ IconView::IconView(QWidget *parent) : QListView(parent)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
-    setGridSize(QSize(136, 136));
-    setIconSize(QSize(86, 86));
+    setIconSize(QSize(64, 64));
+    setGridSize(itemDelegate()->sizeHint(QStyleOptionViewItem(), QModelIndex()) + QSize(20, 20));
 
     m_renameTimer = new QTimer(this);
     m_renameTimer->setInterval(3000);
