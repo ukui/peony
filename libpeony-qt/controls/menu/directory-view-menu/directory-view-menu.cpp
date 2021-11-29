@@ -150,7 +150,8 @@ void DirectoryViewMenu::fillActions()
     auto dev = VolumeManager::getDriveFromUri(m_directory);
     if(dev != nullptr){
         bool canEject = g_drive_can_eject(dev.get()->getGDrive());
-        if(canEject){
+        bool canStop = g_drive_can_stop(dev.get()->getGDrive());
+        if(canEject || canStop){
             m_is_mobile_file = true;
         }
         qDebug() << "canEject :" << canEject;
