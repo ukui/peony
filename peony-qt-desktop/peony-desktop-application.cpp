@@ -168,6 +168,10 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     setApplicationName(tr("peony-qt-desktop"));
     setWindowIcon(QIcon::fromTheme("system-file-manager"));
 
+    //added for session call interactive
+    QGuiApplication::setFallbackSessionManagementEnabled(true);
+    QGuiApplication::setQuitOnLastWindowClosed(false);
+
     if (!this->isRunning()) {
         qDebug()<<"isPrimary screen";
         connect(this, &QtSingleApplication::messageReceived, [=](QString msg) {
