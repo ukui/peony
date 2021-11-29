@@ -843,12 +843,14 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         // 如果是保护箱删除时，不会反馈删除弹窗，保护箱文件不影响
         if(!(srcUris.first().startsWith("filesafe:///") &&
             (QString(srcUris.first()).remove("filesafe:///").indexOf("/") == -1))) {
-            if(canNotTrash){
-                FileOperationUtils::trash(srcUris, false);
-            }else {
-                FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
-                fileOpMgr->startOperation(trashOp, addHistory);
-            }
+            //fix bug#91525, can trash file in U disk issue
+            FileOperationUtils::trash(srcUris, true);
+//            if(canNotTrash){
+//                FileOperationUtils::trash(srcUris, false);
+//            }else {
+//                FileTrashOperation *trashOp = new FileTrashOperation(srcUris);
+//                fileOpMgr->startOperation(trashOp, addHistory);
+//            }
         }
     } else {
         qDebug() << "DesktopItemModel dropMimeData:" <<action;
