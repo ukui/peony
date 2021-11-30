@@ -37,7 +37,8 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QLabel>
-#include <QCheckBox>
+#include <QRadioButton>
+#include <QButtonGroup>
 #include <QProcess>
 #include <QPushButton>
 
@@ -115,7 +116,8 @@ void PermissionsPropertiesPage::initTableWidget()
 {
     m_table = new QTableWidget(this);
     m_table->setRowCount(4);
-    m_table->setColumnCount(5);
+    //属性窗口重构，可读、可写、可执行 改成 读写、只读
+    m_table->setColumnCount(3);
     m_table->verticalHeader()->setVisible(false);
     m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_table->horizontalHeader()->setFrameShape(QFrame::NoFrame);
@@ -131,7 +133,8 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->setAlternatingRowColors(true);
 
     auto l = QStringList();
-    l<<tr("User or Group")<<tr("Type")<<tr("Read")<<tr("Write")<<tr("Executable");
+    //属性窗口重构，类型、可读、可写、可执行 改成 读写、只读
+    l<<tr("Group or User")<<tr("Read and Write")<<tr("Readonly");
     m_table->setHorizontalHeaderLabels(l);
     m_table->setEditTriggers(QTableWidget::NoEditTriggers);
     //开启手动设置宽度 - Enable manual width setting
@@ -139,10 +142,8 @@ void PermissionsPropertiesPage::initTableWidget()
     m_table->horizontalHeader()->setMaximumSectionSize(400);
 
     m_table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
-    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
+    m_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     m_table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-    m_table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
     m_table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft);
 
     m_table->setColumnWidth(0, 150);
@@ -245,7 +246,7 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 bool isSameGroup = false;
                 auto username = pw->pw_name;
                 if (userString == username) {
-                    userNameDisplayString += tr("(Me)");
+                    userNameDisplayString += tr("(Current User)");
                     isSelf = true;
                 }
                 /*
@@ -317,17 +318,6 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 QTableWidgetItem* itemR2C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-people"), tr("Others"));
                 table->setItem(2, 0, itemR2C0);
 
-                auto itemR0C1 = new QTableWidgetItem(tr("Owner"));
-                itemR0C1->setTextAlignment(Qt::AlignCenter);
-                auto itemR1C1 = new QTableWidgetItem(tr("Group"));
-                itemR1C1->setTextAlignment(Qt::AlignCenter);
-                auto itemR2C1 = new QTableWidgetItem(tr("Other"));
-                itemR2C1->setTextAlignment(Qt::AlignCenter);
-
-                table->setItem(0, 1, itemR0C1);
-                table->setItem(1, 1, itemR1C1);
-                table->setItem(2, 1, itemR2C1);
-
                 table->showRow(0);
                 table->showRow(1);
                 table->showRow(2);
@@ -336,35 +326,27 @@ GAsyncReadyCallback PermissionsPropertiesPage::async_query_permisson_callback(GO
                 p_this->m_message->show();
                 table->setRowCount(1);
 
-                QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), tr("Me"));
+                QTableWidgetItem *itemR0C0 = new QTableWidgetItem(QIcon::fromTheme("emblem-personal"), tr("Current User"));
                 table->setItem(0, 0, nullptr);
                 table->setItem(0, 0, itemR0C0);
 
-                auto itemR0C1 = new QTableWidgetItem(tr("User"));
-                itemR0C1->setTextAlignment(Qt::AlignCenter);
-
-                table->setItem(0, 1, itemR0C1);
-
-                for (int i = 0; i < 3; i++) {
-                    table->setCellWidget(0, i + 2, nullptr);
+                for (int i = 0; i < 2; i++) {
+                    table->setCellWidget(0, i + 1, nullptr);
                     QWidget *w = new QWidget(table);
                     QHBoxLayout *l = new QHBoxLayout(w);
                     l->setMargin(0);
                     w->setLayout(l);
                     l->setAlignment(Qt::AlignCenter);
-                    auto checkbox = new QCheckBox(w);
-                    l->addWidget(checkbox);
-                    table->setCellWidget(0, i + 2, w);
+                    QRadioButton* radioButton = new QRadioButton(w);
+                    l->addWidget(radioButton);
+                    table->setCellWidget(0, i + 1, w);
 
                     switch (i) {
                     case 0:
-                        checkbox->setChecked(current_user_readable);
+                        radioButton->setChecked(current_user_writeable&&current_user_readable);
                         break;
                     case 1:
-                        checkbox->setChecked(current_user_writeable);
-                        break;
-                    case 2:
-                        checkbox->setChecked(current_user_executable);
+                        radioButton->setChecked((!current_user_writeable)&&current_user_readable);
                         break;
                     }
                 }
@@ -385,8 +367,21 @@ void PermissionsPropertiesPage::changePermission(int row, int column, bool check
     if(!m_enable)
         return;
 
-    m_permissions[row][column] = checked;
-
+    bool havePermission = false;
+    if(0 == column)
+    {
+        havePermission = !(m_permissions[row][1]&&m_permissions[row][0]);
+        havePermission = checked? havePermission:checked;
+        m_permissions[row][0] = havePermission;
+        m_permissions[row][1] = havePermission;
+    }
+    else
+    {
+        havePermission = !((!m_permissions[row][1])&&m_permissions[row][0]);
+        havePermission = checked? havePermission:checked;
+        m_permissions[row][0] = havePermission;
+        m_permissions[row][1] = false;
+    }
     this->thisPageChanged();
 
     this->updateCheckBox();
@@ -477,18 +472,32 @@ void PermissionsPropertiesPage::thisPageChanged()
 void PermissionsPropertiesPage::updateCheckBox()
 {
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            m_table->setCellWidget(i, j + 2, nullptr);
+        //修改文件管理器属性界面的权限页，设置权限为读写，可读
+        QButtonGroup* permissionsBtGroup = new QButtonGroup(this);
+        for (int j = 0; j < 2; j++) {
+            m_table->setCellWidget(i, j + 1, nullptr);
             QWidget *w = new QWidget(m_table);
             QHBoxLayout *l = new QHBoxLayout(w);
             l->setMargin(0);
             w->setLayout(l);
             l->setAlignment(Qt::AlignCenter);
-            auto checkbox = new QCheckBox(w);
-            l->addWidget(checkbox);
-            m_table->setCellWidget(i, j + 2, w);
-
-            checkbox->setChecked(this->m_permissions[i][j]);
+            QRadioButton* radioButton = new QRadioButton(w);
+            l->addWidget(radioButton);
+            permissionsBtGroup->addButton(radioButton);
+            permissionsBtGroup->setId(radioButton,j);
+            m_table->setCellWidget(i, j + 1, w);
+            bool checkType = false;
+            if(0 == j)
+            {
+                checkType = this->m_permissions[i][1]&&this->m_permissions[i][0];
+            }
+            else
+            {
+                checkType = (!this->m_permissions[i][1])&&this->m_permissions[i][0];
+            }
+            radioButton->setAutoExclusive(false);
+            radioButton->setChecked(checkType);
+            radioButton->setAutoExclusive(true);
 
             //disable home path
             bool check_enable = true;
@@ -503,15 +512,15 @@ void PermissionsPropertiesPage::updateCheckBox()
 
             QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
             if (this->m_uri == homeUri || !check_enable)
-                checkbox->setDisabled(true);
+                radioButton->setDisabled(true);
             else
-                checkbox->setDisabled(false);
+                radioButton->setDisabled(false);
 
-            connect(checkbox, &QCheckBox::clicked, this, [=]() {
-                qDebug()<<"clicked"<<i<<j<<checkbox->isChecked();
-                this->checkBoxChanged(i, j, checkbox->isChecked());
-            });
         }
+        connect(permissionsBtGroup, QOverload<int>::of(&QButtonGroup::buttonClicked),
+            [=](int id){
+            this->checkBoxChanged(i, id, permissionsBtGroup->button(id)->isChecked());
+        });
     }
 }
 
