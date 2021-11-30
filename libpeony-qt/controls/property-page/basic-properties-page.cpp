@@ -181,6 +181,18 @@ void BasicPropertiesPage::initUI()
 
 void BasicPropertiesPage::loadData()
 {
+    if (m_fileType != BP_MultipleFIle) {
+        m_watcher = std::make_shared<FileWatcher>(m_uris.first());
+        m_watcher->connect(m_watcher.get(), &FileWatcher::locationChanged, this, &BasicPropertiesPage::onSingleFileChanged);
+        m_watcher->startMonitor();
+
+        m_thumbnail_watcher = std::make_shared<FileWatcher>("thumbnail:///");
+        connect(m_thumbnail_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri){
+            auto icon = ThumbnailManager::getInstance()->tryGetThumbnail(uri);
+            m_iconButton->setIcon(icon);
+        });
+    }
+
     this->loadPartOne();
     this->loadPartTwo();
 
