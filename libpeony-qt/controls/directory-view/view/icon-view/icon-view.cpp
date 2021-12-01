@@ -337,7 +337,17 @@ void IconView::mousePressEvent(QMouseEvent *e)
     if (!itemIndex.isValid()) {
         disableMultiSelect();
     }
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    QRect rect = visualRect(indexAt(e->pos()));
+    QSize iconExpectedSize = iconSize();
 
+    QRect testRect(rect.x(), rect.y()+ iconExpectedSize.height(),rect.width(),rect.height()-iconExpectedSize.height());
+    if(!testRect.contains(e->pos()))
+    {
+        m_editValid = false;
+        m_renameTimer->start();
+        return;
+    }
     //m_renameTimer
     if(!m_renameTimer->isActive())
     {
