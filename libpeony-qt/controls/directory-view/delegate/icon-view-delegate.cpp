@@ -111,8 +111,8 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //qDebug()<<option.widget;
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
-
-    auto style = QApplication::style();
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    auto style = getView()->style();
 
     auto rawDecoSize = opt.decorationSize;
     opt.decorationSize = view->iconSize();

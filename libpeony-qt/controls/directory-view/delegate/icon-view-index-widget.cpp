@@ -176,7 +176,8 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //p.fillRect(opt.rect, m_delegate->selectedBrush());
     auto rawDecoSize = opt.decorationSize;
     opt.decorationSize = m_delegate->getView()->iconSize();
-    QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    view->style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
                                          &opt,
                                          &p,
                                          nullptr);
@@ -185,7 +186,8 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     opt.rect = rawRect;
     auto tmp = opt.text;
     opt.text = nullptr;
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    view->style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
     if (b_elide_text)
     {
         int  charWidth = opt.fontMetrics.averageCharWidth();
@@ -269,6 +271,17 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
             view->m_renameTimer->stop();
             view->m_editValid = false;
             return QWidget::mousePressEvent(e);
+        }
+        //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+        QRect rect =  m_option.rect;
+        QSize iconExpectedSize = m_delegate->getView()->iconSize();
+        rect.setY(iconExpectedSize.height());
+        rect.setHeight(m_option.rect.height()-iconExpectedSize.height());
+        if(!rect.contains(e->pos()))
+        {
+            view->m_editValid = false;
+            view->m_renameTimer->start();
+            return ;
         }
 
         view->m_editValid = true;
