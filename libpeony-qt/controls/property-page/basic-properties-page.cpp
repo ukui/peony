@@ -345,9 +345,7 @@ void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 
         connect(moreAppButton,&QPushButton::clicked,this,[=](){
             NewFileLaunchDialog dialog(m_info.get()->uri());
-            if (QDialog::Accepted == dialog.exec()) {
-                m_defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(m_info->uri()));
-            }
+            dialog.exec();
         });
     }
 }
