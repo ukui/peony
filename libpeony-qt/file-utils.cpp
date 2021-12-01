@@ -999,3 +999,40 @@ QString FileUtils::getFileSystemType(QString uri)
 
     return fsType;
 }
+void FileUtils::saveCreateTime(const QString &url)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) file = url.startsWith ("file://") ? g_file_new_for_uri (url.toUtf8 ().constData ()) : g_file_new_for_path (url.toUtf8 ().constData ());
+    g_autofree gchar* currentTime = g_strdup_printf ("%ld", g_get_real_time ());
+
+    g_return_if_fail (G_IS_FILE (file) && g_file_query_exists (file, NULL));
+    g_file_set_attribute (file, "metadata::CreateTime", G_FILE_ATTRIBUTE_TYPE_STRING, currentTime, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+
+    if (error)      qDebug () << "set create time error: " << error->message;
+}
+
+gint64 FileUtils::getCreateTimeOfMicro(const QString &url)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) file = g_file_new_for_uri (url.toUtf8 ().constData ());
+    g_autoptr (GFileInfo) fileInfo = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_CHANGED "," G_FILE_ATTRIBUTE_TIME_CREATED "," "metadata::CreateTime", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    g_return_val_if_fail (G_IS_FILE (file) && G_IS_FILE_INFO (fileInfo) && g_file_query_exists (file, NULL), 0);
+
+    if (g_file_info_has_attribute (fileInfo, G_FILE_ATTRIBUTE_TIME_CREATED)) {
+        gint64 createTime = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_CREATED);
+        gint64 modifyTime = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED);
+        if (createTime != 0 && createTime <= modifyTime) {
+            return createTime;
+        }
+    }
+
+    if (g_file_info_has_attribute (fileInfo, "metadata::CreateTime")) {
+        const gchar* createTimeStr = g_file_info_get_attribute_string (fileInfo, "metadata::CreateTime");
+        if (createTimeStr) {
+            g_autofree char* createTime10 = g_strndup (createTimeStr, 10);
+            return atoll (createTime10);
+        }
+    }
+
+    return 0;
+}

@@ -102,6 +102,9 @@ public:
     static QString getUnixDevice(const QString &uri);
     static quint64 getFileSystemSize(QString uri);
     static QString getFileSystemType(QString uri);
+
+    static void   saveCreateTime (const QString& url);
+    static gint64 getCreateTimeOfMicro (const QString& url);
 private:
     FileUtils();
 };
