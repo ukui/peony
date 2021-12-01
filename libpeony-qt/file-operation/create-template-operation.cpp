@@ -163,7 +163,7 @@ retry_create_template:
         break;
     }
     }
-
+    FileUtils::saveCreateTime (m_target_uri);
     // judge if the operation should sync.
     bool needSync = false;
     GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8().constData());
