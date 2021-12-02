@@ -1711,6 +1711,21 @@ Do you want to delete the link file?</source>
     </message>
 </context>
 <context>
+    <name>Peony::HeaderBar</name>
+    <message>
+        <source>Spread</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Peony::LocationBar</name>
     <message>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
@@ -1824,39 +1839,39 @@ Do you want to delete the link file?</source>
     <name>Peony::PermissionsPropertiesPage</name>
     <message>
         <source>Me</source>
-        <translation>ང</translation>
+        <translation type="vanished">ང</translation>
     </message>
     <message>
         <source>(Me)</source>
-        <translation>(ང)</translation>
+        <translation type="vanished">(ང)</translation>
     </message>
     <message>
         <source>Read</source>
-        <translation>ཚགས་ཚུད།</translation>
+        <translation type="vanished">ཚགས་ཚུད།</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>རིགས་གྲས་</translation>
+        <translation type="vanished">རིགས་གྲས་</translation>
     </message>
     <message>
         <source>User</source>
-        <translation>སྤྱོད་མཁན།</translation>
+        <translation type="vanished">སྤྱོད་མཁན།</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation>ཚོགས་པ།</translation>
+        <translation type="vanished">ཚོགས་པ།</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation>གཞན་དག</translation>
+        <translation type="vanished">གཞན་དག</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation>བདག་པོ།</translation>
+        <translation type="vanished">བདག་པོ།</translation>
     </message>
     <message>
         <source>Write</source>
-        <translation>འབྲི་བ།</translation>
+        <translation type="vanished">འབྲི་བ།</translation>
     </message>
     <message>
         <source>Can not get the permission info.</source>
@@ -1872,15 +1887,35 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <source>User or Group</source>
-        <translation>སྤྱོད་མཁན་ནམ་ཚོ།</translation>
+        <translation type="vanished">སྤྱོད་མཁན་ནམ་ཚོ།</translation>
     </message>
     <message>
         <source>Executable</source>
-        <translation>ལག་བསྟར་ཐུབ་པའི་ཡིག་ཆ།</translation>
+        <translation type="vanished">ལག་བསྟར་ཐུབ་པའི་ཡིག་ཆ།</translation>
     </message>
     <message>
         <source>Target: %1</source>
         <translation>དམིགས་འབེན།:</translation>
+    </message>
+    <message>
+        <source>Group or User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read and Write</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Readonly</source>
+        <translation type="unfinished">ཀློག་ཙམ།</translation>
+    </message>
+    <message>
+        <source>(Current User)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current User</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
