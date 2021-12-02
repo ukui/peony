@@ -48,6 +48,7 @@
 #include <QFileDialog>
 #include <QtConcurrent>
 #include <QGSettings>
+#include <QComboBox>
 
 #include "file-info.h"
 #include "file-info-job.h"
@@ -331,22 +332,17 @@ void BasicPropertiesPage::addSeparator()
 void BasicPropertiesPage::addOpenWithLayout(QWidget *parent)
 {
     if (m_openWithLayout) {
-        m_defaultOpenWithWidget = OpenWithPropertiesPage::createDefaultOpenWithWidget(m_info->uri(), parent);
         m_openWithLayout->setContentsMargins(0,0,0,0);
         m_openWithLayout->setAlignment(Qt::AlignVCenter);
-        m_openWithLayout->addWidget(m_defaultOpenWithWidget);
-        m_openWithLayout->addStretch(1);
-
-        QPushButton *moreAppButton = new QPushButton(parent);
-        moreAppButton->setStyle(PushButtonStyle::getStyle());
-        moreAppButton->setText(tr("Change"));
-        moreAppButton->setMinimumSize((moreAppButton->fontMetrics().width(tr("Change")) + 5), 30);
-        m_openWithLayout->addWidget(moreAppButton);
-
-        connect(moreAppButton,&QPushButton::clicked,this,[=](){
-            NewFileLaunchDialog dialog(m_info.get()->uri());
-            dialog.exec();
-        });
+        //FIXME:属性窗口重构，修改打开方式为下拉框
+        QComboBox* moreAppBox = new QComboBox;
+        auto allLaunchActions = FileLaunchManager::getRecommendActions(m_info.get()->uri());
+        for (auto action : allLaunchActions)
+        {
+            moreAppBox->addItem(!action->icon().isNull()? action->icon(): QIcon::fromTheme("application-x-desktop"),
+                                action->text());
+        }
+        m_openWithLayout->addWidget(moreAppBox);
     }
 }
 

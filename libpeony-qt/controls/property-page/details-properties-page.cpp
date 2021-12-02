@@ -228,8 +228,8 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
             this->addRow(tr("Height:"), m_imageHeightLabel);
 
             m_imageDepthLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
-            //FIXME:缺少图片位深
-//        this->addRow(tr("Depth:"),m_imageDepthLabel);
+            //FIXME:属性页面重构，增加图片位深
+            this->addRow(tr("Depth:"),m_imageDepthLabel);
         }
     }
 
@@ -328,13 +328,13 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
     //image file
     if (m_fileInfo->isImageFile()) {
         //image width
-        QImageReader r(url.path());
+        QImage r(url.path());
 
         if (m_imageHeightLabel && m_imageWidthLabel && m_imageDepthLabel) {
             m_imageWidthLabel->setText(tr("%1 px").arg(r.size().width()));
             m_imageHeightLabel->setText(tr("%1 px").arg(r.size().height()));
             //FIXME:获取图片文件的位深
-//                m_imageDepthLabel->setText(32);
+            m_imageDepthLabel->setText(QString::number(r.depth(),10));
         }
     }
 }
