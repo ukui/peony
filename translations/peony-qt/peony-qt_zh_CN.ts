@@ -846,26 +846,27 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">选中%1个</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="163"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="174"/>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>在%2中搜索%1</translation>
     </message>
     <message>
+        <location filename="../../src/control/tab-status-bar.cpp" line="102"/>
         <source> %1 items </source>
-        <translation type="vanished"> %1 个项目 </translation>
+        <translation> %1 个项目 </translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="151"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="162"/>
         <source>selected%1%2</source>
         <translation>已选择%1%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="179"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="190"/>
         <source> selected %1 items    %2</source>
         <translation> 选中 %1 个项目    %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="181"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="192"/>
         <source> selected %1 items</source>
         <translation> 选中 %1 个项目</translation>
     </message>

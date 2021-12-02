@@ -457,27 +457,27 @@
 <context>
     <name>Peony::AllFileLaunchDialog</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="333"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="352"/>
         <source>Choose new application</source>
         <translation>选择一个新的应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="335"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="354"/>
         <source>Choose an Application to open this file</source>
         <translation>选择一个应用打开这个文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="342"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="361"/>
         <source>apply now</source>
         <translation>立即应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="348"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="367"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="349"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="368"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -492,7 +492,7 @@
 <context>
     <name>Peony::BasicPropertiesPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="743"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="741"/>
         <source>Choose a custom icon</source>
         <translation>选择自定义图标</translation>
     </message>
@@ -534,12 +534,12 @@
         <translation type="vanished">移动</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="420"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="418"/>
         <source>symbolLink</source>
         <translation>快捷方式</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="424"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="422"/>
         <source>Folder</source>
         <translation>文件夹</translation>
     </message>
@@ -620,13 +620,13 @@
         <translation>属性：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="532"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="530"/>
         <source>usershare</source>
         <translation>本机共享</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="618"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="784"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="616"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="782"/>
         <source>%1 (%2 Bytes)</source>
         <translation>%1 (%2 字节)</translation>
     </message>
@@ -643,7 +643,7 @@
         <translation type="vanished">不能移动一个文件夹到它内部！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="777"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="775"/>
         <source>%1 Bytes</source>
         <translation>%1 字节</translation>
     </message>
@@ -660,15 +660,15 @@
         <translation type="vanished">%1 GB (%2 字节)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="793"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="791"/>
         <source>%1 files, %2 folders</source>
         <translation>%1 个文件, %2 个文件夹</translation>
     </message>
     <message>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="879"/>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="881"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="883"/>
+        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="886"/>
         <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="888"/>
-        <location filename="../../libpeony-qt/controls/property-page/basic-properties-page.cpp" line="890"/>
         <source>Can&apos;t get remote file information</source>
         <translation>未能获取远程文件信息</translation>
     </message>
@@ -932,7 +932,7 @@
 <context>
     <name>Peony::DefaultOpenWithWidget</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="392"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="411"/>
         <source>No default app</source>
         <translation>没有设置默认打开方式</translation>
     </message>
@@ -986,68 +986,68 @@
         <translation>路径：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="207"/>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="214"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="204"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="211"/>
         <source>yyyy-MM-dd, HH:mm:ss</source>
         <translation>yyyy年MM月dd日, HH:mm:ss</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="199"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="197"/>
         <source>Create time:</source>
         <translation>创建时间：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="204"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="201"/>
         <source>Modify time:</source>
         <translation>修改时间：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="212"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="209"/>
         <source>yyyy-MM-dd, hh:mm:ss AP</source>
         <translation>yyyy年MM月dd日, hh:mm:ss AP</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="221"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="218"/>
         <source>File size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="228"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="225"/>
         <source>Width:</source>
         <translation>宽度：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="231"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="228"/>
         <source>Height:</source>
         <translation>高度：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="239"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="236"/>
         <source>Owner</source>
         <translation>拥有者</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="240"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="237"/>
         <source>Owner:</source>
         <translation>拥有者：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="242"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="239"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="243"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="240"/>
         <source>Computer:</source>
         <translation>计算机：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="288"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="285"/>
         <source>%1 (this computer)</source>
         <translation>%1 (这台电脑)</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="295"/>
+        <location filename="../../libpeony-qt/controls/property-page/details-properties-page.cpp" line="292"/>
         <source>Unknown</source>
         <translation>未知的分区</translation>
     </message>
@@ -2588,6 +2588,24 @@ Do you want to delete the link file?</source>
     </message>
 </context>
 <context>
+    <name>Peony::HeaderBar</name>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="845"/>
+        <source>Spread</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="846"/>
+        <source>Minimize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="847"/>
+        <source>Close</source>
+        <translation type="unfinished">关闭</translation>
+    </message>
+</context>
+<context>
     <name>Peony::LocationBar</name>
     <message>
         <source>click the blank area for edit</source>
@@ -2675,27 +2693,27 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::NewFileLaunchDialog</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="209"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="219"/>
         <source>Choose new application</source>
         <translation>选择一个新的应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="211"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="221"/>
         <source>Choose an Application to open this file</source>
         <translation>选择一个应用打开这个文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="218"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="228"/>
         <source>apply now</source>
         <translation>立即应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="224"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="234"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="225"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="235"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2703,27 +2721,27 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::OpenWithPropertiesPage</name>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="92"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="104"/>
         <source>How do you want to open %1%2 files ?</source>
         <translation>您希望以什么方式打开 %1%2 文件？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="97"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="109"/>
         <source>Default open with:</source>
         <translation>默认打开方式：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="116"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="128"/>
         <source>Other:</source>
         <translation>其他：</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="157"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="169"/>
         <source>Choose other application</source>
         <translation>选择其他应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="173"/>
+        <location filename="../../libpeony-qt/controls/property-page/open-with-properties-page.cpp" line="183"/>
         <source>Go to application center</source>
         <translation>去软件中心</translation>
     </message>
@@ -2853,42 +2871,42 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::PropertiesWindow</name>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="273"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="307"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="277"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="311"/>
         <source>Recent</source>
         <translation>最近</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="285"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="319"/>
         <source>Selected</source>
         <translation>选中</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="285"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="319"/>
         <source> %1 Files</source>
         <translation>%1 个文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="291"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="325"/>
         <source>usershare</source>
         <translation>本机共享</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="300"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="334"/>
         <source>Properties</source>
         <translation>属性</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="396"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="422"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="397"/>
+        <location filename="../../libpeony-qt/windows/properties-window.cpp" line="423"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>

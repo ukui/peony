@@ -545,7 +545,7 @@ Do you want to unmount forcely?</source>
     <name>TabStatusBar</name>
     <message>
         <source> %1 items </source>
-        <translation type="vanished">%1རྣམ་གྲངས་སྒེར།</translation>
+        <translation>%1རྣམ་གྲངས་སྒེར།</translation>
     </message>
     <message>
         <source> selected %1 items</source>
