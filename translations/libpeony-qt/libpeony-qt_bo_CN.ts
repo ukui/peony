@@ -1108,6 +1108,25 @@ Copyright (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</source
     </message>
 </context>
 <context>
+    <name>Peony::FileInfoJob</name>
+    <message>
+        <source>Trash</source>
+        <translation type="unfinished">སྙིགས་སྒམ།</translation>
+    </message>
+    <message>
+        <source>Computer</source>
+        <translation type="unfinished">རྩིས་ཆས།</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation type="unfinished">དྲ་བ།</translation>
+    </message>
+    <message>
+        <source>Recent</source>
+        <translation type="unfinished">ཉེ་ཆར།</translation>
+    </message>
+</context>
+<context>
     <name>Peony::FileItem</name>
     <message>
         <source>Error</source>
