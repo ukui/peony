@@ -58,6 +58,8 @@
 
 #include "file-count-operation.h"
 
+#include "FMWindowIface.h"
+
 using namespace Peony;
 
 #define LABEL_MAX_WIDTH       165
@@ -162,9 +164,15 @@ void DefaultPreviewPage::prepare(const QString &uri)
 
 void DefaultPreviewPage::startPreview()
 {
-    if (m_support) {
+    FMWindowIface *iface = dynamic_cast<FMWindowIface *>(this->topLevelWidget());
+    bool locationSupport = true;
+    if (iface) {
+        if (iface->getCurrentUri() == "computer:///") {
+            locationSupport = false;
+        }
+    }
+    if (m_support && locationSupport) {
         auto previewPage = qobject_cast<FilePreviewPage*>(m_preview_tab_widget);
-        auto info = FileInfo::fromUri(m_current_uri);
         previewPage->updateInfo(m_info.get());
         setCurrentWidget(previewPage);
     } else {
