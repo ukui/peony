@@ -1297,6 +1297,17 @@ const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFile
     return infos;
 }
 
+const QList<std::shared_ptr<Peony::FileInfo> > TabWidget::getCurrentAllFileInfos()
+{
+    const QStringList uris = getAllFileUris();
+    QList<std::shared_ptr<Peony::FileInfo>> infos;
+    for(auto uri : uris){
+        auto info = Peony::FileInfo::fromUri(uri);
+        infos << info;
+    }
+    return infos;
+}
+
 PreviewPageContainer::PreviewPageContainer(QWidget *parent) : QStackedWidget(parent)
 {
 

@@ -93,6 +93,17 @@ void TabStatusBar::update()
     auto uri = m_tab->getCurrentUri();
     auto count = m_tab->getCurrentRowcount();
 
+
+    if(selections.count() == 0){
+        auto uris = m_tab->getCurrentAllFileInfos();
+        if(uris.count() == 0){
+           m_label->setText("");
+        }else{
+           m_label->setText(tr(" \%1 items ").arg(uris.count()));
+        }
+        return;
+    }
+
     //fix select special item issue
     if (selections.count() == 1 && (selections.first()->uri().isNull()
         || (selections.first()->uri() == "network:///"
