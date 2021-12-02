@@ -256,14 +256,15 @@ void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     fileOpMgr->startOperation(renameOp, true);
 }
 
-//QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
-//{
-//    QSize size = QStyledItemDelegate::sizeHint(option, index);
-//    auto view = qobject_cast<DirectoryView::ListView *>(parent());
-//    int expectedHeight = view->iconSize().height() + 4;
-//    size.setHeight(qMax(expectedHeight, size.height()));
-//    return size;
-//}
+//not comment this bug to fix bug#93314
+QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QSize size = QStyledItemDelegate::sizeHint(option, index);
+    auto view = qobject_cast<DirectoryView::ListView *>(parent());
+    int expectedHeight = view->iconSize().height() + 4;
+    size.setHeight(qMax(expectedHeight, size.height()));
+    return size;
+}
 
 //TextEdit
 TextEdit::TextEdit(QWidget *parent) : QTextEdit (parent)
