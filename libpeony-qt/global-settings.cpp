@@ -175,6 +175,12 @@ void GlobalSettings::getUkuiStyle()
                     m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
                 }
             });
+            qreal opacity = 100.0;
+            if (m_gsettings->get(PERSONALISE_EFFECT).toBool()) {
+                opacity *= m_gsettings->get(PERSONALISE_TRANSPARENCY).toReal();
+            }
+            m_cache.remove(SIDEBAR_BG_OPACITY);
+            m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
         }
     } else {
         if (QGSettings::isSchemaInstalled("org.ukui.style")) {
