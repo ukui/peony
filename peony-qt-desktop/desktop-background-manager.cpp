@@ -51,7 +51,7 @@ void DesktopBackgroundManager::initGSettings()
     setBackground();
     if (m_backgroundSettings) {
         connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "pictureFilename" || key == "primaryColor") {
+            if (key == "pictureFilename" || key == "primaryColor" || key == "pictureOptions") {
                 switchBackground();
             }
         });
@@ -164,17 +164,7 @@ void DesktopBackgroundManager::switchBackground()
     if (!m_backgroundSettings)
         return;
 
-    //intel项目背景绘制模式 平铺，拉伸等
     m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
-    if (m_backgroundOption.isEmpty()) {
-        //判断系统类型
-        bool intel = false;
-        if (intel) {
-            m_backgroundOption = "stretched";
-        } else {
-            m_backgroundOption = "";
-        }
-    }
 
     auto path = m_backgroundSettings->get("pictureFilename").toString();
     if (! QFile::exists(path) && !path.isEmpty())
