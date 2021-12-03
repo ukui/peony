@@ -33,6 +33,7 @@
 #include <KWindowSystem>
 
 #include "global-settings.h"
+#include "thumbnail-manager.h"
 #include "clipboard-utils.h"
 #include "file-operation-utils.h"
 #include "file-operation-manager.h"
@@ -84,7 +85,10 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, checked);
-        //m_window->refresh();
+        if (checked) {
+            Peony::ThumbnailManager::getInstance()->clearThumbnail();
+        }
+        m_window->refresh();
     });
     m_forbid_thumbnailing = forbidThumbnailing;
     forbidThumbnailing->setCheckable(true);

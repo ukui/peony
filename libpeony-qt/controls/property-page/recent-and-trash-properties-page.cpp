@@ -175,6 +175,9 @@ void RecentAndTrashPropertiesPage::init()
 
             QString deletion_date = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
             deletion_date = deletion_date.replace("T", " ");
+            QDateTime date_dime = QDateTime::fromString(deletion_date, "yyyy-MM-dd HH:mm:ss");
+            deletion_date = date_dime.toString(GlobalSettings::getInstance()->getSystemTimeFormat());
+
             quint64 delete_width = FIXED_ROW_WIDTH - delete_label->fontMetrics().width(tr("Deletion Date: "));
             delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
             delete_label->setWordWrap(true);
@@ -182,28 +185,11 @@ void RecentAndTrashPropertiesPage::init()
             if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
                 QGSettings *settings = new QGSettings("org.ukui.control-center.panel.plugins", "", this);
                 connect(settings, &QGSettings::changed, this, [=](const QString &key) {
-                    if(key == "date") {
-                        QString current_text = delete_label->text();
-                        QString new_date_type = settings->get("date").toString();
-                        //cn : 1999/11/11
-                        //en : 1999-11-11
-                        if ((new_date_type == "cn") && current_text.contains("-")) {
-                            delete_label->setText(current_text.replace("-", "/"));
-
-                        } else if ((new_date_type == "en") && current_text.contains("/")) {
-                            delete_label->setText(current_text.replace("/", "-"));
-                        }
+                    if(key == "date" || key == "hoursystem") {
+                        QString deletion_date = date_dime.toString(GlobalSettings::getInstance()->getSystemTimeFormat());
+                        delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
                     }
                 });
-
-                QString current_text = delete_label->text();
-                QString new_date_type = settings->get("date").toString();
-                if ((new_date_type == "cn") && current_text.contains("-")) {
-                    delete_label->setText(current_text.replace("-", "/"));
-
-                } else if ((new_date_type == "en") && current_text.contains("/")) {
-                    delete_label->setText(current_text.replace("/", "-"));
-                }
             }
 
             g_object_unref(info);
