@@ -314,6 +314,8 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
     bool isEmpty = true;
     for (auto child : *item->m_children) {
         auto info = FileInfo::fromUri(child->uri());
+        FileInfoJob job(child->uri());
+        job.querySync();
         if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())||item->uri()=="computer:///")
             isEmpty = false;
         if (child->type() == SideBarAbstractItem::SeparatorItem) {
