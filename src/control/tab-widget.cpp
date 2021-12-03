@@ -667,17 +667,18 @@ void TabWidget::handleZoomLevel(int zoomLevel)
 #include <KWindowSystem>
 void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &sourceUri)
 {
-    int  currentIndex = this->currentIndex();
     for(int index = 0; index < m_stack->count(); index++)
     {
+        int  currentIndex = this->currentIndex();
         QString decodedSrcUri = Peony::FileUtils::urlDecode(sourceUri);
         QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
         uri = Peony::FileUtils::urlDecode(uri);
-        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///" )/* 文件保护箱tab页特殊处理 */
+        qDebug()<<"decodedSrcUri:"<<decodedSrcUri<<" uri:"<<uri<<" total count: "<<m_stack->count()<<" index:"<<index<<" currentIndex:"<<currentIndex;
+        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")/* 文件保护箱tab页特殊处理 */
         {
-            if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId() && index == currentIndex){
+            if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+                    && index == currentIndex && decodedSrcUri == uri){
                 /* 当前活动窗口当前tab页 */
-                currentIndex = -1;
                 qDebug()<<"sourceUri:"<<sourceUri<<"jump to computer,"<<" index:"<<currentIndex;
                 this->goToUri(destUri, true, true);/* 跳转到计算机页 */
             }
@@ -685,7 +686,6 @@ void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &so
                 qDebug()<<"remove tab  uri:"<<uri<<", index:"<<index;
                 removeTab(index);
                 index--;
-                currentIndex--;
             }
         }
     }
@@ -1275,8 +1275,8 @@ void TabWidget::changeCurrentIndex(int index)
 {
     m_tab_bar->setCurrentIndex(index);
     m_stack->setCurrentIndex(index);
-    Q_EMIT currentIndexChanged(index);
     Q_EMIT activePageChanged();
+    Q_EMIT currentIndexChanged(index);
 }
 
 int TabWidget::count()
@@ -1301,10 +1301,10 @@ void TabWidget::moveTab(int from, int to)
 
 void TabWidget::removeTab(int index)
 {
-    m_tab_bar->removeTab(index);
     auto widget = m_stack->widget(index);
     m_stack->removeWidget(widget);
     widget->deleteLater();
+    m_tab_bar->removeTab(index);
     if (m_stack->count() > 0)
         Q_EMIT activePageChanged();
 }
