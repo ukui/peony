@@ -170,7 +170,6 @@ void DesktopBackgroundManager::switchBackground()
     if (!m_backgroundSettings)
         return;
 
-    //intel项目背景绘制模式 平铺，拉伸等
     m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
 
     auto path = m_backgroundSettings->get("pictureFilename").toString();
