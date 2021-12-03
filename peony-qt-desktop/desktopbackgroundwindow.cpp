@@ -92,12 +92,98 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
         p.setRenderHint(QPainter::SmoothPixmapTransform);
         auto animation = manager->getAnimation();
         if (animation->state() == QVariantAnimation::Running) {
-            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
             auto opacity = animation->currentValue().toReal();
-            p.setOpacity(opacity);
-            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+            if (manager->getBackgroundOption() == "centered") {
+                //居中
+                p.drawPixmap((m_screen->size().width() - manager->getBackPixmap().rect().width()) / 2,
+                             (m_screen->size().height() - manager->getBackPixmap().rect().height()) / 2,
+                             manager->getBackPixmap());
+                p.setOpacity(opacity);
+                p.drawPixmap((m_screen->size().width() - manager->getFrontPixmap().rect().width()) / 2,
+                             (m_screen->size().height() - manager->getFrontPixmap().rect().height()) / 2,
+                             manager->getFrontPixmap());
+            } else if (manager->getBackgroundOption() == "stretched") {
+                //拉伸
+                p.drawPixmap(this->rect(), manager->getBackPixmap(), manager->getBackPixmap().rect());
+                p.setOpacity(opacity);
+                p.drawPixmap(this->rect(), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+            } else if (manager->getBackgroundOption() == "scaled") {
+                //填充
+                p.drawPixmap(this->rect(), manager->getBackPixmap());
+                p.setOpacity(opacity);
+                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+            } else if (manager->getBackgroundOption() == "wallpaper") {
+                //平铺
+                int drawedWidth = 0;
+                int drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, manager->getBackPixmap());
+                        drawedWidth += manager->getBackPixmap().width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += manager->getBackPixmap().height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+                p.setOpacity(opacity);
+                drawedWidth = 0;
+                drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, manager->getFrontPixmap());
+                        drawedWidth += manager->getFrontPixmap().width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += manager->getFrontPixmap().height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+            } else {
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
+                p.setOpacity(opacity);
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+            }
+
         } else {
-            p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
+            if (manager->getBackgroundOption() == "centered") {
+                p.drawPixmap((m_screen->size().width() - manager->getFrontPixmap().rect().width()) / 2,
+                             (m_screen->size().height() - manager->getFrontPixmap().rect().height()) / 2,
+                             manager->getFrontPixmap());
+            } else if (manager->getBackgroundOption() == "stretched") {
+                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+
+            } else if (manager->getBackgroundOption() == "scaled") {
+                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+
+            } else if (manager->getBackgroundOption() == "wallpaper") {
+                int drawedWidth = 0;
+                int drawedHeight = 0;
+                while (1) {
+                    drawedWidth = 0;
+                    while (1) {
+                        p.drawPixmap(drawedWidth, drawedHeight, manager->getFrontPixmap());
+                        drawedWidth += manager->getFrontPixmap().width();
+                        if (drawedWidth >= m_screen->size().width()) {
+                            break;
+                        }
+                    }
+                    drawedHeight += manager->getFrontPixmap().height();
+                    if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+            } else {
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
+            }
         }
         p.restore();
     }

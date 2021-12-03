@@ -51,7 +51,7 @@ void DesktopBackgroundManager::initGSettings()
     setBackground();
     if (m_backgroundSettings) {
         connect(m_backgroundSettings, &QGSettings::changed, this, [=](const QString &key){
-            if (key == "pictureFilename" || key == "primaryColor") {
+            if (key == "pictureFilename" || key == "primaryColor" || key == "pictureOptions") {
                 switchBackground();
             }
         });
@@ -164,6 +164,8 @@ void DesktopBackgroundManager::switchBackground()
     if (!m_backgroundSettings)
         return;
 
+    m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
+
     auto path = m_backgroundSettings->get("pictureFilename").toString();
     if (! QFile::exists(path) && !path.isEmpty())
         path = getAccountBackground();
@@ -235,4 +237,9 @@ DesktopBackgroundManager *DesktopBackgroundManager::globalInstance()
 QPixmap DesktopBackgroundManager::getBackPixmap() const
 {
     return m_backPixmap;
+}
+
+const QString &DesktopBackgroundManager::getBackgroundOption()
+{
+    return m_backgroundOption;
 }
