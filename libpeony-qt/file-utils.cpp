@@ -549,6 +549,17 @@ bool FileUtils::containsStandardPath(const QStringList &list)
     return false;
 }
 
+bool FileUtils::containsStandardPath(const QList<QUrl> &urls)
+{
+    for (QUrl url : urls) {
+        if (isStandardPath(url.toDisplayString())) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool FileUtils::isFileExsit(const QString &uri)
 {
     //FIXME: replace BLOCKING api in ui thread.
