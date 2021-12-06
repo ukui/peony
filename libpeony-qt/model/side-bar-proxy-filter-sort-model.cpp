@@ -84,11 +84,9 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 //        }
 //    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
-//        if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
-//           item->filterShowRow();
-//        }
-
-        return item->filterShowRow();
+        if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
+           return item->filterShowRow();
+        }
 
         /*!
           所有的volumeitem必须要有一个对应的uri才能显示，这个uri或者是mountpoint（已挂载的）或者是computer:///xxx（未挂载的），

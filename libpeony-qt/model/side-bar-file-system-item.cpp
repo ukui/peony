@@ -223,6 +223,7 @@ void SideBarFileSystemItem::clearChildren()
 {
     if(m_watcher)
         m_watcher->stopMonitor();
+    m_watcher = nullptr;
     SideBarAbstractItem::clearChildren();
 }
 
