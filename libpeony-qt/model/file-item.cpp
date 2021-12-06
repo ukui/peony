@@ -71,6 +71,25 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_idle->setInterval(0);
     m_idle->setSingleShot(true);
     connect(m_idle, &QTimer::timeout, this, [=]{
+        for (auto uri : m_waiting_update_queue) {
+            auto index = m_model->indexFromUri(uri);
+            if (index.isValid()) {
+                auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
+                infoJob->setAutoDelete();
+                connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
+                    m_model->updated();
+                    //auto info = FileInfo::fromUri(uri);
+                    ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
+                    /*
+                    if (info->isDesktopFile()) {
+                        ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
+                    }
+                    */
+                });
+                infoJob->queryAsync();
+            }
+        }
+
         if (m_uris_to_be_removed.isEmpty())
             return;
 
@@ -373,22 +392,7 @@ void FileItem::findChildrenAsync()
                 this->onChildRemoved(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
-                auto index = m_model->indexFromUri(uri);
-                if (index.isValid()) {
-                    auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
-                    infoJob->setAutoDelete();
-                    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
-                        m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
-                        //auto info = FileInfo::fromUri(uri);
-                        ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
-                        /*
-                        if (info->isDesktopFile()) {
-                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
-                        }
-                        */
-                    });
-                    infoJob->queryAsync();
-                }
+                onChanged(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
                 Q_EMIT this->renamed(oldUri, newUri);
@@ -488,20 +492,7 @@ void FileItem::findChildrenAsync()
                 this->onChildRemoved(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileChanged, this, [=](const QString &uri) {
-                auto index = m_model->indexFromUri(uri);
-                if (index.isValid()) {
-                    auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
-                    infoJob->setAutoDelete();
-                    connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
-                        m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
-                        //comment to fix endless loop and can not rename issue, related to bug#72642
-//                        auto info = FileInfo::fromUri(uri);
-//                        if (info->isDesktopFile()) {
-//                            ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_watcher);
-//                        }
-                    });
-                    infoJob->queryAsync();
-                }
+               onChanged(uri);
             });
             connect(m_watcher.get(), &FileWatcher::fileRenamed, this, [=](const QString &oldUri, const QString &newUri) {
                 this->onRenamed(oldUri, newUri);
@@ -715,6 +706,15 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
             child->deleteLater();
             m_model->endRemoveRows();
         }
+    }
+}
+
+void FileItem::onChanged(const QString &uri)
+{
+    m_waiting_update_queue.append(uri);
+    m_waiting_update_queue.removeDuplicates();
+    if (!m_idle->isActive()) {
+        m_idle->start();
     }
 }
 

@@ -166,6 +166,9 @@ void FileInfoJob::refreshFileSystemInfo(GFileInfo *new_info)
 
 void FileInfoJob::queryAsync()
 {
+    if (m_auto_delete)
+        connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
+
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
@@ -181,9 +184,6 @@ void FileInfoJob::queryAsync()
                             m_cancellable,
                             GAsyncReadyCallback(query_info_async_callback),
                             this);
-
-    if (m_auto_delete)
-        connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
 }
 
 void FileInfoJob::queryFileType(GFileInfo* new_info){

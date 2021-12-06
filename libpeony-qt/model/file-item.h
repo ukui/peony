@@ -107,6 +107,7 @@ public Q_SLOTS:
     void onChildRemoved(const QString &uri);
     void onDeleted(const QString &thisUri);
     void onRenamed(const QString &oldUri, const QString &newUri);
+    void onChanged(const QString &uri);
 
     void onUpdateDirectoryRequest();
 
@@ -159,6 +160,7 @@ private:
 
     QStringList m_ending_uris;
     QStringList m_waiting_add_queue;
+    QStringList m_waiting_update_queue;
 
     QStringList m_uris_to_be_removed;
     QTimer *m_idle = nullptr;
