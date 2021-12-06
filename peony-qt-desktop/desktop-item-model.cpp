@@ -815,6 +815,11 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         return false;
     }
 
+    //can not move StandardPath to any dir
+    if (action == Qt::MoveAction && FileUtils::containsStandardPath(srcUris)) {
+        return false;
+    }
+
     bool b_trash_item = false;
     for(auto path : srcUris)
     {

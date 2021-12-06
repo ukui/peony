@@ -472,7 +472,7 @@ void DesktopIconView::initShoutCut()
     auto trashAction = new QAction(this);
     trashAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_Delete<<QKeySequence(Qt::CTRL + Qt::Key_D));
     connect(trashAction, &QAction::triggered, [=]() {
-        auto selectedUris = getSelections();      
+        auto selectedUris = getSelections();
         if (!selectedUris.isEmpty() && !meetSpecialConditions(selectedUris)){
            FileOperationUtils::trash(selectedUris, true);
         }
@@ -516,9 +516,9 @@ void DesktopIconView::initShoutCut()
     QAction *renameAction = new QAction(this);
     renameAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E));
     connect(renameAction, &QAction::triggered, [=]() {
-        auto selections = this->getSelections();        
+        auto selections = this->getSelections();
         if (selections.count() == 1 && !meetSpecialConditions(selections)) {
-            this->editUri(selections.first());           
+            this->editUri(selections.first());
         }
     });
     addAction(renameAction);
@@ -1736,6 +1736,10 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug()<<"drag enter event" <<action;
     if (e->mimeData()->hasUrls()) {
+        if (FileUtils::containsStandardPath(e->mimeData()->urls())) {
+            e->ignore();
+            return;
+        }
         e->setDropAction(action);
         e->accept();
         //e->acceptProposedAction();

@@ -1027,6 +1027,10 @@ bool FileMoveOperation::isValid()
         //it will call G_IO_ERROR_INVALID_FILENAME
         ++index;
     }
+    //can not move StandardPath to any dir. see:#87912
+    if (FileUtils::containsStandardPath(m_source_uris)) {
+        isInvalid = true;
+    }
     if (isInvalid)
         invalidExited(tr("Invalid Operation."));
     return !isInvalid;
