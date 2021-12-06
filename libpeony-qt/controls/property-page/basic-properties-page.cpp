@@ -288,13 +288,17 @@ void BasicPropertiesPage::initFloorTwo()
             case BP_Application:
                 m_timeModifiedLabel = new QLabel(baseFrame);
                 m_timeAccessLabel = new QLabel(baseFrame);
+                m_timeCreatedLabel = new QLabel(baseFrame);
+                baseLayout->addRow(tr("Time Create:"), m_timeCreatedLabel);
                 baseLayout->addRow(tr("Time Modified:"), m_timeModifiedLabel);
                 baseLayout->addRow(tr("Time Access:"), m_timeAccessLabel);
                 break;
             case BP_MultipleFIle:
             case BP_Folder:
+                m_timeModifiedLabel = new QLabel(baseFrame);
                 m_timeCreatedLabel = new QLabel(baseFrame);
-                baseLayout->addRow(tr("Time Modified:"), m_timeCreatedLabel);
+                baseLayout->addRow(tr("Time Create:"), m_timeCreatedLabel);
+                baseLayout->addRow(tr("Time Modified:"), m_timeModifiedLabel);
             default:
                 break;
         }
@@ -836,7 +840,7 @@ void BasicPropertiesPage::updateInfo(const QString &uri)
             QString path = url.path();
             QFileInfo qFileInfo(path);
             if (/*qFileInfo.isDir() && */m_timeCreatedLabel) {
-                m_timeCreated = g_file_info_get_attribute_uint64(info, "time::created");
+                m_timeCreated = FileUtils::getCreateTimeOfMicro(uri);
 
                 // 客户需要必须显示创建时间，因此使用三个时间最小时间戳为创建时间
                 quint64 minTime = m_timeCreated != 0 ? m_timeCreated : m_timeModified;
