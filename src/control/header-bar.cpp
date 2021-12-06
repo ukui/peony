@@ -745,15 +745,10 @@ bool TopMenuBar::eventFilter(QObject *obj, QEvent *e)
     Q_UNUSED(obj)
     if (m_window) {
         //use updateMaximizeState function, comment those code
-//        if (e->type() == QEvent::Resize || QEvent::WindowStateChange == e->type()) {
-//            if (window->isMaximized()) {
-//                m_max_or_restore->setIcon(QIcon::fromTheme("window-restore-symbolic"));
-//                //m_max_or_restore->setToolTip(tr("Restore"));
-//            } else {
-//                m_max_or_restore->setIcon(QIcon::fromTheme("window-maximize-symbolic"));
-//                //m_max_or_restore->setToolTip(tr("Maximize"));
-//            }
-//        }
+        if (e->type() == QEvent::Resize || QEvent::WindowStateChange == e->type()) {
+            //fix bug#95419, drag change window to restore not change state issue
+            m_header_bar->updateMaximizeState();
+        }
         //fix double click space window has no change issue, bug#38499
         if (e->type() == QEvent::MouseButtonDblClick)
         {
