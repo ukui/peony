@@ -300,6 +300,10 @@ void NavigationSideBar::updateGeometries()
 {
     setViewportMargins(4, 0, 4, 0);
     QTreeView::updateGeometries();
+    if(m_notAllowHorizontalMove){
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
+    }
+    m_notAllowHorizontalMove = false;
 }
 
 void NavigationSideBar::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -406,6 +410,11 @@ void NavigationSideBar::JumpDirectory(const QString &uri)
 
 void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Left||event->key()==Qt::Key_Right)
+    {
+        m_notAllowHorizontalMove = true;
+    }
+
     QTreeView::keyPressEvent(event);
 
     if (event->key() == Qt::Key_Return) {
