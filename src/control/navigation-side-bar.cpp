@@ -470,6 +470,17 @@ int NavigationSideBar::sizeHintForColumn(int column) const
     return QTreeView::sizeHintForColumn(column);
 }
 
+void NavigationSideBar::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        if ((event->dropAction() == Qt::MoveAction) && FileUtils::containsStandardPath(event->mimeData()->urls())) {
+            event->ignore();
+            return;
+        }
+    }
+    QAbstractItemView::dragEnterEvent(event);
+}
+
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
 {
 

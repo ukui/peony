@@ -1763,6 +1763,10 @@ void DesktopIconView::dragEnterEvent(QDragEnterEvent *e)
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug()<<"drag enter event" <<action;
     if (e->mimeData()->hasUrls()) {
+        if (FileUtils::containsStandardPath(e->mimeData()->urls())) {
+            e->ignore();
+            return;
+        }
         e->setDropAction(action);
         e->accept();
         //e->acceptProposedAction();

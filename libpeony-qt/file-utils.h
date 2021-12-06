@@ -79,6 +79,7 @@ public:
     NO_BLOCKING static bool isMobileDeviceFile(const QString &uri);
     NO_BLOCKING static bool isSamePath(const QString &uri, const QString &targetUri);
     NO_BLOCKING static bool containsStandardPath(const QStringList &list);
+    NO_BLOCKING static bool containsStandardPath(const QList<QUrl> &urls);
 
     BLOCKING static bool isFileExsit(const QString &uri);
 

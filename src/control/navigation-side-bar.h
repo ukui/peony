@@ -64,6 +64,7 @@ Q_SIGNALS:
 protected:
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
 
     int sizeHintForColumn(int column) const override;
 

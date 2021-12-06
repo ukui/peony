@@ -421,6 +421,10 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
         if (action == Qt::MoveAction)
         {
+            //can not move StandardPath to any dir
+            if (FileUtils::containsStandardPath(srcUris)) {
+                return false;
+            }
             FileOperationUtils::move(uris, item->uri(), true, true);
             //qDebug() << "sideBarModel moveOp";
         }

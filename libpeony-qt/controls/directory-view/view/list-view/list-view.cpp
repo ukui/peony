@@ -333,6 +333,13 @@ void ListView::dragEnterEvent(QDragEnterEvent *e)
     auto action = m_ctrl_key_pressed ? Qt::CopyAction : Qt::MoveAction;
     qDebug()<<"dragEnterEvent()" <<action <<m_ctrl_key_pressed;
     if (e->mimeData()->hasUrls()) {
+        if (FileUtils::containsStandardPath(e->mimeData()->urls())) {
+            e->ignore();
+            if (this == e->source()) {
+                clearSelection();
+            }
+            return;
+        }
         e->setDropAction(action);
         e->accept();
     }
