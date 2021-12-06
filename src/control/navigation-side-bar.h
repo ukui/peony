@@ -72,6 +72,7 @@ private:
     Peony::SideBarProxyFilterSortModel *m_proxy_model = nullptr;
     Peony::SideBarModel *m_model = nullptr;
     Peony::SideBarAbstractItem* m_currSelectedItem = nullptr;
+    bool m_notAllowHorizontalMove = false;/* 按下左右键不可使侧边栏内容左右平移显示 */
 };
 
 class NavigationSideBarContainer : public Peony::SideBar
