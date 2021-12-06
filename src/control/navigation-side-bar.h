@@ -66,9 +66,10 @@ protected:
     int sizeHintForColumn(int column) const override;
 
 private:
-    Peony::SideBarProxyFilterSortModel *m_proxy_model;
-    Peony::SideBarModel *m_model;
-    Peony::SideBarAbstractItem* m_currSelectedItem =nullptr;
+    Peony::SideBarProxyFilterSortModel *m_proxy_model = nullptr;
+    Peony::SideBarModel *m_model = nullptr;
+    Peony::SideBarAbstractItem* m_currSelectedItem = nullptr;
+    bool m_notAllowHorizontalMove = false;/* 按下左右键不可使侧边栏内容左右平移显示 */
 };
 
 class NavigationSideBarContainer : public QWidget
@@ -84,7 +85,7 @@ private:
     NavigationSideBar *m_sidebar = nullptr;
     QVBoxLayout *m_layout = nullptr;
 
-    QPushButton *m_label_button;
+    QPushButton *m_label_button = nullptr;
 };
 
 class NavigationSideBarItemDelegate : public QStyledItemDelegate
