@@ -248,7 +248,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_view_type_menu->insertAction(0,preview);
     preview->setCheckable(true);
 
-    viewType->setMenu(m_view_type_menu);
+    a->setMenu(m_view_type_menu);
 
     auto manager = Peony::PreviewPageFactoryManager::getInstance();
     auto pluginNames = manager->getPluginNames();
