@@ -6,8 +6,27 @@
 #include"sync-thread.h"
 #include "file-utils.h"
 
+#include <udisks/udisks.h>
+#include <sys/stat.h>
+
 using namespace Experimental_Peony;
 static VolumeManager* m_globalManager = nullptr;
+
+QString getDeviceUUID(const char *device) {
+    struct stat statbuf;
+    if (stat (device, &statbuf) != 0)
+    {
+        return nullptr;
+    }
+
+    g_autoptr(UDisksClient) client = udisks_client_new_sync (NULL,NULL);
+    g_autoptr(UDisksBlock) block = udisks_client_get_block_for_dev(client, statbuf.st_rdev);
+    if (!block)
+        return nullptr;
+
+    const gchar *uuid = udisks_block_get_id_uuid(block);
+    return uuid;
+}
 
 void VolumeManager::printVolumeList(){
     qDebug()<<endl<<endl<<endl;
@@ -382,6 +401,20 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
     {
         Volume* volume = new Volume(nullptr);
         volume->setFromDrive(*dirve);
+
+        // try fix #90641, a docking station should be hidden.
+        if (device.startsWith("/dev/sd")) {
+            QString uuid = getDeviceUUID(device.toUtf8().constData());
+            if (uuid.isEmpty()) {
+                volume->setHidden(true);
+            }
+            // if drive has media, it is not represent a docking station.
+            // so it should not be hidden.
+            if (g_drive_has_media(gdrive)) {
+                volume->setHidden(false);
+            }
+        }
+
         // 如果有volume，应该被隐藏
         GList *volumes = g_drive_get_volumes(gdrive);
         if (volumes) {
@@ -520,6 +553,21 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         }
         if(volumeItem->canEject()&&device.contains("/dev/sd")){/* 异常U盘设备 */
             m_volumeList->insert(volumeItem->device(), volumeItem);
+
+            // try fix #90641, a docking station should be hidden.
+            if (device.startsWith("/dev/sd")) {
+                QString uuid = getDeviceUUID(device.toUtf8().constData());
+                if (uuid.isEmpty()) {
+                    volumeItem->setHidden(true);
+                }
+            }
+            // if drive has media, it is not represent a docking station.
+            // so it should not be hidden.
+            if (entry->getGDrive()) {
+                if (g_drive_has_media(entry->getGDrive())) {
+                    volumeItem->setHidden(false);
+                }
+            }
         }
 
     }
