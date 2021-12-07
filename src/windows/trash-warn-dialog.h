@@ -29,6 +29,7 @@ namespace Peony {
 
 class TrashWarnDialog : public QDialog
 {
+    Q_OBJECT
 public:
     explicit TrashWarnDialog(QWidget *parent = nullptr);
 

@@ -111,8 +111,8 @@ TrashWarnDialog::TrashWarnDialog(QWidget *parent) : QDialog(parent)
     deleteButton->setFixedSize(124, 48);
     cancelButton->setFixedSize(124, 48);
 
-    deleteButton->setText("删除");
-    cancelButton->setText("取消");
+    deleteButton->setText(tr("Delete"));
+    cancelButton->setText(tr("Cancel"));
 
     floor4->addWidget(deleteButton);
     floor4->addStretch(1);
