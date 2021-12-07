@@ -493,17 +493,22 @@ void HeaderBar::finishEdit()
 
 void HeaderBar::updateIcons()
 {
+    if(!m_window)
+        return;
     qDebug()<<"updateIcons:" <<m_window->getCurrentUri();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
     m_view_type_menu->setCurrentDirectory(m_window->getCurrentUri());
-    m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
+    if(m_window->getCurrentPage() && m_window->getCurrentPage()->getView())
+        m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
 
     //go back & go forward
-    m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
-    m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+    if(m_window->getCurrentPage()){
+        m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
+        m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+    }
 
     //fix create folder fail issue in special path
 //    auto curUri = m_window->getCurrentUri();
