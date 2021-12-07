@@ -409,7 +409,7 @@
     </message>
     <message>
         <source>Change</source>
-        <translation>བཟོ་བཅོས།</translation>
+        <translation type="vanished">བཟོ་བཅོས།</translation>
     </message>
     <message>
         <source>Include:</source>
@@ -489,6 +489,10 @@
     </message>
     <message>
         <source>usershare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time Create:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -792,6 +796,10 @@
     <message>
         <source>Height:</source>
         <translation>མཐོ་ཚད།</translation>
+    </message>
+    <message>
+        <source>Depth:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

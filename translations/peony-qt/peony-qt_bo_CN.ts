@@ -399,6 +399,14 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished">ཁྱོད་ཀྱིས་ཡིག་ཆ་འདི་དག་གསུབ་རྒྱུ་ཡིན་ནམ། གལ་ཏར་སུབ་ཚར་ན། ཡིག་ཆ་འདི་དག་ནམ་ཡང་སླར་གསོ་མི་ཐུབ།</translation>
     </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">བསུབ་པ།</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PeonyApplication</name>
