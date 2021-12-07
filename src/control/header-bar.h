@@ -188,9 +188,9 @@ private Q_SLOTS:
     void updateTabletMode(bool isTabletMode);
 
 private:
-    QWidget *m_top_menu_internal_widget;
-    QHBoxLayout *m_top_menu_layout;
-    MainWindow *m_window;
+    QWidget *m_top_menu_internal_widget = nullptr;
+    QHBoxLayout *m_top_menu_layout = nullptr;
+    MainWindow *m_window = nullptr;
     QToolButton *m_max_or_restore = nullptr;
     QToolButton *m_minimize = nullptr;
     QToolButton *m_close = nullptr;
