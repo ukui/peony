@@ -541,6 +541,8 @@ void HeaderBar::finishEdit()
 
 void HeaderBar::updateIcons()
 {
+    if(!m_window)
+        return;
     qDebug()<<"updateIcons:" <<m_window->getCurrentUri();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
@@ -551,13 +553,15 @@ void HeaderBar::updateIcons()
     m_close_search_action->setIcon(QIcon::fromTheme(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()), QIcon::fromTheme("folder")));
     m_close_search_action->setToolTip(Peony::FileUtils::getFileDisplayName(m_window->getCurrentUri()));
     //go back & go forward
-    m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
-    m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
-    if (! m_is_intel)
-    {
-        m_go_up->setEnabled(m_window->getCurrentPage()->canCdUp());
-        m_go_up->setProperty("useIconHighlightEffect", 0x2);
-        m_go_up->setProperty("isWindowButton", 1);
+    if (m_window->getCurrentPage()) {
+        m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
+        m_go_forward->setEnabled(m_window->getCurrentPage()->canGoForward());
+        if (! m_is_intel)
+        {
+            m_go_up->setEnabled(m_window->getCurrentPage()->canCdUp());
+            m_go_up->setProperty("useIconHighlightEffect", 0x2);
+            m_go_up->setProperty("isWindowButton", 1);
+        }
     }
 
     //fix create folder fail issue in special path

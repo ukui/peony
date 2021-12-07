@@ -1105,6 +1105,9 @@ void TabWidget::updateTabPageTitle()
 
 void TabWidget::switchViewType(const QString &viewId)
 {
+    if(!currentPage()||currentPage()->getView())
+        return;
+
     if (currentPage()->getView()->viewId() == viewId)
         return;
 
@@ -1122,86 +1125,120 @@ void TabWidget::switchViewType(const QString &viewId)
 
 void TabWidget::goBack()
 {
+    if(!currentPage())
+        return;
     currentPage()->goBack();
 }
 
 void TabWidget::goForward()
 {
+    if(!currentPage())
+        return;
     currentPage()->goForward();
 }
 
 void TabWidget::cdUp()
 {
+    if(!currentPage())
+        return;
     currentPage()->cdUp();
 }
 
 void TabWidget::refresh()
 {
+    if(!currentPage())
+        return;
     currentPage()->refresh();
 }
 
 void TabWidget::stopLoading()
 {
+    if(!currentPage())
+        return;
     currentPage()->stopLoading();
 }
 
 void TabWidget::tryJump(int index)
 {
+    if(!currentPage())
+        return;
     currentPage()->tryJump(index);
 }
 
 void TabWidget::clearHistory()
 {
+    if(!currentPage())
+        return;
     currentPage()->clearHistory();
 }
 
 void TabWidget::setSortType(int type)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortType(Peony::FileItemModel::ColumnType(type));
 }
 
 void TabWidget::setSortOrder(Qt::SortOrder order)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortOrder(order);
 }
 
 void TabWidget::setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortFilter(FileTypeIndex, FileMTimeIndex, FileSizeIndex);
 }
 
 void TabWidget::setShowHidden(bool showHidden)
 {
+    if(!currentPage())
+        return;
     currentPage()->setShowHidden(showHidden);
 }
 
 void TabWidget::setUseDefaultNameSortOrder(bool use)
 {
+    if(!currentPage())
+        return;
     currentPage()->setUseDefaultNameSortOrder(use);
 }
 
 void TabWidget::setSortFolderFirst(bool folderFirst)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortFolderFirst(folderFirst);
 }
 
 void TabWidget::addFilterCondition(int option, int classify, bool updateNow)
 {
+    if(!currentPage())
+        return;
     currentPage()->addFilterCondition(option, classify, updateNow);
 }
 
 void TabWidget::removeFilterCondition(int option, int classify, bool updateNow)
 {
+    if(!currentPage())
+        return;
     currentPage()->removeFilterCondition(option, classify, updateNow);
 }
 
 void TabWidget::clearConditions()
 {
+    if(!currentPage())
+        return;
     currentPage()->clearConditions();
 }
 
 void TabWidget::updateFilter()
 {
+    if(!currentPage())
+        return;
     currentPage()->updateFilter();
 }
 
@@ -1227,7 +1264,9 @@ void TabWidget::updateAdvanceConditions()
     //update file name filter
     for(auto key : keyList)
     {
-       currentPage()->addFileNameFilter(key);
+        if(!currentPage())
+            continue;
+        currentPage()->addFileNameFilter(key);
     }
 
     updateFilter();
