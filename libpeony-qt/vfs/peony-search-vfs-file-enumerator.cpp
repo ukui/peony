@@ -334,6 +334,24 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
             if (desktop_name) {
                 displayName = desktop_name;
             }
+        } else if (uri.startsWith("trash:///")) {
+            // fix #94402
+            g_autoptr(GFileInfo) gfile_info = g_file_query_info(gfile, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
+            g_autofree gchar *target_uri = g_file_info_get_attribute_as_string(gfile_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+            if (target_uri) {
+                gfile = g_file_new_for_uri(target_uri);
+                desktop_file_path = g_file_get_path(gfile);
+                gdesktopappinfo = g_desktop_app_info_new_from_filename(desktop_file_path);
+                if (gdesktopappinfo) {
+                    g_autofree gchar *desktop_name = g_desktop_app_info_get_locale_string(gdesktopappinfo, "Name");
+                    if (!desktop_name) {
+                        desktop_name = g_desktop_app_info_get_string(gdesktopappinfo, "Name");
+                    }
+                    if (desktop_name) {
+                        displayName = desktop_name;
+                    }
+                }
+            }
         }
     }
 
