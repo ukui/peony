@@ -967,7 +967,8 @@ quint64 FileUtils::getFileSystemSize(QString uri)
     unixDevice = FileUtils::getUnixDevice(uri);
 
     //related bug#95731, encrypted data disk show property crash issue
-    if (unixDevice.isEmpty()  || ! unixDevice.startsWith("/dev/sd")) {
+    if (unixDevice.isEmpty() ||
+        ! (unixDevice.startsWith("/dev/sd") || unixDevice.startsWith("/dev/sr"))) {
         return total;
     }
     dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
@@ -993,7 +994,8 @@ QString FileUtils::getFileSystemType(QString uri)
 
     //fix bug#95731, encrypted data disk show property crash issue
     //encrypted disk unixDevice name is like /dev/mapper/kylin--vg-data
-    if (unixDevice.isEmpty() || ! unixDevice.startsWith("/dev/sd")) {
+    if (unixDevice.isEmpty() ||
+        ! (unixDevice.startsWith("/dev/sd") || unixDevice.startsWith("/dev/sr"))) {
         return fsType;
     }
     dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
