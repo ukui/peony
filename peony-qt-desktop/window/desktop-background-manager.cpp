@@ -51,6 +51,9 @@ void DesktopBackgroundManager::initGSettings()
 {
     if (QGSettings::isSchemaInstalled(BACKGROUND_SETTINGS)) {
         m_backgroundSettings = new QGSettings(BACKGROUND_SETTINGS, QByteArray(), this);
+        m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
+    } else {
+        m_backgroundOption = "scaled";
     }
     m_paintBackground = true;
     setBackground();
