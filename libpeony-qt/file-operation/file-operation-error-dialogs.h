@@ -61,31 +61,10 @@ public:
     virtual void handle (FileOperationError& error) override;
 
 private:
-    float m_margin = 9;
-    float m_pic_top = 63;
-    float m_margin_lr = 26;
-    float m_pic_size = 48;
-    float m_fix_width = 550;
-    float m_fix_height = 188;
+    bool m_ok = false;
+    bool m_cancel = false;
 
-    float m_text_y = 65;
-    float m_text_heigth = 80;
-
-    float m_ok_x = 410;
-    float m_ok_y = 132;
-    float m_ok_w = 120;
-    float m_ok_h = 36;
-
-    float m_cancel_x = 280;
-    float m_cancel_y = 132;
-    float m_cancel_w = 120;
-    float m_cancel_h = 36;
-
-    QLabel* m_icon = nullptr;
-    QLabel* m_text = nullptr;
-    QScrollArea* m_text_scroll = nullptr;
-    QPushButton* m_ok = nullptr;
-    QPushButton* m_cancel = nullptr;
+    QPushButton* m_cancel_btn = nullptr;
 };
 
 /*!
@@ -106,66 +85,6 @@ public:
     virtual void handle (FileOperationError& error) override;
 
 private:
-    float           m_margin = 9;
-    float           m_margin_lr = 26;
-    float           m_fix_width = 550;
-    float           m_fix_height = 192;
-
-    // file icon
-    float           m_file_x = 26;
-    float           m_file_y = 60;
-    float           m_file_size = 48;
-
-    float           m_tip_x = 85;
-    float           m_tip_y = 45;
-    float           m_tip_width = 430;
-    float           m_tip_height = 80;
-
-    // replace
-    float           m_rp_btn_x = 414;
-    float           m_rp_btn_y = 140;
-    float           m_rp_btn_width = 120;
-    float           m_rp_btn_height = 36;
-
-    // ignore
-    float           m_ig_btn_x = 278;
-    float           m_ig_btn_y = 140;
-    float           m_ig_btn_width = 120;
-    float           m_ig_btn_height = 36;
-
-    // backup
-    float           m_bk_btn_x = 142;
-    float           m_bk_btn_y = 140;
-    float           m_bk_btn_width = 120;
-    float           m_bk_btn_height = 36;
-
-    // Then do the same thing
-    float           m_sm_btn_x = 16;
-    float           m_sm_btn_y = 150;
-    float           m_sm_btn_width = 216;
-    float           m_sm_btn_height = 24;
-
-    float           m_ck_btn_top = 385;
-    float           m_ck_btn_heigth = 18;
-
-    float           m_btn_top = 80;
-    float           m_btn_width = 120;
-    float           m_btn_heigth = 38;
-    float           m_btn_ok_margin_left = 434;
-    float           m_btn_cancel_margin_left = 298;
-
-    QLabel*         m_tip = nullptr;
-    QLabel*         m_title = nullptr;
-    QLabel*         m_file_icon = nullptr;
-
-    QString         m_file_name;
-    QString         m_file_icon_name;
-
-    QPushButton*    m_rp_btn = nullptr;
-    QPushButton*    m_ig_btn = nullptr;
-    QPushButton*    m_bk_btn = nullptr;
-    QCheckBox*      m_sm_ck = nullptr;
-
     bool            m_ignore = false;
     bool            m_backup = false;
     bool            m_replace = false;
@@ -187,38 +106,9 @@ public:
     virtual void handle (FileOperationError& error) override;
 
 private:
-    float m_margin = 9;
-    float m_pic_top = 63;
-    float m_margin_lr = 26;
-    float m_pic_size = 48;
-    float m_fix_width = 550;
-    float m_fix_height = 188;
-
-    float m_text_y = 65;
-    float m_text_heigth = 60;
-
-    float m_ok_x = 410;
-    float m_ok_y = 132;
-    float m_ok_w = 120;
-    float m_ok_h = 36;
-
-    float m_cancel_x = 280;
-    float m_cancel_y = 132;
-    float m_cancel_w = 120;
-    float m_cancel_h = 36;
-
-    float           m_sm_btn_x = 16;
-    float           m_sm_btn_y = 150;
-    float           m_sm_btn_width = 200;
-    float           m_sm_btn_height = 20;
-
-    QLabel* m_icon = nullptr;
-    QLabel* m_text = nullptr;
-    QScrollArea* m_text_scroll = nullptr;
-    QPushButton* m_ok = nullptr;
-    QPushButton* m_cancel = nullptr;
-
-    QCheckBox*      m_sm_ck = nullptr;
+    bool m_ok = false;
+    bool m_cancel = false;
+    bool m_do_same = false;
 };
 
 };
