@@ -459,15 +459,13 @@ void IconView::focusInEvent(QFocusEvent *e)
             selectionModel()->select(model()->index(0, 0), QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
         } else {
             scrollTo(selectedIndexes().first(), QListView::PositionAtCenter);
-            //auto selections = selectedIndexes();
+            auto selections = getSelections();
             clearSelection();
             //added for tab key to focus button issue
-            //comment to fix crash bug#68788
-//            QTimer::singleShot(100, this, [=](){
-//                for (auto index : selections) {
-//                    selectionModel()->select(index, QItemSelectionModel::Select);
-//                }
-//            });
+            //use uri rather than index, to fix crash bug#68788, 96145
+            QTimer::singleShot(100, this, [=](){
+               setSelections(selections);
+            });
         }
     }
 }
