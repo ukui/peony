@@ -1105,7 +1105,7 @@ void TabWidget::updateTabPageTitle()
 
 void TabWidget::switchViewType(const QString &viewId)
 {
-    if(!currentPage()||currentPage()->getView())
+    if(!currentPage()||!(currentPage()->getView()))
         return;
 
     if (currentPage()->getView()->viewId() == viewId)
