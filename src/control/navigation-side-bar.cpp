@@ -424,6 +424,11 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
             Q_EMIT this->updateWindowLocationRequest(uri, true);
         }
     }
+
+    if(event->key() == Qt::Key_Left||event->key()==Qt::Key_Right)
+    {/* 按下左右键不可使侧边栏内容左右平移显示 */
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
+    }
 }
 
 void NavigationSideBar::focusInEvent(QFocusEvent *event)
@@ -443,6 +448,15 @@ void NavigationSideBar::focusInEvent(QFocusEvent *event)
                 }
             });
         }
+    }
+}
+
+void NavigationSideBar::wheelEvent(QWheelEvent *event)
+{
+    QTreeView::wheelEvent(event);
+    if (event->orientation()==Qt::Horizontal) {
+        /* 触摸板左右滑动不可使侧边栏内容左右平移显示 */
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
     }
 }
 
