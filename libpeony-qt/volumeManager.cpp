@@ -51,29 +51,6 @@ void VolumeManager::printVolumeList(){
 //    }
 
 }
-#include "file-enumerator.h"
-#include "file-info.h"
-#include "file-info-job.h"
-#include "file-utils.h"
-QString VolumeManager::getTargetUriFromUnixDevice(const QString &unixDevice){
-    /* volume item,遍历方式获取uri */
-    Peony::FileEnumerator e;
-    e.setEnumerateDirectory("computer:///");
-    e.enumerateSync();
-    QString uri;
-    for (auto fileInfo : e.getChildren()) {
-        Peony::FileInfoJob infoJob(fileInfo);
-        infoJob.querySync();
-        /* 由volume的unixDevice获取target uri */
-        auto info = infoJob.getInfo();
-        QString device = fileInfo.get()->unixDeviceFile();
-        if(device==unixDevice){
-            uri = fileInfo.get()->targetUri();
-            break;
-        }
-    }
-    return Peony::FileUtils::urlDecode(uri);
-}
 
 VolumeManager::VolumeManager(QObject *parent) : QObject(parent)
 {
@@ -1039,21 +1016,16 @@ GDrive *Drive::getGDrive() const
     return m_drive;
 }
 
-static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QString* targetUri)
+static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, gpointer user_data)
 {
     GError *error = nullptr;
     bool successed = g_drive_eject_with_operation_finish(gDrive, result, &error);
-    qDebug()<<"The result that drive eject with operation finish:"<<successed;
+    qDebug()<<successed;
     if (error) {
         qDebug()<<error->message;
         if(! strcmp(error->message,"Not authorized to perform operation")){//umount /data need permissions.
             QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
             g_error_free(error);
-            if(targetUri){
-                delete targetUri;
-                targetUri = nullptr;
-            }
-            g_free(targetUri);
             return nullptr;
         }
 
@@ -1065,13 +1037,9 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QStrin
         /* 弹出完成信息提示 */
         QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
         Peony::SyncThread::notifyUser(ejectNotify);
-        QString str = *targetUri;
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(static_cast<char*>(user_data));
     }
-    if(targetUri){
-        delete targetUri;
-        targetUri = nullptr;
-    }
+
     return nullptr;
 }
 
@@ -1086,20 +1054,13 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThi
             warningBox.exec();
             g_error_free(error);
         }
-    }else {
-        /* 弹出完成信息提示 */
-        QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
-        Peony::SyncThread::notifyUser(ejectNotify);
-        QString targetUri = VolumeManager::getInstance()->getTargetUriFromUnixDevice(pThis->device());
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(targetUri);
     }
 }
 
 void Drive::eject(GMountUnmountFlags ejectFlag)
 {
     if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
-        QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
-        g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
+        g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb),const_cast<char*>(m_mountPath.toStdString().c_str()));
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
         g_drive_stop(m_drive,ejectFlag,NULL,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
@@ -1310,7 +1271,7 @@ bool Mount::canUnmount() const{
     return m_canUnmount;
 }
 
-static void unmount_force_cb(GMount* mount, GAsyncResult* result, QString* targetUri) {
+static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata) {
 
     GError *err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -1320,16 +1281,13 @@ static void unmount_force_cb(GMount* mount, GAsyncResult* result, QString* targe
     } else {
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
-        QString uri = *targetUri;
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
+        QString uri = static_cast<char*>(udata);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
     }
-    if(targetUri){
-        delete targetUri;
-        targetUri = nullptr;
-    }
+    g_free(udata);
 }
 
-static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, QString* targetUri)
+static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, gpointer user_data)
 {
     GError *err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -1337,19 +1295,11 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
             g_error_free(err);
             QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
-            if(targetUri){
-                delete targetUri;
-                targetUri = nullptr;
-            }
             return nullptr;
         }
         if(strstr(err->message,"umount: ")){
             QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
             g_error_free(err);
-            if(targetUri){
-                delete targetUri;
-                targetUri = nullptr;
-            }
             return nullptr;
         }
 
@@ -1361,12 +1311,9 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
                                            nullptr,
                                            nullptr,
                                            GAsyncReadyCallback(unmount_force_cb),
-                                           targetUri);
+                                           user_data);
         } else {
-            if(targetUri){
-                delete targetUri;
-                targetUri = nullptr;
-            }
+            g_free (user_data);
         }
         g_error_free(err);
 
@@ -1374,21 +1321,21 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
         /* 卸载完成信息提示 */
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
-        QString ss = *targetUri;
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
-        if(targetUri){
-            delete targetUri;
-            targetUri = nullptr;
-        }
+        QString uri = static_cast<char*>(user_data);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
+        g_free(user_data);
     }
     return nullptr;
 }
 
 void Mount::unmount()
 {
-    if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)               
-        QString* targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
-        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), targetUri);
+    if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)
+        GFile* rootFile = g_mount_get_root(m_mount);
+        char* mountPath = g_file_get_uri(rootFile);
+        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), mountPath);
+        g_object_unref(rootFile);
+        //g_free(mountPath);
     }
     //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
 }

@@ -129,9 +129,9 @@ void FileWatcher::startMonitor()
         }
     });
     connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_unmountFinished, this, [=](const QString &uri){
-        /* volume卸载完成跳转到计算机目录(只有进入volume内部目录，卸载时才跳转) */
+        /* volume卸载完成跳转到计算机目录(只有进入volume内部目录，卸载时才跳转，空光盘比较特殊) */
         auto fixedUri = uri;
-        if (m_uri.contains(uri)||m_target_uri.contains(uri)|| m_uri + "/" == fixedUri) {
+        if (m_uri == uri || m_target_uri == uri || m_uri + "/" == fixedUri) {
             Q_EMIT directoryUnmounted(uri);
         }
     });

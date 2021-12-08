@@ -28,9 +28,6 @@ public:
     /*静态的获取当前所有有效的设备分区，函数名后期再做更换*/
     QList<Volume>*   allVaildVolumes();
     void printVolumeList();
-
-    QString getTargetUriFromUnixDevice(const QString &unixDevice);/* 根据device获取volume的uri */
-
 private:
     explicit VolumeManager(QObject *parent = nullptr);
     bool gpartedIsOpening();
