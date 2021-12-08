@@ -91,27 +91,31 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
         p.setRenderHint(QPainter::Antialiasing);
         p.setRenderHint(QPainter::SmoothPixmapTransform);
         auto animation = manager->getAnimation();
+        QPixmap frontPixmap = manager->getFrontPixmap();
+
         if (animation->state() == QVariantAnimation::Running) {
             auto opacity = animation->currentValue().toReal();
+            QPixmap backPixmap = manager->getBackPixmap();
+
             if (manager->getBackgroundOption() == "centered") {
                 //居中
-                p.drawPixmap((m_screen->size().width() - manager->getBackPixmap().rect().width()) / 2,
-                             (m_screen->size().height() - manager->getBackPixmap().rect().height()) / 2,
-                             manager->getBackPixmap());
+                p.drawPixmap((m_screen->size().width() - backPixmap.rect().width()) / 2,
+                             (m_screen->size().height() - backPixmap.rect().height()) / 2,
+                             backPixmap);
                 p.setOpacity(opacity);
-                p.drawPixmap((m_screen->size().width() - manager->getFrontPixmap().rect().width()) / 2,
-                             (m_screen->size().height() - manager->getFrontPixmap().rect().height()) / 2,
-                             manager->getFrontPixmap());
+                p.drawPixmap((m_screen->size().width() - frontPixmap.rect().width()) / 2,
+                             (m_screen->size().height() - frontPixmap.rect().height()) / 2,
+                             frontPixmap);
             } else if (manager->getBackgroundOption() == "stretched") {
                 //拉伸
-                p.drawPixmap(this->rect(), manager->getBackPixmap(), manager->getBackPixmap().rect());
+                p.drawPixmap(this->rect(), backPixmap, backPixmap.rect());
                 p.setOpacity(opacity);
-                p.drawPixmap(this->rect(), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+                p.drawPixmap(this->rect(), frontPixmap, frontPixmap.rect());
             } else if (manager->getBackgroundOption() == "scaled") {
                 //填充
-                p.drawPixmap(this->rect(), manager->getBackPixmap());
+                p.drawPixmap(this->rect().topLeft(), backPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
                 p.setOpacity(opacity);
-                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+                p.drawPixmap(this->rect().topLeft(), frontPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
             } else if (manager->getBackgroundOption() == "wallpaper") {
                 //平铺
                 int drawedWidth = 0;
@@ -119,13 +123,13 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                 while (1) {
                     drawedWidth = 0;
                     while (1) {
-                        p.drawPixmap(drawedWidth, drawedHeight, manager->getBackPixmap());
-                        drawedWidth += manager->getBackPixmap().width();
+                        p.drawPixmap(drawedWidth, drawedHeight, backPixmap);
+                        drawedWidth += backPixmap.width();
                         if (drawedWidth >= m_screen->size().width()) {
                             break;
                         }
                     }
-                    drawedHeight += manager->getBackPixmap().height();
+                    drawedHeight += backPixmap.height();
                     if (drawedHeight >= m_screen->size().height()) {
                         break;
                     }
@@ -136,33 +140,33 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                 while (1) {
                     drawedWidth = 0;
                     while (1) {
-                        p.drawPixmap(drawedWidth, drawedHeight, manager->getFrontPixmap());
-                        drawedWidth += manager->getFrontPixmap().width();
+                        p.drawPixmap(drawedWidth, drawedHeight, frontPixmap);
+                        drawedWidth += frontPixmap.width();
                         if (drawedWidth >= m_screen->size().width()) {
                             break;
                         }
                     }
-                    drawedHeight += manager->getFrontPixmap().height();
+                    drawedHeight += frontPixmap.height();
                     if (drawedHeight >= m_screen->size().height()) {
                         break;
                     }
                 }
             } else {
-                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), backPixmap, backPixmap.rect());
                 p.setOpacity(opacity);
-                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getFrontPixmap(), manager->getFrontPixmap().rect());
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), frontPixmap, frontPixmap.rect());
             }
 
         } else {
             if (manager->getBackgroundOption() == "centered") {
-                p.drawPixmap((m_screen->size().width() - manager->getFrontPixmap().rect().width()) / 2,
-                             (m_screen->size().height() - manager->getFrontPixmap().rect().height()) / 2,
-                             manager->getFrontPixmap());
+                p.drawPixmap((m_screen->size().width() - frontPixmap.rect().width()) / 2,
+                             (m_screen->size().height() - frontPixmap.rect().height()) / 2,
+                             frontPixmap);
             } else if (manager->getBackgroundOption() == "stretched") {
-                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+                p.drawPixmap(this->rect(), frontPixmap, frontPixmap.rect());
 
             } else if (manager->getBackgroundOption() == "scaled") {
-                p.drawPixmap(this->rect(), manager->getFrontPixmap());
+                p.drawPixmap(this->rect().topLeft(), frontPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
 
             } else if (manager->getBackgroundOption() == "wallpaper") {
                 int drawedWidth = 0;
@@ -170,19 +174,19 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                 while (1) {
                     drawedWidth = 0;
                     while (1) {
-                        p.drawPixmap(drawedWidth, drawedHeight, manager->getFrontPixmap());
-                        drawedWidth += manager->getFrontPixmap().width();
+                        p.drawPixmap(drawedWidth, drawedHeight, frontPixmap);
+                        drawedWidth += frontPixmap.width();
                         if (drawedWidth >= m_screen->size().width()) {
                             break;
                         }
                     }
-                    drawedHeight += manager->getFrontPixmap().height();
+                    drawedHeight += frontPixmap.height();
                     if (drawedHeight >= m_screen->size().height()) {
                         break;
                     }
                 }
             } else {
-                p.drawPixmap(rect().adjusted(0, 0, -1, -1), manager->getBackPixmap(), manager->getBackPixmap().rect());
+                p.drawPixmap(rect().adjusted(0, 0, -1, -1), frontPixmap, frontPixmap.rect());
             }
         }
         p.restore();
