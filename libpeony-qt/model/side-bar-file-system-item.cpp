@@ -346,29 +346,35 @@ void SideBarFileSystemItem::slot_volumeDeviceUpdate(const Experimental_Peony::Vo
 
 void SideBarFileSystemItem::slot_fileCreate(const QString &uri)
 {
-    //qDebug()<<"created:"<<uri;
+    qDebug()<<"created:"<<uri;
     for (auto item : *m_children) {
-        if (item->uri() == uri) {
+        if (item->m_uri == uri) {
             return;
         }
     }
+    /* 更新fileinfo */
+    auto info = FileInfo::fromUri(uri);
+    FileInfoJob job(uri, this);
+    job.querySync();
 
-    SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
-                                                            nullptr,
-                                                            this,
-                                                            m_model);
-
+    if (!(info->isDir())){/* 只显示文件夹，文件不显示 */
+        return;
+    }
+    /* 新增项 */
+    SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(), nullptr, this, m_model);
     m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
     m_children->append(item);
     m_model->endInsertRows();
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果添加了非空项，则需要删除空项 */
     m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+
 }
 
 void SideBarFileSystemItem::slot_fileDelete(const QString &uri)
 {
-    //qDebug()<<"deleted:"<<uri;
+    qDebug()<<"deleted:"<<uri;
     for (auto child : *m_children) {
-        if (child->uri() == uri) {
+        if (child->m_uri == uri) {
             int index = m_children->indexOf(child);
             m_model->beginRemoveRows(firstColumnIndex(), index, index);
             m_children->removeOne(child);
@@ -377,14 +383,14 @@ void SideBarFileSystemItem::slot_fileDelete(const QString &uri)
             break;
         }
     }
-    m_model->indexUpdated(this->firstColumnIndex());
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果删除了所有项，则需要添加空项 */
 }
 
 void SideBarFileSystemItem::slot_fileRename(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"rename,old uri:"<<oldUri<<" new uri:"<<newUri;
     for (auto item : *m_children){
-        if (item->uri() == oldUri){
+        if (item->m_uri == oldUri){
             item->m_uri = newUri;
             auto info = FileInfo::fromUri(item->m_uri);
             if (info->displayName().isEmpty()) {
@@ -532,12 +538,13 @@ void SideBarFileSystemItem::findChildren()
 
     }else{
         /* 对挂载目录监听 */
-        if(!m_watcher)
+        if(!m_watcher){
             m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
+            connect(m_watcher.get(),&FileWatcher::fileCreated,this,&SideBarFileSystemItem::slot_fileCreate);
+            connect(m_watcher.get(),&FileWatcher::fileDeleted,this,&SideBarFileSystemItem::slot_fileDelete);
+            connect(m_watcher.get(),&FileWatcher::fileRenamed,this,&SideBarFileSystemItem::slot_fileRename);
+        }
         m_watcher->setMonitorChildrenChange();
-        connect(m_watcher.get(),&FileWatcher::fileCreated,this,&SideBarFileSystemItem::slot_fileCreate);
-        connect(m_watcher.get(),&FileWatcher::fileDeleted,this,&SideBarFileSystemItem::slot_fileDelete);
-        connect(m_watcher.get(),&FileWatcher::fileRenamed,this,&SideBarFileSystemItem::slot_fileRename);
         m_watcher->startMonitor();
     }
 
