@@ -217,6 +217,7 @@ void ListView::mousePressEvent(QMouseEvent *e)
         }
     }
 
+    m_editValid = true;
     QTreeView::mousePressEvent(e);
 
     auto sizeHint = itemDelegate()->sizeHint(viewOptions(), index);
@@ -239,7 +240,6 @@ void ListView::mousePressEvent(QMouseEvent *e)
     }
 
     //m_renameTimer
-    m_editValid = true;
     if(!m_renameTimer->isActive())
     {
         m_renameTimer->start();
