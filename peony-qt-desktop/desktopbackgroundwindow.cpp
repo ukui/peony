@@ -276,7 +276,7 @@ QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
 
     while (shortEdge > 1) {
         qint32 temp = qFloor(shortEdge * screenScale);
-        if (temp <= height) {
+        if (temp <= longEdge) {
             longEdge = temp;
             break;
         }
