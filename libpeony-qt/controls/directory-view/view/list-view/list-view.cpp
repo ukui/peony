@@ -526,15 +526,12 @@ void ListView::focusInEvent(QFocusEvent *e)
         } else {
             QTreeView::scrollTo(selectedIndexes().first(), QTreeView::EnsureVisible);
             reUpdateScrollBar();
-            //auto selections = selectedIndexes();
+            auto selections = getSelections();
             clearSelection();
-            //comment to fix crash bug#68788, 96145
-//            QTimer::singleShot(100, this, [=](){
-//                for (auto index : selections) {
-//                    if (index.isValid())
-//                       selectionModel()->select(index, QItemSelectionModel::Select);
-//                }
-//            });
+            //use uri rather than index, to fix crash bug#68788, 96145
+            QTimer::singleShot(100, this, [=](){
+                setSelections(selections);
+            });
         }
     }
 }
