@@ -308,11 +308,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         return;
     }
 
-//    QUrl url = uri;
-    //fix bug#84324
-    QUrl url = FileUtils::urlEncode(uri);
-
-    auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         button->setIcon(icon);
@@ -320,10 +315,12 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     //comment to fix button text show incomplete issue, link to bug#72080
     //button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
-    if (!url.fileName().isEmpty()) {
-        if (FileUtils::getParentUri(uri).isNull()) {
-            setMenu = false;
-        }
+
+    //fix bug#84324
+    //    QUrl url = uri;
+    QUrl url = FileUtils::urlEncode(uri);
+    if (!url.fileName().isEmpty())
+    {
         button->setText(displayName);
         m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
