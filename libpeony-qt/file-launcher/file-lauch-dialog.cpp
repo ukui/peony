@@ -46,6 +46,9 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     m_layout->addWidget(new QLabel(tr("Choose an Application to open this file"), this));
     m_view = new QListWidget(this);
     m_view->setIconSize(QSize(48, 48));
+    //Set the grid size to be the same as the icon size to solve the overlap problem .link bug#94165
+    m_view->setGridSize(QSize(48, 48));
+    m_view->setUniformItemSizes(true);
     m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_layout->addWidget(m_view, 1);
     m_check_box = new QCheckBox(tr("Set as Default"), this);
