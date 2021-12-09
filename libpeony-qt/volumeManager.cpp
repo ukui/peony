@@ -1097,12 +1097,15 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThi
 
 void Drive::eject(GMountUnmountFlags ejectFlag)
 {
+    // fix #92731, note that if we didn't pass a mount-operation instance,
+    // drive will do operation without user interaction.
+    g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
     if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
         QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
-        g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
+        g_drive_eject_with_operation(m_drive, ejectFlag, mount_op, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
-        g_drive_stop(m_drive,ejectFlag,NULL,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
+        g_drive_stop(m_drive,ejectFlag,mount_op,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
     }
 }
 
