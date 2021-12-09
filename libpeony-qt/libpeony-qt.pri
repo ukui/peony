@@ -22,14 +22,20 @@ include(windows/windows.pri)
 include(thumbnail/thumbnail.pri)
 
 HEADERS += \
-    $$PWD/plugin-manager.h \
-    $$PWD/complementary-style.h \
-    $$PWD/global-settings.h
+    $$PWD/file-copy.h               \
+    $$PWD/peony-log.h               \
+    $$PWD/plugin-manager.h          \
+    $$PWD/global-settings.h         \
+    $$PWD/complementary-style.h     \
 
 SOURCES += \
-    $$PWD/plugin-manager.cpp \
-    $$PWD/complementary-style.cpp \
-    $$PWD/global-settings.cpp
+    $$PWD/file-copy.cpp             \
+    $$PWD/plugin-manager.cpp        \
+    $$PWD/global-settings.cpp       \
+    $$PWD/complementary-style.cpp   \
+
 
 FORMS += \
     $$PWD/connect-server-dialog.ui
+
+

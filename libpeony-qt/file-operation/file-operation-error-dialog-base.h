@@ -22,8 +22,12 @@
 #ifndef FILEOPERATIONERRORDIALOGBASE_H
 #define FILEOPERATIONERRORDIALOGBASE_H
 
+#include <QBoxLayout>
+#include <QCheckBox>
 #include <QDialog>
 #include <QLabel>
+#include <QProxyStyle>
+#include <QPushButton>
 #include "file-operation-error-handler.h"
 
 namespace Peony {
@@ -35,29 +39,22 @@ public:
     explicit FileOperationErrorDialogBase(QDialog *parent);
     ~FileOperationErrorDialogBase() override;
 
-    void setHeaderIcon (QString icon);
+    void setText (QString text);
+    void setIcon (QString iconName);
+    QPushButton* addButton (QString name);
+    QCheckBox* addCheckBoxLeft (QString name);
 
 Q_SIGNALS:
     void cancel();
 
 protected:
-    void paintEvent(QPaintEvent*) override;
-    void mouseMoveEvent(QMouseEvent *event)override;
-    void mousePressEvent(QMouseEvent *event)override;
-
-protected:
     FileOperationError*         m_error = nullptr;
 
 private:
-    float                       m_btn_size = 20;
-    float                       m_margin_tp = 9;
-    float                       m_margin_lr = 16;
-    float                       m_btn_margin = 5;
-    float                       m_header_height = 30;
-
-    float                       m_header_icon_size = 20;
-
-    QString                     m_header_icon;
+    QLabel*                     m_tipimage = nullptr;
+    QLabel*                     m_tipcontent = nullptr;
+    QHBoxLayout*                m_buttonLeft = nullptr;
+    QHBoxLayout*                m_buttonRight = nullptr;
 };
 };
 
