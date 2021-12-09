@@ -54,6 +54,13 @@ SideBarModel::SideBarModel(QObject *parent)
 
     m_root_children = new QVector<SideBarAbstractItem*>();
 
+//    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
+//    m_root_children->append(separator1);
+
+    SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
+    m_root_children->append(favorite_root_item);
+
+
     auto vfsMgr = VFSPluginManager::getInstance();
     auto plugins = vfsMgr->registeredPlugins();
     for (auto plugin : plugins) {
@@ -65,11 +72,6 @@ SideBarModel::SideBarModel(QObject *parent)
         }
     }
 
-//    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
-//    m_root_children->append(separator1);
-
-    SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
-    m_root_children->append(favorite_root_item);
     //favorite_root_item->findChildren();
 
 //    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
