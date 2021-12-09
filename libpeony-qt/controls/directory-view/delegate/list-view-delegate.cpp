@@ -83,13 +83,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 labelSize = 10;
             if (labelSize <6)
                 labelSize = 6;
-            if (colors.count() == 1)
-                yoffset = size-labelSize/2;
-            else if (colors.count() == 2)
-                yoffset = size - labelSize;
-            else
-                yoffset = labelSize/2;
-
+            yoffset = 0;
             for (int i = startIndex; i < colors.count(); ++i, ++index) {
                 auto color = colors.at(i);
                 painter->save();
