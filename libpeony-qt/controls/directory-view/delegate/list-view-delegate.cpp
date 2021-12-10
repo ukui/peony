@@ -74,28 +74,27 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             int index = 0;
             const int MAX_LABEL_NUM = 3;
             int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+            int num = colors.count() - startIndex + 1;
 
             //set color label on center, fix bug#40609
             auto iconSize = view->iconSize();
-            auto size = iconSize.height()/2;
             auto labelSize = iconSize.height()/3;
             if (labelSize > 10)
                 labelSize = 10;
             if (labelSize <6)
                 labelSize = 6;
-            if (colors.count() == 1)
-                yoffset = size-labelSize/2;
-            else if (colors.count() == 2)
-                yoffset = size - labelSize;
-            else
-                yoffset = labelSize/2;
 
+            yoffset = (opt.rect.height()-labelSize*num/2)/2;
+            if(yoffset < 2)
+            {
+                yoffset = 2;
+            }
             for (int i = startIndex; i < colors.count(); ++i, ++index) {
                 auto color = colors.at(i);
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
-                painter->translate(2, 2);
+                painter->translate(2, 0);
                 painter->setPen(opt.palette.highlightedText().color());
                 painter->setBrush(color);
                 painter->drawEllipse(QRectF(xoffset, yoffset, labelSize, labelSize));
