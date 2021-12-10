@@ -41,6 +41,7 @@
 #include "file-item.h"
 
 #include <QDebug>
+#include <QTextLayout>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -195,22 +196,6 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     }
     opt.text = std::move(tmp);
 
-    //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
-    p.save();
-
-    p.setPen(opt.palette.highlightedText().color());
-    p.translate(0, m_delegate->getView()->iconSize().height() + 5);
-    IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4);
-
-//    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
-//    //m_edit->document()->drawContents(&p);
-//    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
-//    textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
-//    p.setFont(opt.font);
-//    p.setPen(opt.palette.highlightedText().color());
-//    p.drawText(QRect(1, 0, this->width() - 1, 9999), opt.text, textOption);
-    p.restore();
-
     //extra emblems
     if (!m_info.lock()) {
         return;
@@ -219,21 +204,80 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     // draw color symbols
     auto colors = info->getColors();
-    int offset = 0;
-    const int MAX_LABEL_NUM = 3;
-    int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
-    for (int i = startIndex; i < colors.count(); ++i) {
-        auto color = colors.at(i);
-        p.save();
-        p.setRenderHint(QPainter::Antialiasing);
-        p.translate(2, 2);
-        p.setPen(opt.palette.highlightedText().color());
-        p.setBrush(color);
-        p.drawEllipse(QRectF(offset, 0, 10, 10));
-        p.restore();
-        offset += 10/2;
-    }
+    auto lineSpacing = opt.fontMetrics.lineSpacing();
+    int yoffset = 0;
+    int iLine = 0;
+    if(0 < colors.count())
+    {
+        const int MAX_LABEL_NUM = 3;
+        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+        int num =  colors.count() - startIndex;
 
+        QString text = opt.text;
+        QFont font = opt.font;
+        QTextLayout textLayout(text, font);
+
+        QTextOption textOpt;
+        textOpt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+        textLayout.setTextOption(textOpt);
+        textLayout.beginLayout();
+
+
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+            return;
+        int width = opt.rect.width() - (num+1)*6 - 2*2 - 4;
+        line.setLineWidth(width);
+
+        int xoffset = (width - line.naturalTextWidth())/2 ;
+        if(xoffset < 0)
+        {
+            xoffset = 2;
+        }
+        yoffset = (lineSpacing -12 )/2+2;
+
+        for (int i = startIndex; i < colors.count(); ++i) {
+            auto color = colors.at(i);
+            p.save();
+            p.setRenderHint(QPainter::Antialiasing);
+            p.translate(0, m_delegate->getView()->iconSize().height() + 5);
+
+           // p.translate(2, 2);
+            p.setPen(opt.palette.highlightedText().color());
+            p.setBrush(color);
+            p.drawEllipse(QRectF(xoffset, yoffset, 12, 12));
+            p.restore();
+            xoffset += 12/2;
+        }
+
+        yoffset = 0;
+        p.save();
+        p.translate(xoffset+10, m_delegate->getView()->iconSize().height() + 5);
+        p.setPen(opt.palette.highlightedText().color());
+
+        line.draw(&p, QPoint(0, yoffset));
+        yoffset += lineSpacing;
+        opt.text = text.mid(line.textLength());
+        textLayout.endLayout();
+        int heigth = opt.rect.height();
+        auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, m_index, 2, 3);
+        int textHeigth = heigth - yoffset - m_delegate->getView()->iconSize().height() - 5;
+        if(textHeigth < textSize.height())
+        {
+           setFixedHeight(heigth+lineSpacing);
+        }
+        p.restore();
+        iLine++;
+    }
+    if(!opt.text.isEmpty())
+    {
+        p.save();
+        p.translate(0, m_delegate->getView()->iconSize().height() + 5 + yoffset);
+        p.setPen(opt.palette.highlightedText().color());
+        IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4-iLine);
+        p.restore();
+    }
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
