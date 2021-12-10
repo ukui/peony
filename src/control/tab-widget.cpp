@@ -407,7 +407,28 @@ void TabWidget::searchChildUpdate()
 
 void TabWidget::browsePath()
 {
-    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
+    // use window modal dialog, fix #56549
+    QFileDialog f(this->topLevelWidget());
+    f.setWindowTitle(tr("Select Path"));
+    f.setDirectoryUrl(QUrl(getCurrentUri()));
+    f.setWindowModality(Qt::WindowModal);
+    f.setAcceptMode(QFileDialog::AcceptOpen);
+    f.setOption(QFileDialog::ShowDirsOnly);
+    f.setFileMode(QFileDialog::DirectoryOnly);
+
+    auto result = f.exec();
+    if (result != QDialog::Accepted) {
+        return;
+    }
+
+    //Gets the URI of the selected directory. link bug#92521
+    QList<QUrl> urls = f.selectedUrls();
+    if(urls.isEmpty()){
+        return;
+    }
+    QString target_path = urls.at(0).toString();
+//    QString target_path = f.directoryUrl().toString();
+//    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
     if (! target_path.contains("file://") && target_path != "")
