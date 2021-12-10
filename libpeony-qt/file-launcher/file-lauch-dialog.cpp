@@ -34,6 +34,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
+#include <QPainter>
+#include <QApplication>
 
 using namespace Peony;
 
@@ -102,4 +104,11 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     if (info->isDir() || info->isDesktopFile()) {
         m_check_box->setEnabled(false);
     }
+}
+
+void FileLauchDialog::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.fillRect(this->rect(), qApp->palette().base());
+    QWidget::paintEvent(event);
 }

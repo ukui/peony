@@ -52,6 +52,10 @@ public:
     QSize sizeHint() const override {
         return QSize(400, 600);
     }
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     QVBoxLayout *m_layout;
 
