@@ -414,12 +414,19 @@ void TabWidget::browsePath()
     f.setAcceptMode(QFileDialog::AcceptOpen);
     f.setOption(QFileDialog::ShowDirsOnly);
     f.setFileMode(QFileDialog::DirectoryOnly);
+
     auto result = f.exec();
     if (result != QDialog::Accepted) {
         return;
     }
 
-    QString target_path = f.directoryUrl().toString();
+    //Gets the URI of the selected directory. link bug#92521
+    QList<QUrl> urls = f.selectedUrls();
+    if(urls.isEmpty()){
+        return;
+    }
+    QString target_path = urls.at(0).toString();
+//    QString target_path = f.directoryUrl().toString();
 //    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
