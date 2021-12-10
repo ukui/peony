@@ -408,6 +408,7 @@ void TabWidget::browsePath()
 {
     // use window modal dialog, fix #56549
     QFileDialog f(this->topLevelWidget());
+    f.setStyle(nullptr);
     f.setWindowTitle(tr("Select Path"));
     f.setDirectoryUrl(QUrl(getCurrentUri()));
     f.setWindowModality(Qt::WindowModal);
