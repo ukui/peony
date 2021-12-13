@@ -369,7 +369,8 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                     Q_EMIT this->requestUpdateItemPositions();
                     QStringList list;
                     list.append(info->uri());
-                    FileOperationUtils::trash(list, false);
+                    //auto remove, link to task#10131
+                    FileOperationUtils::remove(list);
                 }
             }
         }
