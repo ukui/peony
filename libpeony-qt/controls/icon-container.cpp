@@ -71,7 +71,15 @@ IconContainerStyle::IconContainerStyle() : QProxyStyle()
 
 void IconContainerStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    QStyleOptionButton opt = *qstyleoption_cast<const QStyleOptionButton *>(option);
-    opt.palette.setColor(QPalette::Highlight, Qt::transparent);
-    return QProxyStyle::drawControl(element, &opt, painter, widget);
+    if(element == CE_PushButton)
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            QStyleOptionButton subopt = *button;
+            subopt.palette.setColor(QPalette::Highlight, Qt::transparent);
+            subopt.rect = proxy()->subElementRect(SE_PushButtonContents, option, widget);
+            proxy()->drawControl(CE_PushButtonLabel, &subopt, painter, widget);
+            return;
+        }
+    }
+    return QProxyStyle::drawControl(element, option, painter, widget);
 }

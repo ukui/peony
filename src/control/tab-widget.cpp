@@ -1467,7 +1467,7 @@ void TabWidget::updateTabBarGeometry()
 
     int tabBarWidth = qMin(m_tab_bar->sizeHint().width() + 4, m_tab_bar_bg->width() - minRightPadding - 5);
 
-    m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 5, 6);
+    m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 10, 6);
     m_tool_bar->raise();
 
     m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width() - m_tool_bar->width() - m_add_page_button->width() - 20, m_tab_bar->sizeHint().height());
