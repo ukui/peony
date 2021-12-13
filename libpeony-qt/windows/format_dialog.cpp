@@ -292,7 +292,7 @@ void Format_Dialog::acceptFormat(bool)
     //get values from ui
     //strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
     strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
-    strcpy(rom_name,ui->lineEdit_device_name->text().toUtf8().constData());
+    strcpy(rom_name,ui->lineEdit_device_name->text().trimmed ().toUtf8().constData());
 
     //disable name and rom size list
     //ui->comboBox_rom_size->setDisabled(true);
@@ -643,7 +643,7 @@ static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_
         }
 
         // rename fail
-        if (data->dl->ui->lineEdit_device_name->text () != curName) {
+        if (data->dl->ui->lineEdit_device_name->text ().trimmed () != curName) {
             data->dl->renameOK = false;
         }
 
