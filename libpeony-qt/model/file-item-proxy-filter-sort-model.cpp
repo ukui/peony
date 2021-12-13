@@ -304,7 +304,8 @@ bool FileItemProxyFilterSortModel::checkFileNameFilter(const QString &displayNam
 
     for(auto key:m_file_name_list)
     {
-        if (displayName.contains(key))
+        //Filter criteria are not case sensitive. fix bug#92478
+        if (displayName.contains(key, Qt::CaseInsensitive))
             return true;
     }
 
