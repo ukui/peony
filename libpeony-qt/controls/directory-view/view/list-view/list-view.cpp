@@ -92,6 +92,14 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
     setMouseTracking(true);
+
+    //fix head indication sort type and order not change in preference file issue, releated to bug#92525,
+    connect(header(), &QHeaderView::sortIndicatorChanged, this, [=](int logicalIndex, Qt::SortOrder order)
+    {
+        //qDebug() << "sortIndicatorChanged:" <<logicalIndex<<order;
+        Peony::GlobalSettings::getInstance()->setValue(SORT_COLUMN, logicalIndex);
+        Peony::GlobalSettings::getInstance()->setValue(SORT_ORDER, order);
+    });
 }
 
 void ListView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
