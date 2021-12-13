@@ -427,14 +427,15 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
 
         // try fix #90641, a docking station should be hidden.
         if (device.startsWith("/dev/sd")) {
+            auto size = Peony::FileUtils::getDeviceSize(device.toUtf8().constData());
             QString uuid = getDeviceUUID(device.toUtf8().constData());
-            if (uuid.isEmpty()) {
+            if (uuid.isEmpty() && size == 0) {
                 volume->setHidden(true);
-            }
-            // if drive has media, it is not represent a docking station.
-            // so it should not be hidden.
-            if (g_drive_has_media(gdrive)) {
-                volume->setHidden(false);
+                // if drive has media, it is not represent a docking station.
+                // so it should not be hidden.
+                if (g_drive_has_media(gdrive)) {
+                    volume->setHidden(false);
+                }
             }
         }
 
@@ -580,19 +581,19 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
             // try fix #90641, a docking station should be hidden.
             if (device.startsWith("/dev/sd")) {
                 QString uuid = getDeviceUUID(device.toUtf8().constData());
-                if (uuid.isEmpty()) {
+                auto size = Peony::FileUtils::getDeviceSize(device.toUtf8().constData());
+                if (uuid.isEmpty() && size == 0) {
                     volumeItem->setHidden(true);
-                }
-            }
-            // if drive has media, it is not represent a docking station.
-            // so it should not be hidden.
-            if (entry->getGDrive()) {
-                if (g_drive_has_media(entry->getGDrive())) {
-                    volumeItem->setHidden(false);
+                    // if drive has media, it is not represent a docking station.
+                    // so it should not be hidden.
+                    if (entry->getGDrive()) {
+                        if (g_drive_has_media(entry->getGDrive())) {
+                            volumeItem->setHidden(false);
+                        }
+                    }
                 }
             }
         }
-
     }
 
     //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
