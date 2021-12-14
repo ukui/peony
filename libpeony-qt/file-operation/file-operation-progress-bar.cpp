@@ -31,6 +31,7 @@
 
 #include <QTimer>
 #include "file-utils.h"
+#include "xatom-helper.h"
 
 #include <QVector4D>
 
@@ -155,8 +156,16 @@ bool FileOperationProgressBar::isInhibit()
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
     m_current_main = nullptr;
-    setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
+
+    setAutoFillBackground (true);
+    setBackgroundRole (QPalette::Base);
+
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(winId(), hints);
 
     setWindowOpacity(0.9999);
 
