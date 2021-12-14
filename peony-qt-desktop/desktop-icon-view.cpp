@@ -267,20 +267,22 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
     connect(m_model, &DesktopItemModel::requestClearIndexWidget, this, &DesktopIconView::clearAllIndexWidgets);
 
     connect(m_model, &DesktopItemModel::fileCreated, this, [=](const QString &uri) {
-        if (m_new_files_to_be_selected.isEmpty()) {
-            m_new_files_to_be_selected<<uri;
+        //comment this code to fix bug#91050, not select new file in desktop
+        //agree with Mac behavior, keep select origin file, not new file
+//        if (m_new_files_to_be_selected.isEmpty()) {
+//            m_new_files_to_be_selected<<uri;
 
-            QTimer::singleShot(500, this, [=]() {
-                if (this->state() & QAbstractItemView::EditingState)
-                    return;
-                this->setSelections(m_new_files_to_be_selected);
-                m_new_files_to_be_selected.clear();
-            });
-        } else {
-            if (!m_new_files_to_be_selected.contains(uri)) {
-                m_new_files_to_be_selected<<uri;
-            }
-        }
+//            QTimer::singleShot(500, this, [=]() {
+//                if (this->state() & QAbstractItemView::EditingState)
+//                    return;
+//                this->setSelections(m_new_files_to_be_selected);
+//                m_new_files_to_be_selected.clear();
+//            });
+//        } else {
+//            if (!m_new_files_to_be_selected.contains(uri)) {
+//                m_new_files_to_be_selected<<uri;
+//            }
+//        }
 
         auto geo = viewport()->rect();
         if (geo.width() != 0 && geo.height() != 0) {
