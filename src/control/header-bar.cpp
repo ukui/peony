@@ -164,7 +164,7 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     connect(goBack, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goBack();
-        m_location_bar->clearSearchBox();
+        quitSerachMode();
     });
 
     connect(m_location_bar, &Peony::AdvancedLocationBar::refreshRequest, [=]()
@@ -489,6 +489,12 @@ void HeaderBar::startEdit(bool bSearch)
 void HeaderBar::finishEdit()
 {
     m_location_bar->finishEdit();
+}
+
+void HeaderBar::quitSerachMode()
+{
+    if (m_search_mode)
+       m_location_bar->clearSearchBox();
 }
 
 void HeaderBar::updateIcons()

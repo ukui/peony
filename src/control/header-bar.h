@@ -101,6 +101,7 @@ private Q_SLOTS:
     void updateHeaderState();
     void updateSortTypeEnable();
     void updateViewTypeEnable();
+    void quitSerachMode();
 
 private:
     const QString m_uri;
