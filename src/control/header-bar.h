@@ -112,6 +112,7 @@ private Q_SLOTS:
     void setGlobalFlag(bool isGlobal);
     void updateSortTypeEnable();
     void updateViewTypeEnable();
+    void quitSerachMode();
 
 private:
     const QString m_uri;

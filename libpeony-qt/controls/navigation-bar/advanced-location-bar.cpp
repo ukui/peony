@@ -133,7 +133,13 @@ void AdvancedLocationBar::updateLocation(const QString &uri)
     m_edit->setUri(uri);
     m_text = uri;
     if (! uri.startsWith("search://"))
+    {
         m_last_non_search_path = uri;
+        //from search mode go to other non search path, stop search
+        //fix bug#97807, change path in search mode crash issue
+        if (m_last_key != "")
+            clearSearchBox();
+    }
     Q_EMIT this->refreshRequest();
 }
 
