@@ -752,6 +752,7 @@ void Volume::initVolumeInfo()
     //挂载点
     GMount* gmount = nullptr;
     GFile* rootFile = nullptr;
+    QString tmpDevice;
     gmount = g_volume_get_mount(m_volume);
     if(gmount){
         m_gMount = gmount;
@@ -773,6 +774,8 @@ void Volume::initVolumeInfo()
     if(gdrive){
         m_canEject = g_drive_can_eject(gdrive);
         m_canStop = g_drive_can_stop(gdrive);
+        g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        tmpDevice = gdevice;
         g_object_unref(gdrive);
     }
     //TODO... icon
@@ -785,9 +788,15 @@ void Volume::initVolumeInfo()
     if(icon_names) {
         m_icon= *icon_names;
 
-        // fix #81852, refer to #57660, #70014, task #25343
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
         if (QString(m_icon) == "drive-harddisk-usb") {
-            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+
             if (size < 128) {
                 m_icon = "drive-removable-media-usb";
             }
@@ -796,9 +805,15 @@ void Volume::initVolumeInfo()
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
 
-        // fix #81852, refer to #57660, #70014, task #25343
-        if (QString(icon_name) == "drive-harddisk-usb") {
-            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+
             if (size < 128) {
                 m_icon = "drive-removable-media-usb";
             }
@@ -990,7 +1005,7 @@ void Drive::initDriveInfo(){
     if(icon_names) {
         m_icon= *icon_names;
 
-        // fix #81852, refer to #57660, #70014, task #25343
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
         if (QString(m_icon) == "drive-harddisk-usb") {
             double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
             if (size < 128) {
@@ -1001,7 +1016,7 @@ void Drive::initDriveInfo(){
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
 
-        // fix #81852, refer to #57660, #70014, task #25343
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
         if (QString(icon_name) == "drive-harddisk-usb") {
             double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
             if (size < 128) {
@@ -1131,6 +1146,7 @@ void Mount::initMountInfo(){
     GFile* rootFile;
     GVolume* gvolume;
     char* gmountPoint,*uuid;
+    QString tmpDevice;
 
     if(!m_mount)
         return;
@@ -1154,6 +1170,12 @@ void Mount::initMountInfo(){
     }else{
         char* device = g_volume_get_identifier(gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
         uuid = g_volume_get_uuid(gvolume);//g_mount_get_uuid()在设备处于挂载状态时返回值为nullptr
+        GDrive* gdrive = g_volume_get_drive(gvolume);
+        if(gdrive){
+            g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+            tmpDevice = gdevice;
+        }
+        g_object_unref(gdrive);
         m_device = device;
         m_uuid = uuid;
 
@@ -1185,9 +1207,14 @@ void Mount::initMountInfo(){
     if(icon_names) {
         m_icon= *icon_names;
 
-        // fix #81852, refer to #57660, #70014, task #25343
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
         if (QString(m_icon) == "drive-harddisk-usb") {
-            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
             if (size < 128) {
                 m_icon = "drive-removable-media-usb";
             }
@@ -1196,9 +1223,14 @@ void Mount::initMountInfo(){
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
 
-        // fix #81852, refer to #57660, #70014, task #25343
-        if (QString(icon_name) == "drive-harddisk-usb") {
-            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
             if (size < 128) {
                 m_icon = "drive-removable-media-usb";
             }
