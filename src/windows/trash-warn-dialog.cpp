@@ -114,9 +114,9 @@ TrashWarnDialog::TrashWarnDialog(QWidget *parent) : QDialog(parent)
     deleteButton->setText(tr("Delete"));
     cancelButton->setText(tr("Cancel"));
 
-    floor4->addWidget(deleteButton);
-    floor4->addStretch(1);
     floor4->addWidget(cancelButton);
+    floor4->addStretch(1);
+    floor4->addWidget(deleteButton);
 
     dialogLayout->addLayout(floor4);
 
