@@ -51,13 +51,13 @@
     </key>
 
     <key type="i" name="default-window-width">
-      <default>800</default>
+      <default>1160</default>
       <summary>default window width</summary>
       <description>window width</description>
     </key>
 
     <key type="i" name="default-window-height">
-      <default>600</default>
+      <default>675</default>
       <summary>default window height</summary>
       <description>window height</description>
     </key>
