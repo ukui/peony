@@ -1,3 +1,15 @@
+peony (3.2.2+1209ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#79375 【文件管理器】在系统设置—主题中关闭特效模式后，文件管理器窗口左侧和上侧的透明度变高(何文飞)
+    - 其它改动说明:
+      无
+    - 影响域:
+      文件管理器
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 09 Dec 2021 11:44:23 +0800
+
 peony (3.2.2+1122ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
