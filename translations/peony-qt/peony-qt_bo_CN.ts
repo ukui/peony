@@ -684,7 +684,7 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <source>Select path</source>
-        <translation>རྒྱུ་ལམ་གདམ་གསེས།</translation>
+        <translation type="vanished">རྒྱུ་ལམ་གདམ་གསེས།</translation>
     </message>
     <message>
         <source>Choose other path to search.</source>
@@ -720,6 +720,10 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <source>Computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Path</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

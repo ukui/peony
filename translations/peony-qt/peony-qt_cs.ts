@@ -160,12 +160,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="611"/>
+        <location filename="../../src/control/header-bar.cpp" line="621"/>
         <source>Restore</source>
         <translation type="unfinished">Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="614"/>
+        <location filename="../../src/control/header-bar.cpp" line="624"/>
         <source>Maximize</source>
         <translation type="unfinished">Büyüt</translation>
     </message>
@@ -267,18 +267,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="405"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="418"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="405"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="418"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -768,43 +768,43 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="240"/>
+        <location filename="../../src/control/tab-widget.cpp" line="243"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="244"/>
+        <location filename="../../src/control/tab-widget.cpp" line="247"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="249"/>
+        <location filename="../../src/control/tab-widget.cpp" line="252"/>
         <source>Recover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="332"/>
+        <location filename="../../src/control/tab-widget.cpp" line="335"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="342"/>
+        <location filename="../../src/control/tab-widget.cpp" line="345"/>
         <source>Computer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="407"/>
-        <source>Select path</source>
+        <location filename="../../src/control/tab-widget.cpp" line="413"/>
+        <source>Select Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="442"/>
-        <location filename="../../src/control/tab-widget.cpp" line="529"/>
+        <location filename="../../src/control/tab-widget.cpp" line="467"/>
+        <location filename="../../src/control/tab-widget.cpp" line="554"/>
         <source>is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="460"/>
+        <location filename="../../src/control/tab-widget.cpp" line="485"/>
         <source>Please input key words...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -813,8 +813,8 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="495"/>
-        <location filename="../../src/control/tab-widget.cpp" line="514"/>
+        <location filename="../../src/control/tab-widget.cpp" line="520"/>
+        <location filename="../../src/control/tab-widget.cpp" line="539"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
@@ -944,7 +944,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="600"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="635"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -952,17 +952,17 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="789"/>
+        <location filename="../../src/control/header-bar.cpp" line="794"/>
         <source>Option</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="804"/>
+        <location filename="../../src/control/header-bar.cpp" line="809"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="831"/>
+        <location filename="../../src/control/header-bar.cpp" line="836"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>

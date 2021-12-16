@@ -182,12 +182,12 @@ p, li { white-space: pre-wrap; }
         <translation>删除到回收箱</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="611"/>
+        <location filename="../../src/control/header-bar.cpp" line="621"/>
         <source>Restore</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="614"/>
+        <location filename="../../src/control/header-bar.cpp" line="624"/>
         <source>Maximize</source>
         <translation>最大化</translation>
     </message>
@@ -323,18 +323,18 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">在新窗口中打开(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="405"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="418"/>
         <source>Tips</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="401"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="405"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation>这是一个异常U盘, 请先格式化</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="414"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="418"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation>这是一个空光驱, 请插入光盘.</translation>
     </message>
@@ -884,24 +884,29 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="240"/>
+        <location filename="../../src/control/tab-widget.cpp" line="243"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="244"/>
+        <location filename="../../src/control/tab-widget.cpp" line="247"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="249"/>
+        <location filename="../../src/control/tab-widget.cpp" line="252"/>
         <source>Recover</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="342"/>
+        <location filename="../../src/control/tab-widget.cpp" line="345"/>
         <source>Computer</source>
         <translation>计算机</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="413"/>
+        <source>Select Path</source>
+        <translation>选择路径</translation>
     </message>
     <message>
         <source>Close Filter.</source>
@@ -916,7 +921,7 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">关闭高级搜索。</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="332"/>
+        <location filename="../../src/control/tab-widget.cpp" line="335"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
@@ -937,18 +942,17 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">显示/隐藏高级搜索</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="407"/>
         <source>Select path</source>
-        <translation>选择路径</translation>
+        <translation type="vanished">选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="442"/>
-        <location filename="../../src/control/tab-widget.cpp" line="529"/>
+        <location filename="../../src/control/tab-widget.cpp" line="467"/>
+        <location filename="../../src/control/tab-widget.cpp" line="554"/>
         <source>is</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="460"/>
+        <location filename="../../src/control/tab-widget.cpp" line="485"/>
         <source>Please input key words...</source>
         <translation>请输入关键词...</translation>
     </message>
@@ -957,8 +961,8 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">请输入关键词...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="495"/>
-        <location filename="../../src/control/tab-widget.cpp" line="514"/>
+        <location filename="../../src/control/tab-widget.cpp" line="520"/>
+        <location filename="../../src/control/tab-widget.cpp" line="539"/>
         <source>contains</source>
         <translation>包含</translation>
     </message>
@@ -1100,7 +1104,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="600"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="635"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
@@ -1108,12 +1112,12 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TopMenuBar</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="789"/>
+        <location filename="../../src/control/header-bar.cpp" line="794"/>
         <source>Option</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="804"/>
+        <location filename="../../src/control/header-bar.cpp" line="809"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
@@ -1122,7 +1126,7 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">最大化/还原</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="831"/>
+        <location filename="../../src/control/header-bar.cpp" line="836"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
