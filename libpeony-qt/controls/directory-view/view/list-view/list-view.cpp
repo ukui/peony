@@ -57,6 +57,8 @@
 
 #include <QStyleOptionViewItem>
 
+#include <QStandardPaths>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -694,6 +696,17 @@ const QString ListView::getDirectoryUri()
 void ListView::setDirectoryUri(const QString &uri)
 {
     m_current_uri = uri;
+
+    QString username = QStandardPaths::writableLocation(QStandardPaths::HomeLocation).split("/").last();
+
+    QString boxpath = "file://"+QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.box";
+    QString oldboxpath = "file://box/"+username;
+
+    if(uri == "filesafe:///" || uri == boxpath || uri == oldboxpath){
+        setDragEnabled(false);
+    }else {
+        setDragEnabled(true);
+    }
 }
 
 const QStringList ListView::getSelections()
