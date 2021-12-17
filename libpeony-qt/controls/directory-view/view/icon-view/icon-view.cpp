@@ -60,8 +60,6 @@
 #include <QDebug>
 #include <QToolTip>
 
-#include <QStandardPaths>
-
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -182,17 +180,6 @@ void IconView::setCutFiles(const QStringList &uris)
 void IconView::setDirectoryUri(const QString &uri)
 {
     m_current_uri = uri;
-
-    QString username = QStandardPaths::writableLocation(QStandardPaths::HomeLocation).split("/").last();
-
-    QString boxpath = "file://"+QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.box";
-    QString oldboxpath = "file://box/"+username;
-
-    if(uri == "filesafe:///" || uri == boxpath || uri == oldboxpath){
-        setMovement(QListView::Static);
-    }else {
-        setMovement(QListView::Snap);
-    }
 }
 
 const QString IconView::getDirectoryUri()
