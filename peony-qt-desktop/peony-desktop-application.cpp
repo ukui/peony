@@ -33,6 +33,7 @@
 #include "plasma-shell-manager.h"
 #include "desktop-menu.h"
 
+#include "file-enumerator.h"
 #include "desktopbackground.h"
 #include "desktop-background-manager.h"
 #include "desktopbackgroundwindow.h"
@@ -235,6 +236,17 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
             }
         }
         g_object_unref(vm);
+
+        // enumerat network:///
+        QThread* t = QThread::create ([=] () {
+            FileEnumerator e;
+            e.setEnumerateDirectory ("network:///");
+            e.enumerateSync();
+            e.getChildrenUris ();
+        });
+        connect (t, &QThread::finished, t, &QObject::deleteLater);
+        t->start ();
+
     }
 
     connect(this, &SingleApplication::layoutDirectionChanged, this, &PeonyDesktopApplication::layoutDirectionChangedProcess);
