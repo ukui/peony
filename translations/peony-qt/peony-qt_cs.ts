@@ -115,12 +115,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="558"/>
+        <location filename="../../src/control/header-bar.cpp" line="569"/>
         <source>Restore</source>
         <translation type="unfinished">Onar</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="561"/>
+        <location filename="../../src/control/header-bar.cpp" line="572"/>
         <source>Maximize</source>
         <translation type="unfinished">Büyüt</translation>
     </message>
@@ -136,7 +136,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>HeaderBarContainer</name>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="722"/>
+        <location filename="../../src/control/header-bar.cpp" line="728"/>
         <source>Minimize</source>
         <translation type="unfinished">Küçült</translation>
     </message>
@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Büyüt</translation>
     </message>
     <message>
-        <location filename="../../src/control/header-bar.cpp" line="747"/>
+        <location filename="../../src/control/header-bar.cpp" line="753"/>
         <source>Close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
@@ -177,22 +177,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1521"/>
+        <location filename="../../src/windows/main-window.cpp" line="1525"/>
         <source>Delete Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1522"/>
+        <location filename="../../src/windows/main-window.cpp" line="1526"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1531"/>
+        <location filename="../../src/windows/main-window.cpp" line="1535"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1532"/>
+        <location filename="../../src/windows/main-window.cpp" line="1536"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -213,34 +213,34 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Tüm etiketler...</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="376"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="389"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="396"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="376"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="383"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="389"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="396"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="201"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="203"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="217"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="251"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="219"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="253"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="235"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="237"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -248,7 +248,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="502"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="539"/>
         <source>All tags...</source>
         <translation type="unfinished">Tüm etiketler...</translation>
     </message>
@@ -507,54 +507,64 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="204"/>
+        <location filename="../../src/control/tab-widget.cpp" line="205"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="208"/>
+        <location filename="../../src/control/tab-widget.cpp" line="209"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="212"/>
+        <location filename="../../src/control/tab-widget.cpp" line="213"/>
         <source>Recover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="304"/>
+        <location filename="../../src/control/tab-widget.cpp" line="305"/>
         <source>Close Filter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="316"/>
+        <location filename="../../src/control/tab-widget.cpp" line="317"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="325"/>
+        <location filename="../../src/control/tab-widget.cpp" line="326"/>
         <source>Choose other path to search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="334"/>
+        <location filename="../../src/control/tab-widget.cpp" line="335"/>
         <source>Search recursively</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="410"/>
+        <location filename="../../src/control/tab-widget.cpp" line="412"/>
         <source>Select Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="460"/>
-        <location filename="../../src/control/tab-widget.cpp" line="562"/>
+        <location filename="../../src/control/tab-widget.cpp" line="469"/>
+        <location filename="../../src/control/tab-widget.cpp" line="571"/>
         <source>is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="478"/>
+        <location filename="../../src/control/tab-widget.cpp" line="487"/>
         <source>Please input key words...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="1375"/>
+        <source>Open failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/control/tab-widget.cpp" line="1376"/>
+        <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -562,130 +572,130 @@ Telif (C): 2019-2020, Tianjin KYLIN Information Technology Co., Ltd.</translatio
         <translation type="vanished">Lütfen anahtar kelimeler girin ...</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.cpp" line="523"/>
-        <location filename="../../src/control/tab-widget.cpp" line="546"/>
+        <location filename="../../src/control/tab-widget.cpp" line="532"/>
+        <location filename="../../src/control/tab-widget.cpp" line="555"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>modify time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="264"/>
+        <location filename="../../src/control/tab-widget.h" line="265"/>
         <source>file size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>file folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="265"/>
+        <location filename="../../src/control/tab-widget.h" line="266"/>
         <source>video</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>text file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="266"/>
+        <location filename="../../src/control/tab-widget.h" line="267"/>
         <source>wps file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="268"/>
         <source>today</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="268"/>
         <source>this week</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="268"/>
         <source>this month</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="268"/>
         <source>this year</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="267"/>
+        <location filename="../../src/control/tab-widget.h" line="268"/>
         <source>year ago</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>tiny(0-16K)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>small(16k-1M)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>empty(0K)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>medium(1M-128M)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>big(128M-1G)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>large(1-4G)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-widget.h" line="268"/>
+        <location filename="../../src/control/tab-widget.h" line="269"/>
         <source>great(&gt;4G)</source>
         <translation type="unfinished"></translation>
     </message>
