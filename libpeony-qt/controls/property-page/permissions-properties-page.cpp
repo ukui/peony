@@ -455,6 +455,11 @@ void PermissionsPropertiesPage::savePermissions()
         g_autoptr(GFile) pfile = g_file_new_for_uri(m_uri.toUtf8().constData());
         g_file_set_attribute_uint32(pfile, G_FILE_ATTRIBUTE_UNIX_MODE, (guint32)mod, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
     }
+
+    auto fileInfo = FileInfo::fromUri(m_uri);
+    FileInfoJob *job = new FileInfoJob(fileInfo);
+    job->setAutoDelete(true);
+    job->querySync();
 }
 
 void PermissionsPropertiesPage::saveAllChange()

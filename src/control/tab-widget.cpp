@@ -1323,6 +1323,13 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
+        if(!info->uri().startsWith("trash://")
+                &&!info->uri().startsWith("computer://")
+                &&!info->canExecute()){
+            QMessageBox::critical(nullptr, tr("Open failed"),
+                                  tr("Open directory failed, you have no permission!"));
+            return;
+        }
         //process open symbolic link
         auto info = Peony::FileInfo::fromUri(uri);
         QString targetUri = info.get()->targetUri();
