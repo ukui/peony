@@ -771,16 +771,17 @@ void HeaderBarContainer::addWindowButtons()
         m_header_bar->m_window->close();
     });
 
-    connect(qApp, &QApplication::paletteChanged, close, [=](){
-        QTimer::singleShot(100, this, [=](){
-            auto palette = qApp->palette();
-            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-            close->setPalette(palette);
-        });
-    });
-    auto palette = qApp->palette();
-    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-    close->setPalette(palette);
+    //fix bug#98500, comment self change palette code, use platform-theme way
+//    connect(qApp, &QApplication::paletteChanged, close, [=](){
+//        QTimer::singleShot(100, this, [=](){
+//            auto palette = qApp->palette();
+//            palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+//            close->setPalette(palette);
+//        });
+//    });
+//    auto palette = qApp->palette();
+//    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+//    close->setPalette(palette);
 
     layout->addWidget(minimize);
     layout->addWidget(maximizeAndRestore);
