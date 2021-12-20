@@ -1094,13 +1094,14 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QStrin
 /* Eject some device by stop it's drive. Such as: mobile harddisk. */
 static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThis)
 {
-    GError *error = nullptr;
-    if(!g_drive_poll_for_media_finish(G_DRIVE(object), result, &error)){
+    g_autoptr (GError) error = nullptr;
+
+    if(!g_drive_stop_finish (G_DRIVE(object), result, &error)){
         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
-            QString errorMsg = QObject::tr("Unable to eject %1").arg(pThis->name());
-            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), errorMsg, QMessageBox::Ok);
+            // @note 这里不要拼接字符串，多次弹出会崩溃
+//            QString errorMsg = QObject::tr("Unable to eject").arg(pThis->name());
+            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
             warningBox.exec();
-            g_error_free(error);
         }
     }else {
         /* 弹出完成信息提示 */
