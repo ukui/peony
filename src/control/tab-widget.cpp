@@ -1368,6 +1368,12 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
+        if(info->uri().startsWith("file://")
+                && !info->canExecute()){
+            QMessageBox::critical(nullptr, tr("Open failed"),
+                                  tr("Open directory failed, you have no permission!"));
+            return;
+        }
         Q_EMIT this->updateWindowLocationRequest(uri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
