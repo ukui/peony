@@ -53,6 +53,8 @@
 #include <QToolTip>
 #include <QDebug>
 
+#include <QStandardPaths>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -404,6 +406,15 @@ void ListView::dropEvent(QDropEvent *e)
     auto proxy_index = indexAt(e->pos());
     auto index = m_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();
+
+    QString username = QStandardPaths::writableLocation(QStandardPaths::HomeLocation).split("/").last();
+    QString boxpath = "file://"+QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.box";
+    QString oldboxpath = "file://box/"+username;
+
+    if(m_current_uri == boxpath || m_current_uri == oldboxpath || m_current_uri == "filesafe:///"){
+        return;
+    }
+
     //move in current path, do nothing
     if (e->source() == this)
     {
