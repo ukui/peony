@@ -337,18 +337,18 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         return;
 
     QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
+    auto data = e->mimeData();
+    auto bookmark = Peony::BookMarkManager::getInstance();
+    if (bookmark->isLoaded()) {
+        for (auto url : data->urls()) {
+            if(url.toString().startsWith("filesafe:///")){
+                QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
+                continue;
+            }
+            if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
+                // add to bookmark
+                e->setAccepted(true);
 
-    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
-        // add to bookmark
-        e->setAccepted(true);
-
-        auto data = e->mimeData();
-        auto bookmark = Peony::BookMarkManager::getInstance();
-        if (bookmark->isLoaded()) {
-            for (auto url : data->urls()) {
-                if(url.toString().startsWith("filesafe:///")){
-                    continue;
-                }
                 //FIXME: replace BLOCKING api in ui thread.
                 auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
