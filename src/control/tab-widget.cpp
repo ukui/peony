@@ -1323,9 +1323,8 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        if(!info->uri().startsWith("trash://")
-                &&!info->uri().startsWith("computer://")
-                &&!info->canExecute()){
+        QUrl url(info->uri());
+        if(url.isLocalFile() && !info->canExecute()){
             QMessageBox::critical(nullptr, tr("Open failed"),
                                   tr("Open directory failed, you have no permission!"));
             return;
