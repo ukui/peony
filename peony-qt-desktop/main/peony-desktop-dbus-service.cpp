@@ -3,10 +3,12 @@
 //
 
 #include "peony-desktop-dbus-service.h"
+#include "window-manager.h"
 
 #include <QDebug>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QApplication>
 
 
 using namespace Peony;
@@ -15,21 +17,14 @@ PeonyDesktopDbusService::PeonyDesktopDbusService(QObject *parent) : QObject(pare
 {
     QDBusConnection::sessionBus().unregisterService("org.ukui.peony.desktop.service");
     QDBusConnection::sessionBus().registerService("org.ukui.peony.desktop.service");
-    QDBusConnection::sessionBus().registerObject("/org/ukui/peonyQtDesktop", this, QDBusConnection::ExportAllSlots);
+    QDBusConnection::sessionBus().registerObject("/org/ukui/peonyQtDesktop", this, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals);
 }
 
-quint32 PeonyDesktopDbusService::blurBackground(quint32 status)
+int PeonyDesktopDbusService::getCurrentDesktopType()
 {
-    switch (status) {
-        case 0:
-            //取消模糊背景
-            Q_EMIT blurBackGroundSignal(0);
-            return 0;
-        case 1:
-            //激活模糊背景
-            Q_EMIT blurBackGroundSignal(1);
-            return 1;
-        default:
-            return 404;
+    auto window = WindowManager::getInstance()->getWindowByScreen(QApplication::primaryScreen());
+    if (window) {
+        return window->getCurrentDesktop()->getDesktopType();
     }
+    return 0;
 }
