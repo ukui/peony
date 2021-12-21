@@ -1092,7 +1092,7 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QStrin
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk. */
-static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThis)
+static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, QString* targetUri)
 {
     g_autoptr (GError) error = nullptr;
 
@@ -1107,8 +1107,11 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThi
         /* 弹出完成信息提示 */
         QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
         Peony::SyncThread::notifyUser(ejectNotify);
-        QString targetUri = VolumeManager::getInstance()->getTargetUriFromUnixDevice(pThis->device());
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(targetUri);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
+    }
+    if(targetUri){
+        delete targetUri;
+        targetUri = nullptr;
     }
 }
 
@@ -1117,12 +1120,12 @@ void Drive::eject(GMountUnmountFlags ejectFlag)
     // fix #92731, note that if we didn't pass a mount-operation instance,
     // drive will do operation without user interaction.
     g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
+    QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
     if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
-        QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
         g_drive_eject_with_operation(m_drive, ejectFlag, mount_op, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
-        g_drive_stop(m_drive,ejectFlag,mount_op,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
+        g_drive_stop(m_drive,ejectFlag,mount_op,NULL,GAsyncReadyCallback(ejectDevicebyDrive), targetUri);
     }
 }
 
