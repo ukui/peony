@@ -1042,6 +1042,7 @@ void MainWindow::setShowHidden()
 
     m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
     getCurrentPage()->setShowHidden(m_show_hidden_file);
+    Q_EMIT m_tab->updateItemsNum();
 }
 
 void MainWindow::setUseDefaultNameSortOrder()
