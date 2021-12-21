@@ -55,9 +55,11 @@ private:
 
 protected:
     void showWidgetList(bool show);
+#if 0
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+#endif
 
 Q_SIGNALS:
     void pause();
