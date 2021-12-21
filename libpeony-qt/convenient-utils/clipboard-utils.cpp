@@ -108,7 +108,7 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
     QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
     if (FileUtils::isSamePath(m_clipboard_parent_uri, desktopPath) && isCut){
          m_is_desktop_cut = true;
-         m_is_peony_cut = false;
+         m_is_peony_cut = true;
     }
     else if (isCut)
     {
