@@ -125,7 +125,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     bool bCutFile = false;
     if (ClipboardUtils::isClipboardHasFiles() &&
         FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
-        if (ClipboardUtils::isClipboardFilesBeCut()) {
+        if (ClipboardUtils::isPeonyFilesBeCut() && ClipboardUtils::isClipboardFilesBeCut()) {
             auto clipedUris = ClipboardUtils::getClipboardFilesUris();
             if (clipedUris.contains(FileUtils::urlEncode(index.data(FileItemModel::UriRole).toString()))) {
                 painter->setOpacity(0.5);
