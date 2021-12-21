@@ -320,35 +320,6 @@ void DesktopBackgroundWindow::desktopReboundProcess()
     animation->start();
 }
 
-void DesktopBackgroundWindow::blurBackground(bool blur)
-{
-    if (blur) {
-        if (!m_lastEffectWidget) {
-            m_lastEffectWidget = new QWidget(this);
-            m_lastEffectWidget->resize(1,1);
-            m_lastEffectWidget->setVisible(false);
-            m_lastEffectWidget->hide();
-            m_lastEffectWidget->setGraphicsEffect(this->graphicsEffect());
-            //kwin临时模糊效果
-            QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect(this);
-            blurEffect->setBlurRadius(30);
-
-            this->setGraphicsEffect(blurEffect);
-            m_currentDesktop->setHidden(true);
-            qDebug() << "[DesktopBackgroundWindow::blurBackground] set blurEffect success";
-        }
-    } else {
-        if (m_lastEffectWidget) {
-            this->setGraphicsEffect(m_lastEffectWidget->graphicsEffect());
-            m_currentDesktop->setHidden(false);
-
-            delete m_lastEffectWidget;
-            m_lastEffectWidget = nullptr;
-            qDebug() << "[DesktopBackgroundWindow::blurBackground] reset blurEffect success";
-        }
-    }
-}
-
 DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
 {
     if (m_currentDesktop) {

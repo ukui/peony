@@ -29,8 +29,6 @@ public:
         return m_currentDesktop;
     }
 
-    void blurBackground(bool blur);
-
 public Q_SLOTS:
     void setWindowGeometry(const QRect &geometry);
 
@@ -54,11 +52,6 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    //kwin 临时模糊效果
-    qreal m_backgroundOpacity = 0.5;
-    bool  m_backgroundBlur    = false;
-    QWidget *m_lastEffectWidget = nullptr;
-
     int m_id = -1;
     QScreen *m_screen = nullptr;
 
