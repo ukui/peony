@@ -25,6 +25,7 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QUrl>
+#include <QStandardPaths>
 
 #include "file-operation-manager.h"
 #include "file-move-operation.h"
@@ -47,6 +48,9 @@ static ClipboardUtils *global_instance = nullptr;
  * progress when we get the files from clipboard utils.
  */
 static QString m_clipboard_parent_uri = nullptr;
+
+static bool m_is_desktop_cut = false;
+static bool m_is_peony_cut = false;
 
 static QList<QString> m_target_directory_uri;
 
@@ -101,6 +105,20 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
     }
 
     m_clipboard_parent_uri = FileUtils::getParentUri(uris.first());
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    if (FileUtils::isSamePath(m_clipboard_parent_uri, desktopPath) && isCut){
+         m_is_desktop_cut = true;
+         m_is_peony_cut = false;
+    }
+    else if (isCut)
+    {
+        m_is_desktop_cut = false;
+        m_is_peony_cut = true;
+    }else{
+        m_is_desktop_cut = false;
+        m_is_peony_cut = false;
+    }
+
 
     // we should remain the encoded uri for file operation
     auto data = new QMimeData;
@@ -123,6 +141,16 @@ void ClipboardUtils::setClipboardFiles(const QStringList &uris, bool isCut)
 bool ClipboardUtils::isClipboardHasFiles()
 {
     return QApplication::clipboard()->mimeData()->hasUrls();
+}
+
+bool ClipboardUtils::isDesktopFilesBeCut()
+{
+    return m_is_desktop_cut;
+}
+
+bool ClipboardUtils::isPeonyFilesBeCut()
+{
+    return m_is_peony_cut;
 }
 
 bool ClipboardUtils::isClipboardFilesBeCut()
@@ -222,6 +250,8 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
 
 void ClipboardUtils::clearClipboard()
 {
+    m_is_desktop_cut = false;
+    m_is_peony_cut = false;
     QApplication::clipboard()->clear();
 }
 
