@@ -944,6 +944,7 @@ void MainWindow::setShowHidden()
 {
     m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
+    //显示隐藏文件，更新项目个数
     Q_EMIT m_tab->updateItemsNum();
 }
 

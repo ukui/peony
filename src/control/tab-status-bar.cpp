@@ -215,6 +215,7 @@ void TabStatusBar::onZoomRequest(bool zoomIn)
     m_slider->setValue(value);
 }
 
+//显示隐藏文件，更新项目个数
 void TabStatusBar::updateItemsNum()
 {
     this->update();
