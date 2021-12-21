@@ -37,18 +37,25 @@ class PeonyDesktopDbusService : public QObject
     Q_CLASSINFO("D-Bus Interface", "org.ukui.peonyQtDesktop")
 
 public:
-    PeonyDesktopDbusService(QObject *parent = nullptr);
+    explicit PeonyDesktopDbusService(QObject *parent = nullptr);
 
 public Q_SLOTS:
     /**
-     * @brief 窗管未实现小窗模糊背景功能，由桌面暂时代替实现。
-     * @param status
-     * @return
+     * @brief 获取当前桌面的类型 id。
+     * @return 桌面的类型id
      */
-    quint32 blurBackground(quint32 status);
+    int getCurrentDesktopType();
 
 Q_SIGNALS:
-    void blurBackGroundSignal(quint32 status);
+    /**
+    * @param desktopType {
+         0: 普通PC桌面
+         1: 空白桌面
+         2: 平板桌面
+         3: 学习专区
+     }
+    */
+    void desktopChangedSignal(int desktopType);
 };
 
 }
