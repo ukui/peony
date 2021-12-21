@@ -52,7 +52,7 @@ public Q_SLOTS:
     void updateZoomLevelState(int zoomLevel);
 
     void onZoomRequest(bool zoomIn);
-    //显示隐藏文件时候，更新项目个数
+    //显示隐藏文件，更新项目个数
     void updateItemsNum();
 protected:
     void paintEvent(QPaintEvent *e) override;
