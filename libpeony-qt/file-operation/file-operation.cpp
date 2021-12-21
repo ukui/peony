@@ -105,10 +105,17 @@ void FileOperation::fileSync(QString srcFile, QString destDir)
     }
 
     QString destFile = "";
-    if (destDir.split("/").back() == srcFile.split("/").back()) {
-        destFile = destDir;
+    g_autoptr (GFile) ddir = g_file_new_for_uri (destDir.toUtf8 ().constData ());
+    if (G_FILE_TYPE_DIRECTORY & g_file_query_file_type (ddir, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL)) {
+        if (destDir.split("/").back() == srcFile.split("/").back()) {
+            // src and dest are directory
+            destFile = destDir;
+        } else {
+            destFile = destDir + "/" + srcFile.split("/").back();
+        }
     } else {
-        destFile = destDir + "/" + srcFile.split("/").back();
+        g_autofree char* uri = g_file_get_uri (ddir);
+        destFile = uri;
     }
     bool needSync = true;
 
