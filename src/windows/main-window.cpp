@@ -944,6 +944,7 @@ void MainWindow::setShowHidden()
 {
     m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
+    Q_EMIT m_tab->updateItemsNum();
 }
 
 void MainWindow::setUseDefaultNameSortOrder()

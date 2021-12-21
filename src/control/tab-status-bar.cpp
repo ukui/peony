@@ -215,6 +215,10 @@ void TabStatusBar::onZoomRequest(bool zoomIn)
     m_slider->setValue(value);
 }
 
+void TabStatusBar::updateItemsNum()
+{
+    this->update();
+}
 
 void TabStatusBar::paintEvent(QPaintEvent *e)
 {

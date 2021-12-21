@@ -160,6 +160,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
+    connect(this, &TabWidget::updateItemsNum, m_status_bar, &TabStatusBar::updateItemsNum);
     connect(this, &TabWidget::zoomRequest, m_status_bar, &TabStatusBar::onZoomRequest);
     connect(m_status_bar, &TabStatusBar::zoomLevelChangedRequest, this, &TabWidget::handleZoomLevel);
     //setStatusBar(m_status_bar);
