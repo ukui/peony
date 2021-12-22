@@ -182,8 +182,8 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
         button->setFixedSize(26, 26);
         button->setIconSize(QSize(16, 16));
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
+        button->setProperty("useIconHighlightEffect", 0x2);
+        button->setProperty("isWindowButton", 1);
         button->setProperty("fillIconSymbolicColor", true);
 
         //use theme buttons
@@ -322,6 +322,8 @@ void TabWidget::initAdvanceSearch()
 
     QPushButton *tabButton = new QPushButton(searchButtons);
     m_search_path = tabButton;
+    m_search_path->setProperty("isWindowButton", 0x1);
+    m_search_path->setProperty("useIconHighlightEffect", 0x2);
     tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
     tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
     tabButton->setToolTip(tr("Choose other path to search."));
