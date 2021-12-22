@@ -251,7 +251,7 @@ void SideBarNetWorkItem::querySharedFolders()
             QString sharePath=iter.value();
             QString shareName=iter.key();
             if (!sharePath.isEmpty()) {
-                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"inode-directory",
+                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"folder",
                                                                   shareName,this,m_model);
                 m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
@@ -270,7 +270,7 @@ void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool s
 
     if (!shareInfo.originalPath.isEmpty()) {
         SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + shareInfo.originalPath,
-                                                          "inode-directory",
+                                                          "folder",
                                                           shareInfo.name,
                                                           this,
                                                           m_model, this);
