@@ -1,6 +1,48 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="bo_CN">
+<context>
+    <name>Peony::DesktopIconView</name>
+    <message>
+        <source>New Folder</source>
+        <translation>ཡིག་ཁུག་གསར་འཛུགས།</translation>
+    </message>
+    <message>
+        <source>Open Link failed</source>
+        <translation>མྱུར་ལམ་རི་མོ་ཁ་ཕྱེ་བ་ཕམ་ཉེས་བྱུང་།</translation>
+    </message>
+    <message>
+        <source>Open failed</source>
+        <translation>ཁ་ཕྱེ་བ་ཕམ་པ།</translation>
+    </message>
+    <message>
+        <source>Open directory failed, you have no permission!</source>
+        <translation>ཡིག་ཆ་ཁ་ཕྱེ་་བ་ཕམ་ཉེས་བྱུང་། ཁྱེད་ལ་དཀར་ཆག་འདིའི་དབང་ཚད་མི་འདུག</translation>
+    </message>
+    <message>
+        <source>File not exist, do you want to delete the link file?</source>
+        <translation>དམིགས་བཟུང་ཡིག་ཁུག་བསྡད་མི་འདུག ཕན་མེད་མྱུར་ལམ་རི་མོ་འདི་གསུབ་རྒྱུ་ཡིན་ནམ།</translation>
+    </message>
+    <message>
+        <source>set background</source>
+        <translation>རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
+    </message>
+    <message>
+        <source>Desktop Icon View</source>
+        <translation>སྒྲོག་ངོས་རྟགས་རིས་མཐོང་རིས།</translation>
+    </message>
+</context>
+<context>
+    <name>Peony::DesktopItemModel</name>
+    <message>
+        <source>Computer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trash</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>Peony::DesktopMenu</name>
     <message>
@@ -97,7 +139,7 @@
     </message>
     <message>
         <source>Open with...</source>
-        <translation>'ཁ་འབྱེད་སྟངས་...'</translation>
+        <translation>&apos;ཁ་འབྱེད་སྟངས་...&apos;</translation>
     </message>
     <message>
         <source>Open %1 selected files</source>
@@ -133,6 +175,13 @@
     </message>
 </context>
 <context>
+    <name>Peony::DesktopWindow</name>
+    <message>
+        <source>Desktop</source>
+        <translation type="vanished">ཅོག་ངོས་ཁོར་ཡུག</translation>
+    </message>
+</context>
+<context>
     <name>PeonyDesktopApplication</name>
     <message>
         <source>Close the peony desktop window</source>
@@ -148,49 +197,22 @@
     </message>
     <message>
         <source>set background</source>
-        <translation>རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
+        <translation type="vanished">རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
     </message>
     <message>
         <source>peony-qt-desktop</source>
         <translation>སྒྲོག་ངོས།</translation>
     </message>
+    <message>
+        <source>Setup backgrounds</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
-    <name>Peony::DesktopIconView</name>
-    <message>
-        <source>New Folder</source>
-        <translation>ཡིག་ཁུག་གསར་འཛུགས།</translation>
-    </message>
-    <message>
-        <source>Open Link failed</source>
-        <translation>མྱུར་ལམ་རི་མོ་ཁ་ཕྱེ་བ་ཕམ་ཉེས་བྱུང་།</translation>
-    </message>
-    <message>
-        <source>Open failed</source>
-        <translation>ཁ་ཕྱེ་བ་ཕམ་པ།</translation>
-    </message>
-    <message>
-        <source>Open directory failed, you have no permission!</source>
-        <translation>ཡིག་ཆ་ཁ་ཕྱེ་་བ་ཕམ་ཉེས་བྱུང་། ཁྱེད་ལ་དཀར་ཆག་འདིའི་དབང་ཚད་མི་འདུག</translation>
-    </message>
-    <message>
-        <source>File not exist, do you want to delete the link file?</source>
-        <translation>དམིགས་བཟུང་ཡིག་ཁུག་བསྡད་མི་འདུག ཕན་མེད་མྱུར་ལམ་རི་མོ་འདི་གསུབ་རྒྱུ་ཡིན་ནམ།</translation>
-    </message>
+    <name>QObject</name>
     <message>
         <source>set background</source>
-        <translation>རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
-    </message>
-    <message>
-        <source>Desktop Icon View</source>
-        <translation>སྒྲོག་ངོས་རྟགས་རིས་མཐོང་རིས།</translation>
-    </message>
-</context>
-<context>
-    <name>Peony::DesktopWindow</name>
-    <message>
-        <source>Desktop</source>
-        <translation>ཅོག་ངོས་ཁོར་ཡུག</translation>
+        <translation type="unfinished">རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
     </message>
 </context>
 </TS>
