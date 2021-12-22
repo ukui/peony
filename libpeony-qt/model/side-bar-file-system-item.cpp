@@ -136,7 +136,7 @@ void SideBarFileSystemItem::initDirInfo(const QString &uri)
 
    m_children    = nullptr;
    m_watcher     = nullptr;
-   m_iconName    = "gtk-directory";
+   m_iconName    = "folder";
    m_device      = m_mountPoint = "";
 
    m_uri         = uri;

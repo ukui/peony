@@ -246,8 +246,13 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     }
 
     switch (role) {
-    case Qt::DecorationRole:
-        return QIcon::fromTheme(item->iconName() + "-symbolic", QIcon::fromTheme(item->iconName()));
+    case Qt::DecorationRole:{
+        QString iconName = item->iconName() + "-symbolic";
+        if(item->iconName().endsWith("-symbolic"))
+            iconName = item->iconName();
+        //qDebug()<<"print side bar icon name, uri"<<FileUtils::urlEncode(item->uri())<<" icon name:"<<iconName;
+        return QIcon::fromTheme(iconName, QIcon::fromTheme(item->iconName()));
+    }
     case Qt::DisplayRole:
         return item->displayName();
     case Qt::ToolTipRole:

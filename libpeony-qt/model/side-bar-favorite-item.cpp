@@ -171,7 +171,11 @@ QString SideBarFavoriteItem::iconName()
 {
     if (!m_info)
         return m_iconName;
-    return m_info.get()->iconName();
+    /* 设计要求图标统一，文件夹图标名称为folder；而从底层读取的文件夹名称为inode-directory，因此替换一下 */
+    auto iconName = m_info.get()->iconName();
+    if(iconName == "inode-directory")
+        iconName = "folder";
+    return iconName;
 }
 
 bool SideBarFavoriteItem::hasChildren()
