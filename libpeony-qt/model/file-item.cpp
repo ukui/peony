@@ -504,7 +504,8 @@ void FileItem::findChildrenAsync()
                 BookMarkManager::getInstance()->bookmarkChanged(oldUri, newUri);
             });
             connect(m_watcher.get(), &FileWatcher::thumbnailUpdated, this, [=](const QString &uri) {
-                m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
+                m_model->updated();
+                //m_model->dataChanged(m_model->indexFromUri(uri), m_model->indexFromUri(uri));
             });
             connect(m_watcher.get(), &FileWatcher::directoryDeleted, this, [=](QString uri) {
                 //clean all the children, if item index is root index, cd up.
