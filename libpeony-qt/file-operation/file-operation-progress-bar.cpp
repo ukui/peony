@@ -287,6 +287,7 @@ void FileOperationProgressBar::uninhibit()
     }
 }
 
+#if 0
 void FileOperationProgressBar::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_is_press) {
@@ -309,6 +310,7 @@ void FileOperationProgressBar::mouseReleaseEvent(QMouseEvent *event)
         m_is_press = false;
     }
 }
+#endif
 
 void FileOperationProgressBar::showWidgetList(bool show)
 {
