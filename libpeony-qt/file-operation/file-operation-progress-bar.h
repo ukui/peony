@@ -25,6 +25,7 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QListWidget>
+#include <QPushButton>
 
 #include <gio/gio.h>
 
@@ -219,7 +220,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+//    void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
@@ -250,8 +251,12 @@ private:
 
     // btn
     int m_btn_margin_top = 8;
-    int m_btn_margin = 10;
-    int m_btn_size = 16;
+    int m_btn_margin = 3;
+    int m_btn_size = 32;
+
+    // btn
+    QPushButton* m_btn_close = nullptr;
+    QPushButton* m_btn_mini = nullptr;
 
     // icon
     int m_icon_margin = 20;
@@ -274,12 +279,12 @@ private:
     // calc
     const float m_minilize_button_x_l = m_fix_width - m_btn_margin * 2 - m_btn_size * 2;
     const float m_minilize_button_x_r = m_minilize_button_x_l + m_btn_size;
-    const float m_minilize_button_y_t = m_btn_margin_top;
+    const float m_minilize_button_y_t = m_btn_margin;
     const float m_minilize_button_y_b = m_btn_margin_top + m_btn_size;
 
     const float m_close_button_x_l = m_fix_width - m_btn_margin - m_btn_size;
     const float m_close_button_x_r = m_fix_width - m_btn_margin;
-    const float m_close_button_y_t = m_btn_margin_top;
+    const float m_close_button_y_t = m_btn_margin;
     const float m_close_button_y_b = m_btn_margin_top + m_btn_size;
 
     const float m_foot_progress_back_y = m_fix_height - m_foot_margin;
