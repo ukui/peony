@@ -45,6 +45,8 @@
 #include <QPainter>
 #include <QPainterPath>
 
+#include <QStyleOption>
+
 #include "FMWindowIface.h"
 #include "main-window.h"
 #include "file-info.h"
@@ -54,6 +56,9 @@ static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 {
+    setProperty("isWindowButton", 0x1);
+    setProperty("useIconHighlightEffect", 0x2);
+
     setFocusPolicy(Qt::StrongFocus);
 
     setAcceptDrops(true);
@@ -326,6 +331,13 @@ TabBarStyle *TabBarStyle::getStyle()
     return global_instance;
 }
 
+void TabBarStyle::polish(QWidget *widget)
+{
+    QProxyStyle::polish(widget);
+    widget->setProperty("isWindowButton", 0x1);
+    widget->setProperty("useIconHighlightEffect", 0x2);
+}
+
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
     return QProxyStyle::pixelMetric(metric, option, widget);
@@ -372,4 +384,18 @@ void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption
         return;
     }
     QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+void TabBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case PE_IndicatorArrowLeft:
+    case PE_IndicatorArrowRight: {
+        QStyleOption tmp = *option;
+        tmp.palette.setColor(QPalette::HighlightedText, qApp->palette().buttonText().color());
+        return QProxyStyle::drawPrimitive(element, &tmp, painter, widget);
+    }
+    default:
+        return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
 }
