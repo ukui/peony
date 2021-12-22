@@ -41,7 +41,6 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libukui-log4qt0,
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
          accountsservice,
