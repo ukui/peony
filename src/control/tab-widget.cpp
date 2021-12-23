@@ -159,6 +159,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         auto factory = manager->getPlugin(name);
         auto action = group->addAction(factory->icon(), factory->name());
         action->setCheckable(true);
+        m_preview_action = action;
         connect(action, &QAction::triggered, [=](/*bool checked*/) {
             if (!m_current_preview_action) {
                 m_current_preview_action = action;
@@ -650,6 +651,23 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
     }
 
     return currentList;
+}
+
+void TabWidget::updatePreviewActionVisible()
+{
+    auto currentUri = getCurrentUri();
+    if(currentUri.startsWith("computer://")){
+        m_preview_action->setVisible(false);
+    }else{
+        m_preview_action->setVisible(true);
+    }
+}
+
+void TabWidget::updateStatusBarSliderState()
+{
+    bool enable = currentPage()->getView()->supportZoom();
+    m_status_bar->m_slider->setEnabled(enable);
+    m_status_bar->m_slider->setVisible(enable);
 }
 
 void TabWidget::updateTrashBarVisible(const QString &uri)
@@ -1172,6 +1190,8 @@ void TabWidget::updateTabPageTitle()
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri().toLocal8Bit());
     //m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
     updateTrashBarVisible(getCurrentUri());
+    updatePreviewActionVisible();
+    updateStatusBarSliderState();
 }
 
 void TabWidget::switchViewType(const QString &viewId)
@@ -1435,9 +1455,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
-        bool enable = currentPage()->getView()->supportZoom();
-        m_status_bar->m_slider->setEnabled(enable);
-        m_status_bar->m_slider->setVisible(enable);
+        this->updateStatusBarSliderState();
     });
 
     connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){
@@ -1448,6 +1466,10 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::signal_itemAdded, this, [=](const QString& uri){
         if (container == currentPage())
             Q_EMIT this->signal_itemAdded(uri);
+    });
+
+    connect(container, &Peony::DirectoryViewContainer::updatePreviewActionRequest, this, [=](){
+       this->updatePreviewActionVisible();
     });
 }
 

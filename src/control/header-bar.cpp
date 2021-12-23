@@ -536,8 +536,10 @@ void HeaderBar::updateViewTypeEnable()
     //qDebug() << "updateViewTypeEnable url:" << url;
     if(url == "computer:///"){
         m_view_type_menu->setEnabled(false);
+        m_view_type_menu->menuAction()->setVisible(false);
     }else{
         m_view_type_menu->setEnabled(true);
+        m_view_type_menu->menuAction()->setVisible(true);
     }
 }
 
@@ -555,8 +557,10 @@ void HeaderBar::updateSortTypeEnable()
     qDebug() << "url:" << url;
     if(url == "computer:///"){
         m_sort_type_menu->setEnabled(false);
+        m_sort_type_menu->menuAction()->setVisible(false);
     }else{
         m_sort_type_menu->setEnabled(true);
+        m_sort_type_menu->menuAction()->setVisible(true);
     }
 }
 
