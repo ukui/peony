@@ -19,6 +19,8 @@
 #include "fulllistview.h"
 #include "src/UtilityFunction/thumbnail.h"
 #include "src/Interface/ukuimenuinterface.h"
+#include "src/menu/tablet-menu.h"
+
 #include <QDebug>
 #include <syslog.h>
 #include <src/Style/style.h>
@@ -56,6 +58,14 @@ FullListView::FullListView(QWidget *parent, int module):
     syssetting = new QSettings(syspath,QSettings::IniFormat);
 
     setDragEnabled(true);
+
+    connect(this, &QWidget::customContextMenuRequested, this, &FullListView::showContextMenu);
+}
+
+void FullListView::showContextMenu(const QPoint &pos)
+{
+    TabletMenu menu(this, pos);
+    menu.exec(QCursor::pos());
 }
 
 FullListView::~FullListView()

@@ -423,7 +423,7 @@
         <translation type="vanished">关闭桌面并退出</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="162"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="161"/>
         <source>peony-qt-desktop</source>
         <translation>桌面</translation>
     </message>
@@ -436,27 +436,27 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="309"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="308"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="312"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="311"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="315"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="314"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="318"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="317"/>
         <source>Setup backgrounds</source>
         <translation>Setup backgrounds</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="321"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="320"/>
         <source>Open learning center.</source>
         <translation></translation>
     </message>
@@ -513,9 +513,18 @@
     </message>
 </context>
 <context>
+    <name>TabletMenu</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/menu/tablet-menu.cpp" line="32"/>
+        <source>Uninstall</source>
+        <translatorcomment>卸载</translatorcomment>
+        <translation>卸载</translation>
+    </message>
+</context>
+<context>
     <name>TabletPluginWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="116"/>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="117"/>
         <source>Search</source>
         <translation>全局搜索</translation>
     </message>

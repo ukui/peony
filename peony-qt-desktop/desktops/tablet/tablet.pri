@@ -24,7 +24,8 @@ SOURCES += \
         $$PWD/src/UtilityFunction/thumbnail.cpp \
         $$PWD/src/UtilityFunction/utility.cpp \
         $$PWD/src/UtilityFunction/toolbox.cpp \
-        $$PWD/src/UtilityFunction/tablet-plugin-widget.cpp
+        $$PWD/src/UtilityFunction/tablet-plugin-widget.cpp \
+        $$PWD/src/menu/tablet-menu.cpp
 
 
 HEADERS += \
@@ -41,7 +42,8 @@ HEADERS += \
         $$PWD/src/UtilityFunction/thumbnail.h \
         $$PWD/src/UtilityFunction/utility.h \
         $$PWD/src/UtilityFunction/toolbox.h \
-        $$PWD/src/UtilityFunction/tablet-plugin-widget.h
+        $$PWD/src/UtilityFunction/tablet-plugin-widget.h \
+        $$PWD/src/menu/tablet-menu.h
 
 RESOURCES += \
     $$PWD/img.qrc

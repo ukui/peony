@@ -34,8 +34,11 @@
 #include <QVBoxLayout>
 #include <QVariantAnimation>
 
+class TabletMenu;
+
 class FullListView : public QListView
 {
+    friend class TabletMenu;
     Q_OBJECT
 public:
     FullListView(QWidget *parent,int module);
@@ -60,7 +63,7 @@ protected:
    void insertApplicationToTop();
    void insertApplication(QPoint pressedpos,QPoint releasepos);
    void mergeApplication(QPoint pressedpos,QPoint releasepos);
-
+   void showContextMenu(const QPoint &pos);
 
 private:
     FullItemDelegate* m_delegate=nullptr;
