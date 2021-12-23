@@ -57,13 +57,14 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     m_sort_orders = sortOrderGroup;
     sortOrderGroup->setExclusive(true);
 
-    auto ascending = addAction(tr("Ascending"));
-    ascending->setCheckable(true);
-    sortOrderGroup->addAction(ascending);
-
     auto descending = addAction(tr("Descending"));
     descending->setCheckable(true);
     sortOrderGroup->addAction(descending);
+
+    //switch defautl Descending Ascending order, fix bug#99924
+    auto ascending = addAction(tr("Ascending"));
+    ascending->setCheckable(true);
+    sortOrderGroup->addAction(ascending);
 
     connect(sortOrderGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortOrderGroup->actions().indexOf(action);
