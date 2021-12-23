@@ -285,7 +285,7 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 
 void DesktopBackgroundWindow::desktopMoveProcess(AnimationType animationType, quint32 moveLength, quint32 duration)
 {
-    if (moveLength <= 0 | m_currentDesktop->isPause()) {
+    if (moveLength <= 0 || m_currentDesktop->isPause()) {
         return;
     }
 
