@@ -204,6 +204,9 @@ protected:
 
     QStringList getCurrentClassify(int rowCount);
 
+    void updatePreviewActionVisible();
+    void updateStatusBarSliderState();
+
 private:
     NavigationTabBar *m_tab_bar;
     QToolButton *m_add_page_button;
@@ -220,6 +223,7 @@ private:
     QStackedWidget *m_preview_page_container;
 
     QAction *m_current_preview_action = nullptr;
+    QAction *m_preview_action = nullptr;
 
     QToolBar *m_trash_bar;
     QToolBar *m_search_bar;
