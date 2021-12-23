@@ -137,6 +137,7 @@ default_sort:
                 QString rightDisplayName = rightItem->m_info->displayName();
 
                 //fix chinese first sort wrong issue, link to bug#70836
+                //fix bug#97408,change indicator meanings
                 if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
                     return true;
                 else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
@@ -151,6 +152,19 @@ default_sort:
             //fix refresh sort order change issue, use file name to compare, link to bug#92525
             if (leftItem->hasChildren() && rightItem->hasChildren())
             {
+                if (m_use_default_name_sort_order) {
+                    QString leftDisplayName = leftItem->m_info->displayName();
+                    QString rightDisplayName = rightItem->m_info->displayName();
+
+                    //fix chinese first sort wrong issue, link to bug#70836
+                    //fix bug#97408,change indicator meanings
+                    if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
+                        return true;
+                    else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                        return false;
+                    else
+                        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
+                }
                 return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) > 0;
             }
             return leftItem->m_info->size() > rightItem->m_info->size();
@@ -159,6 +173,19 @@ default_sort:
             //fix refresh sort order change issue, use file name to compare, link to bug#92525
             if (leftItem->hasChildren() && rightItem->hasChildren())
             {
+                if (m_use_default_name_sort_order) {
+                    QString leftDisplayName = leftItem->m_info->displayName();
+                    QString rightDisplayName = rightItem->m_info->displayName();
+
+                    //fix chinese first sort wrong issue, link to bug#70836
+                    //fix bug#97408,change indicator meanings
+                    if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
+                        return true;
+                    else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                        return false;
+                    else
+                        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
+                }
                 return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) > 0;
             }
             return leftItem->m_info->fileType() > rightItem->m_info->fileType();

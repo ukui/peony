@@ -151,14 +151,16 @@ void ToolBar::init()
 
     sortMenu->addSeparator();
 
-    sortMenu->addAction(tr("Ascending"), [=]() {
-        m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
-        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
-    });
+    //switch defautl Descending Ascending order, fix bug#99924
     sortMenu->addAction(tr("Descending"), [=] {
         m_top_window->setCurrentSortOrder(Qt::DescendingOrder);
         m_sort_action->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
     });
+    sortMenu->addAction(tr("Ascending"), [=]() {
+        m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+    });
+
 
     m_sort_action->setMenu(sortMenu);
     addAction(m_sort_action);
