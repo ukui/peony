@@ -103,6 +103,7 @@ class NavigationSideBarStyle : public QProxyStyle
 public:
     explicit NavigationSideBarStyle();
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
 };
 
 #endif // NAVIGATIONSIDEBAR_H

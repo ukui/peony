@@ -25,6 +25,7 @@
 #include <QStyleOption>
 #include <QPainterPath>
 #include <QPainter>
+#include <QStyleOptionViewItem>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -45,7 +46,8 @@ ListViewStyle *ListViewStyle::getStyle()
 
 void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (element == PE_Frame) {
+    switch (element) {
+    case PE_Frame: {
         painter->save();
         bool isActive = option->state & State_Active;
         bool isEnable = option->state & State_Enabled;
@@ -54,10 +56,23 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         painter->restore();
         return;
     }
-
-    if (element == PE_FrameWindow) {
+    case PE_FrameWindow: {
         return;
     }
-
-    return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    case PE_IndicatorBranch: {
+        const QStyleOptionViewItem *tmp = qstyleoption_cast<const QStyleOptionViewItem *>(option);
+        QStyleOptionViewItem opt = *tmp;
+        if (!opt.state.testFlag(QStyle::State_Selected)) {
+            if (opt.state & QStyle::State_Sunken) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.button().color());
+            }
+            if (opt.state & QStyle::State_MouseOver) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.mid().color());
+            }
+        }
+        return QProxyStyle::drawPrimitive(element, &opt, painter, widget);
+    }
+    default:
+        return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
 }
