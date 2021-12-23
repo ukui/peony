@@ -487,6 +487,40 @@ void TabWidget::addNewConditionBar()
     inputBox->setPlaceholderText(tr("Please input key words..."));
     inputBox->setText("");
 
+    //bug#93521 添加清除按钮
+    QToolButton* clearButton = new QToolButton(inputBox);
+    clearButton->setAttribute(Qt::WA_TranslucentBackground);
+    clearButton->setObjectName("toolButton");
+    clearButton->installEventFilter(this);
+    clearButton->setAutoRaise(true);
+    clearButton->setStyle(TabBarStyle::getStyle());
+    clearButton->setFixedSize(inputBox->height() - 4, inputBox->height() - 4);
+    QHBoxLayout* clearlayout = new QHBoxLayout(inputBox);
+    clearlayout->addStretch();
+    clearlayout->addWidget(clearButton,Qt::AlignRight);
+    clearlayout->setMargin(2);
+    inputBox->setLayout(clearlayout);
+    clearButton->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    clearButton->setProperty("isWindowButton", 1);
+    clearButton->setProperty("useIconHighlightEffect", 0x2);
+    //clearButton->setAutoRaise(true);
+    clearButton->hide();
+
+
+    connect(clearButton, &QPushButton::clicked, this, [=](){
+        inputBox->clear();
+    });
+    connect(inputBox, &QLineEdit::textChanged, this,  [=](const QString &text){
+        if(text.isEmpty())
+        {
+            clearButton->hide();
+        }
+        else
+        {
+            clearButton->show();
+        }
+    });
+
     QPushButton *addButton = new QPushButton(QIcon::fromTheme("list-add-symbolic"), "", optionBar);
     m_add_button_list.append(addButton);
     addButton->setFixedHeight(20);

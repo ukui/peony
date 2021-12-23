@@ -29,9 +29,10 @@
 #include <QVector4D>
 
 #include <QDebug>
-
+#include <QToolButton>
+#include <QPainter>
 using namespace Peony;
-
+static ToolButtonStyle *global_instance = nullptr;
 SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -101,13 +102,75 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 //        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
 //    });
 
-    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic")), QLineEdit::TrailingPosition);
-    searchAction->setProperty("isWindowButton", 1);
-    searchAction->setProperty("useIconHighlightEffect", 2);
-    searchAction->setProperty("isIcon", true);
-    connect(searchAction, &QAction::triggered, this, [=]() {
+    //bug#93521 搜索界面中 添加搜索图标
+    QHBoxLayout* editlayout = new QHBoxLayout(edit);
+    editlayout->addStretch();
+
+    QToolButton *searchButton = new QToolButton(edit);
+    searchButton->setObjectName("toolButton");
+    searchButton->setStyle(ToolButtonStyle::getStyle());
+    searchButton->setIcon(QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic")));
+    searchButton->setProperty("isWindowButton", 1);
+    searchButton->setProperty("useIconHighlightEffect", 0x2);
+    searchButton->setAutoRaise(true);
+    searchButton->setFixedSize(edit->height() - 2, edit->height() - 2);
+    editlayout->addWidget(searchButton,Qt::AlignRight);
+    connect(searchButton, &QToolButton::clicked, this, [=]() {
         //qDebug() << "triggered search history!";
         m_search_box->completer()->complete();
+    });
+
+    QToolButton* clearButton = new QToolButton(edit);
+    clearButton->setObjectName("toolButton");
+    clearButton->setStyle(ToolButtonStyle::getStyle());
+    editlayout->addWidget(clearButton,Qt::AlignRight);
+    clearButton->setFixedSize(edit->height() - 2, edit->height() - 2);
+    clearButton->setAutoRaise(true);
+//    QToolButton* goToButton = new QToolButton(edit);
+//    goToButton->setAttribute(Qt::WA_TranslucentBackground);
+//    goToButton->setObjectName("toolButton");
+//    goToButton->setStyle(ToolButtonStyle::getStyle());
+//    goToButton->setFixedSize(edit->height() - 2, edit->height() - 2);
+//    QPalette palette = goToButton->palette();
+//    palette.setColor(QPalette::Active, QPalette::Button, QColor(Qt::blue));
+//    goToButton->setPalette(palette);
+//    editlayout->addWidget(goToButton,Qt::AlignRight);
+
+    editlayout->setMargin(2);
+    edit->setLayout(editlayout);
+
+    clearButton->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    clearButton->setProperty("isWindowButton", 1);
+    clearButton->setProperty("useIconHighlightEffect", 2);
+    clearButton->hide();
+
+//    goToButton->setIcon(QIcon::fromTheme("go-next-symbolic"));
+//    goToButton->setProperty("useIconHighlightEffect", true);
+//    goToButton->setProperty("iconHighlightEffectMode", 1);
+
+//    goToButton->hide();
+//    connect(goToButton, &QToolButton::clicked, this, [=](){
+//        //开始搜索
+//        startSearch();
+//    });
+
+    connect(clearButton, &QToolButton::clicked, this, [=](){
+        //停止搜索
+        edit->clear();
+    });
+    connect(edit, &QLineEdit::textChanged, this,  [=](const QString &text){
+        if(text.isEmpty())
+        {
+            //goToButton->hide();
+            clearButton->hide();
+            searchButton->show();
+        }
+        else
+        {
+            //goToButton->show();
+            clearButton->show();
+            searchButton->hide();
+        }
     });
 
     connect(m_list_view, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
@@ -153,4 +216,27 @@ void SearchBarContainer::clearSearchBox()
     m_clear_action = true;
     //need stop search action
     m_search_trigger.stop();
+}
+
+ToolButtonStyle *ToolButtonStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new ToolButtonStyle;
+    }
+    return global_instance;
+}
+
+void ToolButtonStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget &&  widget->objectName() == "toolButton") {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addEllipse(widget->rect().adjusted(2, 2, -2, -2));
+        painter->setClipPath(path);
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+        painter->restore();
+    } else {
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+    }
 }
