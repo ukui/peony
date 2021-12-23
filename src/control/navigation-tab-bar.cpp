@@ -365,7 +365,7 @@ QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption
 
 void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {
-    if (widget && widget->objectName() == "addPageButton") {
+    if (widget && (widget->objectName() == "addPageButton" || widget->objectName() == "toolButton")) {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         QPainterPath path;

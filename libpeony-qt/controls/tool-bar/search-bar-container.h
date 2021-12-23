@@ -31,7 +31,7 @@
 #include <QListView>
 #include <QStringList>
 #include <QTimer>
-
+#include <QProxyStyle>
 namespace Peony {
 
 class SearchBarContainer : public QWidget
@@ -90,6 +90,14 @@ private:
                                    };
 };
 
+class ToolButtonStyle : public QProxyStyle
+{
+public:
+    static ToolButtonStyle *getStyle();
+    ToolButtonStyle() {}
+
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const override;
+};
 }
 
 #endif // SEARCH_BAR_CONTAINER_H

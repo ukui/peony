@@ -222,9 +222,9 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 //    openTerminal->setProperty("isIcon", true);
 
     search->setFlat(true);
-    search->setProperty("isWindowButton", 1);
-    search->setProperty("useIconHighlightEffect", 2);
-    search->setProperty("isIcon", true);
+    //fix:bug#93521,修改控件三态
+    search->setProperty("useIconHighlightEffect", true);
+    search->setProperty("iconHighlightEffectMode", 1);
 
     goBack->setFlat(true);
     goBack->setProperty("isWindowButton", 1);
