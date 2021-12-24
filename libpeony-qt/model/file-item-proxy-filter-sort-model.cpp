@@ -111,95 +111,85 @@ bool FileItemProxyFilterSortModel::lessThan(const QModelIndex &left, const QMode
         auto leftItem = model->itemFromIndex(left);
         auto rightItem = model->itemFromIndex(right);
         if (!(leftItem->hasChildren() && rightItem->hasChildren())) {
-            //make folder always has a higher order.
-            if (!leftItem->hasChildren() && !rightItem->hasChildren()) {
-                goto default_sort;
-            }
-            if (m_folder_first) {
+            //make folder always has a higher order
+            if ((leftItem->hasChildren() || rightItem->hasChildren()) && m_folder_first) {
                 bool lesser = leftItem->hasChildren();
                 if (sortOrder() == Qt::AscendingOrder)
                     return lesser;
                 return !lesser;
             }
+        }else if (sortColumn() != FileItemModel::ModifiedDate){
+            goto default_sort;
         }
 
-default_sort:
         //fix bug#97408,change indicator meanings
         //箭头向上为升序，向下为降序，与通常的理解对应，对比了UOS是这样的
         //将所有排序对比跟之前的方式反过来，小于改为大于，返回true的改为false
         switch (sortColumn()) {
         case FileItemModel::FileName: {
-            if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftItem->m_info->displayName(), rightItem->m_info->displayName())) {
-                return FileOperationUtils::leftNameLesserThanRightName(leftItem->info()->displayName(), rightItem->info()->displayName());
-            }
-            if (m_use_default_name_sort_order) {
-                QString leftDisplayName = leftItem->m_info->displayName();
-                QString rightDisplayName = rightItem->m_info->displayName();
-
-                //fix chinese first sort wrong issue, link to bug#70836
-                //fix bug#97408,change indicator meanings
-                if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
-                    return true;
-                else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
-                    return false;
-                else
-                    return comparer.compare(leftDisplayName, rightDisplayName) > 0;
-            }
-            //return leftItem->m_info->displayName().toLower() < rightItem->m_info->displayName().toLower();
-            return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) > 0;
+            goto default_sort;
         }
         case FileItemModel::FileSize: {
+            qDebug() << "FileSize:" <<leftItem->m_info->displayName()<<leftItem->m_info->size()
+                     <<rightItem->m_info->displayName()<<rightItem->m_info->size();
             //fix refresh sort order change issue, use file name to compare, link to bug#92525
-            if (leftItem->hasChildren() && rightItem->hasChildren())
+            if (leftItem->m_info->size() == rightItem->m_info->size())
             {
-                if (m_use_default_name_sort_order) {
-                    QString leftDisplayName = leftItem->m_info->displayName();
-                    QString rightDisplayName = rightItem->m_info->displayName();
-
-                    //fix chinese first sort wrong issue, link to bug#70836
-                    //fix bug#97408,change indicator meanings
-                    if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
-                        return true;
-                    else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
-                        return false;
-                    else
-                        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
-                }
-                return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) > 0;
+                goto default_sort;
             }
             return leftItem->m_info->size() > rightItem->m_info->size();
         }
         case FileItemModel::FileType: {
             //fix refresh sort order change issue, use file name to compare, link to bug#92525
-            if (leftItem->hasChildren() && rightItem->hasChildren())
+            if (leftItem->m_info->fileType() == rightItem->m_info->fileType())
             {
-                if (m_use_default_name_sort_order) {
-                    QString leftDisplayName = leftItem->m_info->displayName();
-                    QString rightDisplayName = rightItem->m_info->displayName();
-
-                    //fix chinese first sort wrong issue, link to bug#70836
-                    //fix bug#97408,change indicator meanings
-                    if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
-                        return true;
-                    else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
-                        return false;
-                    else
-                        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
-                }
-                return comparer.compare(leftItem->m_info->displayName(), rightItem->m_info->displayName()) > 0;
+                 goto default_sort;
             }
             return leftItem->m_info->fileType() > rightItem->m_info->fileType();
         }
         case FileItemModel::ModifiedDate: {
             //delete time sort in trash, fix bug#63093
             if (leftItem->uri().startsWith("trash://"))
+            {
+                if (leftItem->m_info->deletionDate() == rightItem->m_info->deletionDate())
+                {
+                    goto default_sort;
+                }
                 return leftItem->m_info->deletionDate() > rightItem->m_info->deletionDate();
+            }
 
+            //non trash files, use modifiedTime sort
+            if (leftItem->m_info->modifiedTime() == rightItem->m_info->modifiedTime())
+            {
+                goto default_sort;
+            }
             return leftItem->m_info->modifiedTime() > rightItem->m_info->modifiedTime();
         }
         default:
             break;
         }
+
+default_sort:
+        //function was deprecated
+//        if (FileOperationUtils::leftNameIsDuplicatedFileOfRightName(leftItem->m_info->displayName(), rightItem->m_info->displayName())) {
+//            return FileOperationUtils::leftNameLesserThanRightName(leftItem->info()->displayName(), rightItem->info()->displayName());
+//        }
+
+        //when other sort value is the same, use sort by name way，link to bug#92525
+        //排序条件下的值相等时，使用名称进行排序，保持排序稳定，刷新后不改变, 关联bug#92525
+        QString leftDisplayName = leftItem->m_info->displayName();
+        QString rightDisplayName = rightItem->m_info->displayName();
+        if (m_use_default_name_sort_order) {
+            //fix chinese first sort wrong issue, link to bug#70836
+            //fix bug#97408,change indicator meanings
+            if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
+                return true;
+            else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+                return false;
+            else
+                return comparer.compare(leftDisplayName, rightDisplayName) > 0;
+        }
+        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
     }
 
     return QSortFilterProxyModel::lessThan(left, right);

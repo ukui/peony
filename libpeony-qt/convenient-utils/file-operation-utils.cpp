@@ -300,7 +300,8 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     }
 }
 
-
+//not accurate of process, name has tr("duplicate") not processed
+//do not use this function before you fixed it
 bool FileOperationUtils::leftNameIsDuplicatedFileOfRightName(const QString &left, const QString &right)
 {
     auto tmpl = left;
@@ -335,5 +336,6 @@ bool FileOperationUtils::leftNameLesserThanRightName(const QString &left, const 
     auto tmpr = right;
     int numl = getNumOfFileName(tmpl);
     int numr = getNumOfFileName(tmpr);
-    return numl == numr? left < right: numl < numr;
+    //fix bug#97408,change indicator meanings
+    return numl == numr? left > right: numl > numr;
 }
