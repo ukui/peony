@@ -151,8 +151,12 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
     if (leftInfo->isDir()) {
         if (rightInfo->isDir()) {
             //fix bug#89115, folders not sort by name
-            if (m_sort_type == FileName)
-               return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
+            if (m_sort_type != ModifiedDate){
+                if (leftInfo->isDir() && rightInfo->isDir())
+                {
+                    goto default_sort;
+                }
+            }
         } else {
             return (sortOrder()==Qt::AscendingOrder)? true: false;
         }
@@ -175,25 +179,44 @@ bool DesktopItemProxyModel::lessThan(const QModelIndex &source_left, const QMode
                 //chinese pinyin sort order is reversed compared with english.
                 //return !QSortFilterProxyModel::lessThan(source_left, source_right);
                 //fix bug#89115, chinese files not sort by name pinyin
-                return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
+                return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) > 0;
             }
         } else {
             if (startWithChinese(rightInfo->displayName())) {
                 return (sortOrder()==Qt::AscendingOrder)? false: true;
             }
         }
-        return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) < 0;
+        return comparer.compare(leftInfo->displayName(), rightInfo->displayName()) > 0;
     }
     case ModifiedDate: {
-        return leftInfo->modifiedTime() < rightInfo->modifiedTime();
+        if (leftInfo->modifiedTime() == rightInfo->modifiedTime())
+            goto default_sort;
+        return leftInfo->modifiedTime() > rightInfo->modifiedTime();
     }
     case FileType: {
-        return leftInfo->type() < rightInfo->type();
+        if (leftInfo->type() == rightInfo->type())
+            goto default_sort;
+        return leftInfo->type() > rightInfo->type();
     }
     case FileSize: {
-        return leftInfo->size() < rightInfo->size();
+        if (leftInfo->size() == rightInfo->size())
+            goto default_sort;
+        return leftInfo->size() > rightInfo->size();
     }
     }
+
+default_sort:
+    //when sort value is same, use name to sort, fix refresh change order issue
+    //fix bug#99928, desktop sort not same with folder issue, and releated to bug#92525
+    QString leftDisplayName = leftInfo->displayName();
+    QString rightDisplayName = rightInfo->displayName();
+
+    if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
+        return true;
+    else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
+        return false;
+    else
+        return comparer.compare(leftDisplayName, rightDisplayName) > 0;
 
     return QSortFilterProxyModel::lessThan(source_left, source_right);
 }
