@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QProcess>
 #include <recent-vfs-manager.h>
+#include <QApplication>
 
 #include <QDebug>
 #include <QtX11Extras/QX11Info>
@@ -334,7 +335,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     startInfoId->setupStartupEnv();
     KStartupInfoData data;
     data.setHostname();
+    float scale = qApp->devicePixelRatio();
     QRect rect = fileInfo.get()->property("iconGeometry").toRect();
+    rect.moveTo(rect.x() * scale, rect.y() * scale);
     if (rect.isValid())
         data.setIconGeometry(rect);
     data.setLaunchedBy(getpid());
