@@ -37,6 +37,7 @@
 #include <QProcess>
 #include <QtDBus/QtDBus>
 #include <recent-vfs-manager.h>
+#include <QApplication>
 
 #include <ukuisdk/kylin-com4cxx.h>
 #include <QDebug>
@@ -473,7 +474,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     startInfoId->setupStartupEnv();
     KStartupInfoData data;
     data.setHostname();
+    float scale = qApp->devicePixelRatio();
     QRect rect = fileInfo.get()->property("iconGeometry").toRect();
+    rect.moveTo(rect.x() * scale, rect.y() * scale);
     if (rect.isValid())
         data.setIconGeometry(rect);
     data.setLaunchedBy(getpid());
