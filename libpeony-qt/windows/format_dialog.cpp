@@ -87,7 +87,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     mainLayout->addWidget(mProgress, 5, 1, 1, 8);
 
     mCancelBtn = new QPushButton(tr("Cancel"));
-    mFormatBtn = new QPushButton(tr("Format"));
+    mFormatBtn = new QPushButton(tr("OK"));
 
     mainLayout->addWidget(mCancelBtn, 6, 5, 1, 2, Qt::AlignRight);
     mainLayout->addWidget(mFormatBtn, 6, 7, 1, 2, Qt::AlignRight);
