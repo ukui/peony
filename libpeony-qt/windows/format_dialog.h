@@ -26,6 +26,10 @@
 #include <QTimer>
 #include <errno.h>
 #include <QDialog>
+#include <QComboBox>
+#include <QProgressBar>
+#include <QCheckBox>
+#include <QLabel>
 #include <sys/stat.h>
 #include <glib/gi18n.h>
 #include <udisks/udisks.h>
@@ -33,9 +37,9 @@
 
 #include "peony-core_global.h"
 
-namespace Ui {
-class Format_Dialog;
-}
+//namespace Ui {
+//class Format_Dialog;
+//}
 
 namespace Peony {
 class SideBarAbstractItem;
@@ -62,7 +66,6 @@ struct CreateformatData{
 class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit Format_Dialog(const QString &uris,SideBarAbstractItem *m_item,QWidget *parent = nullptr);
 
@@ -94,7 +97,7 @@ public:
     ~Format_Dialog();
 
 
-    Ui::Format_Dialog *ui;
+//    Ui::Format_Dialog *ui;
 
     QTimer *my_time;
 
@@ -119,7 +122,26 @@ public Q_SLOTS:
     void colseFormat(bool);
 
     void formatloop();
+
 private:
+    static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data);
+
+private:
+    const int           mFixWidth = 424;
+    const int           mFixHeight = 380;
+
+    QTimer*             mTimer = nullptr;
+
+    QComboBox*          mFSCombox = nullptr;
+    QProgressBar*       mProgress = nullptr;
+    QPushButton*        mCancelBtn = nullptr;
+    QPushButton*        mFormatBtn = nullptr;
+    QCheckBox*          mEraseCkbox = nullptr;
+    QLineEdit*          mNameEdit = nullptr;
+    QComboBox*          mRomSizeCombox = nullptr;
+
+
+
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 
