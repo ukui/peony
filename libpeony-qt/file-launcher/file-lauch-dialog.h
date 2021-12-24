@@ -55,6 +55,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    bool event(QEvent *event) override;
 
 private:
     QVBoxLayout *m_layout;
