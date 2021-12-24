@@ -117,7 +117,15 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         }
     }
 
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+    if (!opt.state.testFlag(QStyle::State_Selected)) {
+        if (opt.state & QStyle::State_Sunken) {
+            opt.palette.setColor(QPalette::Highlight, opt.palette.button().color());
+        }
+        if (opt.state & QStyle::State_MouseOver) {
+            opt.palette.setColor(QPalette::Highlight, opt.palette.mid().color());
+        }
+    }
+    opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     //add link and read only icon support
     if (index.column() == 0) {

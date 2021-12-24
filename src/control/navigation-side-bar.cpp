@@ -65,6 +65,8 @@
 #include <QDebug>
 #include <QToolTip>
 
+#include <QStyleOptionViewItem>
+
 #define NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS 4
 
 using namespace Peony;
@@ -595,7 +597,19 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
             leftRoundedRegion.addRect(option->rect.adjusted(NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0, 0, 0));
             painter->setClipPath(leftRoundedRegion);
         }
-        break;
+        const QStyleOptionViewItem *tmp = qstyleoption_cast<const QStyleOptionViewItem *>(option);
+        QStyleOptionViewItem opt = *tmp;
+        if (!opt.state.testFlag(QStyle::State_Selected)) {
+            if (opt.state & QStyle::State_Sunken) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.button().color());
+            }
+            if (opt.state & QStyle::State_MouseOver) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.mid().color());
+            }
+        }
+        QProxyStyle::drawPrimitive(element, &opt, painter, widget);
+        painter->restore();
+        return;
     }
     case QStyle::PE_PanelItemViewRow: {
         painter->restore();
@@ -611,4 +625,21 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 
     QProxyStyle::drawPrimitive(element, option, painter, widget);
     painter->restore();
+}
+
+void NavigationSideBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    if (element == QStyle::CE_ItemViewItem) {
+        const QStyleOptionViewItem *tmp = qstyleoption_cast<const QStyleOptionViewItem *>(option);
+        QStyleOptionViewItem opt = *tmp;
+        if (!opt.state.testFlag(QStyle::State_Selected)) {
+            if (opt.state & QStyle::State_Sunken) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.button().color());
+            }
+            if (opt.state & QStyle::State_MouseOver) {
+                opt.palette.setColor(QPalette::Highlight, opt.palette.mid().color());
+            }
+        }
+        return QProxyStyle::drawControl(element, &opt, painter, widget);
+    }
 }

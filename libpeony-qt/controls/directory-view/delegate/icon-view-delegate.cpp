@@ -119,6 +119,15 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (qApp->devicePixelRatio() != 1.0) {
         opt.rect.adjust(1, 1, -1, -1);
     }
+
+    if (!opt.state.testFlag(QStyle::State_Selected)) {
+        if (opt.state & QStyle::State_Sunken) {
+            opt.palette.setColor(QPalette::Highlight, opt.palette.button().color());
+        }
+        if (opt.state & QStyle::State_MouseOver) {
+            opt.palette.setColor(QPalette::Highlight, opt.palette.mid().color());
+        }
+    }
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
@@ -144,6 +153,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto text = opt.text;
     opt.text = nullptr;
+
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
     opt.text = text;
 
