@@ -699,9 +699,11 @@ void TabWidget::updatePreviewActionVisible()
 
 void TabWidget::updateStatusBarSliderState()
 {
-    bool enable = currentPage()->getView()->supportZoom();
-    m_status_bar->m_slider->setEnabled(enable);
-    m_status_bar->m_slider->setVisible(enable);
+    if (currentPage() && currentPage()->getView()) {
+        bool enable = currentPage()->getView()->supportZoom();
+        m_status_bar->m_slider->setEnabled(enable);
+        m_status_bar->m_slider->setVisible(enable);
+    }
 }
 
 void TabWidget::updateTrashBarVisible(const QString &uri)
