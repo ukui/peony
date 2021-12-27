@@ -117,6 +117,9 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto rawDecoSize = opt.decorationSize;
     opt.decorationSize = view->iconSize();
+    if (qApp->devicePixelRatio() != 1.0) {
+        opt.rect.adjust(1, 1, -1, -1);
+    }
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
