@@ -289,28 +289,12 @@ void DesktopBackgroundManager::setBgPixmapToBlurImage(QPixmap &bgPixmap)
             drawedWidth = 0;
             while (1) {
                 painter.drawPixmap(drawedWidth,drawedHeight,pixmap);
-                drawedWidth += getBackPixmap().width();
+                drawedWidth += pixmap.width();
                 if (drawedWidth >= m_screen->size().width()) {
                     break;
                 }
             }
-            drawedHeight += getBackPixmap().height();
-            if (drawedHeight >= m_screen->size().height()) {
-                break;
-            }
-        }
-        drawedWidth = 0;
-        drawedHeight = 0;
-        while (1) {
-            drawedWidth = 0;
-            while (1) {
-                painter.drawPixmap(drawedWidth,drawedHeight,pixmap);
-                drawedWidth += getFrontPixmap().width();
-                if (drawedWidth >= m_screen->size().width()) {
-                    break;
-                }
-            }
-            drawedHeight += getFrontPixmap().height();
+            drawedHeight += pixmap.height();
             if (drawedHeight >= m_screen->size().height()) {
                 break;
             }
