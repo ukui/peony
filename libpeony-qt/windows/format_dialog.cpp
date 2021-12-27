@@ -338,7 +338,7 @@ void Format_Dialog::acceptFormat(bool)
     };
 
     //keep this window above, fix bug #41227
-    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
+//    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
