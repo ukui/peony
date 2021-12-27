@@ -99,8 +99,6 @@ public:
 
 //    Ui::Format_Dialog *ui;
 
-    QTimer *my_time;
-
     bool renameOK = true;
 
     QWidget *m_parent;
