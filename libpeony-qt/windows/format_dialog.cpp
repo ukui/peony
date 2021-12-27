@@ -83,7 +83,8 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
     mProgress = new QProgressBar;
     mProgress->setMinimum(0);
-    mProgress->setMaximum(1000);
+    mProgress->setValue (0);
+    mProgress->setMaximum(100);
     mainLayout->addWidget(mProgress, 5, 1, 1, 8);
 
     mCancelBtn = new QPushButton(tr("Cancel"));
@@ -92,102 +93,107 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     mainLayout->addWidget(mCancelBtn, 6, 5, 1, 2, Qt::AlignRight);
     mainLayout->addWidget(mFormatBtn, 6, 7, 1, 2, Qt::AlignRight);
 
-    mTimer = new QTimer;
+    mTimer = new QTimer(this);
     mTimer->setInterval(1000);
     connect(mTimer, &QTimer::timeout, this, [=] () {
         int val = mProgress->value();
+        if (b_finished) {
+            mProgress->setValue(100);
+            mTimer->stop();
+            return;
+        } else if (b_failed) {
+            mTimer->stop();
+            return;
+        }
         if (val <= mProgress->maximum()) {
             mProgress->setValue(++val);
         }
     });
 
-       fm_uris = m_uris;
-       fm_item = m_item;
-       m_parent = parent;
-       b_canClose = true;
+    fm_uris = m_uris;
+    fm_item = m_item;
+    m_parent = parent;
+    b_canClose = true;
 
-       /*!
-         如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
-         */
-       if (fm_uris.isEmpty() && !fm_item->getDevice().isEmpty()) {
-           auto itemUris = FileUtils::getChildrenUris("computer:///");
-           for (auto itemUri : itemUris) {
-               auto unixDevice = FileUtils::getUnixDevice(itemUri);
-               if (unixDevice == fm_item->getDevice()) {
-                   fm_uris = itemUri;
-                   break;
-               }
-           }
-       }
+    /*!
+      如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
+     */
+    if (fm_uris.isEmpty() && !fm_item->getDevice().isEmpty()) {
+        auto itemUris = FileUtils::getChildrenUris("computer:///");
+        for (auto itemUri : itemUris) {
+            auto unixDevice = FileUtils::getUnixDevice(itemUri);
+            if (unixDevice == fm_item->getDevice()) {
+                fm_uris = itemUri;
+                break;
+            }
+        }
+    }
 
-       //from uris get the rom size
-       //FIXME: replace BLOCKING api in ui thread.
-       auto targetUri = FileUtils::getTargetUri(fm_uris);
-       if (targetUri.isEmpty()) {
-           targetUri = fm_uris;
-       }
-       g_autoptr(GFile) fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
+    //from uris get the rom size
+    //FIXME: replace BLOCKING api in ui thread.
+    auto targetUri = FileUtils::getTargetUri(fm_uris);
+    if (targetUri.isEmpty()) {
+        targetUri = fm_uris;
+    }
+    g_autoptr(GFile) fm_file = g_file_new_for_uri(targetUri .toUtf8().constData());
 
-       g_autoptr(GFileInfo) fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
-       quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+    g_autoptr(GFileInfo) fm_info = g_file_query_filesystem_info(fm_file, "*", nullptr, nullptr);
+    quint64 total = g_file_info_get_attribute_uint64(fm_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
 
-       //add the rom size value into  rom_size combox
-       //fix system Udisk calculate size wrong issue
-       QString m_volume_name, m_unix_device, m_display_name,m_fs_type;
-       FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
-       bool hasSetRomSize = false;
-       m_fs_type = FileUtils::getFileSystemType(m_uris);
-       //U disk or other mobile device, only use in iso system install device
-       if (! m_unix_device.isEmpty() && m_fs_type.startsWith("iso")
-           && ! m_uris.startsWith("computer:///WDC"))
-       {
-          char dev_name[256] ={0};
-          strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
-          auto size = FileUtils::getDeviceSize(dev_name);
-          if (size > 0)
-          {
-              QString sizeInfo = QString::number(size, 'f', 1);
-              qDebug() << "size:" <<size;
-              sizeInfo += "G";
-              mRomSizeCombox->clear ();
-              mRomSizeCombox->addItem (sizeInfo);
-              hasSetRomSize = true;
-          }
-       }
+    //add the rom size value into  rom_size combox
+    //fix system Udisk calculate size wrong issue
+    QString m_volume_name, m_unix_device, m_display_name,m_fs_type;
+    FileUtils::queryVolumeInfo(m_uris, m_volume_name, m_unix_device, m_display_name);
+    bool hasSetRomSize = false;
+    m_fs_type = FileUtils::getFileSystemType(m_uris);
+    //U disk or other mobile device, only use in iso system install device
+    if (! m_unix_device.isEmpty() && m_fs_type.startsWith("iso")
+        && ! m_uris.startsWith("computer:///WDC")) {
+        char dev_name[256] ={0};
+        strncpy(dev_name, m_unix_device.toUtf8().constData(),sizeof(m_unix_device.toUtf8().constData()-1));
+        auto size = FileUtils::getDeviceSize(dev_name);
+        if (size > 0) {
+            QString sizeInfo = QString::number(size, 'f', 1);
+            qDebug() << "size:" <<size;
+            sizeInfo += "G";
+            mRomSizeCombox->clear ();
+            mRomSizeCombox->addItem (sizeInfo);
+            hasSetRomSize = true;
+        }
+    }
 
-       if (! hasSetRomSize)
-       {
-           //Calculated by 1024 bytes
-           char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
-           mRomSizeCombox->clear ();
-           mRomSizeCombox->addItem (total_format);
-       }
+    if (! hasSetRomSize) {
+        //Calculated by 1024 bytes
+        char *total_format = strtok(g_format_size_full(total,G_FORMAT_SIZE_IEC_UNITS),"iB");
+        mRomSizeCombox->clear ();
+        mRomSizeCombox->addItem (total_format);
+    }
 
-       auto mount = VolumeManager::getMountFromUri(targetUri);
-       //fix name not show complete in bottom issue, bug#36887
-       if (mount.get()) {
-           mNameEdit->setText(mount->name());
-       } else {
-           mNameEdit->setText(LinuxPWDHelper::getCurrentUser().fullName());
-       }
+    auto mount = VolumeManager::getMountFromUri(targetUri);
+    //fix name not show complete in bottom issue, bug#36887
+    if (mount.get()) {
+        mNameEdit->setText(mount->name());
+    } else {
+        mNameEdit->setText(LinuxPWDHelper::getCurrentUser().fullName());
+    }
 
-       mProgress->setValue(0);
+    mProgress->setValue(0);
 
-       // vfat/fat32 格式存在卷标相关问题，目前无法解决只能规避，参考#83826
-       // 如果是可移动设备，格式化时默认使用ntfs格式，可以支持长卷标名，不可移动设备默认按Ext4格式格式化
-       g_autoptr(GFile) computer_file = g_file_new_for_uri(m_uris.toUtf8().constData());
-       g_autoptr(GFileInfo) gfileinfo = g_file_query_info(computer_file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
-       bool isRemoveable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT) || g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
-       bool mountable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT) || g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
-       if (isRemoveable && mountable) {
-           mFSCombox->setCurrentText("ntfs");
-       } else {
-           mFSCombox->setCurrentText("ext4");
-       }
+    // vfat/fat32 格式存在卷标相关问题，目前无法解决只能规避，参考#83826
+    // 如果是可移动设备，格式化时默认使用ntfs格式，可以支持长卷标名，不可移动设备默认按Ext4格式格式化
+    g_autoptr(GFile) computer_file = g_file_new_for_uri(m_uris.toUtf8().constData());
+    g_autoptr(GFileInfo) gfileinfo = g_file_query_info(computer_file, "*", G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
+    bool isRemoveable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_EJECT) ||g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_STOP);
+    bool mountable = g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_MOUNT) || g_file_info_get_attribute_boolean(gfileinfo, G_FILE_ATTRIBUTE_MOUNTABLE_CAN_UNMOUNT);
+    if (isRemoveable && mountable) {
+        mFSCombox->setCurrentText("ntfs");
+    } else {
+        mFSCombox->setCurrentText("ext4");
+    }
 
-       connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
+    connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
 
-       connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
+    connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
 }
 
 Format_Dialog::Format_Dialog(const QString &uri, QWidget *parent) :
@@ -277,7 +283,6 @@ void Format_Dialog::colseFormat(bool)
 
 static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 {
-    
     int flags = 0;
     GError *err = nullptr;
     Format_Dialog *pthis = (Format_Dialog *)udata;
@@ -345,12 +350,12 @@ void Format_Dialog::acceptFormat(bool)
     }
 
     //get values from ui
-//    strncpy(rom_size,ui->comboBox_rom_size->itemText(0).toUtf8().constData(),sizeof(ui->comboBox_rom_size->itemText(0).toUtf8().constData())-1);
+    strncpy(rom_size,mRomSizeCombox->currentText ().toUtf8().constData(), strlen(mRomSizeCombox->currentText ().toUtf8().constData()));
     strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
-    strcpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData());
+    strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
 
 //    //disable name and rom size list
-//    //ui->comboBox_rom_size->setDisabled(true);
+    //ui->comboBox_rom_size->setDisabled(true);
     this->mFSCombox->setDisabled(true);
 
     full_clean = mEraseCkbox->isChecked();
@@ -364,7 +369,7 @@ void Format_Dialog::acceptFormat(bool)
     }
     auto targetUri = FileUtils::getTargetUri(fm_uris);
     auto mount = VolumeManager::getInstance()->getMountFromUri(targetUri);
-    if(mount){
+    if(mount) {
        /* unmount */
        auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
        g_file_unmount_mountable_with_operation(files.get()->get(),
@@ -373,15 +378,14 @@ void Format_Dialog::acceptFormat(bool)
                                                nullptr,
                                                GAsyncReadyCallback(unmount_finished),
                                                this);
-    }else{
+    } else {
         bEnsureFormat = true;
     }
-       //get device name
-       //FIXME: replace BLOCKING api in ui thread.
+    //get device name
+    //FIXME: replace BLOCKING api in ui thread.
     FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
 
-
-    strcpy(dev_name,devName.toUtf8().constData());
+    strncpy(dev_name,devName.toUtf8().constData(), sizeof (dev_name) - 1);
     devtype = rom_type;
 
     //do format
@@ -394,27 +398,16 @@ void Format_Dialog::acceptFormat(bool)
     //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),full_clean?"zero":NULL,rom_name,&format_value);
 
     //begin start my_timer, processbar
-    my_time  = new QTimer(this);
 
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
     b_failed = false;
-    if(full_clean){
-        my_time->setInterval(1000);
-        m_total_predict = 1800;
-    }else{
-        my_time->setInterval(500);
-        m_total_predict = 150;
-    }
-
-    //begin loop
-    connect(my_time, SIGNAL(timeout()), this, SLOT(formatloop()));
 
     //while get ensure emit , do format 
-    connect(this,&Format_Dialog::ensure_format,[=](bool){
+    connect(this,&Format_Dialog::ensure_format, this, [=](bool){
         // time begin loop
-        my_time->start();
+        mTimer->start();
 
         // set ui button disable
         mFormatBtn->setDisabled(TRUE);
@@ -466,18 +459,18 @@ double Format_Dialog::get_format_bytes_done(const gchar * device_name)
 
 void Format_Dialog::formatloop(){
 
-    if (b_finished)
-    {
-        mProgress->setValue(100);
-//        ui->label_process->setText("100%");
-        my_time->stop();
-        return;
-    }
-    else if (b_failed)
-    {
-        my_time->stop();
-        return;
-    }
+//    if (b_finished)
+//    {
+//        mProgress->setValue(100);
+////        ui->label_process->setText("100%");
+//        mTimer->stop();
+//        return;
+//    }
+//    else if (b_failed)
+//    {
+//        mTimer->stop();
+//        return;
+//    }
 
     QString volname, devName, voldisplayname;
     static char name_dev[256] ={0};
@@ -516,7 +509,7 @@ void Format_Dialog::formatloop(){
         b_finished = true;
         mProgress->setValue(100);
 //        ui->label_process->setText("100%");
-        my_time->stop();
+        mTimer->stop();
     }
     else{
         mProgress->setValue(m_simulate_progress);
@@ -719,7 +712,7 @@ void Format_Dialog::format_cb (GObject *source_object, GAsyncResult *res ,gpoint
 
     b_canClose = true;
 
-    data->dl->my_time->stop();
+    data->dl->mTimer->stop();
     data->dl->close();
 
     createformatfree(data);
@@ -805,7 +798,6 @@ void Format_Dialog::ensure_format_cb (CreateformatData *data){
     g_variant_builder_add (&options_builder, "{sv}", "update-partition-type",
                            g_variant_new_boolean (TRUE));
 
-
     udisks_block_call_format (data->block,
                               data->format_type,
                               g_variant_builder_end (&options_builder),
@@ -828,7 +820,10 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
         for(int i=0;i<=7;i++)
             ch[i]=(data->device_name)[i];
         data->drive_object = get_object_from_block_device(data->client,ch);
+        g_return_if_fail (data->drive_object);
+
         data->drive_block = udisks_object_get_block(data->drive_object);
+        g_return_if_fail (data->drive_block);
 
 
         GVariantBuilder options_builder;
@@ -856,7 +851,6 @@ void Format_Dialog::ensure_format_disk(CreateformatData *data){
 
         g_variant_builder_add (&options_builder, "{sv}", "update-partition-type",
                                g_variant_new_boolean (TRUE));
-
 
         udisks_block_call_format(data->drive_block,
                         data->format_type,
