@@ -328,8 +328,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     }
                     openWithMenu->addSeparator();
                     openWithMenu->addAction(tr("More applications..."), [=]() {
-                        FileLauchDialog d(m_selections.first());
-                        d.exec();
+                        FileLauchDialog *d = new FileLauchDialog(m_selections.first());
+                        d->show();
                     });
                     openWithAction->setMenu(openWithMenu);
                 }
@@ -389,8 +389,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 }
                 openWithMenu->addSeparator();
                 openWithMenu->addAction(tr("More applications..."), [=]() {
-                    FileLauchDialog d(m_selections.first());
-                    d.exec();
+                    FileLauchDialog *d = new FileLauchDialog(m_selections.first());
+                    d->show();
                 });
                 openWithAction->setMenu(openWithMenu);
             } else {

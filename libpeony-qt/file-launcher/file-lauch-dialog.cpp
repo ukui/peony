@@ -26,6 +26,7 @@
 #include "file-launch-manager.h"
 
 #include "file-info.h"
+#include "xatom-helper.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -41,6 +42,14 @@ using namespace Peony;
 
 FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
+    //无边框窗口
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(window()->winId(), hints);
+
     m_layout = new QVBoxLayout(this);
     setLayout(m_layout);
 
@@ -112,4 +121,16 @@ void FileLauchDialog::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.fillRect(this->rect(), qApp->palette().base());
     QWidget::paintEvent(event);
+}
+
+bool FileLauchDialog::event(QEvent *event)
+{
+    //失去焦点即关闭窗口
+    if (event->type() == QEvent::ActivationChange) {
+        if (QApplication::activeWindow() != this) {
+            this->close();
+            return false;
+        }
+    }
+    return QWidget::event(event);
 }
