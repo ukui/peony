@@ -484,6 +484,9 @@ void HeaderBar::switchSelectStatus(bool select)
         m_actions.find(HeaderBarAction::SeletcAll).value()->setVisible(false);
         m_actions.find(HeaderBarAction::Delete).value()->setVisible(false);
     }
+    //fix bug#100105 After the selected status changes, the view type is grayed out.
+    updateViewTypeEnable();
+    updateSortTypeEnable();
 }
 
 void HeaderBar::updateSearchRecursive(bool recursive)
