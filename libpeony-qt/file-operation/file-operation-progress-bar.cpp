@@ -560,12 +560,17 @@ void MainProgressBar::paintHeader(QPainter &painter)
 {
     painter.save();
 
+    // paint icon
+    int iconSize = m_header_height - m_btn_margin * 2;
+    QRect iconArea (m_btn_margin * 2, m_btn_margin, iconSize, iconSize);
+    painter.drawPixmap (iconArea, QIcon::fromTheme("system-file-manager").pixmap (iconSize, iconSize)); //(textArea, Qt::Ali | Qt::AlignHCenter, m_title);
+
     // paint title
-    QRect textArea (m_text_area_x, 0, m_title_width, m_header_height);
+    QRect textArea (m_text_area_x + iconSize, 0, m_title_width, m_header_height);
     QFont font = painter.font();
 //    font.setPixelSize(14);
     painter.setFont(font);
-    painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_title);
+    painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignLeft, m_title);
 
 #if 0
     // paint minilize button
