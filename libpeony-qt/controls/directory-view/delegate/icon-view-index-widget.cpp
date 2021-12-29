@@ -186,7 +186,14 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     opt.rect = rawRect;
     auto tmp = opt.text;
     opt.text = nullptr;
+    //bug#99340,修改图标选中状态，会变暗
+    auto state = opt.state;
+    if((opt.state & QStyle::State_Enabled) && (opt.state & QStyle::State_Selected))
+    {
+        opt.state &= ~QStyle::State_Selected;
+    }
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
+    opt.state = state;
     if (b_elide_text)
     {
         int  charWidth = opt.fontMetrics.averageCharWidth();

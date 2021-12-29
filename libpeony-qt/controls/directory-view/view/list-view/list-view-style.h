@@ -24,6 +24,7 @@
 #define LISTVIEWSTYLE_H
 
 #include <QProxyStyle>
+#include <QStyleOptionViewItem>
 
 namespace Peony {
 
@@ -39,6 +40,10 @@ public:
                        const QStyleOption *option,
                        QPainter *painter,
                        const QWidget *widget = nullptr) const override;
+    void drawControl(ControlElement ce, const QStyleOption *option, QPainter *painter,
+                     const QWidget *widget) const override;
+    //绘制列表视图文本
+    void viewItemDrawText(QPainter *p, const QStyleOptionViewItem *option, const QRect &rect) const;
 
 private:
     explicit ListViewStyle(QObject *parent = nullptr);
