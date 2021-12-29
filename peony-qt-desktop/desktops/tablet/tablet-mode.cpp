@@ -378,6 +378,11 @@ void TabletMode::pageNumberChanged(qint32 signal, bool hide)
     //fix bug #82786
     if (!m_isActivated | isPause()) return;
 
+    if (m_exitAnimation && m_showAnimation) {
+        if ((m_exitAnimation->state() != QPropertyAnimation::Stopped)
+            || (m_showAnimation->state() != QPropertyAnimation::Stopped))
+            return;
+    }
     if (signal == 0) {
         returnRawPoint();
         return;
