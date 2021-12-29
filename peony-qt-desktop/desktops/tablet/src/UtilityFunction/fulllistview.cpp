@@ -64,8 +64,20 @@ FullListView::FullListView(QWidget *parent, int module):
 
 void FullListView::showContextMenu(const QPoint &pos)
 {
-    TabletMenu menu(this, pos);
-    menu.exec(QCursor::pos());
+    QModelIndex index = QListView::indexAt(pos);
+    if (index.isValid()) {
+        listmodel->setData(index, 0, Qt::UserRole + 2);
+        QRect visualRect = QListView::visualRect(index);
+        QRect iconRect(visualRect.x() + Style::AppLeftSpace - 5,
+                       visualRect.y() + Style::AppTopSpace - 5,
+                       Style::AppListIconSize + 10,
+                       Style::AppListIconSize + (Style::AppTopSpace / 2));
+
+        if (iconRect.contains(pos)) {
+            TabletMenu menu(this, pos);
+            menu.exec(QCursor::pos());
+        }
+    }
 }
 
 FullListView::~FullListView()
