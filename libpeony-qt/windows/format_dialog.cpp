@@ -54,6 +54,9 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
 
     QGridLayout* mainLayout = new QGridLayout(this);
+    mainLayout->setMargin (0);
+    mainLayout->setHorizontalSpacing (10);
+    mainLayout->setVerticalSpacing (28);
 
     QLabel* romSizeLabel = new QLabel;
     romSizeLabel->setText(tr("Rom size:"));
