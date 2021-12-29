@@ -129,31 +129,21 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
         //bool bigIcon = index.data(Qt::UserRole).value<bool>();
         bool bigIcon = index.data(Qt::UserRole+2).toBool();
+        Style::AppLeftSpace = (rect.width() - Style::AppListIconSize) / 2;
+        Style::AppTopSpace = (rect.height() - Style::AppListIconSize) / 2;
 
-        if(bigIcon)
-        {
-//            iconRect = QRect(rect.x()+Style::AppLeftSpace-3 ,
-//                           rect.y()+Style::AppTopSpace-3,
-//                           Style::AppListIconSize+12,
-//                           Style::AppListIconSize+12);
-            iconRect = QRect(rect.x()+Style::AppLeftSpace - 6 ,//94
-                           rect.y()+Style::AppTopSpace - 6,//60
-                           Style::AppListIconSize + 12,//96
-                           Style::AppListIconSize + 12);
+        if (bigIcon) {
+            iconRect = QRect(rect.x() + Style::AppLeftSpace - 5,
+                             rect.y() + Style::AppTopSpace - 5,
+                             Style::AppListIconSize + 10,
+                             Style::AppListIconSize + 10);
+
             textRect = QRect(rect.x(),
-                           iconRect.bottom()-3,
-                           rect.width(),
-                           rect.height()-iconRect.height()-Style::AppTopSpace-30);
+                             iconRect.bottom(),
+                             rect.width(),
+                             Style::AppTopSpace - 5);
 
-//            QPixmap pixmap;
-//            pixmap = icon.pixmap((Style::AppListIconSize+20,Style::AppListIconSize+20));//wgx
-//            icon=QIcon(pixmap);
-
-
-        }else{
-            Style::AppLeftSpace = (rect.width() - Style::AppListIconSize) / 2;
-            Style::AppTopSpace = (rect.height() - Style::AppListIconSize) / 2;
-
+        } else {
             iconRect = QRect(rect.x() + Style::AppLeftSpace,
                              rect.y() + Style::AppTopSpace,
                              Style::AppListIconSize,
