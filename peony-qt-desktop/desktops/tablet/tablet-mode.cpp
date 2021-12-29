@@ -202,6 +202,7 @@ void TabletMode::screenRotation()
     }
     //note 屏幕变化后，负责将app视图和小组件大小进行调整
     //1.隐藏各个组件
+    m_container->hide();
     m_pluginBoxWidget->hide();
 //    m_pluginBoxWidget->hidePluginWidget(true);
     m_appViewContainer->hide();
@@ -219,7 +220,7 @@ void TabletMode::screenRotation()
                       primaryScreen->geometry().width() + 3,
                       primaryScreen->geometry().height() + 3);
 
-
+    m_container->setGeometry(0, 0, m_width, m_height - Style::ButtonWidgetHeight);
     //4.从新设置组件
     if ((m_direction == "left" || m_direction == "right") &&
                (primaryScreen->geometry().width() <
@@ -238,6 +239,7 @@ void TabletMode::screenRotation()
 
 void TabletMode::showAllWidgets()
 {
+    m_container->show();
     m_pluginBoxWidget->show();
 
     if (Style::ScreenRotation) {
@@ -376,6 +378,11 @@ void TabletMode::pageNumberChanged(qint32 signal, bool hide)
     //fix bug #82786
     if (!m_isActivated | isPause()) return;
 
+    if (m_exitAnimation && m_showAnimation) {
+        if ((m_exitAnimation->state() != QPropertyAnimation::Stopped)
+            || (m_showAnimation->state() != QPropertyAnimation::Stopped))
+            return;
+    }
     if (signal == 0) {
         returnRawPoint();
         return;
@@ -401,7 +408,7 @@ void TabletMode::pageNumberChanged(qint32 signal, bool hide)
     }
 
     if (Style::appPage != 1) {
-        m_pageButtonWidget->hide();
+        m_pageButtonWidget->setDisabled(true);
         this->changePage(signal, hide);
         this->updatePageButtonStatus(Style::nowpagenum);
     }
@@ -566,8 +573,11 @@ void TabletMode::updateGSettings()
 }
 void TabletMode::initAllWidget()
 {
-    m_pluginBoxWidget = new TabletPluginWidget(this);
-    m_appViewContainer = new FullCommonUseWidget(this, m_width, m_height);
+    m_container = new QWidget(this);
+    m_container->setAttribute(Qt::WA_TranslucentBackground);
+    m_container->setGeometry(0, 0, m_width, m_height - Style::ButtonWidgetHeight);
+    m_pluginBoxWidget = new TabletPluginWidget(m_container);
+    m_appViewContainer = new FullCommonUseWidget(m_container, m_width, m_height);
     initRightButton();
 }
 
@@ -635,15 +645,15 @@ TabletMode::~TabletMode()
 void TabletMode::changePage(qint32 signal, bool hide)
 {
     if (!m_exitAnimation) {
-        m_exitAnimation = new QPropertyAnimation(this, "pos");
+        m_exitAnimation = new QPropertyAnimation(m_container, "pos");
     }
 
     if (!m_showAnimation) {
-        m_showAnimation = new QPropertyAnimation(this, "pos");
+        m_showAnimation = new QPropertyAnimation(m_container, "pos");
     }
 
     if ((m_exitAnimation->state() != QPropertyAnimation::Stopped) || (m_showAnimation->state() != QPropertyAnimation::Stopped)) return;
-    QRect saveRect = this->geometry();
+    QRect saveRect = m_container->geometry();
     //当app页面数量发生变化时，会跳转到第一页，添加该处的目的是可以选择不显示动画，在显示完毕后直接显示。
     this->setHidden(hide);
     //显示动画
@@ -675,15 +685,15 @@ void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
 
     QRect screenRect = QApplication::primaryScreen()->geometry();
 
-    this->hide();
+    m_container->hide();
     QRect endRect;
     if (signal < 0) {
         endRect = QRect(-screenRect.width(), screenRect.y(), screenRect.width(), screenRect.height());
     } else {
         endRect = QRect(screenRect.width(), screenRect.y(), screenRect.width(), screenRect.height());
     }
-    this->setGeometry(endRect);
-    this->setWindowOpacity(1);
+    m_container->setGeometry(endRect);
+    m_container->setWindowOpacity(1);
 
     if (Style::nowpagenum == 1) {
         //只在第一页显示小组件
@@ -702,8 +712,8 @@ void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
 
         m_appViewContainer->setGeometry(QRect(0, 0, m_width, m_height - Style::ButtonWidgetHeight));
     }
-
-    this->setHidden(hide);
+    //不是页面数量变化就不用隐藏
+    m_container->setHidden(hide);
     //更新大小，设置数据
     m_appViewContainer->repaintWid(Style::ScreenRotation);
     m_appViewContainer->updatePageData();
@@ -719,7 +729,9 @@ void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
         //显示按钮
         m_showAnimation->stop();
         show();
+        m_container->show();
         m_pageButtonWidget->show();
+        m_pageButtonWidget->setDisabled(false);
     });
 
     m_showAnimation->start();
@@ -729,15 +741,16 @@ void TabletMode::moveWindow(qint32 length)
 {
 //    m_mutex.tryLock(20);
 //    m_mutex.lock();
-    this->setGeometry(QRect((geometry().x() + length), 0, geometry().width(), geometry().height()));
+    QRect geometry = m_container->geometry();
+    m_container->setGeometry(QRect((geometry.x() + length), 0, geometry.width(), geometry.height()));
 //    m_mutex.unlock();
 }
 
 void TabletMode::returnRawPoint()
 {
     //归位
-    QPropertyAnimation *returnAnimation = new QPropertyAnimation(this, "pos");
-    returnAnimation->setStartValue(this->geometry().topLeft());
+    QPropertyAnimation *returnAnimation = new QPropertyAnimation(m_container, "pos");
+    returnAnimation->setStartValue(m_container->geometry().topLeft());
     returnAnimation->setEndValue(QApplication::primaryScreen()->geometry().topLeft());
     returnAnimation->setEasingCurve(QEasingCurve::OutCubic);
     returnAnimation->setDuration(300);
