@@ -61,6 +61,7 @@ using namespace Peony::DirectoryView;
 IconViewDelegate::IconViewDelegate(QObject *parent) : QStyledItemDelegate (parent)
 {
     m_styled_button = new QPushButton;
+    m_isStartDrag = false;
 }
 
 IconViewDelegate::~IconViewDelegate()
@@ -153,8 +154,14 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     auto text = opt.text;
     opt.text = nullptr;
-
+    auto state = opt.state;
+    //bug#99340,修改图标选中状态，会变暗
+    if((opt.state & QStyle::State_Enabled) && (opt.state & QStyle::State_Selected) && !m_isStartDrag)
+    {
+        opt.state &= ~QStyle::State_Selected;
+    }
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
+    opt.state = state;
     opt.text = text;
 
     //get file info from index
@@ -556,4 +563,8 @@ void IconViewTextHelper::paintText(QPainter *painter, const QStyleOptionViewItem
     textLayout.endLayout();
 
     painter->restore();
+}
+void IconViewDelegate::initIndexOption(QStyleOptionViewItem *option, const QModelIndex &index) const
+{
+    return initStyleOption(option, index);
 }

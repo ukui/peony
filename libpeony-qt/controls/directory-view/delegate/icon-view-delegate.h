@@ -51,6 +51,15 @@ public:
 
     void setMaxLineCount(int count = 0);
     const QBrush selectedBrush() const;
+
+   //初始化option
+    void initIndexOption(QStyleOptionViewItem *option,
+                         const QModelIndex &index) const;
+    //设置是否是拖拽item
+    void setStartDrag(bool isStartDrag)
+    {
+        m_isStartDrag = isStartDrag;
+    }
 Q_SIGNALS:
     void isEditing(bool editing) const;
     void requestDone(QWidget *editor);
@@ -79,6 +88,7 @@ private:
     QWidget *m_index_widget;
 
     QPushButton *m_styled_button;
+    bool m_isStartDrag;  //是否是拖拽item
 };
 
 class PEONYCORESHARED_EXPORT IconViewTextHelper

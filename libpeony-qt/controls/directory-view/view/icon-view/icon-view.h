@@ -160,7 +160,8 @@ protected:
 
     bool getIgnore_mouse_move_event() const;
     void setIgnore_mouse_move_event(bool ignore_mouse_move_event);
-
+    //绘制拖拽
+    void startDrag(Qt::DropActions flags) override;
 private Q_SLOTS:
     void slotRename();
 

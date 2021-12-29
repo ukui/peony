@@ -61,6 +61,9 @@
 
 #include <QStandardPaths>
 
+#include <QDrag>
+#include <QWindow>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
@@ -699,6 +702,58 @@ void IconView::clearIndexWidget()
         auto index = m_sort_filter_proxy_model->index(i, 0);
         setIndexWidget(index, nullptr);
         closePersistentEditor(index);
+    }
+}
+//绘制拖拽
+void IconView::startDrag(Qt::DropActions flags)
+{
+    auto indexes = selectedIndexes();
+    if (indexes.count() > 0) {
+        auto pos = mapFromGlobal(QCursor::pos());
+        qreal scale = 1.0;
+        QWidget *window = this->window();
+        if (window) {
+            auto windowHandle = window->windowHandle();
+            if (windowHandle) {
+                scale = windowHandle->devicePixelRatio();
+            }
+        }
+
+        auto drag = new QDrag(this);
+        drag->setMimeData(model()->mimeData(indexes));
+
+        QRegion rect;
+        QHash<QModelIndex, QRect> indexRectHash;
+        for (auto index : indexes) {
+            rect += (visualRect(index));
+            indexRectHash.insert(index, visualRect(index));
+        }
+
+        QRect realRect = rect.boundingRect();
+        QPixmap pixmap(realRect.size() * scale);
+        pixmap.fill(Qt::transparent);
+        pixmap.setDevicePixelRatio(scale);
+        QPainter painter(&pixmap);
+        for (auto index : indexes) {
+            painter.save();
+            QStyleOptionViewItem opt = viewOptions();
+            auto viewItemDelegate = static_cast<IconViewDelegate *>(itemDelegate());
+            viewItemDelegate->initIndexOption(&opt, index);
+
+            opt.state |= QStyle::State_Selected;
+            opt.rect.setSize(visualRect(index).size());
+            painter.translate(indexRectHash.value(index).topLeft() - rect.boundingRect().topLeft());
+
+            viewItemDelegate->setStartDrag(true);
+            itemDelegate()->paint(&painter, opt, index);
+            viewItemDelegate->setStartDrag(false);
+            painter.restore();
+        }
+
+        drag->setPixmap(pixmap);
+        drag->setHotSpot(pos - rect.boundingRect().topLeft() );
+        drag->setDragCursor(QPixmap(), m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
+        drag->exec(m_ctrl_key_pressed? Qt::CopyAction: Qt::MoveAction);
     }
 }
 
