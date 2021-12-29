@@ -115,6 +115,10 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     m_parent = parent;
     b_canClose = true;
 
+    if (fm_item) {
+        connect (fm_item, &QObject::destroyed, this, [=] () {close ();});
+    }
+
     /*!
       如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
      */
