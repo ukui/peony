@@ -135,6 +135,7 @@ Q_SIGNALS:
 private:
     QMutex m_mutex;
     bool m_isTabletMode;//平板模式标志
+    QWidget *m_container = nullptr;
 
 //    //主界面布局，横屏时为水平布局，竖屏时为垂直布局
 //    QBoxLayout *m_layout = nullptr;
