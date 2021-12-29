@@ -41,8 +41,8 @@ static bool b_finished = false;
 static bool b_failed = false;
 static bool b_canClose = true;
 
-Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) :
-    QDialog (parent)/*,
+Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) /*:
+    QDialog (parent),
     ui(new Ui::Format_Dialog)*/
 {
     setAutoFillBackground(true);
@@ -120,12 +120,15 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
 
     if (fm_item) {
         connect (fm_item, &QObject::destroyed, this, [=] () {close ();});
+    } else if (parent) {
+        connect (parent, &QObject::destroyed, this, [=] () {close ();});
     }
+
 
     /*!
       如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
      */
-    if (fm_uris.isEmpty() && !fm_item->getDevice().isEmpty()) {
+    if (fm_uris.isEmpty() && fm_item && !fm_item->getDevice().isEmpty()) {
         auto itemUris = FileUtils::getChildrenUris("computer:///");
         for (auto itemUri : itemUris) {
             auto unixDevice = FileUtils::getUnixDevice(itemUri);
