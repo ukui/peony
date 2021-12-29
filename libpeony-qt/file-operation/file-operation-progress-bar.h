@@ -289,7 +289,7 @@ private:
 
     const float m_foot_progress_back_y = m_fix_height - m_foot_margin;
 
-    const float m_text_area_x = (m_fix_width - m_title_width ) / 2 - 2;
+    const float m_text_area_x = m_btn_margin * 4;
 
     const float m_icon_area_y = (m_fix_height - m_icon_size) / 2;
 
