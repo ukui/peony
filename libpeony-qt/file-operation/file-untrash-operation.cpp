@@ -358,7 +358,14 @@ void FileUntrashOperation::run()
       it caused by the parent uri string has chinese.
       */
     int ret = 0;
+    quint64 total_size = 0;
 
+    for (auto src : m_uris) {
+        Q_EMIT operationPreparedOne (src, 1);
+        total_size += 1;
+    }
+
+    quint64 curSize = 0;
     for (auto uri : m_uris) {
         //cacheOriginalUri();
         auto originUri = m_restore_hash.value(uri);
@@ -459,6 +466,8 @@ retry:
                 break;
             }
         }
+
+        Q_EMIT FileProgressCallback("trash:///", uri, "", ++curSize, total_size);
     }
 
 l_out:
