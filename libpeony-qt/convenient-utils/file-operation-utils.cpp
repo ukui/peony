@@ -133,17 +133,18 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
                 continue;
 
             //folder need recursive calculate file size
-            if(! info->isDir()){
-                total_size += file.size();
-            }
+            //屏蔽本部分代码，文件和文件夹走一样的异常处理流程，关联bug#92483
+//            if(! info->isDir()){
+//                total_size += file.size();
+//            }
 
-            //file total size more than 10G, not trash but delete, task#56444,  bug#88871, bug#88894
-            if (total_size/10 > ONE_GIB_SIZE) {
-                canNotTrash = true;
-                isBigFile = true;
-                break;
-            }
-            qDebug() <<"total_size:" <<total_size<<ONE_GIB_SIZE<<canNotTrash<<isBigFile;
+//            //file total size more than 10G, not trash but delete, task#56444,  bug#88871, bug#88894
+//            if (total_size/10 > ONE_GIB_SIZE) {
+//                canNotTrash = true;
+//                isBigFile = true;
+//                break;
+//            }
+//            qDebug() <<"total_size:" <<total_size<<ONE_GIB_SIZE<<canNotTrash<<isBigFile;
 
             //file total size more than 10G, not trash but delete, task#56444
             //FIXME 判断是否是移动设备文件，可能不准确, 目前暂未找到好的判断方法
