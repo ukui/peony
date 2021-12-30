@@ -271,7 +271,7 @@ private:
 
     // percent
     int m_percent_margin = 15;
-    int m_percent_height = 50;
+    int m_percent_height = 80;
 
     // foot
     float m_foot_margin = 3;
@@ -302,7 +302,7 @@ private:
     const float m_progress_pause_y = (m_fix_height - m_pause_btn_height) / 2;
     const float m_progress_pause_y_b = (m_fix_height + m_pause_btn_height) / 2;
 
-    const float m_percent_x = m_fix_width - m_percent_margin - m_percent_height;
+    const float m_percent_x = 0;
     const float m_percent_y = m_fix_height - m_foot_margin - m_percent_height - m_percent_margin / 5;
 
     // progress
