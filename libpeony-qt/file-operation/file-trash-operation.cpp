@@ -69,17 +69,8 @@ void FileTrashOperation::run()
         if (isCancelled())
             break;
 
-        auto info = FileInfo::fromUri(src);
-        quint64 size = 0;
-        if (info->isDir()) {
-            size = FileUtils::getFileTotalSize(src);
-        } else {
-            size = info->size();
-        }
-
-        Q_EMIT operationPreparedOne (src, size);
-
-        total_size += size;
+        Q_EMIT operationPreparedOne (src, 1);
+        ++total_size;
     }
 
     FileOperationError except;
@@ -128,41 +119,12 @@ void FileTrashOperation::run()
 retry:
             GError *err = nullptr;
             auto srcFile = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(src).toUtf8().constData()));
-            // fix can trash files prompt error dialog issue
-//            FileInfoJob fileInfoJob (FileUtils::urlEncode(src));
-//            if (fileInfoJob.querySync()) {
-//                FileInfo* fileInfo = fileInfoJob.getInfo().get();
-//                if (!fileInfo->isDir() && (!fileInfo->canRead() || !fileInfo->canWrite())) {
-//                    FileOperationError except;
-//                    except.srcUri = src;
-//                    except.destDirUri = tr("trash:///");
-//                    except.isCritical = true;
-//                    except.op = FileOpTrash;
-//                    except.title = tr("Trash file error");
-//                    except.errorCode = G_IO_ERROR_FAILED;
-//                    except.errorStr = QString(tr("The user does not have read and write rights to the file '%1' and cannot delete it to the Recycle Bin.").arg(fileInfo->displayName()));
-//                    except.errorType = ET_GIO;
-//                    except.dlgType = ED_WARNING;
-//                    Q_EMIT errored(except);
-//                    if (Cancel == except.respCode) {
-//                        cancel();
-//                    }
-//                    continue;
-//                }
-//            }
-
-            auto info = FileInfo::fromUri(src);
-            if (info->isDir()){
-                curSize += FileUtils::getFileTotalSize(src);
-            } else {
-                curSize += info->size();
-            }
 
             g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
             if (err) {
                 if (response == IgnoreAll) {
                     g_error_free(err);
-                    Q_EMIT FileProgressCallback("trash:///", src, "", curSize, total_size);
+                    Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, total_size);
                     continue;
                 }
 
@@ -261,28 +223,8 @@ retry:
                 info.get()->setProperty(TRASH_TIME, time);
             }
 
-            Q_EMIT FileProgressCallback("trash:///", src, "", curSize, total_size);
+            Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, total_size);
         }
-
-        // judge if the operation should sync.
-//        bool needSync = false;
-//        GFile *src_first_file = g_file_new_for_uri(m_src_uris.first().toUtf8().constData());
-//        GMount *src_first_mount = g_file_find_enclosing_mount(src_first_file, nullptr, nullptr);
-//        if (src_first_mount) {
-//            needSync = g_mount_can_unmount(src_first_mount);
-//            g_object_unref(src_first_mount);
-//        } else {
-//            // maybe a vfs file.
-//            needSync = true;
-//        }
-//        g_object_unref(src_first_file);
-
-//        if (needSync) {
-//            operationStartSnyc();
-//            QProcess p;
-//            p.start("sync");
-//            p.waitForFinished(-1);
-//        }
 
         // fix dest uris in trash in FileOperationInfo
         // fileinfo关联被删除的时间，然后枚举trash中displayname相同的文件，对比时间差最近的文件作为待恢复的文件
