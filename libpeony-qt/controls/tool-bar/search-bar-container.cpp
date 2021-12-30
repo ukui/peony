@@ -31,6 +31,8 @@
 #include <QDebug>
 #include <QToolButton>
 #include <QPainter>
+#include <QPainterPath>
+
 using namespace Peony;
 static ToolButtonStyle *global_instance = nullptr;
 SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
