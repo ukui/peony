@@ -451,6 +451,7 @@ void NavigationSideBar::focusInEvent(QFocusEvent *event)
             });
         }
     }
+    GlobalSettings::getInstance()->setValue("LAST_FOCUS_PEONY_WINID", dynamic_cast<MainWindow *>(this->topLevelWidget())->winId());
 }
 
 void NavigationSideBar::wheelEvent(QWheelEvent *event)
