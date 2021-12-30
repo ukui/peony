@@ -70,11 +70,16 @@ void FileTrashOperation::run()
             break;
 
         auto info = FileInfo::fromUri(src);
-        if(info->isDir()){
-            total_size += FileUtils::getFileTotalSize(src);
-        }else{
-            total_size += info->size();
+        quint64 size = 0;
+        if (info->isDir()) {
+            size = FileUtils::getFileTotalSize(src);
+        } else {
+            size = info->size();
         }
+
+        Q_EMIT operationPreparedOne (src, size);
+
+        total_size += size;
     }
 
     FileOperationError except;
@@ -112,6 +117,7 @@ void FileTrashOperation::run()
             break;
         }
     } else {
+        int curSize = 0;
         for (auto src : m_src_uris) {
             if (isCancelled())
                 break;
@@ -145,10 +151,18 @@ retry:
 //                }
 //            }
 
+            auto info = FileInfo::fromUri(src);
+            if (info->isDir()){
+                curSize += FileUtils::getFileTotalSize(src);
+            } else {
+                curSize += info->size();
+            }
+
             g_file_trash(srcFile.get()->get(), getCancellable().get()->get(), &err);
             if (err) {
                 if (response == IgnoreAll) {
                     g_error_free(err);
+                    Q_EMIT FileProgressCallback("trash:///", src, "", curSize, total_size);
                     continue;
                 }
 
@@ -247,7 +261,7 @@ retry:
                 info.get()->setProperty(TRASH_TIME, time);
             }
 
-            FileProgressCallback("trash:///", src, "", ++m_current_count, m_total_count);
+            Q_EMIT FileProgressCallback("trash:///", src, "", curSize, total_size);
         }
 
         // judge if the operation should sync.
