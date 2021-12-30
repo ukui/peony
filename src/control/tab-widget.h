@@ -296,4 +296,26 @@ Q_SIGNALS:
     void previewPageButtonTrigger(bool trigger, const QString &pluginId);
 };
 
+class PushButtonStyle : public QProxyStyle
+{
+
+public:
+    static PushButtonStyle *getStyle();
+
+    PushButtonStyle() : QProxyStyle() {}
+
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
+
+    int pixelMetric(PixelMetric metric,
+                    const QStyleOption *option = nullptr,
+                    const QWidget *widget = nullptr) const override;
+
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
+};
+
 #endif // TABWIDGET_H
