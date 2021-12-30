@@ -621,7 +621,7 @@ void MainProgressBar::paintContent(QPainter &painter)
 //    font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
-    painter.drawText(m_percent_x, m_percent_y, m_percent_height, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
+    painter.drawText(m_percent_x, m_percent_y, m_fix_width - m_percent_margin, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
 
     painter.restore();
