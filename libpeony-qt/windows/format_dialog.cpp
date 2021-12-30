@@ -118,12 +118,19 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     m_parent = parent;
     b_canClose = true;
 
-    if (fm_item) {
-        connect (fm_item, &QObject::destroyed, this, [=] () {close ();});
-    } else if (parent) {
-        connect (parent, &QObject::destroyed, this, [=] () {close ();});
+
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) file = g_file_new_for_uri (m_uris.toUtf8 ().constData ());
+    if (G_IS_FILE (file)) {
+        g_autoptr (GFileInfo) fileInfo = g_file_query_info (file, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE, G_FILE_QUERY_INFO_NONE, NULL, &error);
+        if (G_IS_FILE_INFO (fileInfo)) {
+            mVolumeName = g_file_info_get_attribute_as_string (fileInfo, G_FILE_ATTRIBUTE_MOUNTABLE_UNIX_DEVICE_FILE);
+        }
     }
 
+    mVolumeMonitor = g_volume_monitor_get ();
+
+    g_signal_connect (mVolumeMonitor, "drive-disconnected", GCallback(volume_disconnect), this);
 
     /*!
       如果没有uri，尝试从computer:///获取uri，实际上未必能获取到computer:///的uri，比如#90081这种情况
@@ -527,9 +534,26 @@ void Format_Dialog::formatloop(){
     }
 }
 
+void Format_Dialog::volume_disconnect(GVolumeMonitor *vm, GDrive *v, gpointer data)
+{
+    g_autofree char* devName = NULL;
+
+    Format_Dialog* fd = (Format_Dialog*) data;
+
+    if (G_IS_DRIVE (v)) {
+        devName = g_drive_get_identifier ((GDrive*) v, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
+    }
+
+    if (fd && devName && !fd->mVolumeName.isNull () && !g_ascii_strcasecmp (devName, fd->mVolumeName.toUtf8 ().constData ())) {
+        fd->close ();
+    }
+
+    Q_UNUSED (vm)
+}
+
 void Format_Dialog::cancel_format(const gchar* device_name){
 
-      this->close();
+//      this->close();
 
 //    UDisksObject *object ;
 //    UDisksBlock *block;
@@ -951,6 +975,7 @@ Format_Dialog::~Format_Dialog()
     if (mFormatBtn)         mFormatBtn->deleteLater();
     if (mEraseCkbox)        mEraseCkbox->deleteLater();
     if (mRomSizeCombox)     mRomSizeCombox->deleteLater();
+    if (mVolumeMonitor)     g_object_unref (mVolumeMonitor);
 
     b_canClose = true;
 }

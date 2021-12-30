@@ -66,6 +66,7 @@ struct CreateformatData{
 class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
+    friend void volume_disconnect (GVolumeMonitor* vm, GDrive* v, gpointer data);
 public:
     explicit Format_Dialog(const QString &uris,SideBarAbstractItem *m_item,QWidget *parent = nullptr);
     explicit Format_Dialog(const QString &uri, QWidget *parent = nullptr);
@@ -123,6 +124,7 @@ public Q_SLOTS:
     void formatloop();
 
 private:
+    static void volume_disconnect (GVolumeMonitor* vm, GDrive* v, gpointer data);
     static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data);
 
 private:
@@ -139,6 +141,8 @@ private:
     QLineEdit*          mNameEdit = nullptr;
     QComboBox*          mRomSizeCombox = nullptr;
 
+    QString             mVolumeName;
+    GVolumeMonitor*     mVolumeMonitor;
 
 
     QString fm_uris;
