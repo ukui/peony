@@ -38,7 +38,7 @@ Depends: ${misc:Depends},
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
 Recommends: gvfs-backends,
-            peony-extensions
+         peony-extensions(>=3.2.2+1015)
 Description: file Manager for the UKUI desktop
  Peony is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated
