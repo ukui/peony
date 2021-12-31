@@ -46,6 +46,13 @@ void FileTrashOperation::run()
     Q_EMIT operationStarted();
     Peony::ExceptionResponse response = Invalid;
 
+    QSet<QString> trashBefore;
+    FileEnumerator e;
+    e.setEnumerateDirectory("trash:///");
+    e.enumerateSync();
+    QStringList lsBefore = e.getChildrenUris ();
+    trashBefore = lsBefore.toSet ();
+
     quint64 total_size = 0;
     const quint64 ONE_GIB_SIZE = 1024*1024*1024;
     for (auto src : m_src_uris) {
@@ -229,28 +236,40 @@ retry:
         // fix dest uris in trash in FileOperationInfo
         // fileinfo关联被删除的时间，然后枚举trash中displayname相同的文件，对比时间差最近的文件作为待恢复的文件
         if (!isCancelled()) {
-            QStringList destUris;
+            QSet<QString> trashAfter;
             FileEnumerator e;
             e.setEnumerateDirectory("trash:///");
             e.enumerateSync();
-            for (auto trashFileInfo : e.getChildren()) {
-                FileInfoJob trashInfoJob(trashFileInfo);
-                trashInfoJob.querySync();
-                for (auto info : m_src_infos) {
-                    if (info.get()->displayName() == trashFileInfo.get()->displayName()) {
-                        // allow 5 seconds deviation
-                        int a = trashFileInfo.get()->getDeletionDateUInt64();
-                        int b = info.get()->property(TRASH_TIME).toUInt();
-                        int abs = qAbs(a - b);
-                        if (abs < 5000) {
-                            destUris<<trashFileInfo.get()->uri();
+            QStringList lsAfter = e.getChildrenUris ();
+            trashBefore = lsAfter.toSet ();//QSet<QString>(lsAfter.begin (), lsAfter.end ());
+
+            QStringList diff = (trashAfter - trashBefore).values ();
+
+            if (diff.length () == m_src_uris.length ()) {
+                m_info.get()->m_dest_uris.clear();
+                m_info.get()->m_dest_uris<<diff;
+            } else {
+                QStringList destUris;
+                for (auto trashUri : diff) {
+                    auto trashFileInfo = FileInfo::fromUri (trashUri);
+                    FileInfoJob trashInfoJob(trashFileInfo);
+                    trashInfoJob.querySync();
+                    for (auto info : m_src_infos) {
+                        if (info.get()->displayName() == trashFileInfo.get()->displayName()) {
+                            // allow 5 seconds deviation
+                            int a = trashFileInfo.get()->getDeletionDateUInt64();
+                            int b = info.get()->property(TRASH_TIME).toUInt();
+                            int abs = qAbs(a - b);
+                            if (abs < 5000) {
+                                destUris<<trashFileInfo.get()->uri();
+                            }
                         }
                     }
                 }
-            }
-            if (!destUris.isEmpty()) {
-                m_info.get()->m_dest_uris.clear();
-                m_info.get()->m_dest_uris<<destUris;
+                if (!destUris.isEmpty()) {
+                    m_info.get()->m_dest_uris.clear();
+                    m_info.get()->m_dest_uris<<destUris;
+                }
             }
         }
     }
