@@ -105,7 +105,7 @@ void Peony::FileOperationErrorDialogConflict::handle (FileOperationError& error)
 {
     m_error = &error;
 
-    if (FileOpRename == m_error->op) {
+    if (FileOpRename == m_error->op || FileOpUntrash == m_error->op) {
         FileInfoJob file(error.destDirUri, nullptr);
         file.querySync();
         setTipFileicon(file.getInfo()->iconName());
