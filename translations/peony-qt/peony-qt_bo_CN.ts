@@ -204,6 +204,10 @@ p, li { white-space: pre-wrap; }
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation>%2ཁྲོད་%1འཚོལ་ཞིབ།</translation>
     </message>
+    <message>
+        <source>Computer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OperationMenu</name>
