@@ -53,6 +53,9 @@ void FileTrashOperation::run()
     QStringList lsBefore = e.getChildrenUris ();
     trashBefore = lsBefore.toSet ();
 
+    //add file_count para for file trash progress
+    quint64 file_count = 0;
+    //all file total size, should use changed the calculate way
     quint64 total_size = 0;
     const quint64 ONE_GIB_SIZE = 1024*1024*1024;
     for (auto src : m_src_uris) {
@@ -76,8 +79,18 @@ void FileTrashOperation::run()
         if (isCancelled())
             break;
 
+        //need count file total size, more than 10GB file should delete forever, fix bug#101592
+        auto info = FileInfo::fromUri(src);
+        quint64 size = 0;
+        if (info->isDir()) {
+            size = FileUtils::getFileTotalSize(src);
+        } else {
+            size = info->size();
+        }
+        total_size += size;
+
         Q_EMIT operationPreparedOne (src, 1);
-        ++total_size;
+        ++file_count;
     }
 
     FileOperationError except;
@@ -131,7 +144,7 @@ retry:
             if (err) {
                 if (response == IgnoreAll) {
                     g_error_free(err);
-                    Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, total_size);
+                    Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, file_count);
                     continue;
                 }
 
@@ -230,7 +243,7 @@ retry:
                 info.get()->setProperty(TRASH_TIME, time);
             }
 
-            Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, total_size);
+            Q_EMIT FileProgressCallback("trash:///", src, "", ++curSize, file_count);
         }
 
         // fix dest uris in trash in FileOperationInfo
