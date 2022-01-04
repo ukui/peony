@@ -123,6 +123,10 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
         {
             QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
             QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+            //When searching the computer directory, switch to search under the root directory. fix bug97220
+            if(targetDirectory.isEmpty()){
+                targetDirectory = tr("Computer");
+            }
             displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
         }
 

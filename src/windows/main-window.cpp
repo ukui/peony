@@ -951,6 +951,10 @@ void MainWindow::updateSearch(const QString &uri, const QString &key, bool updat
     {
        //qDebug() << "updateSearch:" <<uri;
        m_last_search_path = uri;
+       //When searching the computer directory, switch to search under the root directory. fix bug97220
+       if(uri.startsWith("computer:///")){
+           m_last_search_path = "file:///";
+       }
        needUpdate = true;
     }
 
