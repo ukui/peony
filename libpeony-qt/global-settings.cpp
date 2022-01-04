@@ -112,18 +112,23 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
     }
 
-    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
-    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+    m_cache.insert(SIDEBAR_BG_OPACITY, 100);
+    if (QGSettings::isSchemaInstalled(PERSONAL_EFFECT_SCHEMA)) {
+        m_gsettings = new QGSettings(PERSONAL_EFFECT_SCHEMA, QByteArray(), this);
+
         connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "peonySideBarTransparency") {
+            if (key == PERSONAL_EFFECT_TRANSPARENCY || key == PERSONAL_EFFECT_ENABLE) {
+                qreal opacity = m_gsettings->get(PERSONAL_EFFECT_TRANSPARENCY).toReal() * 100;
                 m_cache.remove(SIDEBAR_BG_OPACITY);
-                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
+                m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
             }
         });
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
+
+        if (m_gsettings->get(PERSONAL_EFFECT_ENABLE).toBool()) {
+            qreal opacity = m_gsettings->get(PERSONAL_EFFECT_TRANSPARENCY).toReal() * 100;
+            m_cache.remove(SIDEBAR_BG_OPACITY);
+            m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
+        }
     }
 
     if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {

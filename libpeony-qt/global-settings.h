@@ -48,6 +48,9 @@
 #define REMOTE_SERVER_REMOTE_IP     "remote-server/favorite-ip"
 //#define REMOTE_SERVER_CONNECT_IP   "remote-server/connecte-ip"
 //gsettings
+#define PERSONAL_EFFECT_SCHEMA       "org.ukui.control-center.personalise"
+#define PERSONAL_EFFECT_ENABLE       "effect"
+#define PERSONAL_EFFECT_TRANSPARENCY "transparency"
 #define SIDEBAR_BG_OPACITY          "sidebar-bg-opacity"
 
 #define FONT_SETTINGS                "org.ukui.style"
