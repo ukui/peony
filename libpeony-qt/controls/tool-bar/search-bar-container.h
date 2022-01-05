@@ -59,6 +59,10 @@ public:
         m_search_box->deselect();
     }
 
+    void setSearchBoxHeight(qint32 height) {
+        m_search_box->setFixedHeight(height);
+    }
+
     //get user selected index of file type
 //    int getFilterIndex() {
 //        return m_filter_box->currentIndex();

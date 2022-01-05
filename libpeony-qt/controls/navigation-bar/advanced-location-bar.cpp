@@ -25,9 +25,11 @@
 #include "location-bar.h"
 #include "search-vfs-uri-parser.h"
 #include "search-bar-container.h"
+#include "global-settings.h"
 
 #include <QStackedLayout>
 #include <QDebug>
+#include <QToolButton>
 
 using namespace Peony;
 
@@ -99,6 +101,19 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
         Q_EMIT this->updateFileTypeFilter(index);
     });
 
+    bool is_intel = (QString::compare("V10SP1-edu", GlobalSettings::getInstance()->getProjectName(), Qt::CaseInsensitive) == 0);
+    if (is_intel) {
+        m_bar->setFixedHeight(48);
+        QToolButton* indicator = m_bar->findChild<QToolButton*>("peony_location_bar_indicator");
+        if (indicator) {
+            indicator->setFixedSize(46, 46);
+            indicator->move(0, 1);
+        }
+
+        m_edit->setFixedHeight(48);
+        m_search_bar->setFixedHeight(48);
+        m_search_bar->setSearchBoxHeight(48);
+    }
 
     layout->addWidget(m_bar);
     layout->addWidget(m_edit);
