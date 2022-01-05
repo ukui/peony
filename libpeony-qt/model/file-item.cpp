@@ -72,22 +72,19 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_idle->setSingleShot(true);
     connect(m_idle, &QTimer::timeout, this, [=]{
         for (auto uri : m_waiting_update_queue) {
-            auto index = m_model->indexFromUri(uri);
-            if (index.isValid()) {
-                auto infoJob = new FileInfoJob(FileInfo::fromUri(index.data(FileItemModel::UriRole).toString()));
-                infoJob->setAutoDelete();
-                connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
-                    m_model->updated();
-                    //auto info = FileInfo::fromUri(uri);
-                    ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
-                    /*
-                    if (info->isDesktopFile()) {
-                        ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
-                    }
-                    */
-                });
-                infoJob->queryAsync();
-            }
+            auto infoJob = new FileInfoJob(FileInfo::fromUri(uri));
+            infoJob->setAutoDelete();
+            connect(infoJob, &FileInfoJob::queryAsyncFinished, this, [=]() {
+                m_model->updated();
+                //auto info = FileInfo::fromUri(uri);
+                ThumbnailManager::getInstance()->createThumbnail(uri, m_thumbnail_watcher, true);
+                /*
+                if (info->isDesktopFile()) {
+                    ThumbnailManager::getInstance()->updateDesktopFileThumbnail(info->uri(), m_thumbnail_watcher);
+                }
+                */
+            });
+            infoJob->queryAsync();
         }
 
         if (m_uris_to_be_removed.isEmpty())

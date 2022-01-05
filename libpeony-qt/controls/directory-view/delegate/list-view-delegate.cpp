@@ -65,7 +65,10 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
-    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
+    QString uri = index.data(Qt::UserRole).toString();
+    if(uri.startsWith("favorite://"))
+        uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
+    auto info = FileInfo::fromUri(uri);
     auto colors = info->getColors();
     if (index.column() == 0 && colors.count() >0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
