@@ -242,19 +242,18 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        qDebug()<<"iconRect"<<iconRect;
         icon.paint(painter,iconRect);
 
-        //文本换行
-        QColor shadow=Qt::black;
-        shadow.setAlpha(127);
-        painter->setPen(shadow);
-        QRect textLineRect;
-        textLineRect.setLeft(textRect.left()+1);
-        textLineRect.setRight(textRect.right()+1);
-        textLineRect.setTop(textRect.top()+1);
-        textLineRect.setBottom(textRect.bottom()+1);
-        painter->drawText(textLineRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop,appname);
+        QPixmap shadowPixmap(textRect.size());
+        shadowPixmap.fill(Qt::transparent);
+        QPainter shadowPainter(&shadowPixmap);
+        shadowPainter.setPen(Qt::black);
+        shadowPainter.drawText(shadowPixmap.rect(), Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
+        QImage shadowImage = shadowPixmap.toImage();
+        qt_blurImage(shadowImage, 8, false, false);
 
-        painter->setPen(QPen(Qt::white));
-        painter->drawText(textRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
+        painter->drawImage(textRect, shadowImage);
+        //文本换行
+        painter->setPen(Qt::white);
+        painter->drawText(textRect, Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
 
         painter->restore();
 
