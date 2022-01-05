@@ -380,9 +380,12 @@ NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent) : 
 
 QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-//    auto size = QStyledItemDelegate::sizeHint(option, index);
-//    size.setHeight(36);
-//    return size;
+    bool is_intel = (QString::compare("V10SP1-edu", GlobalSettings::getInstance()->getProjectName(), Qt::CaseInsensitive) == 0);
+    if (is_intel) {
+        auto size = QStyledItemDelegate::sizeHint(option, index);
+        size.setHeight(56);
+        return size;
+    }
     return QStyledItemDelegate::sizeHint(option, index);
 }
 
@@ -496,9 +499,8 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
     m_text_label = new QLabel(tr("Files"),this);
     QHBoxLayout *l = new QHBoxLayout(this);
     l->setMargin(16);
-    l->addSpacing(16);
     l->addWidget(m_pix_label);
-    l->addSpacing(8);
+    l->addSpacing(16);
     l->addWidget(m_text_label);
     l->addStretch();
 }
