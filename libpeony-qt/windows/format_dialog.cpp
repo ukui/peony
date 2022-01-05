@@ -553,7 +553,7 @@ void Format_Dialog::volume_disconnect(GVolumeMonitor *vm, GDrive *v, gpointer da
 
 void Format_Dialog::cancel_format(const gchar* device_name){
 
-//      this->close();
+      this->close();
 
 //    UDisksObject *object ;
 //    UDisksBlock *block;
