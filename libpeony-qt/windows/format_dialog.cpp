@@ -249,7 +249,7 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
         flags = 0;
         b_failed = true;
         
-        QMessageBox message_error;
+        QMessageBox message_error(pthis);
           
         message_error.setText(QObject::tr("Error: %1\n").arg(err->message));
 
@@ -476,7 +476,7 @@ void Format_Dialog::volume_disconnect(GVolumeMonitor *vm, GDrive *v, gpointer da
     }
 
     if (fd && devName && !fd->mVolumeName.isNull () && !g_ascii_strcasecmp (devName, fd->mVolumeName.toUtf8 ().constData ())) {
-        fd->close ();
+        fd->reject ();
     }
 
     Q_UNUSED (vm)
@@ -484,7 +484,7 @@ void Format_Dialog::volume_disconnect(GVolumeMonitor *vm, GDrive *v, gpointer da
 
 void Format_Dialog::cancel_format(const gchar* device_name){
 
-//      this->close();
+      this->close();
 
 //    UDisksObject *object ;
 //    UDisksBlock *block;
@@ -687,9 +687,9 @@ void Format_Dialog::format_cb (GObject *source_object, GAsyncResult *res ,gpoint
 void Format_Dialog::format_ok_dialog()
 {
     if (renameOK) {
-        QMessageBox::about(m_parent,QObject::tr("format"),QObject::tr("Format operation has been finished successfully."));
+        QMessageBox::about(this,QObject::tr("format"),QObject::tr("Format operation has been finished successfully."));
     } else {
-        QMessageBox::about(m_parent,QObject::tr("format"),QObject::tr("Formatting successful! But failed to set the device name."));
+        QMessageBox::about(this,QObject::tr("format"),QObject::tr("Formatting successful! But failed to set the device name."));
     }
 
     mCancelBtn->setEnabled(true);
@@ -698,30 +698,35 @@ void Format_Dialog::format_ok_dialog()
 
 void Format_Dialog::format_err_dialog()
 {
-    QMessageBox::warning(m_parent,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
+    QMessageBox::warning(this,QObject::tr("qmesg_notify"),QObject::tr("Sorry, the format operation is failed!"));
     mCancelBtn->setEnabled(true);
 }
 
 bool Format_Dialog::format_makesure_dialog(){
 
-    QMessageBox message_format;
+    QMessageBox* message_format = new QMessageBox (this);
 
-    message_format.setText(QObject::tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
+    message_format->setText(QObject::tr("Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?"));
 
-    message_format.setWindowTitle(QObject::tr("format"));
+    message_format->setWindowTitle(QObject::tr("format"));
 
-    QPushButton *okButton = message_format.addButton(QObject::tr("begin format"),QMessageBox::YesRole);
+    QPushButton *okButton = message_format->addButton(QObject::tr("begin format"),QMessageBox::YesRole);
 
-    QPushButton *cancelButton = message_format.addButton(QObject::tr("close"),QMessageBox::NoRole);
+    QPushButton *cancelButton = message_format->addButton(QObject::tr("close"),QMessageBox::NoRole);
 
-    message_format.exec();
+    message_format->connect (this, &QDialog::finished, message_format, [=] (int) {
+        Q_EMIT cancelButton->clicked ();
+        message_format->deleteLater ();
+    });
 
-    if(message_format.clickedButton() == cancelButton)
+    message_format->exec();
+
+    if(message_format->clickedButton() == cancelButton)
     {
         mFormatBtn->setDisabled(false);
         mCancelBtn->setDisabled(false);
         return false;
-    }else if(message_format.clickedButton() == okButton){
+    }else if(message_format->clickedButton() == okButton){
         return true;
     }
 
