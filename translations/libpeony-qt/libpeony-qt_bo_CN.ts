@@ -1749,7 +1749,7 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <source>Computer</source>
-        <translation type="unfinished">རྩིས་ཆས།</translation>
+        <translation type="obsolete">རྩིས་ཆས།</translation>
     </message>
 </context>
 <context>

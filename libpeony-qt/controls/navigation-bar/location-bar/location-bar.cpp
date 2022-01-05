@@ -302,10 +302,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         QString nameRegexp = SearchVFSUriParser::getSearchUriNameRegexp(m_current_uri);
         QString targetDirectory = SearchVFSUriParser::getSearchUriTargetDirectory(m_current_uri);
         button->setIcon(QIcon::fromTheme("edit-find-symbolic"));
-        //When searching the computer directory, switch to search under the root directory. fix bug97220
-        if(targetDirectory.isEmpty()){
-            targetDirectory = tr("Computer");
-        }
         displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
         button->setText(displayName);
         button->setFixedWidth(button->sizeHint().width());
