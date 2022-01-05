@@ -36,7 +36,12 @@ SearchVFSUriParser::SearchVFSUriParser()
 const QString SearchVFSUriParser:: parseSearchKey(const QString &uri, const QString &key, const bool &search_file_name,
         const bool &search_content, const QString &extend_key, const bool &recursive)
 {
-    QString search_str = "search:///search_uris="+uri;
+    //When searching the computer directory, switch to search under the root directory. fix bug97220
+    QString tmp = uri;
+    if(uri.startsWith("computer:///")){
+        tmp = "file:///";
+    }
+    QString search_str = "search:///search_uris="+tmp;
     if (search_file_name)
         search_str += "&name_regexp="+key;
     if (search_content)
@@ -99,7 +104,12 @@ const QString SearchVFSUriParser::getSearchUriTargetDirectory(const QString &sea
             auto uris = tmp.split(",");
             if (uris.count() == 1) {
                 //FIXME: replace BLOCKING api in ui thread.
-                return FileUtils::getFileDisplayName(tmp);
+                //When searching the computer directory, switch to search under the root directory. fix bug97220
+                auto displayName = FileUtils::getFileDisplayName(tmp);
+                if(displayName.isEmpty()){
+                    displayName = QObject::tr("Computer");
+                }
+                return displayName;
             }
             tmp = nullptr;
             QStringList names;
