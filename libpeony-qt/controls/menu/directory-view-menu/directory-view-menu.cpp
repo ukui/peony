@@ -360,16 +360,23 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 // do not highlight application icons.
                 openWithMenu->setProperty("skipHighlightIconEffect", true);
 
-                //auto targetUri = FileUtils::getTargetUri(m_selections.first());
+                QString uri = m_selections.first();
+                //fix bug#101386, can not open file in filesafe path
+                if (uri.startsWith("filesafe:///"))
+                {
+                   auto targetUri = FileUtils::getTargetUri(uri);
+                   uri = targetUri.isEmpty() ? uri : targetUri;
+                }
+
                 //use origin uri instead of target uri, fix recommand menu not same with desktop issue
                 //link to bug#80207
-                auto recommendActions = FileLaunchManager::getRecommendActions(m_selections.first());
-                auto fallbackActions = FileLaunchManager::getFallbackActions(m_selections.first());
+                auto recommendActions = FileLaunchManager::getRecommendActions(uri);
+                auto fallbackActions = FileLaunchManager::getFallbackActions(uri);
                 //fix has default open app but no recommend actions issue, link to bug#61365
                 //fix open options has two same app issue, linkto bug#74480
                 if (recommendActions.count() == 0 && fallbackActions.count() == 0)
                 {
-                    auto action = FileLaunchManager::getDefaultAction(m_selections.first());
+                    auto action = FileLaunchManager::getDefaultAction(uri);
                     if (action != NULL && action->getAppInfoDisplayName().length() > 0)
                         recommendActions.append(action);
                 }
@@ -384,7 +391,7 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 }
                 openWithMenu->addSeparator();
                 openWithMenu->addAction(tr("More applications..."), [=]() {
-                    FileLauchDialog d(m_selections.first());
+                    FileLauchDialog d(uri);
                     d.exec();
                 });
                 openWithAction->setMenu(openWithMenu);
