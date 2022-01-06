@@ -382,7 +382,7 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
                     int  charWidth = fontMetrics().averageCharWidth();
                     displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
                 }
-                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri, false), QIcon::fromTheme("folder"));
                 QAction *action = new QAction(icon, displayName, this);
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {
