@@ -676,7 +676,7 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
 
         auto showHidden = sortPreferencesMenu->addAction(tr("Show Hidden"));
         showHidden->setCheckable(true);
-        showHidden->setChecked(m_top_window->getWindowShowHidden());
+        showHidden->setChecked(GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)? GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false);
         connect(showHidden, &QAction::triggered, this, [=]() {
             m_top_window->setShowHidden();
             showHidden->setChecked(m_top_window->getWindowShowHidden());
