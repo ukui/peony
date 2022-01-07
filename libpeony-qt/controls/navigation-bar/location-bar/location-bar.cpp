@@ -376,13 +376,18 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             QList<QAction *> actions;
             for (auto uri : suburis) {
                 QString tmp = uri;
+                QIcon icon;
                 displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
                 {
                     int  charWidth = fontMetrics().averageCharWidth();
                     displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
                 }
-                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                if(uri.startsWith("filesafe:///")){
+                    icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri, false), QIcon::fromTheme("folder"));
+                }else{
+                    icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                }
                 QAction *action = new QAction(icon, displayName, this);
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {
