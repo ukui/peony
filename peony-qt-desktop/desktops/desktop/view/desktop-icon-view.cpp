@@ -289,9 +289,13 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         auto geo = viewport()->rect();
         if (geo.width() != 0 && geo.height() != 0) {
             QModelIndex index = m_proxy_model->mapToSource(m_model->indexFromUri(uri));
-            QRect indexRect = QListView::visualRect(index);
-            if (!geo.contains(indexRect)) {
-                resolutionChange();
+            if (index.isValid()) {
+                QRect indexRect = QListView::visualRect(index);
+                if (!geo.contains(indexRect)) {
+                    resolutionChange();
+                }
+            } else {
+                qWarning()<<"file is created but not valid in proxy model now";
             }
         }
 
