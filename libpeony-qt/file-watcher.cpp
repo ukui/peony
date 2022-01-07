@@ -32,6 +32,7 @@
 #include "volume-manager.h"
 #include "volumeManager.h"
 #include <QDebug>
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -116,7 +117,11 @@ void FileWatcher::startMonitor()
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::fileLabelChanged, this, [=](const QString &uri) {
         auto parentUri = FileUtils::getParentUri(uri);
         QUrl parentUrl = parentUri;
-        if (parentUri == m_uri || parentUri == m_target_uri || parentUrl.toDisplayString() == m_uri || parentUrl.toDisplayString() == m_target_uri) {
+        QString originalUri = FileUtils::getOriginalUri(m_uri);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);/* 家目录 */
+        bool favoriteCond  = (m_uri=="favorite:///" && parentUri == homeUri);/* 快速访问下 */
+        if (parentUri == m_uri || parentUri == m_target_uri || parentUrl.toDisplayString() == m_uri
+            || parentUrl.toDisplayString() == m_target_uri || parentUri == originalUri || favoriteCond) {
             Q_EMIT fileChanged(uri);
             qDebug()<<"file label changed"<<uri;
         }

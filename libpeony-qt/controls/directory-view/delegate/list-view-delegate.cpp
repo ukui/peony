@@ -65,7 +65,11 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
-    auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
+    /* 此处以中文命名的文件保护箱标记实时同步还存在问题，是由于uri编码（尽管使用FileUtils::urlEncoded进行转换）与底层(info的uri)不匹配 */
+    QString uri = index.data(Qt::UserRole).toString();
+    if(uri.startsWith("favorite://"))/* 快速访问须特殊处理 */
+        uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
+    auto info = FileInfo::fromUri(uri);
     auto colors = info->getColors();
     if (index.column() == 0 && colors.count() >0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {

@@ -39,6 +39,7 @@
 #include "file-info.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
+#include "file-utils.h"
 
 #include <QDebug>
 #include <QTextLayout>
@@ -208,6 +209,9 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     auto info = m_info.lock();
 
     // draw color symbols
+    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+        info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
+    }
     auto colors = info->getColors();
     auto lineSpacing = opt.fontMetrics.lineSpacing();
     int yoffset = 0;
