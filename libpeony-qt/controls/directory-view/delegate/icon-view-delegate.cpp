@@ -147,15 +147,6 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
     opt.text = text;
 
-    //get file info from index
-    auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
-    auto item = model->itemFromIndex(index);
-    //NOTE: item might be deleted when painting, because we might start a
-    //location change during the painting.
-    if (!item) {
-        return;
-    }
-    auto info = item->info();
     auto rect = view->visualRect(index);
 
     bool useIndexWidget = false;
@@ -188,10 +179,23 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (bCutFile && !getView()->getDelegateEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
+    //get file info from index
+    auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
+    auto item = model->itemFromIndex(index);
+    //NOTE: item might be deleted when painting, because we might start a
+    //location change during the painting.
+    if (!item) {
+        return;
+    }
+    auto info = item->info();
+
     // draw color symbols
     int iLine = 0;
     int yoffset = 0;
     if (!isDragging || !view->selectedIndexes().contains(index)) {
+        if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+            info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
+        }
         auto colors = info->getColors();
         if(0 < colors.count())
         {
