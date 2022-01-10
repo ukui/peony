@@ -156,14 +156,15 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
         }
     }
 
-    if (!canNotTrash) {
-        FileEnumerator e;
-        e.setEnumerateDirectory("trash:///");
-        e.enumerateSync();
-        if (e.getChildrenUris().count() > 1000) {
-            canNotTrash = true;
-        }
-    }
+    // comment for fixing #82054
+//    if (!canNotTrash) {
+//        FileEnumerator e;
+//        e.setEnumerateDirectory("trash:///");
+//        e.enumerateSync();
+//        if (e.getChildrenUris().count() > 1000) {
+//            canNotTrash = true;
+//        }
+//    }
 
     if (canNotTrash) {
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
