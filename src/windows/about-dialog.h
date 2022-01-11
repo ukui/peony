@@ -43,7 +43,7 @@ public:
 private:
    void  initUI();
     QString getCurrentVersion();
-	void paintEvent(QPaintEvent *event) override;
+
 private Q_SLOTS:
     void on_closeBtn_clicked();
 
