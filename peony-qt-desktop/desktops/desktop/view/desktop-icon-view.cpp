@@ -1410,6 +1410,11 @@ void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end
 
 void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
+    for (int row = start; row <= end; row++) {
+        auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
+        m_resolution_item_rect.remove(uri);
+    }
+
     m_model->relayoutAddedItems();
     QListView::rowsAboutToBeRemoved(parent, start, end);
 //    QTimer::singleShot(1, this, [=](){
@@ -1419,11 +1424,6 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 //                updateItemPosByUri(uri, pos);
 //        }
 //    });
-
-    for (int row = start; row <= end; row++) {
-        auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
-        m_resolution_item_rect.remove(uri);
-    }
 
     clearAllIndexWidgets();
 }
