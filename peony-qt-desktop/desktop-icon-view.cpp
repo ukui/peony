@@ -162,6 +162,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
         // check if there are items overlapped.
         QTimer::singleShot(150, this, [=](){
             if (!initialized) {
+                qInfo()<<"desktop icon view model inited";
                 initialized = true;
 
                 if (!QGSettings::isSchemaInstalled(PANEL_SETTINGS))
@@ -212,11 +213,11 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 int gridHeight = gridSize().height();
                 // aligin exsited rect
                 int marginTop = notEmptyRegion.boundingRect().top();
-                while (marginTop - gridHeight > 0) {
+                while (marginTop - gridHeight >= 0) {
                     marginTop -= gridHeight;
                 }
                 int marginLeft = notEmptyRegion.boundingRect().left();
-                while (marginLeft - gridWidth > 0) {
+                while (marginLeft - gridWidth >= 0) {
                     marginLeft -= gridWidth;
                 }
                 marginLeft = marginLeft < 0? 0: marginLeft;
@@ -691,11 +692,14 @@ void DesktopIconView::setShowHidden()
 
 void DesktopIconView::resolutionChange()
 {
+    qInfo()<<"start resolutionChange()";
     QSize screenSize = this->viewport()->size();
 
     // do not relayout items while screen size is empty.
-    if (screenSize.isEmpty())
+    if (screenSize.isEmpty()) {
+        qWarning()<<"screen size is not avaliable";
         return;
+    }
 
     float iconWidth = 0;
     float iconHeigth = 0;
@@ -706,6 +710,8 @@ void DesktopIconView::resolutionChange()
     iconHeigth = icon.height();
 
     QRect screenRect = QRect(0, 0, screenSize.width(), screenSize.height());
+
+    qInfo()<<"screen rect:"<<screenRect;
 
     if (!m_item_rect_hash.isEmpty()) {
         QList<QPair<QRect, QString>> newPosition;
@@ -733,32 +739,36 @@ void DesktopIconView::resolutionChange()
         for (auto pair : newPosition) {
             if (!screenRect.contains(pair.first)) {
                 needChanged.append(pair);
-                // remember item position before resolution changed.
-                m_resolution_item_rect.insert(pair.second, m_item_rect_hash.value(pair.second));
-                m_item_rect_hash.remove(pair.second);
+                if (!m_resolution_item_rect.contains(pair.second)) {
+                    // remember item position before resolution changed.
+                    m_resolution_item_rect.insert(pair.second, m_item_rect_hash.value(pair.second));
+                    //m_item_rect_hash.remove(pair.second);
+                }
             } else {
                 notEmptyRegion += pair.first;
             }
         }
 
+        qInfo()<<"need changed item"<<needChanged;
+
         // aligin exsited rect
         int marginTop = notEmptyRegion.boundingRect().top();
-        while (marginTop - iconHeigth > 0) {
+        while (marginTop - iconHeigth >= 0) {
             marginTop -= iconHeigth;
         }
         int marginLeft = notEmptyRegion.boundingRect().left();
-        while (marginLeft - iconWidth > 0) {
+        while (marginLeft - iconWidth >= 0) {
             marginLeft -= iconWidth;
         }
         marginTop = marginTop < 0? 0: marginTop;
         marginLeft = marginLeft < 0? 0: marginLeft;
 
         if (!needChanged.isEmpty()) {
+            qInfo()<<"屏幕过小，有元素超过屏幕范围";
             int posX = marginLeft;
             int posY = marginTop;
 
             for (int i = 0; i < needChanged.count(); i++) {
-                bool placeOK = false;
                 while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
                     if (posY + 2 * iconHeigth > screenSize.height()) {
                         posY = marginTop;
@@ -775,47 +785,75 @@ void DesktopIconView::resolutionChange()
                 notEmptyRegion += newRect;
             }
         } else {
-            // re-layout overlayed items
-            for (auto pair : newPosition) {
-                if (QRect(0, 0, 10, 10).contains(pair.first.topLeft())) {
-                    needChanged.append(pair);
-                }
-            }
-//            // first item doesn't need re-layout
-            if (!needChanged.isEmpty())
-                needChanged.removeFirst();
+            qInfo()<<"没有元素超过屏幕范围";
+            QStringList itemNeedBeRelayout;
 
-            int posX = marginLeft;
-            int posY = marginTop;
-            for (int i = 0; i < needChanged.count(); i++) {
-                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
-                    if (posY + iconHeigth * 2 > screenSize.height()) {
-                        posY = marginTop;
-                        posX += iconWidth;
-                    } else {
-                        posY += iconHeigth;
-                    }
-                }
-                QRect newRect = QRect(QPoint(posX, posY), gridSize());
-                if (posX + iconWidth > screenSize.width()) {
-                    newRect.moveTo(0, 0);
-                }
-                notEmptyRegion += newRect;
-                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
-            }
-
-            // try restore items which's positions changed by resolution changed.
-            QStringList needRelayoutItems2;
+            qInfo()<<"尝试恢复超过屏幕范围的元素";
             for (auto uri : m_resolution_item_rect.keys()) {
-                auto rect = m_resolution_item_rect.value(uri);
-                if (screenRect.contains(rect)) {
-                    m_item_rect_hash.insert(uri, rect);
+                auto originalRect = m_resolution_item_rect.value(uri);
+                if (screenRect.contains(originalRect)) {
+                    m_item_rect_hash.insert(uri, originalRect);
+                    m_resolution_item_rect.remove(uri);
                 } else {
-                    // need be relayout.
-                    needRelayoutItems2<<uri;
+                    m_item_rect_hash.remove(uri);
+                    itemNeedBeRelayout<<uri;
                 }
             }
-            relayoutExsitingItems(needRelayoutItems2);
+
+            qInfo()<<"重排需要更新位置的元素";
+
+            relayoutExsitingItems(itemNeedBeRelayout);
+
+            // re-layout overlayed items
+//            for (auto pair : newPosition) {
+//                if (QRect(0, 0, 10, 10).contains(pair.first.topLeft())) {
+//                    needChanged.append(pair);
+//                }
+//            }
+//            // first item doesn't need re-layout
+//            if (!needChanged.isEmpty())
+//                needChanged.removeFirst();
+
+//            // 重新计算非空区域
+//            notEmptyRegion = QRegion();
+//            for (auto pair : needChanged) {
+//                m_item_rect_hash.remove(pair.second);
+//            }
+//            for (auto rect : m_item_rect_hash.values()) {
+//                notEmptyRegion += rect;
+//            }
+
+//            int posX = marginLeft;
+//            int posY = marginTop;
+//            for (int i = 0; i < needChanged.count(); i++) {
+//                while (notEmptyRegion.contains(QPoint(posX + iconWidth/2, posY + iconHeigth/2))) {
+//                    if (posY + iconHeigth * 2 > screenSize.height()) {
+//                        posY = marginTop;
+//                        posX += iconWidth;
+//                    } else {
+//                        posY += iconHeigth;
+//                    }
+//                }
+//                QRect newRect = QRect(QPoint(posX, posY), gridSize());
+//                if (posX + iconWidth > screenSize.width()) {
+//                    newRect.moveTo(0, 0);
+//                }
+//                notEmptyRegion += newRect;
+//                m_item_rect_hash.insert(needChanged.at(i).second, newRect);
+//            }
+
+//            // try restore items which's positions changed by resolution changed.
+//            QStringList needRelayoutItems2;
+//            for (auto uri : m_resolution_item_rect.keys()) {
+//                auto rect = m_resolution_item_rect.value(uri);
+//                if (screenRect.contains(rect)) {
+//                    m_item_rect_hash.insert(uri, rect);
+//                } else {
+//                    // need be relayout.
+//                    needRelayoutItems2<<uri;
+//                }
+//            }
+//            relayoutExsitingItems(needRelayoutItems2);
         }
     }
 
@@ -1338,6 +1376,8 @@ void DesktopIconView::focusOutEvent(QFocusEvent *e)
 
 void DesktopIconView::resizeEvent(QResizeEvent *e)
 {
+    qInfo()<<"resize event";
+
     QListView::resizeEvent(e);
     //refresh();
 
@@ -1393,6 +1433,7 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
 {
     for (int row = start; row <= end; row++) {
         auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
+        m_item_rect_hash.remove(uri);
         m_resolution_item_rect.remove(uri);
     }
 
