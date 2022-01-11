@@ -251,7 +251,6 @@ Files: libpeony-qt/thumbnail/pdf-thumbnail.cpp
   libpeony-qt/thumbnail/video-thumbnail.h
   libpeony-qt/thumbnail/image-pdf-thumbnail.cpp
   libpeony-qt/thumbnail/image-pdf-thumbnail.h
-
 Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
