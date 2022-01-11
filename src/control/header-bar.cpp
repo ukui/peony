@@ -509,6 +509,14 @@ void HeaderBar::mouseMoveEvent(QMouseEvent *e)
     this->topLevelWidget()->setCursor(c);
 }
 
+void HeaderBar::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    QToolBar::mouseDoubleClickEvent(e);
+    if(e->button() == Qt::LeftButton || e->button() == Qt::RightButton){
+        m_window->maximizeOrRestore();
+    }
+}
+
 void HeaderBar::setLocation(const QString &uri)
 {
     m_location_bar->updateLocation(uri);
@@ -763,10 +771,10 @@ bool TopMenuBar::eventFilter(QObject *obj, QEvent *e)
             m_header_bar->updateMaximizeState();
         }
         //fix double click space window has no change issue, bug#38499
-        if (e->type() == QEvent::MouseButtonDblClick)
-        {
-            m_header_bar->m_window->maximizeOrRestore();
-        }
+//        if (e->type() == QEvent::MouseButtonDblClick)
+//        {
+//            m_header_bar->m_window->maximizeOrRestore();
+//        }
         return false;
     } else {
         if (e->type() == QEvent::MouseMove) {
