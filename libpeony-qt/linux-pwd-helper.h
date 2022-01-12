@@ -34,7 +34,7 @@
  * \brief The PWDItem class
  * is the abstraction of passwd struct in linux.
  */
-class PWDItem
+class PEONYCORESHARED_EXPORT PWDItem
 {
 public:
     explicit PWDItem(passwd *user);
