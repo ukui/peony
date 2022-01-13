@@ -525,7 +525,9 @@ void MainWindow::setShortCuts()
                 auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
                 m_tab->setPreviewPage(page);
             }
-            m_tab->setTriggeredPreviewPage(! triggered);
+            m_tab->setTriggeredPreviewPage(!triggered);
+            m_tab->updatePreviewButtonStatus(!triggered);
+
         });
         addAction(previewPageAction);
 

@@ -373,6 +373,11 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     previewButtons->setEnabled(false);
 }
 
+void TabWidget::updatePreviewButtonStatus(bool status)
+{
+   Q_EMIT m_preview_action->triggered(status);
+}
+
 void TabWidget::initAdvanceSearch()
 {
     //advance search bar
