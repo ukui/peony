@@ -74,7 +74,7 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
-    //header()->setStretchLastSection(true);
+    header()->setMinimumSectionSize(140);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
