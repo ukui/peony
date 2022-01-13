@@ -806,6 +806,7 @@ void MainWindow::updateHeaderBar()
     //fix bug#66336, 83711
     m_header_bar->updateViewTypeEnable();
     //m_status_bar->update();
+    m_header_bar->updatePreviewPageVisible();
 }
 
 void MainWindow::updateWindowIcon()
