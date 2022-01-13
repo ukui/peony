@@ -61,27 +61,64 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     initStyleOption(&opt, index);
     opt.displayAlignment = Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter);
 
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+    auto rect = view->visualRect(index);
 
     if (index.column() == 0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             auto info = FileInfo::fromUri(index.data(Qt::UserRole).toString());
             auto colors = info->getColors();
-            int offset = 0;
-            for (auto color : colors) {
+            //修改标记个数最多为3个，以及标记位置
+            const int MAX_LABEL_NUM = 3;
+            const int LABEL_SIZE = 12;
+            int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+            int num =  colors.count() - startIndex;
+            auto lineSpacing = option.fontMetrics.lineSpacing();
+            int xOffSet = rect.topRight().x() - LABEL_SIZE/2 - 20;
+            int yOffSet = rect.height()/2 - LABEL_SIZE/2;
+            int width = rect.width();
+            if(num > 0){
+                //bug#94242 修改标记位置后和名称重叠，设置标记位置的背景颜色
+                QRect markRect = opt.rect;
+                markRect.setLeft(rect.width() - (num+1)*LABEL_SIZE/2 );
+                bool isHover = (opt.state & QStyle::State_MouseOver) && (opt.state & ~QStyle::State_Selected);
+                bool isSelected = opt.state & QStyle::State_Selected;
+                bool enable = opt.state & QStyle::State_Enabled;
+                QColor color = opt.palette.color(enable? QPalette::Active: QPalette::Disabled,
+                                                     QPalette::Highlight);
+
+                if (isSelected) {
+                    color.setAlpha(255);
+                } else if (isHover) {
+                    color = opt.palette.color(QPalette::Active, QPalette::BrightText);
+                    color.setAlphaF(0.05);
+                } else {
+                    color.setAlpha(0);
+                }
+
+                painter->save();
+                painter->fillRect(markRect, color);
+                painter->restore();
+                width = width - (num+1)*LABEL_SIZE/2 - 20;
+            }
+            for (int i = startIndex; i < colors.count(); ++i) {
+                auto color = colors.at(i);
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing);
                 painter->translate(0, opt.rect.topLeft().y());
                 painter->translate(2, 2);
                 painter->setPen(opt.palette.highlightedText().color());
                 painter->setBrush(color);
-                painter->drawEllipse(QRectF(offset, 0, 10, 10));
+                painter->drawEllipse(QRectF(xOffSet, yOffSet, LABEL_SIZE, LABEL_SIZE));
                 painter->restore();
-                offset += 10;
+
+                xOffSet -= LABEL_SIZE/2;
             }
+            //bug#94242 修改标记位置后和名称重叠，设置汉字宽度
+            opt.rect.setWidth(width);
         }
     }
-    auto rect = view->visualRect(index);
+
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     if (view->isEnableMultiSelect()) {
         int selectBox = 0;
