@@ -114,6 +114,7 @@ private Q_SLOTS:
     void updateSortTypeEnable();
     void updateViewTypeEnable();
     void quitSerachMode();
+    void updatePreviewPageVisible();
 
 private:
     const QString m_uri;
@@ -143,6 +144,7 @@ private:
     QHash<HeaderBarAction, QAction*> m_actions;
 
     QToolButton *m_maximize_restore_button;
+    QAction *m_preview_action = nullptr;
 };
 
 class HeaderBarToolButton : public QToolButton

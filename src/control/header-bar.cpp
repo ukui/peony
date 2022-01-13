@@ -244,7 +244,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     viewType->setPopupMode(QToolButton::InstantPopup);
 
     m_view_type_menu = new ViewTypeMenu(viewType);
-    QAction * preview =new  QAction(tr("Details"));
+    QAction * preview = new QAction(tr("Details"));
+    m_preview_action = preview;
     m_view_type_menu->insertAction(0,preview);
     preview->setCheckable(true);
 
@@ -553,7 +554,21 @@ void HeaderBar::finishEdit()
 void HeaderBar::quitSerachMode()
 {
     if (m_search_mode)
-       m_location_bar->clearSearchBox();
+        m_location_bar->clearSearchBox();
+}
+
+void HeaderBar::updatePreviewPageVisible()
+{
+    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+    auto pluginNames = manager->getPluginNames();
+    for (auto name : pluginNames) {
+        if (m_view_type_menu->menuAction()->isVisible() && m_preview_action->isChecked()) {
+            auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(name);
+            m_window->m_tab->setPreviewPage(plugin->createPreviewPage());
+        } else {
+            m_window->m_tab->setPreviewPage(nullptr);
+        }
+    }
 }
 
 void HeaderBar::updateIcons()
@@ -606,8 +621,10 @@ void HeaderBar::updateViewTypeEnable()
     //qDebug() << "updateViewTypeEnable url:" << url;
     if(url == "computer:///"){
         m_view_type_menu->setEnabled(false);
+        m_view_type_menu->menuAction()->setVisible(false);
     }else{
         m_view_type_menu->setEnabled(true);
+        m_view_type_menu->menuAction()->setVisible(true);
     }
 }
 
@@ -617,8 +634,10 @@ void HeaderBar::updateSortTypeEnable()
     qDebug() << "url:" << url;
     if(url == "computer:///"){
         m_sort_type_menu->setEnabled(false);
+        m_sort_type_menu->menuAction()->setVisible(false);
     }else{
         m_sort_type_menu->setEnabled(true);
+        m_sort_type_menu->menuAction()->setVisible(true);
     }
 }
 
