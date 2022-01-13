@@ -45,6 +45,86 @@ static const QString sambaDefaultPortStr="445";
 static QString passwdEncode (QString p);
 static QString passwdDecode (QString p);
 
+static ButtonStyle *global_instance = nullptr;
+
+ButtonStyle *ButtonStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new ButtonStyle;
+    }
+    return global_instance;
+}
+
+void ButtonStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case CE_PushButton:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            proxy()->drawControl(CE_PushButtonBevel, option, painter, widget);
+            QStyleOptionButton subopt = *button;
+            subopt.rect = proxy()->subElementRect(SE_PushButtonContents, option, widget);
+            proxy()->drawControl(CE_PushButtonLabel, &subopt, painter, widget);
+            return;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+int ButtonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (metric) {
+    case PM_ButtonMargin:
+    {
+        return 0;
+    }
+
+    default:
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+QRect ButtonStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_PushButtonContents:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            const bool icon = !button->icon.isNull();
+            const bool text = !button->text.isEmpty();
+            QRect rect = option->rect;
+            int Margin_Height = 2;
+            int ToolButton_MarginWidth = 10;
+            int Button_MarginWidth = proxy()->pixelMetric(PM_ButtonMargin, option, widget);
+            if (text && !icon && !(button->features & QStyleOptionButton::HasMenu)) {
+                rect.adjust(Button_MarginWidth, 0, -Button_MarginWidth, 0);
+            } else if (!text && icon && !(button->features & QStyleOptionButton::HasMenu)) {
+
+            } else {
+                rect.adjust(ToolButton_MarginWidth, Margin_Height, -ToolButton_MarginWidth, -Margin_Height);
+            }
+            if (button->features & (QStyleOptionButton::AutoDefaultButton | QStyleOptionButton::DefaultButton)) {
+                int dbw = proxy()->pixelMetric(PM_ButtonDefaultIndicator, option, widget);
+                rect.adjust(dbw, dbw, -dbw, -dbw);
+            }
+            return rect;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    return QProxyStyle::subElementRect(element, option, widget);
+}
+
+
 ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
 {
     setFixedSize(m_widget_size);
@@ -130,6 +210,7 @@ ConnectServerDialog::ConnectServerDialog(QWidget *parent) : QDialog(parent)
     m_btn_conn->setAutoDefault(true);
     m_btn_add->setAutoDefault(false);
     m_btn_del->setAutoDefault(false);
+    m_btn_conn->setStyle(ButtonStyle::getStyle());
     m_main_layout->addLayout(m_btn_layout);
 
     setLayout(m_main_layout);
