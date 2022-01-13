@@ -98,7 +98,7 @@ Q_SIGNALS:
     void setZoomLevelRequest(int zoomLevel);
     void updateStatusBarSliderStateRequest();
     void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
-    void updatePreviewActionRequest();
+    void updatePreviewPageRequest();
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);

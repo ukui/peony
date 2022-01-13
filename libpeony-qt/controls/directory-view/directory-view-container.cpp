@@ -260,7 +260,7 @@ update:
         m_view->beginLocationChange();
         //m_active_view_prxoy->setDirectoryUri(uri);
     }
-    updatePreviewActionRequest();
+    updatePreviewPageRequest();
 }
 
 void DirectoryViewContainer::switchViewType(const QString &viewId)
