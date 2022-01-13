@@ -295,11 +295,13 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
     s->setHandleWidth(1);
-    s->setStretchFactor(0, 1);
     s->addWidget(m_stack);
     m_stack->installEventFilter(this);
-    s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
+    //bug#90237 修改默认预览窗口过大
+    s->setStretchFactor(0, 3);
+    s->setStretchFactor(1, 2);
+    s->addWidget(m_preview_page_container);
     vbox->addWidget(s);
     w->setLayout(vbox);
     setCentralWidget(w);
