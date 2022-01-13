@@ -205,7 +205,7 @@ protected:
 
     QStringList getCurrentClassify(int rowCount);
 
-    void updatePreviewActionVisible();
+    void updatePreviewPageVisible();
     void updateStatusBarSliderState();
 
 private:

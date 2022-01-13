@@ -767,13 +767,24 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
     return currentList;
 }
 
-void TabWidget::updatePreviewActionVisible()
+void TabWidget::updatePreviewPageVisible()
 {
     auto currentUri = getCurrentUri();
     if(currentUri.startsWith("computer://")){
         m_preview_action->setVisible(false);
     }else{
         m_preview_action->setVisible(true);
+    }
+
+    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+    auto pluginNames = manager->getPluginNames();
+    for (auto name : pluginNames) {
+        auto factory = manager->getPlugin(name);
+        if(m_preview_action->isChecked() && m_preview_action->isVisible()){
+            Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+        }else{
+            Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
+        }
     }
 }
 
@@ -1307,7 +1318,7 @@ void TabWidget::updateTabPageTitle()
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri().toLocal8Bit());
     //m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
     updateTrashBarVisible(getCurrentUri());
-    updatePreviewActionVisible();
+    updatePreviewPageVisible();
     updateStatusBarSliderState();
 }
 
@@ -1585,8 +1596,8 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
             Q_EMIT this->signal_itemAdded(uri);
     });
 
-    connect(container, &Peony::DirectoryViewContainer::updatePreviewActionRequest, this, [=](){
-       this->updatePreviewActionVisible();
+    connect(container, &Peony::DirectoryViewContainer::updatePreviewPageRequest, this, [=](){
+       this->updatePreviewPageVisible();
     });
 }
 
