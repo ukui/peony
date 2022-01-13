@@ -172,7 +172,6 @@ public Q_SLOTS:
     int count();
     int currentIndex();
     void removeTab(int index);
-
     void updateTrashBarVisible(const QString &uri = "");
     void updateSearchPathButton(const QString &uri = "");
     void updateSearchBar(bool showSearch);
@@ -207,6 +206,7 @@ protected:
 
     void updatePreviewActionVisible();
     void updateStatusBarSliderState();
+    void updatePreviewButtonStatus(bool status);
 
 private:
     NavigationTabBar *m_tab_bar;
