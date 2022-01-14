@@ -79,6 +79,8 @@ public:
 
     QRect visualRect(const QModelIndex &index) const override;
 
+    bool getDelegateEditFlag();
+
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);
 
@@ -149,6 +151,7 @@ private:
     QTimer* m_renameTimer;
     bool  m_editValid;
     bool  m_ctrl_key_pressed;
+    bool  m_delegate_editing = false;
 
     QRubberBand *m_rubberBand;
     QPoint m_lastPressedLogicPoint;
