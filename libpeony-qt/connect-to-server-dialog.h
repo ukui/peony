@@ -34,6 +34,7 @@
 #include <QPushButton>
 #include <QListWidget>
 #include <QRadioButton>
+#include <QProxyStyle>
 #include "peony-core_global.h"
 
 namespace Peony {
@@ -131,6 +132,28 @@ private:
 
     QMap<QString, QVariant> m_userInfo;
 
+};
+
+class ButtonStyle : public QProxyStyle
+{
+
+public:
+    static ButtonStyle *getStyle();
+
+    ButtonStyle() : QProxyStyle() {}
+
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
+
+    int pixelMetric(PixelMetric metric,
+                    const QStyleOption *option = nullptr,
+                    const QWidget *widget = nullptr) const override;
+
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
 };
 
 };
