@@ -110,6 +110,14 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     m_rubberBand = new QRubberBand(QRubberBand::Shape::Rectangle, this);
 
+    //FIXME: do not create proxy in view itself.
+    ListViewDelegate *delegate = new ListViewDelegate(this);
+    setItemDelegate(delegate);
+    connect(delegate, &ListViewDelegate::isEditing, this, [=](const bool &editing)
+    {
+        m_delegate_editing = editing;
+    });
+
     //fix head indication sort type and order not change in preference file issue, releated to bug#92525,
     connect(header(), &QHeaderView::sortIndicatorChanged, this, [=](int logicalIndex, Qt::SortOrder order)
     {
@@ -626,7 +634,8 @@ void ListView::slotRename()
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, this, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
-        if(m_editValid) {
+        //fix bug#98951, click edit box boarder will reenter edit issue
+        if(m_editValid &&  ! m_delegate_editing) {
             m_renameTimer->stop();
             setIndexWidget(m_last_index, nullptr);
             edit(m_last_index);
@@ -792,6 +801,11 @@ void ListView::scrollToSelection(const QString &uri)
 void ListView::setCutFiles(const QStringList &uris)
 {
     return;
+}
+
+bool ListView::getDelegateEditFlag()
+{
+    return m_delegate_editing;
 }
 
 int ListView::getSortType()

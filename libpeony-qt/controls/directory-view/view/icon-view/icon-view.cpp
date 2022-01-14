@@ -503,7 +503,8 @@ void IconView::slotRename()
     qDebug()<<"slotRename"<<m_editValid;
     QTimer::singleShot(300, m_renameTimer, [&]() {
         qDebug()<<"singleshot"<<m_editValid;
-        if(m_editValid) {
+        //fix bug#98951, click edit box boarder will reenter edit issue
+        if(m_editValid && ! m_delegate_editing) {
             m_renameTimer->stop();
             setIndexWidget(m_last_index, nullptr);
             edit(m_last_index);

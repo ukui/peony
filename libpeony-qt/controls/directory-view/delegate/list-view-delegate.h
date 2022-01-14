@@ -54,6 +54,10 @@ public:
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
     //QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 
+Q_SIGNALS:
+    void isEditing(bool editing) const;
+    void requestDone(QWidget *editor);
+
 private:
     QPushButton *m_styled_button;
 };

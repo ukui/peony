@@ -179,9 +179,15 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 //        updateEditorGeometry(edit, option, index);
 //    });
 
+
     connect(edit, &TextEdit::finishEditRequest, this, [=]() {
+        //qDebug() <<"finishEditRequest";
         setModelData(edit, nullptr, index);
         edit->deleteLater();
+    });
+
+    connect(edit, &QWidget::destroyed, this, [=]() {
+        Q_EMIT isEditing(false);
     });
 
     return edit;
@@ -193,6 +199,7 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     if (!edit)
         return;
 
+    Q_EMIT isEditing(true);
     edit->setText(index.data(Qt::DisplayRole).toString());
     auto cursor = edit->textCursor();
     cursor.setPosition(0, QTextCursor::MoveAnchor);
@@ -225,10 +232,12 @@ void ListViewDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
 void ListViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     TextEdit *edit = qobject_cast<TextEdit*>(editor);
+    //qDebug() <<"setModelData entered";
     if (!edit)
         return;
 
     auto text = edit->toPlainText();
+    //qDebug() <<"setModelData edit text:"<<text;
     if (text.isEmpty())
         return;
 
