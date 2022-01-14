@@ -37,9 +37,9 @@
 
 #include "peony-core_global.h"
 
-//namespace Ui {
-//class Format_Dialog;
-//}
+namespace Ui {
+class Format_Dialog;
+}
 
 namespace Peony {
 class SideBarAbstractItem;
@@ -148,6 +148,7 @@ private:
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 
+    Ui::Format_Dialog   *ui;
 };
 
 #endif // FORMAT_DIALOG_H

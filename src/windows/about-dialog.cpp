@@ -22,7 +22,7 @@
 
 #include "about-dialog.h"
 #include "ui_about-dialog.h"
-#include "xatom-helper.h"
+
 #include <locale.h>
 #include <libintl.h>
 #include <QDebug>
@@ -30,6 +30,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QtMath>
+
+#include "xatom-helper.h"
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
