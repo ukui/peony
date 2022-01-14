@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="586"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="591"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="678"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="683"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="857"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="899"/>
         <source>Open Link failed</source>
         <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="858"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="900"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="873"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="915"/>
         <source>Open failed</source>
         <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="874"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="916"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>

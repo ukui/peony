@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="586"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="591"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="678"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="683"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="873"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="915"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="874"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="916"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="857"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="899"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="858"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="900"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>

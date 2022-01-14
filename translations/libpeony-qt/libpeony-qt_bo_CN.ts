@@ -133,6 +133,30 @@
         <source>Formatting. Do not close this window</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rom size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filesystem:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disk name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Completely erase(Time is longer, please confirm!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">མེད་པར་བཟོ་བ</translation>
+    </message>
 </context>
 <context>
     <name>MainProgressBar</name>
@@ -2347,7 +2371,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <source>Unable to eject %1</source>
-        <translation> %1འཕར་མཆོང་མི་ཐུབ།</translation>
+        <translation type="vanished"> %1འཕར་མཆོང་མི་ཐུབ།</translation>
     </message>
     <message>
         <source>Eject failed</source>

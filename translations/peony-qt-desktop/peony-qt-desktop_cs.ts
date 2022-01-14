@@ -9,32 +9,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="586"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="591"/>
         <source>New Folder</source>
         <translation type="unfinished">Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="678"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="683"/>
         <source>set background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="857"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="899"/>
         <source>Open Link failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="858"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="900"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="873"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="915"/>
         <source>Open failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="874"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="916"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished"></translation>
     </message>
