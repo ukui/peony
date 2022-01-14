@@ -182,6 +182,18 @@ void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyle
         }
         return QProxyStyle::drawPrimitive(element, &opt, painter, widget);
     }
+    case QStyle::PE_IndicatorItemViewItemDrop: {
+        if (option->rect.height() <= 1) {
+            // 不显示中间线条，规避#85608，另外偶现错位的问题暂时没有定位，有可能是因为重写了updateGeometries导致的
+            return;
+        }
+        painter->setRenderHint(QPainter::Antialiasing, true);/* 反锯齿 */
+        /* 按设计要求，边框颜色为调色板highlight值，圆角为6px */
+        QColor color = option->palette.color(QPalette::Highlight);
+        painter->setPen(color);
+        painter->drawRoundedRect(option->rect, 6, 6);
+        return;
+    }
     default:
         return QProxyStyle::drawPrimitive(element, option, painter, widget);
     }
