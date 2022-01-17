@@ -637,6 +637,10 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
 
 void TabWidget::updateStatusBarSliderState()
 {
+    if(!currentPage() || !currentPage()->getView()){
+        return;
+    }
+
     bool enable = currentPage()->getView()->supportZoom();
     m_status_bar->m_slider->setEnabled(enable);
     m_status_bar->m_slider->setVisible(enable);
