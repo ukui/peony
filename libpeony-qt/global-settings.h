@@ -41,6 +41,7 @@
 #define DEFAULT_WINDOW_SIZE         "default-window-size"
 #define DEFAULT_SIDEBAR_WIDTH       "default-sidebar-width"
 #define SHOW_TRASH_DIALOG           "showTrashDialog"
+#define INIT_FOR_FIRST_TIME         "initForFirstTime"  /* org.ukui.peony.settings 首次初始化标志 */
 
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
