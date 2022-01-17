@@ -635,6 +635,21 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
     return currentList;
 }
 
+void TabWidget::updateStatusBarSliderState()
+{
+    if(!currentPage()){
+        return;
+    }
+
+    if(!currentPage()->getView()){
+        return;
+    }
+
+    bool enable = currentPage()->getView()->supportZoom();
+    m_status_bar->m_slider->setEnabled(enable);
+    m_status_bar->m_slider->setVisible(enable);
+}
+
 void TabWidget::updateTrashBarVisible(const QString &uri)
 {
     bool visible = false;
@@ -1126,6 +1141,7 @@ void TabWidget::updateTabPageTitle()
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri().toLocal8Bit());
     //m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
     updateTrashBarVisible(getCurrentUri());
+    updateStatusBarSliderState();
 }
 
 void TabWidget::switchViewType(const QString &viewId)
@@ -1393,9 +1409,7 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
     connect(container, &Peony::DirectoryViewContainer::viewSelectionStatus, this, &TabWidget::viewSelectStatus);
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
-        bool enable = currentPage()->getView()->supportZoom();
-        m_status_bar->m_slider->setEnabled(enable);
-        //m_status_bar->m_slider->setVisible(enable);
+        this->updateStatusBarSliderState();
     });
 
     connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){

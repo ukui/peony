@@ -216,6 +216,8 @@ protected:
 
     QStringList getCurrentClassify(int rowCount);
 
+    void updateStatusBarSliderState();
+
 private:
     NavigationTabBar *m_tab_bar;
     QToolButton *m_add_page_button;
