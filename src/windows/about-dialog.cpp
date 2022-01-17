@@ -48,15 +48,9 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::initUI()
 {
-	QPalette palette;
-	QTextCursor textCursor;
-	QTextBlockFormat blockFormat;
-
-	palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-	blockFormat.setLineHeight(24, QTextBlockFormat::SingleHeight);//font-line-hight
-
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
+    setFixedWidth(420);
 
     //bug#101149 使用窗管
     MotifWmHints hints;
@@ -71,7 +65,6 @@ void AboutDialog::initUI()
 
     ui->closeBtn->setFlat(true);
     ui->closeBtn->setProperty("isIcon", true);
-	ui->closeBtn->setPalette(palette);
     ui->closeBtn->setFixedSize(QSize(30, 30));
     ui->closeBtn->setProperty("isWindowButton", 2);
     ui->closeBtn->setProperty("useIconHighlightEffect", 0x8);
@@ -87,21 +80,27 @@ void AboutDialog::initUI()
     ui->nameLabel->setText(tr("Peony"));
 
     ui->versionLabel->setFont(font);
-//    ui->versionLabel->setStyleSheet("color:#595959;");
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
-//	ui->briefTextedit->setFont(font14);
 	ui->briefTextedit->setReadOnly(true);
-//    ui->briefTextedit->setStyleSheet("color:#595959;");
+
+    QTextCursor textCursor;
+    QTextBlockFormat blockFormat;
+    blockFormat.setLineHeight(font.pointSize()+10, QTextBlockFormat::SingleHeight);//font-line-hight
 
 	textCursor = ui->briefTextedit->textCursor();	//before the setText().
-    ui->briefTextedit->setText(tr("Peony is a graphical software to help users manage system files. "
+
+    //bug#101112 关于界面自适应大小
+    QTextDocument* doc = new QTextDocument(ui->briefTextedit);
+    doc->setPlainText(tr("Peony is a graphical software to help users manage system files. "
                                 "It provides common file operation functions for users, such as file viewing, "
                                 "file copy, paste, cut, delete, rename, file selection, application opening, "
                                 "file search, file sorting, file preview, etc. it is convenient for users to "
                                 "manage system files intuitively on the interface."));
-	textCursor.setBlockFormat(blockFormat);
+    ui->briefTextedit->setDocument(doc);
+    textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
+    doc->setTextWidth(420-32-32);
 
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
         m_gSettings = new QGSettings("org.ukui.style", QByteArray(), this);
@@ -116,13 +115,13 @@ void AboutDialog::initUI()
                 namefont.setBold(true);
                 namefont.setPointSize(appfont.pointSize()*1.28);
                 ui->nameLabel->setFont(namefont);
+
+                resetSize();
             }
         });
     }
     this->setSupportText();
     ui->openlinkLabel->setOpenExternalLinks(true);
-//    ui->openlinkLabel->setStyleSheet("color:#595959;");
-	textCursor.setBlockFormat(blockFormat);
 }
 
 void AboutDialog::setSupportText()
@@ -182,4 +181,35 @@ void AboutDialog::on_closeBtn_clicked()
 {
     close();
 }
+void AboutDialog::resetSize()
+{
+    int minHeight =  324;
+    int maxHeight =  560;
 
+    int newHeight = ui->briefTextedit->document()->size().height();
+    int changeHeight = newHeight - ui->briefTextedit->height();
+    int finalHeight = this->height() + changeHeight + 10;
+    if( finalHeight > maxHeight)
+    {
+        finalHeight = maxHeight;
+    }
+    else if(finalHeight < minHeight)
+    {
+        finalHeight = minHeight;
+    }
+
+    this->setFixedHeight(finalHeight);
+    ui->verticalLayout_3->update();
+
+}
+
+void AboutDialog::resizeEvent(QResizeEvent *e)
+{
+    QDialog::resizeEvent(e);
+    if(!m_isFirstLoad)
+    {
+        //bug#101112 第一次加载获取控件实际大小
+        resetSize();
+        m_isFirstLoad = true;
+    }
+}

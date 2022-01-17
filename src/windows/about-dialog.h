@@ -40,9 +40,14 @@ class AboutDialog : public QDialog
 public:
     explicit AboutDialog(QWidget *parent = nullptr);
     ~AboutDialog();
+    void resetSize();
+
 private:
    void  initUI();
     QString getCurrentVersion();
+
+protected:
+    void resizeEvent(QResizeEvent *e);
 
 private Q_SLOTS:
     void on_closeBtn_clicked();
@@ -53,6 +58,7 @@ private:
     void setSupportText();
     //颜色转换
     QString convertRGB16HexStr(const QColor &color);
+    bool m_isFirstLoad = false;
 };
 
 #endif // ABOUTDIALOG_H
