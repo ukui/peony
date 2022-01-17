@@ -104,13 +104,26 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 Q_EMIT this->valueChanged(key);
             }
         });
-
         m_cache.remove(SHOW_TRASH_DIALOG);
         m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
 
         m_cache.remove(SHOW_HIDDEN_PREFERENCE);
         m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
+
+        /* hotfix bug#101227:解决兼容升级后对应设置项恢复gsetting默认值问题。判断字段（INIT_FOR_FIRST_TIME）不存在，则为首次初始化，反之不是 */
+        if(!isExist(INIT_FOR_FIRST_TIME)){
+            setValue(INIT_FOR_FIRST_TIME, false);
+            /* /usr/share/glib-2.0/schemas/org.ukui.peony.settings.gschema.xml文件首次初始化时，
+             * SHOW_HIDDEN_PREFERENCE字段为 "org.ukui/peony-qt-preferences" 文件中"show-hidden"的值*/
+            if(isExist("show-hidden")){
+                bool value = getValue("show-hidden").toBool();
+                m_cache.insert(SHOW_HIDDEN_PREFERENCE, value);
+                setGSettingValue(SHOW_HIDDEN_PREFERENCE, value);
+            }
+        }
     }
+
+
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 100);
     if (QGSettings::isSchemaInstalled(PERSONAL_EFFECT_SCHEMA)) {
