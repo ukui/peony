@@ -637,7 +637,11 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
 
 void TabWidget::updateStatusBarSliderState()
 {
-    if(!currentPage() || !currentPage()->getView()){
+    if(!currentPage()){
+        return;
+    }
+
+    if(!currentPage()->getView()){
         return;
     }
 
