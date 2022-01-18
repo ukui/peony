@@ -121,6 +121,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     this->setModel(m_proxy_model);
 
     setMouseTracking(true);//追踪鼠标
+    setAutoScrollMargin(0);
 
     VolumeManager *volumeManager = VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
