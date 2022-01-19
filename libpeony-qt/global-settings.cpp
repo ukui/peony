@@ -133,6 +133,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 qreal opacity = m_gsettings->get(PERSONAL_EFFECT_TRANSPARENCY).toReal() * 100;
                 m_cache.remove(SIDEBAR_BG_OPACITY);
                 m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
+                qApp->paletteChanged(qApp->palette());
             }
         });
 
