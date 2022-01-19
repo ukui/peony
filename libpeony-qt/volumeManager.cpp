@@ -1428,7 +1428,8 @@ void Mount::unmount()
 {
     if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)               
         QString* targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
-        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), targetUri);
+        g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
+        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, mount_op, nullptr, GAsyncReadyCallback(unmount_finished), targetUri);
     }
     //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
 }
