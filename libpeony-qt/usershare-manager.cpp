@@ -106,8 +106,12 @@ bool UserShareInfoManager::updateShareInfo(ShareInfo &shareInfo)
     sharedInfo->originalPath = shareInfo.originalPath;
 
     m_mutex.lock();
+    bool isShare = true;
     if (m_sharedInfoMap.contains(sharedInfo->name)
             && nullptr != m_sharedInfoMap[sharedInfo->name]) {
+        if(sharedInfo->isShared == m_sharedInfoMap[sharedInfo->name]->isShared){
+            isShare = false;
+        }
         delete m_sharedInfoMap[sharedInfo->name];
     }
     m_sharedInfoMap[sharedInfo->name] = sharedInfo;
@@ -121,7 +125,8 @@ bool UserShareInfoManager::updateShareInfo(ShareInfo &shareInfo)
     args << (sharedInfo->allowGuest ? "guest_ok=y" : "guest_ok=n");
 
     exectueCommand (args, &ret);
-    Q_EMIT signal_addSharedFolder(*sharedInfo, ret);
+    if(isShare)
+        Q_EMIT signal_addSharedFolder(*sharedInfo, ret);
     return ret;
 }
 
@@ -175,6 +180,7 @@ bool UserShareInfoManager::addShareInfo(ShareInfo* shareInfo)
         return false;
     }
 
+    shareInfo->isShared = true;
     m_sharedInfoMap[shareInfo->name] = shareInfo;
     m_mutex.unlock();
 
