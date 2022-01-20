@@ -41,6 +41,9 @@ CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
 
+schemes.files += settings/org.ukui.peony.desktop.settings.gschema.xml
+schemes.path = /usr/share/glib-2.0/schemas/
+
 TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_tr.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
@@ -66,7 +69,8 @@ QM_FILES_INSTALL_PATH = /usr/share/peony-qt-desktop
 
 desktop_data.path = /etc/xdg/autostart
 desktop_data.files += ../data/peony-desktop.desktop
-INSTALLS += desktop_data
+INSTALLS += desktop_data \
+            schemes
 
 DISTFILES +=
 

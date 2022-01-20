@@ -10,10 +10,17 @@
 #define TABLED_ROTATION_SCHEMA "org.ukui.SettingsDaemon.plugins.xrandr"
 #define TABLET_SCHEMA "org.ukui.SettingsDaemon.plugins.tablet-mode"
 
+#define DESKTOP_SETTINGS_SCHEMA      "org.ukui.peony.desktop.settings"
+
 //keys
 #define TABLET_MODE "tabletMode"
+#define DESKTOP_ANIMATION_DURATION   "desktopAnimationDuration"
+#define DESKTOP_ITEM_ZOOM_RANGE      "desktopItemZoomRange"
+#define ENABLE_SMALL_PLUGIN          "enableSmallPlugin"
 
 #include <QObject>
+#include <QMap>
+#include <QVariant>
 
 namespace Peony {
 
@@ -29,9 +36,18 @@ public:
 
     const QString &getCurrentProjectName();
 
+    QVariant getValue(const QString &key) const;
+    void setValue(const QString &key, const QVariant &value);
+
+Q_SIGNALS:
+    void valueChanged(const QString &key, const QVariant &value);
+
 private:
     explicit DesktopGlobalSettings(QObject *parent = nullptr);
+    void initDesktopSetting();
 
+private:
+    QMap<QString, QVariant> m_cache;
 };
 
 }
