@@ -32,7 +32,7 @@
 
 #include "plasma-shell-manager.h"
 #include "desktop-menu.h"
-
+#include "global-settings.h"
 #include "file-enumerator.h"
 #include "desktopbackground.h"
 #include "desktop-background-manager.h"
@@ -172,6 +172,20 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
     //added for session call interactive
     QGuiApplication::setFallbackSessionManagementEnabled(true);
     QGuiApplication::setQuitOnLastWindowClosed(false);
+
+    // global settings
+    if (QGSettings::isSchemaInstalled (FONT_SETTINGS)) {
+        //font monitor
+        QGSettings *fontSetting = new QGSettings (FONT_SETTINGS, QByteArray(), this);
+        connect (fontSetting, &QGSettings::changed, this, [=] (const QString &key) {
+            if (key == "systemFont" || key == "systemFontSize") {
+                QFont font = this->font();
+                for(auto widget : qApp->allWidgets()) {
+                    widget->setFont(font);
+                }
+            }
+        });
+    }
 
     if (!this->isRunning()) {
         qDebug()<<"isPrimary screen";
