@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.ukui.peony.desktop.settings" path="/">
+    <!--General-->
+    <key type="i" name="desktop-animation-duration">
+      <default>500</default>
+      <summary>desktop animation duration</summary>
+      <description>Duration of the mode switching animation</description>
+    </key>
+    <key type="d" name="desktop-item-zoom-range">
+      <default>0.1</default>
+      <summary>desktop item zoom range</summary>
+      <description>Controls the zoom range of desktop item</description>
+    </key>
+    <key type="b" name="enable-small-plugin">
+      <default>true</default>
+      <summary>enable small plugin</summary>
+      <description>Whether to load the 'small plugin'</description>
+    </key>
+  </schema>
+</schemalist>
