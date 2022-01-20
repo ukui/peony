@@ -121,7 +121,7 @@ void FileCopyOperation::progress_callback(goffset current_num_bytes,
     QUrl url(Peony::FileUtils::urlEncode(p_this->m_current_src_uri));
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
-    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
+    auto fileIconName = FileUtilsPrivate::getFileIconName(p_this->m_current_src_uri);
     auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
                 p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
 //    qDebug()<<currnet*1.0/total;

@@ -107,6 +107,17 @@ private:
     FileUtils();
 };
 
+class FileUtilsPrivate
+{
+public:
+    BLOCKING static QString getFileIconName(const QString &uri);
+
+private:
+    FileUtilsPrivate()=delete;
+};
+
 }
+
+
 
 #endif // FILEUTILS_H

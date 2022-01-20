@@ -51,7 +51,7 @@ void FileDeleteOperation::deleteRecursively(FileNode *node)
     if (isCancelled())
         return;
 
-    auto fileIconName = FileUtils::getFileIconName(FileUtils::urlEncode(node->uri()), false);
+    auto fileIconName = FileUtilsPrivate::getFileIconName(FileUtils::urlEncode(node->uri()));
     GFile *file = g_file_new_for_uri(FileUtils::urlEncode(node->uri()).toUtf8().constData());
     if (node->isFolder()) {
         for (auto child : *(node->children())) {

@@ -1015,3 +1015,44 @@ QString FileUtils::getFileSystemType(QString uri)
 
     return fsType;
 }
+
+QString FileUtilsPrivate::getFileIconName(const QString &uri)
+{
+    if (nullptr == uri) return "";
+
+    auto file = wrapGFile(g_file_new_for_uri(uri.toUtf8().constData()));
+    auto info = wrapGFileInfo(g_file_query_info(file.get()->get(),
+        G_FILE_ATTRIBUTE_STANDARD_ICON,
+        G_FILE_QUERY_INFO_NONE,
+        nullptr,
+        nullptr));
+    if (!G_IS_FILE_INFO (info.get()->get()))
+        return nullptr;
+    GIcon *g_icon = g_file_info_get_icon (info.get()->get());
+    QString icon_name;
+    //do not unref the GIcon from info.
+    if (!g_icon && G_IS_ICON(g_icon)) {
+        const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
+        if (icon_names) {
+            auto p = icon_names;
+            while (*p) {
+                QIcon icon = QIcon::fromTheme(*p);
+                if (!icon.isNull()) {
+                    icon_name = QString (*p);
+                    break;
+                } else {
+                    p++;
+                }
+            }
+        } else {
+            //if it's a bootable-media,maybe we can get the icon from the mount directory.
+            char *bootableIcon = g_icon_to_string(g_icon);
+            if(bootableIcon){
+                icon_name = QString(bootableIcon);
+                g_free(bootableIcon);
+            }
+        }
+    }
+
+    return icon_name;
+}
