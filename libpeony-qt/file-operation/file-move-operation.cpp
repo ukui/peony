@@ -92,7 +92,7 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
     QUrl url(p_this->m_current_src_uri);
     auto currnet = p_this->m_current_offset + current_num_bytes;
     auto total = p_this->m_total_szie;
-    auto fileIconName = FileUtils::getFileIconName(p_this->m_current_src_uri, false);
+    auto fileIconName = FileUtilsPrivate::getFileIconName(p_this->m_current_src_uri);
     auto destFileName = FileUtils::isFileDirectory(p_this->m_current_dest_dir_uri) ?
                 p_this->m_current_dest_dir_uri + "/" + url.fileName() : p_this->m_current_dest_dir_uri;
 
@@ -649,7 +649,7 @@ fallback_retry:
         auto realDestUri = node->resolveDestFileUri(m_dest_dir_uri);
         destFile = wrapGFile(g_file_new_for_uri(realDestUri.toUtf8().constData()));
         GError *err = nullptr;
-        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri, false);
+        auto fileIconName = FileUtilsPrivate::getFileIconName(m_current_src_uri);
         auto destFileName = FileUtils::isFileDirectory(m_current_dest_dir_uri) ? nullptr : m_current_dest_dir_uri;
         //NOTE: mkdir doesn't have a progress callback.
         Q_EMIT FileProgressCallback(m_current_src_uri, destFileName, fileIconName, node->size(), node->size());
@@ -761,7 +761,7 @@ fallback_retry:
             //node->setState(FileNode::Handled);
         }
 
-        fileIconName = FileUtils::getFileIconName(m_current_src_uri, false);
+        fileIconName = FileUtilsPrivate::getFileIconName(m_current_src_uri);
         destFileName = FileUtils::isFileDirectory(m_current_dest_dir_uri) ? nullptr : m_current_dest_dir_uri;
         //assume that make dir finished anyway
         m_current_offset += node->size();
@@ -935,7 +935,7 @@ fallback_retry:
         }
         fileSync(node->uri(), realDestUri);
         m_current_offset += node->size();
-        auto fileIconName = FileUtils::getFileIconName(m_current_src_uri, false);
+        auto fileIconName = FileUtilsPrivate::getFileIconName(m_current_src_uri);
         auto destFileName = FileUtils::isFileDirectory(node->destUri()) ? nullptr : node->destUri();
         Q_EMIT FileProgressCallback(node->uri(), destFileName, fileIconName, m_current_offset, m_total_szie);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
