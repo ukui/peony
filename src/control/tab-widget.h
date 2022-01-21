@@ -41,6 +41,7 @@ class QStackedWidget;
 class PreviewPageButtonGroups;
 class QHBoxLayout;
 class QVBoxLayout;
+class QSplitter;
 
 namespace Peony {
 class PreviewPageIface;
@@ -208,7 +209,7 @@ protected:
     void initAdvanceSearch();
 
     QStringList getCurrentClassify(int rowCount);
-
+    void paintEvent(QPaintEvent *e);
 private:
     NavigationTabBar *m_tab_bar;
     QToolButton *m_add_page_button;
@@ -244,6 +245,7 @@ private:
 //    QString m_current_uri;
     QPushButton* m_current_search;
     QPushButton* m_home_search;
+    QSplitter* m_preview_splitter;
 
     //use qlist for dynamic generated search conditions list
     QList<QHBoxLayout*> m_layout_list;

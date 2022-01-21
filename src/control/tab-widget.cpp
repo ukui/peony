@@ -63,6 +63,7 @@
 #include <QMessageBox>
 
 #include <QDebug>
+#include <QPainter>
 
 TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 {
@@ -208,16 +209,16 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 //    vbox->addLayout(m_header_bar_layout);
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
-    QSplitter *s = new QSplitter(this);
-    s->setChildrenCollapsible(false);
-    s->setContentsMargins(0, 0, 0, 0);
-    s->setHandleWidth(1);
-    s->setStretchFactor(0, 1);
-    s->addWidget(m_stack);
+    m_preview_splitter = new QSplitter(this);
+    m_preview_splitter->setChildrenCollapsible(false);
+    m_preview_splitter->setContentsMargins(0, 0, 0, 0);
+    m_preview_splitter->setHandleWidth(1);
+    m_preview_splitter->setStretchFactor(0, 1);
+    m_preview_splitter->addWidget(m_stack);
     m_stack->installEventFilter(this);
-    s->addWidget(m_preview_page_container);
+    m_preview_splitter->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
-    vbox->addWidget(s);
+    vbox->addWidget(m_preview_splitter);
     w->setLayout(vbox);
     setCentralWidget(w);
 
@@ -1226,6 +1227,19 @@ void TabWidget::updateStatusBarGeometry()
     } else {
         m_status_bar->m_slider->hide();
     }
+}
+
+void TabWidget::paintEvent(QPaintEvent *e)
+{
+    //bug#95007 打开预览窗口，有分割线
+    QPainter painter(this);
+    auto handle = m_preview_splitter->handle(1);
+    auto handlePoint = handle->mapTo(this, QPoint());
+    QPainterPath path;
+    path.addRect(handlePoint.x(),handlePoint.y(), handle->size().width(),handle->size().height());
+    path.setFillRule(Qt::FillRule::WindingFill);
+    painter.fillPath(path, this->palette().window().color());
+    QMainWindow::paintEvent(e);
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()
