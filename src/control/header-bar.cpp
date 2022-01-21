@@ -372,15 +372,15 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     for (auto action : actions()) {
         auto w = widgetForAction(action);
         if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-            w->setProperty("useIconHighlightEffect", true);
+            w->setProperty("iconHighlightEffectMode", 1);
             //bug#95007 修改快捷键的三态
             if (action != m_actions[HeaderBarAction::Delete] &&
                 action != m_actions[HeaderBarAction::SeletcAll] &&
                 action != m_actions[HeaderBarAction::Cut] &&
                 action != m_actions[HeaderBarAction::Copy]) {
-                w->setProperty("iconHighlightEffectMode", 1);
+                w->setProperty("useIconHighlightEffect", true);
             } else {
-                w->setProperty("iconHighlightEffectMode", 0x02);
+                w->setProperty("useIconHighlightEffect", 0x02);
                 w->setProperty("isWindowButton", 1);
             }
         } else {
