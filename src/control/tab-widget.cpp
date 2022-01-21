@@ -890,7 +890,8 @@ void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &so
         /* 不属于该设备的tab页不处理；属于该设备：执行动作的文件管理器的当前标签页跳转到计算机页，其余标签页均关闭 */
         if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")
         {
-            if(Peony::GlobalSettings::getInstance()->getValue("LAST_FOCUS_PEONY_WINID") == dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+            if((Peony::GlobalSettings::getInstance()->getValue("LAST_FOCUS_PEONY_WINID") == dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+                ||KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId())
                     && index == currentIndex && decodedSrcUri == uri){
                 /* 执行动作(弹出/卸载)的文件管理器的当前tab页 */
                 qDebug()<<"sourceUri:"<<sourceUri<<"jump to computer,"<<" index:"<<currentIndex;
