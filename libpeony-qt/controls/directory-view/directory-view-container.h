@@ -28,6 +28,7 @@
 #include <QWidget>
 #include <QStack>
 #include <QGSettings>
+#include <QTimer>
 
 #include "file-item-model.h"
 

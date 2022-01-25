@@ -71,6 +71,17 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 //            this, &DirectoryViewContainer::menuRequest);
     connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::signal_responseUnmounted);
 
+    this->setProperty("statusBarUpdate", false);
+    connect(m_model, &FileItemModel::updated, [=](){
+        if(this->property("statusBarUpdate").isValid() && this->property("statusBarUpdate").toBool() == false){
+            this->setProperty("statusBarUpdate", true);
+            QTimer::singleShot(400, this, [=](){
+                Q_EMIT this->directoryChanged();
+                this->setProperty("statusBarUpdate", false);
+            });
+        }
+    });
+
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
         refresh();
     });
