@@ -118,6 +118,9 @@ static bool m_resident = false;
 
 PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicationName) : SingleApplication (argc, argv, applicationName, true)
 {
+    bool isWayland = QString(qgetenv("XDG_SESSION_DESKTOP")).contains("ukui-wayland");
+    setProperty("isWayland", isWayland);
+
     setApplicationVersion(QString("v%1").arg(VERSION));
     //setApplicationDisplayName(tr("Peony-Qt"));
 
