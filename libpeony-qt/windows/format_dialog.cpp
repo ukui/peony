@@ -923,9 +923,15 @@ void Format_Dialog::kdisk_format(const gchar * device_name,const gchar *format_t
     data->client = udisks_client_new_sync(NULL,NULL);
 
     data->object = get_object_from_block_device(data->client,data->device_name);
-    data->block = udisks_object_get_block(data->object);
+    if (data->object) {
+        data->block = udisks_object_get_block(data->object);
 
-    ensure_unused_cb(data);
+        ensure_unused_cb(data);
+    } else {
+        // fix #103344
+        QMessageBox::critical(0, tr("Error"), tr("Block not existed!"));
+        this->close();
+    }
 }
 
 
