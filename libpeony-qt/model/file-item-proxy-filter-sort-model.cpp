@@ -182,10 +182,20 @@ default_sort:
         if (m_use_default_name_sort_order) {
             //fix chinese first sort wrong issue, link to bug#70836
             //fix bug#97408,change indicator meanings
-            if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
-                return true;
-            else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
-                return false;
+            bool lesser = true;
+            if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName)) {
+                // fix #103343
+                lesser = true;
+                if (sortOrder() == Qt::AscendingOrder)
+                    return lesser;
+                return !lesser;
+            }
+            else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName)) {
+                lesser = false;
+                if (sortOrder() == Qt::AscendingOrder)
+                    return lesser;
+                return !lesser;
+            }
             else
                 return comparer.compare(leftDisplayName, rightDisplayName) > 0;
         }
