@@ -1435,6 +1435,10 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
         if (container == currentPage())
             Q_EMIT this->signal_itemAdded(uri);
     });
+
+    connect(container, &Peony::DirectoryViewContainer::statusBarChanged, this, [=](){
+        m_status_bar->update();
+    });
 }
 
 void TabWidget::updatePreviewPage()
