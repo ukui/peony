@@ -1608,6 +1608,10 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::updatePreviewPageRequest, this, [=](){
        this->updatePreviewPageVisible();
     });
+
+    connect(container, &Peony::DirectoryViewContainer::statusBarChanged, this, [=](){
+        m_status_bar->update();
+    });
 }
 
 void TabWidget::updatePreviewPage()
