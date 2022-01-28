@@ -21,6 +21,7 @@
 #include "syn-and-daemon.h"
 #include <QDebug>
 #include <QPainter>
+#include <QPainterPath>
 #include "../../tablet/data/tablet-app-manager.h"
 #include "study-list-view.h"
 #include "common.h"

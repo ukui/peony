@@ -34,6 +34,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QPaintEvent>
+#include <QPainterPath>
 #include "progress-widget.h"
 #include "desktop-background-manager.h"
 //#include "progress-item-delegate.h"

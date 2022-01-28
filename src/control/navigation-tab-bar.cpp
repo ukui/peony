@@ -44,6 +44,7 @@
 #include <QStyleOptionTab>
 #include <QStyle>
 #include <QPainter>
+#include <QPainterPath>
 
 #include "FMWindowIface.h"
 #include "main-window.h"

@@ -32,6 +32,9 @@
 #include <QListView>
 #include <QListWidget>
 #include <QApplication>
+
+#include <QPainterPath>
+
 using namespace Peony;
 using namespace Peony::DirectoryView;
 
