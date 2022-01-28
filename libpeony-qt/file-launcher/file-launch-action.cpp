@@ -280,7 +280,7 @@ void pid_callback(GDesktopAppInfo *appinfo, GPid pid, gpointer user_data) {
 
     KStartupInfoData data;
     data.addPid(pid);
-    data.setIconGeometry(QRect(0, 0, 1, 1));  // ugly
+    //data.setIconGeometry(QRect(0, 0, 1, 1));  // ugly
 
     KStartupInfo::sendChange(*startInfoId, data);
     KStartupInfo::resetStartupEnv();
@@ -480,8 +480,8 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     float scale = qApp->devicePixelRatio();
     QRect rect = fileInfo.get()->property("iconGeometry").toRect();
     rect.moveTo(rect.x() * scale, rect.y() * scale);
-    if (rect.isValid())
-        data.setIconGeometry(rect);
+    //if (rect.isValid())
+        //data.setIconGeometry(rect);
     data.setLaunchedBy(getpid());
 
     KStartupInfo::sendStartup(*startInfoId, data);
