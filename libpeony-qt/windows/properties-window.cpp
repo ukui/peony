@@ -53,6 +53,8 @@
 #include <QApplication>
 #include <KWindowSystem>
 
+#include <QPainterPath>
+
 #include <glib/gstdio.h>
 #include <gio/gdesktopappinfo.h>
 #include <pwd.h>

@@ -29,6 +29,8 @@
 #include "../../tablet/src/Style/style.h"
 #include "desktop-background-manager.h"
 
+#include <QPainterPath>
+
 using namespace Peony;
 
 //qt's global function
