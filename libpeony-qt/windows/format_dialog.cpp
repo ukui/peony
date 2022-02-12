@@ -317,7 +317,11 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     if (err) {
         flags = 0;
         b_failed = true;
-        
+        if(G_IO_ERROR_BUSY == err->code){/* 卷被占用时，防止二次弹出信息提示框 */
+            g_error_free(err);
+            pthis->close();
+            return;
+        }
         QMessageBox message_error(pthis);
           
         message_error.setText(QObject::tr("Error: %1\n").arg(err->message));
@@ -389,9 +393,10 @@ void Format_Dialog::acceptFormat(bool)
     if(mount) {
        /* unmount */
        auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
+       auto mount_op = Experimental_Peony::VolumeManager::getInstance()->getGMountOperation();
        g_file_unmount_mountable_with_operation(files.get()->get(),
                                                G_MOUNT_UNMOUNT_NONE,
-                                               nullptr,
+                                               mount_op,
                                                nullptr,
                                                GAsyncReadyCallback(unmount_finished),
                                                this);

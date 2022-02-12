@@ -98,12 +98,12 @@ public:
     
     ~Format_Dialog();
 
-
 //    Ui::Format_Dialog *ui;
 
+public:
     bool renameOK = true;
 
-    QWidget *m_parent;
+    QWidget *m_parent = nullptr;
 
     int m_cost_seconds = 0;
 
@@ -111,6 +111,7 @@ public:
 
     double m_simulate_progress = 0;
 
+protected:
     void closeEvent(QCloseEvent* );
 
 Q_SIGNALS:
@@ -142,11 +143,11 @@ private:
     QComboBox*          mRomSizeCombox = nullptr;
 
     QString             mVolumeName;
-    GVolumeMonitor*     mVolumeMonitor;
+    GVolumeMonitor*     mVolumeMonitor = nullptr;
 
 
     QString fm_uris;
-    SideBarAbstractItem *fm_item;
+    SideBarAbstractItem *fm_item = nullptr;
 
     Ui::Format_Dialog   *ui;
 };

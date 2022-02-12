@@ -53,6 +53,10 @@ public:
 
     QString getTargetUriFromUnixDevice(const QString &unixDevice);/* 根据device获取volume的uri */
 
+    GMountOperation*  getGMountOperation(){
+        return m_mountOpreation;
+    }
+
 private:
     explicit VolumeManager(QObject *parent = nullptr);
     bool gpartedIsOpening();
@@ -76,6 +80,7 @@ private:
     static void driveDisconnectCallback(GVolumeMonitor*,GDrive*,VolumeManager*);
     static void volumeChangeCallback(GVolumeMonitor*,GVolume*,VolumeManager*);
     static void mountChangedCallback(GMount *mount, VolumeManager *pThis);
+    static void show_processes_cb(GMountOperation *op, char *message, GArray *processes, char **choices);
 
 private:
     GVolumeMonitor* m_volumeMonitor = nullptr;
@@ -86,8 +91,10 @@ private:
     quint64 m_mountRemoveHandle;
     quint64 m_driveConnectHandle;
     quint64 m_driveDisconnectHandle;
-    bool m_gpartedIsOpening;
+    quint64 m_mountOpreationHandle;
+    bool m_gpartedIsOpening = false;
     QHash<QString,Volume*>* m_volumeList = nullptr;
+    GMountOperation *m_mountOpreation = nullptr;
 
     //我应该在检测到信号时更新卷设备列表？还是在用到时重新全部get一次？感觉前者好点?
 Q_SIGNALS:
@@ -214,4 +221,18 @@ private:
     void initVolumeInfo();
 };
 }
+#include <QIcon>
+#include <QDialog>
+#include <QWidget>
+//#include<map>
+class MessageDialog : public QDialog{
+    Q_OBJECT
+public:
+    explicit MessageDialog(QWidget *parent = nullptr);
+    ~MessageDialog(){}
+
+    void init(std::map<QString,QIcon>& occupiedAppMap, const QString& message);
+
+};
+
 #endif // VOLUMEMANAGER_H
