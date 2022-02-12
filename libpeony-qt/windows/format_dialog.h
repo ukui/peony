@@ -98,6 +98,7 @@ public:
     
     ~Format_Dialog();
 
+    void setBtnStatus(bool enable);
 //    Ui::Format_Dialog *ui;
 
 public:

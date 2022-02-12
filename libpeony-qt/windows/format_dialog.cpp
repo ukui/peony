@@ -319,7 +319,8 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
         b_failed = true;
         if(G_IO_ERROR_BUSY == err->code){/* 卷被占用时，防止二次弹出信息提示框 */
             g_error_free(err);
-            pthis->close();
+            /* 在此处需要做取消格式化操作，格式化对话框恢复到初始化状态，以备再次格式化 */
+            pthis->setBtnStatus(true);
             return;
         }
         QMessageBox message_error(pthis);
@@ -988,6 +989,12 @@ Format_Dialog::~Format_Dialog()
     if (mVolumeMonitor)     g_object_unref (mVolumeMonitor);
 
     b_canClose = true;
+}
+
+void Format_Dialog::setBtnStatus(bool enable)
+{
+    mFormatBtn->setEnabled(enable);
+    mCancelBtn->setEnabled(enable);
 }
 
 void Format_Dialog::closeEvent(QCloseEvent *e)
