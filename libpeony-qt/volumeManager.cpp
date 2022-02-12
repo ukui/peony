@@ -3,6 +3,7 @@
 #include <QTimer>
 #include <QThread>
 #include<QMessageBox>
+#include<QProcess>
 #include"sync-thread.h"
 #include "file-utils.h"
 
@@ -95,6 +96,12 @@ VolumeManager::~VolumeManager(){
         g_object_unref(m_volumeMonitor);
         m_volumeMonitor = nullptr;
     }
+    if(m_mountOpreation){
+        g_signal_handler_disconnect(m_mountOpreation, m_mountOpreationHandle);
+        g_object_unref(m_mountOpreation);
+        m_mountOpreation = nullptr;
+    }
+
 
     if(!m_volumeList->isEmpty()){
         QHash<QString,Volume*>::iterator item = m_volumeList->begin();
@@ -120,6 +127,9 @@ void VolumeManager::initManagerInfo(){
     m_volumeChangeHandle = g_signal_connect(m_volumeMonitor,"volume-changed",G_CALLBACK(volumeChangeCallback),this);
     m_driveConnectHandle = g_signal_connect(m_volumeMonitor,"drive-connected",G_CALLBACK(driveConnectCallback),this);
     m_driveDisconnectHandle = g_signal_connect(m_volumeMonitor,"drive-disconnected",G_CALLBACK(driveDisconnectCallback),this);
+    m_mountOpreation = g_mount_operation_new();
+    if(m_mountOpreation)
+        m_mountOpreationHandle = g_signal_connect (m_mountOpreation, "show-processes", G_CALLBACK(show_processes_cb), this);
 }
 
 /*gparted应用是否打开*/
@@ -407,6 +417,38 @@ void VolumeManager::mountChangedCallback(GMount *mount, VolumeManager *pThis)
 
     delete mountItem;
     g_object_unref(rootFile);
+}
+
+void VolumeManager::show_processes_cb(GMountOperation *op, char *message, GArray *processes, char **choices)
+{
+    std::map<QString,QIcon> occupiedAppMap;
+    for(int i=0; i< processes->len; i++)
+    {
+        GPid pid = g_array_index(processes, GPid ,i);
+        QProcess *process =new QProcess();
+        QString cmd =QString("ps -p %1 o comm=").arg(pid);
+        process->start(cmd);
+        process->waitForFinished();
+        auto application = QString(process->readAll()).replace("\n","");
+        QString iconName = "application-x-executable";
+        if(application=="bash")
+            iconName = "utilities-terminal";
+        auto icon = QIcon::fromTheme(iconName);
+        occupiedAppMap.insert(std::pair<QString, QIcon>(application,icon));
+        qDebug()<<application;
+
+    }
+    if(0==occupiedAppMap.size())
+        return;
+
+    MessageDialog* dlg = new MessageDialog();
+    dlg->init(occupiedAppMap, message);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    QThread* currentThread = new QThread();
+    dlg->moveToThread(currentThread);
+    connect(currentThread,&QThread::started,dlg,&MessageDialog::exec);
+    currentThread->start();
+
 }
 
 
@@ -1057,25 +1099,25 @@ GDrive *Drive::getGDrive() const
 
 static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QString* targetUri)
 {
-    GError *error = nullptr;
+    g_autoptr (GError) error = nullptr;
     bool successed = g_drive_eject_with_operation_finish(gDrive, result, &error);
     qDebug()<<"The result that drive eject with operation finish:"<<successed;
     if (error) {
         qDebug()<<error->message;
+        if(targetUri){
+            delete targetUri;
+            targetUri = nullptr;
+        }
+        if(G_IO_ERROR_BUSY == error->code){/* 卷被占用时，防止二次弹出信息提示框 */            
+            return nullptr;
+        }
         if(! strcmp(error->message,"Not authorized to perform operation")){//umount /data need permissions.
-            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
-            g_error_free(error);
-            if(targetUri){
-                delete targetUri;
-                targetUri = nullptr;
-            }
-            g_free(targetUri);
+            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);                                   
             return nullptr;
         }
 
         QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"), QString(error->message), QMessageBox::Ok);
-        warningBox.exec();
-        g_error_free(error);
+        warningBox.exec();        
 
     } else {
         /* 弹出完成信息提示 */
@@ -1100,8 +1142,10 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, QString* ta
         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
             // @note 这里不要拼接字符串，多次弹出会崩溃
 //            QString errorMsg = QObject::tr("Unable to eject").arg(pThis->name());
-            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
-            warningBox.exec();
+            if(G_IO_ERROR_BUSY != error->code){/* 卷被占用时，防止二次弹出信息提示框 */
+                QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
+                warningBox.exec();
+            }
         }
     }else {
         /* 弹出完成信息提示 */
@@ -1119,14 +1163,15 @@ void Drive::eject(GMountUnmountFlags ejectFlag)
 {
     // fix #92731, note that if we didn't pass a mount-operation instance,
     // drive will do operation without user interaction.
-    g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
+    auto mount_op = VolumeManager::getInstance()->getGMountOperation();
     QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
     if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
         g_drive_eject_with_operation(m_drive, ejectFlag, mount_op, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
-        g_drive_stop(m_drive,ejectFlag,mount_op,NULL,GAsyncReadyCallback(ejectDevicebyDrive), targetUri);
+        g_drive_stop(m_drive, ejectFlag, mount_op, NULL, GAsyncReadyCallback(ejectDevicebyDrive), targetUri);
     }
+
 }
 
 void Drive::setMountPath(const QString &mountPath)
@@ -1371,12 +1416,11 @@ static void unmount_force_cb(GMount* mount, GAsyncResult* result, QString* targe
 
 static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, QString* targetUri)
 {
-    GError *err = nullptr;
+    g_autoptr (GError) err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
-    if (err) {
+    if (err) {        
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
-            g_error_free(err);
-            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
+            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);           
             if(targetUri){
                 delete targetUri;
                 targetUri = nullptr;
@@ -1384,15 +1428,13 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
             return nullptr;
         }
         if(strstr(err->message,"umount: ")){
-            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
-            g_error_free(err);
             if(targetUri){
                 delete targetUri;
                 targetUri = nullptr;
             }
+            QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
             return nullptr;
         }
-
         auto button = QMessageBox::warning(nullptr, QObject::tr("Unmount failed"), QObject::tr("Error: %1\n"
                                             "Do you want to unmount forcely?").arg(err->message),QMessageBox::Yes, QMessageBox::No);
         if (button == QMessageBox::Yes) {
@@ -1408,13 +1450,11 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
                 targetUri = nullptr;
             }
         }
-        g_error_free(err);
 
     } else {
         /* 卸载完成信息提示 */
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
-        Peony::SyncThread::notifyUser(unmountNotify);
-        QString ss = *targetUri;
+        Peony::SyncThread::notifyUser(unmountNotify);     
         Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
         if(targetUri){
             delete targetUri;
@@ -1436,3 +1476,45 @@ void Mount::unmount()
 
 
 /*==================Drive property==============*/
+
+#include <QGridLayout>
+#include <QLabel>
+#include <QGroupBox>
+#include <QListWidget>
+MessageDialog::MessageDialog(QWidget *parent):
+    QDialog(parent)
+{    
+    //setWindowTitle("Volume is occupied");
+    setBackgroundRole(QPalette::Base);
+    setAutoFillBackground(true);
+    setMinimumSize(QSize(350,200));
+}
+
+void MessageDialog::init(std::map<QString, QIcon> &occupiedAppMap, const QString& message)
+{
+    QVBoxLayout *layout = new QVBoxLayout();
+    QFont font;
+    font.setBold(true);
+    QLabel* massageLabel = new QLabel(tr(message.toStdString().data()));
+    massageLabel->setFont(font);
+    massageLabel->setContentsMargins(40,10,0,0);
+
+    std::map<QString, QIcon>::iterator  it;
+    QListWidget* listWidget         = new QListWidget(this);
+    listWidget->setContentsMargins(QMargins(10,10,10,10));
+    int i =0;
+    for (it = occupiedAppMap.begin(); it != occupiedAppMap.end(); ++it,++i)
+    {
+        QListWidgetItem *newItem = new QListWidgetItem;
+        newItem->setText(it->first);
+        newItem->setIcon(it->second);
+        listWidget->insertItem(i, newItem);
+    }
+
+    layout->addWidget(massageLabel);
+    layout->addStretch(5);
+    layout->addWidget(listWidget);
+    layout->addStretch();
+    setLayout(layout);
+}
+
