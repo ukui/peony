@@ -84,25 +84,6 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
         //qDebug()<<"tab bar double clicked"<<index;
     });
 
-    QToolButton *addPageButton = new QToolButton(this);
-    addPageButton->setProperty("useIconHighlightEffect", true);
-    addPageButton->setProperty("iconHighlightEffectMode", 1);
-    addPageButton->setProperty("fillIconSymbolicColor", true);
-    addPageButton->setFixedSize(QSize(32 ,32));
-    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    addPageButton->setAutoRaise(true);
-
-    connect(addPageButton, &QToolButton::clicked, this, [=]() {
-        auto uri = tabData(currentIndex()).toString();
-        Q_EMIT addPageRequest(uri, true);
-    });
-
-    m_float_button = addPageButton;
-
-//    connect(this, &QTabBar::tabCloseRequested, this, [=](int index){
-//        removeTab(index);
-//    });
-
     setDrawBase(false);
 }
 
@@ -135,7 +116,6 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
     //去除tabPage的图标
 //    setTabIcon(index, QIcon::fromTheme(iconName));
     setTabData(index, uri);
-    relayoutFloatButton(false);
 
     Q_EMIT this->locationUpdated(uri);
 }
@@ -167,36 +147,17 @@ void NavigationTabBar::tabRemoved(int index)
 {
     //qDebug()<<"tab removed"<<index;
     QTabBar::tabRemoved(index);
+
+    Q_EMIT pageRemoved();
     if (count() == 0) {
         Q_EMIT closeWindowRequest();
     }
-    relayoutFloatButton(false);
 }
 
 void NavigationTabBar::tabInserted(int index)
 {
     //qDebug()<<"tab inserted"<<index;
     QTabBar::tabInserted(index);
-    relayoutFloatButton(true);
-}
-
-void NavigationTabBar::relayoutFloatButton(bool insterted)
-{
-    int fixedY = 0;
-    if (count() == 0) {
-        m_float_button->move(0, fixedY);
-        return;
-    }
-    //qDebug()<<"relayout";
-    auto lastTabRect = tabRect(count() - 1);
-    fixedY = lastTabRect.center().y() - m_float_button->height()/2;
-    int fixedX = qMin(this->width() - qApp->style()->pixelMetric(QStyle::PM_TabBarScrollButtonWidth)*2 - m_float_button->width(), lastTabRect.right());
-    if (count() == 1) {
-        fixedX = lastTabRect.right();
-    }
-    m_float_button->move(fixedX, fixedY);
-    setFixedHeight(lastTabRect.height());
-    m_float_button->raise();
 }
 
 void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
@@ -317,7 +278,6 @@ void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
 void NavigationTabBar::resizeEvent(QResizeEvent *e)
 {
     QTabBar::resizeEvent(e);
-    relayoutFloatButton(false);
 }
 
 TabBarStyle *TabBarStyle::getStyle()
@@ -422,4 +382,18 @@ void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption
     }
 
     return QProxyStyle::drawControl(element, option, painter, widget);
+}
+void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget &&  widget->objectName() == "toolButton") {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addRoundedRect(widget->rect(), 16, 16);
+        painter->setClipPath(path);
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+        painter->restore();
+     } else {
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+    }
 }

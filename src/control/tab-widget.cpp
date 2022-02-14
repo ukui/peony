@@ -97,6 +97,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     connect(m_tab_bar, &QTabBar::currentChanged, this, &TabWidget::changeCurrentIndex);
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
     connect(m_tab_bar, &QTabBar::tabCloseRequested, this, &TabWidget::removeTab);
+    connect(m_tab_bar, &NavigationTabBar::pageRemoved, this, [this]{
+        updateTabBarGeometry();
+    });
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
 
@@ -105,17 +108,22 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         Q_EMIT tabBarIndexUpdate(index);
     });
 
-//    m_header_bar_layout = new QHBoxLayout(this);
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
-//    m_header_bar_bg = new QWidget(this);
-//    m_header_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-//    m_header_bar_bg->setFixedHeight(50);
-//    QToolBar *previewButtons = new QToolBar(this);
-//    m_tool_bar = previewButtons;
-    //previewButtons->setFixedHeight(m_tab_bar->height());
-    //m_header_bar_layout->setContentsMargins(0, 0, 5, 0);
-    //t->addWidget(m_header_bar_bg);
+
+    //bug#94981 修改添加控件的位置和形状
+    m_add_page_button = new QToolButton(this);
+    m_add_page_button->setFixedSize(QSize(48, 48));
+    m_add_page_button->setIconSize(QSize(16, 16));
+    m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    m_add_page_button->setAutoRaise(true);
+    m_add_page_button->setObjectName("toolButton");
+    m_add_page_button->setStyle(TabBarStyle::getStyle());
+
+    connect(m_add_page_button, &QToolButton::clicked, this, [=](){
+        QString str = m_tab_bar->tabData(m_tab_bar->currentIndex()).toString();
+        m_tab_bar->addPageRequest(str, true);
+    });
 
     updateTabBarGeometry();
 
@@ -238,6 +246,7 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=]() {
         m_status_bar->update();
+        updateTabBarGeometry();
     });
 }
 
@@ -677,7 +686,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "goToUri iconName:" <<iconName <<displayName<<curUri;
-    m_current_search->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -934,7 +942,6 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                 viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 
             m_tab_bar->addPage(realUri, jumpTo);
-            updateTabBarGeometry();
         });
         enumerator->prepare();
     });
@@ -1211,9 +1218,24 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    m_tab_bar->setGeometry(0, 1, this->width()-136,48);
-//    m_tab_bar->setFixedHeight(m_tab_bar->height());
+    //更新添加控件的位置
+    int addPageX = 0;
+    int tabBarWidth = 0;
+    if( m_tab_bar->sizeHint().width()+2 > this->width() - m_add_page_button->width() - 148 )
+    {
+        tabBarWidth = this->width() - m_add_page_button->width() - 148;
+        addPageX = this->width() - m_add_page_button->width() - 148;
+    }
+    else
+    {
+        tabBarWidth = this->width() - 148;
+        addPageX =  m_tab_bar->sizeHint().width()+2;
+    }
+
+    m_tab_bar->setGeometry(0, 1, tabBarWidth,48);
     m_tab_bar->raise();
+    m_add_page_button->move(addPageX, 0);
+    m_add_page_button->raise();
 }
 
 void TabWidget::updateStatusBarGeometry()
