@@ -88,6 +88,11 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         qtbase5-dev,
+         libglib2.0-dev,
+         libgsettings-qt-dev,
+         libpoppler-qt5-dev,
+         libnotify-dev,
          libcanberra-dev,
          libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)
