@@ -37,6 +37,7 @@ public:
 
 Q_SIGNALS:
     void pageAdded(const QString &uri);
+    void pageRemoved();
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
@@ -49,7 +50,6 @@ public Q_SLOTS:
 protected:
     void tabRemoved(int index) override;
     void tabInserted(int index) override;
-    void relayoutFloatButton(bool insterted);
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
@@ -83,6 +83,10 @@ class TabBarStyle : public QProxyStyle
                      const QStyleOption *option,
                      QPainter *painter,
                      const QWidget *widget = nullptr) const;
+   void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option,
+                           QPainter *painter,
+                           const QWidget *widget = nullptr) const override;
+
 };
 
 #endif // NAVIGATIONTABBAR_H
