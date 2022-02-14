@@ -121,6 +121,7 @@ public Q_SLOTS:
 
     void acceptFormat (bool);
     void colseFormat(bool);
+    void slot_format(bool enable);
 
     void formatloop();
 
