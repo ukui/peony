@@ -208,9 +208,10 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
         mFSCombox->setCurrentText("ext4");
     }
 
-    connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
+    connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)), Qt::UniqueConnection);
 
-    connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
+    connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)), Qt::UniqueConnection);
+    connect(this,&Format_Dialog::ensure_format, this, &Format_Dialog::slot_format, Qt::UniqueConnection);
 }
 
 Format_Dialog::Format_Dialog(const QString &uri, QWidget *parent) :
@@ -297,6 +298,55 @@ void Format_Dialog::colseFormat(bool)
     cancel_format(dev_name);
 }
 
+void Format_Dialog::slot_format(bool enable)
+{
+    if(!enable)
+        return;
+
+    mTimer->start();
+
+    // set ui button disable
+    mFormatBtn->setDisabled(TRUE);
+    mCancelBtn->setDisabled(TRUE);
+    //ui->lineEdit_device_name->setDisabled(TRUE);
+    //use set readonly property, fix exit issue link to task#33686
+    mNameEdit->setReadOnly(true);
+    mEraseCkbox->setDisabled(TRUE);
+
+    //init the value
+    char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
+    int full_clean = 0;
+
+    QString romType = mFSCombox->currentText();
+    if (QString("vfat/fat32") == romType) {
+        romType = "vfat";
+    }
+
+    //get values from ui
+    strncpy(rom_size,mRomSizeCombox->currentText ().toUtf8().constData(), strlen(mRomSizeCombox->currentText ().toUtf8().constData()));
+    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
+    strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
+
+//    //disable name and rom size list
+    //ui->comboBox_rom_size->setDisabled(true);
+    this->mFSCombox->setDisabled(true);
+
+    full_clean = mEraseCkbox->isChecked();
+
+    QString volname, devName, voldisplayname ,devtype;
+    //get device name
+    //FIXME: replace BLOCKING api in ui thread.
+    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
+
+    strncpy(dev_name,devName.toUtf8().constData(), sizeof (dev_name) - 1);
+    devtype = rom_type;
+
+    int format_value = 0;
+    //do format
+    kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
+                 full_clean?"zero":NULL, rom_name,&format_value);
+}
+
 
 static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
 {
@@ -362,27 +412,6 @@ void Format_Dialog::acceptFormat(bool)
     //keep this window above, fix bug #41227
 //    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
 
-    //init the value
-    char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
-    int full_clean = 0;
-
-    QString romType = mFSCombox->currentText();
-    if (QString("vfat/fat32") == romType) {
-        romType = "vfat";
-    }
-
-    //get values from ui
-    strncpy(rom_size,mRomSizeCombox->currentText ().toUtf8().constData(), strlen(mRomSizeCombox->currentText ().toUtf8().constData()));
-    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
-    strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
-
-//    //disable name and rom size list
-    //ui->comboBox_rom_size->setDisabled(true);
-    this->mFSCombox->setDisabled(true);
-
-    full_clean = mEraseCkbox->isChecked();
-
-    QString volname, devName, voldisplayname ,devtype;
     bool bEnsureFormat = false;
     auto info = FileInfo::fromUri(fm_uris);
     if (info.get()->isEmptyInfo()) {
@@ -403,48 +432,13 @@ void Format_Dialog::acceptFormat(bool)
                                                this);
     } else {
         bEnsureFormat = true;
-    }
-    //get device name
-    //FIXME: replace BLOCKING api in ui thread.
-    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
-
-    strncpy(dev_name,devName.toUtf8().constData(), sizeof (dev_name) - 1);
-    devtype = rom_type;
-
-    //do format
-    //enter kdisk_format function
-
-    //init format_finish value
-    //int format_value = 0;
-
-    //begin format
-    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),full_clean?"zero":NULL,rom_name,&format_value);
-
-    //begin start my_timer, processbar
+    } 
 
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
     b_failed = false;
 
-    //while get ensure emit , do format 
-    connect(this,&Format_Dialog::ensure_format, this, [=](bool){
-        // time begin loop
-        mTimer->start();
-
-        // set ui button disable
-        mFormatBtn->setDisabled(TRUE);
-        mCancelBtn->setDisabled(TRUE);
-        //ui->lineEdit_device_name->setDisabled(TRUE);
-        //use set readonly property, fix exit issue link to task#33686
-        mNameEdit->setReadOnly(true);
-        mEraseCkbox->setDisabled(TRUE);
-
-        int format_value = 0;
-        //do format
-        kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
-                     full_clean?"zero":NULL, rom_name,&format_value);
-    });
     if(bEnsureFormat){
         Q_EMIT ensure_format(true);
         bEnsureFormat = false;
