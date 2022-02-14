@@ -30,7 +30,7 @@
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QImageReader>
-#include <QtNetwork/QHostInfo>
+#include "linux-pwd-helper.h"
 #include "global-settings.h"
 #include "file-watcher.h"
 
@@ -285,7 +285,7 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
         m_ownerLabel->setText(qFileInfo.owner());
         //FIXME:明确当前文件所属计算机
         if (qFileInfo.isNativePath()) {
-            QString str_m_computerLabel = tr("%1 (this computer)").arg(QHostInfo::localHostName());
+            QString str_m_computerLabel = tr("%1 (this computer)").arg(LinuxPWDHelper::localHost());
             if (fm.width(str_m_computerLabel) > FIXED_CONTENT_WIDTH) {
                 m_computerLabel->setToolTip(str_m_computerLabel);
                 str_m_computerLabel = m_tableWidget->fontMetrics().elidedText(str_m_computerLabel, Qt::ElideMiddle, FIXED_CONTENT_WIDTH);
