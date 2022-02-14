@@ -75,6 +75,7 @@ class PEONYCORESHARED_EXPORT LinuxPWDHelper
 public:
     static const QList<PWDItem> getAllUserInfos();
     static const PWDItem getCurrentUser();
+    static const QString localHost();
 
 private:
     LinuxPWDHelper();

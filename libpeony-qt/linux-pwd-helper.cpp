@@ -23,6 +23,7 @@
 #include "linux-pwd-helper.h"
 
 #include <unistd.h>
+#include <QtNetwork/QHostInfo>
 
 LinuxPWDHelper::LinuxPWDHelper()
 {
@@ -57,4 +58,9 @@ const PWDItem LinuxPWDHelper::getCurrentUser()
     uid_t uid = geteuid();
     struct passwd *pw = getpwuid(uid);
     return PWDItem(pw);
+}
+
+const QString LinuxPWDHelper::localHost()
+{
+    return QHostInfo::localHostName();
 }
