@@ -85,6 +85,7 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (e->button() == Qt::LeftButton) {
             m_prepare_drag_time = e->timestamp();
             //修改页签可以拖拽，记录鼠标位置
+            //bug#94981 修改页签可以拖拽，记录鼠标位置
             m_press_pos = QCursor::pos();
             m_is_draging = true;
             m_current_widget = static_cast<QWidget *>(watched);
@@ -158,6 +159,18 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 topLevel->move(globalPos - m_toplevel_offset);
             }
         }
+        //commit id: 339dbaf18b9555d274e69c0589a755457e3f555b [FIX] 【文件管理器】首页页签未按UI设计稿还原 [LINK]94981
+        /*else {
+            bool overDragTime = 0 < m_prepare_drag_time && (m_prepare_drag_time + START_DRAG_TIME) < e->timestamp();
+            bool canDrag = !isTouchMove || overDragTime;
+            if (canDrag) {
+                m_is_draging = true;
+                m_prepare_drag_time = 0;
+                m_press_pos = QCursor::pos();
+                m_current_widget = static_cast<QWidget *>(watched);
+                m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
+            }
+        }*/
         break;
     }
     case QEvent::MouseButtonRelease: {

@@ -415,3 +415,17 @@ void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption
 
     return QProxyStyle::drawControl(element, option, painter, widget);
 }
+void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    if (widget &&  widget->objectName() == "toolButton") {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        QPainterPath path;
+        path.addRoundedRect(widget->rect(), 16, 16);
+        painter->setClipPath(path);
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+        painter->restore();
+     } else {
+        QProxyStyle::drawComplexControl(control, option, painter, widget);
+    }
+}

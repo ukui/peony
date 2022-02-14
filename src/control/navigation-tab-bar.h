@@ -88,6 +88,10 @@ class TabBarStyle : public QProxyStyle
                      const QStyleOption *option,
                      QPainter *painter,
                      const QWidget *widget = nullptr) const;
+   void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option,
+                           QPainter *painter,
+                           const QWidget *widget = nullptr) const override;
+
 };
 
 #endif // NAVIGATIONTABBAR_H

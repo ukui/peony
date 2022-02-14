@@ -193,14 +193,25 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
 
-    //修改添加控件的位置和形状
-    m_add_page_button = new QToolButton(this);
-    m_add_page_button->setProperty("useIconHighlightEffect", true);
-    m_add_page_button->setProperty("iconHighlightEffectMode", 1);
-    m_add_page_button->setProperty("fillIconSymbolicColor", true);
-    m_add_page_button->setFixedSize(QSize(32 ,32));
-    m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    m_add_page_button->setAutoRaise(true);
+    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        //bug#94981 修改添加控件的位置和形状
+        m_add_page_button = new QToolButton(this);
+        m_add_page_button->setFixedSize(QSize(48, 48));
+        m_add_page_button->setIconSize(QSize(16, 16));
+        m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
+        m_add_page_button->setAutoRaise(true);
+        m_add_page_button->setObjectName("toolButton");
+        m_add_page_button->setStyle(TabBarStyle::getStyle());
+    } else {
+        //修改添加控件的位置和形状
+        m_add_page_button = new QToolButton(this);
+        m_add_page_button->setProperty("useIconHighlightEffect", true);
+        m_add_page_button->setProperty("iconHighlightEffectMode", 1);
+        m_add_page_button->setProperty("fillIconSymbolicColor", true);
+        m_add_page_button->setFixedSize(QSize(32 ,32));
+        m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
+        m_add_page_button->setAutoRaise(true);
+    }
 
     connect(m_add_page_button, &QToolButton::clicked, this, [=](){
         QString str = m_tab_bar->tabData(m_tab_bar->currentIndex()).toString();
@@ -850,7 +861,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "goToUri iconName:" <<iconName <<displayName<<curUri;
-    m_current_search->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -1467,30 +1477,36 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
+//<<<<<<< HEAD
     //204 = 48 * 4 + 12   4个按钮每个48px，相互间隔4px
     quint32 windowButtonsWidth = 204;
     if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-        windowButtonsWidth -= 52;
+        //windowButtonsWidth -= 52;
+        //cherry-pick commit:339dbaf18b9555d274e69c0589a755457e3f555b, 为解决冲突加入的下一行
+        windowButtonsWidth = 148;
     }
     //更新添加控件的位置
     int addPageX = 0;
     int tabBarWidth = 0;
-    if( m_tab_bar->sizeHint().width()+2 > this->width() - m_add_page_button->width() - windowButtonsWidth )
-    {
+    if (m_tab_bar->sizeHint().width() + 2 > this->width() - m_add_page_button->width() - windowButtonsWidth) {
         tabBarWidth = this->width() - m_add_page_button->width() - windowButtonsWidth;
         addPageX = this->width() - m_add_page_button->width() - windowButtonsWidth;
-    }
-    else
-    {
+    } else {
         tabBarWidth = this->width() - windowButtonsWidth;
-        addPageX =  m_tab_bar->sizeHint().width()+2;
+        addPageX = m_tab_bar->sizeHint().width() + 2;
     }
 
     m_tab_bar->setGeometry(0, 1, tabBarWidth,48);
     m_tab_bar->raise();
-    auto lastTabRect =  m_tab_bar->rect();
-    int fixedY = lastTabRect.center().y() - m_add_page_button->height()/2;
-    m_add_page_button->move(addPageX, fixedY);
+
+    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        m_add_page_button->move(addPageX, 0);
+    } else {
+        auto lastTabRect =  m_tab_bar->rect();
+        int fixedY = lastTabRect.center().y() - m_add_page_button->height()/2;
+        m_add_page_button->move(addPageX, fixedY);
+    }
+
     m_add_page_button->raise();
 }
 
