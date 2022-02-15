@@ -211,11 +211,14 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
         m_uri = "file://" + m_uri;
     }
     /* 文件系统项特殊处理 */
-    if("file:///"==m_uri){
+    if("file:///" == m_uri){
         m_unmountable = m_mountable = m_ejectable = m_stopable = false;
-        m_mounted=true;
+        m_mounted = true;
         m_displayName = QObject::tr("File System");
-        m_iconName="drive-harddisk-system-symbolic";
+        m_iconName = "drive-harddisk-system-symbolic";
+    }else if("file:///data" == m_uri){
+        m_displayName = QObject::tr("Data");
+        m_iconName = "drive-harddisk";
     }
 }
 
