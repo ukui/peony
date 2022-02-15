@@ -293,7 +293,8 @@ const QString FileInfo::displayName()
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
-    if(m_uri == "file:///DATA")
+    QString targetUri = FileUtils::getTargetUri(m_uri);
+    if(m_uri == "file:///DATA" || targetUri == "file:///data")
     {
         return tr("data");
     }
