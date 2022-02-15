@@ -178,7 +178,7 @@ void OpenWithPropertiesPage::initFloorThree()
     connect(otherOpenLabel, &QLabel::linkActivated, this, [=]() {
         QtConcurrent::run([=]() {
             QProcess p;
-            if (COMMERCIAL_VERSION)
+            if (COMMERCIAL_VERSION || (GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU))
                 p.setProgram("kylin-software-center");
             else
                 p.setProgram("ubuntu-kylin-software-center");
