@@ -93,6 +93,12 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/thumbnail-manager.h
   libpeony-qt/volume-manager.cpp
   libpeony-qt/volume-manager.h
+ libpeony-qt/sync-thread.cpp
+ libpeony-qt/sync-thread.h
+ libpeony-qt/usershare-manager.cpp
+ libpeony-qt/usershare-manager.h
+ libpeony-qt/volumeManager.cpp
+ libpeony-qt/volumeManager.h
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
@@ -287,6 +293,16 @@ Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: peony-qt-desktop/*
+ peony-qt-desktop/desktop-background-manager.cpp
+ peony-qt-desktop/desktop-background-manager.h
+ peony-qt-desktop/desktopbackground.cpp
+ peony-qt-desktop/desktopbackground.h
+ peony-qt-desktop/desktopbackgroundwindow.cpp
+ peony-qt-desktop/desktopbackgroundwindow.h
+ peony-qt-desktop/user-dir-manager.cpp
+ peony-qt-desktop/user-dir-manager.h
+ peony-qt-desktop/waylandoutputmanager.cpp
+ peony-qt-desktop/waylandoutputmanager.h
 Copyright: 2020, KylinSoft Co., Ltd.
 License: GPL-3+
 
