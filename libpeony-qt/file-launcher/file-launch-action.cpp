@@ -113,6 +113,12 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
+    bool isMdmApp = this->property("isMdmApp").toBool();
+    if (isMdmApp) {
+        QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
+        return;
+    }
+
     //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
@@ -261,6 +267,12 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
+    bool isMdmApp = this->property("isMdmApp").toBool();
+    if (isMdmApp) {
+        QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
+        return;
+    }
+
     //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
     if (fileInfo->isEmptyInfo()) {
