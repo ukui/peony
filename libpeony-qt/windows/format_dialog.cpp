@@ -189,7 +189,7 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     auto mount = VolumeManager::getMountFromUri(targetUri);
     //fix name not show complete in bottom issue, bug#36887
     if (mount.get()) {
-        if(m_uris == "file:///data" || targetUri == "file://data"){
+        if(m_uris == "file:///data" || targetUri == "file:///data"){
             mNameEdit->setText(tr("Data"));
         }else{
             mNameEdit->setText(mount->name());
