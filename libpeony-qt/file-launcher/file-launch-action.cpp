@@ -113,6 +113,8 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
+    preCheck();
+
     bool isMdmApp = this->property("isMdmApp").toBool();
     if (isMdmApp) {
         QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
@@ -267,6 +269,8 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
+    preCheck();
+
     bool isMdmApp = this->property("isMdmApp").toBool();
     if (isMdmApp) {
         QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
@@ -691,4 +695,30 @@ void FileLaunchAction::execFileInterm()
     QDir::setCurrent(QDir::homePath());
     g_object_unref(app_info);
     g_free(quote);
+}
+
+void FileLaunchAction::preCheck()
+{
+    if (property("isMdmApp").isNull()) {
+        // 不是从default action初始化的，需要在此做判断
+        if (m_app_info) {
+            auto execmd = g_app_info_get_commandline(m_app_info);
+            QString settingsPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.cache/ukui-menu/ukui-menu.ini";
+            QSettings settings(settingsPath, QSettings::IniFormat);
+            auto g = settings.childGroups();
+            auto k = settings.allKeys();
+            settings.setIniCodec(QTextCodec::codecForName("utf-8"));
+            settings.beginGroup("application");
+            bool isExist = settings.contains(execmd);
+            bool notDisable = true;
+            if (isExist) {
+                notDisable = settings.value(execmd).toBool();
+            }
+            settings.endGroup();
+
+            if (isExist && !notDisable) {
+                setProperty("isMdmApp", true);
+            }
+        }
+    }
 }
