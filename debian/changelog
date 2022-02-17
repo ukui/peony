@@ -1,3 +1,15 @@
+peony (3.2.3+0127ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#95007 【文件管理器】视图模式界面未按设计稿还原(杨艳微)
+    - 其它改动说明:
+      无
+    - 影响域:
+      文件管理器
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 27 Jan 2022 09:27:10 +0800
+
 peony (3.2.3+0107ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
