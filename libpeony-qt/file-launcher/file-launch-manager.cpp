@@ -109,6 +109,23 @@ FileLaunchAction *FileLaunchManager::getDefaultAction(const QString &uri)
                 g_free (desktopApp);
             } else {
                 info = g_app_info_get_default_for_type(mimeType.toUtf8().constData(), false);
+                auto execmd = g_app_info_get_commandline(info);
+                QString settingsPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.cache/ukui-menu/ukui-menu.ini";
+                QSettings settings(settingsPath, QSettings::IniFormat);
+                auto g = settings.childGroups();
+                auto k = settings.allKeys();
+                settings.setIniCodec(QTextCodec::codecForName("utf-8"));
+                settings.beginGroup("application");
+                bool isExist = settings.contains(execmd);
+                bool notDisable = true;
+                if (isExist) {
+                    notDisable = settings.value(execmd).toBool();
+                }
+                settings.endGroup();
+
+                if (isExist && !notDisable) {
+                    isMdmApp = true;
+                }
             }
         }
 
