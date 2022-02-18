@@ -161,6 +161,10 @@
         <source>OK</source>
         <translation type="unfinished">གཏན་འཁེལ་བྱེད་པ།</translation>
     </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainProgressBar</name>
