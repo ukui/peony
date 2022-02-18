@@ -28,6 +28,7 @@
 #include <QTimer>
 
 class QToolButton;
+class QDrag;
 
 class NavigationTabBar : public QTabBar
 {
@@ -63,10 +64,11 @@ protected:
     void resizeEvent(QResizeEvent *e) override;
 
 private:
-    QToolButton *m_float_button;
-
     QTimer m_drag_timer;
     bool m_start_drag = false;
+    QPoint m_press_pos;
+    QDrag *m_drag = nullptr;
+    bool m_should_trigger_drop = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 };
