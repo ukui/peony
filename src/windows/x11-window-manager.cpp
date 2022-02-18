@@ -84,6 +84,11 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
             return true;
         if (e->button() == Qt::LeftButton) {
             m_prepare_drag_time = e->timestamp();
+            //修改页签可以拖拽，记录鼠标位置
+            m_press_pos = QCursor::pos();
+            m_is_draging = true;
+            m_current_widget = static_cast<QWidget *>(watched);
+            m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
         }
 
         //qDebug()<<event->type();
@@ -151,16 +156,6 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
                 auto globalPos = QCursor::pos();
                 //auto offset = globalPos - m_press_pos;
                 topLevel->move(globalPos - m_toplevel_offset);
-            }
-        } else {
-            bool overDragTime = 0 < m_prepare_drag_time && (m_prepare_drag_time + START_DRAG_TIME) < e->timestamp();
-            bool canDrag = !isTouchMove || overDragTime;
-            if (canDrag) {
-                m_is_draging = true;
-                m_prepare_drag_time = 0;
-                m_press_pos = QCursor::pos();
-                m_current_widget = static_cast<QWidget *>(watched);
-                m_toplevel_offset = m_current_widget->topLevelWidget()->mapFromGlobal(m_press_pos);
             }
         }
         break;

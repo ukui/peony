@@ -28,6 +28,7 @@
 #include <QTimer>
 
 class QToolButton;
+class QDrag;
 
 class NavigationTabBar : public QTabBar
 {
@@ -37,6 +38,7 @@ public:
 
 Q_SIGNALS:
     void pageAdded(const QString &uri);
+    void pageRemoved();
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
@@ -49,7 +51,6 @@ public Q_SLOTS:
 protected:
     void tabRemoved(int index) override;
     void tabInserted(int index) override;
-    void relayoutFloatButton(bool insterted);
 
     void dragEnterEvent(QDragEnterEvent *e) override;
     void dragMoveEvent(QDragMoveEvent *e) override;
@@ -67,6 +68,10 @@ private:
 
     QTimer m_drag_timer;
     bool m_start_drag = false;
+
+    QPoint m_press_pos;
+    QDrag *m_drag = nullptr;
+    bool m_should_trigger_drop = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 };
