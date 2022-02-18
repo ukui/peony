@@ -179,7 +179,7 @@ void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
 
 void NavigationTabBar::dragMoveEvent(QDragMoveEvent *e)
 {
-    //点击tab页签，抓取页面得到新的窗口
+    //bug#94981 点击tab页签可以抓取界面，获取创建新的窗口
     if (e->source() == this) {
         m_should_trigger_drop = false;
         m_drag->cancel();
@@ -235,8 +235,7 @@ void NavigationTabBar::mousePressEvent(QMouseEvent *e)
 void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
 {
     QTabBar::mouseMoveEvent(e);
-
-    //点击tab页签，抓取页面得到新的窗口
+    //bug#94981 点击tab页签可以抓取界面，获取创建新的窗口
     if (e->source() != Qt::MouseEventNotSynthesized) {
         return;
     }
