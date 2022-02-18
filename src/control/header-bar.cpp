@@ -641,17 +641,6 @@ void HeaderBar::updateSortTypeEnable()
     }
 }
 
-void HeaderBar::updateSortTypeEnable()
-{
-    auto url = m_window->getCurrentUri();
-    qDebug() << "url:" << url;
-    if(url == "computer:///"){
-        m_sort_type_menu->setEnabled(false);
-    }else{
-        m_sort_type_menu->setEnabled(true);
-    }
-}
-
 void HeaderBar::updateMaximizeState()
 {
     //maximize & restore
