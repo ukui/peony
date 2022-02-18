@@ -47,6 +47,8 @@
 
 #include "FMWindowIface.h"
 #include "main-window.h"
+#include "file-info.h"
+#include "file-info-job.h"
 
 static TabBarStyle *global_instance = nullptr;
 
@@ -94,30 +96,38 @@ void NavigationTabBar::addPages(const QStringList &uri)
 
 void NavigationTabBar::updateLocation(int index, const QString &uri)
 {
-    //FIXME: replace BLOCKING api in ui thread.
-//    auto iconName = Peony::FileUtils::getFileIconName(uri);
-    auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-    //qDebug() << "updateLocation text:" <<displayName <<uri;
-    if (uri.startsWith("search:///"))
-    {
-        QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
-        QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
-        displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
-    }
-
-    //elide text if it is too long
-    if (displayName.length() > ELIDE_TEXT_LENGTH)
-    {
-        int  charWidth = fontMetrics().averageCharWidth();
-        displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
-    }
-
-    setTabText(index, displayName);
-    //去除tabPage的图标
-//    setTabIcon(index, QIcon::fromTheme(iconName));
+    //bug#94981 修改拖拽tab页时出现断错误，改成异步查询更新tab数据
+    auto info = Peony::FileInfo::fromUri(uri);
+    auto infoJob = new Peony::FileInfoJob(info);
+    infoJob->setAutoDelete();
     setTabData(index, uri);
 
-    Q_EMIT this->locationUpdated(uri);
+    connect(infoJob, &Peony::FileInfoJob::queryAsyncFinished, this, [=](){
+        if (uri != tabData(index).toString())
+            return;
+        auto iconName = Peony::FileUtils::getFileIconName(uri);
+        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        if (uri.startsWith("search:///"))
+        {
+            QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
+            QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+            displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+        }
+
+        //elide text if it is too long
+        if (displayName.length() > ELIDE_TEXT_LENGTH)
+        {
+            int  charWidth = fontMetrics().averageCharWidth();
+            displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
+        }
+
+        setTabText(index, displayName);
+        setTabData(index, uri);
+
+        Q_EMIT this->locationUpdated(uri);
+    });
+
+    infoJob->queryAsync();
 }
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
@@ -168,6 +178,12 @@ void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
 
 void NavigationTabBar::dragMoveEvent(QDragMoveEvent *e)
 {
+    //bug#94981 点击tab页签可以抓取界面，获取创建新的窗口
+    if (e->source() == this) {
+        m_should_trigger_drop = false;
+        m_drag->cancel();
+        grabMouse();
+    }
     e->accept();
     return;
 }
@@ -179,6 +195,7 @@ void NavigationTabBar::dragLeaveEvent(QDragLeaveEvent *e)
 
 void NavigationTabBar::dropEvent(QDropEvent *e)
 {
+    m_start_drag = false;
     if (e->source() != this) {
         if (e->mimeData()->hasUrls()) {
             for (auto url : e->mimeData()->urls()) {
@@ -200,79 +217,92 @@ void NavigationTabBar::dropEvent(QDropEvent *e)
             oldTab->removeTab(oldTab->currentIndex());
         }
     }
+    releaseMouse();
 }
 
 void NavigationTabBar::mousePressEvent(QMouseEvent *e)
 {
     QTabBar::mousePressEvent(e);
-    if (!m_drag_timer.isActive()) {
+    m_press_pos = e->pos();
+    if (tabAt(e->pos()) >= 0)
         m_start_drag = true;
-        m_drag_timer.start();
-    } else {
+    else
         m_start_drag = false;
-    }
-
-    QTimer::singleShot(1, this, [=]() {
-        if (!m_start_drag)
-            return;
-
-        QTimer::singleShot(750, this, [=]() {
-            if (tabAt(e->pos()) == -1)
-                return;
-
-            if (!m_start_drag)
-                return;
-            //start a drag
-            //note that we should remove this tab from the window
-            //at other tab's drop event.
-
-            auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2, Qt::SmoothTransformation);
-
-            auto thisWindow = this->topLevelWidget();
-            //KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
-            for (auto win : qApp->allWidgets()) {
-                if (auto mainWin = qobject_cast<MainWindow *>(win)) {
-                    if (thisWindow != mainWin)
-                        KWindowSystem::raiseWindow(win->winId());
-                }
-            }
-
-
-            QDrag *d = new QDrag(this);
-            QMimeData *data = new QMimeData();
-            auto uri = tabData(currentIndex()).toString();
-            //data->setText(uri);
-            data->setData("peony/tab-index", uri.toUtf8());
-            d->setMimeData(data);
-
-            d->setPixmap(pixmap);
-            d->setHotSpot(pixmap.rect().center());
-            d->exec();
-
-            if (auto tab = qobject_cast<NavigationTabBar *>(d->target())) {
-                //do nothing for target tab bar helped us handling yet.
-            } else {
-                auto window = dynamic_cast<Peony::FMWindowIface *>(this->topLevelWidget());
-                auto newWindow = dynamic_cast<QWidget *>(window->create(this->tabData(currentIndex()).toString()));
-                newWindow->show();
-                KWindowSystem::raiseWindow(newWindow->winId());
-                newWindow->move(QCursor::pos() - newWindow->rect().center());
-                removeTab(currentIndex());
-            }
-        });
-    });
 }
 
 void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
 {
-    m_start_drag = false;
     QTabBar::mouseMoveEvent(e);
+    //bug#94981 点击tab页签可以抓取界面，获取创建新的窗口
+    if (e->source() != Qt::MouseEventNotSynthesized) {
+        return;
+    }
+
+    auto offset = e->pos() - m_press_pos;
+    auto offsetX = qAbs(offset.x());
+    auto offsetY = qAbs(offset.y());
+
+    if (e->pos().y() >= 0 && e->pos().y() <= this->height()) {
+        return;
+    }
+
+    if (!m_start_drag)
+        return;
+
+    //start a drag
+    //note that we should remove this tab from the window
+    //at other tab's drop event.
+
+    auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2, Qt::SmoothTransformation);
+
+    auto thisWindow = this->topLevelWidget();
+    //KWindowSystem::lowerWindow(this->topLevelWidget()->winId());
+    for (auto win : qApp->allWidgets()) {
+        if (auto mainWin = qobject_cast<MainWindow *>(win)) {
+            if (thisWindow != mainWin)
+                KWindowSystem::raiseWindow(win->winId());
+        }
+    }
+
+    QDrag *d = new QDrag(this);
+    m_drag = d;
+    QMimeData *data = new QMimeData();
+    auto uri = tabData(currentIndex()).toString();
+    //data->setText(uri);
+    data->setData("peony/tab-index", uri.toUtf8());
+    d->setMimeData(data);
+
+    d->setPixmap(pixmap);
+    d->setHotSpot(pixmap.rect().center());
+    m_should_trigger_drop = true;
+    d->exec();
+    qApp->restoreOverrideCursor();
+    m_drag = nullptr;
+
+    if (m_should_trigger_drop) {
+        if (auto tab = qobject_cast<NavigationTabBar *>(d->target())) {
+            //do nothing for target tab bar helped us handling yet.
+        } else {
+            auto window = dynamic_cast<Peony::FMWindowIface *>(this->topLevelWidget());
+            auto newWindow = dynamic_cast<QWidget *>(window->create(this->tabData(currentIndex()).toString()));
+            newWindow->show();
+            KWindowSystem::raiseWindow(newWindow->winId());
+            newWindow->move(QCursor::pos() - newWindow->rect().center());
+            removeTab(currentIndex());
+        }
+        delete d;
+        releaseMouse();
+        m_start_drag = false;
+    } else {
+        d->deleteLater();
+    }
 }
 
 void NavigationTabBar::mouseReleaseEvent(QMouseEvent *e)
 {
     QTabBar::mouseReleaseEvent(e);
     m_start_drag = false;
+    releaseMouse();
 }
 
 void NavigationTabBar::resizeEvent(QResizeEvent *e)
