@@ -28,6 +28,8 @@
 #include "file-info.h"
 #include "file-info-job.h"
 
+#include "global-settings.h"
+
 #include <QUrl>
 #include <QDir>
 #include <QDebug>
@@ -40,6 +42,14 @@ SideBarProxyFilterSortModel::SideBarProxyFilterSortModel(QObject *parent) : QSor
     m_locale = QLocale(QLocale::system().name());
     m_comparer = QCollator(m_locale);
     m_comparer.setNumericMode(true);
+
+    m_show_hidden = GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=](const QString &key){
+        if (key == SHOW_HIDDEN_PREFERENCE) {
+            m_show_hidden = GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+            invalidateFilter();
+        }
+    });
 }
 
 bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -75,7 +85,19 @@ bool SideBarProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelIn
 //    }
     if (item->type() == SideBarAbstractItem::FileSystemItem) {
         if (sourceParent.data(Qt::UserRole).toString() == "computer:///") {
-           item->filterShowRow();
+           return item->filterShowRow();
+        }
+
+        /*!
+          所有的volumeitem必须要有一个对应的uri才能显示，这个uri或者是mountpoint（已挂载的）或者是computer:///xxx（未挂载的），
+          否则会出现drive和volume同时存在的bug，参考#90081
+          */
+        if (item->uri().isEmpty()) {
+            return false;
+        }
+
+        if (!m_show_hidden) {
+            return !item->displayName().startsWith(".");
         }
     }
 

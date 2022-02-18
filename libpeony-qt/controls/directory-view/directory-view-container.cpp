@@ -34,7 +34,7 @@
 #include "directory-view-factory-manager.h"
 
 #include "file-item-proxy-filter-sort-model.h"
-
+#include "global-settings.h"
 #include "file-info.h"
 
 #include <QVBoxLayout>
@@ -46,6 +46,8 @@ using namespace Peony;
 
 DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
+
     m_model = new FileItemModel(this);
     m_proxy_model = new FileItemProxyFilterSortModel(this);
     m_proxy_model->setSourceModel(m_model);
@@ -67,7 +69,18 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
 
 //    connect(m_proxy, &DirectoryViewProxyIface::menuRequest,
 //            this, &DirectoryViewContainer::menuRequest);
-    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::updateWindowLocationRequest);
+    connect(m_model, &FileItemModel::changePathRequest, this, &DirectoryViewContainer::signal_responseUnmounted);
+
+    this->setProperty("statusBarUpdate", false);
+    connect(m_model, &FileItemModel::updated, [=](){
+        if(this->property("statusBarUpdate").isValid() && this->property("statusBarUpdate").toBool() == false){
+            this->setProperty("statusBarUpdate", true);
+            QTimer::singleShot(400, this, [=](){
+                Q_EMIT this->directoryChanged();
+                this->setProperty("statusBarUpdate", false);
+            });
+        }
+    });
 
     connect(FileLabelModel::getGlobalModel(), &FileLabelModel::dataChanged, this, [=](){
         refresh();
@@ -119,7 +132,10 @@ void DirectoryViewContainer::goBack()
         return;
 
     auto uri = m_back_list.takeLast();
-    m_forward_list.prepend(getCurrentUri());
+    //avoid same uri add twice
+    int count = m_forward_list.count();
+    if (count <= 0 || m_forward_list.at(0) != getCurrentUri())
+        m_forward_list.prepend(getCurrentUri());
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
@@ -134,7 +150,12 @@ void DirectoryViewContainer::goForward()
         return;
 
     auto uri = m_forward_list.takeFirst();
-    m_back_list.append(getCurrentUri());
+    //avoid same uri add twice
+    int count = m_back_list.count();
+    if (! getCurrentUri().contains("search://") &&
+        (count <= 0 || m_back_list.at(count-1) != getCurrentUri()))
+        m_back_list.append(getCurrentUri());
+
     Q_EMIT updateWindowLocationRequest(uri, false);
 }
 
@@ -285,8 +306,8 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
         return;
 
     auto settings = GlobalSettings::getInstance();
-    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
-    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
+    auto sortType = settings->isExist (SORT_TYPE) ? settings->getValue (SORT_TYPE).toInt() : 0;
+    auto sortOrder = settings->isExist (SORT_ORDER) ? settings->getValue (SORT_ORDER).toInt() : 0;
 
     auto oldView = m_view;
     QStringList selection;
@@ -333,11 +354,16 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
 
     connect(m_view, &DirectoryViewWidget::updateWindowSelectionRequest, this, &DirectoryViewContainer::updateWindowSelectionRequest);
 
+    connect(m_view, &DirectoryViewWidget::viewSelectionStatus, this, &DirectoryViewContainer::viewSelectionStatus);
+
     //similar to double clicked, but just jump directory only.
     //note that if view use double clicked signal, this signal should
     //not sended again.
     connect(m_view, &DirectoryViewWidget::updateWindowLocationRequest, this, [=](const QString &uri) {
         Q_EMIT this->updateWindowLocationRequest(uri, true);
+    });
+    connect(m_view, &DirectoryViewWidget::signal_itemAdded, this, [=](const QString& uri) {
+        Q_EMIT this->signal_itemAdded(uri);
     });
 
     //m_proxy->switchView(view);
@@ -407,6 +433,11 @@ const QStringList DirectoryViewContainer::getCurrentSelections()
     return QStringList();
 }
 
+const int DirectoryViewContainer::getCurrentRowcount()
+{
+    return m_view->getRowcount();
+}
+
 const QString DirectoryViewContainer::getCurrentUri()
 {
     if (m_view) {
@@ -463,7 +494,7 @@ void DirectoryViewContainer::setSortType(FileItemModel::ColumnType type)
     if (!m_view)
         return;
     m_view->setSortType(type);
-    Peony::GlobalSettings::getInstance()->setValue(SORT_COLUMN, type);
+    Peony::GlobalSettings::getInstance()->setValue (SORT_TYPE, type);
 }
 
 Qt::SortOrder DirectoryViewContainer::getSortOrder()
@@ -480,7 +511,8 @@ void DirectoryViewContainer::setSortOrder(Qt::SortOrder order)
         return;
     if (!m_view)
         return;
-    Peony::GlobalSettings::getInstance()->setValue(SORT_ORDER, order);
+
+    Peony::GlobalSettings::getInstance()->setValue (SORT_ORDER, order);
     m_view->setSortOrder(order);
 }
 

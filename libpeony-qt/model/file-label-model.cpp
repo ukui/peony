@@ -104,6 +104,7 @@ const QList<QColor> FileLabelModel::getColors()
 
 int FileLabelModel::lastLabelId()
 {
+    m_label_settings = new QSettings(QSettings::UserScope, "org.ukui", "peony-qt", this);
     if (m_label_settings->value("lastid").isNull()) {
         return 0;
     } else {

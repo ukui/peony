@@ -501,12 +501,27 @@ bool FileUtils::isStandardPath(const QString &uri)
     QString videoPath= QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString publicPath = g_get_user_special_dir(G_USER_DIRECTORY_PUBLIC_SHARE);
     QStringList mStandardPaths;
     //qDebug() << "isStandardPath :" <<templateDir.path();
     mStandardPaths <<desktopPath <<documentPath <<picturePath <<videoPath
-                  <<downloadPath <<musicPath <<templateDir.path();
+                  <<downloadPath <<musicPath <<templateDir.path()<<publicPath;
 
     if (mStandardPaths.contains(url.path()))
+        return true;
+
+    return false;
+}
+
+/* @func: 判断文件是否属于移动设备上的文件，是的话，提示为永久删除
+ * FIXME 目前根据挂载路径进行判断的，可能不准确，目前暂未找到好的判断方法
+ * 其他系统分区文件可能也会判断为移动设备文件
+ * 目前的定位为，判断是否非本系统文件更为合适
+*/
+bool FileUtils::isMobileDeviceFile(const QString &uri)
+{
+    auto targetUri = getTargetUri(uri);
+    if (uri.startsWith("file:///media") || targetUri.startsWith("file:///media"))
         return true;
 
     return false;
@@ -518,7 +533,9 @@ bool FileUtils::isSamePath(const QString &uri, const QString &targetUri)
     if (uri.endsWith(":///") && targetUri.endsWith(":///"))
         return uri == targetUri;
 
-    return QUrl(uri).path() == QUrl(targetUri).path();
+    //return QUrl(uri).path() == QUrl(targetUri).path();
+    //fix bug#84324
+    return QUrl(urlEncode(uri)).path() == QUrl(urlEncode(targetUri)).path();
 }
 
 bool FileUtils::containsStandardPath(const QStringList &list)
@@ -527,6 +544,17 @@ bool FileUtils::containsStandardPath(const QStringList &list)
     {
         if (isStandardPath(uri))
             return true;
+    }
+
+    return false;
+}
+
+bool FileUtils::containsStandardPath(const QList<QUrl> &urls)
+{
+    for (QUrl url : urls) {
+        if (isStandardPath(url.toDisplayString())) {
+            return true;
+        }
     }
 
     return false;
@@ -734,6 +762,41 @@ QString transcodeForGbkCode(QByteArray gbkName, QString &volumeName)
     return name;
 }
 
+/* @func:           calculate all files size, recursively calculate folder files size
+ * @uri             file uri 文件uri, 如果是文件夹将会递归计算子文件大小
+ */
+quint64 FileUtils::getFileTotalSize(const QString &uri)
+{
+    auto info = FileInfo::fromUri(uri);
+    if (info->isDir())
+    {
+        guint64 disk_usage = 0, num_dirs = 0, num_files = 0;
+        GFile          *m_file = g_file_new_for_uri(uri.toUtf8().constData());
+        GCancellable   *m_cancel = g_cancellable_new();
+        GError         *err = nullptr;
+        g_file_measure_disk_usage (m_file,
+                                   G_FILE_MEASURE_NONE,
+                                   m_cancel,
+                                   nullptr,
+                                   nullptr,
+                                   &disk_usage,
+                                   &num_dirs,
+                                   &num_files,
+                                   &err);
+
+        if (err){
+            qWarning()<< "getFileTotalSize has error:" <<err->code<<err->message<<disk_usage;
+        }
+
+        g_object_unref(m_file);
+        g_object_unref(m_cancel);
+
+        return disk_usage;
+    }
+
+    return info->size();
+}
+
 /* @func:           determines whether the @volumeName needs to be transcoded. 判断字符串是否需要转码.
  * @volumeName      a string that needs to be converted from ascii to  Unicode. eg:"\\xb8\\xfc\\xd0\\xc2CODE"
  * @unixDeviceName  a device name. eg: /dev/sdb
@@ -903,7 +966,9 @@ quint64 FileUtils::getFileSystemSize(QString uri)
 
     unixDevice = FileUtils::getUnixDevice(uri);
 
-    if (unixDevice.isEmpty()) {
+    //related bug#95731, encrypted data disk show property crash issue
+    if (unixDevice.isEmpty() ||
+        ! (unixDevice.startsWith("/dev/sd") || unixDevice.startsWith("/dev/sr"))) {
         return total;
     }
     dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
@@ -927,7 +992,10 @@ QString FileUtils::getFileSystemType(QString uri)
 
     unixDevice = getUnixDevice(uri);
 
-    if (unixDevice.isEmpty()) {
+    //fix bug#95731, encrypted data disk show property crash issue
+    //encrypted disk unixDevice name is like /dev/mapper/kylin--vg-data
+    if (unixDevice.isEmpty() ||
+        ! (unixDevice.startsWith("/dev/sd") || unixDevice.startsWith("/dev/sr"))) {
         return fsType;
     }
     dbusPath = "/org/freedesktop/UDisks2/block_devices/" + unixDevice.split("/").last();
@@ -946,4 +1014,41 @@ QString FileUtils::getFileSystemType(QString uri)
 //        fsType = blockInterface.property("IdVersion").toString();
 
     return fsType;
+}
+void FileUtils::saveCreateTime(const QString &url)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) file = url.startsWith ("file://") ? g_file_new_for_uri (url.toUtf8 ().constData ()) : g_file_new_for_path (url.toUtf8 ().constData ());
+    g_autofree gchar* currentTime = g_strdup_printf ("%ld", g_get_real_time ());
+
+    g_return_if_fail (G_IS_FILE (file) && g_file_query_exists (file, NULL));
+    g_file_set_attribute (file, "metadata::CreateTime", G_FILE_ATTRIBUTE_TYPE_STRING, currentTime, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+
+    if (error)      qDebug () << "set create time error: " << error->message;
+}
+
+gint64 FileUtils::getCreateTimeOfMicro(const QString &url)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) file = g_file_new_for_uri (url.toUtf8 ().constData ());
+    g_autoptr (GFileInfo) fileInfo = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_CHANGED "," G_FILE_ATTRIBUTE_TIME_CREATED "," "metadata::CreateTime", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    g_return_val_if_fail (G_IS_FILE (file) && G_IS_FILE_INFO (fileInfo) && g_file_query_exists (file, NULL), 0);
+
+    if (g_file_info_has_attribute (fileInfo, G_FILE_ATTRIBUTE_TIME_CREATED)) {
+        gint64 createTime = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_CREATED);
+        gint64 modifyTime = g_file_info_get_attribute_uint64 (fileInfo, G_FILE_ATTRIBUTE_TIME_CHANGED);
+        if (createTime != 0 && createTime <= modifyTime) {
+            return createTime;
+        }
+    }
+
+    if (g_file_info_has_attribute (fileInfo, "metadata::CreateTime")) {
+        const gchar* createTimeStr = g_file_info_get_attribute_string (fileInfo, "metadata::CreateTime");
+        if (createTimeStr) {
+            g_autofree char* createTime10 = g_strndup (createTimeStr, 10);
+            return atoll (createTime10);
+        }
+    }
+
+    return 0;
 }

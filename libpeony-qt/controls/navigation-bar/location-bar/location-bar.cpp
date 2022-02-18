@@ -174,6 +174,9 @@ void LocationBar::setRootUri(const QString &uri)
     auto tmpUri = uri;
     while (!tmpUri.isEmpty() && tmpUri != "") {
         m_buttons_info.prepend(FileInfo::fromUri(tmpUri));
+        if(tmpUri.startsWith("kmre:///") && tmpUri != "kmre:///"){
+            m_buttons_info.prepend(FileInfo::fromUri("kmre:///"));
+        }
         tmpUri = FileUtils::getParentUri(tmpUri);
     }
 
@@ -305,9 +308,6 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
         return;
     }
 
-    QUrl url = uri;
-
-    auto parent = FileUtils::getParentUri(uri);
     if (setIcon) {
         QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
         button->setIcon(icon);
@@ -315,10 +315,12 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
 
     //comment to fix button text show incomplete issue, link to bug#72080
     //button->setStyleSheet("QToolButton{padding-left: 13px; padding-right: 13px}");
-    if (!url.fileName().isEmpty()) {
-        if (FileUtils::getParentUri(uri).isNull()) {
-            setMenu = false;
-        }
+
+    //fix bug#84324
+    //    QUrl url = uri;
+    QUrl url = FileUtils::urlEncode(uri);
+    if (!url.fileName().isEmpty())
+    {
         button->setText(displayName);
         m_current_uri = uri.left(uri.lastIndexOf("/")+1) + displayName;
     } else {
@@ -374,13 +376,18 @@ void LocationBar::addButton(const QString &uri, bool setIcon, bool setMenu)
             QList<QAction *> actions;
             for (auto uri : suburis) {
                 QString tmp = uri;
+                QIcon icon;
                 displayName = Peony::FileUtils::getFileDisplayName(uri);
                 if (displayName.length() > ELIDE_TEXT_LENGTH)
                 {
                     int  charWidth = fontMetrics().averageCharWidth();
                     displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
                 }
-                QIcon icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                if(uri.startsWith("filesafe:///")){
+                    icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri, false), QIcon::fromTheme("folder"));
+                }else{
+                    icon = QIcon::fromTheme(Peony::FileUtils::getFileIconName(uri), QIcon::fromTheme("folder"));
+                }
                 QAction *action = new QAction(icon, displayName, this);
                 actions<<action;
                 connect(action, &QAction::triggered, [=]() {

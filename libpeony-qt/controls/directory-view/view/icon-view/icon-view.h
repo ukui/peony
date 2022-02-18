@@ -91,6 +91,9 @@ public:
     //selections
     const QStringList getSelections() override;
 
+    //rowcount
+    const int getRowcount();
+
     //children
     const QStringList getAllFileUris() override;
 
@@ -111,7 +114,7 @@ public Q_SLOTS:
 
     //selections
     void setSelections(const QStringList &uris) override;
-    void invertSelections() override;
+    void invertSelections(bool isInvert = true) override;
     void scrollToSelection(const QString &uri) override;
 
     //clipboard
@@ -131,6 +134,8 @@ public Q_SLOTS:
     void resort();
     void reportViewDirectoryChanged();
     void clearIndexWidget();
+    void multiSelect();
+    void disableMultiSelect();
 
 protected:
     /*!
@@ -192,9 +197,11 @@ private:
 
     bool m_delegate_editing = false;
 
+    bool m_multi_select =false;
     bool m_allow_set_index_widget = true;
 
     bool m_slider_bar_draging = false;
+    bool m_mouse_release_unselect = false;
 };
 
 //IconView2
@@ -220,6 +227,11 @@ public:
         return m_view->getSelections();
     }
 
+    //rowcount
+    const int getRowcount(){
+        return m_view->getRowcount();
+    }
+
     //children
     const QStringList getAllFileUris() {
         return m_view->getAllFileUris();
@@ -236,7 +248,7 @@ public:
         return m_zoom_level;
     }
     int minimumZoomLevel() {
-        return 21;
+        return 41;
     }
     int maximumZoomLevel() {
         return 100;
@@ -271,6 +283,9 @@ public Q_SLOTS:
     void invertSelections() {
         m_view->invertSelections();
     }
+    void selectAll() {
+        m_view->invertSelections(false);
+    }
     void scrollToSelection(const QString &uri) {
         m_view->scrollToSelection(uri);
     }
@@ -300,13 +315,19 @@ public Q_SLOTS:
     void setCurrentZoomLevel(int zoomLevel);
 
     void clearIndexWidget();
+    void multiSelect(){
+        m_view->multiSelect();
+    }
+    void disableMultiSelect(){
+        m_view->disableMultiSelect();
+    }
 
 private:
     IconView *m_view = nullptr;
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 25;
+    int m_zoom_level = 70;
 };
 
 }

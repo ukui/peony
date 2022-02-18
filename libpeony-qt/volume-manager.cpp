@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QDebug>
+#include "file-info.h"
 
 #include "file-info.h"
 

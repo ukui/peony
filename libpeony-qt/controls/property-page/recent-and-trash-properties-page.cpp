@@ -28,6 +28,7 @@
 #include "global-settings.h"
 #include "file-count-operation.h"
 
+#include <QGSettings>
 #include <QFormLayout>
 #include <QPushButton>
 #include <QLineEdit>
@@ -46,15 +47,7 @@ QString RecentAndTrashPropertiesPage::getIconName() {
         return "application-x-desktop";
 
     QString realPath;
-    bool startWithTrash = m_fileInfo->uri().startsWith("trash:///");
-
-    if (startWithTrash) {
-        realPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
-                + "/.local/share/Trash/files/"
-                + m_fileInfo->displayName();
-    } else {
-        realPath = m_fileInfo->targetUri();
-    }
+    realPath = m_fileInfo->targetUri();
 
     auto _desktop_file = g_desktop_app_info_new_from_filename(QUrl(realPath).path().toUtf8().constData());
     if (_desktop_file) {
@@ -81,6 +74,11 @@ void RecentAndTrashPropertiesPage::init()
         delete m_futureWatcher;
         m_futureWatcher = nullptr;
     }
+
+    auto targetFileInfo = FileInfo::fromUri(m_fileInfo.get()->targetUri());
+    FileInfoJob j(targetFileInfo);
+    j.querySync();
+
     m_layout = new QFormLayout(this);
     m_layout->setRowWrapPolicy(QFormLayout::WrapLongRows);
     m_layout->setFormAlignment(Qt::AlignLeft|Qt::AlignHCenter);
@@ -100,6 +98,9 @@ void RecentAndTrashPropertiesPage::init()
     auto name = new QLineEdit(this);
     name->setReadOnly(true);
     name->setText(m_fileInfo->displayName());
+    if (!targetFileInfo.get()->displayName().isEmpty()) {
+        name->setText(targetFileInfo.get()->displayName());
+    }
 
     boxLayout->addWidget(name);
     boxLayout->setAlignment(Qt::AlignBottom);
@@ -174,9 +175,22 @@ void RecentAndTrashPropertiesPage::init()
 
             QString deletion_date = g_file_info_get_attribute_as_string(info, G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
             deletion_date = deletion_date.replace("T", " ");
+            QDateTime date_dime = QDateTime::fromString(deletion_date, "yyyy-MM-dd HH:mm:ss");
+            deletion_date = date_dime.toString(GlobalSettings::getInstance()->getSystemTimeFormat());
+
             quint64 delete_width = FIXED_ROW_WIDTH - delete_label->fontMetrics().width(tr("Deletion Date: "));
             delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
             delete_label->setWordWrap(true);
+
+            if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
+                QGSettings *settings = new QGSettings("org.ukui.control-center.panel.plugins", "", this);
+                connect(settings, &QGSettings::changed, this, [=](const QString &key) {
+                    if(key == "date" || key == "hoursystem") {
+                        QString deletion_date = date_dime.toString(GlobalSettings::getInstance()->getSystemTimeFormat());
+                        delete_label->setText(label->fontMetrics().elidedText(deletion_date, Qt::ElideMiddle, delete_width));
+                    }
+                });
+            }
 
             g_object_unref(info);
             g_object_unref(file);

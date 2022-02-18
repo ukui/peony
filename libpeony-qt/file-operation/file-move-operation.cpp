@@ -41,8 +41,15 @@ static void handleDuplicate(FileNode *node)
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
     m_source_uris = sourceUris;
-    if(destDirUri.startsWith("favorite://"))/* favorite://xxx特殊处理,例如本机共享，bug#83353 */
+
+    /* favorite://xxx特殊处理,例如本机共享，bug#83353 */
+    if (destDirUri.startsWith("favorite://")) {
         destDirUri = FileUtils::getTargetUri(destDirUri);
+        if (destDirUri.isEmpty ()) {
+            destDirUri = "favorite:///";
+        }
+    }
+
     m_dest_dir_uri = FileUtils::urlEncode(destDirUri);
     m_info = std::make_shared<FileOperationInfo>(sourceUris, destDirUri, FileOperationInfo::Move);
 }
@@ -97,6 +104,15 @@ void FileMoveOperation::progress_callback(goffset current_num_bytes,
 ExceptionResponse FileMoveOperation::prehandle(GError *err)
 {
     //setHasError(true);
+
+    /**
+     * @note FIX BUG 79363
+     * 文件传输中拔掉U盘，第一次报错:G_IO_ERROR_FAILED，后续报错:G_IO_ERROR_NOT_FOUND
+     */
+    if (G_IO_ERROR_NOT_FOUND == err->code && m_prehandle_hash.contains(G_IO_ERROR_FAILED)) {
+        return IgnoreAll;
+    }
+
     if (m_prehandle_hash.contains(err->code))
         return m_prehandle_hash.value(err->code);
 
@@ -107,6 +123,46 @@ void FileMoveOperation::move()
 {
     if (isCancelled())
         return;
+
+    // 特殊处理 favorite:///
+    g_autoptr (GFile) destFile = g_file_new_for_uri (m_dest_dir_uri.toUtf8 ().constData ());
+    g_autofree gchar* destSchema = g_file_get_uri_scheme (destFile);
+
+    if (G_IS_FILE (destFile) && destSchema && !g_ascii_strcasecmp (destSchema, "favorite")) {
+        for (auto src : m_source_uris) {
+            g_autoptr (GFile) srcFile = g_file_new_for_uri (src.toUtf8 ().constData ());
+            g_autoptr (GError) error = NULL;
+            // 注意：不可能报冲突错误
+            g_file_move (srcFile, destFile, m_default_copy_flag, getCancellable().get()->get(), GFileProgressCallback (progress_callback), this, &error);
+            if (error) {
+                setHasError ();
+                FileOperationError except;
+                int handle_type = prehandle(error);
+                except.errorType = ET_GIO;
+                except.op = FileOpMove;
+                except.title = tr("Move file error");
+                except.errorCode = error->code;
+                except.errorStr = error->message;
+                except.srcUri = m_current_src_uri;
+                except.destDirUri = m_current_dest_dir_uri;
+                except.isCritical = false;
+                if (handle_type == Other) {
+                    if (G_IO_ERROR_EXISTS != error->code) {
+                        except.dlgType = ED_WARNING;
+                        Q_EMIT errored(except);
+                    }
+                    // ignore multiple bounces
+                    if (except.errorCode == G_IO_ERROR_NOT_SUPPORTED) {
+                        m_prehandle_hash.insert(error->code, IgnoreOne);
+                    }
+                }
+            }
+        }
+
+        Q_EMIT operationFinished();
+
+        return;
+    }
 
     QList<FileNode*> nodes;
     QList<FileNode*> errNode;
@@ -1017,6 +1073,10 @@ bool FileMoveOperation::isValid()
         //FIXME: find if destUriDirFile is srcFile's child.
         //it will call G_IO_ERROR_INVALID_FILENAME
         ++index;
+    }
+    //can not move StandardPath to any dir. see:#87912
+    if (FileUtils::containsStandardPath(m_source_uris)) {
+        isInvalid = true;
     }
     if (isInvalid)
         invalidExited(tr("Invalid Operation."));

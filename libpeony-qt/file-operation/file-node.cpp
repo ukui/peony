@@ -25,6 +25,7 @@
 #include "file-info.h"
 #include "file-node-reporter.h"
 
+#include <QUrl>
 
 using namespace Peony;
 
@@ -37,7 +38,7 @@ FileNode::FileNode(QString uri, FileNode *parent, FileNodeReporter *reporter)
     char *basename = g_file_get_basename(file);
     m_basename = basename;
     m_dest_basename = basename;
-    m_basename = m_uri.split("/").last();
+    m_basename =  FileUtils::urlDecode(m_uri).split("/").last();
     m_dest_basename = m_basename;
     g_free(basename);
 

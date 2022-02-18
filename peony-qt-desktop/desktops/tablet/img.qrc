@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/ukui-search.svg</file>
+        <file>img/ukui-focus.png</file>
+        <file>img/ukui-search-blue.svg</file>
+        <file>img/fixed.svg</file>
+        <file>img/unfixed.svg</file>
+        <file>img/uninstall.svg</file>
+        <file>img/focus-select.png</file>
+        <file>img/focus-select@2x.png</file>
+        <file>img/focus.png</file>
+        <file>img/focus@2x.png</file>
+        <file>img/memo-select.png</file>
+        <file>img/memo-select@2x.png</file>
+        <file>img/memo.png</file>
+        <file>img/memo@2x.png</file>
+        <file>img/note-select.png</file>
+        <file>img/click.svg</file>
+        <file>img/default.svg</file>
+        <file>img/hover.svg</file>
+        <file>img/learning-center-select.svg</file>
+        <file>img/learning-center-selected.svg</file>
+        <file>img/refresh.svg</file>
+        <file>img/white-refresh.svg</file>
+    </qresource>
+</RCC>

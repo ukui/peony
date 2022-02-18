@@ -21,10 +21,12 @@
  */
 
 #include "list-view-style.h"
+#include "list-view-delegate.h"
 
 #include <QStyleOption>
 #include <QPainterPath>
 #include <QPainter>
+#include <QDebug>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;

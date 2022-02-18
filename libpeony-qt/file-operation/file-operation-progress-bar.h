@@ -25,6 +25,9 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QListWidget>
+#include <QPushButton>
+
+#include <gio/gio.h>
 
 class ProgressBar;
 class OtherButton;
@@ -40,17 +43,24 @@ public:
     ProgressBar* addFileOperation();
     void showProgress (ProgressBar& progress);
     void removeFileOperation(ProgressBar* progress);
+    bool isInhibit();
 
 private:
     explicit FileOperationProgressBar(QWidget *parent = nullptr);
     ~FileOperationProgressBar();
     void showMore ();
 
+    // s3 s4
+    bool inhibit ();
+    void uninhibit ();
+
 protected:
     void showWidgetList(bool show);
+#if 0
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+#endif
 
 Q_SIGNALS:
     void pause();
@@ -65,8 +75,11 @@ public:
     bool m_error = false;
 
 private:
+    GUnixFDList*            m_fds = nullptr;
+
     // layout
     QVBoxLayout* m_main_layout = nullptr;
+    GDBusConnection* m_dbus_connection = nullptr;
 
     // widget
     QListWidget* m_list_widget = nullptr;
@@ -207,7 +220,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+//    void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
@@ -238,8 +251,12 @@ private:
 
     // btn
     int m_btn_margin_top = 8;
-    int m_btn_margin = 10;
-    int m_btn_size = 16;
+    int m_btn_margin = 3;
+    int m_btn_size = 32;
+
+    // btn
+    QPushButton* m_btn_close = nullptr;
+    QPushButton* m_btn_mini = nullptr;
 
     // icon
     int m_icon_margin = 20;
@@ -254,7 +271,7 @@ private:
 
     // percent
     int m_percent_margin = 15;
-    int m_percent_height = 50;
+    int m_percent_height = 80;
 
     // foot
     float m_foot_margin = 3;
@@ -262,17 +279,17 @@ private:
     // calc
     const float m_minilize_button_x_l = m_fix_width - m_btn_margin * 2 - m_btn_size * 2;
     const float m_minilize_button_x_r = m_minilize_button_x_l + m_btn_size;
-    const float m_minilize_button_y_t = m_btn_margin_top;
+    const float m_minilize_button_y_t = m_btn_margin;
     const float m_minilize_button_y_b = m_btn_margin_top + m_btn_size;
 
     const float m_close_button_x_l = m_fix_width - m_btn_margin - m_btn_size;
     const float m_close_button_x_r = m_fix_width - m_btn_margin;
-    const float m_close_button_y_t = m_btn_margin_top;
+    const float m_close_button_y_t = m_btn_margin;
     const float m_close_button_y_b = m_btn_margin_top + m_btn_size;
 
     const float m_foot_progress_back_y = m_fix_height - m_foot_margin;
 
-    const float m_text_area_x = (m_fix_width - m_title_width ) / 2 - 2;
+    const float m_text_area_x = m_btn_margin * 4;
 
     const float m_icon_area_y = (m_fix_height - m_icon_size) / 2;
 
@@ -285,7 +302,7 @@ private:
     const float m_progress_pause_y = (m_fix_height - m_pause_btn_height) / 2;
     const float m_progress_pause_y_b = (m_fix_height + m_pause_btn_height) / 2;
 
-    const float m_percent_x = m_fix_width - m_percent_margin - m_percent_height;
+    const float m_percent_x = 0;
     const float m_percent_y = m_fix_height - m_foot_margin - m_percent_height - m_percent_margin / 5;
 
     // progress

@@ -55,3 +55,13 @@ void SideBarAbstractItem::clearChildren()
     m_children->clear();
     //qDebug()<<"clear children has children"<<m_model->hasChildren(firstColumnIndex());
 }
+
+QModelIndex SideBarAbstractItem::firstColumnIndex()
+{
+    return m_model->firstColumnIndex(this);
+}
+
+QModelIndex SideBarAbstractItem::lastColumnIndex()
+{
+    return m_model->lastColumnIndex(this);
+}

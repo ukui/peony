@@ -61,6 +61,7 @@
 #include <QMessageBox>
 
 #include <QPainterPath>
+#include <QLabel>
 
 #include <QDebug>
 #include <QToolTip>
@@ -119,6 +120,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     this->setModel(m_proxy_model);
 
     setMouseTracking(true);//追踪鼠标
+    setAutoScrollMargin(0);
 
     VolumeManager *volumeManager = VolumeManager::getInstance();
     connect(volumeManager,&Peony::VolumeManager::volumeAdded,this,[=](const std::shared_ptr<Peony::Volume> &volume){
@@ -154,6 +156,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     });
 
     connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,this,[=](){
+        if(!m_currSelectedItem)
+            return;
         JumpDirectory(m_currSelectedItem->uri());
         qDebug()<<"挂载后跳转路径："<<m_currSelectedItem->uri();
     });
@@ -162,7 +166,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         switch (index.column()) {
         case 0: {
             m_currSelectedItem = m_proxy_model->itemFromIndex(index);
-            if(m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
+            if(m_currSelectedItem && m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
                 m_currSelectedItem->mount();
             else{
                 JumpDirectory(m_currSelectedItem->uri());
@@ -270,7 +274,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
                     if ((0 != QString::compare(item->uri(), "computer:///")) &&
                         (0 != QString::compare(item->uri(), "filesafe:///"))) {
                         for (const auto &actionItem : actionList) {
-                            if(item->isMountable()||item->isUnmountable())/* 分区才去需要判断是否已挂载 */
+                            if(item->isVolume())/* 分区才去需要判断是否已挂载 */
                                 actionItem->setEnabled(item->isMounted());
                         }
                     }
@@ -283,9 +287,24 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     connect(m_model, &QAbstractItemModel::dataChanged, this, [=](){
         this->viewport()->update();
+        m_proxy_model->invalidate();
     });
 
-    expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
+    connect(m_model, &SideBarModel::signal_collapsedChildren, this, [=](const QModelIndex &index){
+        QModelIndex modelIndex = m_proxy_model->mapFromSource(index);
+        collapse(modelIndex);
+    });
+
+    //expandToDepth(1);/* 快速访问、计算机、网络 各模块往下展开一层 */
+    for(int row =0; row < model()->rowCount();row++)
+    {
+        auto index = model()->index(row,0);
+        auto srcIndex = m_proxy_model->mapToSource(index);
+        auto item = m_model->itemFromIndex(srcIndex);
+        if(item->uri()=="filesafe:///")/* 文件保护箱默认不展开 */
+            continue;
+        expand(index);
+    }
 }
 
 bool NavigationSideBar::eventFilter(QObject *obj, QEvent *e)
@@ -297,6 +316,10 @@ void NavigationSideBar::updateGeometries()
 {
     setViewportMargins(4, 0, 4, 0);
     QTreeView::updateGeometries();
+    if(m_notAllowHorizontalMove){
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
+    }
+    m_notAllowHorizontalMove = false;
 }
 
 void NavigationSideBar::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -330,18 +353,18 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
         return;
 
     QString destUri = m_proxy_model->itemFromIndex(indexAt(e->pos()))->uri();
+    auto data = e->mimeData();
+    auto bookmark = Peony::BookMarkManager::getInstance();
+    if (bookmark->isLoaded()) {
+        for (auto url : data->urls()) {
+            if(url.toString().startsWith("filesafe:///")){
+                QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
+                continue;
+            }
+            if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
+                // add to bookmark
+                e->setAccepted(true);
 
-    if (dropIndicatorPosition() == QAbstractItemView::AboveItem || dropIndicatorPosition() == QAbstractItemView::BelowItem || "favorite:///" == destUri) {
-        // add to bookmark
-        e->setAccepted(true);
-
-        auto data = e->mimeData();
-        auto bookmark = Peony::BookMarkManager::getInstance();
-        if (bookmark->isLoaded()) {
-            for (auto url : data->urls()) {
-                if(url.toString().startsWith("filesafe:///")){
-                    continue;
-                }
                 //FIXME: replace BLOCKING api in ui thread.
                 auto info = Peony::FileInfo::fromUri(url.toDisplayString());
                 if (info->displayName().isNull()) {
@@ -366,18 +389,31 @@ void NavigationSideBar::dropEvent(QDropEvent *e)
 
 QSize NavigationSideBar::sizeHint() const
 {
-    return QTreeView::sizeHint();
+    auto size = QTreeView::sizeHint();
+    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 210;
+    size.setWidth(width);
+    return size;
 }
 
 void NavigationSideBar::JumpDirectory(const QString &uri)
 {
+    if(uri=="" && m_currSelectedItem && m_currSelectedItem->getDevice().startsWith("/dev/sd"))
+    {/* 异常U盘 */
+        QMessageBox::information(nullptr, tr("Tips"), tr("This is an abnormal Udisk, please fix it or format it"));
+        return;
+    }
+
     auto info = FileInfo::fromUri(uri);
     if (info.get()->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
     }
     auto targetUri = FileUtils::getTargetUri(uri);
-    if (targetUri == "" && uri== "burn://" /*&& item->displayName().contains("DVD")*/)
+    if (targetUri == "" && uri== "burn://")
     {
         qDebug() << "empty drive"<<uri;
         QMessageBox::information(nullptr, tr("Tips"), tr("This is an empty drive, please insert a Disc."));
@@ -397,6 +433,11 @@ void NavigationSideBar::JumpDirectory(const QString &uri)
 
 void NavigationSideBar::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Left||event->key()==Qt::Key_Right)
+    {
+        m_notAllowHorizontalMove = true;
+    }
+
     QTreeView::keyPressEvent(event);
 
     if (event->key() == Qt::Key_Return) {
@@ -405,6 +446,11 @@ void NavigationSideBar::keyPressEvent(QKeyEvent *event)
             auto uri = index.data(Qt::UserRole).toString();
             Q_EMIT this->updateWindowLocationRequest(uri, true);
         }
+    }
+
+    if(event->key() == Qt::Key_Left||event->key()==Qt::Key_Right)
+    {/* 按下左右键不可使侧边栏内容左右平移显示 */
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
     }
 }
 
@@ -428,6 +474,15 @@ void NavigationSideBar::focusInEvent(QFocusEvent *event)
     }
 }
 
+void NavigationSideBar::wheelEvent(QWheelEvent *event)
+{
+    QTreeView::wheelEvent(event);
+    if (event->orientation()==Qt::Horizontal) {
+        /* 触摸板左右滑动不可使侧边栏内容左右平移显示 */
+        horizontalScrollBar()->setValue(0);/* hotfix bug#93557 */
+    }
+}
+
 int NavigationSideBar::sizeHintForColumn(int column) const
 {
     if (column == 1)
@@ -437,6 +492,17 @@ int NavigationSideBar::sizeHintForColumn(int column) const
         return viewport()->width() - 22;
 
     return QTreeView::sizeHintForColumn(column);
+}
+
+void NavigationSideBar::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        if ((event->dropAction() == Qt::MoveAction) && FileUtils::containsStandardPath(event->mimeData()->urls())) {
+            event->ignore();
+            return;
+        }
+    }
+    QAbstractItemView::dragEnterEvent(event);
 }
 
 NavigationSideBarItemDelegate::NavigationSideBarItemDelegate(QObject *parent)
@@ -472,13 +538,24 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
     painter->restore();
 }
 
-NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent)
+NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent) : Peony::SideBar(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_layout = new QVBoxLayout;
     m_layout->setContentsMargins(0, 4, 0, 0);
     m_layout->setSpacing(0);
+    auto sideBar = new NavigationSideBar(this);
+
+    QWidget *widget = new QWidget;
+    m_layout->addWidget(new TitleLabel(this));
+    m_layout->addWidget(sideBar);
+    widget->setLayout(m_layout);
+
+    setWidget(widget);
+    //addSideBar(sideBar);
+
+    connect(sideBar, &NavigationSideBar::updateWindowLocationRequest, this, &NavigationSideBarContainer::updateWindowLocationRequest);
 }
 
 void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
@@ -489,39 +566,32 @@ void NavigationSideBarContainer::addSideBar(NavigationSideBar *sidebar)
     m_sidebar = sidebar;
     m_layout->addWidget(sidebar);
 
-    QWidget *w = new QWidget(this);
-    QVBoxLayout *l = new QVBoxLayout;
-    l->setContentsMargins(4, 4, 2, 4);
+//    QWidget *w = new QWidget(this);
+//    QVBoxLayout *l = new QVBoxLayout;
+//    l->setContentsMargins(4, 4, 2, 4);
 
-    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
-    m_label_button->setProperty("useIconHighlightEffect", true);
-    m_label_button->setProperty("iconHighlightEffectMode", 1);
-    m_label_button->setProperty("fillIconSymbolicColor", true);
-    m_label_button->setCheckable(true);
+//    m_label_button = new QPushButton(QIcon(":/icons/sign"), tr("All tags..."), this);
+//    m_label_button->setProperty("useIconHighlightEffect", true);
+//    m_label_button->setProperty("iconHighlightEffectMode", 1);
+//    m_label_button->setProperty("fillIconSymbolicColor", true);
+//    m_label_button->setCheckable(true);
 
-    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
+//    m_label_button->setFocusPolicy(Qt::FocusPolicy(m_label_button->focusPolicy() & ~Qt::TabFocus));
 
-    l->addWidget(m_label_button);
+//    l->addWidget(m_label_button);
 
-    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
+//    connect(m_label_button, &QPushButton::clicked, m_sidebar, &NavigationSideBar::labelButtonClicked);
 
-    w->setLayout(l);
+//    w->setLayout(l);
 
-    m_layout->addWidget(w);
+//    m_layout->addWidget(w);
 
     setLayout(m_layout);
 }
 
 QSize NavigationSideBarContainer::sizeHint() const
 {
-    auto size = QWidget::sizeHint();
-    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
-    qDebug() << "sizeHint set DEFAULT_SIDEBAR_WIDTH:"<<width;
-    //fix width value abnormal issue
-    if (width <= 0)
-        width = 210;
-    size.setWidth(width);
-    return size;
+    return SideBar::sizeHint();
 }
 
 NavigationSideBarStyle::NavigationSideBarStyle()
@@ -533,6 +603,16 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 {
     painter->save();
     switch (element) {
+    case QStyle::PE_IndicatorItemViewItemDrop: {
+        /* hotfixbug#99344：拖拽文件到侧边栏，出现黑框 */
+        painter->setRenderHint(QPainter::Antialiasing, true);/* 反锯齿 */
+        /* 按设计要求，边框颜色为调色板highlight值，圆角为6px */
+        QColor color = option->palette.color(QPalette::Highlight);
+        painter->setPen(color);
+        painter->drawRoundedRect(option->rect, 6, 6);
+        painter->restore();
+        return;
+    }
     case QStyle::PE_IndicatorBranch: {
         if (option->rect.x() == 0) {
             QPainterPath leftRoundedRegion;
@@ -544,6 +624,7 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
         break;
     }
     case QStyle::PE_PanelItemViewRow: {
+        painter->restore();
         return;
         break;
     }
@@ -556,4 +637,19 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
 
     QProxyStyle::drawPrimitive(element, option, painter, widget);
     painter->restore();
+}
+
+TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
+{
+    m_pix_label = new QLabel(this);
+    m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
+    m_text_label = new QLabel(tr("Files"),this);
+    QHBoxLayout *l = new QHBoxLayout(this);
+    l->setMargin(8);
+    l->addSpacing(16);
+    l->addWidget(m_pix_label);
+    l->addSpacing(8);
+    l->addWidget(m_text_label);
+    l->addStretch();
+    this->setFixedHeight(sizeHint().height());
 }

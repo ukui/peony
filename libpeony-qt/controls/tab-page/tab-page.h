@@ -50,6 +50,7 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
 
     void menuRequest(const QPoint &pos);
+    void signal_itemAdded(const QString &uri);
 
 public Q_SLOTS:
     void addPage(const QString &uri);

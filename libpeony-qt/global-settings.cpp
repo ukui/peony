@@ -21,6 +21,9 @@
  */
 
 #include "global-settings.h"
+//ukui-interface
+#include <ukuisdk/kylin-com4cxx.h>
+
 #include <QtConcurrent>
 
 #include <QGSettings>
@@ -44,15 +47,12 @@ GlobalSettings *GlobalSettings::getInstance()
 GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 {
     m_settings = new QSettings("org.ukui", "peony-qt-preferences", this);
-    //set default allow parallel
-    if (! m_settings->allKeys().contains(ALLOW_FILE_OP_PARALLEL)) {
-        qDebug() << "default ALLOW_FILE_OP_PARALLEL:true";
-        setValue(ALLOW_FILE_OP_PARALLEL, true);
+    if (!m_settings->allKeys().contains(REMOTE_SERVER_REMOTE_IP)) {
+        setValue(REMOTE_SERVER_REMOTE_IP, QVariant());
     }
-    //if local languege is chinese, set chinese first as deafult
-    if (QLocale::system().name().contains("zh") && !m_settings->allKeys().contains(SORT_CHINESE_FIRST))
-        setValue(SORT_CHINESE_FIRST, true);
+
     for (auto key : m_settings->allKeys()) {
+        //only REMOTE_SERVER_REMOTE_IP
         m_cache.insert(key, m_settings->value(key));
     }
 
@@ -77,7 +77,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             }
         });
 
-        QString timeValue = m_control_center_plugin->get("time").toString();
+        QString timeValue = m_control_center_plugin->get("hoursystem").toString();
         QString dateValue = m_control_center_plugin->get("date").toString();
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_TIME, timeValue);
         m_cache.insert(UKUI_CONTROL_CENTER_PANEL_PLUGIN_DATE, dateValue);
@@ -90,43 +90,25 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
         connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "showTrashDialog") {
-                m_cache.remove(SHOW_TRASH_DIALOG);
-                m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
-            } else if (SHOW_HIDDEN_PREFERENCE == key) {
-                if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
-                {
-                    m_cache.remove(key);
-                    m_cache.insert(key, m_peony_gsettings->get(key).toBool());                  
-                }
-                /* Solve the problem: When opening multiple document management, check "Show hidden files" in one document management,
-                 *  but the other document management does not take effect in real time.modified by 2021/06/15  */
-                Q_EMIT this->valueChanged(key);
-            }
+            m_cache.remove(key);
+            m_cache.insert(key, m_peony_gsettings->get(key));
+            Q_EMIT this->valueChanged(key);
         });
 
-        m_cache.remove(SHOW_TRASH_DIALOG);
-        m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
-
-        m_cache.remove(SHOW_HIDDEN_PREFERENCE);
-        m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
+        for (auto key : m_peony_gsettings->keys()) {
+            m_cache.remove(key);
+            m_cache.insert(key, m_peony_gsettings->get(key));
+        }
     }
 
-    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
-    if (QGSettings::isSchemaInstalled("org.ukui.style")) {
-        m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
-        connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "peonySideBarTransparency") {
-                m_cache.remove(SIDEBAR_BG_OPACITY);
-                m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
-                qApp->paletteChanged(qApp->palette());
-            }
-        });
-        m_cache.remove(SIDEBAR_BG_OPACITY);
-        m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
-    }
+    getUkuiStyle();
+    getDualScreenMode();
+    getMachineMode();
 
-    if (m_cache.value(DEFAULT_WINDOW_SIZE).isNull() || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0) {
+    if (m_cache.value(DEFAULT_WINDOW_WIDTH).isNull()
+        || m_cache.value(DEFAULT_WINDOW_HEIGHT).isNull()
+        || m_cache.value(DEFAULT_SIDEBAR_WIDTH) <= 0)
+    {
         QScreen *screen=qApp->primaryScreen();
         QRect geometry = screen->availableGeometry();
         int default_width = geometry.width() * 2/3;
@@ -135,7 +117,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             default_width = 850;
         if (default_height < 850 *0.618)
             default_height = 850 *0.618;
-        setValue(DEFAULT_WINDOW_SIZE, QSize(default_width, default_height));
+        setValue(DEFAULT_WINDOW_WIDTH, default_width);
+        setValue(DEFAULT_WINDOW_HEIGHT, default_height);
         setValue(DEFAULT_SIDEBAR_WIDTH, 210);
         qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<210;
     }
@@ -159,11 +142,96 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (m_cache.value(REMOTE_SERVER_REMOTE_IP).isNull()) {
         setValue(REMOTE_SERVER_REMOTE_IP, QVariant(QList<QString>()));
     }
+
+
+    if (m_cache.value (SORT_TYPE).isNull()) {
+        setValue (SORT_TYPE, 0);
+    }
+
+    if (m_cache.value (SORT_ORDER).isNull()) {
+        setValue (SORT_ORDER, 0);
+    }
+
 }
 
 GlobalSettings::~GlobalSettings()
 {
 
+}
+
+void GlobalSettings::getUkuiStyle()
+{
+    m_cache.insert(SIDEBAR_BG_OPACITY, 50);
+    if (getProjectName() == V10_SP1_EDU) {
+        if (QGSettings::isSchemaInstalled(UKUI_CONTROL_CENTER_PERSONALISE)) {
+            m_gsettings = new QGSettings(UKUI_CONTROL_CENTER_PERSONALISE);
+            connect(m_gsettings, &QGSettings::changed, [this](const QString &key) {
+                if (key == PERSONALISE_EFFECT) {
+                    qreal opacity = 100.0;
+                    if (m_gsettings->get(PERSONALISE_EFFECT).toBool()) {
+                        opacity *= m_gsettings->get(PERSONALISE_TRANSPARENCY).toReal();
+                    }
+                    m_cache.remove(SIDEBAR_BG_OPACITY);
+                    m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
+                }
+            });
+            qreal opacity = 100.0;
+            if (m_gsettings->get(PERSONALISE_EFFECT).toBool()) {
+                opacity *= m_gsettings->get(PERSONALISE_TRANSPARENCY).toReal();
+            }
+            m_cache.remove(SIDEBAR_BG_OPACITY);
+            m_cache.insert(SIDEBAR_BG_OPACITY, opacity);
+        }
+    } else {
+        if (QGSettings::isSchemaInstalled("org.ukui.style")) {
+            m_gsettings = new QGSettings("org.ukui.style", QByteArray(), this);
+            connect(m_gsettings, &QGSettings::changed, this, [=](const QString &key) {
+                if (key == "peonySideBarTransparency") {
+                    m_cache.remove(SIDEBAR_BG_OPACITY);
+                    m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get(key).toString());
+                    qApp->paletteChanged(qApp->palette());
+                }
+            });
+            m_cache.remove(SIDEBAR_BG_OPACITY);
+            m_cache.insert(SIDEBAR_BG_OPACITY, m_gsettings->get("peonySideBarTransparency").toString());
+        }
+    }
+}
+
+void GlobalSettings::getMachineMode()
+{
+    m_cache.insert(TABLET_MODE, "false");
+    if (QGSettings::isSchemaInstalled("org.ukui.SettingsDaemon.plugins.tablet-mode")) {
+        m_gsettings_tablet_mode = new QGSettings("org.ukui.SettingsDaemon.plugins.tablet-mode", QByteArray(), this);
+        m_cache.remove(TABLET_MODE);
+        m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get("tablet-mode").toString());
+        connect(m_gsettings_tablet_mode, &QGSettings::changed, this, [=](const QString &key) {
+            if (key == "tabletMode") {
+                m_cache.remove(TABLET_MODE);
+                m_cache.insert(TABLET_MODE, m_gsettings_tablet_mode->get(key).toString());
+                qApp->paletteChanged(qApp->palette());
+            }
+        });
+    }
+}
+
+void GlobalSettings::getDualScreenMode()
+{
+    m_cache.insert(DUAL_SCREEN_MODE, DUAL_SCREEN_EXPAND_MODE);
+    if(QGSettings::isSchemaInstalled(SETTINGS_DAEMON_SCHEMA_XRANDR)) {
+        m_gsettings_dual_screen_mode = new QGSettings(SETTINGS_DAEMON_SCHEMA_XRANDR, QByteArray(), this);
+        m_cache.remove(DUAL_SCREEN_MODE);
+        if (m_gsettings_dual_screen_mode->keys().contains(DUAL_SCREEN_MODE)) {
+            m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(DUAL_SCREEN_MODE).toString());
+        }
+        connect(m_gsettings_dual_screen_mode, &QGSettings::changed, this, [=](const QString &key){
+           if (key == DUAL_SCREEN_MODE) {
+               m_cache.remove(DUAL_SCREEN_MODE);
+               m_cache.insert(DUAL_SCREEN_MODE, m_gsettings_dual_screen_mode->get(key).toString());
+               qApp->paletteChanged(qApp->palette());
+           }
+        });
+    }
 }
 
 const QVariant GlobalSettings::getValue(const QString &key)
@@ -207,16 +275,19 @@ void GlobalSettings::resetAll()
 
 void GlobalSettings::setValue(const QString &key, const QVariant &value)
 {
-
-    m_cache.remove(key);
-    m_cache.insert(key, value);
-    QtConcurrent::run([=]() {
-        if (m_mutex.tryLock(1000)) {
-            m_settings->setValue(key, value);
-            m_settings->sync();
-            m_mutex.unlock();
-        }
-    });
+    if (key == REMOTE_SERVER_REMOTE_IP) {
+        m_cache.remove(key);
+        m_cache.insert(key, value);
+        QtConcurrent::run([=]() {
+            if (m_mutex.tryLock(1000)) {
+                m_settings->setValue(key, value);
+                m_settings->sync();
+                m_mutex.unlock();
+            }
+        });
+    } else {
+        setGSettingValue(key, value);
+    }
 }
 
 void GlobalSettings::forceSync(const QString &key)
@@ -227,9 +298,19 @@ void GlobalSettings::forceSync(const QString &key)
         for (auto key : m_settings->allKeys()) {
             m_cache.insert(key, m_settings->value(key));
         }
+
+        if (m_peony_gsettings) {
+            for (auto key : m_peony_gsettings->keys()) {
+                m_cache.insert(key, m_peony_gsettings->get(key));
+            }
+        }
     } else {
         m_cache.remove(key);
-        m_cache.insert(key, m_settings->value(key));
+        if (m_settings->allKeys().contains(key)) {
+            m_cache.insert(key, m_settings->value(key));
+        } else {
+            m_cache.insert(key, m_peony_gsettings ? m_peony_gsettings->get(key) : QVariant());
+        }
     }
 }
 
@@ -241,7 +322,7 @@ void GlobalSettings::slot_updateRemoteServer(const QString& server, bool add)
 void GlobalSettings::setTimeFormat(const QString &value)
 {
     if (value == "12"){
-        m_time_format = tr("hh:mm:ss AP");
+        m_time_format = tr("AP hh:mm:ss");
     }
     else{
         m_time_format = tr("HH:mm:ss");
@@ -275,4 +356,9 @@ void GlobalSettings::setGSettingValue(const QString &key, const QVariant &value)
     m_peony_gsettings->set(key, value);
     m_cache.remove(key);
     m_cache.insert(key, m_peony_gsettings->get(key));
+}
+
+QString GlobalSettings::getProjectName()
+{
+    return QString::fromStdString(KDKGetPrjCodeName());
 }

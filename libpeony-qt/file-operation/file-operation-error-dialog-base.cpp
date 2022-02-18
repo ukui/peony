@@ -20,6 +20,7 @@
  *
  */
 #include "file-operation-error-dialog-base.h"
+#include "xatom-helper.h"
 
 #include <QIcon>
 #include <QPainter>
@@ -27,17 +28,102 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPushButton>
-
-static QPixmap drawSymbolicColoredPixmap (const QPixmap& source);
+#include <QScrollArea>
+#include <QProxyStyle>
+#include <QPushButton>
 
 Peony::FileOperationErrorDialogBase::FileOperationErrorDialogBase(QDialog *parent) : QDialog(parent)
 {
-    setMouseTracking(true);
-    setContentsMargins(0, 0, 0, 0);
-    setWindowFlags(Qt::FramelessWindowHint);
+    setFixedSize (536, 192);
+    setAutoFillBackground (true);
+    setBackgroundRole (QPalette::Base);
 
-    connect(this, &FileOperationErrorDialogBase::cancel, this, [=](){
-        done(QDialog::Rejected);
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(winId(), hints);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout (this);
+    mainLayout->setContentsMargins (16, 3, 3, 16);
+
+    QHBoxLayout* headerLayout = new QHBoxLayout;
+
+//    QPushButton* minilize = new QPushButton;
+    QPushButton* closebtn = new QPushButton;
+
+//    minilize->setFlat (true);
+//    minilize->setFixedSize (36, 36);
+//    minilize->setProperty ("isWindowButton", 0x01);
+//    minilize->setIconSize (QSize(16, 16));
+//    minilize->setIcon (QIcon::fromTheme ("window-minimize-symbolic"));
+
+    closebtn->setFlat (true);
+    closebtn->setFixedSize (36, 36);
+    closebtn->setProperty ("isWindowButton", 0x02);
+    closebtn->setIconSize (QSize(16, 16));
+    closebtn->setIcon (QIcon::fromTheme("window-close-symbolic"));
+
+    headerLayout->addStretch ();
+//    headerLayout->setSpacing (1);
+//    headerLayout->addWidget (minilize);
+    headerLayout->addWidget (closebtn);
+
+    mainLayout->addLayout (headerLayout);
+
+    QHBoxLayout* contentLayout = new QHBoxLayout;
+    contentLayout->setContentsMargins (6, 10, 13, 10);
+    contentLayout->setAlignment (Qt::AlignTop | Qt::AlignLeft);
+
+    m_tipimage = new QLabel(this);
+    m_tipimage->setMargin (0);
+    m_tipimage->setFixedSize (48, 80);
+    m_tipimage->setAlignment (Qt::AlignCenter);
+    m_tipimage->setPixmap (QIcon::fromTheme ("dialog-warning").pixmap (48, 48));
+    contentLayout->addWidget (m_tipimage);
+
+    m_tipcontent = new QLabel(this);
+    m_tipcontent->setWordWrap (true);
+    m_tipcontent->setMinimumSize (450, 80);
+    m_tipcontent->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
+
+    QScrollArea* scroll = new QScrollArea(this);
+
+    scroll->setFixedSize (440, 80);
+    scroll->setWidgetResizable (true);
+    scroll->setFrameShape(QFrame::NoFrame);
+
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    scroll->setWidget(m_tipcontent);
+
+    contentLayout->addWidget (scroll);
+
+    mainLayout->addLayout (contentLayout);
+
+    m_buttonLeft = new QHBoxLayout;
+    m_buttonRight = new QHBoxLayout;
+    m_buttonRight->setDirection (QHBoxLayout::RightToLeft);
+    QHBoxLayout* buttonLayout = new QHBoxLayout;
+    buttonLayout->setContentsMargins (0, 0, 13, 0);
+
+    buttonLayout->addLayout (m_buttonLeft);
+    buttonLayout->addStretch ();
+    buttonLayout->addLayout (m_buttonRight);
+
+    mainLayout->addStretch ();
+    mainLayout->addLayout (buttonLayout);
+
+    setLayout (mainLayout);
+
+    connect (closebtn, &QPushButton::clicked, this, [=] () {
+        Q_EMIT cancel ();
+        done (QDialog::Rejected);
+    });
+
+    connect(this, &FileOperationErrorDialogBase::cancel, this, [=] () {
+        done (QDialog::Rejected);
     });
 }
 
@@ -46,109 +132,38 @@ Peony::FileOperationErrorDialogBase::~FileOperationErrorDialogBase()
 
 }
 
-void Peony::FileOperationErrorDialogBase::setHeaderIcon(QString icon)
+void Peony::FileOperationErrorDialogBase::setText(QString text)
 {
-    m_header_icon = icon;
-}
-
-void Peony::FileOperationErrorDialogBase::paintEvent(QPaintEvent *)
-{
-    QPainter painter(this);
-
-    painter.save();
-
-    QPushButton btn;
-
-    // paint icon
-    if (!m_header_icon.isEmpty()) {
-    }
-    painter.drawPixmap(m_margin_lr, (m_header_height - m_header_icon_size) / 2, m_header_icon_size, m_header_icon_size, QIcon::fromTheme(m_header_icon.isEmpty()?"dialog-error":m_header_icon).pixmap(QSize(m_header_icon_size, m_header_icon_size)));
-
-    // paint title
-    QRect textArea (m_margin_lr + m_header_icon_size + m_btn_margin, 0, width() - m_margin_lr * 2 - 2 * m_btn_size, m_header_height);
-    QFont font = painter.font();
-    font.setPixelSize(14);
-    painter.setFont(font);
-    painter.setBrush(QBrush(btn.palette().color(QPalette::Highlight).lighter(150)));
-    if (nullptr != m_error && nullptr != m_error->title) {
-        painter.drawText(textArea, Qt::AlignLeft | Qt::AlignVCenter, m_error->title);
-    }
-
-    // paint minilize button
-    /*QPen pen(QColor(192,192,192), 1);
-    pen.setStyle(Qt::SolidLine);
-    painter.setBrush(Qt::NoBrush);
-    painter.setPen(pen);
-    painter.drawPixmap(width() - m_margin_lr * 2 - m_btn_size * 2, m_margin_tp, m_btn_size, m_btn_size,
-                           drawSymbolicColoredPixmap(QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size)));
-     */
-
-    // paint close button
-    QPen pen;
-    pen.setStyle(Qt::SolidLine);
-    painter.setBrush(Qt::NoBrush);
-    painter.setPen(pen);
-    painter.drawPixmap(width() - m_margin_lr - m_btn_size, m_margin_tp, m_btn_size, m_btn_size,
-                           drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
-
-    painter.restore();
-}
-
-void Peony::FileOperationErrorDialogBase::mouseMoveEvent(QMouseEvent *event)
-{
-    // minilize button
-    QPoint pos = event->pos();
-    /*if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
-            && (pos.x() <= width() - m_margin_lr * 2 - m_btn_size)
-            && (pos.y() >= m_margin_tp)
-            && (pos.y() <= m_margin_tp + m_btn_size)) {
-        setCursor(Qt::PointingHandCursor);
-    } else */if ((pos.x() >= width() - m_margin_lr - m_btn_size)
-               && (pos.x() <= width() - m_margin_lr)
-               && (pos.y() >= m_margin_tp)
-               && (pos.y() <= m_margin_tp + m_btn_size)) {
-        setCursor(Qt::PointingHandCursor);
-    } else {
-        setCursor(Qt::ArrowCursor);
-        QWidget::mouseMoveEvent(event);
+    if (!text.isNull () && !text.isEmpty ()) {
+        m_tipcontent->setText (text);
     }
 }
 
-void Peony::FileOperationErrorDialogBase::mousePressEvent(QMouseEvent *event)
+void Peony::FileOperationErrorDialogBase::setIcon(QString iconName)
 {
-    // minilize button
-    QPoint pos = event->pos();
-    /*if ((pos.x() >= width() - m_margin_lr * 2 - m_btn_size * 2)
-            && (pos.x() <= width() - m_margin_lr * 2 - m_btn_size)
-            && (pos.y() >= m_margin_tp)
-            && (pos.y() <= m_margin_tp + m_btn_size)) {
-        showMinimized();
-    } else */if ((pos.x() >= width() - m_margin_lr - m_btn_size)
-               && (pos.x() <= width() - m_margin_lr)
-               && (pos.y() >= m_margin_tp)
-               && (pos.y() <= m_margin_tp + m_btn_size)) {
-        Q_EMIT cancel();
+    if (!iconName.isNull () && !iconName.isEmpty ()) {
+        m_tipimage->setPixmap (QIcon::fromTheme (iconName).pixmap (48, 48));
     }
-
-    QWidget::mouseReleaseEvent(event);
 }
 
-static QPixmap drawSymbolicColoredPixmap (const QPixmap& source)
+QPushButton *Peony::FileOperationErrorDialogBase::addButton(QString name)
 {
-    // 18, 32, 69
-    QPushButton      m_btn;
-    QColor baseColor = m_btn.palette().color(QPalette::Text).light(150);
-    QImage img = source.toImage();
-
-    for (int x = 0; x < img.width(); ++x) {
-        for (int y = 0; y < img.height(); ++y) {
-            auto color = img.pixelColor(x, y);
-            color.setRed(baseColor.red());
-            color.setGreen(baseColor.green());
-            color.setBlue(baseColor.blue());
-            img.setPixelColor(x, y, color);
-        }
+    if (!name.isNull () && !name.isEmpty ()) {
+        QPushButton* b = new QPushButton(name);
+        m_buttonRight->addWidget (b, Qt::AlignRight | Qt::AlignVCenter);
+        return b;
     }
 
-    return QPixmap::fromImage(img);
+    return nullptr;
+}
+
+QCheckBox *Peony::FileOperationErrorDialogBase::addCheckBoxLeft(QString name)
+{
+    if (!name.isNull () && !name.isEmpty ()) {
+        QCheckBox* b = new QCheckBox(name);
+        m_buttonLeft->addWidget (b, Qt::AlignLeft | Qt::AlignVCenter);
+        return b;
+    }
+
+    return nullptr;
 }

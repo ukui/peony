@@ -26,6 +26,10 @@
 #include <QTimer>
 #include <errno.h>
 #include <QDialog>
+#include <QComboBox>
+#include <QProgressBar>
+#include <QCheckBox>
+#include <QLabel>
 #include <sys/stat.h>
 #include <glib/gi18n.h>
 #include <udisks/udisks.h>
@@ -62,9 +66,10 @@ struct CreateformatData{
 class PEONYCORESHARED_EXPORT Format_Dialog : public QDialog
 {
     Q_OBJECT
-
+    friend void volume_disconnect (GVolumeMonitor* vm, GDrive* v, gpointer data);
 public:
     explicit Format_Dialog(const QString &uris,SideBarAbstractItem *m_item,QWidget *parent = nullptr);
+    explicit Format_Dialog(const QString &uri, QWidget *parent = nullptr);
 
     gboolean is_iso(const gchar *device_path);
 
@@ -94,9 +99,9 @@ public:
     ~Format_Dialog();
 
 
-    Ui::Format_Dialog *ui;
+//    Ui::Format_Dialog *ui;
 
-    QTimer *my_time;
+    bool renameOK = true;
 
     QWidget *m_parent;
 
@@ -117,10 +122,33 @@ public Q_SLOTS:
     void colseFormat(bool);
 
     void formatloop();
+
 private:
+    static void volume_disconnect (GVolumeMonitor* vm, GDrive* v, gpointer data);
+    static void format_cb (GObject *source_object, GAsyncResult *res ,gpointer user_data);
+
+private:
+    const int           mFixWidth = 424;
+    const int           mFixHeight = 380;
+
+    QTimer*             mTimer = nullptr;
+
+    QComboBox*          mFSCombox = nullptr;
+    QProgressBar*       mProgress = nullptr;
+    QPushButton*        mCancelBtn = nullptr;
+    QPushButton*        mFormatBtn = nullptr;
+    QCheckBox*          mEraseCkbox = nullptr;
+    QLineEdit*          mNameEdit = nullptr;
+    QComboBox*          mRomSizeCombox = nullptr;
+
+    QString             mVolumeName;
+    GVolumeMonitor*     mVolumeMonitor;
+
+
     QString fm_uris;
     SideBarAbstractItem *fm_item;
 
+    Ui::Format_Dialog   *ui;
 };
 
 #endif // FORMAT_DIALOG_H

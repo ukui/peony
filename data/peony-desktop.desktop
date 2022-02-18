@@ -12,4 +12,4 @@ Type=Application
 Categories=System;Settings;Security;
 Keywords=file;desktop;
 OnlyShowIn=UKUI;
-NoDisplay=true;
+NoDisplay=true

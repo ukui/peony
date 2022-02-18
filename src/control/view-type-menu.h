@@ -22,7 +22,6 @@
 
 #ifndef VIEWTYPEMENU_H
 #define VIEWTYPEMENU_H
-
 #include <QMenu>
 
 namespace Peony {

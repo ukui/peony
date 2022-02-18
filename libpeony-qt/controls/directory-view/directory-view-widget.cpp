@@ -29,6 +29,7 @@ using namespace Peony;
 DirectoryViewWidget::DirectoryViewWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_TranslucentBackground);
 
     connect(qApp, &QApplication::paletteChanged, this, [=]() {
         this->repaintView();

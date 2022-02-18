@@ -29,6 +29,8 @@
 #include "thumbnail-manager.h"
 
 #include <QUrl>
+#include <QtDBus/QDBusConnection>
+#include <QStandardPaths>
 #include <QDir>
 #include <QDebug>
 
@@ -54,6 +56,8 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     m_file = g_file_new_for_uri(uri.toUtf8().data());
     m_parent = g_file_get_parent(m_file);
     m_is_remote = !g_file_is_native(m_file);
+    m_is_dir = false;
+    m_is_volume = false;
     GFileType type = g_file_query_file_type(m_file, G_FILE_QUERY_INFO_NONE, nullptr);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
@@ -87,6 +91,12 @@ FileInfo::~FileInfo()
 std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 {
     FileInfoManager *info_manager = FileInfoManager::getInstance();
+    // avoid using binding mount original uri. link to: #48982.
+    if (info_manager->isAutoParted()) {
+        if (uri.contains("file:///data/home")) {
+            uri.replace("file:///data/home", "file:///home");
+        }
+    }
     info_manager->lock();
     std::shared_ptr<FileInfo> info = info_manager->findFileInfoByUri(uri);
     if (info != nullptr) {
@@ -100,6 +110,8 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
 
         newly_info->m_parent = g_file_get_parent(newly_info->m_file);
         newly_info->m_is_remote = ! g_file_is_native(newly_info->m_file);
+        newly_info->m_is_dir = false;
+        newly_info->m_is_volume = false;
         if (! newly_info->m_is_remote && false) {
             GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
             switch (type) {
@@ -189,6 +201,18 @@ bool FileInfo::isOfficeFile()
     return false;
 }
 
+bool FileInfo::isExecDisable()
+{
+    if (m_meta_info) {
+        int nRet = m_meta_info->getMetaInfoInt("exec_disable");
+        if(1 == nRet) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const QString FileInfo::targetUri()
 {
     return m_target_uri;
@@ -269,7 +293,8 @@ const QString FileInfo::displayName()
     unixDevice = unixDeviceFile();
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
-    if(m_uri == "file:///DATA")
+    QString targetUri = FileUtils::getTargetUri(m_uri);
+    if(m_uri == "file:///DATA" || targetUri == "file:///data")
     {
         return tr("data");
     }
@@ -294,4 +319,29 @@ const QString FileInfo::displayName()
     deviceName = m_display_name;
     FileUtils::handleVolumeLabelForFat32(deviceName,unixDevice);
     return deviceName;
+}
+
+QString FileInfo::displayFileType()
+{
+    if (isDir()) {
+        return tr("folder");
+    } else if (isOfficeFile()) {
+        return m_file_type;
+    } else if (isDesktopFile()) {
+        return "DESKTOP" + tr("file");
+    } else {
+        if (m_file_type.contains("plain text document")) {
+            return tr("text file");
+        } else {
+            QString fileName = displayName();
+            if (fileName.contains(".")) {
+                QStringList strElement = fileName.split(".");
+                return QString(strElement.last()).toUpper() + tr("file");
+            } else {
+                return tr("file");
+            }
+        }
+    }
+
+    return m_file_type;
 }

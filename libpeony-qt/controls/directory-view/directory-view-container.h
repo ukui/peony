@@ -28,6 +28,7 @@
 #include <QWidget>
 #include <QStack>
 #include <QGSettings>
+#include <QTimer>
 
 #include "file-item-model.h"
 
@@ -64,6 +65,7 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    const int getCurrentRowcount();
 
     const QStringList getAllFileUris();
 
@@ -88,6 +90,7 @@ Q_SIGNALS:
     void selectionChanged();
     void viewDoubleClicked(const QString &uri);
     void updateWindowLocationRequest(const QString &uri, bool addHistory, bool forceUpdate = false);
+    void signal_responseUnmounted(const QString &destUri, const QString &sourceUri);
 
     void updateWindowSelectionRequest(const QStringList &uris);
 
@@ -96,6 +99,10 @@ Q_SIGNALS:
     void zoomRequest(bool zoomIn);
     void setZoomLevelRequest(int zoomLevel);
     void updateStatusBarSliderStateRequest();
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
+
+    void viewSelectionStatus(bool isSelected);
 
 public Q_SLOTS:
     void goToUri(const QString &uri, bool addHistory, bool forceUpdate = false);

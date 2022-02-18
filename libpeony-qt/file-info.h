@@ -144,6 +144,9 @@ public:
      */
     static std::shared_ptr<FileInfo> fromGFile(GFile *file);
 
+    std::shared_ptr<FileMetaInfo> metainfo() {
+        return m_meta_info;
+    }
     QString uri() {
         return m_uri;
     }
@@ -180,6 +183,9 @@ public:
     QString mimeType() {
         return m_mime_type_string;
     }
+
+    QString displayFileType();
+
     QString fileType() {
         return m_file_type;
     }
@@ -284,6 +290,8 @@ public:
     bool isEmptyInfo() {
         return m_display_name == nullptr || m_display_name == "";
     }
+    // 是否禁止执行程序
+    bool isExecDisable();
 
     AccessFlags accesses() {
         auto flags = AccessFlags();

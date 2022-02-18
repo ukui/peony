@@ -21,9 +21,8 @@ include(control/control.pri)
 #include(view/view.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
-PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra openssl
+PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra libnotify udisks2 openssl
 LIBS +=-lgio-2.0 -lglib-2.0 -lX11 -lukui-log4qt
-
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 LIBS += -L$$PWD/../libpeony-qt/ -lpeony
@@ -41,7 +40,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 TRANSLATIONS += ../translations/peony-qt/peony-qt_zh_CN.ts \
                 ../translations/peony-qt/peony-qt_tr.ts \
-                ../translations/peony-qt/peony-qt_cs.ts
+                ../translations/peony-qt/peony-qt_cs.ts \
+                ../translations/peony-qt/peony-qt_bo_CN.ts
 
 SOURCES += \
     peony-application.cpp \
@@ -68,4 +68,9 @@ data.files += ../data/peony.desktop \
 INSTALLS += data
 
 RESOURCES += \
-    custome.qrc
+    custome.qrc \
+    img.qrc
+
+DISTFILES += \
+    icons/app／control setting.png \
+    icons/app／control setting@2x.png

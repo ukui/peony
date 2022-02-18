@@ -23,32 +23,36 @@
 #ifndef SIDEBAR_H
 #define SIDEBAR_H
 
-#include <QTreeView>
 #include "peony-core_global.h"
+#include "FMWindowIface.h"
+
+#include <QDockWidget>
 
 namespace Peony {
 
-class SideBarDelegate;
-
-class SideBar : public QTreeView
+class PEONYCORESHARED_EXPORT SideBar : public QDockWidget
 {
-    friend class SideBarDelegate;
     Q_OBJECT
 public:
     explicit SideBar(QWidget *parent = nullptr);
+    ~SideBar();
 
-    QSize sizeHint() const override;
+    virtual QSize sizeHint() const;
+
+    virtual void resizeEvent(QResizeEvent *event);
+
+    FMWindowIface *getWindowIface();
 
 Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri, bool addHistory = true, bool forceUpdate = false);
+    void labelButtonClicked(bool checked);
+    void labelIdChanged(int labelId);
+    void labelNameChanged(const QString &labelName);
+    void newTabRequest(const QString &uri);
+    void newWindowRequest(const QString &uri);
 
-protected:
-    void paintEvent(QPaintEvent *e) override;
-    QRect visualRect(const QModelIndex &index) const override;
-    //int horizontalOffset() const override {return 100;}
-
-    void dragEnterEvent(QDragEnterEvent *e) override;
-    void dragMoveEvent(QDragMoveEvent *e) override;
+    void propertiesWindowRequest(const QString &uri);
+    void propertiesWindowRequest(const QStringList &uris);
 };
 
 }

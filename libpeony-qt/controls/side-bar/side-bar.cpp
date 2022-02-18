@@ -21,141 +21,50 @@
  */
 
 #include "side-bar.h"
-#include "side-bar-model.h"
-#include "side-bar-proxy-filter-sort-model.h"
-#include "side-bar-abstract-item.h"
-#include "side-bar-delegate.h"
-
-#include "side-bar-menu.h"
-
-#include <QHeaderView>
-#include <QTimer>
-#include <QPainter>
-
-#include <QApplication>
-
-#include <QDragEnterEvent>
-#include <QDragMoveEvent>
-
-#include <QDebug>
+#include "global-settings.h"
 
 using namespace Peony;
 
-SideBar::SideBar(QWidget *parent) : QTreeView(parent)
+SideBar *last_resize_sidebar = nullptr;
+
+SideBar::SideBar(QWidget *parent) : QDockWidget(parent)
 {
-    setDropIndicatorShown(false);
-    setAttribute(Qt::WA_Hover);
-
-    connect(qApp, &QApplication::paletteChanged, this, [=]() {
-        this->update();
-        this->viewport()->update();
-    });
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
-
-    setDragDropMode(QTreeView::DragDrop);
-
-    setIndentation(15);
-    setSelectionBehavior(QTreeView::SelectRows);
+    setFeatures(QDockWidget::NoDockWidgetFeatures);
+//    auto palette = palette();
+//    palette.setColor(QPalette::Window, Qt::transparent);
+//    setPalette(palette);
+    setTitleBarWidget(new QWidget(this));
+    titleBarWidget()->setFixedHeight(0);
+    setAttribute(Qt::WA_TranslucentBackground);
     setContentsMargins(0, 0, 0, 0);
+}
 
-    setItemDelegate(new SideBarDelegate(this));
-
-    auto model = new SideBarModel(this);
-    auto proxy_model = new SideBarProxyFilterSortModel(model);
-
-    setSortingEnabled(true);
-    setExpandsOnDoubleClick(false);
-    //don't show HorizontalScroll
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    header()->setVisible(false);
-
-    setModel(proxy_model);
-
-    proxy_model->setSourceModel(model);
-
-    connect(this, &QTreeView::expanded, [=](const QModelIndex &index) {
-        auto item = proxy_model->itemFromIndex(index);
-        item->findChildrenAsync();
-    });
-
-    connect(this, &QTreeView::collapsed, [=](const QModelIndex &index) {
-        auto item = proxy_model->itemFromIndex(index);
-        item->clearChildren();
-    });
-
-    connect(this, &QTreeView::clicked, [=](const QModelIndex &index) {
-        switch (index.column()) {
-        case 0: {
-            auto item = proxy_model->itemFromIndex(index);
-            //some side bar item doesn't have a uri.
-            //do not emit signal with a null uri to window.
-            if (!item->uri().isNull())
-                Q_EMIT this->updateWindowLocationRequest(item->uri());
-            break;
-        }
-        case 1: {
-            auto item = proxy_model->itemFromIndex(index);
-            if (item->isMounted() && item->isRemoveable()) {
-                auto leftIndex = proxy_model->index(index.row(), 0, index.parent());
-                this->collapse(leftIndex);
-                item->unmount();
-            }
-            break;
-        }
-        default:
-            break;
-        }
-    });
-
-    connect(this, &QTreeView::customContextMenuRequested, this, [=](const QPoint &pos) {
-        auto index = indexAt(pos);
-        auto item = proxy_model->itemFromIndex(index);
-        if (item) {
-            if (item->type() != SideBarAbstractItem::SeparatorItem) {
-                SideBarMenu menu(item, this);
-                menu.exec(QCursor::pos());
-            }
-        }
-    });
-
-    expandAll();
+SideBar::~SideBar()
+{
+    if (last_resize_sidebar == this) {
+        GlobalSettings::getInstance()->setValue(DEFAULT_SIDEBAR_WIDTH, this->width());
+        last_resize_sidebar = nullptr;
+    }
 }
 
 QSize SideBar::sizeHint() const
 {
-    auto size = QTreeView::sizeHint();
-    size.setWidth(180);
+    auto size = QWidget::sizeHint();
+    auto width = Peony::GlobalSettings::getInstance()->getValue(DEFAULT_SIDEBAR_WIDTH).toInt();
+    //fix width value abnormal issue
+    if (width <= 0)
+        width = 210;
+    size.setWidth(width);
     return size;
 }
 
-void SideBar::paintEvent(QPaintEvent *e)
+void SideBar::resizeEvent(QResizeEvent *event)
 {
-    QTreeView::paintEvent(e);
+    QDockWidget::resizeEvent(event);
+    last_resize_sidebar = this;
 }
 
-QRect SideBar::visualRect(const QModelIndex &index) const
+FMWindowIface *SideBar::getWindowIface()
 {
-    return QTreeView::visualRect(index);
-}
-
-void SideBar::dragEnterEvent(QDragEnterEvent *e)
-{
-    //qDebug()<<"enter";
-    e->accept();
-    setState(DraggingState);
-}
-
-void SideBar::dragMoveEvent(QDragMoveEvent *e)
-{
-    //qDebug()<<"move";
-    auto widget = static_cast<QWidget*>(e->source());
-    if (widget) {
-        if (widget->topLevelWidget() == this->topLevelWidget()) {
-            QTreeView::dragMoveEvent(e);
-        }
-    }
-
-    e->accept();
+    return dynamic_cast<FMWindowIface *>(topLevelWidget());
 }

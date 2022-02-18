@@ -95,35 +95,37 @@ QModelIndex SideBarFileSystemItem::lastColumnIndex()
 
 bool SideBarFileSystemItem::filterShowRow()
 {
-    if (m_uri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
-        return false;
-    }
-    if (m_uri.startsWith("file:///home/")){
-        return false;
-    }
-    if (m_uri != "file:///") {
+    return SideBarAbstractItem::filterShowRow();
 
-        QString gvfsDisplayName = m_mountPoint;
-        QString gvfsUnixDevice = m_device;
+//    if (m_uri == "file:///data" && FileUtils::isFileExsit("file:///data/usershare")) {
+//        return false;
+//    }
+//    if (m_uri.startsWith("file:///home/")){
+//        return false;
+//    }
+//    if (m_uri != "file:///") {
+
+//        QString gvfsDisplayName = m_mountPoint;
+//        QString gvfsUnixDevice = m_device;
 
 
-        if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")))
-            return true;
+//        if (!gvfsUnixDevice.isNull() && (gvfsDisplayName.contains("DVD")))
+//            return true;
 
-        if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
-            return false;//Filter some non-mountable drive items
+//        if(!gvfsUnixDevice.isNull() && !gvfsDisplayName.contains(":"))
+//            return false;//Filter some non-mountable drive items
 
-        if (isMounted())
-            return true;
-        if (isRemoveable() && isUnmountable()) {
-            return true;
-        }
-        if (!isRemoveable() && !isEjectable() && !isStopable())
-            return true;
-        return false;
-    }
+//        if (isMounted())
+//            return true;
+//        if (isRemoveable() && isUnmountable()) {
+//            return true;
+//        }
+//        if (!isRemoveable() && !isEjectable() && !isStopable())
+//            return true;
+//        return false;
+//    }
 
-    return true;
+//    return true;
 }
 
 void SideBarFileSystemItem::initDirInfo(const QString &uri)
@@ -134,7 +136,7 @@ void SideBarFileSystemItem::initDirInfo(const QString &uri)
 
    m_children    = nullptr;
    m_watcher     = nullptr;
-   m_iconName    = "gtk-directory";
+   m_iconName    = "folder";
    m_device      = m_mountPoint = "";
 
    m_uri         = uri;
@@ -142,6 +144,11 @@ void SideBarFileSystemItem::initDirInfo(const QString &uri)
    m_displayName = info.get()->displayName();
    m_mounted = m_ejectable = m_stopable = m_removeable = m_mountable = false;
    m_unmountable = false;
+
+   if (uri == "computer:///ukui-data-volume") {
+       m_displayName = tr("Data");
+       m_iconName = "drive-harddisk";
+   }
 }
 
 void SideBarFileSystemItem::initComputerInfo()
@@ -173,6 +180,8 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
     m_uri = m_mountPoint = volumeItem.mountPoint();
     m_mounted   = !m_uri.isEmpty();
     m_displayName = volumeItem.name() + "(" + m_device + ")";
+    m_isVolume = true;
+    m_hidden = volumeItem.getHidden();
 
     /* 手机和空光盘的m_uri需要额外设置 */
     if(m_uri.isEmpty()){
@@ -186,17 +195,30 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
             m_mounted=true;
             m_unmountable = m_mountable=false;
             m_uri = "burn://";
+        } else {
+            /* 未挂载的volume尝试匹配computer:///的uri */
+            auto itemUris = FileUtils::getChildrenUris("computer:///");
+            for (auto itemUri : itemUris) {
+                auto unixDevice = FileUtils::getUnixDevice(itemUri);
+                if (unixDevice == m_device) {
+                    m_uri = itemUri;
+                    break;
+                }
+            }
         }
 
     }else{
         m_uri = "file://" + m_uri;
     }
     /* 文件系统项特殊处理 */
-    if("file:///"==m_uri){
+    if("file:///" == m_uri){
         m_unmountable = m_mountable = m_ejectable = m_stopable = false;
-        m_mounted=true;
+        m_mounted = true;
         m_displayName = QObject::tr("File System");
-        m_iconName="drive-harddisk-system-symbolic";
+        m_iconName = "drive-harddisk-system-symbolic";
+    }else if("file:///data" == m_uri){
+        m_displayName = QObject::tr("Data");
+        m_iconName = "drive-harddisk";
     }
 }
 
@@ -204,6 +226,7 @@ void SideBarFileSystemItem::clearChildren()
 {
     if(m_watcher)
         m_watcher->stopMonitor();
+    m_watcher = nullptr;
     SideBarAbstractItem::clearChildren();
 }
 
@@ -267,6 +290,7 @@ void SideBarFileSystemItem::slot_volumeDeviceMount(const Experimental_Peony::Vol
             {
                 item->m_uri="burn:///";
             }
+            item->m_iconName = volume.icon();
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
         }
@@ -283,7 +307,15 @@ void SideBarFileSystemItem::slot_volumeDeviceUnmount(const QString &unmountDevic
     //更新model,元素信息更新
     for(auto& item:*m_children){
         if(item->m_mountPoint == unmountDevice){/* 依靠挂载点属性匹配 */
-            item->m_uri = "";                   /* 分区卸载后不可以做枚举操作 */
+            item->m_uri = nullptr;                   /* 分区卸载后不可以做枚举操作 */
+            auto itemUris = FileUtils::getChildrenUris("computer:///");   /*  重新寻找匹配卸载点的computer uri，避免item被过滤  */
+            for (auto itemUri : itemUris) {
+                auto unixDevice = FileUtils::getUnixDevice(itemUri);
+                if (unixDevice == item->m_device) {
+                    item->m_uri = itemUri;
+                    break;
+                }
+            }
             item->m_mountPoint = "";            /*挂载点置空，属性页会用到? */
             item->m_mounted = false;            /* 分区已卸载 */
             item->m_unmountable = false;
@@ -305,6 +337,8 @@ void SideBarFileSystemItem::slot_volumeDeviceUpdate(const Experimental_Peony::Vo
     for(auto& item:*m_children){
         if(item->m_device == device){
             item->m_displayName = updateDevice.name() + "(" + device + ")";
+            item->m_hidden = updateDevice.getHidden();
+            item->m_iconName = updateDevice.icon();
             //model更新
              m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
@@ -315,29 +349,35 @@ void SideBarFileSystemItem::slot_volumeDeviceUpdate(const Experimental_Peony::Vo
 
 void SideBarFileSystemItem::slot_fileCreate(const QString &uri)
 {
-    //qDebug()<<"created:"<<uri;
+    qDebug()<<"created:"<<uri;
     for (auto item : *m_children) {
-        if (item->uri() == uri) {
+        if (item->m_uri == uri) {
             return;
         }
     }
+    /* 更新fileinfo */
+    auto info = FileInfo::fromUri(uri);
+    FileInfoJob job(uri, this);
+    job.querySync();
 
-    SideBarFileSystemItem *item = new SideBarFileSystemItem(uri,
-                                                            nullptr,
-                                                            this,
-                                                            m_model);
-
+    if (!(info->isDir())){/* 只显示文件夹，文件不显示 */
+        return;
+    }
+    /* 新增项 */
+    SideBarFileSystemItem *item = new SideBarFileSystemItem(info->uri(), nullptr, this, m_model);
     m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
     m_children->append(item);
     m_model->endInsertRows();
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果添加了非空项，则需要删除空项 */
     m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
+
 }
 
 void SideBarFileSystemItem::slot_fileDelete(const QString &uri)
 {
-    //qDebug()<<"deleted:"<<uri;
+    qDebug()<<"deleted:"<<uri;
     for (auto child : *m_children) {
-        if (child->uri() == uri) {
+        if (child->m_uri == uri) {
             int index = m_children->indexOf(child);
             m_model->beginRemoveRows(firstColumnIndex(), index, index);
             m_children->removeOne(child);
@@ -346,14 +386,14 @@ void SideBarFileSystemItem::slot_fileDelete(const QString &uri)
             break;
         }
     }
-    m_model->indexUpdated(this->firstColumnIndex());
+    m_model->indexUpdated(this->firstColumnIndex());/* 如果删除了所有项，则需要添加空项 */
 }
 
 void SideBarFileSystemItem::slot_fileRename(const QString &oldUri, const QString &newUri)
 {
     qDebug()<<"rename,old uri:"<<oldUri<<" new uri:"<<newUri;
     for (auto item : *m_children){
-        if (item->uri() == oldUri){
+        if (item->m_uri == oldUri){
             item->m_uri = newUri;
             auto info = FileInfo::fromUri(item->m_uri);
             if (info->displayName().isEmpty()) {
@@ -375,8 +415,12 @@ void SideBarFileSystemItem::slot_enumeratorPrepared(const std::shared_ptr<GError
 
 void SideBarFileSystemItem::slot_enumeratorFinish(bool successed)
 {
-    if(!successed)
+    if(!successed) {
+        auto separator = new SideBarSeparatorItem(SideBarSeparatorItem::EmptyFile, this, m_model);
+        this->m_children->prepend(separator);
+        m_model->insertRows(0, 1, this->firstColumnIndex());
         return;
+    }
 
     auto infos = m_enumerator->getChildren();
     bool isEmpty = true;
@@ -452,18 +496,33 @@ void SideBarFileSystemItem::findChildren()
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
         }
 
+        if (FileUtils::isFileExsit("file:///data/usershare")) {
+            m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+            SideBarFileSystemItem* item = new SideBarFileSystemItem("computer:///ukui-data-volume", nullptr, this, m_model);
+            m_children->append(item);
+            m_model->endInsertRows();
+        }
+
     }else{
         //对挂载点进行已存在文件的枚举操作
         QString enumdir = m_uri;
-        if(m_uri.startsWith("computer:///")){//GFileEnumerator不识别computer:///，只识别file:///
+        if (m_uri == "computer:///ukui-data-volume") {
+            enumdir = "file:///data";
+        } else if(m_uri.startsWith("computer:///")){//GFileEnumerator不识别computer:///，只识别file:///
             auto info = FileInfo::fromUri(m_uri);
             FileInfoJob job(info);
             job.querySync();
             enumdir = info.get()->targetUri();
         }
 
-        if(!m_enumerator)
+        if (!m_enumerator) {
             m_enumerator= new FileEnumerator();
+        } else {
+            m_enumerator->cancel();
+            m_enumerator->deleteLater();
+            m_enumerator = new FileEnumerator();
+        }
+
         m_enumerator->setEnumerateDirectory(enumdir);
         m_enumerator->setEnumerateWithInfoJob();
 
@@ -474,20 +533,21 @@ void SideBarFileSystemItem::findChildren()
     /* 设备动态增减处理 */
     if("computer:///" == m_uri){
         auto volumeManager = Experimental_Peony::VolumeManager::getInstance();
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount);
-        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeAdd,this,&SideBarFileSystemItem::slot_volumeDeviceAdd, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeRemove,this,&SideBarFileSystemItem::slot_volumeDeviceRemove, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountAdd,this,&SideBarFileSystemItem::slot_volumeDeviceMount, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::mountRemove,this,&SideBarFileSystemItem::slot_volumeDeviceUnmount, Qt::DirectConnection);
+        connect(volumeManager,&Experimental_Peony::VolumeManager::volumeUpdate,this,&SideBarFileSystemItem::slot_volumeDeviceUpdate, Qt::DirectConnection);
 
     }else{
         /* 对挂载目录监听 */
-        if(!m_watcher)
+        if(!m_watcher){
             m_watcher = std::make_shared<FileWatcher>(m_uri, nullptr, true);
+            connect(m_watcher.get(),&FileWatcher::fileCreated,this,&SideBarFileSystemItem::slot_fileCreate);
+            connect(m_watcher.get(),&FileWatcher::fileDeleted,this,&SideBarFileSystemItem::slot_fileDelete);
+            connect(m_watcher.get(),&FileWatcher::fileRenamed,this,&SideBarFileSystemItem::slot_fileRename);
+        }
         m_watcher->setMonitorChildrenChange();
-        connect(m_watcher.get(),&FileWatcher::fileCreated,this,&SideBarFileSystemItem::slot_fileCreate);
-        connect(m_watcher.get(),&FileWatcher::fileDeleted,this,&SideBarFileSystemItem::slot_fileDelete);
-        connect(m_watcher.get(),&FileWatcher::fileRenamed,this,&SideBarFileSystemItem::slot_fileRename);
         m_watcher->startMonitor();
     }
 
@@ -590,7 +650,7 @@ static UDisksObject *get_object_from_block_device (UDisksClient *client,const gc
 
 void SideBarFileSystemItem::ejectOrUnmount()
 {
-    if (isRemoveable())
+    if (isRemoveable()||isStopable())
         eject(G_MOUNT_UNMOUNT_NONE);
 
     else if (isUnmountable())
@@ -605,16 +665,23 @@ void SideBarFileSystemItem::mount()
 
 //update udisk file info
 void SideBarFileSystemItem::updateFileInfo(SideBarFileSystemItem *pThis){
-    //FIXME: replace BLOCKING api in ui thread.
-    auto fileInfo = FileInfo::fromUri(pThis->m_uri);
-    FileInfoJob fileJob(fileInfo);
-    fileJob.querySync();
+//    //FIXME: replace BLOCKING api in ui thread.
+//    auto fileInfo = FileInfo::fromUri(pThis->m_uri);
+//    FileInfoJob fileJob(fileInfo);
+//    fileJob.querySync();
 
-    QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
+//    QString tmpName = FileUtils::getFileDisplayName(pThis->m_uri);
 
-    //old's drive name -> now's volume name. fix #17968
-    FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
-    //icon name.
-    pThis->m_iconName = FileUtils::getFileIconName(pThis->m_uri,false);
+//    //old's drive name -> now's volume name. fix #17968
+//    FileUtils::queryVolumeInfo(pThis->m_uri,pThis->m_volume_name,pThis->m_unix_device,tmpName);
+//    //icon name.
+//    pThis->m_iconName = FileUtils::getFileIconName(pThis->m_uri,false);
+
+//    // fix #81852, refer to #57660, #70014, task #25343
+//    if (pThis->m_iconName == "drive-harddisk-usb") {
+//        double size = FileUtils::getDeviceSize(pThis->m_unix_device.toUtf8().constData());
+//        if (size < 128) {
+//            pThis->m_iconName = "drive-removable-media-usb";
+//        }
+//    }
 }
-

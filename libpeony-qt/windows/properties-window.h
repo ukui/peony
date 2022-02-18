@@ -25,6 +25,9 @@
 
 #include <QTabWidget>
 #include <QMainWindow>
+#include <QToolBar>
+#include <QToolButton>
+#include <QLabel>
 
 #include "peony-core_global.h"
 #include "properties-window-tab-iface.h"
@@ -69,6 +72,35 @@ private:
     QHash<QString, PropertiesWindowTabPagePluginIface *> m_factory_hash;
     QMap<int, QString> m_sorted_factory_map;
     QMutex m_mutex;
+};
+
+class HeaderBar : public QToolBar
+{
+    Q_OBJECT
+public:
+    enum ButtonType {
+        Spread_Button,
+        Minimize_Button,
+        Close_Button
+    };
+
+    explicit HeaderBar(QWidget *parent = nullptr);
+    void setIcon(const QString &iconName);
+    void setTitle(const QString &title);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void initUI();
+    void resetTitle();
+
+Q_SIGNALS:
+    void buttonClicked(const ButtonType buttonType);
+
+private:
+    QList<QToolButton*> m_buttonList;
+    QLabel *m_iconLabel  = nullptr;
+    QLabel *m_titleLabel = nullptr;
+    QString m_title;
 };
 
 class PEONYCORESHARED_EXPORT PropertiesWindow : public QMainWindow
@@ -177,6 +209,13 @@ public:
      */
     QString rebuildUriBySchema(QString &uri);
 
+    /**
+     * @brief 对kmre-vfs中的文件进行特殊处理，以获取真实路径
+     * @param uri
+     * @return
+     */
+    bool handleKMREUri(QString &uri);
+
 protected:
     /**
      * 在窗口关闭时，将存储的窗口指针从openPropertiesWindows中删除
@@ -184,6 +223,7 @@ protected:
      * @param event
      */
     void closeEvent(QCloseEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     bool m_notDir = true;
@@ -222,7 +262,20 @@ class PropertiesWindowPrivate : public QTabWidget
 Q_OBJECT
 private:
     explicit PropertiesWindowPrivate(const QStringList &uris, QWidget *parent = nullptr);
+};
 
+class tabWidgetStyle : public QProxyStyle
+{
+public:
+    /**
+     * QTabBar设置居中
+     * @brief subElementRect
+     * @param element
+     * @return 返回QTabBar的矩形
+     */
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
 };
 
 }

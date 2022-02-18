@@ -54,14 +54,18 @@ public:
     void setText(QString text) {
         m_search_box->setText(text);
     }
+    void deselectSearchBox() {
+        // Take action in the search bar to refresh search results
+        m_search_box->deselect();
+    }
 
     //get user selected index of file type
-    int getFilterIndex() {
-        return m_filter_box->currentIndex();
-    }
-    void clearFilter() {
-        m_filter_box->setCurrentIndex(0);
-    }
+//    int getFilterIndex() {
+//        return m_filter_box->currentIndex();
+//    }
+//    void clearFilter() {
+//        m_filter_box->setCurrentIndex(0);
+//    }
 
 Q_SIGNALS:
     void returnPressed();
@@ -76,7 +80,7 @@ private:
     QHBoxLayout *m_layout = nullptr;
 
     QLineEdit *m_search_box;
-    QComboBox *m_filter_box;
+//    QComboBox *m_filter_box;
 
     QStringListModel *m_model = nullptr;
     QListView *m_list_view = nullptr;

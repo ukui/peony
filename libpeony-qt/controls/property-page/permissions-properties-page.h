@@ -68,8 +68,8 @@ public:
 
 protected:
     static GAsyncReadyCallback async_query_permisson_callback(GObject *obj,
-            GAsyncResult *res,
-            PermissionsPropertiesPage *p_this);
+                                                         GAsyncResult *res,
+                                            PermissionsPropertiesPage *p_this);
 
     void queryPermissionsAsync(const QString&, const QString &uri);
 

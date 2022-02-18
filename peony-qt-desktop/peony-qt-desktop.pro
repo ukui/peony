@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui x11extras dbus concurrent KWindowSystem KWaylandClient
+# for tablet-desktop
+QT       += svg network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,6 +27,16 @@ include(../3rd-parties/qtsingleapplication/qtsingleapplication.pri)
 DEFINES += QAPPLICATION_CLASS=QApplication
 
 PKGCONFIG +=gio-2.0 glib-2.0 gio-unix-2.0 gsettings-qt libcanberra wayland-client
+# for tablet-desktop
+PKGCONFIG += libbamf3 x11 xrandr xtst
+
+#导入模块
+include($$PWD/main/main.pri)
+include($$PWD/window/window.pri)
+include($$PWD/settings/settings.pri)
+include($$PWD/interface/interface.pri)
+include($$PWD/desktops/desktops.pri)
+
 CONFIG += c++11 link_pkgconfig no_keywords lrelease
 
 #LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11 -lukui-log4qt
@@ -32,52 +44,21 @@ LIBS += -L$$PWD/../libpeony-qt/ -lpeony -lX11
 
 TRANSLATIONS += ../translations/peony-qt-desktop/peony-qt-desktop_zh_CN.ts \
                 ../translations/peony-qt-desktop/peony-qt-desktop_tr.ts \
-                ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts
+                ../translations/peony-qt-desktop/peony-qt-desktop_cs.ts \
+                ../translations/peony-qt-desktop/peony-qt-desktop_bo_CN.ts
 
 SOURCES += \
-    desktop-background-manager.cpp \
-    desktopbackgroundwindow.cpp \
     main.cpp \
-    peony-desktop-application.cpp \
-    fm-dbus-service.cpp \
-    desktop-item-model.cpp \
-    desktop-icon-view.cpp \
-    desktop-icon-view-delegate.cpp \
-    desktop-index-widget.cpp \
-    desktop-menu.cpp \
-    desktop-menu-plugin-manager.cpp \
-    desktop-item-proxy-model.cpp \
-    peony-json-operation.cpp \
-    bw-list-info.cpp \
-    peony-dbus-service.cpp \
     plasma-shell-manager.cpp \
     primary-manager.cpp \
-    user-dir-manager.cpp \
     waylandoutputmanager.cpp \
-    ukui-output-core.c \
-    desktopbackground.cpp
+    ukui-output-core.c
 
 HEADERS += \
-    desktop-background-manager.h \
-    desktopbackgroundwindow.h \
-    peony-desktop-application.h \
-    fm-dbus-service.h \
-    desktop-item-model.h \
-    desktop-icon-view.h \
-    desktop-icon-view-delegate.h \
-    desktop-index-widget.h \
-    desktop-menu.h \
-    desktop-menu-plugin-manager.h \
-    desktop-item-proxy-model.h \
-    peony-json-operation.h \
-    bw-list-info.h \
-    peony-dbus-service.h \
     plasma-shell-manager.h \
     primary-manager.h \
-    user-dir-manager.h \
     waylandoutputmanager.h \
-    ukui-output-client.h \
-    desktopbackground.h
+    ukui-output-client.h
 
 target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
@@ -92,4 +73,4 @@ INSTALLS += desktop_data
 DISTFILES +=
 
 RESOURCES += \
-    peony-qt-desktop-style.qrc
+    $$PWD/resources/peony-qt-desktop-style.qrc

@@ -147,6 +147,16 @@ void DirectoryViewMenu::fillActions()
         m_is_smb_file = true;
     }
 
+    auto dev = VolumeManager::getDriveFromUri(m_directory);
+    if(dev != nullptr){
+        bool canEject = g_drive_can_eject(dev.get()->getGDrive());
+        bool canStop = g_drive_can_stop(dev.get()->getGDrive());
+        if(canEject || canStop){
+            m_is_mobile_file = true;
+        }
+        qDebug() << "canEject :" << canEject;
+    }
+
     QString homeUri = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString musicUri = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
@@ -193,6 +203,11 @@ void DirectoryViewMenu::fillActions()
         if (!viewActions.isEmpty())
             addSeparator();
     }
+
+    //add multiselect action
+    auto multiselectAction = constructMultiSelectActions();
+    if(!multiselectAction.isEmpty())
+        addSeparator();
 
     //add operation actions
     auto fileOpActions = constructFileOpActions();
@@ -270,13 +285,22 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 if (!info->isVirtual() &&  !info->uri().startsWith("smb://") && !m_is_kydroid && !m_is_filesafe && !m_is_filebox_file)
                 {
                     l<<addAction(QIcon::fromTheme("bookmark-add-symbolic"), tr("Add to bookmark"));
-                    connect(l.last(), &QAction::triggered, [=]() {
-                        //qDebug() <<"add to bookmark:" <<info->uri();
-                        auto bookmark = BookMarkManager::getInstance();
-                        if (bookmark->isLoaded()) {
-                            bookmark->addBookMark(info->uri());
-                        }
-                    });
+
+                    if(BookMarkManager::getInstance()->existsInBookMarks(info->uri()))
+                    {
+                        l.last()->setEnabled(false);
+                    }
+                    else
+                    {
+                        connect(l.last(), &QAction::triggered, [=]() {
+
+                            //qDebug() <<"add to bookmark:" <<info->uri();
+                            auto bookmark = BookMarkManager::getInstance();
+                            if (bookmark->isLoaded()) {
+                                bookmark->addBookMark(info->uri());
+                            }
+                        });
+                    }
                 }
 
                 l<<addAction(QIcon::fromTheme("document-open-symbolic"), tr("Open"));
@@ -304,8 +328,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                     }
                     openWithMenu->addSeparator();
                     openWithMenu->addAction(tr("More applications..."), [=]() {
-                        FileLauchDialog d(m_selections.first());
-                        d.exec();
+                        FileLauchDialog *d = new FileLauchDialog(m_selections.first());
+                        d->show();
                     });
                     openWithAction->setMenu(openWithMenu);
                 }
@@ -365,8 +389,8 @@ const QList<QAction *> DirectoryViewMenu::constructOpenOpActions()
                 }
                 openWithMenu->addSeparator();
                 openWithMenu->addAction(tr("More applications..."), [=]() {
-                    FileLauchDialog d(m_selections.first());
-                    d.exec();
+                    FileLauchDialog *d = new FileLauchDialog(m_selections.first());
+                    d->show();
                 });
                 openWithAction->setMenu(openWithMenu);
             } else {
@@ -609,8 +633,10 @@ const QList<QAction *> DirectoryViewMenu::constructViewOpActions()
         l<<sortOrderAction;
         QMenu *sortOrderMenu = new QMenu(this);
         tmp.clear();
-        tmp<<sortOrderMenu->addAction(tr("Ascending Order"));
+        //fix bug#97408,change indicator meanings
+        //箭头向上为升序，向下为降序，与通常的理解对应，对比了UOS是这样的
         tmp<<sortOrderMenu->addAction(tr("Descending Order"));
+        tmp<<sortOrderMenu->addAction(tr("Ascending Order"));
         int sortOrder = m_view->getSortOrder();
         tmp.at(sortOrder)->setCheckable(true);
         tmp.at(sortOrder)->setChecked(true);
@@ -722,7 +748,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 }
 
                 //fix unencrypted box file can delete to trash issue, link to bug#72948
-                if (canTrash && ! m_is_filebox_file)
+                if (canTrash && ! m_is_filebox_file && !m_is_mobile_file)
                 {
                     l<<addAction(QIcon::fromTheme("edit-delete-symbolic"), tr("Delete to trash"));
                     connect(l.last(), &QAction::triggered, [=]() {
@@ -736,7 +762,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                     //fix the bug 77131;
                     if(m_is_filebox_file){
                         l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
-                    }else {
+                    }else if(!m_is_filebox_file || m_is_mobile_file){
                         l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete forever"));
                     }
 
@@ -929,6 +955,13 @@ const QList<QAction *> DirectoryViewMenu::constructComputerActions()
             j.querySync();
         }
 
+        //not allow format data block, fix bug#66471，66479
+        QString targetUri = FileUtils::getTargetUri(uri);
+        if (uri == "file:///data" || targetUri == "file:///data"
+            || (uri.startsWith("file:///media") && uri.endsWith("/data"))
+            || (targetUri.startsWith("file:///media") && targetUri.endsWith("/data")))
+            return l;
+
         auto mount = VolumeManager::getMountFromUri(info->targetUri());
         //fix bug#52491, CDROM and DVD can format issue
         if (nullptr != mount) {
@@ -1043,6 +1076,20 @@ const QList<QAction *> DirectoryViewMenu::constructSearchActions()
         });
     }
     return l;
+}
+
+const QList<QAction *> DirectoryViewMenu::constructMultiSelectActions()
+{
+    QList<QAction *> l;
+    if(m_view->viewId() == "List View")
+        return l;
+    auto MultiSelectAction = addAction(tr("MultiSelect"));
+    l<<MultiSelectAction;
+    connect(l.last(), &QAction::triggered, [=]() {
+        m_view->multiSelect();
+    });
+    return l;
+
 }
 
 const QList<QAction *> DirectoryViewMenu::constructMenuPluginActions()

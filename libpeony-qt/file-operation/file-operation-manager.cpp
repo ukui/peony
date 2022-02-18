@@ -49,6 +49,7 @@
 #include <QVector4D>
 
 #include <QDebug>
+#include <unistd.h>
 
 using namespace Peony;
 
@@ -76,13 +77,7 @@ FileOperationManager::FileOperationManager(QObject *parent) : QObject(parent)
     // 休眠检测
     GDBusConnection* pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
     if (pconnection) {
-        g_dbus_connection_signal_subscribe(pconnection,
-                       "org.freedesktop.login1",
-                       "org.freedesktop.login1.Manager",
-                       "PrepareForSleep",
-                       "/org/freedesktop/login1", NULL,
-                       G_DBUS_SIGNAL_FLAGS_NONE,
-                       systemSleep, this, NULL);
+        g_dbus_connection_signal_subscribe(pconnection, "org.freedesktop.login1", "org.freedesktop.login1.Manager", "PrepareForSleep", "/org/freedesktop/login1", NULL, G_DBUS_SIGNAL_FLAGS_NONE, systemSleep, this, NULL);
     }
 }
 
@@ -286,6 +281,18 @@ start:
            }
        }
    }, Qt::BlockingQueuedConnection);
+
+   // fix #92481
+   if (auto trashOp = qobject_cast<FileTrashOperation *>(operation)) {
+       connect(trashOp, &FileTrashOperation::deleteRequest, this, [=](const QStringList &srcUris){
+           auto deleteOperation = new FileDeleteOperation(srcUris);
+           // wait trash operation finished. otherwise manager will asume
+           // the operation is invalid due to deletion checkment.
+           QTimer::singleShot(1000, this, [=]{
+               startOperation(deleteOperation, true);
+           });
+       }, Qt::BlockingQueuedConnection);
+   }
 
     if (!allowParallel) {
         if (m_thread_pool->activeThreadCount() > 0) {
@@ -680,6 +687,7 @@ std::shared_ptr<FileOperationInfo> FileOperationInfo::getOppositeInfo(FileOperat
     return oppositeInfo;
 }
 
+// S3/S4
 void FileOperationManager::systemSleep (GDBusConnection *connection, const gchar *senderName, const gchar *objectPath, const gchar *interfaceName, const gchar *signalName, GVariant *parameters, gpointer udata)
 {
     FileOperationProgressBar* pb = static_cast<FileOperationManager*>(udata)->m_progressbar;

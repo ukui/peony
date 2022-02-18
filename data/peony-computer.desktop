@@ -11,4 +11,4 @@ Terminal=false
 Type=Application
 Categories=System;Settings;Security;
 Keywords=file;home;folder;browser;disk;computer;
-NoDisplay=true;
+NoDisplay=true

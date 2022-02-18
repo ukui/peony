@@ -41,9 +41,9 @@
 
 #include <QApplication>
 #include <QWindow>
-
+#include <QStyleOptionTab>
+#include <QStyle>
 #include <QPainter>
-#include <QPainterPath>
 
 #include "FMWindowIface.h"
 #include "main-window.h"
@@ -54,23 +54,20 @@ static TabBarStyle *global_instance = nullptr;
 
 NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
 {
-    setFocusPolicy(Qt::StrongFocus);
-
     setAcceptDrops(true);
     m_drag_timer.setInterval(750);
     m_drag_timer.setSingleShot(true);
 
-    setStyle(TabBarStyle::getStyle());
+//    setStyle(TabBarStyle::getStyle());
+
 
     setContentsMargins(0, 0, 0, 0);
-    //setUsesScrollButtons(false);
-    //setFixedHeight(36);
+    setFixedHeight(48);
 
     setProperty("useStyleWindowManager", false);
     setMovable(true);
     setExpanding(false);
     setTabsClosable(true);
-    setUsesScrollButtons(true);
     X11WindowManager::getInstance()->registerWidget(this);
 
     connect(this, &QTabBar::currentChanged, this, [=](int index) {
@@ -89,10 +86,6 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
         //qDebug()<<"tab bar double clicked"<<index;
     });
 
-//    connect(this, &QTabBar::tabCloseRequested, this, [=](int index){
-//        removeTab(index);
-//    });
-
     setDrawBase(false);
 }
 
@@ -103,6 +96,7 @@ void NavigationTabBar::addPages(const QStringList &uri)
 
 void NavigationTabBar::updateLocation(int index, const QString &uri)
 {
+    //bug#94981 修改拖拽tab页时出现断错误，改成异步查询更新tab数据
     auto info = Peony::FileInfo::fromUri(uri);
     auto infoJob = new Peony::FileInfoJob(info);
     infoJob->setAutoDelete();
@@ -113,7 +107,6 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
             return;
         auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-        //qDebug() << "updateLocation text:" <<displayName <<uri;
         if (uri.startsWith("search:///"))
         {
             QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
@@ -129,7 +122,6 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
         }
 
         setTabText(index, displayName);
-        setTabIcon(index, QIcon::fromTheme(iconName));
         setTabData(index, uri);
 
         Q_EMIT this->locationUpdated(uri);
@@ -140,14 +132,13 @@ void NavigationTabBar::updateLocation(int index, const QString &uri)
 
 void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 {
-    setFocus();
-    if (uri.isEmpty())
-        return;
-    m_info = Peony::FileInfo::fromUri(uri);
     if (!uri.isNull()) {
-        auto iconName = Peony::FileUtils::getFileIconName(uri);
+        //FIXME: replace BLOCKING api in ui thread.
+//        auto iconName = Peony::FileUtils::getFileIconName(uri);
         auto displayName = Peony::FileUtils::getFileDisplayName(uri);
-        addTab(QIcon::fromTheme(iconName), displayName);
+        //去除tabpage图标
+//        addTab(QIcon::fromTheme(iconName), displayName);
+        addTab(displayName);
         setTabData(count() - 1, uri);
         if (jumpToNewTab)
             setCurrentIndex(count() - 1);
@@ -165,12 +156,9 @@ void NavigationTabBar::addPage(const QString &uri, bool jumpToNewTab)
 void NavigationTabBar::tabRemoved(int index)
 {
     //qDebug()<<"tab removed"<<index;
-    QString uri = tabData(index).toString();
-
     QTabBar::tabRemoved(index);
 
-    Q_EMIT pageRemoved(uri);
-
+    Q_EMIT pageRemoved();
     if (count() == 0) {
         Q_EMIT closeWindowRequest();
     }
@@ -190,6 +178,7 @@ void NavigationTabBar::dragEnterEvent(QDragEnterEvent *e)
 
 void NavigationTabBar::dragMoveEvent(QDragMoveEvent *e)
 {
+    //点击tab页签，抓取页面得到新的窗口
     if (e->source() == this) {
         m_should_trigger_drop = false;
         m_drag->cancel();
@@ -206,16 +195,19 @@ void NavigationTabBar::dragLeaveEvent(QDragLeaveEvent *e)
 
 void NavigationTabBar::dropEvent(QDropEvent *e)
 {
+    //点击tab页签，抓取页面得到新的窗口
     m_start_drag = false;
     if (e->source() != this) {
         if (e->mimeData()->hasUrls()) {
             for (auto url : e->mimeData()->urls()) {
+                //FIXME: replace BLOCKING api in ui thread.
                 if (Peony::FileUtils::isFileDirectory(url.url())) {
                     addPageRequest(url.url(), true);
                 }
             }
         } else if (e->mimeData()->hasFormat("peony/tab-index")) {
             auto uri = e->mimeData()->data("peony/tab-index");
+            //FIXME: replace BLOCKING api in ui thread.
             if (Peony::FileUtils::isFileDirectory(uri)) {
                 addPageRequest(uri, true);
             }
@@ -243,6 +235,7 @@ void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
 {
     QTabBar::mouseMoveEvent(e);
 
+    //点击tab页签，抓取页面得到新的窗口
     if (e->source() != Qt::MouseEventNotSynthesized) {
         return;
     }
@@ -261,7 +254,6 @@ void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
     //start a drag
     //note that we should remove this tab from the window
     //at other tab's drop event.
-
     auto pixmap = this->topLevelWidget()->grab().scaledToWidth(this->topLevelWidget()->width()/2, Qt::SmoothTransformation);
 
     auto thisWindow = this->topLevelWidget();
@@ -285,6 +277,7 @@ void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
     d->setHotSpot(pixmap.rect().center());
     m_should_trigger_drop = true;
     d->exec();
+    qApp->restoreOverrideCursor();
     m_drag = nullptr;
 
     if (m_should_trigger_drop) {
@@ -329,48 +322,95 @@ TabBarStyle *TabBarStyle::getStyle()
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
     switch (metric) {
-    case PM_TabBarScrollButtonWidth:
     case PM_TabBarTabShiftVertical:
     case PM_TabBarBaseHeight:
         return 0;
     case PM_TabBarBaseOverlap:
         return 0;
+    case PM_TabBarTabVSpace:
+        return 25;
+    case PM_TabBarTabHSpace:
+        return 140 ;
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
 }
 
-QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
-{
-    switch (element) {
-    case SE_TabBarScrollLeftButton:
-    case SE_TabBarScrollRightButton:
-        return QRect();
-    default:
-        break;
-    }
-    return QProxyStyle::subElementRect(element, option, widget);
-}
-
-void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
-{
-    if (widget && widget->objectName() == "addPageButton") {
-        painter->save();
-        painter->setRenderHint(QPainter::Antialiasing);
-        QPainterPath path;
-        path.addEllipse(widget->rect().adjusted(2, 2, -2, -2));
-        painter->setClipPath(path);
-        QProxyStyle::drawComplexControl(control, option, painter, widget);
-        painter->restore();
-    } else {
-        QProxyStyle::drawComplexControl(control, option, painter, widget);
-    }
-}
-
 void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (widget && widget->objectName() == "previewButtons") {
+    if(element == CE_TabBarTab)
+    {
+        QRect rect = option->rect;
+        QColor outline =option->palette.window().color();
+
+        painter->save();
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+
+            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
+                               && (tab->shape == QTabBar::RoundedNorth
+                                   || tab->shape == QTabBar::RoundedSouth));
+            bool selected = tab->state & State_Selected;
+            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
+                            || (rtlHorTabs
+                                && tab->position == QStyleOptionTab::Beginning));
+            bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
+            int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
+            rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
+
+
+            //painter->setPen(d->innerContrastLine());
+            painter->setPen( Qt::NoPen);
+
+            QTransform rotMatrix;
+            //painter->setPen(shadow);
+            painter->setPen( Qt::NoPen);
+            switch (tab->shape) {
+            case QTabBar::RoundedNorth:
+                break;
+            default:
+                painter->restore();
+                QCommonStyle::drawControl(element, tab, painter, widget);
+                return;
+            }
+
+
+            bool firstTab = tab->position == QStyleOptionTab::Beginning;
+            if (selected) {
+                painter->save();
+                painter->setRenderHint(QPainter::Antialiasing);
+                painter->setBrush(option->palette.base().color());
+                painter->drawRoundedRect(option->rect.adjusted(0,-1,0,0),12,12);
+                if(firstTab){
+                    painter->drawRect(option->rect.left(),option->rect.bottom()-12,25,option->rect.bottom()+25);
+                    painter->drawRect(option->rect.right()-12,option->rect.bottom()-12,12,12);
+                    QPainterPath path1;
+                    QPainterPath path2;
+                    QPainterPath path;
+                    path1.addRect(option->rect.right(),option->rect.bottom()-12,12,12);
+                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
+                    path=path1-path2;
+                    painter->drawPath(path);
+                }
+                else
+                {
+                    QPainterPath path1;
+                    QPainterPath path2;
+                    QPainterPath path;
+                    path1.addRect(option->rect.left()-12,option->rect.bottom()-12,option->rect.width()+24,12);
+                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
+                    path2.addEllipse(option->rect.left()-24,option->rect.bottom()-24,24,24);
+                    path=path1-path2;
+                    painter->drawPath(path);
+                }
+                painter->restore();
+            }
+            painter->restore();
+            proxy()->drawControl(CE_TabBarTabLabel, tab, painter, widget);
+
+        }
+
         return;
     }
-    QProxyStyle::drawControl(element, option, painter, widget);
+
+    return QProxyStyle::drawControl(element, option, painter, widget);
 }

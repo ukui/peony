@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg  viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>default</title>
+    <g id="Edu-OS-Light" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TM-桌面01" transform="translate(-1856.000000, -556.000000)">
+            <g id="default" transform="translate(1856.000000, 556.000000)">
+                <rect id="overlay" fill-opacity="0.298039216" fill="#FF5500" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                <path d="M12,8.5 C12.9664983,8.5 13.8414983,8.89175084 14.4748737,9.52512627 C15.1082492,10.1585017 15.5,11.0335017 15.5,12 C15.5,12.9664983 15.1082492,13.8414983 14.4748737,14.4748737 C13.8414983,15.1082492 12.9664983,15.5 12,15.5 C11.0335017,15.5 10.1585017,15.1082492 9.52512627,14.4748737 C8.89175084,13.8414983 8.5,12.9664983 8.5,12 C8.5,11.0335017 8.89175084,10.1585017 9.52512627,9.52512627 C10.1585017,8.89175084 11.0335017,8.5 12,8.5 Z" id="矩形" stroke-opacity="0.5" stroke="#FFFFFF" fill-opacity="0.25" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

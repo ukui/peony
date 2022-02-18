@@ -74,5 +74,5 @@ void IconViewEditor::keyPressEvent(QKeyEvent *e)
 
 void IconViewEditor::minimalAdjust()
 {
-    this->resize(QSize(document()->size().width(), document()->size().height() + 10));
+    this->resize(QSize(document()->size().width(), document()->size().height() + 24));
 }

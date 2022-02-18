@@ -41,6 +41,9 @@ public:
     }
     void run() override;
 
+Q_SIGNALS:
+    void deleteRequest(const QStringList &uris);
+
 private:
     void forceDelete (QString uri);
     void setErrorMessage (GError** err);

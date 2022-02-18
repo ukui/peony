@@ -26,13 +26,9 @@
 #include <QTabBar>
 #include <QProxyStyle>
 #include <QTimer>
-#include <memory>
 
 class QToolButton;
 class QDrag;
-namespace Peony {
-class FileInfo;
-}
 
 class NavigationTabBar : public QTabBar
 {
@@ -42,7 +38,7 @@ public:
 
 Q_SIGNALS:
     void pageAdded(const QString &uri);
-    void pageRemoved(const QString &uri);
+    void pageRemoved();
     void closeWindowRequest();
     void addPageRequest(const QString &uri, bool jumpTo);
     void locationUpdated(const QString &uri);
@@ -68,15 +64,16 @@ protected:
     void resizeEvent(QResizeEvent *e) override;
 
 private:
+    QToolButton *m_float_button;
+
     QTimer m_drag_timer;
     bool m_start_drag = false;
+
     QPoint m_press_pos;
     QDrag *m_drag = nullptr;
     bool m_should_trigger_drop = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
-
-    std::shared_ptr<Peony::FileInfo> m_info;
 };
 
 class TabBarStyle : public QProxyStyle
@@ -87,9 +84,10 @@ class TabBarStyle : public QProxyStyle
     TabBarStyle() {}
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
-    QRect subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const override;
-    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const override;
-    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
 };
 
 #endif // NAVIGATIONTABBAR_H

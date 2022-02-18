@@ -225,3 +225,9 @@ void BookMarkManager::removeBookMark(const QStringList &uris)
     });
 }
 
+bool BookMarkManager::existsInBookMarks(const QString &uri)
+{
+    QUrl url = FileUtils::urlDecode(uri);
+    QString originPath = "favorite://" + url.path() + "?schema=" + url.scheme();
+    return  m_uris.contains(originPath);
+}

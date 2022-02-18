@@ -31,6 +31,8 @@
 #include <QDebug>
 #include <bookmark-manager.h>
 
+#include <ukuisdk/kylin-com4cxx.h>
+
 static char* vfs_favorite_file_get_target_file (GFile* file);
 static void vfs_favorite_file_g_file_iface_init(GFileIface *iface);
 
@@ -272,6 +274,9 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
     } else {
         info = g_file_info_new ();
         QString name = QObject::tr("favorite");
+        if (QString::fromStdString(KDKGetPrjCodeName()) == V10_SP1_EDU) {
+            name = QObject::tr("Favorites");
+        }
         auto icon = g_themed_icon_new("favorite");
         g_file_info_set_icon(info, icon);
         g_object_unref(icon);

@@ -49,8 +49,11 @@
 #include "advance-search-bar.h"
 #include "status-bar.h"
 
+#include "intel/intel-navigation-side-bar.h"
+
 #include "peony-main-window-style.h"
 
+#include "file-label-box.h"
 #include "file-operation-manager.h"
 #include "file-operation-utils.h"
 #include "file-utils.h"
@@ -69,7 +72,7 @@
 #include "global-settings.h"
 #include "audio-play-manager.h"
 
-#include "float-pane-widget.h"
+#include "side-bar-factory-manager.h"
 
 #include <QSplitter>
 
@@ -96,6 +99,10 @@
 // NOTE build failed on Archlinux. Can't detect `QGSettings/QGSettings' header
 // fixed by replaced `QGSettings/QGSettings' with `QGSettings'
 #include <QGSettings>
+#include "xatom-helper.h"
+#include "trash-warn-dialog.h"
+
+#define FONT_SETTINGS "org.ukui.style"
 
 static MainWindow *last_resize_window = nullptr;
 
@@ -104,8 +111,7 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
     setContextMenuPolicy(Qt::CustomContextMenu);
     installEventFilter(this);
 
-    //use qApp set window icon, task#29435
-    qApp->setWindowIcon(QIcon::fromTheme("system-file-manager"));
+    setWindowIcon(QIcon::fromTheme("system-file-manager"));
     //setWindowTitle(tr("File Manager"));
 
     //check all settings and init
@@ -113,43 +119,30 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
     setStyle(PeonyMainWindowStyle::getStyle());
 
-    m_effect = new BorderShadowEffect(this);
-    m_effect->setPadding(0);
-    m_effect->setBorderRadius(0);
-    m_effect->setBlurRadius(0);
-    //setGraphicsEffect(m_effect);
-
     setAnimated(false);
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
     //setAttribute(Qt::WA_OpaquePaintEvent);
     //fix double window base buttons issue, not effect MinMax button hints
-    //auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-    //setWindowFlags(flags |Qt::FramelessWindowHint);
-    //setWindowFlags(windowFlags()|Qt::FramelessWindowHint);
-    //setContentsMargins(4, 4, 4, 4);
+    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
+    setWindowFlags(flags);
+
+    //use ukui-kwin to draw round corner and shadow.
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(window()->winId(), hints);
+    setContentsMargins(0, 0, 0, 0);
 
     //disable style window manager
     setProperty("useStyleWindowManager", false);
 
-    //set minimum width by design request
-    setMinimumWidth(WINDOW_MINIMUM_WIDTH);
+    //short cut settings
+    setShortCuts();
 
     //init UI
     initUI(uri);
-
-    // set tab order
-
-    if (QX11Info::isPlatformX11()) {
-        XAtomHelper::getInstance()->setUKUIDecoraiontHint(this->winId(), true);
-        MotifWmHints hints;
-        hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
-        hints.functions = MWM_FUNC_ALL;
-        hints.decorations = MWM_DECOR_BORDER;
-        XAtomHelper::getInstance()->setWindowMotifHint(this->winId(), hints);
-    }
-
-    startMonitorThumbnailForbidStatus();
 
     auto start_cost_time = QDateTime::currentMSecsSinceEpoch()- PeonyApplication::peony_start_time;
     qDebug() << "peony start end in main-window time:" <<start_cost_time
@@ -158,10 +151,10 @@ MainWindow::MainWindow(const QString &uri, QWidget *parent) : QMainWindow(parent
 
 MainWindow::~MainWindow()
 {
-    //fix bug 40913, when window is maximazed, not update size
-    if (last_resize_window == this && !isMaximized()) {
+    if (last_resize_window == this) {
         auto settings = Peony::GlobalSettings::getInstance();
-        settings->setValue(DEFAULT_WINDOW_SIZE, this->size());
+        settings->setValue(DEFAULT_WINDOW_WIDTH, this->size().width());
+        settings->setValue(DEFAULT_WINDOW_HEIGHT, this->size().height());
         last_resize_window = nullptr;
     }
 }
@@ -182,7 +175,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
             // real set default side bar width
             auto settings = Peony::GlobalSettings::getInstance();
             settings->setValue(DEFAULT_SIDEBAR_WIDTH, m_side_bar->width());
-            qDebug() << "main window set DEFAULT_SIDEBAR_WIDTH:" << m_side_bar->width();
         }
         m_should_save_side_bar_width = false;
     }
@@ -193,15 +185,10 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 QSize MainWindow::sizeHint() const
 {
     auto screenSize = QApplication::primaryScreen()->size();
-    QSize windowSize;
-    windowSize.setWidth(screenSize.width()*2/3);
-    windowSize.setHeight(screenSize.height()*4/5);
-    QSize defaultSize = (Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_SIZE)).toSize();
-    if (!defaultSize.isValid())
-        return windowSize;
+    QSize defaultSize(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_WIDTH).toInt(),
+                      Peony::GlobalSettings::getInstance()->getValue(DEFAULT_WINDOW_HEIGHT).toInt());
     int width = qMin(defaultSize.width(), screenSize.width());
     int height = qMin(defaultSize.height(), screenSize.height());
-
     //return screenSize*2/3;
     //qreal dpr = qApp->devicePixelRatio();
     return QSize(width, height);
@@ -210,11 +197,8 @@ QSize MainWindow::sizeHint() const
 Peony::FMWindowIface *MainWindow::create(const QString &uri)
 {
     auto window = new MainWindow(uri);
-    connect(window, &MainWindow::locationChanged, this, [=](){
-        if (currentViewSupportZoom())
-            window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
-    });
-
+    if (currentViewSupportZoom())
+        window->setCurrentViewZoomLevel(this->currentViewZoomLevel());
     return window;
 }
 
@@ -285,50 +269,46 @@ void MainWindow::checkSettings()
         QGSettings *fontSetting = new QGSettings(FONT_SETTINGS, QByteArray(), this);
         connect(fontSetting, &QGSettings::changed, this, [=](const QString &key){
             qDebug() << "fontSetting changed:" << key;
-            if (key == "systemFont" || key == "systemFontSize") {
+            if (key == "systemFont" || key == "systemFontSize")
+            {
                 QFont font = this->font();
                 for(auto widget : qApp->allWidgets())
                     widget->setFont(font);
             }
-            //use qApp set window icon, task#29435
-            /*else if ("iconThemeName" == key) {
-                setWindowIcon(QIcon::fromTheme("system-file-manager"));
-            }*/
         });
     }
 }
 
 void MainWindow::setShortCuts()
 {
-    if (!m_shortcuts_set) {
-        //stop loading action
-        QAction *stopLoadingAction = new QAction(this);
-        stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
-        addAction(stopLoadingAction);
-        connect(stopLoadingAction, &QAction::triggered, this, &MainWindow::forceStopLoading);
+    //stop loading action
+    QAction *stopLoadingAction = new QAction(this);
+    stopLoadingAction->setShortcut(QKeySequence(Qt::Key_Escape));
+    addAction(stopLoadingAction);
+    connect(stopLoadingAction, &QAction::triggered, this, &MainWindow::forceStopLoading);
 
-        //show hidden action
-        QAction *showHiddenAction = new QAction(this);
-        showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
-        addAction(showHiddenAction);
-        connect(showHiddenAction, &QAction::triggered, this, [=]() {
-            //qDebug() << "show hidden";
-            this->setShowHidden();
-        });
+    //show hidden action
+    QAction *showHiddenAction = new QAction(this);
+    showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    addAction(showHiddenAction);
+    connect(showHiddenAction, &QAction::triggered, this, [=]() {
+        //qDebug() << "show hidden";
+        this->setShowHidden();
+    });
 
-        auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
-        undoAction->setShortcut(QKeySequence::Undo);
-        addAction(undoAction);
-        connect(undoAction, &QAction::triggered, [=]() {
-            Peony::FileOperationManager::getInstance()->undo();
-        });
+    auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    addAction(undoAction);
+    connect(undoAction, &QAction::triggered, [=]() {
+        Peony::FileOperationManager::getInstance()->undo();
+    });
 
-        auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
-        redoAction->setShortcut(QKeySequence::Redo);
-        addAction(redoAction);
-        connect(redoAction, &QAction::triggered, [=]() {
-            Peony::FileOperationManager::getInstance()->redo();
-        });
+    auto redoAction = new QAction(QIcon::fromTheme("edit-redo-symbolic"), tr("Redo"), this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    addAction(redoAction);
+    connect(redoAction, &QAction::triggered, [=]() {
+        Peony::FileOperationManager::getInstance()->redo();
+    });
 
         //add CTRL+D for delete operation
         auto trashAction = new QAction(this);
@@ -340,27 +320,20 @@ void MainWindow::setShortCuts()
                     || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
-            auto uris = this->getCurrentSelections();
-
-            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
-            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
-            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
-            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
-            if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
-                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
-                bool isTrash = this->getCurrentUri() == "trash:///";
-                if (!isTrash) {
-                    Peony::FileOperationUtils::trash(uris, true);
-                } else {
-                    Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
-                }
+        auto uris = this->getCurrentSelections();
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (!uris.isEmpty() && !uris.contains(desktopUri) && !uris.contains(homeUri)) {
+            bool isTrash = this->getCurrentUri() == "trash:///";
+            if (!isTrash) {
+                Peony::FileOperationUtils::trash(uris, true);
+            } else {
+                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
             }
-        });
-        addAction(trashAction);
+        }
+    });
+    addAction(trashAction);
 
         auto deleteAction = new QAction(this);
         deleteAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::SHIFT + Qt::Key_Delete));
@@ -371,285 +344,291 @@ void MainWindow::setShortCuts()
                     || currentUri.startsWith("kmre://") || currentUri.startsWith("kydroid://"))
                 return;
 
-            auto uris = this->getCurrentSelections();
+        auto uris = this->getCurrentSelections();
+        QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+        QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        if (! uris.contains(desktopUri) && !uris.contains(homeUri))
+           Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
+    });
 
-            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-            QString documentPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-            QString musicPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
-            QString moviesPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::MoviesLocation));
-            QString picturespPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
-            QString downloadPath = Peony::FileUtils::getEncodedUri("file://" +  QStandardPaths::writableLocation(QStandardPaths::DownloadLocation));
-            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-            if (! uris.contains(desktopUri) && !uris.contains(homeUri) && !uris.contains(documentPath) && !uris.contains(musicPath)
-                    && !uris.contains(moviesPath) && !uris.contains(picturespPath) && !uris.contains(downloadPath)) {
-                Peony::FileOperationUtils::executeRemoveActionWithDialog(uris);
-            }
-        });
+    auto searchAction = new QAction(this);
+    searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
+    connect(searchAction, &QAction::triggered, this, [=]() {
+        m_is_search = ! m_is_search;
+        m_header_bar->startEdit(m_is_search);
+    });
+    addAction(searchAction);
 
-        auto searchAction = new QAction(this);
-        searchAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::Key_F));
-        connect(searchAction, &QAction::triggered, this, [=]() {
-            m_is_search = ! m_is_search;
-            m_header_bar->startEdit(m_is_search);
-        });
-        addAction(searchAction);
+    //F4 or Alt+D, change to address
+    auto locationAction = new QAction(this);
+    locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
+    connect(locationAction, &QAction::triggered, this, [=]() {
+        m_header_bar->startEdit();
+    });
+    addAction(locationAction);
 
-        //F4 or Alt+D, change to address
-        auto locationAction = new QAction(this);
-        locationAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F4<<QKeySequence(Qt::ALT + Qt::Key_D));
-        connect(locationAction, &QAction::triggered, this, [=]() {
-            m_header_bar->startEdit();
-        });
-        addAction(locationAction);
+    auto newWindowAction = new QAction(this);
+    newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    connect(newWindowAction, &QAction::triggered, this, [=]() {
+        MainWindow *newWindow = new MainWindow(getCurrentUri());
+        newWindow->show();
+    });
+    addAction(newWindowAction);
 
-        auto newWindowAction = new QAction(this);
-        newWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-        connect(newWindowAction, &QAction::triggered, this, [=]() {
-            MainWindow *newWindow = new MainWindow(getCurrentUri());
-            newWindow->show();
-        });
-        addAction(newWindowAction);
+    auto closeWindowAction = new QAction(this);
+    closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
+    connect(closeWindowAction, &QAction::triggered, this, [=]() {
+        this->close();
+    });
+    addAction(closeWindowAction);
 
-        auto closeWindowAction = new QAction(this);
-        closeWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_F4));
-        connect(closeWindowAction, &QAction::triggered, this, [=]() {
+    auto aboutAction = new QAction(this);
+    aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
+    connect(aboutAction, &QAction::triggered, this, [=]() {
+        PeonyApplication::about();
+    });
+    addAction(aboutAction);
+
+    auto newTabAction = new QAction(this);
+    newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
+    connect(newTabAction, &QAction::triggered, this, [=]() {
+        this->addNewTabs(QStringList()<<this->getCurrentUri());
+    });
+    addAction(newTabAction);
+
+    auto closeTabAction = new QAction(this);
+    closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    connect(closeTabAction, &QAction::triggered, this, [=]() {
+        if (m_tab->count() <= 1) {
             this->close();
-        });
-        addAction(closeWindowAction);
+        } else {
+            m_tab->removeTab(m_tab->currentIndex());
+        }
+    });
+    addAction(closeTabAction);
 
-        auto aboutAction = new QAction(this);
-        aboutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2));
-        connect(aboutAction, &QAction::triggered, this, [=]() {
-            PeonyApplication::about();
-        });
-        addAction(aboutAction);
+    auto nextTabAction = new QAction(this);
+    nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    connect(nextTabAction, &QAction::triggered, this, [=]() {
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex + 1 < m_tab->count()) {
+            m_tab->setCurrentIndex(currentIndex + 1);
+        } else {
+            m_tab->setCurrentIndex(0);
+        }
+    });
+    addAction(nextTabAction);
 
-        auto newTabAction = new QAction(this);
-        newTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
-        connect(newTabAction, &QAction::triggered, this, [=]() {
-            this->addNewTabs(QStringList()<<this->getCurrentUri());
-        });
-        addAction(newTabAction);
+    auto previousTabAction = new QAction(this);
+    previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    connect(previousTabAction, &QAction::triggered, this, [=]() {
+        int currentIndex = m_tab->currentIndex();
+        if (currentIndex > 0) {
+            m_tab->setCurrentIndex(currentIndex - 1);
+        } else {
+            m_tab->setCurrentIndex(m_tab->count() - 1);
+        }
+    });
+    addAction(previousTabAction);
 
-        auto closeTabAction = new QAction(this);
-        closeTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
-        connect(closeTabAction, &QAction::triggered, this, [=]() {
-            if (m_tab->count() <= 1) {
-                this->close();
-            } else {
-                m_tab->removeTab(m_tab->currentIndex());
-            }
-        });
-        addAction(closeTabAction);
+    auto newFolderAction = new QAction(this);
+    newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+    connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
+    addAction(newFolderAction);
 
-        auto nextTabAction = new QAction(this);
-        nextTabAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-        connect(nextTabAction, &QAction::triggered, this, [=]() {
-            int currentIndex = m_tab->currentIndex();
-            if (currentIndex + 1 < m_tab->count()) {
-                m_tab->setCurrentIndex(currentIndex + 1);
-            } else {
-                m_tab->setCurrentIndex(0);
-            }
-        });
-        addAction(nextTabAction);
+    //show selected item's properties
+    auto propertiesWindowAction = new QAction(this);
+    propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
+                                         <<QKeySequence(Qt::ALT + Qt::Key_Enter));
+    connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
+        //Fixed issue:when use this shortcut without any selections, this will crash
+        QStringList uris;
+        if (getCurrentSelections().count() > 0)
+        {
+            uris<<getCurrentSelections();
+        }
+        else
+        {
+            uris<<getCurrentUri();
+        }
 
-        auto previousTabAction = new QAction(this);
-        previousTabAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-        connect(previousTabAction, &QAction::triggered, this, [=]() {
-            int currentIndex = m_tab->currentIndex();
-            if (currentIndex > 0) {
-                m_tab->setCurrentIndex(currentIndex - 1);
-            } else {
-                m_tab->setCurrentIndex(m_tab->count() - 1);
-            }
-        });
-        addAction(previousTabAction);
+        Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
+        w->setAttribute(Qt::WA_DeleteOnClose);
+        w->show();
+    });
+    addAction(propertiesWindowAction);
 
-        auto newFolderAction = new QAction(this);
-        newFolderAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
-        connect(newFolderAction, &QAction::triggered, this, &MainWindow::createFolderOperation);
-        addAction(newFolderAction);
+    auto helpAction = new QAction(this);
+    helpAction->setShortcut(QKeySequence(Qt::Key_F1));
+    connect(helpAction, &QAction::triggered, this, [=]() {
+        PeonyApplication::help();
+    });
+    addAction(helpAction);
 
-        //show selected item's properties
-        auto propertiesWindowAction = new QAction(this);
-        propertiesWindowAction->setShortcuts(QList<QKeySequence>()<<QKeySequence(Qt::ALT + Qt::Key_Return)
-                                             <<QKeySequence(Qt::ALT + Qt::Key_Enter));
-        connect(propertiesWindowAction, &QAction::triggered, this, [=]() {
-            //Fixed issue:when use this shortcut without any selections, this will crash
-            QStringList uris;
-            if (getCurrentSelections().count() > 0)
-            {
-                uris<<getCurrentSelections();
-            }
-            else
-            {
-                uris<<getCurrentUri();
-            }
-
-            Peony::PropertiesWindow *w = new Peony::PropertiesWindow(uris);
-            w->setAttribute(Qt::WA_DeleteOnClose);
-            w->show();
-        });
-        addAction(propertiesWindowAction);
-
-        auto helpAction = new QAction(this);
-        helpAction->setShortcut(QKeySequence(Qt::Key_F1));
-        connect(helpAction, &QAction::triggered, this, [=]() {
-            PeonyApplication::help();
-        });
-        addAction(helpAction);
-
-        auto maxAction = new QAction(this);
+    auto maxAction = new QAction(this);
         maxAction->setShortcut(QKeySequence(Qt::Key_F11));
         connect(maxAction, &QAction::triggered, this, [=]() {
             //showFullScreen has some issue, change to showMaximized, fix #20043
             m_header_bar->cancelEdit();
-            if (!this->isMaximized()) {
-                this->showMaximized();
-            } else {
-                this->showNormal();
-            }
+            maximizeOrRestore();
         });
         addAction(maxAction);
 
-        auto previewPageAction = new QAction(this);
-        previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-        connect(previewPageAction, &QAction::triggered, this, [=]() {
-            auto triggered = m_tab->getTriggeredPreviewPage();
-            if (triggered)
-            {
-                m_tab->setPreviewPage(nullptr);
-            }
-            else
-            {
-                auto instance = Peony::PreviewPageFactoryManager::getInstance();
-                auto lastPreviewPageId  = instance->getLastPreviewPageId();
-                auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
-                m_tab->setPreviewPage(page);
-            }
-            m_tab->setTriggeredPreviewPage(! triggered);
-        });
-        addAction(previewPageAction);
+//    auto previewPageAction = new QAction(this);
+//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+//    connect(previewPageAction, &QAction::triggered, this, [=]() {
+//        auto triggered = m_tab->getTriggeredPreviewPage();
+//        if (triggered)
+//        {
+//            m_tab->setPreviewPage(nullptr);
+//        }
+//        else
+//        {
+//            auto instance = Peony::PreviewPageFactoryManager::getInstance();
+//            auto lastPreviewPageId  = instance->getLastPreviewPageId();
+//            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+//            m_tab->setPreviewPage(page);
+//        }
+//        m_tab->setTriggeredPreviewPage(! triggered);
+//    });
+//    addAction(previewPageAction);
 
-        auto refreshWindowAction = new QAction(this);
-        refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-        connect(refreshWindowAction, &QAction::triggered, this, [=]() {
-            this->refresh();
-        });
-        addAction(refreshWindowAction);
+    auto refreshWindowAction = new QAction(this);
+    refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    connect(refreshWindowAction, &QAction::triggered, this, [=]() {
+        this->refresh();
+    });
+    addAction(refreshWindowAction);
 
-        auto listToIconViewAction = new QAction(this);
-        listToIconViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-        connect(listToIconViewAction, &QAction::triggered, this, [=]() {
-            this->beginSwitchView(QString("Icon View"));
-        });
-        addAction(listToIconViewAction);
+    auto listToIconViewAction = new QAction(this);
+    listToIconViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+    connect(listToIconViewAction, &QAction::triggered, this, [=]() {
+        this->beginSwitchView(QString("Icon View"));
+    });
+    addAction(listToIconViewAction);
 
-        auto iconToListViewAction = new QAction(this);
-        iconToListViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
-        connect(iconToListViewAction, &QAction::triggered, this, [=]() {
-            this->beginSwitchView(QString("List View"));
-        });
-        addAction(iconToListViewAction);
+    auto iconToListViewAction = new QAction(this);
+    iconToListViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
+    connect(iconToListViewAction, &QAction::triggered, this, [=]() {
+        this->beginSwitchView(QString("List View"));
+    });
+    addAction(iconToListViewAction);
 
-        auto reverseSelectAction = new QAction(this);
-        reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
-        connect(reverseSelectAction, &QAction::triggered, this, [=]() {
-            this->getCurrentPage()->getView()->invertSelections();
-        });
-        addAction(reverseSelectAction);
+    auto reverseSelectAction = new QAction(this);
+    reverseSelectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+    connect(reverseSelectAction, &QAction::triggered, this, [=]() {
+        this->getCurrentPage()->getView()->invertSelections();
+    });
+    addAction(reverseSelectAction);
 
-        auto remodelViewAction = new QAction(this);
-        remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
-        connect(remodelViewAction, &QAction::triggered, this, [=]() {
-            this->getCurrentPage()->setZoomLevelRequest(25);
-        });
-        addAction(remodelViewAction);
+    auto remodelViewAction = new QAction(this);
+    remodelViewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    connect(remodelViewAction, &QAction::triggered, this, [=]() {
+        this->getCurrentPage()->setZoomLevelRequest(25);
+    });
+    addAction(remodelViewAction);
 
-        auto enlargViewAction = new QAction(this);
-        enlargViewAction->setShortcut(QKeySequence::ZoomIn);
-        connect(enlargViewAction, &QAction::triggered, this, [=]() {
-            int defaultZoomLevel = this->currentViewZoomLevel();
-            if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
-            for (int i = 0; i < 5; i++) {
-                this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
-            }
-
-        });
-        addAction(enlargViewAction);
-
-        auto shrinkViewAction = new QAction(this);
-        shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
-        connect(shrinkViewAction, &QAction::triggered, this, [=]() {
-            int defaultZoomLevel = this->currentViewZoomLevel();
-            if (defaultZoomLevel >= 5) {
-                defaultZoomLevel-=5;
-            } else {
-                defaultZoomLevel = 0;
-            }
+    auto enlargViewAction = new QAction(this);
+    enlargViewAction->setShortcut(QKeySequence::ZoomIn);
+    connect(enlargViewAction, &QAction::triggered, this, [=]() {
+        int defaultZoomLevel = this->currentViewZoomLevel();
+        if(defaultZoomLevel <= 95){ defaultZoomLevel+=5; }
+        for (int i = 0; i < 5; i++) {
             this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
-        });
-        addAction(shrinkViewAction);
+        }
 
-        auto quitAllAction = new QAction(this);
-        quitAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-        connect(quitAllAction, &QAction::triggered, this, [=]() {
-            QProcess p(0);
-            p.start("peony", QStringList()<<"-q");
-            p.waitForStarted();
-            p.waitForFinished();
-        });
-        addAction(quitAllAction);
+    });
+    addAction(enlargViewAction);
 
-        auto refreshAction = new QAction(this);
-        refreshAction->setShortcut(Qt::Key_F5);
-        connect(refreshAction, &QAction::triggered, this, [=]() {
-            this->refresh();
-        });
-        addAction(refreshAction);
+    auto shrinkViewAction = new QAction(this);
+    shrinkViewAction->setShortcut(QKeySequence::ZoomOut);
+    connect(shrinkViewAction, &QAction::triggered, this, [=]() {
+        int defaultZoomLevel = this->currentViewZoomLevel();
+        if(defaultZoomLevel > 6){ defaultZoomLevel-=5; }
+        this->getCurrentPage()->setZoomLevelRequest(defaultZoomLevel);
+    });
+    addAction(shrinkViewAction);
 
-        //file operations
-        auto *copyAction = new QAction(this);
-        copyAction->setShortcut(QKeySequence::Copy);
-        connect(copyAction, &QAction::triggered, [=]() {
-            bool is_recent = false;
-            if (!this->getCurrentSelections().isEmpty())
-            {
-                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                    return ;
-                }
-                if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                    is_recent = true;
-                }
-                if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
-                    return ;
-                }
+    auto quitAllAction = new QAction(this);
+    quitAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    connect(quitAllAction, &QAction::triggered, this, [=]() {
+        QProcess p(0);
+        p.start("peony", QStringList()<<"-q");
+        p.waitForStarted();
+        p.waitForFinished();
+    });
+    addAction(quitAllAction);
+
+    auto refreshAction = new QAction(this);
+    refreshAction->setShortcut(Qt::Key_F5);
+    connect(refreshAction, &QAction::triggered, this, [=]() {
+        this->refresh();
+    });
+    addAction(refreshAction);
+
+    //file operations
+    auto *copyAction = new QAction(this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    connect(copyAction, &QAction::triggered, [=]() {
+        if (!this->getCurrentSelections().isEmpty())
+        {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
             }
-            else
-                return;
-
-            QStringList selections;
-            if (is_recent)
-            {
-                for(auto uri:this->getCurrentSelections())
-                {
-                    uri = Peony::FileUtils::getTargetUri(uri);
-                    selections << uri;
-                }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
             }
-            else{
-                selections = this->getCurrentSelections();
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                return ;
+            }
+        }
+        Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), false);
+    });
+    addAction(copyAction);
+
+    auto *pasteAction = new QAction(this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+    connect(pasteAction, &QAction::triggered, [=]() {
+        auto currentUri = getCurrentUri();
+        if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
+            || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
+            || currentUri.startsWith("search://"))
+        {
+            return;
+        }
+        if (Peony::ClipboardUtils::isClipboardHasFiles()) {
+            //FIXME: how about duplicated copy?
+            //FIXME: how to deal with a failed move?
+            auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
+            if (op) {
+                connect(op, &Peony::FileOperation::operationFinished, this, [=](){
+                    auto opInfo = op->getOperationInfo();
+                    auto targetUirs = opInfo->dests();
+                    QTimer::singleShot(500, this, [=](){
+                        setCurrentSelectionUris(targetUirs);
+                    });
+//                    setCurrentSelectionUris(targetUirs);
+                }, Qt::BlockingQueuedConnection);
+            }
+        }
+    });
+    addAction(pasteAction);
+
+    auto *cutAction = new QAction(this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    connect(cutAction, &QAction::triggered, [=]() {
+        if (!this->getCurrentSelections().isEmpty()) {
+            if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
+                return ;
+            }
+            if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
+                return ;
             }
 
-            Peony::ClipboardUtils::setClipboardFiles(selections, false);
-        });
-        addAction(copyAction);
-
-        auto *pasteAction = new QAction(this);
-        pasteAction->setShortcut(QKeySequence::Paste);
-        connect(pasteAction, &QAction::triggered, [=]() {
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
                 || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
@@ -657,57 +636,15 @@ void MainWindow::setShortCuts()
             {
                 return;
             }
-            if (Peony::ClipboardUtils::isClipboardHasFiles()) {
-                //FIXME: how about duplicated copy?
-                //FIXME: how to deal with a failed move?
-                auto op = Peony::ClipboardUtils::pasteClipboardFiles(this->getCurrentUri());
-                if (op) {
-                    connect(op, &Peony::FileOperation::operationFinished, this, [=](){
-                        auto opInfo = op->getOperationInfo();
-                        auto targetUirs = opInfo->dests();
-                        setCurrentSelectionUris(targetUirs);
-                    }, Qt::BlockingQueuedConnection);
-                }
-                else{
-                    //fix paste file in old path not update issue, link to bug#71627
-                    this->getCurrentPage()->getView()->repaintView();
-                }
-            }
-        });
-        addAction(pasteAction);
 
-        auto *cutAction = new QAction(this);
-        cutAction->setShortcut(QKeySequence::Cut);
-        connect(cutAction, &QAction::triggered, [=]() {
-            if (!this->getCurrentSelections().isEmpty()) {
-                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                    return ;
-                }
-                if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
-                    return ;
-                }
-                if (this->getCurrentSelections().first().startsWith("favorite://", Qt::CaseInsensitive)) {
-                    return ;
-                }
-
-                auto currentUri = getCurrentUri();
-                if (currentUri.startsWith("search://"))
-                    return;
-
-                QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-                QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
-                QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-                if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
-                {
-                   Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
-                   this->getCurrentPage()->getView()->repaintView();
-                }
-            }
-        });
-        addAction(cutAction);
-
-        m_shortcuts_set = true;
-    }
+            QString desktopPath = "file://" +  QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+            QString desktopUri = Peony::FileUtils::getEncodedUri(desktopPath);
+            QString homeUri = "file://" +  QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+            if (! this->getCurrentSelections().contains(desktopUri) && ! this->getCurrentSelections().contains(homeUri))
+                Peony::ClipboardUtils::setClipboardFiles(this->getCurrentSelections(), true);
+        }
+    });
+    addAction(cutAction);
 }
 
 void MainWindow::updateTabPageTitle()
@@ -738,9 +675,10 @@ void MainWindow::createFolderOperation()
         if (op->hasError())
             return;
         auto opInfo = op->getOperationInfo();
-        auto targetUri = opInfo->target();
+        //auto targetUri = opInfo->target();
         this->getCurrentPage()->getView()->clearIndexWidget();
-        QTimer::singleShot(500, this, [=](){
+        //set a short time delay, fix bug#86070, select two folders
+        QTimer::singleShot(10, this, [=](){
             this->editUri(opInfo->target());
         });
     }, Qt::BlockingQueuedConnection);
@@ -768,11 +706,6 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         //if select only one item, let view to process
         if (selections.count() > 1)
         {
-            QString currentUri = this->getCurrentUri();
-            if(currentUri == "filesafe:///") {
-                return ;
-            }
-
             QStringList files;
             QStringList dirs;
             for (auto uri : selections) {
@@ -854,7 +787,9 @@ void MainWindow::maximizeOrRestore()
     } else {
         this->showNormal();
     }
-    m_header_bar->updateIcons();
+    //maybe not need update icons? comment to try fix bug#77966
+    //m_header_bar->updateIcons();
+    m_header_bar->updateMaximizeState();
 }
 
 void MainWindow::syncControlsLocation(const QString &uri)
@@ -868,7 +803,10 @@ void MainWindow::updateHeaderBar()
     m_header_bar->updateIcons();
     //fix bug#82685
     m_header_bar->updateSortTypeEnable();
+    //fix bug#66336, 83711
+    m_header_bar->updateViewTypeEnable();
     //m_status_bar->update();
+    m_header_bar->updatePreviewPageVisible();
 }
 
 void MainWindow::updateWindowIcon()
@@ -877,30 +815,33 @@ void MainWindow::updateWindowIcon()
    if (currentUri.startsWith("trash://"))
    {
        QIcon icon = QIcon::fromTheme("user-trash");
-       qApp->setWindowIcon(icon);
+       setWindowIcon(icon);
    }
    else if (currentUri.startsWith("computer://"))
    {
        QIcon icon = QIcon::fromTheme("computer");
-       qApp->setWindowIcon(icon);
+       setWindowIcon(icon);
    }
    else
    {
        QIcon icon = QIcon::fromTheme("system-file-manager");
-       qApp->setWindowIcon(icon);
+       setWindowIcon(icon);
    }
 }
 
 void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
 {
+    auto viewId = this->getCurrentPage()->getView()->viewId();
+
+    if (QString::compare(viewId, "Icon View", Qt::CaseSensitive) == 0) {
+        this->getCurrentPage()->getView()->disableMultiSelect();
+    }
+
     QUrl url(uri);
     auto realUri = uri;
-    //process open symbolic link
-    auto info = Peony::FileInfo::fromUri(uri);
-    if (info->isSymbolLink() && info->symlinkTarget().length() >0 &&
-    (uri.startsWith("file://") || uri.startsWith("favorite://")))
-        realUri = "file://" + info->symlinkTarget();
-
+    if (uri == "computer:///ukui-data-volume") {
+        realUri = "file:///data";
+    }
     if (url.scheme().isEmpty()) {
         if (uri.startsWith("/")) {
             realUri = "file://" + uri;
@@ -921,55 +862,9 @@ void MainWindow::goToUri(const QString &uri, bool addHistory, bool force)
         }
     }
 
-    //if in search mode and key is not null, need quit search mode
-    if (m_is_search && m_last_key != "" && !uri.startsWith("search://"))
-    {
-        m_tab->updateSearchBar(false);
-        m_is_search = false;
-        m_header_bar->startEdit(false);
-    }
-
     locationChangeStart();
     m_tab->goToUri(realUri, addHistory, force);
     m_header_bar->setLocation(uri);
-
-    m_label_box->clearSelection();
-    Q_EMIT m_label_box->leftClickOnBlank();
-}
-
-void MainWindow::updateSearch(const QString &uri, const QString &key, bool updateKey)
-{
-    qDebug() << "updateSearch:" <<uri <<key <<updateKey;
-    bool needUpdate = false;
-    //coment 9X0 changes, fix bug#70916
-    //m_tab->enableSearchBar(key.length() != 0);
-    if (m_last_search_path == "" || ! Peony::FileUtils::isSamePath(uri, m_last_search_path))
-    {
-       //qDebug() << "updateSearch:" <<uri;
-       m_last_search_path = uri;
-       needUpdate = true;
-    }
-
-    if (updateKey)
-    {
-        needUpdate = true;
-        m_last_key = key;
-    }
-
-    if (needUpdate)
-    {
-        //qDebug() << "updateSearch needUpdate:" <<m_last_key<<m_last_search_path;
-        forceStopLoading();
-        if (m_last_key == "")
-            goToUri(m_last_search_path, true);
-        else
-        {
-            auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(m_last_search_path,
-                                                         m_last_key, true, false, "", true);
-            //qDebug() << "updateSearch targetUri:" <<targetUri;
-            goToUri(targetUri, true);
-        }
-    }
 }
 
 void MainWindow::addNewTabs(const QStringList &uris)
@@ -988,6 +883,10 @@ void MainWindow::addNewTabs(const QStringList &uris)
 
 void MainWindow::beginSwitchView(const QString &viewId)
 {
+    //not allow change to other view when in computer, link to bug#83711
+    if (getCurrentUri() == "computer:///")
+        return;
+
     auto selection = getCurrentSelections();
 //    int sortType = getCurrentSortColumn();
 //    Qt::SortOrder sortOrder = getCurrentSortOrder();
@@ -997,59 +896,66 @@ void MainWindow::beginSwitchView(const QString &viewId)
     m_tab->setCurrentSelections(selection);
     bool supportZoom = m_tab->currentPage()->getView()->supportZoom();
     m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
-    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
+//    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
     //fix slider value not update issue
     m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
 }
-
-
 
 void MainWindow::refresh()
 {
     locationChangeStart();
     m_tab->refresh();
-    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     //goToUri(getCurrentUri(), false, true);
+}
+
+void MainWindow::advanceSearch()
+{
+    qDebug()<<"advanceSearch clicked";
+    initAdvancePage();
+}
+
+void MainWindow::clearRecord()
+{
+    //qDebug()<<"clearRecord clicked";
+//    m_search_bar->clearSearchRecord();
+//    m_clear_record->setDisabled(true);
+}
+
+void MainWindow::searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content)
+{
+//    auto targetUri = SearchVFSUriParser::parseSearchKey(target_path, keyWord, search_file_name, search_content);
+//    //qDebug()<<"targeturi:"<<targetUri;
+//    m_update_condition = true;
+//    this->goToUri(targetUri, true);
+}
+
+void MainWindow::filterUpdate(int type_index, int time_index, int size_index)
+{
+    //qDebug()<<"filterUpdate:";
+    //m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
 }
 
 void MainWindow::setLabelNameFilter(QString name)
 {
-    if (!getCurrentPage()) {
-        return;
-    }
-    //update filter flag
-    if (name == "")
-        m_filter_working = false;
-    else
-        m_filter_working = true;
-    m_header_bar->updateHeaderState();
     getCurrentPage()->setFilterLabelConditions(name);
 }
 
 void MainWindow::setShowHidden()
 {
-    if (!getCurrentPage()) {
-        return;
-    }
-
-    m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+    m_show_hidden_file = !m_show_hidden_file;
     getCurrentPage()->setShowHidden(m_show_hidden_file);
+    //显示隐藏文件，更新项目个数
+    Q_EMIT m_tab->updateItemsNum();
 }
 
 void MainWindow::setUseDefaultNameSortOrder()
 {
-    if (!getCurrentPage()) {
-        return;
-    }
     m_use_default_name_sort_order = ! m_use_default_name_sort_order;
     getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
 }
 
 void MainWindow::setSortFolderFirst()
 {
-    if (!getCurrentPage()) {
-        return;
-    }
     m_folder_first = ! m_folder_first;
     getCurrentPage()->setSortFolderFirst(m_folder_first);
 }
@@ -1057,13 +963,6 @@ void MainWindow::setSortFolderFirst()
 void MainWindow::forceStopLoading()
 {
     m_tab->stopLoading();
-
-    //Key_escape also use as cancel
-    if (Peony::ClipboardUtils::isClipboardHasFiles())
-    {
-        Peony::ClipboardUtils::clearClipboard();
-        this->getCurrentPage()->getView()->repaintView();
-    }
 }
 
 void MainWindow::setCurrentSelectionUris(const QStringList &uris)
@@ -1102,22 +1001,15 @@ void MainWindow::setCurrentViewZoomLevel(int zoomLevel)
         m_tab->m_status_bar->m_slider->setValue(zoomLevel);
 }
 
-QString MainWindow::getLastSearchKey()
-{
-    return m_last_key;
-}
-
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     QMainWindow::resizeEvent(e);
-    m_header_bar->updateMaximizeState();
+    //may not need update? comment to try fix bug#77966
+    //m_header_bar->updateMaximizeState();
     validBorder();
     update();
 
-    if (!isMaximized()) {
-        // set save window size flag
-        last_resize_window = this;
-    }
+    last_resize_window = this;
 }
 
 /*!
@@ -1155,29 +1047,41 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
     colorBase.setAlphaF(sidebarOpacity/100.0);
 
-    if (qApp->property("blurEnable").isValid()) {
-        bool blurEnable = qApp->property("blurEnable").toBool();
-        if (!blurEnable) {
-            colorBase.setAlphaF(0.9);
-        }
-    } else {
-        colorBase.setAlphaF(0.9);
-    }
+//    if (qApp->property("blurEnable").isValid()) {
+//        bool blurEnable = qApp->property("blurEnable").toBool();
+//        if (!blurEnable) {
+//            colorBase.setAlphaF(1);
+//        }
+//    } else {
+//        colorBase.setAlphaF(1);
+//    }
 
     QPainterPath sidebarPath;
     sidebarPath.setFillRule(Qt::FillRule::WindingFill);
-    auto adjustedRect = sideBarRect().adjusted(0, 1, 0, 0);
-    sidebarPath.addRoundedRect(adjustedRect, 6, 6);
-    sidebarPath.addRect(adjustedRect.adjusted(0, 0, 0, -6));
-    sidebarPath.addRect(adjustedRect.adjusted(6, 0, 0, 0));
-    m_effect->setTransParentPath(sidebarPath);
-    m_effect->setTransParentAreaBg(colorBase);
 
-    //color.setAlphaF(0.5);
-    m_effect->setWindowBackground(color);
+    auto pos = m_tab->mapTo(this, QPoint());
+    auto tmpRect = QRect(pos, m_tab->size());
+    QPainterPath deletePath;
+    QPainterPath tmpPath;
+
+    tmpPath.addRect(rect());
+
+    deletePath.addRoundedRect(tmpRect.adjusted(0, 48, 0, 0), 16, 16);
+    deletePath.addRect(rect().width()-18,rect().height()-18,18,18);
+    deletePath.addRect(tmpRect.x(),tmpRect.height()-18,18,18);
+
+    sidebarPath = tmpPath - deletePath;
+
+
     QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+    p.fillPath(sidebarPath,colorBase);
 
-    m_effect->drawWindowShadowManually(&p, this->rect(), false);
+    QPainter painter(this);
+    if(m_is_first_tab)
+        deletePath.addRect(m_tab->x(),48,16,16);
+    deletePath.setFillRule(Qt::FillRule::WindingFill);
+    painter.fillPath(deletePath,this->palette().base());
     QMainWindow::paintEvent(e);
 }
 
@@ -1268,33 +1172,18 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *e)
 
 void MainWindow::validBorder()
 {
-    if (this->isMaximized()) {
-        setContentsMargins(0, 0, 0, 0);
-        m_effect->setPadding(0);
-        setProperty("blurRegion", QVariant());
-        KWindowEffects::enableBlurBehind(this->winId(), true);
-    } else {
-        //setContentsMargins(4, 4, 4, 4);
-        m_effect->setPadding(4);
-        QPainterPath path;
-        auto rect = this->rect();
-        rect.adjust(4, 4, -4, -4);
-        path.addRoundedRect(rect, 6, 6);
-        //setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
-        //use KWindowEffects
-        //KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
-        KWindowEffects::enableBlurBehind(this->winId(), true);
-    }
+    QPainterPath path;
+    auto rect = this->rect();
+    path.addRect(rect);
+    setProperty("blurRegion", QRegion(path.toFillPolygon().toPolygon()));
+    //use KWindowEffects
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
 }
-
+#include "file-utils.h"
 void MainWindow::initUI(const QString &uri)
 {
-    auto size = sizeHint();
-    resize(size);
-
     connect(this, &MainWindow::locationChangeStart, this, [=]() {
-        //comment to fix bug 33527
-        //m_side_bar->blockSignals(true);
+        m_side_bar->blockSignals(true);
         m_header_bar->blockSignals(true);
         QCursor c;
         c.setShape(Qt::WaitCursor);
@@ -1305,8 +1194,7 @@ void MainWindow::initUI(const QString &uri)
     });
 
     connect(this, &MainWindow::locationChangeEnd, this, [=]() {
-        //comment to fix bug 33527
-        //m_side_bar->blockSignals(false);
+        m_side_bar->blockSignals(false);
         m_header_bar->blockSignals(false);
         QCursor c;
         c.setShape(Qt::ArrowCursor);
@@ -1317,16 +1205,20 @@ void MainWindow::initUI(const QString &uri)
         //function for UKUI3.1, update window icon
         //updateWindowIcon();
         //m_status_bar->update();
-
-        setShortCuts();
     });
 
     //HeaderBar
+    auto views = new TabWidget;
+
     auto headerBar = new HeaderBar(this);
     m_header_bar = headerBar;
     auto headerBarContainer = new HeaderBarContainer(this);
     headerBarContainer->addHeaderBar(headerBar);
-    addToolBar(headerBarContainer);
+
+    TopMenuBar *top = new TopMenuBar(headerBar, this);
+    views->setMenuBar(top);
+//    views->m_header_bar_layout->insertWidget(0,headerBarContainer);
+    views->addToolBar(headerBarContainer);
     //m_header_bar->setVisible(false);
 
     connect(m_header_bar, &HeaderBar::updateLocationRequest, this, &MainWindow::goToUri);
@@ -1341,68 +1233,60 @@ void MainWindow::initUI(const QString &uri)
     });
 
     //SideBar
-    QDockWidget *sidebarContainer = new QDockWidget(this);
+    auto sideBarFactory = Peony::SideBarFactoryManager::getInstance()->getFactoryFromPlatformName();
+    if (!sideBarFactory) {
+        NavigationSideBarContainer *sidebar = new NavigationSideBarContainer(this);
+        m_side_bar = sidebar;
+    } else {
+        auto sidebar = sideBarFactory->create(this);
+        m_side_bar = sidebar;
+    }
+    m_transparent_area_widget = m_side_bar;
+    connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
+    connect(m_side_bar, &Peony::SideBar::updateWindowLocationRequest, m_header_bar, &HeaderBar::cancleSelect);
+    addDockWidget(Qt::LeftDockWidgetArea, m_side_bar);
 
-    sidebarContainer->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    auto palette = sidebarContainer->palette();
-    palette.setColor(QPalette::Window, Qt::transparent);
-    sidebarContainer->setPalette(palette);
-//    sidebarContainer->setStyleSheet("{"
-//                                    "background-color: transparent;"
-//                                    "border: 0px solid transparent"
-//                                    "}");
-    sidebarContainer->setTitleBarWidget(new QWidget(this));
-    sidebarContainer->titleBarWidget()->setFixedHeight(0);
-    sidebarContainer->setAttribute(Qt::WA_TranslucentBackground);
-    sidebarContainer->setContentsMargins(0, 0, 0, 0);
+//    auto labelDialog = new FileLabelBox(this);
+//    labelDialog->hide();
+//    TitleLabel *t = new TitleLabel(this);
 
-    NavigationSideBar *sidebar = new NavigationSideBar(this);
-    m_side_bar = sidebar;
+//    auto splitter = new QSplitter(this);
+//    splitter->setChildrenCollapsible(false);
+//    splitter->setHandleWidth(0);
+//    splitter->setOrientation(Qt::Vertical);
+//    splitter->addWidget(t);
+//    splitter->addWidget(navigationSidebarContainer);
+    //splitter->addWidget(labelDialog);
 
-    auto navigationSidebarContainer = new NavigationSideBarContainer(this);
-    navigationSidebarContainer->addSideBar(m_side_bar);
-
-    m_transparent_area_widget = navigationSidebarContainer;
-
-    connect(m_side_bar, &NavigationSideBar::updateWindowLocationRequest, this, &MainWindow::goToUri);
-
-    auto labelDialog = new FileLabelBox(this);
-    labelDialog->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    labelDialog->hide();
-    m_label_box = labelDialog;
-
-    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
-    {
-        auto selected = labelDialog->selectionModel()->selectedIndexes();
-        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
-        if (selected.count() > 0)
-        {
-            auto name = selected.first().data().toString();
-            setLabelNameFilter(name);
-        }
-    });
+//    connect(labelDialog->selectionModel(), &QItemSelectionModel::selectionChanged, [=]()
+//    {
+//        auto selected = labelDialog->selectionModel()->selectedIndexes();
+//        //qDebug() << "FileLabelBox selectionChanged:" <<selected.count();
+//        if (selected.count() > 0)
+//        {
+//            auto name = selected.first().data().toString();
+//            setLabelNameFilter(name);
+//        }
+//    });
     //when clicked in blank, currentChanged may not triggered
-    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
-    {
-        setLabelNameFilter("");
-    });
+//    connect(labelDialog, &FileLabelBox::leftClickOnBlank, [=]()
+//    {
+//        setLabelNameFilter("");
+//    });
 
-
-
-    sidebarContainer->setWidget(navigationSidebarContainer);
-    addDockWidget(Qt::LeftDockWidgetArea, sidebarContainer);
+//    connect(sidebar, &NavigationSideBar::labelButtonClicked, labelDialog, &QWidget::setVisible);
 
 //    m_status_bar = new Peony::StatusBar(this, this);
 //    setStatusBar(m_status_bar);
 
-    auto views = new TabWidget;
+//    auto views = new TabWidget;
     m_tab = views;
     if (uri.isNull()) {
         auto home = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         m_tab->addPage(home, true);
     } else {
         m_tab->addPage(uri, true);
-        //m_header_bar->setLocation(uri);
+        m_header_bar->setLocation(uri);
     }
     QTimer::singleShot(1, this, [=]() {
         // FIXME:
@@ -1415,48 +1299,46 @@ void MainWindow::initUI(const QString &uri)
         m_tab->updateStatusBarGeometry();
     });
 
+    connect(Peony::GlobalSettings::getInstance(), &Peony::GlobalSettings::valueChanged, this, [=](const QString &key) {
+        if (key == ZOOM_SLIDER_VISIBLE) {
+            m_tab->updateStatusBarGeometry();
+        }
+    });
+
     connect(views->tabBar(), &QTabBar::tabBarDoubleClicked, this, [=](int index) {
-        if (index == -1)
+        bool tablet = Peony::GlobalSettings::getInstance()->getValue(TABLET_MODE).toBool();
+        if (index == -1&&!tablet)
             maximizeOrRestore();
     });
-    connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
-    connect(m_header_bar, &HeaderBar::updateSearchRequest, this, [=](bool showSearch)
-    {
-        m_tab->updateSearchBar(showSearch);
-        m_is_search = showSearch;
+    connect(m_tab,&TabWidget::tabBarIndexUpdate,this,[=](int index){
+        if(index == 0)
+            m_is_first_tab = true;
+        else
+           m_is_first_tab = false;
+        update();
+
     });
-    connect(m_header_bar, &HeaderBar::updateSearch, this, &MainWindow::updateSearch);
+    connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
+    connect(m_header_bar, &HeaderBar::updateSearchRequest, m_tab, &TabWidget::updateSearchBar);
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
 
-    auto paneAndViews = new FloatPaneWidget(views, labelDialog, this);
-    connect(sidebar, &NavigationSideBar::labelButtonClicked, this, [=](bool checked)
-    {
-        bool visible = checked;
-        //quit label filter, clear conditions
-        if (visible)
-        {
-           setLabelNameFilter("");
-           m_label_box->clearSelection();
-        } else {
-            setLabelNameFilter("");
-        }
-        paneAndViews->setFloatWidgetVisible(visible);
-    });
-    setCentralWidget(paneAndViews);
+    setCentralWidget(views);
 
-//    // check slider zoom level
-//    if (currentViewSupportZoom())
-//        setCurrentViewZoomLevel(currentViewZoomLevel());
+    // check slider zoom level
+    if (currentViewSupportZoom())
+        setCurrentViewZoomLevel(currentViewZoomLevel());
 
     //bind signals
     connect(m_tab, &TabWidget::searchRecursiveChanged, headerBar, &HeaderBar::updateSearchRecursive);
     connect(m_tab, &TabWidget::closeSearch, headerBar, &HeaderBar::closeSearch);
+    connect(m_tab, &TabWidget::viewSelectStatus, headerBar, &HeaderBar::switchSelectStatus);
+    connect(m_tab, &TabWidget::updateWindowLocationRequest, headerBar, &HeaderBar::cancleSelect);
+    connect(m_tab,&TabWidget::globalSearch, headerBar, &HeaderBar::setGlobalFlag);
     connect(m_tab, &TabWidget::clearTrash, this, &MainWindow::cleanTrash);
     connect(m_tab, &TabWidget::recoverFromTrash, this, &MainWindow::recoverFromTrash);
     connect(m_tab, &TabWidget::updateWindowLocationRequest, this, &MainWindow::goToUri);
-    connect(m_tab, &TabWidget::updateSearch, this, &MainWindow::updateSearch);
     connect(m_tab, &TabWidget::activePageLocationChanged, this, &MainWindow::locationChangeEnd);
     connect(m_tab, &TabWidget::activePageViewTypeChanged, this, &MainWindow::updateHeaderBar);
     connect(m_tab, &TabWidget::activePageChanged, this, &MainWindow::updateHeaderBar);
@@ -1464,56 +1346,47 @@ void MainWindow::initUI(const QString &uri)
         // check slider zoom level
         setCurrentViewZoomLevel(currentViewZoomLevel());
     });
+
+    connect(m_tab, &TabWidget::signal_itemAdded, this, [=](const QString& uri){
+        /* 新建文件/文件夹，可编辑文件名，copy时不能编辑 */
+        if(this->m_uris_to_edit.isEmpty())
+            return;
+        QString editUri = Peony::FileUtils::urlDecode(this->m_uris_to_edit.first());
+        QString infoUri = Peony::FileUtils::urlDecode(uri);
+        if (editUri == infoUri ) {
+            this->getCurrentPage()->getView()->scrollToSelection(uri);
+            this->editUri(uri);
+        }
+        this->m_uris_to_edit.clear();
+    });
+
     connect(m_tab, &TabWidget::menuRequest, this, [=]() {
         Peony::DirectoryViewMenu menu(this);
         menu.exec(QCursor::pos());
-        auto urisToEdit = menu.urisToEdit();
-        if (!urisToEdit.isEmpty())
-        {
-            QTimer::singleShot(100, this, [=]() {
-                this->getCurrentPage()->getView()->scrollToSelection(urisToEdit.first());
-                this->editUri(urisToEdit.first());
-            });
-        }
+        m_uris_to_edit = menu.urisToEdit();
     });
+
     connect(m_tab, &TabWidget::updateWindowSelectionRequest, this, [=](const QStringList &uris){
         setCurrentSelectionUris(uris);
     });
 //    connect(m_tab, &TabWidget::currentSelectionChanged, this, [=](){
 //        m_status_bar->update();
 //    });
-
-    addFocusWidgetToFocusList(m_side_bar);
-    addFocusWidgetToFocusList(m_tab);
-
-    setTabOrder(nullptr, this);
-
-    QWidget *oldWidget = this;
-    for (auto widget : m_focus_list) {
-        setTabOrder(oldWidget, widget);
-        oldWidget = widget;
-        if (m_focus_list.last() == widget) {
-            setTabOrder(widget, m_focus_list.first());
-        }
-    }
 }
 
 void MainWindow::cleanTrash()
 {
     auto uris = getCurrentAllFileUris();
     Peony::AudioPlayManager::getInstance()->playWarningAudio();
-    if (uris.count() >0)
-    {
-        auto result = QMessageBox::question(nullptr, tr("Delete Permanently"),
-                                            tr("Are you sure that you want to delete these files? "
-                                               "Once you start a deletion, the files deleting will never be "
-                                               "restored again."));
-        if (result == QMessageBox::Yes) {
+    if (uris.count() >0) {
+        Peony::TrashWarnDialog *dialog = new Peony::TrashWarnDialog(nullptr);
+
+        connect(dialog, &Peony::TrashWarnDialog::accepted, [=]{
             Peony::FileOperationUtils::remove(uris);
-        }
-    }
-    else
-    {
+        });
+
+        dialog->exec();
+    } else {
         QMessageBox::information(nullptr, tr("Tips info"),
                                  tr("Trash has no file need to be cleaned."));
     }
@@ -1531,45 +1404,16 @@ void MainWindow::recoverFromTrash()
     }
 }
 
+void MainWindow::initAdvancePage()
+{
+    //Fix me: advance search page, need the new design to develop new UI
+    //auto filterBar = new Peony::AdvanceSearchBar(this);
+}
+
 QRect MainWindow::sideBarRect()
 {
     auto pos = m_transparent_area_widget->mapTo(this, QPoint());
     return QRect(pos, m_transparent_area_widget->size());
-}
-
-void MainWindow::startMonitorThumbnailForbidStatus()
-{
-    m_do_not_thumbnail = Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
-
-    m_thumbnail_watcher = new QFileSystemWatcher(this);
-    QString peonySettingFile = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
-                        + "/.config/org.ukui/peony-qt-preferences.conf";
-    m_thumbnail_watcher->addPath(peonySettingFile);
-
-    connect(m_thumbnail_watcher, &QFileSystemWatcher::fileChanged, [=](const QString &uri){
-        auto settings = Peony::GlobalSettings::getInstance();
-        if (m_do_not_thumbnail != settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool()) {
-            m_do_not_thumbnail = settings->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool();
-            if (true == m_do_not_thumbnail) {
-                Peony::ThumbnailManager::getInstance()->clearThumbnail();
-            }
-            refresh();
-        }
-
-        //qDebug()<<"peonySettingFile:"<<peonySettingFile;
-        m_thumbnail_watcher->addPath(uri);
-    });
-
-}
-
-void MainWindow::addFocusWidgetToFocusList(QWidget *widget)
-{
-    m_focus_list<<widget;
-}
-
-QWidgetList MainWindow::focusWidgetsList()
-{
-    return m_focus_list;
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> MainWindow::getCurrentSelectionFileInfos()

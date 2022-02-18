@@ -28,6 +28,9 @@ public:
     /*静态的获取当前所有有效的设备分区，函数名后期再做更换*/
     QList<Volume>*   allVaildVolumes();
     void printVolumeList();
+
+    QString getTargetUriFromUnixDevice(const QString &unixDevice);/* 根据device获取volume的uri */
+
 private:
     explicit VolumeManager(QObject *parent = nullptr);
     bool gpartedIsOpening();
@@ -167,6 +170,9 @@ public:
     void unmount();
     void mount();
     void format() const;
+    bool getHidden() const;
+    void setHidden(bool hidden);
+
 private:
     bool m_canEject = false ;
     bool m_canStop = false;
@@ -180,6 +186,8 @@ private:
     QString  m_icon;
     QString  m_device;
     QString  m_mountPoint;
+
+    bool m_hidden = false;
 private:
     void initVolumeInfo();
 };

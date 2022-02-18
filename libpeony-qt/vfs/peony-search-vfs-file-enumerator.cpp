@@ -29,6 +29,8 @@
 #include <QUrl>
 #include <QTextStream>
 
+#include <gio/gdesktopappinfo.h>
+
 //G_DEFINE_TYPE(PeonySearchVFSFileEnumerator, peony_search_vfs_file_enumerator, G_TYPE_FILE_ENUMERATOR)
 
 G_DEFINE_TYPE_WITH_PRIVATE(PeonySearchVFSFileEnumerator,
@@ -154,7 +156,7 @@ static GFileInfo *enumerate_next_file(GFileEnumerator *enumerator,
 {
     auto manager = Peony::SearchVFSManager::getInstance();
 
-    qDebug()<<"next file";
+    //qDebug()<<"next file";
     if (cancellable) {
         if (g_cancellable_is_cancelled(cancellable)) {
             //FIXME: how to add translation here? do i have to use gettext?
@@ -318,6 +320,41 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
     g_object_unref(info);
     QString displayName = file_display_name;
     g_free(file_display_name);
+
+    // fix #83327
+    if (uri.endsWith(".desktop")) {
+        g_autoptr(GFile) gfile = g_file_new_for_uri(uri.toUtf8().constData());
+        g_autofree gchar *desktop_file_path = g_file_get_path(gfile);
+        g_autoptr(GDesktopAppInfo) gdesktopappinfo = g_desktop_app_info_new_from_filename(desktop_file_path);
+        if (gdesktopappinfo) {
+            g_autofree gchar *desktop_name = g_desktop_app_info_get_locale_string(gdesktopappinfo, "Name");
+            if (!desktop_name) {
+                desktop_name = g_desktop_app_info_get_string(gdesktopappinfo, "Name");
+            }
+            if (desktop_name) {
+                displayName = desktop_name;
+            }
+        } else if (uri.startsWith("trash:///")) {
+            // fix #94402
+            g_autoptr(GFileInfo) gfile_info = g_file_query_info(gfile, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, G_FILE_QUERY_INFO_NONE, nullptr, nullptr);
+            g_autofree gchar *target_uri = g_file_info_get_attribute_as_string(gfile_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+            if (target_uri) {
+                gfile = g_file_new_for_uri(target_uri);
+                desktop_file_path = g_file_get_path(gfile);
+                gdesktopappinfo = g_desktop_app_info_new_from_filename(desktop_file_path);
+                if (gdesktopappinfo) {
+                    g_autofree gchar *desktop_name = g_desktop_app_info_get_locale_string(gdesktopappinfo, "Name");
+                    if (!desktop_name) {
+                        desktop_name = g_desktop_app_info_get_string(gdesktopappinfo, "Name");
+                    }
+                    if (desktop_name) {
+                        displayName = desktop_name;
+                    }
+                }
+            }
+        }
+    }
+
     if (details->name_regexp) {
         if (details->use_regexp && details->match_name_or_content
                 && displayName.contains(*enumerator->priv->name_regexp))

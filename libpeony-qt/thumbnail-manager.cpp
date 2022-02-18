@@ -203,16 +203,32 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
 
     if (!uri.startsWith("file:///")) {
         url = FileUtils::getTargetUri(uri);
+        //qDebug()<<url;
     }
 
-    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
-    if (!_desktop_file) {
+//    auto _desktop_file = g_desktop_app_info_new_from_filename(url.path().toUtf8().constData());
+//    if (!_desktop_file) {
+//        return;
+//    }
+
+//    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
+    //! \note add for mdm
+    //! mdm禁用应用会把可执行文件的属性改为不可执行，g_desktop_app_info_new_from_filename会
+    //! 认为这个desktop文件不是快捷方式，导致图标变为默认图标
+    if (!uri.endsWith(".desktop") || !QFile(url.path()).exists())
         return;
-    }
+    QSettings desktop_file(url.path(), QSettings::IniFormat);
+    desktop_file.beginGroup("Desktop Entry");
+    QString _icon_string = desktop_file.value("Icon").toString();
 
-    auto _icon_string = g_desktop_app_info_get_string(_desktop_file, "Icon");
     thumbnail = QIcon::fromTheme(_icon_string);
     QString string = _icon_string;
+
+    //fix desktop file set customer icon issue, link to bug#77638
+    auto info = FileInfo::fromUri(uri);
+    if (! info->customIcon().isEmpty()){
+        thumbnail = GenericThumbnailer::generateThumbnail(info->customIcon(), true);
+    }
 
     if (thumbnail.isNull()) {
         if (string.startsWith("/")) {
@@ -257,8 +273,8 @@ void ThumbnailManager::createDesktopFileThumbnail(const QString &uri, std::share
         }
     }
 
-    g_free(_icon_string);
-    g_object_unref(_desktop_file);
+//    g_free(_icon_string);
+//    g_object_unref(_desktop_file);
 
     if (!thumbnail.isNull()) {
         insertOrUpdateThumbnail(uri, thumbnail);

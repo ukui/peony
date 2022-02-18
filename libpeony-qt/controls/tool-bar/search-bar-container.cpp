@@ -42,15 +42,20 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 //    QComboBox *filter = new QComboBox(this);
 //    m_filter_box = filter;
 //    filter->setToolTip(tr("Choose File Type"));
-    auto model = new QStringListModel(this);
-    model->setStringList(m_file_type_list);
+//    auto model = new QStringListModel(this);
+//    model->setStringList(m_file_type_list);
 //    filter->setModel(model);
 //    filter->setFixedWidth(80);
 //    filter->setFixedHeight(parent->height());
+//    AdvancedLocationBar * a = qobject_cast<AdvancedLocationBar *>(parent);
 
     QLineEdit *edit = new QLineEdit(this);
     m_search_box = edit;
-    edit->setFixedHeight(parent->height());
+    m_search_box->setFixedHeight(parent->height());
+    m_search_box->setClearButtonEnabled(true);
+    QAction *searchAction = new QAction(m_search_box);
+    searchAction->setIcon(QIcon::fromTheme("edit-find-symbolic"));
+    m_search_box->addAction(searchAction,QLineEdit::LeadingPosition);
 
 //    layout->addWidget(filter, Qt::AlignLeft);
     layout->addWidget(edit, Qt::AlignLeft);
@@ -78,9 +83,11 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     m_list_view->setModel(m_model);
     completer->setPopup(m_list_view);
 
-    //change QCompleter Mode form UnfilteredPopupCompletion to PopupCompletion
-    //to fix can not input chinese continuous issue
-    completer->setCompletionMode(QCompleter::PopupCompletion);
+    //change QCompleter Mode from PopupCompletion to InlineCompletion，
+    //show list in pop up window way will effect the input method
+    //to fix can not input chinese continuous issue,link to bug#90621
+    completer->setCompletionMode(QCompleter::InlineCompletion);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_search_box->setCompleter(completer);
 
     m_search_trigger.setInterval(500);
@@ -99,14 +106,11 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
 //        Q_EMIT this->filterUpdate(m_filter_box->currentIndex());
 //    });
 
-    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("ukui-down-symbolic", QIcon(":/icons/ukui-down-symbolic")), QLineEdit::TrailingPosition);
-    searchAction->setProperty("isWindowButton", 1);
-    searchAction->setProperty("useIconHighlightEffect", 2);
-    searchAction->setProperty("isIcon", true);
-    connect(searchAction, &QAction::triggered, this, [=]() {
-        //qDebug() << "triggered search history!";
-        m_search_box->completer()->complete();
-    });
+//    QAction *searchAction = m_search_box->addAction(QIcon::fromTheme("go-down"), QLineEdit::TrailingPosition);
+//    connect(searchAction, &QAction::triggered, this, [=]() {
+//        //qDebug() << "triggered search history!";
+//        m_search_box->completer()->complete();
+//    });
 
     connect(m_list_view, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 }
@@ -125,17 +129,19 @@ void SearchBarContainer::onTableClicked(const QModelIndex &index)
         return;
     }
 
+    m_search_box->setText("");
     auto l = m_model->stringList();
     l.clear();
     l.prepend(tr("Clear"));
     m_model->setStringList(l);
-    m_search_box->setText("");
 }
 
 void SearchBarContainer::startSearch()
 {
     auto l = m_model->stringList();
-    if (! l.contains(m_search_box->text()))
+    //fix has empty key words issue
+    if (m_search_box->text() != nullptr && m_search_box->text().length() >0
+         && ! l.contains(m_search_box->text()))
         l.prepend(m_search_box->text());
 
     //qDebug() << "SearchBarContainer::startSearch:" <<m_search_box->text();
@@ -145,7 +151,7 @@ void SearchBarContainer::startSearch()
 
 void SearchBarContainer::clearSearchBox()
 {
-    m_search_box->setText("");
+    m_search_box->deselect();
     m_clear_action = true;
     //need stop search action
     m_search_trigger.stop();

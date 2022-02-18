@@ -27,8 +27,8 @@
 #include "file-info-job.h"
 #include "connect-to-server-dialog.h"
 #include "sync-thread.h"
-//#include "volume-manager.h"
-#include "volumeManager.h"
+#include "volume-manager.h"
+//#include "volumeManager.h"
 #include "gobject-template.h"
 #include "file-utils.h"
 #include "libnotify/notification.h"
@@ -111,7 +111,7 @@ QModelIndex SideBarNetWorkItem::lastColumnIndex()
     return m_model->lastColumnIndex(this);
 }
 
-static void unmount_finished(GMount *mount, GAsyncResult *result)
+static void unmount_finished(GMount *mount, GAsyncResult *result, QString *mountPath)
 {
     GError *err = nullptr;   
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -131,23 +131,30 @@ static void unmount_finished(GMount *mount, GAsyncResult *result)
 
     } else {
         /* 卸载完成信息提示 */
+        Q_EMIT Peony::VolumeManager::getInstance()->fileUnmounted(*mountPath);
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         SyncThread::notifyUser(unmountNotify);
     }
-
+    if(mountPath){
+        delete mountPath;
+        mountPath = nullptr;
+    }
 }
 
 void SideBarNetWorkItem::realUnmount()
 {
-    //auto mount = Experimental_Peony::VolumeManager::getMountFromUri(this->uri().toUtf8().constData());
     GFile *gFile= g_file_new_for_uri(this->uri().toUtf8().constData());
+    auto mountPath = new QString;
+    *mountPath = m_uri;
     GMount *gMount = g_file_find_enclosing_mount(gFile, nullptr, nullptr);
     g_mount_unmount_with_operation(gMount,
                     G_MOUNT_UNMOUNT_NONE,
                     nullptr,
                     nullptr,
                     GAsyncReadyCallback(unmount_finished),
-                    nullptr);
+                    mountPath);
+    g_object_unref(gFile);
+    g_object_unref(gMount);
 }
 
 void SideBarNetWorkItem::ejectOrUnmount()
@@ -219,6 +226,7 @@ void SideBarNetWorkItem::findRemoteServers()
                                                                   remoteServer,
                                                                   this,
                                                                   m_model, this);
+                item->m_isVolume = true;
                 m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
                 m_model->endInsertRows();
@@ -243,7 +251,7 @@ void SideBarNetWorkItem::querySharedFolders()
             QString sharePath=iter.value();
             QString shareName=iter.key();
             if (!sharePath.isEmpty()) {
-                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"inode-directory",
+                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"folder",
                                                                   shareName,this,m_model);
                 m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
                 m_children->append(item);
@@ -262,13 +270,13 @@ void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool s
 
     if (!shareInfo.originalPath.isEmpty()) {
         SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + shareInfo.originalPath,
-                                                          "inode-directory",
+                                                          "folder",
                                                           shareInfo.name,
                                                           this,
                                                           m_model, this);
-
+        m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
         m_children->append(item);
-        m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+        m_model->endInsertRows();
     }
     return;
 }
@@ -280,8 +288,12 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
     for (auto item : *m_children){
         if(item->uri()!="file://" + originalPath)
             continue;
-        m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+        int index = m_children->indexOf(item);
+        m_model->beginRemoveRows(firstColumnIndex(), index, index);
         m_children->removeOne(item);
+        m_model->endRemoveRows();
+        item->deleteLater();
+        break;
     }
     return;
 }
@@ -289,21 +301,33 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
 void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
 {
    if(add){
+       /* 防止一个远程服务器多次添加 */
+       for (auto item : *m_children) {
+           if (item->uri() == server) {
+               return;
+           }
+       }
        SideBarNetWorkItem *item = new SideBarNetWorkItem(server,
                                                          "network-workgroup-symbolic",
                                                          server,
                                                          this,
                                                          m_model, this);
-
+       item->m_isVolume = true;
+       m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
        m_children->append(item);
-       m_model->insertRows(m_children->count() - 1, 1, this->firstColumnIndex());
+       m_model->endInsertRows();
     }
    else{
        for (auto item : *m_children){
            if(item->uri()!= server)
                continue;
-           m_model->removeRow(m_children->indexOf(item), this->firstColumnIndex());
+           int index = m_children->indexOf(item);
+           m_model->beginRemoveRows(firstColumnIndex(), index, index);
            m_children->removeOne(item);
+           m_model->endRemoveRows();
+           item->deleteLater();
+           break;
+
    }
    }
 }

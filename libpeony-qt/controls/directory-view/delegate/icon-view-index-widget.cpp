@@ -39,8 +39,10 @@
 #include "file-info.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
+#include "file-utils.h"
 
 #include <QDebug>
+#include <QTextLayout>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -66,9 +68,9 @@ IconViewIndexWidget::IconViewIndexWidget(const IconViewDelegate *delegate, const
 
     m_delegate = delegate;
 
-    m_delegate->getView()->m_renameTimer->stop();
-    m_delegate->getView()->m_editValid = false;
-    m_delegate->getView()->m_renameTimer->start();
+//    m_delegate->getView()->m_renameTimer->stop();
+//    m_delegate->getView()->m_editValid = false;
+//    m_delegate->getView()->m_renameTimer->start();
 
     m_is_dragging = m_delegate->getView()->isDraggingState();
 
@@ -176,7 +178,8 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //p.fillRect(opt.rect, m_delegate->selectedBrush());
     auto rawDecoSize = opt.decorationSize;
     opt.decorationSize = m_delegate->getView()->iconSize();
-    QApplication::style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    view->style()->drawPrimitive(QStyle::PE_PanelItemViewItem,
                                          &opt,
                                          &p,
                                          nullptr);
@@ -185,29 +188,14 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     opt.rect = rawRect;
     auto tmp = opt.text;
     opt.text = nullptr;
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    view->style()->drawControl(QStyle::CE_ItemViewItem, &opt, &p, opt.widget);
     if (b_elide_text)
     {
         int  charWidth = opt.fontMetrics.averageCharWidth();
         tmp = opt.fontMetrics.elidedText(tmp, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
     }
     opt.text = std::move(tmp);
-
-    //auto textRectF = QRectF(0, m_delegate->getView()->iconSize().height(), this->width(), this->height());
-    p.save();
-
-    p.setPen(opt.palette.highlightedText().color());
-    p.translate(0, m_delegate->getView()->iconSize().height() + 5);
-    IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4);
-
-//    p.translate(-1, m_delegate->getView()->iconSize().height() + 13);
-//    //m_edit->document()->drawContents(&p);
-//    QTextOption textOption(Qt::AlignTop|Qt::AlignHCenter);
-//    textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
-//    p.setFont(opt.font);
-//    p.setPen(opt.palette.highlightedText().color());
-//    p.drawText(QRect(1, 0, this->width() - 1, 9999), opt.text, textOption);
-    p.restore();
 
     //extra emblems
     if (!m_info.lock()) {
@@ -216,27 +204,94 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     auto info = m_info.lock();
 
     // draw color symbols
-    auto colors = info->getColors();
-    int offset = 0;
-    const int MAX_LABEL_NUM = 3;
-    int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
-    for (int i = startIndex; i < colors.count(); ++i) {
-        auto color = colors.at(i);
-        p.save();
-        p.setRenderHint(QPainter::Antialiasing);
-        p.translate(2, 2);
-        p.setPen(opt.palette.highlightedText().color());
-        p.setBrush(color);
-        p.drawEllipse(QRectF(offset, 0, 10, 10));
-        p.restore();
-        offset += 10/2;
+    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+        info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
     }
+    auto colors = info->getColors();
+    auto lineSpacing = opt.fontMetrics.lineSpacing();
+    int yoffset = 0;
+    int iLine = 0;
+    if(0 < colors.count())
+    {
+        const int MAX_LABEL_NUM = 3;
+        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+        int num =  colors.count() - startIndex;
 
+        QString text = opt.text;
+        QFont font = opt.font;
+        QTextLayout textLayout(text, font);
+
+        QTextOption textOpt;
+        textOpt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+        textLayout.setTextOption(textOpt);
+        textLayout.beginLayout();
+
+
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+            return;
+        int width = opt.rect.width() - (num+1)*6 - 2*2 - 4;
+        line.setLineWidth(width);
+
+        int xoffset = (width - line.naturalTextWidth())/2 ;
+        if(xoffset < 0)
+        {
+            xoffset = 2;
+        }
+        yoffset = (lineSpacing -12 )/2+2;
+
+        for (int i = startIndex; i < colors.count(); ++i) {
+            auto color = colors.at(i);
+            p.save();
+            p.setRenderHint(QPainter::Antialiasing);
+            p.translate(0, m_delegate->getView()->iconSize().height() + 5);
+
+           // p.translate(2, 2);
+            p.setPen(opt.palette.highlightedText().color());
+            p.setBrush(color);
+            p.drawEllipse(QRectF(xoffset, yoffset, 12, 12));
+            p.restore();
+            xoffset += 12/2;
+        }
+
+        yoffset = 0;
+        p.save();
+        p.translate(xoffset+10, m_delegate->getView()->iconSize().height() + 5);
+        p.setPen(opt.palette.highlightedText().color());
+
+        line.draw(&p, QPoint(0, yoffset));
+        yoffset += lineSpacing;
+        opt.text = text.mid(line.textLength());
+        textLayout.endLayout();
+        int heigth = opt.rect.height();
+        auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, m_index, 2, 3);
+        int textHeigth = heigth - yoffset - m_delegate->getView()->iconSize().height() - 5;
+        if(textHeigth < textSize.height())
+        {
+           setFixedHeight(heigth+lineSpacing);
+        }
+        p.restore();
+        iLine++;
+    }
+    if(!opt.text.isEmpty())
+    {
+        p.save();
+        p.translate(0, m_delegate->getView()->iconSize().height() + 5 + yoffset);
+        p.setPen(opt.palette.highlightedText().color());
+        IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4-iLine);
+        p.restore();
+    }
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<< "symbolic:" << info->symbolicIconName();
         icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
+    }
+    if(view->m_multi_select)
+    {
+        QIcon icon = QIcon(":/icons/icon-selected.png");
+        icon.paint(&p, this->width() - 20, 4, 16, 16, Qt::AlignCenter);
     }
 
     //paint access emblems
@@ -265,6 +320,17 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
             view->m_editValid = false;
             return QWidget::mousePressEvent(e);
         }
+        //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+        QRect rect =  m_option.rect;
+        QSize iconExpectedSize = m_delegate->getView()->iconSize();
+        rect.setY(iconExpectedSize.height());
+        rect.setHeight(m_option.rect.height()-iconExpectedSize.height());
+        if(!rect.contains(e->pos()))
+        {
+            view->m_editValid = false;
+            view->m_renameTimer->start();
+            return ;
+        }
 
         view->m_editValid = true;
         if (view->m_renameTimer->isActive()) {
@@ -278,8 +344,7 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
             view->m_editValid = false;
             view->m_renameTimer->start();
         }
-        e->accept();
-        return;
+        e->ignore();
 //        if (m_edit_trigger.isActive()) {
 //            qDebug()<<"IconViewIndexWidget::mousePressEvent: edit"<<e->type();
 //            m_delegate->getView()->setIndexWidget(m_index, nullptr);
@@ -287,7 +352,7 @@ void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)
 //            return;
 //        }
     }
-    QWidget::mousePressEvent(e);
+//    QWidget::mousePressEvent(e);
 }
 
 void IconViewIndexWidget::mouseMoveEvent(QMouseEvent *e)

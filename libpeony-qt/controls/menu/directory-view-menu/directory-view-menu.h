@@ -66,6 +66,7 @@ protected:
     const QList<QAction *> constructComputerActions();
     const QList<QAction *> constructTrashActions();
     const QList<QAction *> constructSearchActions();
+    const QList<QAction *> constructMultiSelectActions();
 
 private:
     FMWindowIface *m_top_window;
@@ -87,6 +88,7 @@ private:
     bool m_is_filesafe = false;
     bool m_is_filebox_file = false;     //filesafe path files operation flag
     bool m_is_smb_file = false;
+    bool m_is_mobile_file = false;
 
     const int ELIDE_TEXT_LENGTH = 16;
 

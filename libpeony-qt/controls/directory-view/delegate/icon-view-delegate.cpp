@@ -70,15 +70,14 @@ IconViewDelegate::~IconViewDelegate()
 
 QSize IconViewDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItem opt = option;
-    initStyleOption(&opt, index);
+    //QStyleOptionViewItem opt = option;
+    //initStyleOption(&opt, index);
 
     auto view = qobject_cast<IconView*>(this->parent());
     auto iconSize = view->iconSize();
-    auto font = qApp->font();
-    auto fm = QFontMetrics(font);
+    auto fm = qApp->fontMetrics();
     int width = iconSize.width() + 41;
-    int height = iconSize.height() + fm.ascent()*2 + 20;
+    int height = iconSize.height() + fm.ascent()*2 + 20 + 10;
     return QSize(width, height);
     /*
     qDebug()<<option;
@@ -112,11 +111,14 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     //qDebug()<<option.widget;
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
-
-    auto style = QApplication::style();
+    //FIXME: Modify the icon style, only click on the text to respond, click on the icon to not respond
+    auto style = getView()->style();
 
     auto rawDecoSize = opt.decorationSize;
     opt.decorationSize = view->iconSize();
+    if (qApp->devicePixelRatio() != 1.0) {
+        opt.rect.adjust(1, 1, -1, -1);
+    }
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, nullptr);
     opt.decorationSize = rawDecoSize;
 
@@ -144,28 +146,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     opt.text = nullptr;
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
     opt.text = text;
-    //auto textSize = IconViewTextHelper::getTextSizeForIndex(opt, index, 2, 2);
-    painter->save();
-    painter->translate(opt.rect.topLeft());
-    painter->translate(0, iconRect.size().height() + 5);
-    IconViewTextHelper::paintText(painter,
-                                  opt,
-                                  index,
-                                  9999,
-                                  2,
-                                  2);
 
-    painter->restore();
-
-    //get file info from index
-    auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
-    auto item = model->itemFromIndex(index);
-    //NOTE: item might be deleted when painting, because we might start a
-    //location change during the painting.
-    if (!item) {
-        return;
-    }
-    auto info = item->info();
     auto rect = view->visualRect(index);
 
     bool useIndexWidget = false;
@@ -198,24 +179,98 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (bCutFile && !getView()->getDelegateEditFlag())/* Rename is index is not set to nullptr,link to bug#61119.modified by 2021/06/22 */
         view->setIndexWidget(index, nullptr);
 
+    //get file info from index
+    auto model = static_cast<FileItemProxyFilterSortModel*>(view->model());
+    auto item = model->itemFromIndex(index);
+    //NOTE: item might be deleted when painting, because we might start a
+    //location change during the painting.
+    if (!item) {
+        return;
+    }
+    auto info = item->info();
+
     // draw color symbols
+    int iLine = 0;
+    int yoffset = 0;
     if (!isDragging || !view->selectedIndexes().contains(index)) {
-        auto colors = info->getColors();
-        int offset = 0;
-        const int MAX_LABEL_NUM = 3;
-        int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
-        for (int i = startIndex; i < colors.count(); ++i) {
-            auto color = colors.at(i);
-            painter->save();
-            painter->setRenderHint(QPainter::Antialiasing);
-            painter->translate(option.rect.topLeft());
-            painter->translate(2, 2);
-            painter->setPen(opt.palette.highlightedText().color());
-            painter->setBrush(color);
-            painter->drawEllipse(QRectF(offset, 0, 10, 10));
-            painter->restore();
-            offset += 10/2;
+        if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+            info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
         }
+        auto colors = info->getColors();
+        if(0 < colors.count())
+        {
+            const int MAX_LABEL_NUM = 3;
+            int startIndex = (colors.count() > MAX_LABEL_NUM ? colors.count() - MAX_LABEL_NUM : 0);
+            int num =  colors.count() - startIndex;
+            int xoffset = 0;
+            auto lineSpacing = option.fontMetrics.lineSpacing();
+
+            QString text = opt.text;
+            QFont font = opt.font;
+            QTextLayout textLayout(text, font);
+
+            QTextOption textOpt;
+            textOpt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+
+            textLayout.setTextOption(textOpt);
+            textLayout.beginLayout();
+
+            QTextLine line = textLayout.createLine();
+            if (!line.isValid())
+                return;
+            int width = opt.rect.width() - (num+1)*6 - 2*2 - 4;
+            line.setLineWidth(width);
+            xoffset = (width - line.naturalTextWidth())/2 ;
+            if(xoffset < 0)
+            {
+                xoffset = 2;
+            }
+            yoffset = (lineSpacing -12 )/2+2;
+            for (int i = startIndex; i < colors.count(); ++i) {
+                auto color = colors.at(i);
+                painter->save();
+                painter->setRenderHint(QPainter::Antialiasing);
+                painter->translate(opt.rect.topLeft());
+                painter->translate(0, iconRect.size().height() + 5);
+                painter->setPen(opt.palette.highlightedText().color());
+                painter->setBrush(color);
+                painter->drawEllipse(QRectF(xoffset, yoffset, 12, 12));
+                painter->restore();
+                xoffset += 12/2;
+            }
+
+            yoffset = 0;
+            painter->save();
+            painter->translate(opt.rect.topLeft());
+            painter->translate(xoffset+10, iconRect.size().height() + 5);
+            if (opt.state.testFlag(QStyle::State_Selected))
+                painter->setPen(opt.palette.highlightedText().color());
+            else
+                painter->setPen(opt.palette.text().color());
+            line.draw(painter, QPoint(0, yoffset));
+            yoffset += lineSpacing;
+            opt.text = text.mid(line.textLength());
+
+            textLayout.endLayout();
+            painter->restore();
+            iLine++;
+        }
+    }
+
+    if(!opt.text.isEmpty())
+    {
+        painter->save();
+        painter->translate(opt.rect.topLeft());
+        painter->translate(0, iconRect.size().height() + 5 + yoffset);
+
+        IconViewTextHelper::paintText(painter,
+                                      opt,
+                                      index,
+                                      9999,
+                                      2,
+                                      2-iLine);
+
+        painter->restore();
     }
 
     //paint symbolic link emblems
@@ -224,6 +279,20 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         //qDebug()<<info->symbolicIconName();
         icon.paint(painter, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
     }
+
+    if(view->m_multi_select)
+        if(view->selectedIndexes().contains(index))
+        {
+            QIcon icon = QIcon(":/icons/icon-selected.png");
+            icon.paint(painter, rect.x()+rect.width() - 20, rect.y()+4, 16, 16, Qt::AlignCenter);
+        }
+        else
+        {
+            QIcon icon = QIcon(":/icons/icon-select.png");
+            icon.paint(painter, rect.x()+rect.width() - 20, rect.y()+4, 16, 16, Qt::AlignCenter);
+        }
+
+
 
     //paint access emblems
 

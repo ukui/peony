@@ -23,6 +23,8 @@
 #ifndef NAVIGATIONSIDEBAR_H
 #define NAVIGATIONSIDEBAR_H
 
+#include "side-bar.h"
+
 #include <QTreeView>
 #include <QStyledItemDelegate>
 #include <QProxyStyle>
@@ -35,6 +37,7 @@ class SideBarAbstractItem;
 
 class QPushButton;
 class QVBoxLayout;
+class QLabel;
 
 class NavigationSideBar : public QTreeView
 {
@@ -61,16 +64,19 @@ Q_SIGNALS:
 protected:
     void keyPressEvent(QKeyEvent *event);
     void focusInEvent(QFocusEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
 
     int sizeHintForColumn(int column) const override;
 
 private:
-    Peony::SideBarProxyFilterSortModel *m_proxy_model;
-    Peony::SideBarModel *m_model;
-    Peony::SideBarAbstractItem* m_currSelectedItem =nullptr;
+    Peony::SideBarProxyFilterSortModel *m_proxy_model = nullptr;
+    Peony::SideBarModel *m_model = nullptr;
+    Peony::SideBarAbstractItem* m_currSelectedItem = nullptr;
+    bool m_notAllowHorizontalMove = false;/* 按下左右键不可使侧边栏内容左右平移显示 */
 };
 
-class NavigationSideBarContainer : public QWidget
+class NavigationSideBarContainer : public Peony::SideBar
 {
     Q_OBJECT
 public:
@@ -84,6 +90,17 @@ private:
     QVBoxLayout *m_layout = nullptr;
 
     QPushButton *m_label_button;
+};
+
+class TitleLabel : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit TitleLabel(QWidget *parent);
+
+private:
+    QLabel *m_pix_label;
+    QLabel *m_text_label;
 };
 
 class NavigationSideBarItemDelegate : public QStyledItemDelegate

@@ -121,10 +121,10 @@ const QString DirectoryViewFactoryManager2::getDefaultViewId(int zoomLevel, cons
         return getDefaultViewId(uri);
 
     if (defaultFactory->supportZoom()) {
-        if (zoomLevel <= 20 && zoomLevel >=0) {
+        if (zoomLevel <= 40 && zoomLevel >=0) {
             defaultFactory = getFactory("List View");
         }
-        if (zoomLevel >= 21) {
+        if (zoomLevel >= 41) {
             defaultFactory = getFactory("Icon View");
         }
     }

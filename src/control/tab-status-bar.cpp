@@ -25,9 +25,9 @@
 #include "file-utils.h"
 #include "search-vfs-uri-parser.h"
 #include "tab-widget.h"
-#include "file-info.h"
 
 #include "global-settings.h"
+#include "main-window.h"
 
 #include <QLabel>
 #include <QPainter>
@@ -57,8 +57,8 @@ TabStatusBar::TabStatusBar(TabWidget *tab, QWidget *parent) : QStatusBar(parent)
     addWidget(m_label, 1);
 
     m_slider = new QSlider(Qt::Horizontal, this);
-    m_slider->setFocusPolicy(Qt::FocusPolicy(Qt::WheelFocus & ~Qt::TabFocus));
     m_slider->setRange(0, 100);
+    m_slider->hide();
 
     auto mainWindow = qobject_cast<MainWindow *>(this->topLevelWidget());
     auto settings = Peony::GlobalSettings::getInstance();
@@ -89,18 +89,18 @@ void TabStatusBar::update()
     if (!m_tab)
         return;
 
-    //qDebug() << "TabStatusBar::update";
     auto selections = m_tab->getCurrentSelectionFileInfos();
+    auto uri = m_tab->getCurrentUri();
+    auto count = m_tab->getCurrentRowcount();
 
-    //show current path files count
-    if (selections.count() ==0)
-    {
+
+    if(selections.count() == 0){
         auto uris = m_tab->getCurrentAllFileInfos();
-        if (uris.count() == 0)
-            m_label->setText("");
-        else
-            m_label->setText(tr(" \%1 items ").arg(uris.count()));
-
+        if(uris.count() == 0){
+           m_label->setText("");
+        }else{
+           m_label->setText(tr(" \%1 items ").arg(uris.count()));
+        }
         return;
     }
 
@@ -113,19 +113,71 @@ void TabStatusBar::update()
         return;
     }
 
-    int specialCount = 0;
     goffset size = 0;
-    for (auto selection : selections) {
-        //not count special path
-        if (selection->uri() == "network:///"
-           || selection->uri() == "computer:///")
+    int specialCount = 0;
+
+    if (! selections.isEmpty()) {
+        QString directoriesString = "";
+        QString filesString="";
+        for (auto selection : selections) {
+            //not count special path
+            if (selection->uri() == "network:///"
+               || selection->uri() == "computer:///")
+            {
+                specialCount++;
+                continue;
+            }
+
+            if(selection->isDir()) {
+//                directoryCount++;
+            } else if (!selection->isVolume()) {
+//                fileCount++;
+                size += selection->size();
+            }
+        }
+      
+        // auto format_size = g_format_size(size);
+    
+       //Calculated by 1024 bytes 
+        auto format_size  = g_format_size_full(size,G_FORMAT_SIZE_IEC_UNITS);
+      
+        //qDebug() << "directoryCount:" <<directoryCount <<",fileCount" <<fileCount <<format_size;
+
+        //in computer, only show selected count
+        if (uri != "computer:///")
         {
-            specialCount++;
-            continue;
+            if (selections.count() == 1) {
+                if (selections.first()->displayName() != "")
+                    directoriesString = QString("1/%1").arg(count);
+                if (size >0)
+                    filesString = QString(", %1").arg(format_size);
+            }
+            else
+            {
+                directoriesString = QString("%1/%2").arg(selections.count()).arg(count);
+            }
         }
 
-        if(! selection->isDir() && ! selection->isVolume()){
-            size += selection->size();
+        //qDebug() << "directoriesString:" <<directoriesString <<filesString;
+        m_label->setText(tr("selected%1%2").arg(directoriesString).arg(filesString));
+        //showMessage(tr("%1 files selected ").arg(selections.count()));
+        g_free(format_size);
+    }
+    else {
+        //FIXME: replace BLOCKING api in ui thread.
+        auto displayName = Peony::FileUtils::getFileDisplayName(uri);
+        //qDebug() << "status bar text:" <<displayName <<uri;
+        if (uri.startsWith("search:///"))
+        {
+            QString nameRegexp = Peony::SearchVFSUriParser::getSearchUriNameRegexp(uri);
+            QString targetDirectory = Peony::SearchVFSUriParser::getSearchUriTargetDirectory(uri);
+            displayName = tr("Search \"%1\" in \"%2\"").arg(nameRegexp).arg(targetDirectory);
+            m_label->setText(displayName);
+        }
+        else {
+//            QUrl url = m_tab->getCurrentUri();
+//            m_label->setText(url.toDisplayString());
+            m_label->setText(nullptr);
         }
     }
 
@@ -163,6 +215,11 @@ void TabStatusBar::onZoomRequest(bool zoomIn)
     m_slider->setValue(value);
 }
 
+//显示隐藏文件，更新项目个数
+void TabStatusBar::updateItemsNum()
+{
+    this->update();
+}
 
 void TabStatusBar::paintEvent(QPaintEvent *e)
 {
@@ -215,40 +272,39 @@ void ElidedLabel::paintEvent(QPaintEvent *event)
     QFontMetrics fm(this->font());
     auto elidedText = fm.elidedText(m_text, Qt::TextElideMode::ElideRight, this->size().width() - 150);
     QPainter p(this);
-//    //p.setCompositionMode(QPainter::CompositionMode_SourceIn);
-//    QLinearGradient linearGradient;
-//    linearGradient.setStart(QPoint(10, this->height()));
-//    linearGradient.setFinalStop(QPoint(10, 0));
-//    linearGradient.setColorAt(0, base);
-//    linearGradient.setColorAt(0.75, base);
-//    linearGradient.setColorAt(1, Qt::transparent);
+    QLinearGradient linearGradient;
+    linearGradient.setStart(QPoint(10, this->height()));
+    linearGradient.setFinalStop(QPoint(10, 0));
+    linearGradient.setColorAt(0, base);
+    linearGradient.setColorAt(0.75, base);
+    linearGradient.setColorAt(1, Qt::transparent);
 
     int overlap = qApp->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap);
     int layoutWidth = qApp->style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     int adjustedY2 = qMin(0, overlap - layoutWidth);
 
     QPainterPath path;
-    path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height() + 14, 0));
+    path.addRect(this->rect().adjusted(0, 0, adjustedY2 - this->height(), 0));
 
-    p.fillPath(path, base);
+    p.fillPath(path, linearGradient);
 
-//    QPainterPath path2;
+    QPainterPath path2;
 
-//    int radius = this->height();
-//    QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
-//    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
-//    path2.moveTo(pos);
-//    path2.arcTo(targetRect, 0, 90);
+    int radius = this->height();
+    QPoint pos = QPoint(this->width() + adjustedY2 - this->height(), this->height());
+    QRect targetRect = QRect(pos.x() - radius, pos.y() - radius, radius*2, radius*2);
+    path2.moveTo(pos);
+    path2.arcTo(targetRect, 0, 90);
 
-//    QRadialGradient radialGradient;
-//    radialGradient.setCenter(pos);
-//    radialGradient.setFocalPoint(pos);
-//    radialGradient.setRadius(radius);
-//    radialGradient.setColorAt(0, base);
-//    radialGradient.setColorAt(0.75, base);
-//    radialGradient.setColorAt(1, Qt::transparent);
-//    p.fillPath(path2, radialGradient);
+    QRadialGradient radialGradient;
+    radialGradient.setCenter(pos);
+    radialGradient.setFocalPoint(pos);
+    radialGradient.setRadius(radius);
+    radialGradient.setColorAt(0, base);
+    radialGradient.setColorAt(0.75, base);
+    radialGradient.setColorAt(1, Qt::transparent);
+    p.fillPath(path2, radialGradient);
 
-    style()->drawItemText(&p, this->rect().adjusted(30, 0, -120, 0), Qt::AlignLeft | Qt::AlignVCenter, qApp->palette(), this->isEnabled(), elidedText, QPalette::WindowText);
+    style()->drawItemText(&p, this->rect().adjusted(30, 0, -120, 0), Qt::AlignLeft, qApp->palette(), this->isEnabled(), elidedText, QPalette::WindowText);
 }
 

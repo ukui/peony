@@ -154,10 +154,16 @@ retry_create_template:
                                     G_FILE_ATTRIBUTE_TIME_MODIFIED,
                                     (guint64)now_time,
                                     G_FILE_QUERY_INFO_NONE, nullptr, &err);
+
+        //需要设置一下访问时间属性，修复前场反馈的在U盘创建wps文件，访问时间异常问题，时分秒为：000000
+        g_file_set_attribute_uint64(wrapGFile(g_file_new_for_uri(m_target_uri.toUtf8())).get()->get(),
+                                    G_FILE_ATTRIBUTE_TIME_ACCESS,
+                                    (guint64)now_time,
+                                    G_FILE_QUERY_INFO_NONE, nullptr, &err);
         break;
     }
     }
-
+    FileUtils::saveCreateTime (m_target_uri);
     // judge if the operation should sync.
     bool needSync = false;
     GFile *src_first_file = g_file_new_for_uri(FileUtils::urlEncode(m_src_uri).toUtf8().constData());

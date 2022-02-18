@@ -26,6 +26,7 @@
 #include "file-launch-manager.h"
 
 #include "file-info.h"
+#include "xatom-helper.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -34,11 +35,21 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDebug>
+#include <QPainter>
+#include <QApplication>
 
 using namespace Peony;
 
 FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
+    //无边框窗口
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(window()->winId(), hints);
+
     m_layout = new QVBoxLayout(this);
     setLayout(m_layout);
 
@@ -46,6 +57,9 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     m_layout->addWidget(new QLabel(tr("Choose an Application to open this file"), this));
     m_view = new QListWidget(this);
     m_view->setIconSize(QSize(48, 48));
+    //Set the grid size to be the same as the icon size to solve the overlap problem .link bug#94165
+    m_view->setGridSize(QSize(48, 48));
+    m_view->setUniformItemSizes(true);
     m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_layout->addWidget(m_view, 1);
     m_check_box = new QCheckBox(tr("Set as Default"), this);
@@ -63,7 +77,8 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     auto actions = FileLaunchManager::getAllActions(uri);
     for (auto action : actions) {
         //fix show no icon app in list issue, bug#18171
-        if (action->icon().isNull())
+        if (action->icon().isNull() ||
+                "org.gnome.font-viewer" == action->icon().name())
             continue;
         //FIXME should have a spcific rule to decide which kind of app can show
         //fix show uninstall app in list issue, link to bug#80233
@@ -99,4 +114,23 @@ FileLauchDialog::FileLauchDialog(const QString &uri, QWidget *parent) : QDialog(
     if (info->isDir() || info->isDesktopFile()) {
         m_check_box->setEnabled(false);
     }
+}
+
+void FileLauchDialog::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.fillRect(this->rect(), qApp->palette().base());
+    QWidget::paintEvent(event);
+}
+
+bool FileLauchDialog::event(QEvent *event)
+{
+    //失去焦点即关闭窗口
+    if (event->type() == QEvent::ActivationChange) {
+        if (QApplication::activeWindow() != this) {
+            this->close();
+            return false;
+        }
+    }
+    return QWidget::event(event);
 }

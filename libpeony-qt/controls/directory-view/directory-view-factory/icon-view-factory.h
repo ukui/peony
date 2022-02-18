@@ -69,7 +69,7 @@ public:
     DirectoryViewIface *create() override;
 
     int zoom_level_hint() override {
-        return 100;
+        return 70;
     }
     int priority(const QString &) override {
         return 0;
@@ -123,10 +123,10 @@ public:
     DirectoryViewWidget *create() override;
 
     int zoom_level_hint() override {
-        return 25;
+        return 70;
     }
     int minimumSupportedZoomLevel() override {
-        return 21;
+        return 41;
     }
     int maximumSupportedZoomLevel() override {
         return 100;

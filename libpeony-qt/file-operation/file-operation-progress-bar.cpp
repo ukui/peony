@@ -31,6 +31,7 @@
 
 #include <QTimer>
 #include "file-utils.h"
+#include "xatom-helper.h"
 
 #include <QVector4D>
 
@@ -66,6 +67,9 @@ void FileOperationProgressBar::removeAllProgressbar()
     m_list_widget->clear();
     m_progress_list->clear();
     m_progress_size = 0;
+
+    uninhibit();
+
     hide();
 }
 
@@ -87,9 +91,15 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
         mainProgressChange(li);
     }
 
-    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    if (!isInhibit()) {
+        inhibit();
+    }
 
     showMore();
+
+    if (m_progress_size > 0 && !isHidden()) {
+        setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    }
 
     return proc;
 }
@@ -97,13 +107,8 @@ ProgressBar *FileOperationProgressBar::addFileOperation()
 void FileOperationProgressBar::showProgress(ProgressBar &progress)
 {
     if (m_progress_size > 0) {
-        setAttribute(Qt::WA_TranslucentBackground, true);
         progress.show();
         show();
-
-        QTimer::singleShot(300, [=] () {
-            setAttribute(Qt::WA_TranslucentBackground, false);
-        });
     }
 }
 
@@ -132,26 +137,45 @@ void FileOperationProgressBar::removeFileOperation(ProgressBar *progress)
     progress->deleteLater();
     delete li;
 
+    showMore();
+
     if (m_progress_size <= 0) {
         m_progress_size = 0;
         m_current_main = nullptr;
+        setWindowState(Qt::WindowNoState);
         hide();
+        uninhibit();
     }
+}
 
-    showMore();
+bool FileOperationProgressBar::isInhibit()
+{
+    return m_fds != nullptr;
 }
 
 FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(parent)
 {
     m_current_main = nullptr;
-    setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
 
+    setAutoFillBackground (true);
+    setBackgroundRole (QPalette::Base);
+
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(winId(), hints);
+
+    setWindowOpacity(0.9999);
+
+#if 0
     setProperty("useCustomShadow", true);
     setProperty("customShadowDarkness", 0.5);
     setProperty("customShadowWidth", 30);
     setProperty("customShadowRadius", QVector4D(1, 1, 1, 1));
     setProperty("customShadowMargins", QVector4D(30, 30, 30, 30));
+#endif
 
     btn = new QPushButton(nullptr);
     m_main_layout = new QVBoxLayout(this);
@@ -200,6 +224,7 @@ FileOperationProgressBar::FileOperationProgressBar(QWidget *parent) : QWidget(pa
 FileOperationProgressBar::~FileOperationProgressBar()
 {
     delete btn;
+    if (m_dbus_connection) g_object_unref(m_dbus_connection);
 }
 
 void FileOperationProgressBar::showMore()
@@ -228,6 +253,43 @@ void FileOperationProgressBar::showMore()
     update();
 }
 
+bool FileOperationProgressBar::inhibit()
+{
+    g_autoptr(GError) error = NULL;
+    g_autoptr(GDBusConnection) pconnection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    if (error) {
+        printf("error:%s\n", error->message);
+        return false;
+    }
+
+    uninhibit();
+
+    if (pconnection) {
+        g_autoptr(GVariantType) rtype = g_variant_type_new("(h)");
+
+        g_autoptr(GVariant) ret = g_dbus_connection_call_with_unix_fd_list_sync(pconnection, "org.freedesktop.login1", "/org/freedesktop/login1",
+                                                                      "org.freedesktop.login1.Manager", "Inhibit",
+                                                                      g_variant_new("(ssss)", "sleep", "peony", "file operation", "block"),
+                                                                      rtype, G_DBUS_CALL_FLAGS_NONE, G_MAXINT, NULL, &m_fds, NULL, &error);
+        if (error) {
+            printf("cannot block s4: %s\n", error->message);
+        }
+
+        Q_UNUSED(ret);
+    }
+
+    return true;
+}
+
+void FileOperationProgressBar::uninhibit()
+{
+    if (m_fds) {
+        g_object_unref(m_fds);
+        m_fds = nullptr;
+    }
+}
+
+#if 0
 void FileOperationProgressBar::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_is_press) {
@@ -250,6 +312,7 @@ void FileOperationProgressBar::mouseReleaseEvent(QMouseEvent *event)
         m_is_press = false;
     }
 }
+#endif
 
 void FileOperationProgressBar::showWidgetList(bool show)
 {
@@ -318,6 +381,33 @@ MainProgressBar::MainProgressBar(QWidget *parent) : QWidget(parent)
 
     m_title = tr("File operation");
 
+    m_btn_close = new QPushButton(this);
+    m_btn_mini = new QPushButton (this);
+
+    m_btn_mini->setFlat (true);
+    m_btn_mini->setProperty ("isWindowButton", 0x01);
+    m_btn_mini->setIcon (QIcon::fromTheme("window-minimize-symbolic"));
+    connect (m_btn_mini, &QPushButton::clicked, this, [=] () {
+        Q_EMIT minimized();
+    });
+
+    m_btn_close->setFlat (true);
+    m_btn_close->setProperty ("isWindowButton", 0x02);
+    m_btn_close->setIcon (QIcon::fromTheme("window-close-symbolic"));
+    connect (m_btn_close, &QPushButton::clicked, this, [=] () {
+        QMessageBox msgBox(QMessageBox::Warning, tr("cancel all file operations"),
+            tr("Are you sure want to cancel all file operations"),
+            QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.button(QMessageBox::Ok)->setText(tr("OK"));
+        msgBox.button(QMessageBox::Cancel)->setText(tr("Cancel"));
+        if (QMessageBox::Ok == msgBox.exec()) {
+            Q_EMIT closeWindow();
+        }
+    });
+
+    m_btn_mini->setGeometry (m_minilize_button_x_l, m_minilize_button_y_t, m_btn_size, m_btn_size);
+    m_btn_close->setGeometry (m_close_button_x_l, m_close_button_y_t, m_btn_size, m_btn_size);
+
     setFixedSize(m_fix_width, m_fix_height);
 }
 
@@ -381,6 +471,7 @@ void MainProgressBar::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
+#if 0
 void MainProgressBar::mouseMoveEvent(QMouseEvent *event)
 {
     // minilize button
@@ -405,11 +496,13 @@ void MainProgressBar::mouseMoveEvent(QMouseEvent *event)
         QWidget::mouseMoveEvent(event);
     }
 }
+#endif
 
 void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
 {
     // minilize button
     QPoint pos = event->pos();
+#if 0
     if ((pos.x() >= m_minilize_button_x_l)
             && (pos.x() <= m_minilize_button_x_r)
             && (pos.y() >= m_minilize_button_y_t)
@@ -427,7 +520,9 @@ void MainProgressBar::mouseReleaseEvent(QMouseEvent *event)
         if (QMessageBox::Ok == msgBox.exec()) {
             Q_EMIT closeWindow();
         }
-    } else if ((pos.x() >= m_progress_pause_x)
+    } else
+#endif
+    if ((pos.x() >= m_progress_pause_x)
                && (pos.x() <= m_progress_pause_x_r)
                && (pos.y() >= m_progress_pause_y)
                && (pos.y() <= m_progress_pause_y_b)) {
@@ -465,13 +560,19 @@ void MainProgressBar::paintHeader(QPainter &painter)
 {
     painter.save();
 
-    // paint title
-    QRect textArea (m_text_area_x, 0, m_title_width, m_header_height);
-    QFont font = painter.font();
-    font.setPixelSize(14);
-    painter.setFont(font);
-    painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignHCenter, m_title);
+    // paint icon
+    int iconSize = m_header_height - m_btn_margin * 2;
+    QRect iconArea (m_btn_margin * 2, m_btn_margin, iconSize, iconSize);
+    painter.drawPixmap (iconArea, QIcon::fromTheme("system-file-manager").pixmap (iconSize, iconSize)); //(textArea, Qt::Ali | Qt::AlignHCenter, m_title);
 
+    // paint title
+    QRect textArea (m_text_area_x + iconSize, 0, m_title_width, m_header_height);
+    QFont font = painter.font();
+//    font.setPixelSize(14);
+    painter.setFont(font);
+    painter.drawText(textArea, Qt::AlignVCenter | Qt::AlignLeft, m_title);
+
+#if 0
     // paint minilize button
     painter.drawPixmap(m_minilize_button_x_l, m_btn_margin_top, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-minimize-symbolic").pixmap(m_btn_size, m_btn_size)));
@@ -479,7 +580,7 @@ void MainProgressBar::paintHeader(QPainter &painter)
     // paint close button
     painter.drawPixmap(m_close_button_x_l, m_btn_margin_top, m_btn_size, m_btn_size,
                        drawSymbolicColoredPixmap(QIcon::fromTheme("window-close-symbolic").pixmap(m_btn_size, m_btn_size)));
-
+#endif
     painter.restore();
 }
 
@@ -498,29 +599,29 @@ void MainProgressBar::paintContent(QPainter &painter)
 
     // paint file name
     QFont font = painter.font();
-    font.setPixelSize(14);
+//    font.setPixelSize(14);
     painter.setFont(font);
     if (m_stopping) {
         painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else {
         if (m_sync) {
             painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
         } else {
             painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
             if (m_pause) {
-                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
             } else {
-                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
             }
         }
     }
 
     // paint percentage
-    font.setPixelSize(12);
+//    font.setPixelSize(12);
     painter.setFont(font);
     painter.setBrush(QBrush(btn->palette().color(QPalette::Highlight)));
-    painter.drawText(m_percent_x, m_percent_y, m_percent_height, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
+    painter.drawText(m_percent_x, m_percent_y, m_fix_width - m_percent_margin, m_percent_height, Qt::AlignRight | Qt::AlignBottom,
                      QString(" %1 %").arg(QString::number(m_current_value * 100, 'f', 1)));
 
     painter.restore();
@@ -595,7 +696,7 @@ void OtherButton::paintEvent(QPaintEvent *event)
     x = x + m_icon_size + 10;
     QRect textArea (x, 0, m_text_length, m_button_heigth);
     QFont font = painter.font();
-    font.setPixelSize(10);
+//    font.setPixelSize(10);
     painter.setFont(font);
     pen.setBrush(QBrush(btn->palette().color(QPalette::WindowText)));
     painter.setPen(pen);
@@ -717,13 +818,13 @@ void ProgressBar::paintEvent(QPaintEvent *event)
     pen.setStyle(Qt::SolidLine);
     painter.setPen(pen);
     QFont font = painter.font();
-    font.setPixelSize(12);
+//    font.setPixelSize(12);
     painter.setFont(font);
     if (m_is_stopping) {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else if (m_sync) {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-        painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
+        painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size)));
     } else {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
     }
@@ -743,9 +844,9 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 
     if (!m_sync) {
         if (m_pause) {
-            painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size));
+            painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size)));
         } else {
-            painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
+            painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size)));
         }
     }
 

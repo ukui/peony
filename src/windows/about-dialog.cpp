@@ -22,6 +22,7 @@
 
 #include "about-dialog.h"
 #include "ui_about-dialog.h"
+
 #include <locale.h>
 #include <libintl.h>
 #include <QDebug>
@@ -29,6 +30,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QtMath>
+
+#include "xatom-helper.h"
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
@@ -45,59 +48,59 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::initUI()
 {
-	QPalette palette;
-//    QFont font14,font18;
-	QTextCursor textCursor;
-	QTextBlockFormat blockFormat;
-//	QString addressLabel = tr("Offical Website: ");
-//    QString supportLabel = tr("Service & Support: ");
-//	QString phoneLabel = tr("Hot Service: ");
-
-//    font18.setPointSize(18);
-//    font14.setPointSize(14);
-	palette.setColor(QPalette::Highlight, QColor("#E54A50"));
-	blockFormat.setLineHeight(24, QTextBlockFormat::SingleHeight);//font-line-hight
-
     setAutoFillBackground(true);
     setBackgroundRole(QPalette::Base);
-    setAttribute(Qt::WA_TranslucentBackground, true);
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);//modal、borderless window
+    setFixedWidth(420);
+
+    //bug#101149 使用窗管
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(winId(), hints);
 
     ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
 
-//    ui->titleLabel->setFont(font14);
     ui->titleLabel->setText(tr("Peony"));
 
     ui->closeBtn->setFlat(true);
     ui->closeBtn->setProperty("isIcon", true);
-	ui->closeBtn->setPalette(palette);
-    ui->closeBtn->setIconSize(QSize(16,16));
-    ui->closeBtn->setFixedSize(QSize(40, 40));
+    ui->closeBtn->setFixedSize(QSize(30, 30));
     ui->closeBtn->setProperty("isWindowButton", 2);
-    ui->closeBtn->setProperty("useIconHighlightEffect", 0x2);
+    ui->closeBtn->setProperty("useIconHighlightEffect", 0x8);
     ui->closeBtn->setIcon(QIcon::fromTheme("window-close-symbolic"));
 
     ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
+    auto font = qApp->font();
+    QFont namefont = font;
+    namefont.setBold(true);
+    namefont.setPointSize(font.pointSize()*1.28);
 
-//    ui->nameLabel->setFont(font18);
+    ui->nameLabel->setFont(namefont);
     ui->nameLabel->setText(tr("Peony"));
 
-//    ui->versionLabel->setFont(font14);
-//    ui->versionLabel->setStyleSheet("color:#595959;");
+    ui->versionLabel->setFont(font);
     ui->versionLabel->setText(QString(tr("Version number: %1")).arg(getCurrentVersion()));
 
-//	ui->briefTextedit->setFont(font14);
 	ui->briefTextedit->setReadOnly(true);
-//    ui->briefTextedit->setStyleSheet("color:#595959;");
+
+    QTextCursor textCursor;
+    QTextBlockFormat blockFormat;
+    blockFormat.setLineHeight(font.pointSize()+10, QTextBlockFormat::SingleHeight);//font-line-hight
 
 	textCursor = ui->briefTextedit->textCursor();	//before the setText().
-    ui->briefTextedit->setText(tr("Peony is a graphical software to help users manage system files. "
+
+    //bug#101112 关于界面自适应大小
+    QTextDocument* doc = new QTextDocument(ui->briefTextedit);
+    doc->setPlainText(tr("Peony is a graphical software to help users manage system files. "
                                 "It provides common file operation functions for users, such as file viewing, "
                                 "file copy, paste, cut, delete, rename, file selection, application opening, "
                                 "file search, file sorting, file preview, etc. it is convenient for users to "
                                 "manage system files intuitively on the interface."));
-	textCursor.setBlockFormat(blockFormat);
+    ui->briefTextedit->setDocument(doc);
+    textCursor.setBlockFormat(blockFormat);
     ui->briefTextedit->setTextCursor(textCursor);
+    doc->setTextWidth(420-32-32);
 
     if (QGSettings::isSchemaInstalled("org.ukui.style")) {
         m_gSettings = new QGSettings("org.ukui.style", QByteArray(), this);
@@ -105,12 +108,20 @@ void AboutDialog::initUI()
             if (key == "styleName") {
                 setSupportText();
             }
+            else if("systemFontSize" == key)
+            {
+                auto appfont = qApp->font();
+                QFont namefont = appfont;
+                namefont.setBold(true);
+                namefont.setPointSize(appfont.pointSize()*1.28);
+                ui->nameLabel->setFont(namefont);
+
+                resetSize();
+            }
         });
     }
     this->setSupportText();
     ui->openlinkLabel->setOpenExternalLinks(true);
-//    ui->openlinkLabel->setStyleSheet("color:#595959;");
-	textCursor.setBlockFormat(blockFormat);
 }
 
 void AboutDialog::setSupportText()
@@ -170,41 +181,35 @@ void AboutDialog::on_closeBtn_clicked()
 {
     close();
 }
-
-//Rounded corners and shadows
-void AboutDialog::paintEvent(QPaintEvent *event)
+void AboutDialog::resetSize()
 {
-    QPainterPath path;
-    QPainter painter(this);
+    int minHeight =  324;
+    int maxHeight =  560;
 
-    QColor m_defaultBackgroundColor = qRgb(65, 65, 65);
-    QColor m_defaultBorderColor = qRgb(69, 69, 69);
-    path.setFillRule(Qt::WindingFill);
-    path.addRoundedRect(10, 10, this->width() - 20, this->height() - 20, 5, 5);
-
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.fillPath(path, QBrush(QColor(m_defaultBackgroundColor.red(),
-        m_defaultBackgroundColor.green(),
-        m_defaultBackgroundColor.blue())));
-
-    QColor color(45, 45, 45, 50);
-    for (int i = 0; i < 5; i++)
+    int newHeight = ui->briefTextedit->document()->size().height();
+    int changeHeight = newHeight - ui->briefTextedit->height();
+    int finalHeight = this->height() + changeHeight + 10;
+    if( finalHeight > maxHeight)
     {
-        QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(5 - i, 5 - i, this->width() - (5 - i) * 2, this->height() - (5 - i) * 2, 5, 5);
-        color.setAlpha(100 - qSqrt(i) * 50);
-        painter.setPen(color);
-        painter.drawPath(path);
+        finalHeight = maxHeight;
+    }
+    else if(finalHeight < minHeight)
+    {
+        finalHeight = minHeight;
     }
 
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(palette().color(QPalette::Active, QPalette::Base));
-    painter.setPen(Qt::transparent);
-    QRect rect = this->rect();
-    rect.setX(5);
-    rect.setY(5);
-    rect.setWidth(rect.width() - 5);
-    rect.setHeight(rect.height() - 5);
-    painter.drawRoundedRect(rect, 5, 5);
+    this->setFixedHeight(finalHeight);
+    ui->verticalLayout_3->update();
+
+}
+
+void AboutDialog::resizeEvent(QResizeEvent *e)
+{
+    QDialog::resizeEvent(e);
+    if(!m_isFirstLoad)
+    {
+        //bug#101112 第一次加载获取控件实际大小
+        resetSize();
+        m_isFirstLoad = true;
+    }
 }

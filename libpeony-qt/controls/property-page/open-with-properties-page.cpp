@@ -28,8 +28,10 @@
 #include <QPushButton>
 #include <QFrame>
 #include <QDebug>
+#include <gio/gdesktopappinfo.h>
 
 using namespace Peony;
+OpenWithGlobalData *OpenWithPropertiesPage::openWithGlobalData = nullptr;
 
 OpenWithPropertiesPage::OpenWithPropertiesPage(const QString &uri, QWidget *parent) : PropertiesWindowTabIface(parent)
 {
@@ -62,17 +64,27 @@ void OpenWithPropertiesPage::init()
 
 OpenWithPropertiesPage::~OpenWithPropertiesPage()
 {
-
+    if (OpenWithPropertiesPage::openWithGlobalData) {
+        OpenWithPropertiesPage::openWithGlobalData->removeAction(m_fileInfo->uri());
+    }
 }
 
 void OpenWithPropertiesPage::saveAllChange()
 {
-    if (!m_thisPageChanged)
+    if (!OpenWithPropertiesPage::openWithGlobalData) {
         return;
-
-    if (m_newAction) {
-        FileLaunchManager::setDefaultLauchAction(m_fileInfo.get()->uri(), m_newAction);
     }
+
+    FileLaunchAction* newAction = OpenWithPropertiesPage::openWithGlobalData->getActionByUri(m_fileInfo->uri());
+    if (newAction) {
+        QString newAppId(g_app_info_get_id(newAction->gAppInfo()));
+        QString oldAppId(g_app_info_get_id(FileLaunchManager::getDefaultAction(m_fileInfo->uri())->gAppInfo()));
+        if (newAppId != oldAppId) {
+            FileLaunchManager::setDefaultLauchAction(m_fileInfo->uri(), newAction);
+        }
+    }
+
+    OpenWithPropertiesPage::openWithGlobalData->removeAction(m_fileInfo->uri());
 }
 
 void OpenWithPropertiesPage::initFloorOne()
@@ -135,7 +147,7 @@ void OpenWithPropertiesPage::initFloorTwo()
         if (action == FileLaunchManager::getDefaultAction(m_fileInfo.get()->uri()))
             return ;
 
-        this->m_newAction = action;
+        OpenWithPropertiesPage::setNewLaunchAction(action, false);
         this->thisPageChanged();
     });
 
@@ -161,9 +173,7 @@ void OpenWithPropertiesPage::initFloorThree()
 
     connect(allOpenLabel, &QLabel::linkActivated, this, [=]() {
         AllFileLaunchDialog dialog(m_fileInfo.get()->uri());
-        if (QDialog::Accepted == dialog.exec()) {
-            m_defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(m_fileInfo->uri()));
-        }
+        dialog.exec();
     });
 
     layout3->addWidget(allOpenLabel);
@@ -186,7 +196,11 @@ void OpenWithPropertiesPage::initFloorThree()
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
             p.startDetached();
 #else
-            p.startDetached("ukui-control-center", QStringList()<<"-a");
+            if (COMMERCIAL_VERSION)
+                p.startDetached("kylin-software-center");
+            else
+                p.startDetached("ubuntu-kylin-software-center");
+
 #endif
         });
     });
@@ -225,7 +239,7 @@ NewFileLaunchDialog::NewFileLaunchDialog(const QString &uri, QWidget *parent) : 
             return ;
         FileLaunchAction *action = m_launchHashList->m_actionHash->value(m_launchHashList->m_actionList->currentItem());
         if (action) {
-            FileLaunchManager::setDefaultLauchAction(uri, action);
+            OpenWithPropertiesPage::setNewLaunchAction(action);
         }
     });
 
@@ -243,11 +257,20 @@ NewFileLaunchDialog::~NewFileLaunchDialog()
 
 DefaultOpenWithWidget* OpenWithPropertiesPage::createDefaultOpenWithWidget(const QString &uri, QWidget *parent)
 {
-    DefaultOpenWithWidget* defaultOpenWithWidget = new DefaultOpenWithWidget(parent);
+    if (!OpenWithPropertiesPage::openWithGlobalData) {
+        OpenWithPropertiesPage::openWithGlobalData = new OpenWithGlobalData;
+    }
 
-    defaultOpenWithWidget->setLaunchAction(FileLaunchManager::getDefaultAction(uri));
+    return OpenWithPropertiesPage::openWithGlobalData->createWidgetForUri(uri, parent);
+}
 
-    return defaultOpenWithWidget;
+void OpenWithPropertiesPage::setNewLaunchAction(FileLaunchAction *newAction, bool needUpdate)
+{
+    if (!OpenWithPropertiesPage::openWithGlobalData) {
+        return;
+    }
+
+    OpenWithPropertiesPage::openWithGlobalData->setActionForUri(newAction, needUpdate);
 }
 
 LaunchHashList::LaunchHashList(const QString &uri, QWidget *parent)
@@ -349,7 +372,7 @@ AllFileLaunchDialog::AllFileLaunchDialog(const QString &uri, QWidget *parent) : 
             return ;
         FileLaunchAction *action = m_launchHashList->m_actionHash->value(m_launchHashList->m_actionList->currentItem());
         if (action) {
-            FileLaunchManager::setDefaultLauchAction(uri, action);
+            OpenWithPropertiesPage::setNewLaunchAction(action);
         }
     });
 
@@ -415,23 +438,11 @@ void DefaultOpenWithWidget::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-FileLaunchAction* DefaultOpenWithWidget::getLaunchAction()
-{
-    return m_launchAction;
-}
-
 void DefaultOpenWithWidget::setLaunchAction(FileLaunchAction* launchAction)
 {
-    if (m_launchAction) {
-        delete m_launchAction;
-        m_launchAction = nullptr;
-    }
-
     if (launchAction) {
-        this->m_launchAction = launchAction;
-
-        this->setAppIcon(m_launchAction->icon());
-        this->setAppName(m_launchAction->text());
+        this->setAppIcon(launchAction->icon());
+        this->setAppName(launchAction->text());
     } else {
         this->setAppIcon(QIcon());
         this->setAppName(QString());
@@ -440,8 +451,94 @@ void DefaultOpenWithWidget::setLaunchAction(FileLaunchAction* launchAction)
 
 DefaultOpenWithWidget::~DefaultOpenWithWidget()
 {
-    if (m_launchAction) {
-        delete m_launchAction;
-        m_launchAction = nullptr;
+
+}
+
+OpenWithGlobalData::OpenWithGlobalData(QObject *parent) : QObject(parent)
+{}
+
+DefaultOpenWithWidget *OpenWithGlobalData::createWidgetForUri(const QString &uri, QWidget *parent)
+{
+    DefaultOpenWithWidget* defaultOpenWithWidget = new DefaultOpenWithWidget(parent);
+    QList<DefaultOpenWithWidget*> *list = nullptr;
+
+    if (m_openWithWidgetMap.keys().contains(uri)) {
+        list = m_openWithWidgetMap.value(uri);
+    } else {
+        list = new QList<DefaultOpenWithWidget*>;
+        m_openWithWidgetMap.insert(uri, list);
+    }
+    list->append(defaultOpenWithWidget);
+
+    if (!m_newActionMap.keys().contains(uri)) {
+        m_newActionMap.insert(uri, FileLaunchManager::getDefaultAction(uri));
+    }
+
+    defaultOpenWithWidget->setLaunchAction(m_newActionMap.value(uri));
+
+    return defaultOpenWithWidget;
+}
+
+void OpenWithGlobalData::setActionForUri(FileLaunchAction *newAction, bool needUpdate)
+{
+    if (!newAction) {
+        return;
+    }
+    FileLaunchAction* oldAction = nullptr;
+    if (m_newActionMap.keys().contains(newAction->getUri())) {
+        oldAction = m_newActionMap.value(newAction->getUri());
+
+        QString newAppId(g_app_info_get_id(newAction->gAppInfo()));
+        QString oldAppId(g_app_info_get_id(oldAction->gAppInfo()));
+        if (newAppId == oldAppId) {
+            return;
+        }
+    }
+
+    GAppInfo *appInfo = (GAppInfo*)g_desktop_app_info_new(g_app_info_get_id(newAction->gAppInfo()));
+    auto launchAction = new FileLaunchAction(newAction->getUri(), appInfo);
+
+    m_newActionMap.remove(newAction->getUri());
+    m_newActionMap.insert(newAction->getUri(), launchAction);
+    g_object_unref(appInfo);
+
+    if (needUpdate) {
+        auto widgetList = m_openWithWidgetMap.value(newAction->getUri());
+        for (DefaultOpenWithWidget *openWithWidget : *widgetList) {
+            openWithWidget->setLaunchAction(launchAction);
+        }
+    }
+
+    if (oldAction) {
+        delete oldAction;
+    }
+}
+
+FileLaunchAction *OpenWithGlobalData::getActionByUri(const QString &uri)
+{
+    if (m_newActionMap.keys().contains(uri)) {
+        return m_newActionMap.value(uri);
+    }
+    return nullptr;
+}
+
+void OpenWithGlobalData::removeAction(const QString &uri)
+{
+    if (m_newActionMap.keys().contains(uri)) {
+        auto action = m_newActionMap.value(uri);
+        m_newActionMap.remove(uri);
+        delete action;
+    }
+
+    if (m_openWithWidgetMap.keys().contains(uri)) {
+        auto list = m_openWithWidgetMap.value(uri);
+        m_openWithWidgetMap.remove(uri);
+        list->clear();
+        delete list;
+    }
+
+    if ((m_newActionMap.count() == 0) && (m_openWithWidgetMap.count() == 0)) {
+        OpenWithPropertiesPage::openWithGlobalData = nullptr;
+        this->deleteLater();
     }
 }

@@ -166,6 +166,9 @@ void FileInfoJob::refreshFileSystemInfo(GFileInfo *new_info)
 
 void FileInfoJob::queryAsync()
 {
+    if (m_auto_delete)
+        connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
+
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
@@ -181,9 +184,6 @@ void FileInfoJob::queryAsync()
                             m_cancellable,
                             GAsyncReadyCallback(query_info_async_callback),
                             this);
-
-    if (m_auto_delete)
-        connect(this, &FileInfoJob::queryAsyncFinished, this, &FileInfoJob::deleteLater, Qt::QueuedConnection);
 }
 
 void FileInfoJob::queryFileType(GFileInfo* new_info){
@@ -193,6 +193,8 @@ void FileInfoJob::queryFileType(GFileInfo* new_info){
     } else {
         return;
     }
+    info->m_is_dir = false;
+    info->m_is_volume = false;
     GFileType type = g_file_info_get_file_type (new_info);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
@@ -251,6 +253,16 @@ void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
         if (string)
            g_free(string);
         g_object_unref(desktop_info);
+    } else if (!info->uri().startsWith("file:///")) {
+        if (info->uri() == "trash:///") {
+            info->m_display_name = tr("Trash");
+        } else if (info->uri() == "computer:///") {
+            info->m_display_name = tr("Computer");
+        } else if (info->uri() == "network:///") {
+            info->m_display_name = tr("Network");
+        } else if (info->uri() == "recent:///") {
+            info->m_display_name = tr("Recent");
+        }
     }
 }
 
@@ -403,6 +415,15 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 
     info->m_target_uri = g_file_info_get_attribute_string(new_info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
     info->m_symlink_target = g_file_info_get_symlink_target(new_info);
+
+    // fix #81862
+    auto uri = m_info.get()->uri();
+    if (uri.startsWith("trash:///") && uri != "trash:///") {
+        auto targetInfo = FileInfo::fromUri(info->m_target_uri);
+        FileInfoJob j(targetInfo);
+        j.querySync();
+        info->m_display_name = targetInfo.get()->displayName();
+    }
 
     Q_EMIT info->updated();
 //    m_info->m_mutex.unlock();

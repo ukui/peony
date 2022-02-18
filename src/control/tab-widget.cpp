@@ -28,12 +28,9 @@
 #include "directory-view-widget.h"
 
 #include "file-info.h"
-#include "file-utils.h"
-#include "file-info-job.h"
 #include "file-launch-manager.h"
 #include "search-vfs-uri-parser.h"
 #include "properties-window.h"
-#include "file-enumerator.h"
 
 #include <QStackedWidget>
 #include <QToolButton>
@@ -55,9 +52,15 @@
 #include "directory-view-factory-manager.h"
 #include "global-settings.h"
 #include "main-window.h"
+
+#include "file-enumerator.h"
+#include "file-info-job.h"
+#include "file-info.h"
+
 #include "volume-manager.h"
 
-#include "file-info-job.h"
+#include "global-settings.h"
+
 
 #include <QApplication>
 #include <QStandardPaths>
@@ -66,36 +69,111 @@
 
 #include <QDebug>
 
+static PushButtonStyle *global_instance = nullptr;
+
+PushButtonStyle *PushButtonStyle::getStyle()
+{
+    if (!global_instance) {
+        global_instance = new PushButtonStyle;
+    }
+    return global_instance;
+}
+
+void PushButtonStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case CE_PushButton:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            proxy()->drawControl(CE_PushButtonBevel, option, painter, widget);
+            QStyleOptionButton subopt = *button;
+            subopt.rect = proxy()->subElementRect(SE_PushButtonContents, option, widget);
+            proxy()->drawControl(CE_PushButtonLabel, &subopt, painter, widget);
+            return;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    QProxyStyle::drawControl(element, option, painter, widget);
+}
+
+int PushButtonStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (metric) {
+    case PM_ButtonMargin:
+    {
+        return 0;
+    }
+    default:
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+QRect PushButtonStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_PushButtonContents:
+    {
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            const bool icon = !button->icon.isNull();
+            const bool text = !button->text.isEmpty();
+            QRect rect = option->rect;
+            int Margin_Height = 2;
+            int ToolButton_MarginWidth = 10;
+            int Button_MarginWidth = proxy()->pixelMetric(PM_ButtonMargin, option, widget);
+            if (text && !icon && !(button->features & QStyleOptionButton::HasMenu)) {
+                rect.adjust(Button_MarginWidth, 0, -Button_MarginWidth, 0);
+            } else if (!text && icon && !(button->features & QStyleOptionButton::HasMenu)) {
+
+            } else {
+                rect.adjust(ToolButton_MarginWidth, Margin_Height, -ToolButton_MarginWidth, -Margin_Height);
+            }
+            if (button->features & (QStyleOptionButton::AutoDefaultButton | QStyleOptionButton::DefaultButton)) {
+                int dbw = proxy()->pixelMetric(PM_ButtonDefaultIndicator, option, widget);
+                rect.adjust(dbw, dbw, -dbw, -dbw);
+            }
+            return rect;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return QProxyStyle::subElementRect(element, option, widget);
+}
+
 TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 {
     setStyle(PeonyMainWindowStyle::getStyle());
 
     setAttribute(Qt::WA_TranslucentBackground);
-
     m_tab_bar = new NavigationTabBar(this);
     m_tab_bar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_stack = new QStackedWidget(this);
     m_stack->setContentsMargins(0, 0, 0, 0);
-    m_buttons = new PreviewPageButtonGroups(this);
+//    m_buttons = new PreviewPageButtonGroups(this);
     m_preview_page_container = new QStackedWidget(this);
-    m_preview_page_container->setContentsMargins(0, 2, 0, 0);
-    m_preview_page_container->setMinimumWidth(300);
+    m_preview_page_container->setMinimumWidth(200);
 
     //status bar
     m_status_bar = new TabStatusBar(this, this);
+    connect(this, &TabWidget::updateItemsNum, m_status_bar, &TabStatusBar::updateItemsNum);
     connect(this, &TabWidget::zoomRequest, m_status_bar, &TabStatusBar::onZoomRequest);
     connect(m_status_bar, &TabStatusBar::zoomLevelChangedRequest, this, &TabWidget::handleZoomLevel);
     //setStatusBar(m_status_bar);
 
-    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id) {
-        setTriggeredPreviewPage(trigger);
-        if (trigger) {
-            auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
-            setPreviewPage(plugin->createPreviewPage());
-        } else {
-            setPreviewPage(nullptr);
-        }
-    });
+//    connect(m_buttons, &PreviewPageButtonGroups::previewPageButtonTrigger, [=](bool trigger, const QString &id) {
+//        setTriggeredPreviewPage(trigger);
+//        if (trigger) {
+//            auto plugin = Peony::PreviewPageFactoryManager::getInstance()->getPlugin(id);
+//            setPreviewPage(plugin->createPreviewPage());
+//        } else {
+//            setPreviewPage(nullptr);
+//        }
+//    });
 
     connect(m_tab_bar, &QTabBar::currentChanged, this, &TabWidget::changeCurrentIndex);
     connect(m_tab_bar, &QTabBar::tabMoved, this, &TabWidget::moveTab);
@@ -105,95 +183,65 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     });
     connect(m_tab_bar, &NavigationTabBar::addPageRequest, this, &TabWidget::addPage);
     connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, &TabWidget::updateSearchPathButton);
-    connect(m_tab_bar, &NavigationTabBar::locationUpdated, this, [this]{
-        updateTabBarGeometry();
-    });
 
     connect(m_tab_bar, &NavigationTabBar::closeWindowRequest, this, &TabWidget::closeWindowRequest);
+    connect(m_tab_bar, &QTabBar::currentChanged, [=](int index){
+        Q_EMIT tabBarIndexUpdate(index);
+    });
 
-    QHBoxLayout *t = new QHBoxLayout();
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
-    m_tab_bar_bg = new QWidget(this);
-    m_tab_bar_bg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QToolBar *previewButtons = new QToolBar(this);
-    previewButtons->setMovable(false);
-    previewButtons->setAttribute(Qt::WA_TranslucentBackground);
-    previewButtons->setAutoFillBackground(false);
-    previewButtons->setObjectName("previewButtons");
-    previewButtons->setStyle(TabBarStyle::getStyle());
-    m_tool_bar = previewButtons;
-   // previewButtons->setFixedSize(QSize(40, 40));
-    previewButtons->setIconSize(QSize(16,16));
-    t->setContentsMargins(0, 0, 5, 0);
-    t->addWidget(m_tab_bar_bg);
 
-    auto spacer = new QWidget(this);
-    spacer->setFixedWidth(qApp->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing) * 2 + 36);
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    t->addWidget(spacer);
-    auto addPageButton = new QToolButton(this);
-    m_add_page_button = addPageButton;
-    addPageButton->setObjectName("addPageButton");
-    addPageButton->setProperty("isWindowButton", 1);
-    addPageButton->setStyle(TabBarStyle::getStyle());
-    addPageButton->setIcon(QIcon::fromTheme("list-add-symbolic"));
-    spacer->setVisible(false);
-    addPageButton->setFixedSize(m_tab_bar->height() + 2, m_tab_bar->height() + 2);
-    addPageButton->setProperty("useIconHighlightEffect", 2);
-//    addPageButton->setProperty("iconHighlightEffectMode", 1);
-//    addPageButton->setProperty("fillIconSymbolicColor", true);
+    //修改添加控件的位置和形状
+    m_add_page_button = new QToolButton(this);
+    m_add_page_button->setProperty("useIconHighlightEffect", true);
+    m_add_page_button->setProperty("iconHighlightEffectMode", 1);
+    m_add_page_button->setProperty("fillIconSymbolicColor", true);
+    m_add_page_button->setFixedSize(QSize(32 ,32));
+    m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    m_add_page_button->setAutoRaise(true);
 
-
-    connect(addPageButton, &QPushButton::clicked, this, [=](){
-        m_tab_bar->addPageRequest(m_tab_bar->tabData(m_tab_bar->currentIndex()).toString(), true);
+    connect(m_add_page_button, &QToolButton::clicked, this, [=](){
+        QString str = m_tab_bar->tabData(m_tab_bar->currentIndex()).toString();
+        m_tab_bar->addPageRequest(str, true);
     });
 
     updateTabBarGeometry();
 
-    auto manager = Peony::PreviewPageFactoryManager::getInstance();
-    auto pluginNames = manager->getPluginNames();
-    for (auto name : pluginNames) {
-        auto factory = manager->getPlugin(name);
-        auto action = group->addAction(factory->icon(), factory->name());
-        action->setCheckable(true);
-        connect(action, &QAction::triggered, [=](/*bool checked*/) {
-            if (!m_current_preview_action) {
-                m_current_preview_action = action;
-                action->setChecked(true);
-                Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
-            } else {
-                if (m_current_preview_action == action) {
-                    m_current_preview_action = nullptr;
-                    action->setChecked(false);
-                    Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
-                } else {
-                    m_current_preview_action = action;
-                    action->setChecked(true);
-                    Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
-                }
-            }
-        });
-    }
-    previewButtons->addActions(group->actions());
-    for (auto action : group->actions()) {
-        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
-        button->setFixedSize(26, 26);
-        button->setIconSize(QSize(16, 16));
-        button->setProperty("useIconHighlightEffect", true);
-        button->setProperty("iconHighlightEffectMode", 1);
-        button->setProperty("fillIconSymbolicColor", true);
-
-        //use theme buttons
-//        auto button = new QPushButton(this);
-//        button->setFixedSize(QSize(26, 26));
+//    auto manager = Peony::PreviewPageFactoryManager::getInstance();
+//    auto pluginNames = manager->getPluginNames();
+//    for (auto name : pluginNames) {
+//        auto factory = manager->getPlugin(name);
+//        auto action = group->addAction(factory->icon(), factory->name());
+//        action->setCheckable(true);
+//        connect(action, &QAction::triggered, [=](/*bool checked*/) {
+//            if (!m_current_preview_action) {
+//                m_current_preview_action = action;
+//                action->setChecked(true);
+//                Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+//            } else {
+//                if (m_current_preview_action == action) {
+//                    m_current_preview_action = nullptr;
+//                    action->setChecked(false);
+//                    Q_EMIT m_buttons->previewPageButtonTrigger(false, factory->name());
+//                } else {
+//                    m_current_preview_action = action;
+//                    action->setChecked(true);
+//                    Q_EMIT m_buttons->previewPageButtonTrigger(true, factory->name());
+//                }
+//            }
+//        });
+//    }
+//    previewButtons->addActions(group->actions());
+//    for (auto action : group->actions()) {
+//        auto button = qobject_cast<QToolButton *>(previewButtons->widgetForAction(action));
+//        button->setFixedSize(26, 26);
 //        button->setIconSize(QSize(16, 16));
-//        button->setFlat(true);
-//        button->setProperty("isWindowButton", 1);
-//        button->setProperty("useIconHighlightEffect", 2);
-//        button->setProperty("isIcon", true);
-    }
-    m_tool_bar->setFixedWidth(m_tool_bar->sizeHint().width());
+//        button->setProperty("useIconHighlightEffect", true);
+//        button->setProperty("iconHighlightEffectMode", 1);
+//        button->setProperty("fillIconSymbolicColor", true);
+//    }
+//    m_header_bar_layout->addWidget(previewButtons);
 
     //trash quick operate buttons
     QHBoxLayout *trash = new QHBoxLayout();
@@ -207,15 +255,14 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     m_trash_label = Label;
     QPushButton *clearAll = new QPushButton(tr("Clear"), trashButtons);
     clearAll->setFixedWidth(TRASH_BUTTON_WIDTH);
-    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT + 10);/* Fix the bug:62841,the font of the clear button is not displayed completely */
+    clearAll->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    clearAll->setStyle(PushButtonStyle::getStyle());
     m_clear_button = clearAll;
     QPushButton *recover = new QPushButton(tr("Recover"), trashButtons);
     recover->setFixedWidth(TRASH_BUTTON_WIDTH);
     recover->setFixedHeight(TRASH_BUTTON_HEIGHT);
+    recover->setStyle(PushButtonStyle::getStyle());
     m_recover_button = recover;
-    //hide trash button to fix bug 31322, according to designer advice
-    m_recover_button->hide();
-
     //trash->addSpacing(10);
     trash->addWidget(Label, Qt::AlignLeft);
     trash->setContentsMargins(10, 0, 10, 0);
@@ -240,26 +287,30 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 
     QWidget *w = new QWidget();
     w->setAttribute(Qt::WA_TranslucentBackground);
+    w->setStyleSheet(
+                  "QWidget#w {background-color: transparent;"
+                  "border: 0px solid transparent;}");
+
+
+
     auto vbox = new QVBoxLayout();
     m_top_layout = vbox;
     vbox->setSpacing(0);
     vbox->setContentsMargins(0, 0, 0, 0);
-    vbox->addLayout(t);
+//    vbox->addLayout(m_header_bar_layout);
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
     QSplitter *s = new QSplitter(this);
     s->setChildrenCollapsible(false);
     s->setContentsMargins(0, 0, 0, 0);
     s->setHandleWidth(1);
-
     s->addWidget(m_stack);
     m_stack->installEventFilter(this);
-    //s->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
-
+    //bug#90237 修改默认预览窗口过大
     s->setStretchFactor(0, 3);
     s->setStretchFactor(1, 2);
-
+    s->addWidget(m_preview_page_container);
     vbox->addWidget(s);
     w->setLayout(vbox);
     setCentralWidget(w);
@@ -279,15 +330,9 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     });
 
     connect(this, &TabWidget::activePageLocationChanged, m_status_bar, [=]() {
-        if (m_first_add_page) {
-            previewButtons->setEnabled(true);
-            s->addWidget(m_preview_page_container);
-            m_first_add_page = false;
-        }
         m_status_bar->update();
+        updateTabBarGeometry();
     });
-
-    previewButtons->setEnabled(false);
 }
 
 void TabWidget::initAdvanceSearch()
@@ -295,78 +340,46 @@ void TabWidget::initAdvanceSearch()
     //advance search bar
     QHBoxLayout *search = new QHBoxLayout();
     m_search_bar_layout = search;
+    // Maybe it is unused
     QToolBar *searchButtons = new QToolBar(this);
     m_search_bar = searchButtons;
-    QPushButton *closeButton = new QPushButton(QIcon::fromTheme("window-close-symbolic"), "", searchButtons);
-    m_search_close = closeButton;
-    closeButton->setFixedHeight(20);
-    closeButton->setFixedWidth(20);
-    closeButton->setToolTip(tr("Close Filter."));
-    closeButton->setFlat(true);
-    closeButton->setProperty("isWindowButton", 1);
-    closeButton->setProperty("useIconHighlightEffect", 2);
-    closeButton->setProperty("isIcon", true);
 
-    connect(closeButton, &QPushButton::clicked, [=]()
-    {
-        updateSearchBar(false);
-        Q_EMIT this->closeSearch();
-    });
-
-    QLabel *title = new QLabel(tr("Filter"), searchButtons);
+    QLabel *title = new QLabel(tr("Search"), this);
     m_search_title = title;
     title->setFixedWidth(TRASH_BUTTON_WIDTH);
     title->setFixedHeight(TRASH_BUTTON_HEIGHT);
 
-    QPushButton *tabButton = new QPushButton(searchButtons);
-    m_search_path = tabButton;
-    tabButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    tabButton->setFixedWidth(TRASH_BUTTON_WIDTH * 2);
-    tabButton->setToolTip(tr("Choose other path to search."));
-    connect(tabButton, &QPushButton::clicked, this, &TabWidget::browsePath);
+    m_current_search = new QPushButton(this);
+//    m_current_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
+    m_current_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
+    m_current_search->setStyleSheet("border: 1px solid transparent;");
 
-    QPushButton *childButton = new QPushButton(searchButtons);
-    m_search_child = childButton;
-    childButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-    childButton->setFixedWidth(TRASH_BUTTON_HEIGHT);
-    //qDebug() << QIcon(":/custom/icons/child-folder").name();
-    childButton->setIcon(QIcon(":/custom/icons/child-folder"));
-    childButton->setToolTip(tr("Search recursively"));
-    m_search_child->setVisible(false);
-    connect(childButton, &QPushButton::clicked, this, &TabWidget::searchChildUpdate);
-    //set default select recursive
-    m_search_child_flag = true;
-    Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
-    m_search_child->setCheckable(m_search_child_flag);
-    m_search_child->setChecked(m_search_child_flag);
-    m_search_child->setDown(m_search_child_flag);;
+    m_home_search = new QPushButton(tr("Computer"), this);
+//    m_home_search->setFixedWidth(TRASH_BUTTON_WIDTH + 50);
+    m_home_search->setFixedHeight(TRASH_BUTTON_HEIGHT + 20);
+    m_home_search->setStyleSheet("border: 1px solid transparent;");
 
-//    QPushButton *moreButton = new QPushButton(tr("more options"),searchButtons);
-//    m_search_more = moreButton;
-//    moreButton->setFixedHeight(TRASH_BUTTON_HEIGHT);
-//    moreButton->setFixedWidth(TRASH_BUTTON_WIDTH *2);
-//    moreButton->setToolTip(tr("Show/hide advance search"));
+    connect(m_home_search, &QPushButton::clicked, m_home_search, [=]() {
+        switchSearchPath(false);
+    });
+    connect(m_current_search, &QPushButton::clicked, m_current_search, [=]() {
+        switchSearchPath(true);
+    });
 
-//    connect(moreButton, &QPushButton::clicked, this, &TabWidget::updateSearchList);
 
-    search->addWidget(closeButton, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(title, Qt::AlignLeft);
+    search->addWidget(title, 0, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(tabButton, Qt::AlignLeft);
+    search->addWidget(m_current_search, 0, Qt::AlignLeft);
     search->addSpacing(10);
-    search->addWidget(childButton, Qt::AlignLeft);
-//    search->addSpacing(10);
-//    search->addWidget(moreButton, Qt::AlignLeft);
-    search->addSpacing(10);
+    search->addWidget(m_home_search, 0, Qt::AlignLeft);
+    search->addStretch(1);
     search->addWidget(searchButtons);
     search->setContentsMargins(10, 0, 10, 0);
     searchButtons->setVisible(false);
-    tabButton->setVisible(false);
-    closeButton->setVisible(false);
     title->setVisible(false);
-    childButton->setVisible(false);
-//    moreButton->setVisible(false);
+    m_current_search->setVisible(false);
+    m_home_search->setVisible(false);
 }
 
 //search conditions changed, update filter
@@ -374,6 +387,7 @@ void TabWidget::searchUpdate()
 {
     qDebug() <<"searchUpdate:" <<m_search_child_flag;
     auto currentUri = getCurrentUri();
+//    QString currentUri = "file:///home/weinan1/prj";
     if (! currentUri.startsWith("search:///"))
     {
         qDebug() << "searchUpdate is not in search path";
@@ -394,10 +408,10 @@ void TabWidget::searchUpdate()
 
 void TabWidget::searchChildUpdate()
 {
-    m_search_child_flag = ! m_search_child_flag;
-    m_search_child->setCheckable(m_search_child_flag);
-    m_search_child->setChecked(m_search_child_flag);
-    m_search_child->setDown(m_search_child_flag);
+//    m_search_child_flag = isRecursive;
+//    m_search_child->setCheckable(m_search_child_flag);
+//    m_search_child->setChecked(m_search_child_flag);
+//    m_search_child->setDown(m_search_child_flag);
     searchUpdate();
 
     Q_EMIT this->searchRecursiveChanged(m_search_child_flag);
@@ -407,18 +421,26 @@ void TabWidget::browsePath()
 {
     // use window modal dialog, fix #56549
     QFileDialog f(this->topLevelWidget());
+    f.setStyle(nullptr);
     f.setWindowTitle(tr("Select Path"));
     f.setDirectoryUrl(QUrl(getCurrentUri()));
     f.setWindowModality(Qt::WindowModal);
     f.setAcceptMode(QFileDialog::AcceptOpen);
     f.setOption(QFileDialog::ShowDirsOnly);
     f.setFileMode(QFileDialog::DirectoryOnly);
+
     auto result = f.exec();
     if (result != QDialog::Accepted) {
         return;
     }
 
-    QString target_path = f.directoryUrl().toString();
+    //Gets the URI of the selected directory. link bug#92521
+    QList<QUrl> urls = f.selectedUrls();
+    if(urls.isEmpty()){
+        return;
+    }
+    QString target_path = urls.at(0).toString();
+//    QString target_path = f.directoryUrl().toString();
 //    QString target_path = QFileDialog::getExistingDirectory(this, tr("Select path"), getCurrentUri(), QFileDialog::ShowDirsOnly);
     qDebug()<<"browsePath Opened:"<<target_path;
     //add root prefix
@@ -428,10 +450,7 @@ void TabWidget::browsePath()
     if (target_path != "" && target_path != getCurrentUri())
     {
         updateSearchPathButton(target_path);
-        /* get search key */
-        MainWindow *mainWindow = dynamic_cast<MainWindow *>(this->topLevelWidget());
-        QString key=mainWindow->getLastSearchKey();
-        Q_EMIT this->updateSearch(target_path,key);
+        Q_EMIT this->updateWindowLocationRequest(target_path, true);
     }
 }
 
@@ -476,26 +495,17 @@ void TabWidget::addNewConditionBar()
     inputBox->setFixedHeight(TRASH_BUTTON_HEIGHT);
     inputBox->setFixedWidth(TRASH_BUTTON_WIDTH *4);
     inputBox->setPlaceholderText(tr("Please input key words..."));
-    inputBox->setText("");
 
-    QPushButton *addButton = new QPushButton(QIcon::fromTheme("list-add-symbolic"), "", optionBar);
+    QPushButton *addButton = new QPushButton(QIcon::fromTheme("add"), "", optionBar);
     m_add_button_list.append(addButton);
     addButton->setFixedHeight(20);
     addButton->setFixedWidth(20);
-    addButton->setFlat(true);
-    addButton->setProperty("isWindowButton", 1);
-    addButton->setProperty("useIconHighlightEffect", 2);
-    addButton->setProperty("isIcon", true);
     connect(addButton, &QPushButton::clicked, this, &TabWidget::addNewConditionBar);
 
-    QPushButton *removeButton = new QPushButton(QIcon::fromTheme("list-remove-symbolic"), "", optionBar);
+    QPushButton *removeButton = new QPushButton(QIcon::fromTheme("remove"), "", optionBar);
     m_remove_button_list.append(removeButton);
     removeButton->setFixedHeight(20);
     removeButton->setFixedWidth(20);
-    removeButton->setFlat(true);
-    removeButton->setProperty("isWindowButton", 1);
-    removeButton->setProperty("useIconHighlightEffect", 2);
-    removeButton->setProperty("isIcon", true);
     //mapper for button clicked parse index
     auto signalMapper = new QSignalMapper(this);
     connect(removeButton, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -503,11 +513,7 @@ void TabWidget::addNewConditionBar()
     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(removeConditionBar(int)));
     m_remove_mapper_list.append(signalMapper);
 
-    layout->addWidget(addButton, Qt::AlignRight);
-    layout->addSpacing(10);
-    layout->addWidget(removeButton, Qt::AlignRight);
-    layout->addSpacing(10);
-    layout->addSpacing(TRASH_BUTTON_WIDTH - 20);
+    layout->addSpacing(TRASH_BUTTON_WIDTH + 40);
     layout->addWidget(conditionCombox, Qt::AlignLeft);
     layout->addSpacing(10);
     layout->addWidget(linkLabel, Qt::AlignLeft);
@@ -515,40 +521,38 @@ void TabWidget::addNewConditionBar()
     layout->addWidget(classifyCombox, Qt::AlignLeft);
     layout->addWidget(inputBox, Qt::AlignLeft);
     layout->addWidget(optionBar);
+    layout->addWidget(addButton, Qt::AlignRight);
+    layout->addSpacing(10);
+    layout->addWidget(removeButton, Qt::AlignRight);
     layout->setContentsMargins(10, 0, 10, 5);
 
-    if (index%4 >= 3)
+    if (index == 0)
     {
         classifyCombox->hide();
         linkLabel->setText(tr("contains"));
         //adjust label width to language
-        //use 1.5 rate width to fix big size font issue, link to bug#58824
         QLocale locale;
         if (locale.language() == QLocale::Chinese)
-            linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
+            linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
         else
             linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
     }
     else
-    {
-       inputBox->hide();
-    }
-
+        inputBox->hide();
 
     connect(conditionCombox, &QComboBox::currentTextChanged, [=]()
     {
         auto cur = conditionCombox->currentIndex();
-        if (cur%4 >= 3)
+        if (cur == 0)
         {
             classifyCombox->setCurrentIndex(0);
             classifyCombox->hide();
             inputBox->show();
             linkLabel->setText(tr("contains"));
             //adjust label width to language
-            //use 1.5 rate width to fix big size font issue, link to bug#58824
             QLocale locale;
             if (locale.language() == QLocale::Chinese)
-                linkLabel->setFixedWidth(1.5 * TRASH_BUTTON_HEIGHT);
+                linkLabel->setFixedWidth(TRASH_BUTTON_HEIGHT);
             else
                 linkLabel->setFixedWidth(TRASH_BUTTON_WIDTH);
         }
@@ -625,12 +629,12 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
 {
     QStringList currentList;
     currentList.clear();
-
-    switch (rowCount%4) {
-    case 0:
-        return m_file_type_list;
-    case 1:
+    if (rowCount >= m_option_list.size()-1)
         return m_file_size_list;
+
+    switch (rowCount) {
+    case 1:
+        return m_file_type_list;
     case 2:
         return m_file_mtime_list;
     default:
@@ -638,6 +642,21 @@ QStringList TabWidget::getCurrentClassify(int rowCount)
     }
 
     return currentList;
+}
+
+void TabWidget::updateStatusBarSliderState()
+{
+    if(!currentPage()){
+        return;
+    }
+
+    if(!currentPage()->getView()){
+        return;
+    }
+
+    bool enable = currentPage()->getView()->supportZoom();
+    m_status_bar->m_slider->setEnabled(enable);
+    m_status_bar->m_slider->setVisible(enable);
 }
 
 void TabWidget::updateTrashBarVisible(const QString &uri)
@@ -653,16 +672,24 @@ void TabWidget::updateTrashBarVisible(const QString &uri)
     m_trash_bar->setVisible(visible);
     m_trash_label->setVisible(visible);
     m_clear_button->setVisible(visible);
-    //m_recover_button->setVisible(visible);
+    m_recover_button->setVisible(visible);
 
-    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
-        m_tool_bar->setVisible(false);
-    else
-        m_tool_bar->setVisible(true);
+//    if (uri.startsWith("trash://") || uri.startsWith("recent://"))
+//        m_tool_bar->setVisible(false);
+//    else
+//        m_tool_bar->setVisible(true);
 }
 
 void TabWidget::handleZoomLevel(int zoomLevel)
 {
+    if (!currentPage()) {
+        return;
+    }
+
+    if (!currentPage()->getView()) {
+        return;
+    }
+
     currentPage()->getView()->clearIndexWidget();
 
     int currentViewZoomLevel = currentPage()->getView()->currentZoomLevel();
@@ -685,32 +712,30 @@ void TabWidget::handleZoomLevel(int zoomLevel)
         currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
     }
 }
-#include"windows/FMWindowIface.h"
-void TabWidget::enableSearchBar(bool enable)
+
+#include <KWindowSystem>
+void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &sourceUri)
 {
-    //qDebug() << "enable:" <<enable;
-    m_search_path->setEnabled(enable);
-    //m_search_close->setEnabled(enable);
-    m_search_title->setEnabled(enable);
-    m_search_bar->setEnabled(enable);
-    if (m_search_bar_count >0)
+    for(int index = 0; index < m_stack->count(); index++)
     {
-        //already had a list,just set to show
-        for(int i=0; i<m_search_bar_list.count(); i++)
+        int  currentIndex = this->currentIndex();
+        QString decodedSrcUri = Peony::FileUtils::urlDecode(sourceUri);
+        QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
+        uri = Peony::FileUtils::urlDecode(uri);
+        qDebug()<<"decodedSrcUri:"<<decodedSrcUri<<" uri:"<<uri<<" total count: "<<m_stack->count()<<" index:"<<index<<" currentIndex:"<<currentIndex;
+        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")/* 文件保护箱tab页特殊处理 */
         {
-            m_conditions_list[i]->setEnabled(enable);
-            m_link_label_list[i]->setEnabled(enable);
-            if (m_conditions_list[i]->currentIndex()%4 < 3)
-                m_classify_list[i]->setEnabled(enable);
-            else
-                m_input_list[i]->setEnabled(enable);
-            m_search_bar_list[i]->setEnabled(enable);
-            m_add_button_list[i]->setEnabled(enable);
-            /* When there is only one filter item,remove button set disable */
-            if(m_search_bar_count==1)
-                m_remove_button_list[0]->setEnabled(false);
-            else
-                m_remove_button_list[i]->setEnabled(enable);
+            if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+                    && index == currentIndex && decodedSrcUri == uri){
+                /* 当前活动窗口当前tab页 */
+                qDebug()<<"sourceUri:"<<sourceUri<<"jump to computer,"<<" index:"<<currentIndex;
+                this->goToUri(destUri, true, true);/* 跳转到计算机页 */
+            }
+            else{/* 其余tab页关闭 */
+                qDebug()<<"remove tab  uri:"<<uri<<", index:"<<index;
+                removeTab(index);
+                index--;
+            }
         }
     }
 }
@@ -721,26 +746,21 @@ void TabWidget::updateSearchBar(bool showSearch)
     m_show_search_bar = showSearch;
     if (showSearch)
     {
-        //default add one bar
-        updateSearchList();
-        m_search_path->show();
-        m_search_close->show();
         m_search_title->show();
         m_search_bar->show();
-        //m_search_child->show();
-        //m_search_more->show();
+        m_current_search->show();
+        m_home_search->show();
         m_search_bar_layout->setContentsMargins(10, 5, 10, 5);
-        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
+        //updateCurrentSearchPath();
         updateSearchPathButton();
+        switchSearchPath(true);
     }
     else
     {
-        m_search_path->hide();
-        m_search_close->hide();
         m_search_title->hide();
         m_search_bar->hide();
-        //m_search_child->hide();
-        //m_search_more->hide();
+        m_current_search->hide();
+        m_home_search->hide();
         m_search_bar_layout->setContentsMargins(10, 0, 10, 0);
     }
 
@@ -753,9 +773,6 @@ void TabWidget::updateSearchBar(bool showSearch)
         clearConditions();
         updateFilter();
     }
-
-    //9X0 changes, set default as true, fix bug#70916
-    enableSearchBar(true);
 }
 
 void TabWidget::updateButtons()
@@ -765,21 +782,39 @@ void TabWidget::updateButtons()
         m_remove_button_list[0]->setDisabled(true);
     else
         m_remove_button_list[0]->setDisabled(false);
+}
 
-    //limit total number to 10
-    if (m_search_bar_count >= 10)
-    {
-        for(int i=0;i<m_search_bar_count;i++)
-        {
-            m_add_button_list[i]->setDisabled(true);
-        }
+void TabWidget::updateCurrentSearchPath()
+{
+    QString currentUri = getCurrentUri();
+    if (!currentUri.endsWith("///")) {
+        GFile* file = g_file_new_for_uri(currentUri.toStdString().c_str());
+        currentUri = g_file_peek_path (file);
+        QString displayName = currentUri.right(currentUri.count() - currentUri.lastIndexOf("/") - 1);
+        m_current_search->setText(displayName);
+        g_object_unref(file);
     }
-    else
-    {
-        for(int i=0;i<m_search_bar_count;i++)
-        {
-            m_add_button_list[i]->setDisabled(false);
-        }
+    else {
+        QString displayName = currentUri.left(currentUri.indexOf(":"));
+        m_current_search->setText(displayName);
+    }
+}
+
+void TabWidget::switchSearchPath(bool isCurrent)
+{
+    if (isCurrent) {
+        m_home_search->setStyleSheet("border: 1px solid transparent;");
+        m_current_search->setStyleSheet("border: 1px solid transparent;"
+                                        "border-bottom: 1px solid gray;");
+        Q_EMIT this->globalSearch(false);
+//        searchChildUpdate(false);
+    }
+    else {
+        m_current_search->setStyleSheet("border: 1px solid transparent;");
+        m_home_search->setStyleSheet("border: 1px solid transparent;"
+                                     "border-bottom: 1px solid gray;");
+        Q_EMIT this->globalSearch(true);
+//        searchChildUpdate(true);
     }
 }
 
@@ -796,17 +831,11 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         if (! getCurrentUri().isNull())
             curUri = getCurrentUri();
     }
-    auto info = Peony::FileInfo::fromUri(curUri);
-    m_search_button_info = info;
-    if (info.get()->isEmptyInfo()) {
-        // TODO: use async method.
-        Peony::FileInfoJob j(info);
-        j.querySync();
-    }
+    //FIXME: replace BLOCKING api in ui thread.
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
-    qDebug() << "iconName:" <<iconName <<displayName<<curUri;
-    m_search_path->setIcon(QIcon::fromTheme(iconName));
+    qDebug() << "goToUri iconName:" <<iconName <<displayName<<curUri;
+    m_current_search->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -814,17 +843,16 @@ void TabWidget::updateSearchPathButton(const QString &uri)
         int  charWidth = fontMetrics().averageCharWidth();
         displayName = fontMetrics().elidedText(displayName, Qt::ElideRight, ELIDE_TEXT_LENGTH * charWidth);
     }
-    m_search_path->setText(displayName);
+    m_current_search->setText(displayName);
 }
 
 void TabWidget::updateSearchList()
 {
     m_show_search_list = !m_show_search_list;
     //if not show search bar, then don't show search list
-    qDebug() << "updateSearchList:" <<m_show_search_list <<m_show_search_bar;
-    if (m_show_search_bar)
+    if (m_show_search_list && m_show_search_bar)
     {
-        //m_search_more->setIcon(QIcon::fromTheme("go-up"));
+//        m_search_more->setIcon(QIcon::fromTheme("go-up"));
         //first click to show advance serach
         if(m_search_bar_list.count() ==0)
         {
@@ -837,7 +865,7 @@ void TabWidget::updateSearchList()
         {
             m_conditions_list[i]->show();
             m_link_label_list[i]->show();
-            if (m_conditions_list[i]->currentIndex()%4 < 3)
+            if (m_conditions_list[i]->currentIndex() >0)
                 m_classify_list[i]->show();
             else
                 m_input_list[i]->show();
@@ -850,7 +878,7 @@ void TabWidget::updateSearchList()
     else
     {
         //hide search list
-        //m_search_more->setIcon(QIcon::fromTheme("go-down"));
+//        m_search_more->setIcon(QIcon::fromTheme("go-down"));
         for(int i=0; i<m_search_bar_list.count(); i++)
         {
             m_conditions_list[i]->hide();
@@ -882,65 +910,68 @@ const QString TabWidget::getCurrentUri()
 
 const QStringList TabWidget::getCurrentSelections()
 {
-    if (!currentPage())
-        return QStringList();
     return currentPage()->getCurrentSelections();
+}
+
+const int TabWidget::getCurrentRowcount()
+{
+    return currentPage()->getCurrentRowcount();
 }
 
 const QStringList TabWidget::getAllFileUris()
 {
-    if (!currentPage())
-        return QStringList();
     return currentPage()->getAllFileUris();
 }
 
 const QStringList TabWidget::getBackList()
 {
-    if (!currentPage())
-        return QStringList();
     return currentPage()->getBackList();
 }
 
 const QStringList TabWidget::getForwardList()
 {
-    if (!currentPage())
-        return QStringList();
     return currentPage()->getForwardList();
 }
 
 bool TabWidget::canGoBack()
 {
-    if (!currentPage())
-        return false;
     return currentPage()->canGoBack();
 }
 
 bool TabWidget::canGoForward()
 {
-    if (!currentPage())
-        return false;
     return currentPage()->canGoForward();
 }
 
 bool TabWidget::canCdUp()
 {
-    if (!currentPage())
-        return false;
     return currentPage()->canCdUp();
 }
 
 int TabWidget::getSortType()
 {
-    if (!currentPage())
-        return 0;
-    return currentPage()->getSortType();
+    //fix switch to computer view and back change to default sort issue, link to bug#92261
+    auto settings = Peony::GlobalSettings::getInstance();
+    auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt() : 0;
+
+    return sortType;
+
+//    if (!currentPage())
+//        return 0;
+//    return currentPage()->getSortType();
 }
 
 Qt::SortOrder TabWidget::getSortOrder()
 {
-    if (!currentPage())
-        return Qt::AscendingOrder;
-    return currentPage()->getSortOrder();
+    //fix switch to computer view and back change to default sort issue, link to bug#92261
+    auto settings = Peony::GlobalSettings::getInstance();
+    auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt() : 0;
+
+    return Qt::SortOrder(sortOrder);
+
+//    if (!currentPage())
+//        return Qt::AscendingOrder;
+//    return currentPage()->getSortOrder();
 }
 
 bool TabWidget::eventFilter(QObject *obj, QEvent *e)
@@ -1004,6 +1035,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                     QTimer::singleShot(100, topLevelWidget(), &QWidget::close);
                 }
                 return;
+            }
+        });
+        connect(enumerator, &Peony::FileEnumerator::cancelled, this, [=](){
+            if (!currentPage()) {
+                QTimer::singleShot(100, topLevelWidget(), &QWidget::close);
+            }else{
+                this->refresh();
             }
         });
         connect(enumerator, &Peony::FileEnumerator::prepared, this, [=](const std::shared_ptr<Peony::GErrorWrapper> &err = nullptr, const QString &t = nullptr, bool critical = false){
@@ -1077,7 +1115,6 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                 viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
 
             m_tab_bar->addPage(realUri, jumpTo);
-            updateTabBarGeometry();
         });
         enumerator->prepare();
     });
@@ -1087,15 +1124,13 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
 
 void TabWidget::goToUri(const QString &uri, bool addHistory, bool forceUpdate)
 {
-    if (!currentPage()) {
-        // do not trigger go to uri if there is no active page, avoid crash. link to: #45684
-        return;
-    }
-    qDebug() << "goToUri:" << uri;
+    qDebug() << "goToUri:" <<uri;
     currentPage()->goToUri(uri, addHistory, forceUpdate);
     m_tab_bar->updateLocation(m_tab_bar->currentIndex(), uri);
     updateTrashBarVisible(uri);
-    updatePreviewPage();
+ //   if (uri.indexOf("search:///") == -1) {
+ //       updateCurrentSearchPath();
+//    }
 }
 
 void TabWidget::updateTabPageTitle()
@@ -1111,12 +1146,17 @@ void TabWidget::updateTabPageTitle()
             refresh();
         });
     }
-    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
+    m_tab_bar->updateLocation(m_tab_bar->currentIndex(), getCurrentUri().toLocal8Bit());
+    //m_tab_bar->updateLocation(m_tab_bar->currentIndex(), QUrl::fromPercentEncoding(getCurrentUri().toLocal8Bit()));
     updateTrashBarVisible(getCurrentUri());
+    updateStatusBarSliderState();
 }
 
 void TabWidget::switchViewType(const QString &viewId)
 {
+    if(!currentPage()||!(currentPage()->getView()))
+        return;
+
     if (currentPage()->getView()->viewId() == viewId)
         return;
 
@@ -1134,86 +1174,120 @@ void TabWidget::switchViewType(const QString &viewId)
 
 void TabWidget::goBack()
 {
+    if(!currentPage())
+        return;
     currentPage()->goBack();
 }
 
 void TabWidget::goForward()
 {
+    if(!currentPage())
+        return;
     currentPage()->goForward();
 }
 
 void TabWidget::cdUp()
 {
+    if(!currentPage())
+        return;
     currentPage()->cdUp();
 }
 
 void TabWidget::refresh()
 {
+    if(!currentPage())
+        return;
     currentPage()->refresh();
 }
 
 void TabWidget::stopLoading()
 {
+    if(!currentPage())
+        return;
     currentPage()->stopLoading();
 }
 
 void TabWidget::tryJump(int index)
 {
+    if(!currentPage())
+        return;
     currentPage()->tryJump(index);
 }
 
 void TabWidget::clearHistory()
 {
+    if(!currentPage())
+        return;
     currentPage()->clearHistory();
 }
 
 void TabWidget::setSortType(int type)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortType(Peony::FileItemModel::ColumnType(type));
 }
 
 void TabWidget::setSortOrder(Qt::SortOrder order)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortOrder(order);
 }
 
 void TabWidget::setSortFilter(int FileTypeIndex, int FileMTimeIndex, int FileSizeIndex)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortFilter(FileTypeIndex, FileMTimeIndex, FileSizeIndex);
 }
 
 void TabWidget::setShowHidden(bool showHidden)
 {
+    if(!currentPage())
+        return;
     currentPage()->setShowHidden(showHidden);
 }
 
 void TabWidget::setUseDefaultNameSortOrder(bool use)
 {
+    if(!currentPage())
+        return;
     currentPage()->setUseDefaultNameSortOrder(use);
 }
 
 void TabWidget::setSortFolderFirst(bool folderFirst)
 {
+    if(!currentPage())
+        return;
     currentPage()->setSortFolderFirst(folderFirst);
 }
 
 void TabWidget::addFilterCondition(int option, int classify, bool updateNow)
 {
+    if(!currentPage())
+        return;
     currentPage()->addFilterCondition(option, classify, updateNow);
 }
 
 void TabWidget::removeFilterCondition(int option, int classify, bool updateNow)
 {
+    if(!currentPage())
+        return;
     currentPage()->removeFilterCondition(option, classify, updateNow);
 }
 
 void TabWidget::clearConditions()
 {
+    if(!currentPage())
+        return;
     currentPage()->clearConditions();
 }
 
 void TabWidget::updateFilter()
 {
+    if(!currentPage())
+        return;
     currentPage()->updateFilter();
 }
 
@@ -1222,25 +1296,26 @@ void TabWidget::updateAdvanceConditions()
     clearConditions();
 
     //get key list for proxy-filter
-    //input name not show, must be empty
     QStringList keyList;
     for(int i=0; i<m_layout_list.count(); i++)
     {
         QString input = m_input_list[i]->text();
-        if(input != "" && ! keyList.contains(input))
-        {
-            keyList.append(input);
-        }
-        else
+        if (m_conditions_list[i]->currentIndex() > 0)
         {
             addFilterCondition(m_conditions_list[i]->currentIndex(), m_classify_list[i]->currentIndex());
+        }
+        else if(input != "" && ! keyList.contains(input))
+        {
+            keyList.append(input);
         }
     }
 
     //update file name filter
     for(auto key : keyList)
     {
-       currentPage()->addFileNameFilter(key);
+        if(!currentPage())
+            continue;
+        currentPage()->addFileNameFilter(key);
     }
 
     updateFilter();
@@ -1273,7 +1348,18 @@ void TabWidget::onViewDoubleClicked(const QString &uri)
         return;
     }
     if (info->isDir() || info->isVolume() || info->isVirtual()) {
-        Q_EMIT this->updateWindowLocationRequest(uri, true);
+        if(info->uri().startsWith("file://")
+                && !info->canExecute()){
+            QMessageBox::critical(nullptr, tr("Open failed"),
+                                  tr("Open directory failed, you have no permission!"));
+            return;
+        }
+        //process open symbolic link
+        auto info = Peony::FileInfo::fromUri(uri);
+        QString targetUri = info.get()->targetUri();
+        if (targetUri.isEmpty())
+            targetUri = uri;
+        Q_EMIT this->updateWindowLocationRequest(targetUri, true);
     } else {
         Peony::FileLaunchManager::openAsync(uri, false, false);
     }
@@ -1283,8 +1369,8 @@ void TabWidget::changeCurrentIndex(int index)
 {
     m_tab_bar->setCurrentIndex(index);
     m_stack->setCurrentIndex(index);
-    Q_EMIT currentIndexChanged(index);
     Q_EMIT activePageChanged();
+    Q_EMIT currentIndexChanged(index);
 }
 
 int TabWidget::count()
@@ -1309,18 +1395,18 @@ void TabWidget::moveTab(int from, int to)
 
 void TabWidget::removeTab(int index)
 {
-    m_tab_bar->removeTab(index);
     auto widget = m_stack->widget(index);
     m_stack->removeWidget(widget);
     widget->deleteLater();
+    m_tab_bar->removeTab(index);
     if (m_stack->count() > 0)
         Q_EMIT activePageChanged();
-
-    //updateTabBarGeometry();
 }
 
+#include <KWindowSystem>
 void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
 {
+    connect(container, &Peony::DirectoryViewContainer::signal_responseUnmounted, this,&TabWidget::slot_responseUnmounted);
     connect(container, &Peony::DirectoryViewContainer::updateWindowLocationRequest, this, &TabWidget::updateWindowLocationRequest);
     connect(container, &Peony::DirectoryViewContainer::directoryChanged, this, &TabWidget::activePageLocationChanged);
     connect(container, &Peony::DirectoryViewContainer::selectionChanged, this, &TabWidget::activePageSelectionChanged);
@@ -1329,16 +1415,19 @@ void TabWidget::bindContainerSignal(Peony::DirectoryViewContainer *container)
     connect(container, &Peony::DirectoryViewContainer::menuRequest, this, &TabWidget::menuRequest);
     connect(container, &Peony::DirectoryViewContainer::zoomRequest, this, &TabWidget::zoomRequest);
     connect(container, &Peony::DirectoryViewContainer::setZoomLevelRequest, m_status_bar, &TabStatusBar::updateZoomLevelState);
+    connect(container, &Peony::DirectoryViewContainer::viewSelectionStatus, this, &TabWidget::viewSelectStatus);
     connect(container, &Peony::DirectoryViewContainer::updateStatusBarSliderStateRequest, this, [=]() {
-        bool enable = currentPage()->getView()->supportZoom();
-        m_status_bar->m_slider->setEnabled(enable);
-        m_status_bar->m_slider->setVisible(enable);
+        this->updateStatusBarSliderState();
     });
 
     connect(container, &Peony::DirectoryViewContainer::updateWindowSelectionRequest, this, [=](const QStringList &uris){
         if (container == currentPage()) {
             Q_EMIT this->updateWindowSelectionRequest(uris);
         }
+    });
+    connect(container, &Peony::DirectoryViewContainer::signal_itemAdded, this, [=](const QString& uri){
+        if (container == currentPage())
+            Q_EMIT this->signal_itemAdded(uri);
     });
 }
 
@@ -1363,18 +1452,30 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
-    int minRightPadding = m_tool_bar->width() + m_add_page_button->width() + 12;
+    //204 = 48 * 4 + 12   4个按钮每个48px，相互间隔4px
+    quint32 windowButtonsWidth = 204;
+    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        windowButtonsWidth -= 52;
+    }
+    //更新添加控件的位置
+    int addPageX = 0;
+    int tabBarWidth = 0;
+    if( m_tab_bar->sizeHint().width()+2 > this->width() - m_add_page_button->width() - windowButtonsWidth )
+    {
+        tabBarWidth = this->width() - m_add_page_button->width() - windowButtonsWidth;
+        addPageX = this->width() - m_add_page_button->width() - windowButtonsWidth;
+    }
+    else
+    {
+        tabBarWidth = this->width() - windowButtonsWidth;
+        addPageX =  m_tab_bar->sizeHint().width()+2;
+    }
 
-    int tabBarWidth = qMin(m_tab_bar->sizeHint().width() + 4, m_tab_bar_bg->width() - minRightPadding - 5);
-
-    m_tool_bar->move(m_tab_bar_bg->width() - m_tool_bar->width() - 5, 6);
-    m_tool_bar->raise();
-
-    m_tab_bar->setGeometry(2, 2, m_tab_bar_bg->width() - m_tool_bar->width() - 5, m_tab_bar->sizeHint().height());
-    m_tab_bar_bg->setFixedHeight(m_tab_bar->height());
+    m_tab_bar->setGeometry(0, 1, tabBarWidth,48);
     m_tab_bar->raise();
-
-    m_add_page_button->move(tabBarWidth + 8, 5);
+    auto lastTabRect =  m_tab_bar->rect();
+    int fixedY = lastTabRect.center().y() - m_add_page_button->height()/2;
+    m_add_page_button->move(addPageX, fixedY);
     m_add_page_button->raise();
 }
 
@@ -1384,6 +1485,11 @@ void TabWidget::updateStatusBarGeometry()
     QFontMetrics fm(font);
     m_status_bar->setGeometry(0, this->height() - fm.height() - 10, m_stack->width(), fm.height() + 10);
     m_status_bar->raise();
+    if (Peony::GlobalSettings::getInstance()->getValue(ZOOM_SLIDER_VISIBLE).toBool()) {
+        m_status_bar->m_slider->show();
+    } else {
+        m_status_bar->m_slider->hide();
+    }
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()
@@ -1397,13 +1503,13 @@ const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFile
     return infos;
 }
 
-const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentAllFileInfos()
+const QList<std::shared_ptr<Peony::FileInfo> > TabWidget::getCurrentAllFileInfos()
 {
     const QStringList uris = getAllFileUris();
     QList<std::shared_ptr<Peony::FileInfo>> infos;
-    for(auto uri : uris) {
+    for(auto uri : uris){
         auto info = Peony::FileInfo::fromUri(uri);
-        infos<<info;
+        infos << info;
     }
     return infos;
 }

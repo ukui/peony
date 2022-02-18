@@ -29,6 +29,8 @@
 #include <QStandardPaths>
 #include <file-utils.h>
 
+#include <ukuisdk/kylin-com4cxx.h>
+
 extern bool kydroidInstall;
 extern QString kydroidPath;
 
@@ -50,13 +52,21 @@ static void vfs_favorites_file_enumerator_init (FavoritesVFSFileEnumerator* self
     self->priv = priv;
     self->priv->enumerate_queue = new QQueue<QString>;
 
-    self->priv->enumerate_queue->enqueue(QString("favorite://?schema=trash"));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MoviesLocation)));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)));
-    self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)));
+    //fix #86133
+    bool isEduPlatform = QString::fromStdString(KDKGetPrjCodeName()) == V10_SP1_EDU;
+    if (!isEduPlatform) {
+        self->priv->enumerate_queue->enqueue(QString("favorite://?schema=trash"));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MoviesLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)));
+    } else {
+        self->priv->enumerate_queue->enqueue(QString("favorite://?schema=recent"));
+        self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)));
+        self->priv->enumerate_queue->enqueue(QString("favorite://?schema=trash"));
+    }
 
     if (Peony::FileUtils::isFileExsit("file:///data/usershare")) {
         self->priv->enumerate_queue->enqueue("favorite:///data/usershare?schema=file");

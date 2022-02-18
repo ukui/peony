@@ -32,6 +32,7 @@
 #include "file-utils.h"
 
 #include "thumbnail-manager.h"
+#include "global-settings.h"
 
 #include "file-operation-utils.h"
 
@@ -228,6 +229,13 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole: {
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
             if (!thumbnail.isNull()) {
+                // to make the applications disable
+                std::shared_ptr<FileInfo> info = item->info();
+                if(info->canExecute()&&info->isExecDisable()) {
+                    QSize size(100, 100);
+                    QPixmap pixmap = thumbnail.pixmap(size,QIcon::Disabled,QIcon::Off);
+                    return QIcon(pixmap);
+                }
                 return thumbnail;
             }
             QIcon icon = QIcon::fromTheme(item->m_info->iconName(), QIcon::fromTheme("text-x-generic"));
@@ -249,20 +257,11 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
     case ModifiedDate: {
         switch (role) {
         case Qt::DisplayRole:
-            //can not sort, comment this
             //trash files show delete Date
             if (m_root_uri.startsWith("trash://") && !item->m_info->deletionDate().isNull()) {
                 QDateTime deleteTime = QDateTime::fromMSecsSinceEpoch(item->m_info->deletionTime (), Qt::LocalTime);
-                if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
-                    QGSettings setting("org.ukui.control-center.panel.plugins");
-                    QString val = setting.get ("date").toString ();
-                    if ("cn" == val) {
-                        return QVariant(deleteTime.toString ("yyyy/MM/dd HH:mm:ss"));
-                    } else {
-                        return QVariant(deleteTime.toString ("yyyy-MM-dd HH:mm:ss"));
-                    }
-                }
-                return QVariant(item->m_info->deletionDate());
+                QString format = GlobalSettings::getInstance()->getSystemTimeFormat();
+                return QVariant(deleteTime.toString(format));
             }
             return QVariant(item->m_info->modifiedDate());
         default:
@@ -310,10 +309,9 @@ QVariant FileItemModel::headerData(int section, Qt::Orientation orientation, int
         case FileName:
             return tr("File Name");
         case ModifiedDate:
-            //can not sort, comment this
             //trash files show delete Date
-//            if (m_root_uri.startsWith("trash:///"))
-//                return tr("Delete Date");
+            if (m_root_uri.startsWith("trash:///"))
+                return tr("Delete Date");
             return tr("Modified Date");
         case FileType:
             return tr("File Type");
@@ -561,6 +559,11 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    //can not move StandardPath to any dir
+    if (action == Qt::MoveAction && FileUtils::containsStandardPath(srcUris)) {
+        return false;
+    }
+
     bool b_trash_item = false;
     for(auto path : srcUris)
     {
@@ -619,7 +622,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
     return true;
 }
 
-void FileItemModel::sendPathChangeRequest(const QString &uri)
+void FileItemModel::sendPathChangeRequest(const QString &destUri, const QString &sourceUri)
 {
-    Q_EMIT this->changePathRequest(uri, true, true);
+    Q_EMIT this->changePathRequest(destUri, sourceUri);
 }

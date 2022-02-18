@@ -127,11 +127,22 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
 {
     QList<QAction *> l;
     /* 卸载 */
-    if (m_item->isUnmountable()) {
-        l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
-            m_item->unmount();
-        });     
-        l.last()->setEnabled(m_item->isMounted());
+    bool isWayland = qApp->property("isWayland").toBool(); // related to #105070
+    if (isWayland) {
+        if (m_item->isUnmountable()) {
+            l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
+                m_item->unmount();
+            });
+            l.last()->setEnabled(m_item->isMounted());
+        }
+    } else {
+        /*  可用的U盘、外接移动硬盘、外接移动光盘, 右键菜单里不允许有“卸载”选项，bug#83206 */
+        if (!(m_item->isEjectable() || m_item->isStopable()) && m_item->isUnmountable()) {
+            l<<addAction(QIcon::fromTheme("media-eject-symbolic"), tr("Unmount"), [=]() {
+                m_item->unmount();
+            });
+            l.last()->setEnabled(m_item->isMounted());
+        }
     }
 
     /* 弹出 */
@@ -153,30 +164,53 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     else
         uri=m_uri;
 
-    /* 光盘暂时没有格式化功能以及手机要求不能格式化 */
-    if((! unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
+    //not allow format data block, fix bug#66471，66479
+    QString targetUri = FileUtils::getTargetUri(m_uri);
+    bool isData = m_uri == "file:///data" || targetUri == "file:///data"
+            || (m_uri.startsWith("file:///media") && m_uri.endsWith("/data"))
+            || (targetUri.startsWith("file:///media") && targetUri.endsWith("/data"));
+
+    /* 光盘暂时没有格式化功能以及文件系统、手机要求不能格式化 */
+    /* 没有uri的item不能格式化，FormatDialog需要uri走流程，否则会导致崩溃问题 */
+    //fix bug#92380, file system has format option issue
+    bool showFormatDialog = m_uri!="file:///" && m_uri != "computer:///root.link"
+            && (!unixDevice.isNull() && ! unixDevice.contains("/dev/sr"))
             &&!unixDevice.startsWith("/dev/bus/usb")
-            && (m_item->isMountable()||m_item->isUnmountable()))
+            && (m_item->isVolume()) && !m_item->uri().isEmpty();
+    if(showFormatDialog)
     {
-          l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
-          Format_Dialog *fd  = new Format_Dialog(uri,m_item);
-          fd->show();
-      });
+        if (!isWayland && isData) {
+            // skip
+        } else {
+            l<<addAction(QIcon::fromTheme("preview-file"), tr("format"), [=]() {
+                auto info = FileInfo::fromUri(uri);
+                if (info->targetUri ().isEmpty ()) {
+                    FileInfoJob job (uri, this);
+                    job.querySync ();
+                }
+                Format_Dialog *fd  = new Format_Dialog(uri,m_item);
+                fd->show();
+            });
+        }
     }
 
     /* 插件 */
-    if(0 != QString::compare(m_uri, "filesafe:///")) {
-        auto mgr = MenuPluginManager::getInstance();
-        auto ids = mgr->getPluginIds();
-        for (auto id : ids) {
-            auto factory = mgr->getPlugin(id);
-            //qDebug()<<id;
-            auto tmp = factory->menuActions(MenuPluginInterface::SideBar, uri, QStringList()<<uri);
-            addActions(tmp);
-            for (auto action : tmp) {
-                action->setParent(this);
+    if (!isWayland && isData) {
+        //skip
+    } else {
+        if(0 != QString::compare(m_uri, "filesafe:///")) {
+            auto mgr = MenuPluginManager::getInstance();
+            auto ids = mgr->getPluginIds();
+            for (auto id : ids) {
+                auto factory = mgr->getPlugin(id);
+                //qDebug()<<id;
+                auto tmp = factory->menuActions(MenuPluginInterface::SideBar, uri, QStringList()<<uri);
+                addActions(tmp);
+                for (auto action : tmp) {
+                    action->setParent(this);
+                }
+                l<<tmp;
             }
-            l<<tmp;
         }
     }
 
@@ -194,7 +228,7 @@ const QList<QAction *> SideBarMenu::constructFileSystemItemActions()
     });
     if ((0 != QString::compare(m_uri, "computer:///")) &&
         (0 != QString::compare(m_uri, "filesafe:///"))
-            &&(m_item->isMountable()||m_item->isUnmountable())) {
+            &&(m_item->isVolume())) {
         l.last()->setEnabled(m_item->isMounted());
     }
 
@@ -205,12 +239,12 @@ void SideBarMenu::gotoAboutComputer()
 {
     QProcess p;
     p.setProgram("ukui-control-center");
-    //-a para to show about computer infos
-    p.setArguments(QStringList()<<"-a");
+    //-m About para to show about computer infos, related to bug#88258
+    p.setArguments(QStringList()<<"-m" << "About");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
 #else
-    p.startDetached("ukui-control-center", QStringList()<<"-a");
+    p.startDetached("ukui-control-center", QStringList()<<"-m" << "About");
 #endif
     p.waitForFinished(-1);
 }
@@ -229,7 +263,7 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
     }
     if(netWorkUri != m_uri){
         l<<addAction(QIcon::fromTheme("preview-file"), tr("Properties"), [=]() {
-            if((m_item->isMountable()||m_item->isUnmountable())){
+            if((m_item->isVolume())){
                 /* 远程服务器 */
                 FileEnumerator e;
                 e.setEnumerateDirectory("computer:///");
@@ -255,7 +289,7 @@ const QList<QAction *> SideBarMenu::constructNetWorkItemActions()
                 w->show();
             }
         });
-        if(m_item->isMountable()||m_item->isUnmountable())
+        if(m_item->isVolume())
             l.last()->setEnabled(m_item->isMounted());
     }
 

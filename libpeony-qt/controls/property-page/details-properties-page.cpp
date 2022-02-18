@@ -30,7 +30,7 @@
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QImageReader>
-#include <QtNetwork/QHostInfo>
+#include "linux-pwd-helper.h"
 #include "global-settings.h"
 #include "file-watcher.h"
 
@@ -193,11 +193,8 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
     this->addRow(tr("Location:"), m_localLabel);
 
     //createTime
-    if (m_fileInfo->isDir())
-    {
-      m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
-      this->addRow(tr("Create time:"),m_createDateLabel);
-    }
+    m_createDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
+    this->addRow(tr("Create time:"),m_createDateLabel);
 
     //modifiedTime
     m_modifyDateLabel = this->createFixedLabel(0,0,"",m_tableWidget);
@@ -231,8 +228,8 @@ void DetailsPropertiesPage::initDetailsPropertiesPage()
             this->addRow(tr("Height:"), m_imageHeightLabel);
 
             m_imageDepthLabel = this->createFixedLabel(0, 0, "", m_tableWidget);
-            //FIXME:缺少图片位深
-//        this->addRow(tr("Depth:"),m_imageDepthLabel);
+            //FIXME:属性页面重构，增加图片位深
+            this->addRow(tr("Depth:"),m_imageDepthLabel);
         }
     }
 
@@ -285,7 +282,7 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
         m_ownerLabel->setText(qFileInfo.owner());
         //FIXME:明确当前文件所属计算机
         if (qFileInfo.isNativePath()) {
-            QString str_m_computerLabel = tr("%1 (this computer)").arg(QHostInfo::localHostName());
+            QString str_m_computerLabel = tr("%1 (this computer)").arg(LinuxPWDHelper::localHost());
             if (fm.width(str_m_computerLabel) > FIXED_CONTENT_WIDTH) {
                 m_computerLabel->setToolTip(str_m_computerLabel);
                 str_m_computerLabel = m_tableWidget->fontMetrics().elidedText(str_m_computerLabel, Qt::ElideMiddle, FIXED_CONTENT_WIDTH);
@@ -293,15 +290,6 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
             m_computerLabel->setText(str_m_computerLabel);
         } else {
             m_computerLabel->setText(tr("Unknown"));
-        }
-
-        //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题 后期将qt的方法替换为gio的方法
-        //参考：https://www.oschina.net/news/126468/gnome-40-alpha-preview
-        if (qFileInfo.isDir() && m_createDateLabel)
-        {
-            QDateTime date1 = qFileInfo.birthTime();
-            QString time1 = date1.toString(m_systemTimeFormat);
-            m_createDateLabel->setText(time1);
         }
 
         GFile     *file = g_file_new_for_uri(uri.toUtf8().constData());
@@ -319,6 +307,18 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
 
         g_object_unref(info);
 
+        //FIXME:文件的创建时间会随着文件被修改而发生改变，甚至会出现创建时间晚于修改时间问题 后期将qt的方法替换为gio的方法
+        //参考：https://www.oschina.net/news/126468/gnome-40-alpha-preview
+        quint64 timeNum = FileUtils::getCreateTimeOfMicro (uri);
+        // 客户需要必须显示创建时间，因此使用时间最小时间戳为创建时间
+
+        quint64 minTime = timeNum != 0 ? timeNum : timeNum2;
+        minTime = qMin (minTime, timeNum2);
+        timeNum = minTime;
+        QDateTime createDate = QDateTime::fromMSecsSinceEpoch(timeNum*1000);
+        QString createTime = createDate.toString(m_systemTimeFormat);
+        m_createDateLabel->setText(createTime);
+
     } else {
         if (m_createDateLabel)
             m_createDateLabel->setText(tr("Can't get remote file information"));
@@ -328,13 +328,13 @@ void DetailsPropertiesPage::updateFileInfo(const QString &uri)
     //image file
     if (m_fileInfo->isImageFile()) {
         //image width
-        QImageReader r(url.path());
+        QImage r(url.path());
 
         if (m_imageHeightLabel && m_imageWidthLabel && m_imageDepthLabel) {
             m_imageWidthLabel->setText(tr("%1 px").arg(r.size().width()));
             m_imageHeightLabel->setText(tr("%1 px").arg(r.size().height()));
             //FIXME:获取图片文件的位深
-//                m_imageDepthLabel->setText(32);
+            m_imageDepthLabel->setText(QString::number(r.depth(),10));
         }
     }
 }

@@ -8,6 +8,7 @@ HEADERS += \
     $$PWD/file-item-proxy-filter-sort-model.h \
     $$PWD/file-label-model.h \
     $$PWD/side-bar-abstract-item.h \
+    $$PWD/side-bar-cloud-item.h \
     $$PWD/side-bar-model.h \
     $$PWD/side-bar-favorite-item.h \
     $$PWD/side-bar-personal-item.h \
@@ -26,6 +27,7 @@ SOURCES += \
     $$PWD/file-item-proxy-filter-sort-model.cpp \
     $$PWD/file-label-model.cpp \
     $$PWD/side-bar-abstract-item.cpp \
+    $$PWD/side-bar-cloud-item.cpp \
     $$PWD/side-bar-model.cpp \
     $$PWD/side-bar-favorite-item.cpp \
     $$PWD/side-bar-personal-item.cpp \

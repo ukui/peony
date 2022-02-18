@@ -54,6 +54,13 @@ SideBarModel::SideBarModel(QObject *parent)
 
     m_root_children = new QVector<SideBarAbstractItem*>();
 
+//    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
+//    m_root_children->append(separator1);
+
+    SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
+    m_root_children->append(favorite_root_item);
+
+
     auto vfsMgr = VFSPluginManager::getInstance();
     auto plugins = vfsMgr->registeredPlugins();
     for (auto plugin : plugins) {
@@ -61,15 +68,10 @@ SideBarModel::SideBarModel(QObject *parent)
             continue;
         }
         if (plugin->holdInSideBar()) {
-            m_root_children->append(new SideBarVFSItem(plugin, this));
+            m_root_children->append(new SideBarVFSItem(plugin->uriScheme() + "/", nullptr, this));
         }
     }
 
-//    SideBarSeparatorItem *separator1 = new SideBarSeparatorItem(SideBarSeparatorItem::Large, nullptr, this, this);
-//    m_root_children->append(separator1);
-
-    SideBarFavoriteItem *favorite_root_item = new SideBarFavoriteItem(nullptr, nullptr, this);
-    m_root_children->append(favorite_root_item);
     //favorite_root_item->findChildren();
 
 //    SideBarSeparatorItem *separator2 = new SideBarSeparatorItem(SideBarSeparatorItem::Small, nullptr, this, this);
@@ -244,8 +246,13 @@ QVariant SideBarModel::data(const QModelIndex &index, int role) const
     }
 
     switch (role) {
-    case Qt::DecorationRole:
-        return QIcon::fromTheme(item->iconName() + "-symbolic", QIcon::fromTheme(item->iconName()));
+    case Qt::DecorationRole:{
+        QString iconName = item->iconName() + "-symbolic";
+        if(item->iconName().endsWith("-symbolic"))
+            iconName = item->iconName();
+        //qDebug()<<"print side bar icon name, uri"<<FileUtils::urlEncode(item->uri())<<" icon name:"<<iconName;
+        return QIcon::fromTheme(iconName, QIcon::fromTheme(item->iconName()));
+    }
     case Qt::DisplayRole:
         return item->displayName();
     case Qt::ToolTipRole:
@@ -312,6 +319,8 @@ void SideBarModel::onIndexUpdated(const QModelIndex &index)
     bool isEmpty = true;
     for (auto child : *item->m_children) {
         auto info = FileInfo::fromUri(child->uri());
+        FileInfoJob job(child->uri());
+        job.querySync();
         if (!info->displayName().startsWith(".") && (info->isDir() || info->isVolume())||item->uri()=="computer:///")
             isEmpty = false;
         if (child->type() == SideBarAbstractItem::SeparatorItem) {
@@ -417,6 +426,10 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
         if (action == Qt::MoveAction)
         {
+            //can not move StandardPath to any dir
+            if (FileUtils::containsStandardPath(srcUris)) {
+                return false;
+            }
             FileOperationUtils::move(uris, item->uri(), true, true);
             //qDebug() << "sideBarModel moveOp";
         }

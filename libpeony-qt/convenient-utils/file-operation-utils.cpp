@@ -31,6 +31,7 @@
 #include "file-link-operation.h"
 
 #include "file-untrash-operation.h"
+#include "file-count-operation.h"
 
 #include "file-info-job.h"
 #include "file-info.h"
@@ -39,8 +40,11 @@
 
 #include <QUrl>
 #include <QFileInfo>
+#include <gio/gio.h>
 
 #include <QMessageBox>
+
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -89,13 +93,36 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
 {
     FileOperation *op = nullptr;
     bool canNotTrash = false;
+    bool isBigFile = false;
+
+    QString userPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    QString newBoxPath;
+    QString oldBoxPath;
+
+    //1.0保护箱路径为“/box/用户名/保护箱名称”,2.1保护箱路径为“/home/用户名/.box/保护箱名称”，只要包含这些路径就是保护箱下文件，是不可以删除到回收站的；
+    //root下没有home；
+    if(userPath.startsWith("/home")){
+        newBoxPath = userPath+"/.box";
+
+        QString user = userPath.remove("/home/");
+
+        oldBoxPath = "/box/"+user;
+
+    } else {
+        newBoxPath = userPath+"/.box";
+        oldBoxPath = "/box/root";
+    }
+
     for (auto uri : uris) {
-        if (!uri.startsWith("file:/")) {
+        if (!uri.startsWith("file:/") || (uri.contains(newBoxPath)) || (uri.contains(oldBoxPath))) {
             canNotTrash = true;
         }
     }
 
     if (!canNotTrash) {
+        quint64 total_size = 0;
+        const quint64 ONE_GIB_SIZE = 1024*1024*1024;
         for (auto uri : uris) {
             QUrl url(uri);
             QFile file(url.path());
@@ -104,28 +131,50 @@ FileOperation *FileOperationUtils::trash(const QStringList &uris, bool addHistor
             auto info = FileInfo::fromUri(uri);
             if (info->isSymbolLink())
                 continue;
-            if (file.size() > 1024*1024*1024) {
+
+            //folder need recursive calculate file size
+            //屏蔽本部分代码，文件和文件夹走一样的异常处理流程，关联bug#92483
+//            if(! info->isDir()){
+//                total_size += file.size();
+//            }
+
+//            //file total size more than 10G, not trash but delete, task#56444,  bug#88871, bug#88894
+//            if (total_size/10 > ONE_GIB_SIZE) {
+//                canNotTrash = true;
+//                isBigFile = true;
+//                break;
+//            }
+//            qDebug() <<"total_size:" <<total_size<<ONE_GIB_SIZE<<canNotTrash<<isBigFile;
+
+            //file total size more than 10G, not trash but delete, task#56444
+            //FIXME 判断是否是移动设备文件，可能不准确, 目前暂未找到好的判断方法
+            bool isMobileDeviece = FileUtils::isMobileDeviceFile(uri);
+            if(isMobileDeviece){
                 canNotTrash = true;
                 break;
             }
         }
     }
 
-    if (!canNotTrash) {
-        FileEnumerator e;
-        e.setEnumerateDirectory("trash:///");
-        e.enumerateSync();
-        if (e.getChildrenUris().count() > 1000) {
-            canNotTrash = true;
-        }
-    }
+    // comment for fixing #82054
+//    if (!canNotTrash) {
+//        FileEnumerator e;
+//        e.setEnumerateDirectory("trash:///");
+//        e.enumerateSync();
+//        if (e.getChildrenUris().count() > 1000) {
+//            canNotTrash = true;
+//        }
+//    }
 
     if (canNotTrash) {
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
-        auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), QObject::tr("Can not trash these files. "
-                                            "You can delete them permanently. "
-                                            "Are you sure doing that?"));
+        QString message = QObject::tr("Can not trash these files. "
+                                      "You can delete them permanently. "
+                                      "Are you sure doing that?");
+        if (isBigFile)
+           message = QObject::tr("Can not trash files more than 10GB, would you like to delete it permanently?");
 
+        auto result = QMessageBox::question(nullptr, QObject::tr("Can not trash"), message);
         if (result == QMessageBox::Yes) {
             op = FileOperationUtils::remove(uris);
         }
@@ -253,7 +302,8 @@ void FileOperationUtils::executeRemoveActionWithDialog(const QStringList &uris)
     }
 }
 
-
+//not accurate of process, name has tr("duplicate") not processed
+//do not use this function before you fixed it
 bool FileOperationUtils::leftNameIsDuplicatedFileOfRightName(const QString &left, const QString &right)
 {
     auto tmpl = left;
@@ -288,5 +338,6 @@ bool FileOperationUtils::leftNameLesserThanRightName(const QString &left, const 
     auto tmpr = right;
     int numl = getNumOfFileName(tmpl);
     int numr = getNumOfFileName(tmpr);
-    return numl == numr? left < right: numl < numr;
+    //fix bug#97408,change indicator meanings
+    return numl == numr? left > right: numl > numr;
 }

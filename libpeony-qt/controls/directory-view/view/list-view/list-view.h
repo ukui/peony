@@ -46,6 +46,7 @@ namespace DirectoryView {
 class PEONYCORESHARED_EXPORT ListView : public QTreeView, public DirectoryViewIface
 {
     friend class ListView2;
+    friend class ListViewDelegate;
     Q_OBJECT
 public:
     explicit ListView(QWidget *parent = nullptr);
@@ -74,10 +75,20 @@ public:
     //selections
     const QStringList getSelections() override;
 
+    //rowcount
+    const int getRowcount();
+
     //children
     const QStringList getAllFileUris() override;
 
     QRect visualRect(const QModelIndex &index) const override;
+    int getCurrentCheckboxColumn();
+
+    /**
+     * @brief 定制版本需要显示多选框
+     * @return
+     */
+    bool isEnableMultiSelect();
 
 Q_SIGNALS:
     void zoomLevelChangedRequest(bool zoomIn);
@@ -92,7 +103,7 @@ public Q_SLOTS:
 
     //selections
     void setSelections(const QStringList &uris) override;
-    void invertSelections() override;
+    void invertSelections(bool isInvert = true) override;
     void scrollToSelection(const QString &uri) override;
 
     //clipboard
@@ -107,13 +118,11 @@ public Q_SLOTS:
     void editUri(const QString &uri) override;
     void editUris(const QStringList uris) override;
 
-    void keyboardSearch(const QString &key) override;
-
     void resort();
     void reportViewDirectoryChanged();
     void adjustColumnsSize();
-
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+    void multiSelect();
+    void disableMultiSelect();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
@@ -130,18 +139,14 @@ protected:
 
     void resizeEvent(QResizeEvent *e) override;
 
-    void updateGeometries() override;
-    void reUpdateScrollBar();
+    //void updateGeometries() override;
 
     void wheelEvent (QWheelEvent *e) override;
 
-    void focusInEvent(QFocusEvent *e) override;
-
-    void startDrag(Qt::DropActions flags) override;
+    void paintEvent(QPaintEvent *e) override;
 
 private Q_SLOTS:
     void slotRename();
-
 private:
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
@@ -189,6 +194,11 @@ public:
         return m_view->getSelections();
     }
 
+    //rowcount
+    const int getRowcount(){
+         return m_view->getRowcount();
+    }
+
     //children
     const QStringList getAllFileUris() {
         return m_view->getAllFileUris();
@@ -208,7 +218,7 @@ public:
         return 0;
     }
     int maximumZoomLevel() {
-        return 20;
+        return 40;
     }
 
     bool supportZoom() {
@@ -242,6 +252,9 @@ public Q_SLOTS:
     void invertSelections() {
         m_view->invertSelections();
     }
+    void selectAll() {
+        m_view->invertSelections(false);
+    }
     void scrollToSelection(const QString &uri) {
         m_view->scrollToSelection(uri);
     }
@@ -269,15 +282,19 @@ public Q_SLOTS:
     void setCurrentZoomLevel(int zoomLevel);
 
     void clearIndexWidget();
-
-    void repaintView();
+    void multiSelect(){
+        m_view->multiSelect();
+    }
+    void disableMultiSelect(){
+        m_view->disableMultiSelect();
+    }
 
 private:
     ListView *m_view = nullptr;
     FileItemModel *m_model = nullptr;
     FileItemProxyFilterSortModel *m_proxy_model = nullptr;
 
-    int m_zoom_level = 20;
+    int m_zoom_level = 24;
     bool m_need_resize_header;
 };
 

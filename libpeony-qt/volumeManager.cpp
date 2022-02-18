@@ -4,9 +4,29 @@
 #include <QThread>
 #include<QMessageBox>
 #include"sync-thread.h"
+#include "file-utils.h"
+
+#include <udisks/udisks.h>
+#include <sys/stat.h>
 
 using namespace Experimental_Peony;
 static VolumeManager* m_globalManager = nullptr;
+
+QString getDeviceUUID(const char *device) {
+    struct stat statbuf;
+    if (stat (device, &statbuf) != 0)
+    {
+        return nullptr;
+    }
+
+    g_autoptr(UDisksClient) client = udisks_client_new_sync (NULL,NULL);
+    g_autoptr(UDisksBlock) block = udisks_client_get_block_for_dev(client, statbuf.st_rdev);
+    if (!block)
+        return nullptr;
+
+    const gchar *uuid = udisks_block_get_id_uuid(block);
+    return uuid;
+}
 
 void VolumeManager::printVolumeList(){
     qDebug()<<endl<<endl<<endl;
@@ -30,6 +50,29 @@ void VolumeManager::printVolumeList(){
 //        delete m_globalManager;
 //    }
 
+}
+#include "file-enumerator.h"
+#include "file-info.h"
+#include "file-info-job.h"
+#include "file-utils.h"
+QString VolumeManager::getTargetUriFromUnixDevice(const QString &unixDevice){
+    /* volume item,遍历方式获取uri */
+    Peony::FileEnumerator e;
+    e.setEnumerateDirectory("computer:///");
+    e.enumerateSync();
+    QString uri;
+    for (auto fileInfo : e.getChildren()) {
+        Peony::FileInfoJob infoJob(fileInfo);
+        infoJob.querySync();
+        /* 由volume的unixDevice获取target uri */
+        auto info = infoJob.getInfo();
+        QString device = fileInfo.get()->unixDeviceFile();
+        if(device==unixDevice){
+            uri = fileInfo.get()->targetUri();
+            break;
+        }
+    }
+    return Peony::FileUtils::urlDecode(uri);
 }
 
 VolumeManager::VolumeManager(QObject *parent) : QObject(parent)
@@ -146,9 +189,27 @@ void VolumeManager::volumeAddCallback(GVolumeMonitor *monitor,
     itemIsExisted = pThis->m_volumeList->contains(addItem->device());
     qDebug()<<__func__<<__LINE__<<addItem->device()<<itemIsExisted<<endl;
     if(itemIsExisted){
+        /* 先删除后添加，更新volume,例如异常U盘格式化 */
+        QString device = addItem->device();
+        pThis->m_volumeList->remove(device);
+        Q_EMIT pThis->volumeRemove(device);
+        pThis->m_volumeList->insert(device, addItem);
+        Q_EMIT pThis->volumeAdd(Volume(*addItem));
         //情景1、关闭gparted时，所有具有卸载属性的设备均会触发volume-added信号
         //      该情景似乎不需要更新属性信息，确认一下name属性？
-    }else{
+    } else {
+        // 判断volume的drive是否存在与列表中，如果是就要将其drive隐藏
+        GDrive *gdrive = g_volume_get_drive(gvolume);
+        if (gdrive) {
+            g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+            if (pThis->m_volumeList->contains(gdevice)) {
+                auto driveItem = pThis->m_volumeList->value(gdevice);
+                driveItem->setHidden(true);
+                Q_EMIT pThis->volumeUpdate(*driveItem, "name");
+            }
+            g_object_unref(gdrive);
+        }
+
         //情景1、未打开gparted时插入新设备
         //情景2、已打开gparted->插入新设备不拔出->关闭gparted后触发volume-added信号
         //情景3、默认用数据线连接的手机("仅充电")
@@ -161,6 +222,42 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
         GVolume *gvolume,VolumeManager *pThis){
     if(!pThis->m_volumeList)
         return;
+
+    GDrive *gdrive = g_volume_get_drive(gvolume);
+    if (gdrive) {
+        // 可能是光驱，弹出之后drive还在
+        g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (pThis->m_volumeList->contains(gdevice)) {
+            // 如果没有volume，这个drive应该显示出来，参考volumeAddedCallback流程
+            GList *volumes = g_drive_get_volumes(gdrive);
+            if (volumes) {
+                // noop
+            } else {
+                // 由于旧的volume信息不好更新，所以移除旧的volume，重新添加
+                QString device = gdevice;
+                auto addItem = new Volume(nullptr);
+                auto drive = new Drive(gdrive);
+                addItem->setFromDrive(*drive);
+                if (device.startsWith("/dev/sr")) {
+                    addItem->setHidden(false);
+                }
+                pThis->m_volumeList->remove(device);
+                Q_EMIT pThis->volumeRemove(device);
+                pThis->m_volumeList->insert(device, addItem);
+                Q_EMIT pThis->volumeAdd(Volume(*addItem));
+            }
+        }
+        g_object_unref(gdrive);
+    } else {
+        // drive已经disconnect，从volume进行索引
+        g_autofree char *gdevice = g_volume_get_identifier(gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (pThis->m_volumeList->contains(gdevice)) {
+            auto volumeItem = pThis->m_volumeList->value(gdevice);
+            pThis->m_volumeList->remove(gdevice);
+            Q_EMIT pThis->volumeRemove(gdevice);
+        }
+    }
+
     //情景1、未打开gparted时正常弹出设备
     //情景2、打开gparted瞬间所有可卸载的分区均会触发volume-removed信号
     //      这种情景下设备需要继续支持访问,不能够移除
@@ -197,10 +294,12 @@ void VolumeManager::volumeRemoveCallback(GVolumeMonitor *monitor,
     if(gmount)
         g_object_unref(gmount);
 
+    if (blankCDFlag)
+        return;
+
     //情景1、确定可以删除设备
     //情景5、数据线连接的手机状态改变： "传输文件(mtp)" 与 "传输图片(gphoto)" 相互转换(即/dev/bus/xxx设备只能保留一个)
     //情景6、数据线连接的手机状态改变："mtp"或"gphoto" -> "仅充电"
-    //情景7、光盘正常弹出
     //情景9、手机(mtp或gphoto2状态)暴力拔出
     pThis->m_volumeList->remove(device);
 
@@ -320,12 +419,37 @@ void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
     Drive* dirve = new Drive(gdrive);
     QString device = dirve->device();
 
-    if(!pThis->m_volumeList->contains(device) && !device.isEmpty() && device.contains("/dev/sr"))
+    if(!pThis->m_volumeList->contains(device) && !device.isEmpty() &&
+            (device.contains("/dev/sr")||device.startsWith("/dev/sd")))/* 异常U盘也需要显示 */
     {
         Volume* volume = new Volume(nullptr);
         volume->setFromDrive(*dirve);
-        pThis->m_volumeList->insert(device, volume);
-        Q_EMIT pThis->volumeAdd(Volume(*volume));
+
+        // try fix #90641, a docking station should be hidden.
+        if (device.startsWith("/dev/sd")) {
+            auto size = Peony::FileUtils::getDeviceSize(device.toUtf8().constData());
+            QString uuid = getDeviceUUID(device.toUtf8().constData());
+            if (uuid.isEmpty() && size == 0) {
+                volume->setHidden(true);
+                // if drive has media, it is not represent a docking station.
+                // so it should not be hidden.
+                if (g_drive_has_media(gdrive)) {
+                    volume->setHidden(false);
+                }
+            }
+        }
+
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(gdrive);
+        if (volumes) {
+            volume->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
+
+        if(volume->canEject()){
+            pThis->m_volumeList->insert(device, volume);
+            Q_EMIT pThis->volumeAdd(Volume(*volume));
+        }
     }
 }
 
@@ -433,20 +557,6 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         m_volumeList->insert(volumeItem->device(),volumeItem);
     }
 
-    /* 添加光驱设备 */
-    QList<Drive*> driveList = allDrives();
-    for(auto entry : driveList)
-    {
-        Volume* volumeItem = new Volume(nullptr);
-        volumeItem->setFromDrive(*entry);
-        QString device = volumeItem->device();
-        if(m_volumeList->contains(volumeItem->device()))
-            continue;
-        if(device.contains("/dev/sr")){/* 判断是否为光驱设备 */
-            m_volumeList->insert(volumeItem->device(), volumeItem);
-        }
-    }
-
     //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
     if(!m_gpartedIsOpening){ //gparted未打开时，才考虑卷设备未挂载的情况
         for(int i=0; i<volumeCount; ++i){
@@ -459,6 +569,47 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         }
     }
     //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
+
+    /* 添加光驱设备 */
+    QList<Drive*> driveList = allDrives();
+    for(auto entry : driveList)
+    {
+        Volume* volumeItem = new Volume(nullptr);
+        volumeItem->setFromDrive(*entry);
+        // 如果有volume，应该被隐藏
+        GList *volumes = g_drive_get_volumes(entry->getGDrive());
+        if (volumes) {
+            volumeItem->setHidden(true);
+            g_list_free_full(volumes, g_object_unref);
+        }
+        QString device = volumeItem->device();
+        if(m_volumeList->contains(volumeItem->device()))
+            continue;
+        if(device.contains("/dev/sr")){/* 判断是否为光驱设备 */
+            m_volumeList->insert(volumeItem->device(), volumeItem);
+        }
+        if(volumeItem->canEject()&&device.contains("/dev/sd")){/* 异常U盘设备 */
+            m_volumeList->insert(volumeItem->device(), volumeItem);
+
+            // try fix #90641, a docking station should be hidden.
+            if (device.startsWith("/dev/sd")) {
+                QString uuid = getDeviceUUID(device.toUtf8().constData());
+                auto size = Peony::FileUtils::getDeviceSize(device.toUtf8().constData());
+                if (uuid.isEmpty() && size == 0) {
+                    volumeItem->setHidden(true);
+                    // if drive has media, it is not represent a docking station.
+                    // so it should not be hidden.
+                    if (entry->getGDrive()) {
+                        if (g_drive_has_media(entry->getGDrive())) {
+                            volumeItem->setHidden(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     QHash<QString,Volume*>::const_iterator item = m_volumeList->begin();
     QHash<QString,Volume*>::const_iterator end = m_volumeList->end();
@@ -572,6 +723,7 @@ Volume::Volume(const Volume& other){
     m_gMount = other.m_gMount == nullptr? nullptr : (GMount*)g_object_ref(other.m_gMount);
     m_gdrive = other.m_gdrive == nullptr? nullptr : (GDrive*)g_object_ref(other.m_gdrive);
     m_volume = nullptr;
+    m_hidden = other.m_hidden;
     if(other.m_volume)
         m_volume = (GVolume*)g_object_ref(other.m_volume);
 }
@@ -602,6 +754,7 @@ void Volume::initVolumeInfo()
     //挂载点
     GMount* gmount = nullptr;
     GFile* rootFile = nullptr;
+    QString tmpDevice;
     gmount = g_volume_get_mount(m_volume);
     if(gmount){
         m_gMount = gmount;
@@ -623,6 +776,8 @@ void Volume::initVolumeInfo()
     if(gdrive){
         m_canEject = g_drive_can_eject(gdrive);
         m_canStop = g_drive_can_stop(gdrive);
+        g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        tmpDevice = gdevice;
         g_object_unref(gdrive);
     }
     //TODO... icon
@@ -634,9 +789,37 @@ void Volume::initVolumeInfo()
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
 
     if(m_volume)
@@ -730,6 +913,16 @@ void Volume::mount()
                        this);
 }
 
+bool Volume::getHidden() const
+{
+    return m_hidden;
+}
+
+void Volume::setHidden(bool hidden)
+{
+    m_hidden = hidden;
+}
+
 
 void Volume::setFromMount(const Mount& mount){
     m_name = mount.name();
@@ -805,6 +998,7 @@ void Drive::initDriveInfo(){
     if(!m_drive)
         return;
 
+    m_device = g_drive_get_identifier(m_drive, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
     m_canEject = g_drive_can_eject(m_drive);
     m_canStop = g_drive_can_stop(m_drive);
     m_name=g_drive_get_name(m_drive);
@@ -812,11 +1006,26 @@ void Drive::initDriveInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(icon_name) == "drive-harddisk-usb") {
+            double size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
-    m_device = g_drive_get_identifier(m_drive, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
 }
 
 QString Drive::name() const
@@ -848,16 +1057,21 @@ GDrive *Drive::getGDrive() const
     return m_drive;
 }
 
-static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, gpointer user_data)
+static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QString* targetUri)
 {
     GError *error = nullptr;
     bool successed = g_drive_eject_with_operation_finish(gDrive, result, &error);
-    qDebug()<<successed;
+    qDebug()<<"The result that drive eject with operation finish:"<<successed;
     if (error) {
         qDebug()<<error->message;
         if(! strcmp(error->message,"Not authorized to perform operation")){//umount /data need permissions.
             QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
             g_error_free(error);
+            if(targetUri){
+                delete targetUri;
+                targetUri = nullptr;
+            }
+            g_free(targetUri);
             return nullptr;
         }
 
@@ -869,33 +1083,51 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, gpoint
         /* 弹出完成信息提示 */
         QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
         Peony::SyncThread::notifyUser(ejectNotify);
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(static_cast<char*>(user_data));
+        QString str = *targetUri;
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
     }
-
+    if(targetUri){
+        delete targetUri;
+        targetUri = nullptr;
+    }
     return nullptr;
 }
 
 /* Eject some device by stop it's drive. Such as: mobile harddisk. */
-static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, Drive *pThis)
+static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, QString* targetUri)
 {
-    GError *error = nullptr;
-    if(!g_drive_poll_for_media_finish(G_DRIVE(object), result, &error)){
+    g_autoptr (GError) error = nullptr;
+
+    if(!g_drive_stop_finish (G_DRIVE(object), result, &error)){
         if((NULL != error) && (G_IO_ERROR_FAILED_HANDLED != error->code)){
-            QString errorMsg = QObject::tr("Unable to eject %1").arg(pThis->name());
-            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), errorMsg, QMessageBox::Ok);
+            // @note 这里不要拼接字符串，多次弹出会崩溃
+//            QString errorMsg = QObject::tr("Unable to eject").arg(pThis->name());
+            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
             warningBox.exec();
-            g_error_free(error);
         }
+    }else {
+        /* 弹出完成信息提示 */
+        QString ejectNotify = QObject::tr("Data synchronization is complete and the device can be safely unplugged!");
+        Peony::SyncThread::notifyUser(ejectNotify);
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
+    }
+    if(targetUri){
+        delete targetUri;
+        targetUri = nullptr;
     }
 }
 
 void Drive::eject(GMountUnmountFlags ejectFlag)
 {
-    if(m_canEject){
-        g_drive_eject_with_operation(m_drive, ejectFlag, nullptr, nullptr, GAsyncReadyCallback(eject_cb),const_cast<char*>(m_mountPath.toStdString().c_str()));
+    // fix #92731, note that if we didn't pass a mount-operation instance,
+    // drive will do operation without user interaction.
+    g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
+    QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
+    if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
+        g_drive_eject_with_operation(m_drive, ejectFlag, mount_op, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
     }
     else if(g_drive_can_stop(m_drive) || g_drive_is_removable(m_drive)){//for mobile harddisk.
-        g_drive_stop(m_drive,ejectFlag,NULL,NULL,GAsyncReadyCallback(ejectDevicebyDrive),this);
+        g_drive_stop(m_drive,ejectFlag,mount_op,NULL,GAsyncReadyCallback(ejectDevicebyDrive), targetUri);
     }
 }
 
@@ -920,6 +1152,7 @@ void Mount::initMountInfo(){
     GFile* rootFile;
     GVolume* gvolume;
     char* gmountPoint,*uuid;
+    QString tmpDevice;
 
     if(!m_mount)
         return;
@@ -943,6 +1176,12 @@ void Mount::initMountInfo(){
     }else{
         char* device = g_volume_get_identifier(gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
         uuid = g_volume_get_uuid(gvolume);//g_mount_get_uuid()在设备处于挂载状态时返回值为nullptr
+        GDrive* gdrive = g_volume_get_drive(gvolume);
+        if(gdrive){
+            g_autofree char* gdevice = g_drive_get_identifier(gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+            tmpDevice = gdevice;
+        }
+        g_object_unref(gdrive);
         m_device = device;
         m_uuid = uuid;
 
@@ -973,9 +1212,35 @@ void Mount::initMountInfo(){
     const char * const * icon_names = g_themed_icon_get_names((GThemedIcon *)gicon);
     if(icon_names) {
         m_icon= *icon_names;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     } else {
         g_autofree gchar *icon_name = g_icon_to_string(gicon);
         m_icon = icon_name;
+
+        // fix #81852, refer to #57660, #70014, #96652, task #25343
+        if (QString(m_icon) == "drive-harddisk-usb") {
+            double size = 0.0;
+            if(!tmpDevice.isEmpty()){
+                size = Peony::FileUtils::getDeviceSize(tmpDevice.toUtf8().constData());
+            }else{
+                size = Peony::FileUtils::getDeviceSize(m_device.toUtf8().constData());
+            }
+            if (size < 128) {
+                m_icon = "drive-removable-media-usb";
+            }
+        }
     }
 }
 
@@ -1087,7 +1352,7 @@ bool Mount::canUnmount() const{
     return m_canUnmount;
 }
 
-static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata) {
+static void unmount_force_cb(GMount* mount, GAsyncResult* result, QString* targetUri) {
 
     GError *err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -1097,13 +1362,16 @@ static void unmount_force_cb(GMount* mount, GAsyncResult* result, gpointer udata
     } else {
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
-        QString uri = static_cast<char*>(udata);
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
+        QString uri = *targetUri;
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
     }
-
+    if(targetUri){
+        delete targetUri;
+        targetUri = nullptr;
+    }
 }
 
-static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, gpointer user_data)
+static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result, QString* targetUri)
 {
     GError *err = nullptr;
     g_mount_unmount_with_operation_finish(mount, result, &err);
@@ -1111,11 +1379,19 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
         if(!strcmp(err->message,"Not authorized to perform operation")){//umount /data need permissions.
             g_error_free(err);
             QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
+            if(targetUri){
+                delete targetUri;
+                targetUri = nullptr;
+            }
             return nullptr;
         }
         if(strstr(err->message,"umount: ")){
             QMessageBox::warning(nullptr,QObject::tr("Unmount failed"),QObject::tr("Unable to unmount it, you may need to close some programs, such as: GParted etc."),QMessageBox::Yes);
             g_error_free(err);
+            if(targetUri){
+                delete targetUri;
+                targetUri = nullptr;
+            }
             return nullptr;
         }
 
@@ -1127,7 +1403,12 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
                                            nullptr,
                                            nullptr,
                                            GAsyncReadyCallback(unmount_force_cb),
-                                           user_data);
+                                           targetUri);
+        } else {
+            if(targetUri){
+                delete targetUri;
+                targetUri = nullptr;
+            }
         }
         g_error_free(err);
 
@@ -1135,20 +1416,22 @@ static GAsyncReadyCallback unmount_finished(GMount *mount, GAsyncResult *result,
         /* 卸载完成信息提示 */
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         Peony::SyncThread::notifyUser(unmountNotify);
-        QString uri = static_cast<char*>(user_data);
-        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(uri);
+        QString ss = *targetUri;
+        Q_EMIT VolumeManager::getInstance()->signal_unmountFinished(*targetUri);
+        if(targetUri){
+            delete targetUri;
+            targetUri = nullptr;
+        }
     }
     return nullptr;
 }
 
 void Mount::unmount()
 {
-    if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)
-        GFile* rootFile = g_mount_get_root(m_mount);
-        char* mountPath = g_file_get_uri(rootFile);
-        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, nullptr,nullptr, GAsyncReadyCallback(unmount_finished), mountPath);
-        g_object_unref(rootFile);
-        g_free(mountPath);
+    if(m_canUnmount && m_mount){//gparted打开时 + 中文挂载点 => 卸载失败(转码后的挂载点目录找不到，与文件系统格式无关)               
+        QString* targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
+        g_autoptr(GMountOperation) mount_op = g_mount_operation_new();
+        g_mount_unmount_with_operation(m_mount, G_MOUNT_UNMOUNT_NONE, mount_op, nullptr, GAsyncReadyCallback(unmount_finished), targetUri);
     }
     //考虑使用udisks API udisks_filesystem_call_unmount 或者udisks2相关dbus做卸载处理
 }

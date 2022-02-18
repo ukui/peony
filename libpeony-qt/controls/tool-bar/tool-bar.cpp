@@ -151,14 +151,16 @@ void ToolBar::init()
 
     sortMenu->addSeparator();
 
-    sortMenu->addAction(tr("Ascending"), [=]() {
-        m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
-        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
-    });
+    //switch defautl Descending Ascending order, fix bug#99924
     sortMenu->addAction(tr("Descending"), [=] {
         m_top_window->setCurrentSortOrder(Qt::DescendingOrder);
         m_sort_action->setIcon(QIcon::fromTheme("view-sort-descending-symbolic"));
     });
+    sortMenu->addAction(tr("Ascending"), [=]() {
+        m_top_window->setCurrentSortOrder(Qt::AscendingOrder);
+        m_sort_action->setIcon(QIcon::fromTheme("view-sort-ascending-symbolic"));
+    });
+
 
     m_sort_action->setMenu(sortMenu);
     addAction(m_sort_action);
@@ -301,11 +303,11 @@ void ToolBar::init()
 
         optionMenu.addSeparator();
 
-        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=]() {
-            QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
-            QDesktopServices::openUrl(url);
-        });
-        help->setShortcut(Qt::Key_F1);
+//        auto help = optionMenu.addAction(QIcon::fromTheme("help-symbolic"), tr("&Help"), this, [=]() {
+//            QUrl url = QUrl("help:ubuntu-kylin-help/files", QUrl::TolerantMode);
+//            QDesktopServices::openUrl(url);
+//        });
+//        help->setShortcut(Qt::Key_F1);
 
         auto about = optionMenu.addAction(tr("&About..."), this, [=]() {
             QMessageBox::about(m_top_window,

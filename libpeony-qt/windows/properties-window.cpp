@@ -33,6 +33,8 @@
 #include "details-properties-page-factory.h"
 #include "thumbnail-manager.h"
 #include "file-utils.h"
+#include "vfs-plugin-manager.h"
+#include "xatom-helper.h"
 
 #include <QToolBar>
 #include <QPushButton>
@@ -48,9 +50,12 @@
 #include <QTimer>
 #include <QPainter>
 #include <QStyleOptionTab>
+#include <QApplication>
+#include <KWindowSystem>
 
 #include <glib/gstdio.h>
 #include <gio/gdesktopappinfo.h>
+#include <pwd.h>
 
 #include "file-info-job.h"
 
@@ -166,7 +171,7 @@ PropertiesWindowTabPagePluginIface *PropertiesWindowPluginManager::getFactory(co
 const qint32 PropertiesWindow::s_windowWidth        = 460;
 const qint32 PropertiesWindow::s_windowHeightFolder = 600;
 const qint32 PropertiesWindow::s_windowHeightOther  = 652;
-const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(100, 32);
+const QSize  PropertiesWindow::s_bottomButtonSize   = QSize(96, 36);
 
 PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : QMainWindow(parent)
 {
@@ -181,9 +186,14 @@ PropertiesWindow::PropertiesWindow(const QStringList &uris, QWidget *parent) : Q
 
         if (uri.startsWith("favorite://")) {
             rebuildUriBySchema(uri);
-        }
 
-        if (uri.startsWith("network://")) {
+        } else if (uri.startsWith("kmre://")) {
+            if (!handleKMREUri(uri)) {
+                m_destroyThis = true;
+                return;
+            }
+
+        } else if (uri.startsWith("network://")) {
             m_destroyThis = true;
             return;
         }
@@ -224,9 +234,15 @@ void PropertiesWindow::init()
 {
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setContentsMargins(0, 10, 0, 0);
+    this->setContentsMargins(0, 0, 0, 0);
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(window()->winId(), hints);
     //only show close button
-    this->setWindowFlags(this->windowFlags() & ~Qt::WindowMinMaxButtonsHint & ~Qt::WindowSystemMenuHint);
+    //this->setWindowFlags(this->windowFlags() & ~Qt::WindowMinMaxButtonsHint & ~Qt::WindowSystemMenuHint);
 
     this->setWindowTitleTextAndIcon();
 
@@ -256,6 +272,31 @@ void PropertiesWindow::init()
  */
 void PropertiesWindow::setWindowTitleTextAndIcon()
 {
+    HeaderBar *headerBar = new HeaderBar(this);
+    this->addToolBar(Qt::ToolBarArea::TopToolBarArea, headerBar);
+
+    connect(headerBar, &HeaderBar::buttonClicked, this, [=](const HeaderBar::ButtonType buttonType) {
+        switch (buttonType) {
+            case HeaderBar::ButtonType::Spread_Button: {
+                if (this->width() < 600) {
+                    this->setFixedWidth(600);
+                } else {
+                    this->setFixedWidth(PropertiesWindow::s_windowWidth);
+                }
+                break;
+            }
+            case HeaderBar::ButtonType::Minimize_Button: {
+                KWindowSystem::minimizeWindow(this->winId());
+                this->showMinimized();
+                break;
+            }
+            case HeaderBar::ButtonType::Close_Button: {
+                this->close();
+                break;
+            }
+        }
+    });
+
     QString windowTitle = "";
     QString iconName = "system-file-manager";
 
@@ -279,7 +320,12 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
         } else {
             qDebug() << __FILE__ << __FUNCTION__ << "fileInfo is null :" << (m_fileInfo.get() == nullptr);
             if (m_fileInfo) {
-                windowTitle = m_fileInfo.get()->displayName();
+                //fix bug:#82320
+                if (QRegExp("^file:///data/usershare(/{,1})$").exactMatch(m_fileInfo->uri())) {
+                    windowTitle = tr("usershare");
+                } else {
+                    windowTitle = m_fileInfo.get()->displayName();
+                }
                 iconName = m_fileInfo.get()->iconName();
             }
         }
@@ -291,10 +337,8 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
         iconName = getIconName();
     }
 
-    QIcon fileIcon = QIcon::fromTheme(iconName, QIcon::fromTheme("text-x-generic"));
-
-    this->setWindowIcon(fileIcon);
-    this->setWindowTitle(windowTitle);
+    headerBar->setIcon(iconName);
+    headerBar->setTitle(windowTitle);
 }
 
 void PropertiesWindow::notDir()
@@ -344,14 +388,14 @@ void PropertiesWindow::gotoAboutComputer()
 {
     QProcess p;
     p.setProgram("ukui-control-center");
-    //-a para to show about computer infos
-    p.setArguments(QStringList() << "-a");
+    //-m About para to show about computer infos, related to bug#88258
+    p.setArguments(QStringList()<<"-m" << "About");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     p.startDetached();
 #else
-    p.startDetached("ukui-control-center", QStringList()<<"-a");
-    p.waitForFinished(-1);
+    p.startDetached("ukui-control-center", QStringList()<<"-m" << "About");
 #endif
+    p.waitForFinished(-1);
 }
 
 /*!
@@ -360,43 +404,35 @@ void PropertiesWindow::gotoAboutComputer()
  */
 void PropertiesWindow::initStatusBar()
 {
-    QStatusBar *statusBar = new QStatusBar(this);
+    QToolBar *bottomToolBar = new QToolBar(this);
+    bottomToolBar->setMovable(false);
+    bottomToolBar->setMinimumHeight(64);
+    bottomToolBar->setContentsMargins(0, 0, 0, 12);
+    bottomToolBar->setStyleSheet("QToolBar{border-color: transparent;border: none;}");
 
-    //    statusBar->setFixedSize(PropertiesWindow::s_windowWidth,64);
-    statusBar->setMinimumSize(PropertiesWindow::s_windowWidth, 64);
-
-    // use button-box  暂时不能使用button box实现底部按钮
-    //    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal,statusBar);
-    //    buttonBox->setMinimumSize(PropertiesWindow::s_windowWidth,64);
-    //    buttonBox->setContentsMargins(0,0,16,0);
-
-    //    QPushButton *cancelButton = buttonBox->addButton(tr("Cancel"),QDialogButtonBox::RejectRole);
-    //    QPushButton *okButton = buttonBox->addButton(tr("Ok"),QDialogButtonBox::AcceptRole);
-
-    //    okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
-    //    cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
-
-    //    statusBar->addWidget(buttonBox);
+    QWidget *container = new QWidget(bottomToolBar);
+    container->setContentsMargins(0, 0, 0, 0);
+    container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     //use HBox-layout
-    QHBoxLayout *bottomToolLayout = new QHBoxLayout(statusBar);
+    QHBoxLayout *bottomToolLayout = new QHBoxLayout(container);
+    bottomToolLayout->setSpacing(16);
+    bottomToolLayout->setContentsMargins(24, 0, 24, 12);
 
-    QPushButton *okButton = new QPushButton(tr("Ok"), statusBar);
-    QPushButton *cancelButton = new QPushButton(tr("Cancel"), statusBar);
+    QPushButton *okButton = new QPushButton(tr("Ok"), container);
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"), container);
 
     okButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
     cancelButton->setMinimumSize(PropertiesWindow::s_bottomButtonSize);
 
-    bottomToolLayout->addWidget(okButton);
+    bottomToolLayout->addStretch(1);
     bottomToolLayout->addWidget(cancelButton);
+    bottomToolLayout->addWidget(okButton);
 
-    okButton->move(344, 16);
-    cancelButton->move(236, 16);
+    container->setLayout(bottomToolLayout);
 
-    statusBar->setLayout(bottomToolLayout);
-
-    this->setStatusBar(statusBar);
-    statusBar->setSizeGripEnabled(false);
+    bottomToolBar->addWidget(container);
+    this->addToolBar(Qt::ToolBarArea::BottomToolBarArea, bottomToolBar);
 
     //set cancelButton event process
     connect(cancelButton, &QPushButton::clicked, this, &QMainWindow::close);
@@ -559,12 +595,55 @@ QString PropertiesWindow::rebuildUriBySchema(QString &uri)
     return uri;
 }
 
+bool PropertiesWindow::handleKMREUri(QString &uri)
+{
+//    bool kmreIsInstalled = false;
+//    for (VFSPluginIface *vfs : VFSPluginManager::getInstance()->registeredPlugins()) {
+//        if (vfs->uriScheme() == "kmre://") {
+//            kmreIsInstalled = true;
+//            break;
+//        }
+//    }
+//
+//    if (!kmreIsInstalled) {
+//        return false;
+//    }
+
+    if (uri == "kmre:///") {
+        uid_t uid = geteuid();
+        struct passwd *pw = getpwuid(uid);
+        if (!pw) {
+            return false;
+        }
+        uri = QString("file:///var/lib/kmre/data/kmre-%1-%2").arg(QString::number(uid)).arg(QString(pw->pw_name));
+
+    } else if (uri.contains("&real-path:")) {
+        //kmre:///picture&real-path:/var/lib
+        uri = "file://" + uri.split("&real-path:").last();
+
+    } else {
+
+    }
+
+    return true;
+}
+
+void PropertiesWindow::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.fillRect(this->rect(), this->palette().base());
+
+    QWidget::paintEvent(event);
+}
+
 //properties window
 PropertiesWindowPrivate::PropertiesWindowPrivate(const QStringList &uris, QWidget *parent) : QTabWidget(parent)
 {
     setTabsClosable(false);
     setMovable(false);
     setContentsMargins(0, 0, 0, 0);
+    //重写subElementRect设置居中
+    setStyle(new tabWidgetStyle);
 
     //监听悬浮事件
     this->tabBar()->setAttribute(Qt::WA_Hover, true);
@@ -593,15 +672,42 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             //设置按钮的左右上下偏移
             QRect rect = tab->rect;
-            //顶部下移8px
-            rect.setTop(rect.y() + 8);
-            //底部上移8px
-            rect.setBottom((rect.y() + rect.height()) - 8);
-            //左侧移动4px
-            rect.setLeft(rect.x() + 4);
-            //右侧移动2px
-            rect.setRight((rect.x() + rect.width()) - 2);
+            //左侧移动1px
+            rect.setLeft(rect.x() + 1);
+            //右侧移动1px
+            rect.setRight((rect.x() + rect.width())-2);
+            QPainterPath path;
+            const qreal radius = 6;
+            if(tab->position == QStyleOptionTab::Beginning)
+            {
+                path.moveTo(rect.topRight());
+                path.lineTo(rect.topLeft() + QPointF(radius, 0));
+                path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+                path.lineTo(rect.bottomLeft() - QPointF(0, radius));
+                path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+                path.lineTo(rect.bottomRight());
+                path.lineTo(rect.topRight());
 
+            }
+            else if(tab->position == QStyleOptionTab::End)
+            {
+                path.moveTo(rect.topRight() - QPointF(radius, 0));
+                path.lineTo(rect.topLeft());
+                path.lineTo(rect.bottomLeft() );
+                path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+                path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+                path.lineTo(rect.topRight() + QPointF(0, radius));
+                path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+            }
+            else if(tab->position == QStyleOptionTab::OnlyOneTab)
+            {
+                path.addRoundedRect(rect, radius, radius);
+            }
+            else
+            {
+                path.addRect(rect);
+            }
             const QPalette &palette = widget->palette();
 
             //未选中时文字颜色 - Text color when not selected
@@ -609,11 +715,11 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
 
             if (tab->state & QStyle::State_Selected) {
                 painter->save();
-                painter->setPen(palette.color(QPalette::Highlight));
+                painter->setPen(Qt::NoPen);
                 painter->setBrush(palette.brush(QPalette::Highlight));
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect, 4, 4);
+                painter->drawPath(path);
                 painter->restore();
 
                 //选中时文字颜色 - Text color when selected
@@ -621,23 +727,21 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
             } else if (tab->state & QStyle::State_MouseOver) {
                 painter->save();
                 QColor color = palette.color(QPalette::Highlight).lighter(140);
-                painter->setPen(color);
+                painter->setPen(Qt::NoPen);
                 painter->setBrush(color);
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect,4,4);
-
+                painter->drawPath(path);
                 painter->restore();
                 //选中时文字颜色 - Text color when selected
                 painter->setPen(palette.color(QPalette::BrightText));
-            } else if (tab->state & QStyle::State_MouseOver) {
+            } else {
                 painter->save();
-                QColor color = palette.color(QPalette::Highlight).lighter(140);
-                painter->setPen(color);
-                painter->setBrush(color);
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(palette.color(QPalette::Button));
 
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-                painter->drawRoundedRect(rect, 4, 4);
+                painter->drawPath(path);
                 painter->restore();
             }
 
@@ -669,4 +773,149 @@ QSize tabStyle::sizeFromContents(QStyle::ContentsType ct, const QStyleOption *op
     }
 
     return barSize;
+}
+
+QRect tabWidgetStyle::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch(element)
+    {
+        case SE_TabWidgetTabBar:
+        {
+            //解决QTabBar设置为居中
+            if (const QStyleOptionTabWidgetFrame *twf = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))
+            {
+                QRect rect = QRect(QPoint(0, 0), twf->tabBarSize);
+
+                rect.moveLeft((twf->rect.size() - twf->leftCornerWidgetSize - twf->rightCornerWidgetSize - twf->tabBarSize).width() / 2);
+                return rect;
+            }
+            break;
+
+        }
+    default:
+        break;
+
+    }
+    return QProxyStyle::subElementRect(element, option, widget);
+}
+
+HeaderBar::HeaderBar(QWidget *parent) : QToolBar(parent)
+{
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    setStyleSheet("QToolBar{border-color: transparent;border:none;}");
+
+    setFixedHeight(40);
+    setContentsMargins(0, 0, 0, 0);
+    setMovable(false);
+
+    initUI();
+}
+
+void HeaderBar::initUI()
+{
+    QWidget *mainWidget = new QWidget(this);
+    mainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setAlignment(Qt::AlignVCenter);
+    layout->setSpacing(4);
+    layout->setContentsMargins(8, 2, 8, 2);
+
+    mainWidget->setLayout(layout);
+
+    m_iconLabel = new QLabel(this);
+    m_titleLabel = new QLabel(this);
+
+    m_iconLabel->setFixedSize(24, 24);
+    m_titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QToolButton *spreadButton = new QToolButton(this);
+    QToolButton *minimizeButton = new QToolButton(this);
+    QToolButton *closeButton = new QToolButton(this);
+
+    spreadButton->setIconSize(QSize(16, 16));
+    minimizeButton->setIconSize(QSize(16, 16));
+    closeButton->setIconSize(QSize(16, 16));
+
+    spreadButton->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
+    minimizeButton->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
+    closeButton->setIcon(QIcon::fromTheme("window-close-symbolic"));
+
+    spreadButton->setToolTip(tr("Spread"));
+    minimizeButton->setToolTip(tr("Minimize"));
+    closeButton->setToolTip(tr("Close"));
+
+    auto palette = qApp->palette();
+    palette.setColor(QPalette::Highlight, QColor("#E54A50"));
+    closeButton->setPalette(palette);
+
+    layout->addWidget(m_iconLabel, 1, Qt::AlignLeft);
+    layout->addWidget(m_titleLabel, 9, Qt::AlignLeft);
+    layout->addWidget(spreadButton, 1, Qt::AlignRight);
+    layout->addWidget(minimizeButton, 1, Qt::AlignRight);
+    layout->addWidget(closeButton, 1, Qt::AlignRight);
+
+    m_buttonList.append(spreadButton);
+    m_buttonList.append(minimizeButton);
+    m_buttonList.append(closeButton);
+
+    for (QToolButton *button : m_buttonList) {
+        button->setFixedSize(36, 36);
+        button->setAutoRaise(true);
+
+        button->setProperty("isWindowButton", 1);
+        button->setProperty("useIconHighlightEffect", 0x2);
+    }
+    closeButton->setProperty("isWindowButton", 2);
+    closeButton->setProperty("useIconHighlightEffect", 0x8);
+
+    this->addWidget(mainWidget);
+
+    spreadButton->hide();
+
+    connect(spreadButton, &QToolButton::clicked, this, [=] {
+        Q_EMIT buttonClicked(ButtonType::Spread_Button);
+        m_titleLabel->setText(m_title);
+        resetTitle();
+    });
+
+    connect(minimizeButton, &QToolButton::clicked, this, [=] {
+        Q_EMIT buttonClicked(ButtonType::Minimize_Button);
+    });
+
+    connect(closeButton, &QToolButton::clicked, this, [=] {
+        Q_EMIT buttonClicked(ButtonType::Close_Button);
+    });
+}
+
+void HeaderBar::setTitle(const QString &title)
+{
+    m_title = title;
+    m_titleLabel->setText(m_title);
+    m_titleLabel->setToolTip(m_title);
+}
+
+void HeaderBar::setIcon(const QString &iconName)
+{
+    QIcon icon = QIcon::fromTheme(iconName, QIcon::fromTheme("text-x-generic"));
+    m_iconLabel->setPixmap(icon.pixmap(24, 24));
+}
+
+void HeaderBar::paintEvent(QPaintEvent *event)
+{
+    resetTitle();
+    QToolBar::paintEvent(event);
+}
+
+void HeaderBar::resetTitle()
+{
+    quint32 titleLength = m_titleLabel->fontMetrics().width(m_title);
+    //左右边距8，组件间距4，按钮组件36px宽 (8*2 + 4*4 + 36*4) = 176
+    quint32 labelLength = this->width() - 176;
+
+    if (titleLength > labelLength) {
+        QString title = m_titleLabel->fontMetrics().elidedText(m_title ,Qt::ElideMiddle ,labelLength);
+        m_titleLabel->setText(title);
+    }
 }

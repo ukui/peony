@@ -93,7 +93,8 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/thumbnail-manager.h
   libpeony-qt/volume-manager.cpp
   libpeony-qt/volume-manager.h
-Copyright: 2020, 2021, KylinSoft Co., Ltd.
+  libpeony-qt/peony-log.h
+Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/controls/*
@@ -187,6 +188,11 @@ Files: libpeony-qt/file-operation/file-operation-error-dialog-base.cpp
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
+Files: libpeony-qt/file-copy.cpp
+  libpeony-qt/file-copy.h
+Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-3+
+
 Files: libpeony-qt/file-operation/file-operation-test/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
@@ -212,6 +218,8 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/side-bar-favorite-item.h
   libpeony-qt/model/side-bar-file-system-item.cpp
   libpeony-qt/model/side-bar-file-system-item.h
+  libpeony-qt/model/side-bar-vfs-item.cpp
+  libpeony-qt/model/side-bar-vfs-item.h
   libpeony-qt/model/side-bar-model.cpp
   libpeony-qt/model/side-bar-model.h
   libpeony-qt/model/side-bar-personal-item.cpp
@@ -243,11 +251,15 @@ Files: libpeony-qt/thumbnail/*
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
-Files: libpeony-qt/thumbnail/generic-thumbnailer.cpp
-  libpeony-qt/thumbnail/generic-thumbnailer.h
-  libpeony-qt/thumbnail/thumbnail-job.cpp
-  libpeony-qt/thumbnail/thumbnail-job.h
-Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+Files: libpeony-qt/thumbnail/pdf-thumbnail.cpp
+  libpeony-qt/thumbnail/pdf-thumbnail.h
+  libpeony-qt/thumbnail/office-thumbnail.cpp
+  libpeony-qt/thumbnail/office-thumbnail.h
+  libpeony-qt/thumbnail/video-thumbnail.cpp
+  libpeony-qt/thumbnail/video-thumbnail.h
+  libpeony-qt/thumbnail/image-pdf-thumbnail.cpp
+  libpeony-qt/thumbnail/image-pdf-thumbnail.h
+Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
@@ -272,7 +284,15 @@ Files: libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
   libpeony-qt/vfs/search-vfs-uri-parser.h
   libpeony-qt/vfs/vfs-plugin-manager.cpp
   libpeony-qt/vfs/vfs-plugin-manager.h
-Copyright: 2020, 2021, KylinSoft Co., Ltd.
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
+  libpeony-qt/vfs/favorite-vfs-file-enumerator.h
+  libpeony-qt/vfs/favorite-vfs-file-monitor.cpp
+  libpeony-qt/vfs/favorite-vfs-file-monitor.h
+  libpeony-qt/vfs/favorite-vfs-file.cpp
+  libpeony-qt/vfs/favorite-vfs-file.h
+  libpeony-qt/vfs/favorite-vfs-register.cpp
+  libpeony-qt/vfs/favorite-vfs-register.h
+Copyright: 2020, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/windows/*
@@ -292,6 +312,12 @@ License: GPL-3+
 
 Files: peony-qt-desktop/desktop-icon-view.cpp
   peony-qt-desktop/desktop-index-widget.cpp
+  peony-qt-desktop/bw-list-info.cpp
+  peony-qt-desktop/bw-list-info.h
+  peony-qt-desktop/peony-dbus-service.cpp
+  peony-qt-desktop/peony-dbus-service.h
+  peony-qt-desktop/peony-json-operation.cpp
+  peony-qt-desktop/peony-json-operation.h
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
@@ -335,6 +361,11 @@ Files: src/peony-application.cpp
   src/peony-main.cpp
 Copyright: 2020, KylinSoft Co., Ltd.
 License: GPL-3+
+
+Files: src/peony-screen.cpp
+  src/peony-screen.h
+Copyright: 2020, KylinSoft Co., Ltd.
+License: LGPL-3+
 
 Files: translations/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
@@ -388,6 +419,7 @@ License: GPL-3.0+
  Version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
 License: LGPL-3+
+ This software is Copyright (c) 2020 by KylinSoft Co., Ltd.
  This is free software, licensed under:
  The GNU Lesser General Public License, Version 3, June 2007
  This program is free software; you can redistribute it and/or modify it

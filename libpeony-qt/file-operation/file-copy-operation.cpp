@@ -93,6 +93,14 @@ ExceptionResponse FileCopyOperation::prehandle(GError *err)
             return Other;
     }
 
+    /**
+     * @note FIX BUG 79363
+     * 文件传输中拔掉U盘，第一次报错:G_IO_ERROR_FAILED，后续报错:G_IO_ERROR_NOT_FOUND
+     */
+    if (G_IO_ERROR_NOT_FOUND == err->code && m_prehandle_hash.contains(G_IO_ERROR_FAILED)) {
+        return IgnoreAll;
+    }
+
     if (G_IO_ERROR_EXISTS == err->code && m_is_duplicated_copy) {
         return BackupAll;
     }
@@ -130,7 +138,8 @@ void FileCopyOperation::copyRecursively(FileNode *node)
 
 fallback_retry:
     QString destFileUri = node->resolveDestFileUri(m_dest_dir_uri);
-    QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
+    //QUrl destFileUrl = Peony::FileUtils::urlEncode(destFileUri);
+    destFileUri = FileUtils::urlEncode(destFileUri);
     node->setDestUri(destFileUri);
     QString srcUri = node->uri();
     qDebug()<<"dest file uri:"<<destFileUri;

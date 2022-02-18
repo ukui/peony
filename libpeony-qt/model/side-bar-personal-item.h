@@ -26,9 +26,12 @@
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
 
+#include <memory>
+
 namespace Peony {
 
 class SideBarModel;
+class FileWatcher;
 class PEONYCORESHARED_EXPORT SideBarPersonalItem : public SideBarAbstractItem
 {
     Q_OBJECT
@@ -78,12 +81,17 @@ public Q_SLOTS:
     void clearChildren() override {}
 
 private:
+    void initWatcher();
+
     SideBarPersonalItem *m_parent = nullptr;
 
     bool m_is_root_child = false;
     QString m_uri = nullptr;
     QString m_display_name = nullptr;
     QString m_icon_name = nullptr;
+
+    std::shared_ptr<FileWatcher> m_watcher = nullptr;
+
 };
 
 }

@@ -69,6 +69,9 @@ public:
     const virtual QStringList getSelections() {
         return QStringList();
     }
+    const virtual int getRowcount(){
+        return -1;
+    }
 
     //children
     const virtual QStringList getAllFileUris() {
@@ -102,6 +105,7 @@ Q_SIGNALS:
     void viewDoubleClicked(const QString &uri);
     void viewDirectoryChanged();
     void viewSelectionChanged();
+    void viewSelectionStatus(bool isSelected);
     void sortTypeChanged(int type);
     void sortOrderChanged(Qt::SortOrder order);
 
@@ -115,6 +119,8 @@ Q_SIGNALS:
     void updateWindowLocationRequest(const QString &uri);
 
     void updateWindowSelectionRequest(const QStringList &uris);
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+
 
 public Q_SLOTS:
     virtual void bindModel(FileItemModel *model, FileItemProxyFilterSortModel *proxyModel) {}
@@ -130,6 +136,7 @@ public Q_SLOTS:
     //selections
     virtual void setSelections(const QStringList &uris) {}
     virtual void invertSelections() {}
+    virtual void selectAll() {}
     virtual void scrollToSelection(const QString &uri) {}
 
     //clipboard
@@ -148,6 +155,8 @@ public Q_SLOTS:
 
     //zoom
     virtual void setCurrentZoomLevel(int zoomLevel) {}
+    virtual void multiSelect(){}
+    virtual void disableMultiSelect(){}
 };
 
 }

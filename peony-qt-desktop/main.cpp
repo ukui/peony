@@ -21,7 +21,6 @@
  */
 
 #include "peony-desktop-application.h"
-#include "waylandoutputmanager.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -30,7 +29,6 @@
 #include <stdlib.h>
 #include <QTime>
 #include <QFile>
-#include <QThread>
 
 #include <QStandardPaths>
 
@@ -80,7 +78,6 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
-    //qputenv("QT_QPA_PLATFORM", "wayland");
     PeonyDesktopApplication::peony_desktop_start_time = QDateTime::currentMSecsSinceEpoch();
 //    initUkuiLog4qt("peony-desktop");
     qInstallMessageHandler(messageOutput);
@@ -96,13 +93,6 @@ int main(int argc, char *argv[])
     PeonyDesktopApplication a(argc, argv, id);
     if (a.isRunning())
         return 0;
-
-//    WaylandOutputManager waylandOutputManager;
-//    QThread waylandThread;
-//    waylandOutputManager.moveToThread(&waylandThread);
-//    QObject::connect(&waylandThread, &QThread::started, &waylandOutputManager, &WaylandOutputManager::run);
-//    QObject::connect(&a, &PeonyDesktopApplication::requestSetUKUIOutputEnable, &waylandOutputManager, &WaylandOutputManager::setUKUIOutputEnable);
-//    waylandThread.start();
 
     QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
                                                           "/org/gnome/SessionManager",

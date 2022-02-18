@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets gui concurrent xml KWindowSystem dbus
+QT       += core widgets gui concurrent xml KWindowSystem dbus x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += printsupport
 
@@ -42,7 +42,8 @@ include(libpeony-qt.pri)
 
 TRANSLATIONS += ../translations/libpeony-qt/libpeony-qt_zh_CN.ts \
                 ../translations/libpeony-qt/libpeony-qt_tr.ts \
-                ../translations/libpeony-qt/libpeony-qt_cs.ts
+                ../translations/libpeony-qt/libpeony-qt_cs.ts \
+                ../translations/libpeony-qt/libpeony-qt_bo_CN.ts
 
 DESTDIR += $$PWD
 
@@ -82,9 +83,4 @@ unix {
     QM_FILES_INSTALL_PATH = /usr/share/libpeony-qt
 }
 
-HEADERS += \
-    file-copy.h
-
-SOURCES += \
-    file-copy.cpp
 

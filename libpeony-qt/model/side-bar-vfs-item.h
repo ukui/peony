@@ -25,17 +25,20 @@
 
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
+#include "gerror-wrapper.h"
 
 namespace Peony {
 
 class SideBarModel;
-class VFSPluginIface;
+class FileEnumerator;
+class FileWatcher;
 
 class PEONYCORESHARED_EXPORT SideBarVFSItem : public SideBarAbstractItem
 {
     Q_OBJECT
 public:
-    explicit SideBarVFSItem(VFSPluginIface *plugin, SideBarModel *model, QObject *parent = nullptr);
+    explicit SideBarVFSItem(const QString& uri, SideBarVFSItem* parentItem, SideBarModel *model, QObject *parent = nullptr);
+    ~SideBarVFSItem();
 
     Type type() override {
         return SideBarAbstractItem::FileSystemItem;
@@ -46,50 +49,26 @@ public:
     QString iconName() override;
 
     bool hasChildren() override {
-        return false;
+        return true;
     }
-
-    bool isRemoveable() override {
-        return false;
-    }
-    bool isEjectable() override {
-        return false;
-    }
-    bool isMountable() override {
-        return false;
-    }
-
-    //TODO: monitoring the mount state
-    bool isMounted() override {
-        return false;
-    }
-
-    QModelIndex firstColumnIndex() override;
-    QModelIndex lastColumnIndex() override;
-
     SideBarAbstractItem *parent() override {
-        return nullptr;
+        return m_parentItem;
     }
 
 public Q_SLOTS:
-    void eject(GMountUnmountFlags ejectFlag) override {}
-    void unmount() override {}
-    void format() override {}
-
-    void ejectOrUnmount() override {}
-
-    void onUpdated() override {}
-
-    void findChildren() override {}
-    void findChildrenAsync() override {}
-    void clearChildren() override {}
+    void findChildren() override;
+    void findChildrenAsync() override;
+    void clearChildren() override;
+    void slot_enumeratorFinish(bool successed);/* 遍历完成 */
+    void slot_fileCreate(const QString& uri);/* 增加 */
+    void slot_fileDelete(const QString& uri);/* 删除 */
+    void slot_fileSafeLocked(const QString& uri);/* 锁定 */
+    void slot_fileSafeUpdate(const QString& uri);/* 用于文件保护箱解锁/锁定时更新icon */
 
 private:
-    VFSPluginIface *m_plugin = nullptr;
-
-    QString m_uri;
-    QString m_display_name;
-    SideBarModel *m_model = nullptr;
+    SideBarVFSItem *m_parentItem = nullptr;
+    FileEnumerator *m_enumerator = nullptr;
+    std::shared_ptr<FileWatcher> m_watcher = nullptr;
 };
 
 }

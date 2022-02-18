@@ -92,7 +92,6 @@ class DefaultOpenWithWidget : public QWidget
 Q_OBJECT
 
 private:
-    FileLaunchAction* m_launchAction = nullptr;
     QLabel*           m_appNameLabel = nullptr;
     QLabel*           m_appIconLabel = nullptr;
     QHBoxLayout*      m_layout       = nullptr;
@@ -113,15 +112,25 @@ public:
      */
     void setAppName(QString appName);
 
-    /*!
-     * \brief 获取当前打开方式
-     */
-    FileLaunchAction* getLaunchAction();
-
     void setLaunchAction(FileLaunchAction* launchAction);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+};
+
+class OpenWithGlobalData : public QObject
+{
+public:
+    explicit OpenWithGlobalData(QObject *parent = nullptr);
+
+    DefaultOpenWithWidget *createWidgetForUri(const QString &uri, QWidget *parent = nullptr);
+    FileLaunchAction *getActionByUri(const QString &uri);
+    void setActionForUri(FileLaunchAction *newAction, bool needUpdate = true);
+    void removeAction(const QString &uri);
+
+private:
+    QMap<QString, QList<DefaultOpenWithWidget*>*> m_openWithWidgetMap;
+    QMap<QString, FileLaunchAction*> m_newActionMap;
 };
 
 //open with page
@@ -136,6 +145,8 @@ public:
      * \return
      */
     static DefaultOpenWithWidget* createDefaultOpenWithWidget(const QString &uri, QWidget *parent = nullptr);
+    static void setNewLaunchAction(FileLaunchAction* newAction, bool needUpdate = true);
+    static OpenWithGlobalData *openWithGlobalData;
 
 public:
     void initFloorOne();
@@ -164,7 +175,6 @@ private:
     std::shared_ptr<FileInfo> m_fileInfo  = nullptr;
     QFutureWatcher<void> *m_futureWatcher = nullptr;
     //新的打开方式
-    FileLaunchAction *m_newAction      = nullptr;
     LaunchHashList   *m_launchHashList = nullptr;
     //默认打开方式
     DefaultOpenWithWidget* m_defaultOpenWithWidget = nullptr;

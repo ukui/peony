@@ -13,9 +13,118 @@
       <summary>show hide file</summary>
       <description>show hide files in peony and peony-desktop</description>
     </key>
+
+    <key type="b" name="allow-file-op-parallel">
+      <default>true</default>
+      <summary>allow file op parallel</summary>
+      <description>Allow parallel operations</description>
+    </key>
+
+    <key type="b" name="resident">
+      <default>false</default>
+      <summary>resident backstage</summary>
+      <description>resident backstage</description>
+    </key>
+
+    <key type="b" name="chinese-first">
+      <default>true</default>
+      <summary>chinese first</summary>
+      <description>chinese first</description>
+    </key>
+
+    <key type="b" name="folder-first">
+      <default>true</default>
+      <summary>folder first</summary>
+      <description>folder first</description>
+    </key>
+
+    <key type="b" name="do-not-thumbnail">
+      <default>true</default>
+      <summary>do not thumbnail</summary>
+      <description>Do not display thumbnails</description>
+    </key>
+
+    <key type="i" name="default-sidebar-width">
+      <default>260</default>
+      <summary>default sidebar width</summary>
+      <description>sidebar width</description>
+    </key>
+
+    <key type="i" name="default-window-width">
+      <default>1160</default>
+      <summary>default window width</summary>
+      <description>window width</description>
+    </key>
+
+    <key type="i" name="default-window-height">
+      <default>675</default>
+      <summary>default window height</summary>
+      <description>window height</description>
+    </key>
+
+    <key type="i" name="last-desktop-sort-order">
+      <default>0</default>
+      <summary>last desktop sort order</summary>
+      <description>last desktop sort order</description>
+    </key>
+
+    <key type="i" name="sort-column">
+      <default>0</default>
+      <summary>sort column</summary>
+      <description>sort column</description>
+    </key>
+
+    <key type="i" name="sort-order">
+      <default>0</default>
+      <summary>sort order</summary>
+      <description>sort order, 'xxx'</description>
+    </key>
+
+    <key type="i" name="sort-type">
+      <default>0</default>
+      <summary>sort type</summary>
+      <description>sort type, 'xxx'</description>
+    </key>
+
+    <key type="s" name="templates-dir">
+      <default>''</default>
+      <summary>templates dir</summary>
+      <description>templates dir</description>
+    </key>
+
     <!--directory-view-->
+    <key type="b" name="multi-select-checkbox-enabled">
+      <default>true</default>
+      <summary>multi-select with checkbox</summary>
+      <description>determe wether support multi select with checkbox</description>
+    </key>
+
+    <key type="s" name="default-view-id">
+      <default>'Icon View'</default>
+      <summary>default view id</summary>
+      <description>default view type</description>
+    </key>
+
+    <key type="i" name="default-view-zoom-level">
+      <default>25</default>
+      <summary>default view zoom level</summary>
+      <description>default view zoom level</description>
+    </key>
 
     <!--remote-server-->
+
+    <!--status-bar-->
+    <key type="b" name="zoom-slider-visible">
+      <default>true</default>
+      <summary>show zoom slider</summary>
+      <description>determe wether status bar zoom slider is visible</description>
+    </key>
+
+    <key type="i" name="default-desktop-zoom-level">
+      <default>2</default>
+      <summary>default desktop icon view zoom level</summary>
+      <description>1 is smallest, 4 is largest</description>
+    </key>
 
   </schema>
 </schemalist>

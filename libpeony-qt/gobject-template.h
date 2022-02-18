@@ -83,17 +83,17 @@ typedef std::shared_ptr<GObjectTemplate<GIcon>> GIconWrapperPtr;
 typedef std::shared_ptr<GObjectTemplate<GThemedIcon>> GThemedIconWrapperPtr;
 typedef std::shared_ptr<GObjectTemplate<GCancellable>> GCancellableWrapperPtr;
 
-std::shared_ptr<GObjectTemplate<GFile>> wrapGFile(GFile *file);
-std::shared_ptr<GObjectTemplate<GFileInfo>> wrapGFileInfo(GFileInfo *info);
-std::shared_ptr<GObjectTemplate<GFileEnumerator>> wrapGFileEnumerator(GFileEnumerator *enumerator);
-std::shared_ptr<GObjectTemplate<GFileMonitor>> wrapGFileMonitor(GFileMonitor *monitor);
-std::shared_ptr<GObjectTemplate<GVolumeMonitor>> wrapGVolumeMonitor(GVolumeMonitor *monitor);
-std::shared_ptr<GObjectTemplate<GDrive>> wrapGDrive(GDrive *drive);
-std::shared_ptr<GObjectTemplate<GVolume>> wrapGVolume(GVolume *volume);
-std::shared_ptr<GObjectTemplate<GMount>> wrapGMount(GMount *mount);
-std::shared_ptr<GObjectTemplate<GIcon>> wrapGIcon(GIcon *icon);
-std::shared_ptr<GObjectTemplate<GThemedIcon>> wrapGThemedIcon(GThemedIcon *icon);
-std::shared_ptr<GObjectTemplate<GCancellable>> wrapGCancellable(GCancellable *cancellable);
+std::shared_ptr<GObjectTemplate<GFile>> PEONYCORESHARED_EXPORT wrapGFile(GFile *file);
+std::shared_ptr<GObjectTemplate<GFileInfo>> PEONYCORESHARED_EXPORT wrapGFileInfo(GFileInfo *info);
+std::shared_ptr<GObjectTemplate<GFileEnumerator>> PEONYCORESHARED_EXPORT wrapGFileEnumerator(GFileEnumerator *enumerator);
+std::shared_ptr<GObjectTemplate<GFileMonitor>> PEONYCORESHARED_EXPORT wrapGFileMonitor(GFileMonitor *monitor);
+std::shared_ptr<GObjectTemplate<GVolumeMonitor>> PEONYCORESHARED_EXPORT wrapGVolumeMonitor(GVolumeMonitor *monitor);
+std::shared_ptr<GObjectTemplate<GDrive>> PEONYCORESHARED_EXPORT wrapGDrive(GDrive *drive);
+std::shared_ptr<GObjectTemplate<GVolume>> PEONYCORESHARED_EXPORT wrapGVolume(GVolume *volume);
+std::shared_ptr<GObjectTemplate<GMount>> PEONYCORESHARED_EXPORT wrapGMount(GMount *mount);
+std::shared_ptr<GObjectTemplate<GIcon>> PEONYCORESHARED_EXPORT wrapGIcon(GIcon *icon);
+std::shared_ptr<GObjectTemplate<GThemedIcon>> PEONYCORESHARED_EXPORT wrapGThemedIcon(GThemedIcon *icon);
+std::shared_ptr<GObjectTemplate<GCancellable>> PEONYCORESHARED_EXPORT wrapGCancellable(GCancellable *cancellable);
 
 /*
 std::shared_ptr<GObjectTemplate<>> wrap() {

@@ -76,8 +76,10 @@ public:
     NO_BLOCKING static const QString getOriginalUri(const QString &uri);
 
     NO_BLOCKING static bool isStandardPath(const QString &uri);
+    NO_BLOCKING static bool isMobileDeviceFile(const QString &uri);
     NO_BLOCKING static bool isSamePath(const QString &uri, const QString &targetUri);
     NO_BLOCKING static bool containsStandardPath(const QStringList &list);
+    NO_BLOCKING static bool containsStandardPath(const QList<QUrl> &urls);
 
     BLOCKING static bool isFileExsit(const QString &uri);
 
@@ -95,11 +97,15 @@ public:
 
     BLOCKING static bool isFileUnmountable(const QString &uri);
     BLOCKING static double getDeviceSize(const gchar * device_name);
+    BLOCKING static quint64 getFileTotalSize(const QString &uri);
 
     static void handleVolumeLabelForFat32(QString &volumeName,const QString &unixDevcieName);
     static QString getUnixDevice(const QString &uri);
     static quint64 getFileSystemSize(QString uri);
     static QString getFileSystemType(QString uri);
+
+    static void   saveCreateTime (const QString& url);
+    static gint64 getCreateTimeOfMicro (const QString& url);
 private:
     FileUtils();
 };

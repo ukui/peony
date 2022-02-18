@@ -1,5 +1,7 @@
 INCLUDEPATH += $$PWD
 
+include(intel/intel-sidebar.pri)
+
 HEADERS += \
     $$PWD/file-label-box.h \
     $$PWD/header-bar.h \

@@ -32,6 +32,7 @@
 #include <QList>
 #include <QLineEdit>
 #include <QSignalMapper>
+#include <QProxyStyle>
 #include "navigation-tab-bar.h"
 #include "file-info.h"
 #include "tab-status-bar.h"
@@ -74,6 +75,7 @@ public:
 
     const QString getCurrentUri();
     const QStringList getCurrentSelections();
+    const int getCurrentRowcount();
 
     const QStringList getAllFileUris();
     const QList<std::shared_ptr<Peony::FileInfo>> getCurrentSelectionFileInfos();
@@ -120,6 +122,13 @@ Q_SIGNALS:
     void closeSearch();
     void recoverFromTrash();
     void currentSelectionChanged();
+    void tabBarIndexUpdate(int index);
+
+    void viewSelectStatus(bool isSelected);
+    void globalSearch(bool isGlobal);
+
+    void signal_itemAdded(const QString& uri);/* 新增文件（夹），item创建完成 */
+    void updateItemsNum(); /*显示隐藏文件，更新项目个数*/
 
 public Q_SLOTS:
     void setCurrentIndex(int index);
@@ -184,7 +193,13 @@ public Q_SLOTS:
     void browsePath();
 
     void handleZoomLevel(int zoomLevel);
-    void enableSearchBar(bool enable);
+    //void enableSearchBar(bool enable);
+
+    void updateCurrentSearchPath();
+    void switchSearchPath (bool isCurrent);
+
+    /* 设备卸载、弹出后，其所在标签页跳转到计算机页（保护箱标签除外），其余标签页均关闭 */
+    void slot_responseUnmounted(const QString &destUri, const QString &sourceUri);
 
 protected:
     void changeCurrentIndex(int index);
@@ -201,11 +216,14 @@ protected:
 
     QStringList getCurrentClassify(int rowCount);
 
+    void updateStatusBarSliderState();
+
 private:
     NavigationTabBar *m_tab_bar;
     QToolButton *m_add_page_button;
 
-    QWidget *m_tab_bar_bg;
+    //QWidget *m_tab_bar_bg;
+    QWidget *m_header_bar_bg;
 
     QStackedWidget *m_stack;
 
@@ -221,16 +239,20 @@ private:
     QToolBar *m_trash_bar;
     QToolBar *m_search_bar;
     QVBoxLayout *m_top_layout;
+    QHBoxLayout *m_header_bar_layout;
     QHBoxLayout *m_trash_bar_layout;
     QHBoxLayout *m_search_bar_layout;
     QLabel *m_trash_label;
     QPushButton *m_clear_button;
     QPushButton *m_recover_button;
-    QPushButton *m_search_path;
-    QPushButton *m_search_close;
-    QPushButton *m_search_child;
-    QPushButton *m_search_more;
+//    QPushButton *m_search_path;
+//    QPushButton *m_search_close;
+//    QPushButton *m_search_child;
+//    QPushButton *m_search_more;
     QLabel *m_search_title;
+//    QString m_current_uri;
+    QPushButton* m_current_search;
+    QPushButton* m_home_search;
 
     //use qlist for dynamic generated search conditions list
     QList<QHBoxLayout*> m_layout_list;
@@ -252,7 +274,7 @@ private:
     bool m_triggered_preview_page = false;
     bool m_show_search_list = false;
     bool m_show_search_bar = false;
-    bool m_search_child_flag = false;
+    bool m_search_child_flag = true;
 
     //Button size macro definition
     //change height to 36 to ensure max size font can show complete, link to bug#58824
@@ -287,6 +309,28 @@ public:
 
 Q_SIGNALS:
     void previewPageButtonTrigger(bool trigger, const QString &pluginId);
+};
+
+class PushButtonStyle : public QProxyStyle
+{
+    Q_OBJECT
+public:
+    static PushButtonStyle *getStyle();
+
+    PushButtonStyle() : QProxyStyle() {}
+
+    void drawControl(QStyle::ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget = nullptr) const;
+
+    int pixelMetric(PixelMetric metric,
+                    const QStyleOption *option = nullptr,
+                    const QWidget *widget = nullptr) const override;
+
+    QRect subElementRect(SubElement element,
+                         const QStyleOption *option,
+                         const QWidget *widget = nullptr) const;
 };
 
 #endif // TABWIDGET_H

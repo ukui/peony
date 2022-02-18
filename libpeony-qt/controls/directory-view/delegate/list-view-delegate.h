@@ -26,6 +26,7 @@
 #include <QStyledItemDelegate>
 #include <QTextEdit>
 #include "peony-core_global.h"
+#include "list-view.h"
 
 class QPushButton;
 
@@ -45,17 +46,20 @@ public:
                          const QModelIndex &index) const;
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    //QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
     //edit
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void setEditorData(QWidget *editor, const QModelIndex &index) const override;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    //void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    int getCurrentCheckboxColumn(){
+        return m_checkbox_column;
+    }
 
 private:
     QPushButton *m_styled_button;
+    int m_checkbox_column =3;
 };
 
 class TextEdit : public QTextEdit
