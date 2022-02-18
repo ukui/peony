@@ -236,7 +236,9 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
 
         //not show system orgin lost+found and sec_storage_data folder in DATA, fix bug#67084
         /* not show system orgin lost+found and bbox_logs folder in file:///data, fix bug#104820、bug#105714 */
-        if (targetUri.endsWith("data/lost+found",Qt::CaseInsensitive) || targetUri.endsWith("data/sec_storage_data",Qt::CaseInsensitive)||targetUri.endsWith("data/bbox_logs",Qt::CaseInsensitive))
+        if(targetUri.endsWith("data/bbox_logs",Qt::CaseInsensitive))
+            return false;
+        if (targetUri.endsWith("data/lost+found",Qt::CaseInsensitive) || targetUri.endsWith("data/sec_storage_data",Qt::CaseInsensitive))
         {
             if (! item->m_info->canWrite() && ! item->m_info->canExecute())
                return false;
