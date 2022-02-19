@@ -1,3 +1,4 @@
 usr/lib/*/*.so.*
 translations/libpeony-qt/* usr/share/libpeony-qt
-libpeony-qt/.qm/* usr/share/libpeony-qt
+#libpeony-qt/.qm/* usr/share/libpeony-qt
+usr/share/libpeony-qt/*.qm
