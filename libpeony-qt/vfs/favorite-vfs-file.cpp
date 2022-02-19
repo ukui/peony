@@ -31,7 +31,9 @@
 #include <QDebug>
 #include <bookmark-manager.h>
 
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
 
 static char* vfs_favorite_file_get_target_file (GFile* file);
 static void vfs_favorite_file_g_file_iface_init(GFileIface *iface);
