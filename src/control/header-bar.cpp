@@ -60,7 +60,9 @@
 
 #include <KWindowSystem>
 #include "global-settings.h"
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
 
 #include <QtConcurrent>
 #include <QAction>

@@ -29,7 +29,9 @@
 #include <QStandardPaths>
 #include <file-utils.h>
 
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
 
 extern bool kydroidInstall;
 extern QString kydroidPath;

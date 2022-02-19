@@ -56,7 +56,9 @@
 #include <pwd.h>
 #include <unistd.h>
 
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
 
 #include <QDebug>
 

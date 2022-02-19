@@ -22,7 +22,9 @@
 
 #include "global-settings.h"
 //ukui-interface
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
 
 #include <QtConcurrent>
 

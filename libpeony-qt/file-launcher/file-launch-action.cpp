@@ -39,7 +39,10 @@
 #include <recent-vfs-manager.h>
 #include <QApplication>
 
+#ifdef KYLIN_COMMON
 #include <ukuisdk/kylin-com4cxx.h>
+#endif
+
 #include <QDebug>
 #include <QtX11Extras/QX11Info>
 #include <kstartupinfo.h>
