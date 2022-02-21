@@ -88,7 +88,6 @@ Package: libpeony-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
          qtbase5-dev,
          libglib2.0-dev,
          libgsettings-qt-dev,
