@@ -23,7 +23,8 @@ Build-Depends: debhelper-compat (=12),
                libcanberra-dev,
                libukui-log4qt-dev,
                libkf5wayland-dev,
-               libwayland-dev
+               libwayland-dev,
+               libx11-xcb-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
