@@ -40,6 +40,7 @@ using namespace  Peony;
 static bool b_finished = false;
 static bool b_failed = false;
 static bool b_canClose = true;
+static double m_before_progress = 0;
 
 Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,QWidget *parent) /*:
     QDialog (parent),
@@ -108,9 +109,13 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
             mTimer->stop();
             return;
         }
-        if (val <= mProgress->maximum()) {
-            mProgress->setValue(++val);
-        }
+
+        //需要使用老的预估机制，修复完全擦除格式化在100%等待问题，关联 bug#105901
+        //Fix full clean format way waiting in 100% issue, link to bug#105901.
+        formatloop();
+//        if (val <= mProgress->maximum()) {
+//            mProgress->setValue(++val);
+//        }
     });
 
     fm_uris = m_uris;
@@ -356,6 +361,17 @@ void Format_Dialog::acceptFormat(bool)
     b_finished = false;
     b_failed = false;
 
+    //恢复之前被删除的代码，尝试修复在100%进度等待问题，bug#105901
+    if(full_clean){
+        //完全擦除方式格式化，预估为半小时，1秒更新一次
+        mTimer->setInterval(1000);
+        m_total_predict = 1800;
+    }else{
+        //快速格式化，预估时间为75S,0.5秒更新一次
+        mTimer->setInterval(500);
+        m_total_predict = 150;
+    }
+
     //while get ensure emit , do format 
     connect(this,&Format_Dialog::ensure_format, this, [=](bool){
         // time begin loop
@@ -426,7 +442,7 @@ void Format_Dialog::formatloop(){
 
     QString volname, devName, voldisplayname;
     static char name_dev[256] ={0};
-    char prestr[10] = {0};
+//    char prestr[10] = {0};
 
     //cost time count
     m_cost_seconds++;
@@ -451,11 +467,17 @@ void Format_Dialog::formatloop(){
         m_simulate_progress = pre;
     }
 
+    //防止看起来回退现象，进度值比之前还小了
+    if (m_simulate_progress < m_before_progress)
+        m_simulate_progress = m_before_progress;
+
+
     qDebug() << "formatloop predict and cost:" <<pre <<cost
              <<m_simulate_progress <<m_cost_seconds <<b_finished;
 
-    sprintf(prestr,"%.1f",m_simulate_progress);
-    strcat(prestr,"%");
+    m_before_progress = m_simulate_progress;
+//    sprintf(prestr,"%.1f",m_simulate_progress);
+//    strcat(prestr,"%");
 
     if(m_simulate_progress>=100){
         b_finished = true;
