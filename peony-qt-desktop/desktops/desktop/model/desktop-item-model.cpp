@@ -385,13 +385,25 @@ DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
         }
     });
 
-    QString homepath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString initfile = homepath + "/.cache/ukui-menu/ukui-menu.ini";
-    QSettings settings(initfile, QSettings::IniFormat);
-    QStringList keylist = settings.allKeys();
-    for (auto begin = keylist.begin(); begin != keylist.end(); ++begin) {
-        bool execable = settings.value(*begin).toBool();
-        enabelChange(*begin, execable);
+    if (g_isEdu) {
+        QString homepath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QString initfile = homepath + "/.cache/ukui-menu/ukui-menu.ini";
+        QSettings settings(initfile, QSettings::IniFormat);
+        settings.beginGroup("application");
+        QStringList keylist = settings.allKeys();
+        settings.endGroup();
+        if (keylist.count() == 0) {
+            //如果不存在app被禁用，那么清除所有.desktop文件metaInfo中的标记,防止图标异常置灰
+            QStringList files = getDesktopFiles();
+            for (QString &fileName: files) {
+                updateAppMetaInfo(fileName, true);
+            }
+        } else {
+            for (auto begin = keylist.begin(); begin != keylist.end(); ++begin) {
+                bool execable = settings.value(*begin).toBool();
+                enabelChange(*begin, execable);
+            }
+        }
     }
     //handle standard dir changing.
     m_dir_manager =new Peony::UserdirManager(this);
@@ -895,6 +907,17 @@ Qt::DropActions DesktopItemModel::supportedDropActions() const
     return QAbstractItemModel::supportedDropActions();
 }
 
+QStringList DesktopItemModel::getDesktopFiles()
+{
+    QString     desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QDir        dir(desktop);
+    QStringList nameFilters;
+    nameFilters << "*.desktop";
+    QStringList files = dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
+
+    return files;
+}
+
 void DesktopItemModel::enabelChange(QString exec, bool execenable)
 {
     /*!
@@ -903,10 +926,7 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
      * application can exec or not
     */
     QString     desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-    QDir        dir(desktop);
-    QStringList nameFilters;
-    nameFilters << "*.desktop";
-    QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+    QStringList files = getDesktopFiles();
     QString     appid;
 
     for (auto begin = files.begin(); begin != files.end(); ++begin) {
@@ -928,28 +948,46 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
         }
         if (lineStr == "1") {
             appid = *begin;
+            break;
         }
     }
-    if (appid == "") {
-        //qDebug() << "without this desktop file please check out input";
+
+    updateAppMetaInfo(appid, execenable);
+}
+
+void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable)
+{
+    if (appid.isEmpty()) {
         return;
     }
-    QString uri = "file://" + desktop + "/" + appid;
-    GFile*  file = g_file_new_for_uri(uri.toUtf8());
-    uri = g_file_get_uri(file);
-    auto metainfo = FileMetaInfo::fromUri(uri);
 
-    if (execenable)
-        metainfo->setMetaInfoInt("exec_disable",0);
-    else
-        metainfo->setMetaInfoInt("exec_disable",1);
+    qWarning("[DesktopItemModel::enabelChange] app id:%s, enabled:%d", appid.toLocal8Bit().data(), execEnable);
+
+    QString uri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/" + appid;
+    //使用glib编码uri...
+    GFile *file = g_file_new_for_uri(uri.toUtf8());
+    uri = g_file_get_uri(file);
+
+    auto fileInfo = FileInfo::fromUri(uri);
+    auto *job = new FileInfoJob(fileInfo);
+    job->querySync();
 
     g_object_unref(file);
 
-    auto view = m_view;
-    view->viewport()->update(view->viewport()->rect());
-}
+    auto metaInfo = fileInfo->metainfo();
+    if (!metaInfo) {
+        return;
+    }
 
+    if (execEnable) {
+        metaInfo->setMetaInfoInt("exec_disable", 0);
+    } else {
+        metaInfo->setMetaInfoInt("exec_disable", 1);
+    }
+    qWarning("[DesktopItemModel::enabelChange] success");
+
+    m_view->viewport()->update(m_view->viewport()->rect());
+}
 
 /*
 * 重命名desktop文件，会产生类似下面的临时文件
