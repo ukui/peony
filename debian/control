@@ -45,8 +45,7 @@ Depends: ${misc:Depends},
          libpeony3 (= ${binary:Version}),
          peony-common (= ${source:Version}),
          accountsservice,
-         bamfdaemon,
-         kylin-status-manager
+         bamfdaemon
 Recommends: gvfs-backends,
          peony-extensions(>=3.2.2+1015)
 Description: file Manager for the UKUI desktop
@@ -58,8 +57,7 @@ Description: file Manager for the UKUI desktop
 Package: peony-common
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends},
-         kylin-status-manager
+Depends: ${misc:Depends}
 Breaks: peony (<< 2.2.0-1)
 Replaces: peony (<< 2.2.0-1)
 Description: file manager for the UKUI desktop (common files)
@@ -77,8 +75,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          dvd+rw-tools,
-         gvfs,
-         kylin-status-manager
+         gvfs
 Provides: libpeony,
 Breaks: peony (<< 2.2.0-1),
         libpeony2
@@ -107,8 +104,7 @@ Depends: ${misc:Depends},
          libnotify-dev,
          libcanberra-dev,
          libukui-common-dev,
-         libpeony3 (= ${binary:Version}),
-         kylin-status-manager
+         libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)
  Peony is the official file manager for the UKUI desktop. It allows one
  to browse directories, preview files and launch applications associated
