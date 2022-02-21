@@ -198,6 +198,11 @@ Files: libpeony-qt/model/file-item-model.cpp
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
+Files: libpeony-qt/model/side-bar-cloud-item.cpp
+  libpeony-qt/model/side-bar-cloud-item.h
+Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-3+
+
 Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/file-item-proxy-filter-sort-model.cpp
   libpeony-qt/model/file-item-proxy-filter-sort-model.h
