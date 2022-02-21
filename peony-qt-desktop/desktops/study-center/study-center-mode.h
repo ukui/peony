@@ -94,6 +94,11 @@ public Q_SLOTS:
 protected Q_SLOTS:
    void centerToScreen(QWidget *widget);
 
+    /**
+     * @brief mdm 禁用或解除禁用应用时，刷新界面
+     */
+    void updateUiSlot();
+
 Q_SIGNALS:
     void valueChangedSingal(QList<TABLETAPP> applist);
     void timeChangedSingal(QString strMethod ,QString strTime);
