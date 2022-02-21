@@ -55,8 +55,9 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         iconstr.remove(".png");
         iconstr.remove(".svg");
         QIcon icon=QIcon::fromTheme(iconstr);
-        if(icon.isNull())
-            icon=QIcon::fromTheme(QString("application-x-desktop"));
+        if (icon.isNull()) {
+            icon = ensureLoadIcon(iconstr);
+        }
         QString appname= tabletApp.appName;
 
 
@@ -117,6 +118,35 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 QSize FullItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     return QSize(Style::itemWidth,Style::itemHeight);
+}
+
+QIcon FullItemDelegate::ensureLoadIcon(const QString &iconName) const
+{
+    QIcon icon;
+    if (QFile::exists(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(iconName).arg("svg")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(iconName).arg("svg"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(iconName).arg("png")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/scalable/apps/%1.%2").arg(iconName).arg("png"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(iconName).arg("png")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(iconName).arg("png"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(iconName).arg("svg")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/96x96/apps/%1.%2").arg(iconName).arg("svg"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(iconName).arg("png")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(iconName).arg("png"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(iconName).arg("svg")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/64x64/apps/%1.%2").arg(iconName).arg("svg"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(iconName).arg("png")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(iconName).arg("png"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(iconName).arg("svg")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/48x48/apps/%1.%2").arg(iconName).arg("svg"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(iconName).arg("png")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(iconName).arg("png"));
+    else if (QFile::exists(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(iconName).arg("svg")))
+        icon = QIcon(QString("/usr/share/icons/hicolor/32x32/apps/%1.%2").arg(iconName).arg("svg"));
+    else {
+        icon = QIcon::fromTheme(QString("application-x-desktop"));
+    }
+    return icon;
 }
 
 //bool FullItemDelegate::helpEvent(QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index)

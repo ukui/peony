@@ -41,6 +41,7 @@ public:
 
 private:
     int module=0;
+    QIcon ensureLoadIcon(const QString &iconName) const;
 //    int m_iProvcessValue=0;
     //QSettings* setting=nullptr;
     //UkuiMenuInterface* pUkuiMenuInterface=nullptr;
