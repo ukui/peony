@@ -238,7 +238,7 @@ int DataCDROM::checkRWSupport()
                 qDebug()<< "Removable CDROM.";
                 break;
             default:
-                qDebug()<<"Unkown medium type" << ((result[i + 12] << 8) | result[i + 13]);
+                qDebug()<<"Unknown medium type" << ((result[i + 12] << 8) | result[i + 13]);
                 break;
         }
     }

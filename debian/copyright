@@ -4,7 +4,7 @@ Upstream-Contact: Yue Lan <lanyue@kylinos.cn>
 Source: Source: <https://github.com/ukui/peony.git>
 
 Files: *
-Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
+Copyright: s and Licenses.
 License: GPL-3.0+
 
 Files: 3rd-parties/*
@@ -31,18 +31,22 @@ Files: 3rd-parties/SingleApplication/singleapplication_p.h
 Copyright: Itay Grudev 2015-2016
 License: Expat
 
-Files: CONTRIBUTING.md
-  GUIDE_ZH_CN.md
-  NEWS
-Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-3.0+
+Files: 3rd-parties/qtsingleapplication/*
+Copyright: 2013, Digia Plc and/or its subsidiary(-ies).
+License: BSD-3-clause
+
+Files: 3rd-parties/qtsingleapplication/QtLockedFile
+  3rd-parties/qtsingleapplication/QtSingleApplication
+Copyright: Itay Grudev 2015 - 2016
+ Itay Grudev 2015-2016
+License: Expat
 
 Files: data/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
 
-Files: debian/*
-Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
+Files: data/peony/zh_CN/*
+Copyright: ç¨å®æææä»¶ç³»ç»çåå±æ / ±å¨å¨ï¼å
 License: GPL-3.0+
 
 Files: doxygen/*
@@ -61,6 +65,8 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/connect-server-dialog.h
   libpeony-qt/connect-to-server-dialog.cpp
   libpeony-qt/connect-to-server-dialog.h
+  libpeony-qt/custom-error-handler.cpp
+  libpeony-qt/custom-error-handler.h
   libpeony-qt/file-copy.cpp
   libpeony-qt/file-copy.h
   libpeony-qt/file-enumerator.cpp
@@ -88,13 +94,19 @@ Files: libpeony-qt/bookmark-manager.cpp
   libpeony-qt/mount-operation.cpp
   libpeony-qt/mount-operation.h
   libpeony-qt/peony-core_global.h
+  libpeony-qt/peony-log.h
   libpeony-qt/plugin-manager.cpp
   libpeony-qt/plugin-manager.h
+  libpeony-qt/sync-thread.cpp
+  libpeony-qt/sync-thread.h
   libpeony-qt/thumbnail-manager.h
+  libpeony-qt/usershare-manager.cpp
+  libpeony-qt/usershare-manager.h
   libpeony-qt/volume-manager.cpp
   libpeony-qt/volume-manager.h
-  libpeony-qt/peony-log.h
-Copyright: 2020, KylinSoft Co., Ltd.
+  libpeony-qt/volumeManager.cpp
+  libpeony-qt/volumeManager.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/controls/*
@@ -107,26 +119,30 @@ Files: libpeony-qt/controls/directory-view/delegate/icon-view-delegate.cpp
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
-Files: libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp
-  libpeony-qt/controls/directory-view/view/icon-view/icon-view.h
+Files: libpeony-qt/controls/directory-view/view/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
-Files: libpeony-qt/controls/directory-view/view/list-view/*
-Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+Files: libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.cpp
+  libpeony-qt/controls/directory-view/view/icon-view/icon-view-style.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/controls/directory-view/view/list-view/list-view.h
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
-Files: libpeony-qt/controls/navigation-bar/location-bar/location-bar.cpp
+Files: libpeony-qt/controls/navigation-bar/location-bar/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+License: LGPL-3+
+
+Files: libpeony-qt/controls/navigation-bar/location-bar/location-bar.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/controls/tool-bar/search-bar-container.cpp
   libpeony-qt/controls/tool-bar/search-bar-container.h
-Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+Copyright: 2019-2021, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
 Files: libpeony-qt/convenient-utils/*
@@ -192,15 +208,15 @@ Files: libpeony-qt/file-operation/file-operation-test/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
+Files: libpeony-qt/file-operation/xatom-helper.cpp
+  libpeony-qt/file-operation/xatom-helper.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: GPL-3+
+
 Files: libpeony-qt/model/file-item-model.cpp
   libpeony-qt/model/file-label-model.cpp
   libpeony-qt/model/file-label-model.h
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
-License: LGPL-3+
-
-Files: libpeony-qt/model/side-bar-cloud-item.cpp
-  libpeony-qt/model/side-bar-cloud-item.h
-Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/model/file-item-model.h
@@ -214,14 +230,15 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/path-completer.h
   libpeony-qt/model/side-bar-abstract-item.cpp
   libpeony-qt/model/side-bar-abstract-item.h
+  libpeony-qt/model/side-bar-cloud-item.cpp
   libpeony-qt/model/side-bar-favorite-item.cpp
   libpeony-qt/model/side-bar-favorite-item.h
   libpeony-qt/model/side-bar-file-system-item.cpp
   libpeony-qt/model/side-bar-file-system-item.h
-  libpeony-qt/model/side-bar-vfs-item.cpp
-  libpeony-qt/model/side-bar-vfs-item.h
   libpeony-qt/model/side-bar-model.cpp
   libpeony-qt/model/side-bar-model.h
+  libpeony-qt/model/side-bar-net-work-item.cpp
+  libpeony-qt/model/side-bar-net-work-item.h
   libpeony-qt/model/side-bar-personal-item.cpp
   libpeony-qt/model/side-bar-personal-item.h
   libpeony-qt/model/side-bar-proxy-filter-sort-model.cpp
@@ -230,6 +247,8 @@ Files: libpeony-qt/model/file-item-model.h
   libpeony-qt/model/side-bar-separator-item.h
   libpeony-qt/model/side-bar-single-item.cpp
   libpeony-qt/model/side-bar-single-item.h
+  libpeony-qt/model/side-bar-vfs-item.cpp
+  libpeony-qt/model/side-bar-vfs-item.h
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
@@ -249,15 +268,11 @@ Files: libpeony-qt/thumbnail/*
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
-Files: libpeony-qt/thumbnail/pdf-thumbnail.cpp
-  libpeony-qt/thumbnail/pdf-thumbnail.h
-  libpeony-qt/thumbnail/office-thumbnail.cpp
-  libpeony-qt/thumbnail/office-thumbnail.h
-  libpeony-qt/thumbnail/video-thumbnail.cpp
-  libpeony-qt/thumbnail/video-thumbnail.h
-  libpeony-qt/thumbnail/image-pdf-thumbnail.cpp
-  libpeony-qt/thumbnail/image-pdf-thumbnail.h
-Copyright: 2020, KylinSoft Co., Ltd.
+Files: libpeony-qt/thumbnail/generic-thumbnailer.cpp
+  libpeony-qt/thumbnail/generic-thumbnailer.h
+  libpeony-qt/thumbnail/thumbnail-job.cpp
+  libpeony-qt/thumbnail/thumbnail-job.h
+Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
@@ -282,7 +297,7 @@ Files: libpeony-qt/vfs/favorite-vfs-file-enumerator.cpp
   libpeony-qt/vfs/search-vfs-uri-parser.h
   libpeony-qt/vfs/vfs-plugin-manager.cpp
   libpeony-qt/vfs/vfs-plugin-manager.h
-Copyright: 2020, KylinSoft Co., Ltd.
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: libpeony-qt/windows/*
@@ -297,12 +312,26 @@ Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: peony-qt-desktop/*
-Copyright: 2020, KylinSoft Co., Ltd.
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: GPL-3+
+
+Files: peony-qt-desktop/desktops/desktop/model/user-dir-manager.cpp
+  peony-qt-desktop/desktops/desktop/model/user-dir-manager.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: LGPL-3+
+
+Files: peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp
+  peony-qt-desktop/desktops/desktop/view/desktop-index-widget.cpp
+Copyright: 2019-2021, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
 Files: peony-qt-desktop/man/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
+
+Files: peony-qt-desktop/ukui-output-client.h
+Copyright: <pre> / 2021, KylinSoft Co., Ltd.
+License: GPL-3+
 
 Files: peony-qt-plugin-test/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
@@ -313,15 +342,15 @@ Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
 Files: plugin-iface/vfs-plugin-iface.h
-Copyright: 2020, KylinSoft Co., Ltd.
-License: LGPL-3+
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: GPL-3+
 
 Files: plugin/*
 Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: LGPL-3+
 
 Files: src/*
-Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
+Copyright: 2019-2021, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
 Files: src/control/float-pane-widget.cpp
@@ -331,6 +360,15 @@ Files: src/control/float-pane-widget.cpp
 Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: LGPL-3+
 
+Files: src/control/intel/*
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: LGPL-3+
+
+Files: src/control/intel/intel-navigation-side-bar.cpp
+  src/control/intel/intel-navigation-side-bar.h
+Copyright: 2019-2021, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-3+
+
 Files: src/man/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
@@ -338,12 +376,45 @@ License: GPL-3.0+
 Files: src/peony-application.cpp
   src/peony-application.h
   src/peony-main.cpp
-Copyright: 2020, KylinSoft Co., Ltd.
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
+License: GPL-3+
+
+Files: src/windows/xatom-helper.cpp
+  src/windows/xatom-helper.h
+Copyright: 2020, 2021, KylinSoft Co., Ltd.
 License: GPL-3+
 
 Files: translations/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
+
+License: BSD-3-clause
+ This software is Copyright (c) 2022 by foo.
+ This is free software, licensed under:
+ The (three-clause) BSD License
+ The BSD License
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution. 
+ * Neither the name of foo nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission. 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy

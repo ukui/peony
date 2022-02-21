@@ -355,7 +355,7 @@ void StudyStatusWidget::initUserInfo()
     }
     else
     {
-        qDebug() << "Connot found avatar image";
+        qDebug() << "Cannot found avatar image";
     }
 
 }

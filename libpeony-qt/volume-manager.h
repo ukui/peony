@@ -256,7 +256,7 @@ Q_SIGNALS:
      * \param drive
      * \note moc will failed when sending a GDrive handle into signal/slot.
      * so I have to take it with a custom class.
-     * This case is also happend in GVolme and GMount handle.
+     * This case is also happened in GVolme and GMount handle.
      */
     void driveConnected(const std::shared_ptr<Drive> &drive);
     void driveDisconnected(const std::shared_ptr<Drive> &drive);

@@ -144,7 +144,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
         m_model->endResetModel();
         BookMarkManager::getInstance()->removeBookMark(favoriteUris);
         int time1 = QTime::currentTime().msecsSinceStartOfDay();
-        qDebug()<<"excute deletion finished, cost"<<time1 - time0;
+        qDebug()<<"execute deletion finished, cost"<<time1 - time0;
         //ThumbnailManager::getInstance()->releaseThumbnail(m_uris_to_be_removed);
     });
 

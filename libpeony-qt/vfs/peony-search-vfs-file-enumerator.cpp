@@ -415,6 +415,6 @@ gboolean peony_search_vfs_file_enumerator_is_file_match(PeonySearchVFSFileEnumer
         }
     }
 
-    //this may never happend.
+    //this may never happened.
     return false;
 }

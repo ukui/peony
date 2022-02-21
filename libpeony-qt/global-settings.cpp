@@ -122,7 +122,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         setValue(DEFAULT_WINDOW_WIDTH, default_width);
         setValue(DEFAULT_WINDOW_HEIGHT, default_height);
         setValue(DEFAULT_SIDEBAR_WIDTH, 210);
-        qDebug() << "deafult set DEFAULT_SIDEBAR_WIDTH:"<<210;
+        qDebug() << "default set DEFAULT_SIDEBAR_WIDTH:"<<210;
     }
 
     if (m_cache.value(DEFAULT_VIEW_ID).isNull()) {
