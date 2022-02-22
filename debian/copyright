@@ -45,10 +45,6 @@ Files: data/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
 
-Files: data/peony/zh_CN/*
-Copyright: ç¨å®æææä»¶ç³»ç»çåå±æ / ±å¨å¨ï¼å
-License: GPL-3.0+
-
 Files: doxygen/*
 Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3.0+
