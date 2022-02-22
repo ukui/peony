@@ -63,6 +63,7 @@
 
 #include <QDrag>
 #include <QWindow>
+#include <QMessageBox>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -282,6 +283,13 @@ void IconView::dropEvent(QDropEvent *e)
     if (e->keyboardModifiers() & Qt::ShiftModifier) {
         action = Qt::TargetMoveAction;
     }
+
+    //Do not allow dragging files to file manager when searching
+    if (m_current_uri.startsWith("search://")) {
+        QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
+        return;
+    }
+
     auto proxy_index = indexAt(e->pos());
     auto index = m_sort_filter_proxy_model->mapToSource(proxy_index);
     qDebug()<<"dropEvent" <<action <<m_ctrl_key_pressed <<indexAt(e->pos()).isValid();

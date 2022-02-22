@@ -236,12 +236,12 @@
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="194"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="193"/>
         <source>Data</source>
         <translation>数据盘</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="928"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="927"/>
         <source>Formatting. Do not close this window</source>
         <translation>正在格式化, 请勿关闭</translation>
     </message>
@@ -1117,6 +1117,16 @@
         <source>Icon View</source>
         <translation type="vanished">图标视图</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp" line="289"/>
+        <source>warn</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp" line="289"/>
+        <source>This operation is not supported.</source>
+        <translation>不支持此操作。</translation>
+    </message>
 </context>
 <context>
     <name>Peony::DirectoryView::IconView2</name>
@@ -1130,6 +1140,16 @@
     <message>
         <source>List View</source>
         <translation type="vanished">列表视图</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.cpp" line="464"/>
+        <source>warn</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.cpp" line="464"/>
+        <source>This operation is not supported.</source>
+        <translation>不支持此操作。</translation>
     </message>
 </context>
 <context>
@@ -3549,27 +3569,27 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">请检查设备是否正在使用,确认没有使用后再次弹出</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="261"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="260"/>
         <source>Format failed</source>
         <translation>格式化失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="263"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="262"/>
         <source>YES</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="697"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="696"/>
         <source>Formatting successful! But failed to set the device name.</source>
         <translation>格式化成功！设备名设置失败。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="706"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="705"/>
         <source>qmesg_notify</source>
         <translation>通知</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="695"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="694"/>
         <source>Format operation has been finished successfully.</source>
         <translation>格式化操作已成功完成。</translation>
     </message>
@@ -3578,35 +3598,35 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">格式化成功！设备名设置失败。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="706"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="705"/>
         <source>Sorry, the format operation is failed!</source>
         <translation>很遗憾，格式化操作失败了，您可以重新试下！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="714"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="713"/>
         <source>Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?</source>
         <translation>格式化此卷将清除其上的所有数据。请在格式化之前备份所有保留的数据。您想继续吗?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="695"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="697"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="716"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="694"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="696"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="715"/>
         <source>format</source>
         <translation>格式化</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="718"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="717"/>
         <source>begin format</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="720"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="719"/>
         <source>close</source>
         <translation>关闭</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/sync-thread.cpp" line="41"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="636"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="635"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -3615,14 +3635,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
         <translation type="vanished">默认文件搜索</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1358"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1360"/>
         <source>Force unmount failed</source>
         <translation>强制卸载失败</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1358"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="259"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1360"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="258"/>
         <source>Error: %1
 </source>
         <translation>错误: %1
@@ -3630,33 +3650,33 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="135"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1361"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1415"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1363"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1417"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation>数据同步完成，设备已经成功卸载！</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1387"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1396"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1389"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1398"/>
         <source>Unmount failed</source>
         <translation>卸载失败</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1066"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1379"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1068"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1381"/>
         <source>Not authorized to perform operation.</source>
         <translation>操作未获得授权。</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1387"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1389"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation>无法卸载，您可能需要先关闭一些程序，如分区编辑器等。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1396"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1398"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation>错误: %1
@@ -3671,13 +3691,13 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">无论如何弹出</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="898"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="900"/>
         <source>The device has been mount successfully!</source>
         <translation>设备挂载成功！</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1082"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1108"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1084"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1110"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation>数据同步完成，设备可以安全拔出！</translation>
     </message>
@@ -3690,10 +3710,10 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">文件管理器通知</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1066"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1076"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1103"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1379"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1068"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1078"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1105"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1381"/>
         <source>Eject failed</source>
         <translation>弹出失败</translation>
     </message>

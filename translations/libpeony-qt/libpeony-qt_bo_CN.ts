@@ -828,12 +828,28 @@
         <source>Icon View</source>
         <translation type="vanished">རིས་རྟགས་མཐོང་རིས།</translation>
     </message>
+    <message>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
         <source>List View</source>
         <translation type="vanished">རེའུ་མིག་གི་མཐོང་རིས།</translation>
+    </message>
+    <message>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
