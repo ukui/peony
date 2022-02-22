@@ -59,7 +59,7 @@ NavigationTabBar::NavigationTabBar(QWidget *parent) : QTabBar(parent)
     m_drag_timer.setInterval(750);
     m_drag_timer.setSingleShot(true);
 
-//    setStyle(TabBarStyle::getStyle());
+    setStyle(TabBarStyle::getStyle());
 
 
     setContentsMargins(0, 0, 0, 0);
@@ -322,98 +322,44 @@ TabBarStyle *TabBarStyle::getStyle()
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
     switch (metric) {
-    case PM_TabBarTabShiftVertical:
-    case PM_TabBarBaseHeight:
-        return 0;
-    case PM_TabBarBaseOverlap:
-        return 0;
-    case PM_TabBarTabVSpace:
-        return 25;
-    case PM_TabBarTabHSpace:
-        return 140 ;
+    case PM_TabBarScrollButtonWidth:
+        return 48;
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
 }
-
-void TabBarStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
 {
-    if(element == CE_TabBarTab)
-    {
-        QRect rect = option->rect;
-        QColor outline =option->palette.window().color();
-
-        painter->save();
-        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
-
-            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
-                               && (tab->shape == QTabBar::RoundedNorth
-                                   || tab->shape == QTabBar::RoundedSouth));
-            bool selected = tab->state & State_Selected;
-            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
-                            || (rtlHorTabs
-                                && tab->position == QStyleOptionTab::Beginning));
-            bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
-            int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
-            rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
-
-
-            //painter->setPen(d->innerContrastLine());
-            painter->setPen( Qt::NoPen);
-
-            QTransform rotMatrix;
-            //painter->setPen(shadow);
-            painter->setPen( Qt::NoPen);
-            switch (tab->shape) {
-            case QTabBar::RoundedNorth:
-                break;
-            default:
-                painter->restore();
-                QCommonStyle::drawControl(element, tab, painter, widget);
-                return;
-            }
-
-
-            bool firstTab = tab->position == QStyleOptionTab::Beginning;
-            if (selected) {
-                painter->save();
-                painter->setRenderHint(QPainter::Antialiasing);
-                painter->setBrush(option->palette.base().color());
-                painter->drawRoundedRect(option->rect.adjusted(0,-1,0,0),12,12);
-                if(firstTab){
-                    painter->drawRect(option->rect.left(),option->rect.bottom()-12,25,option->rect.bottom()+25);
-                    painter->drawRect(option->rect.right()-12,option->rect.bottom()-12,12,12);
-                    QPainterPath path1;
-                    QPainterPath path2;
-                    QPainterPath path;
-                    path1.addRect(option->rect.right(),option->rect.bottom()-12,12,12);
-                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
-                    path=path1-path2;
-                    painter->drawPath(path);
-                }
-                else
-                {
-                    QPainterPath path1;
-                    QPainterPath path2;
-                    QPainterPath path;
-                    path1.addRect(option->rect.left()-12,option->rect.bottom()-12,option->rect.width()+24,12);
-                    path2.addEllipse(option->rect.right(),option->rect.bottom()-24,24,24);
-                    path2.addEllipse(option->rect.left()-24,option->rect.bottom()-24,24,24);
-                    path=path1-path2;
-                    painter->drawPath(path);
-                }
-                painter->restore();
-            }
-            painter->restore();
-            proxy()->drawControl(CE_TabBarTabLabel, tab, painter, widget);
-
-        }
-
-        return;
+    switch (element) {
+    case SE_TabBarScrollLeftButton:{
+        QRect tabRect = option->rect;
+        tabRect.setRight(tabRect.left() + 48);
+        return tabRect;
     }
-
-    return QProxyStyle::drawControl(element, option, painter, widget);
+    case SE_TabBarScrollRightButton:{
+        QRect tabRect = option->rect;
+        tabRect.setLeft(tabRect.right() - 48);
+        return tabRect;
+    }
+    default:
+        return QProxyStyle::subElementRect(element, option, widget);
+    }
 }
+void TabBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    switch (element) {
+    case PE_PanelButtonTool:{
+        QPainterPath path;
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+        path.addRoundedRect(widget->rect(), 16, 16);
+        painter->setClipPath(path);
+        return  QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
+    default:
+        return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    }
+}
+
 void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {
     if (widget &&  widget->objectName() == "toolButton") {

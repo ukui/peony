@@ -55,26 +55,7 @@ int PeonyMainWindowStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOp
         return 2;
     case PM_DockWidgetSeparatorExtent:
         return 2;
-    case PM_TabBarScrollButtonWidth:
-        return 48;
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
-    }
-}
-QRect PeonyMainWindowStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
-{
-    switch (element) {
-    case SE_TabBarScrollLeftButton:{
-        QRect tabRect = option->rect;
-        tabRect.setRight(tabRect.left() + 48);
-        return tabRect;
-    }
-    case SE_TabBarScrollRightButton:{
-        QRect tabRect = option->rect;
-        tabRect.setLeft(tabRect.right() - 48);
-        return tabRect;
-    }
-    default:
-        return QProxyStyle::subElementRect(element, option, widget);
     }
 }
