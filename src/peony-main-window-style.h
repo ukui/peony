@@ -35,8 +35,6 @@ private:
     explicit PeonyMainWindowStyle(QObject *parent = nullptr);
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
-    QRect subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const override;
-
 };
 
 #endif // PEONYMAINWINDOWSTYLE_H
