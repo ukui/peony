@@ -259,7 +259,7 @@ long int StudyCenterMode::getStudyTime(QString strMethod, QString appName)
         int ll = response.type();
         QString errMeg = response.errorMessage();
         QString errName = response.errorName();
-        qDebug( "get study time sucess!, errtype:[%d], errmsg:[%s], errname:[%s],strMethod:[%s],appname:[%s]/n",ll, errMeg.toLocal8Bit().data(),errName.toLocal8Bit().data(),strMethod.toLocal8Bit().data(), appName.toLocal8Bit().data());
+        qDebug( "get study time success!, errtype:[%d], errmsg:[%s], errname:[%s],strMethod:[%s],appname:[%s]/n",ll, errMeg.toLocal8Bit().data(),errName.toLocal8Bit().data(),strMethod.toLocal8Bit().data(), appName.toLocal8Bit().data());
 
         qDebug("study time:%d/n", iWeekmm);
     }
@@ -294,7 +294,7 @@ QString  StudyCenterMode::getTime(QString strMethod, QStringList appList)
         int ll = response.type();
         QString errMeg = response.errorMessage();
         QString errName = response.errorName();
-        qDebug( "get study time sucess!, errtype:[%d], errmsg:[%s], errname:[%s]/n",ll, errMeg.toLocal8Bit().data(),errName.toLocal8Bit().data());
+        qDebug( "get study time success!, errtype:[%d], errmsg:[%s], errname:[%s]/n",ll, errMeg.toLocal8Bit().data(),errName.toLocal8Bit().data());
 
         qDebug("study time:%d/n", iWeekmm);
     }

@@ -126,7 +126,7 @@ Q_SIGNALS:
      * \brief locationChangeStart
      * \details
      * This signal is used to tell the window doing a location change.
-     * When a window is excuting a location change, it should not excute another
+     * When a window is excuting a location change, it should not execute another
      * one util the location change finished.
      */
     void locationChangeStart();

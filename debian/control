@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Kylin Team <team+kylin@tracker.debian.org>
 Uploaders: Aron Xu <aron@debian.org>,
            handsome_feng <jianfengli@ubuntukylin.com>
-Build-Depends: debhelper-compat (=13),
+Build-Depends: debhelper-compat (= 13),
                pkg-config,
                qt5-qmake,
                libssl-dev,
@@ -31,7 +31,7 @@ Build-Depends: debhelper-compat (=13),
                libx11-dev,
                libukui-common-dev,
                libx11-xcb-dev
-Standards-Version: 4.5.0
+Standards-Version: 4.6.0.1
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
 Vcs-Git: https://github.com/ukui/peony.git

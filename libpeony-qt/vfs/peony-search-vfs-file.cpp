@@ -149,7 +149,7 @@ static void peony_search_vfs_file_g_file_iface_init(GFileIface *iface)
 GFile *peony_search_vfs_file_dup(GFile *file)
 {
     if (!PEONY_IS_SEARCH_VFS_FILE(file)) {
-        //this should not be happend.
+        //this should not be happened.
         return g_file_new_for_uri("search:///");
     }
     auto vfs_file = PEONY_SEARCH_VFS_FILE(file);

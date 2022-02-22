@@ -383,7 +383,7 @@ void FileUntrashOperation::run()
                 // 2. restore the item from peony application.
                 // 3. undo the operation in desktop application.
                 // in this case trashedFileLocaledUri is empty, and could not get
-                // the responding info. so I add a checkment to avoid the case happend.
+                // the responding info. so I add a checkment to avoid the case happened.
                 originUri = "file://" + metaInfo.get()->getMetaInfoString("orig-path");
             } else {
                 qWarning()<<"invalid file meta info orig-path"<<trashedFileLocaledUri;

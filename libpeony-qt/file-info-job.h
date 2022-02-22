@@ -82,8 +82,8 @@ Q_SIGNALS:
     /*!
      * \brief queryAsyncFinished
      * \param successed
-     * \retval true if no error happend in queryAsync() and callback
-     * \retval false if error happend, it might be cancelled, or others.
+     * \retval true if no error happened in queryAsync() and callback
+     * \retval false if error happened, it might be cancelled, or others.
      * \note If you just want to get the info states, I recommend you connect to
      * Peony::FileInfo::updated signal, every query job of a info will send this signal
      * if query successfully.

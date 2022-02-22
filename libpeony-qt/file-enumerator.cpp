@@ -584,7 +584,7 @@ GAsyncReadyCallback FileEnumerator::find_children_async_ready_callback(GFile *fi
         qDebug()<<"find children async err:"<<err->code<<err->message;
         //NOTE: if the enumerator file has target uri, but target uri is not mounted,
         //it should be handled.
-        //This nearly won't happend in local, but in a network server it might.
+        //This nearly won't happened in local, but in a network server it might.
         if (err->code == G_IO_ERROR_NOT_MOUNTED) {
             g_object_unref(p_this->m_root_file);
             p_this->m_root_file = g_file_dup(file);
