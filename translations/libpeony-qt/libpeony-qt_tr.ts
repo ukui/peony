@@ -236,12 +236,12 @@
         <translation type="unfinished">Tamam</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="194"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="193"/>
         <source>Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="928"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="927"/>
         <source>Formatting. Do not close this window</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1096,6 +1096,16 @@
         <source>Icon View</source>
         <translation type="vanished">Simge Görünümü</translation>
     </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp" line="289"/>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/icon-view/icon-view.cpp" line="289"/>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::DirectoryView::IconView2</name>
@@ -1109,6 +1119,16 @@
     <message>
         <source>List View</source>
         <translation type="vanished">Liste Görünümü</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.cpp" line="464"/>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/controls/directory-view/view/list-view/list-view.cpp" line="464"/>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3478,60 +3498,60 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Lütfen cihazın dolu olup olmadığını kontrol edin ve ardından cihazı tekrar çıkarın</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="261"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="260"/>
         <source>Format failed</source>
         <translation>Biçim hatalı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="263"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="262"/>
         <source>YES</source>
         <translation>EVET</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="697"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="696"/>
         <source>Formatting successful! But failed to set the device name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="706"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="705"/>
         <source>qmesg_notify</source>
         <translation type="unfinished">Qmesg bildir</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="695"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="694"/>
         <source>Format operation has been finished successfully.</source>
         <translation type="unfinished">Biçimlendirme işlemi başarıyla tamamlandı.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="706"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="705"/>
         <source>Sorry, the format operation is failed!</source>
         <translation type="unfinished">Üzgünüz, formatlama işlemi başarısız oldu!</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="714"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="713"/>
         <source>Formatting this volume will erase all data on it. Please backup all retained data before formatting. Do you want to continue ?</source>
         <translation type="unfinished">Bu birimi biçimlendirmek, içindeki tüm verileri silecektir. Biçimlendirmeden önce lütfen saklanan tüm verileri yedekleyin. Devam etmek istiyor musun?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="695"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="697"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="716"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="694"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="696"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="715"/>
         <source>format</source>
         <translation type="unfinished">Biçim</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="718"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="717"/>
         <source>begin format</source>
         <translation type="unfinished">biçimlendirmeye başla</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="720"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="719"/>
         <source>close</source>
         <translation type="unfinished">Kapat</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/sync-thread.cpp" line="41"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="636"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="635"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
@@ -3540,14 +3560,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Peony için varsayılan arama vfs&apos;si</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1358"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1360"/>
         <source>Force unmount failed</source>
         <translation>Zorla ayrılma başarısız oldu</translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1358"/>
-        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="259"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1360"/>
+        <location filename="../../libpeony-qt/windows/format_dialog.cpp" line="258"/>
         <source>Error: %1
 </source>
         <translation>Hata: %1
@@ -3555,43 +3575,43 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="135"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1361"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1415"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1363"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1417"/>
         <source>Data synchronization is complete,the device has been unmount successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="129"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1387"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1396"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1389"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1398"/>
         <source>Unmount failed</source>
         <translation>Ayrılma Hatası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1066"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1379"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1068"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1381"/>
         <source>Not authorized to perform operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/model/side-bar-net-work-item.cpp" line="124"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1387"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1389"/>
         <source>Unable to unmount it, you may need to close some programs, such as: GParted etc.</source>
         <translation>Bağlantısını kesemiyorsanız, bazı programları kapatmanız gerekebilir, örneğin: GParted vb.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1396"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1398"/>
         <source>Error: %1
 Do you want to unmount forcely?</source>
         <translation>Hata: %1
 Zorla ayrılmak ister misin?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1066"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1076"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1103"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1379"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1068"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1078"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1105"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1381"/>
         <source>Eject failed</source>
         <translation>Çıkarma hatalı</translation>
     </message>
@@ -3604,13 +3624,13 @@ Zorla ayrılmak ister misin?</translation>
         <translation type="vanished">Yine de Çıkar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="898"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="900"/>
         <source>The device has been mount successfully!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1082"/>
-        <location filename="../../libpeony-qt/volumeManager.cpp" line="1108"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1084"/>
+        <location filename="../../libpeony-qt/volumeManager.cpp" line="1110"/>
         <source>Data synchronization is complete and the device can be safely unplugged!</source>
         <translation type="unfinished"></translation>
     </message>
