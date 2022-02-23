@@ -807,8 +807,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     //出现动画
     QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop,
                                                                       nextDesktopStartRect, primaryScreenRect);
-    showAnimation->setDuration(300);
-    QSequentialAnimationGroup *animationGroup = new QSequentialAnimationGroup(this);
+    QParallelAnimationGroup *animationGroup = new QParallelAnimationGroup(this);
     animationGroup->addAnimation(exitAnimation);
     animationGroup->addAnimation(showAnimation);
 

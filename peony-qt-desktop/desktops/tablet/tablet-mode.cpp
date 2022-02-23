@@ -138,6 +138,9 @@ TabletMode::TabletMode(QWidget *parent) : DesktopWidgetBase(parent)
 void TabletMode::setActivated(bool activated)
 {
     DesktopWidgetBase::setActivated(activated);
+    if (!activated) {
+        m_container->move(0, 0);
+    }
     this->setHidden(!activated);
 }
 
