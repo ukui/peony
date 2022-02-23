@@ -302,6 +302,10 @@ void FileEnumerator::handleError(GError *err)
     if (!m_is_custom_error_handler_initialized) {
         auto vfsManager = VFSPluginManager::getInstance();
         for (auto plugin : vfsManager->registeredPlugins()) {
+            // try fixing abi compatibility issue.
+            if (plugin->uriScheme().contains("kmre", Qt::CaseInsensitive) || plugin->uriScheme().contains("kydroid", Qt::CaseInsensitive)) {
+                continue;
+            }
             auto customErrorHandler = plugin->customErrorHandler();
             if (customErrorHandler) {
                 customErrorHandler->setParent(this);
