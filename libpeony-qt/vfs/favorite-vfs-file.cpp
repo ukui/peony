@@ -260,19 +260,6 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
                 break;
             }
         }
-    }
-
-    if (nullptr != trueUri) {
-        GFile* file = g_file_new_for_uri (trueUri.toUtf8().constData());
-        if (nullptr != file) {
-            info = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr, nullptr);
-            if (!info)
-                info = g_file_info_new();
-            g_file_info_set_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, trueUri.toUtf8().constData());
-        } else {
-            info = g_file_info_new();
-        }
-        g_object_unref(file);
     } else {
         info = g_file_info_new ();
         QString name = QObject::tr("favorite");
@@ -287,6 +274,37 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
         g_file_info_set_is_symlink(info, FALSE);
         g_file_info_set_file_type(info, G_FILE_TYPE_DIRECTORY);
         g_file_info_set_display_name(info, name.toUtf8().constData());
+
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL, TRUE);
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, TRUE);
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH, FALSE);
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE, TRUE);
+        g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME, FALSE);
+
+        return info;
+    }
+
+    if (url.path() == "/data/usershare") {
+        trueUri = "file:///data/usershare";
+    }
+
+    if (!trueUri.isNull()) {
+        GFile* file = g_file_new_for_uri (trueUri.toUtf8().constData());
+        if (nullptr != file) {
+            info = g_file_query_info(file, attributes, flags, cancellable, error);
+            if (!info) {
+                return nullptr;
+            }
+            g_file_info_set_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, trueUri.toUtf8().constData());
+            qDebug()<<attributes;
+        } else {
+            g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND, QObject::tr("File is not existed.").toUtf8().constData());
+            return nullptr;
+        }
+        g_object_unref(file);
+    } else {
+        g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND, QObject::tr("File is not existed.").toUtf8().constData());
+        return nullptr;
     }
 
     g_file_info_set_name (info, vfsfile->priv->uri);
@@ -295,18 +313,6 @@ GFileInfo* vfs_favorite_file_query_info(GFile *file, const char *attributes, GFi
         g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, FALSE);
         g_file_info_set_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, QObject::tr("Share Data").toUtf8());
     }
-
-    g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL, TRUE);
-    g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, TRUE);
-    g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH, FALSE);
-    g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE, FALSE);
-    g_file_info_set_attribute_boolean(info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME, FALSE);
-
-
-    Q_UNUSED(flags)
-    Q_UNUSED(error)
-    Q_UNUSED(attributes)
-    Q_UNUSED(cancellable)
 
     return info;
 }
@@ -543,6 +549,12 @@ gboolean vfs_favorite_file_move(GFile* source, GFile* destination, GFileCopyFlag
     }
     if (srcScheme == "file" && destScheme == "favorite") {
         // add src file to favorite:///
+        auto source_type = g_file_query_file_type(source, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, cancellable);
+        if (source_type != G_FILE_TYPE_DIRECTORY) {
+            g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED, QObject::tr("Can not add a file to favorite directory.").toUtf8().constData());
+            return false;
+        }
+
         Peony::BookMarkManager::getInstance()->addBookMark(srcUri);
         return true;
     }
