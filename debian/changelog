@@ -1,3 +1,16 @@
+peony (3.2.3+0223ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#94981 【文件管理器】首页页签未按UI设计稿还原, 修改点击tab页签，拖拽出来创建新的窗口(杨艳微)
+      2.#107354 【交互动画】PC模式专区切换出现空白页(何文飞)
+    - 其它改动说明:
+      无
+    - 影响域:
+      文件管理器，学习专区
+
+ -- hewenfei <hewenfei@kylinos.cn>  Wed, 23 Feb 2022 17:43:37 +0800
+
 peony (3.2.3+0221ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
