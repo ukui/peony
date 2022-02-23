@@ -672,6 +672,7 @@ GAsyncReadyCallback FileEnumerator::enumerator_next_files_async_ready_callback(G
             }
         }
 
+        // FIXME: dirty code need be rewritten.
         auto fileInfo = FileInfo::fromUri(uri);
         FileInfoJob infoJob(fileInfo);
         infoJob.queryFileType(info);

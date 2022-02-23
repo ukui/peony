@@ -211,6 +211,11 @@ void FileInfoJob::queryFileType(GFileInfo* new_info){
 }
 
 void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
+    if (!g_file_info_get_display_name(new_info)) {
+        qWarning()<<m_info.get()->uri()<<"query file display name failed";
+        return;
+    }
+
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
