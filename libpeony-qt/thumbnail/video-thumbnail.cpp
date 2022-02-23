@@ -150,34 +150,15 @@ QIcon VideoThumbnail::generateThumbnail()
         QString pos=map.value("Pos");
 
         //ffmpeg -i ./kofar-bi-amirica.mp4 -y -ss 10.0 -vframes 1 -f image2 -s 128x128 thumbnail
-        //华为机器提取视频缩略图存在问题，目前沟通确认需要使用如下命令：
-        //ffmpeg -c:v mpeg2video -i omg.ts -y -ss 5.0 -vframes 1 -f image2 -s 640x640 thumbnail
         QStringList list;
-        bool isWayland = qApp->property("isWayland").toBool();
-        //try to fix bug#104920
-        //部分视频文件在盘古w机器，无法提取到视频缩略图问题，主线版本验证可用后可统一
-        if (isWayland)
-        {
-            list<<"-c:v"
-               <<"mpeg2video"
-               <<"-i"<<m_url.path()     /*Input File Name*/
-               <<"-y"                    /*Overwrite*/
-               <<"-ss"<<pos              /* seeks in this position*/
-               <<"-vframes"<<"1"         /* Num Frames */
-               <<"-f"<<"image2"          /* file format.  */
-               <<"-s"<<"640x640"         /*<<"-vf"<<scal*/
-               <<fileThumbnail; /*output file Name */
-        }else{
-            list<<"-i"<<m_url.path()     /*Input File Name*/
-               <<"-y"                    /*Overwrite*/
-               <<"-ss"<<pos              /* seeks in this position*/
-               <<"-vframes"<<"1"         /* Num Frames */
-               <<"-f"<<"image2"          /* file format.  */
-              // <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
-               <<"-s"<<"640x640"         /*<<"-vf"<<scal*/
-               <<fileThumbnail; /*output file Name */
-        }
-
+        list<<"-i"<<m_url.path()     /*Input File Name*/
+           <<"-y"                    /*Overwrite*/
+           <<"-ss"<<pos              /* seeks in this position*/
+           <<"-vframes"<<"1"         /* Num Frames */
+           <<"-f"<<"image2"          /* file format.  */
+          // <<"-s"<<"128x128"         /*<<"-vf"<<scal*/
+           <<"-s"<<"640x640"         /*<<"-vf"<<scal*/
+           <<fileThumbnail; /*output file Name */
         qDebug()<<"the ffmpeg cmd: " << list;
 
         QProcess p;
