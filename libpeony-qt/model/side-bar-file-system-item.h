@@ -35,6 +35,7 @@ namespace Peony {
 class FileWatcher;
 class FileEnumerator;
 class FileUtils;
+class fstabData;
 class PEONYCORESHARED_EXPORT SideBarFileSystemItem : public SideBarAbstractItem
 {
     Q_OBJECT
@@ -77,6 +78,7 @@ public:
     }
 
     bool filterShowRow();
+    QString getDeviceUUID(const char *device);
 
 private:
     void initDirInfo(const QString& uri);           //普通目录
