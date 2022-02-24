@@ -427,7 +427,7 @@ void Format_Dialog::acceptFormat(bool)
     if(mount) {
        /* unmount */
        auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
-       auto mount_op = Experimental_Peony::VolumeManager::getInstance()->getGMountOperation();
+       auto mount_op = Experimental_Peony::VolumeManager::getInstance()->getOccupiedInfoThread()->getMountOp();
        g_file_unmount_mountable_with_operation(files.get()->get(),
                                                G_MOUNT_UNMOUNT_NONE,
                                                mount_op,

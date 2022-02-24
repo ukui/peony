@@ -104,6 +104,18 @@ VolumeManager::VolumeManager(QObject *parent) : QObject(parent)
 //    QTimer* timer = new QTimer();
 //    connect(timer,&QTimer::timeout,this,&VolumeManager::printVolumeList);
 //    timer->start(10*1000);
+
+    /* 显示占用app信息对话框 */
+    qRegisterMetaType<std::map<QString,QIcon> >("std::map<QString,QIcon>&");
+    m_occupiedAppsInfoThread = new GetOccupiedAppsInfoThread();
+    connect(m_occupiedAppsInfoThread, &GetOccupiedAppsInfoThread::signal_occupiedAppInfo, this, [=](std::map<QString,QIcon>& occupiedAppMap, const QString& message){
+        MessageDialog* dlg = new MessageDialog();
+        dlg->init(occupiedAppMap, message);
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+        dlg->exec();
+    }, Qt::QueuedConnection);
+    m_occupiedAppsInfoThread->start();
+
 }
 
 VolumeManager::~VolumeManager(){
@@ -118,12 +130,6 @@ VolumeManager::~VolumeManager(){
         g_object_unref(m_volumeMonitor);
         m_volumeMonitor = nullptr;
     }
-    if(m_mountOpreation){
-        g_signal_handler_disconnect(m_mountOpreation, m_mountOpreationHandle);
-        g_object_unref(m_mountOpreation);
-        m_mountOpreation = nullptr;
-    }
-
 
     if(!m_volumeList->isEmpty()){
         QHash<QString,Volume*>::iterator item = m_volumeList->begin();
@@ -149,9 +155,6 @@ void VolumeManager::initManagerInfo(){
     m_volumeChangeHandle = g_signal_connect(m_volumeMonitor,"volume-changed",G_CALLBACK(volumeChangeCallback),this);
     m_driveConnectHandle = g_signal_connect(m_volumeMonitor,"drive-connected",G_CALLBACK(driveConnectCallback),this);
     m_driveDisconnectHandle = g_signal_connect(m_volumeMonitor,"drive-disconnected",G_CALLBACK(driveDisconnectCallback),this);
-    m_mountOpreation = g_mount_operation_new();
-    if(m_mountOpreation)
-        m_mountOpreationHandle = g_signal_connect (m_mountOpreation, "show-processes", G_CALLBACK(show_processes_cb), this);
 }
 
 /*gparted应用是否打开*/
@@ -440,39 +443,6 @@ void VolumeManager::mountChangedCallback(GMount *mount, VolumeManager *pThis)
     delete mountItem;
     g_object_unref(rootFile);
 }
-
-void VolumeManager::show_processes_cb(GMountOperation *op, char *message, GArray *processes, char **choices)
-{
-    std::map<QString,QIcon> occupiedAppMap;
-    for(int i=0; i< processes->len; i++)
-    {
-        GPid pid = g_array_index(processes, GPid ,i);
-        QProcess *process =new QProcess();
-        QString cmd =QString("ps -p %1 o comm=").arg(pid);
-        process->start(cmd);
-        process->waitForFinished();
-        auto application = QString(process->readAll()).replace("\n","");
-        QString iconName = "application-x-executable";
-        if(application=="bash")
-            iconName = "utilities-terminal";
-        auto icon = QIcon::fromTheme(iconName);
-        occupiedAppMap.insert(std::pair<QString, QIcon>(application,icon));
-        qDebug()<<application;
-
-    }
-    if(0==occupiedAppMap.size())
-        return;
-
-    MessageDialog* dlg = new MessageDialog();
-    dlg->init(occupiedAppMap, message);
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    QThread* currentThread = new QThread();
-    dlg->moveToThread(currentThread);
-    connect(currentThread,&QThread::started,dlg,&MessageDialog::exec);
-    currentThread->start();
-
-}
-
 
 void VolumeManager::driveConnectCallback(GVolumeMonitor *monitor,
                                          GDrive *gdrive,VolumeManager *pThis)
@@ -1187,7 +1157,7 @@ void Drive::eject(GMountUnmountFlags ejectFlag)
 {
     // fix #92731, note that if we didn't pass a mount-operation instance,
     // drive will do operation without user interaction.
-    auto mount_op = VolumeManager::getInstance()->getGMountOperation();
+    auto mount_op = VolumeManager::getInstance()->getOccupiedInfoThread()->getMountOp();
     QString *targetUri = new QString(VolumeManager::getInstance()->getTargetUriFromUnixDevice(m_device));
     if(m_canEject && !m_device.startsWith("/dev/sd")){ /* U盘使用安全移除 */
         g_drive_eject_with_operation(m_drive, ejectFlag, mount_op, nullptr, GAsyncReadyCallback(eject_cb), targetUri);
@@ -1542,3 +1512,44 @@ void MessageDialog::init(std::map<QString, QIcon> &occupiedAppMap, const QString
     setLayout(layout);
 }
 
+#include <gio/gio.h>
+
+GetOccupiedAppsInfoThread::GetOccupiedAppsInfoThread(QObject *parent)
+{
+
+}
+
+void GetOccupiedAppsInfoThread::run()
+{
+    this->m_mountOp=g_mount_operation_new();
+    g_signal_connect (m_mountOp, "show-processes", G_CALLBACK(show_processes_cb), this);
+}
+
+void GetOccupiedAppsInfoThread::show_processes_cb(GMountOperation *MountOp, char *message, GArray *processes, char **choices, gpointer user_data)
+{
+    std::map<QString,QIcon> occupiedAppMap;
+    for(int i=0; i< processes->len; i++)
+    {
+        GPid pid = g_array_index(processes, GPid ,i);
+        QProcess *process =new QProcess();
+        QString cmd =QString("ps -p %1 o comm=").arg(pid);
+        process->start(cmd);
+        process->waitForFinished();
+        auto application = QString(process->readAll()).replace("\n","");
+        QString iconName = "application-x-executable";
+        if(application=="bash")
+            iconName = "utilities-terminal";
+        auto icon = QIcon::fromTheme(iconName);
+        occupiedAppMap.insert(std::pair<QString, QIcon>(application,icon));
+        qDebug()<<application;
+
+    }
+
+    auto thread = static_cast<GetOccupiedAppsInfoThread *>(user_data);
+    thread->signal_occupiedAppInfo(occupiedAppMap, message);
+}
+
+GMountOperation *GetOccupiedAppsInfoThread::getMountOp() const
+{
+    return m_mountOp;
+}

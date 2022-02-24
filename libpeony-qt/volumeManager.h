@@ -36,11 +36,14 @@
 #include <gio/gio.h>
 #include <gio/gunixmounts.h>
 
+
+class GetOccupiedAppsInfoThread;
 namespace Experimental_Peony{
 
 class Volume;
 class Mount;
 class Drive;
+
 class Q_DECL_EXPORT VolumeManager : public QObject
 {
     Q_OBJECT
@@ -53,8 +56,8 @@ public:
 
     QString getTargetUriFromUnixDevice(const QString &unixDevice);/* 根据device获取volume的uri */
 
-    GMountOperation*  getGMountOperation(){
-        return m_mountOpreation;
+    GetOccupiedAppsInfoThread* getOccupiedInfoThread(){
+        return m_occupiedAppsInfoThread;
     }
 
 private:
@@ -80,7 +83,6 @@ private:
     static void driveDisconnectCallback(GVolumeMonitor*,GDrive*,VolumeManager*);
     static void volumeChangeCallback(GVolumeMonitor*,GVolume*,VolumeManager*);
     static void mountChangedCallback(GMount *mount, VolumeManager *pThis);
-    static void show_processes_cb(GMountOperation *op, char *message, GArray *processes, char **choices);
 
 private:
     GVolumeMonitor* m_volumeMonitor = nullptr;
@@ -94,7 +96,7 @@ private:
     quint64 m_mountOpreationHandle;
     bool m_gpartedIsOpening = false;
     QHash<QString,Volume*>* m_volumeList = nullptr;
-    GMountOperation *m_mountOpreation = nullptr;
+    GetOccupiedAppsInfoThread* m_occupiedAppsInfoThread = nullptr;
 
     //我应该在检测到信号时更新卷设备列表？还是在用到时重新全部get一次？感觉前者好点?
 Q_SIGNALS:
@@ -221,10 +223,11 @@ private:
     void initVolumeInfo();
 };
 }
+
+
 #include <QIcon>
 #include <QDialog>
 #include <QWidget>
-//#include<map>
 class MessageDialog : public QDialog{
     Q_OBJECT
 public:
@@ -233,6 +236,25 @@ public:
 
     void init(std::map<QString,QIcon>& occupiedAppMap, const QString& message);
 
+};
+
+#include <QThread>
+class GetOccupiedAppsInfoThread:public QThread
+{
+    Q_OBJECT
+public:
+    explicit GetOccupiedAppsInfoThread(QObject *parent = nullptr);
+    void run() override;
+
+    static void show_processes_cb(GMountOperation *mountOp, char *message, GArray *processes, char **choices, gpointer user_data);
+    GMountOperation *getMountOp() const;
+
+Q_SIGNALS:
+    void signal_occupiedAppInfo(std::map<QString,QIcon>& occupiedAppMap, const QString& message);
+
+private:
+    GMainLoop *loop = nullptr;
+    GMountOperation *m_mountOp = nullptr;
 };
 
 #endif // VOLUMEMANAGER_H
