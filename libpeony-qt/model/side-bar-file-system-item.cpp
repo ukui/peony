@@ -33,6 +33,7 @@
 #include "gobject-template.h"
 #include "linux-pwd-helper.h"
 #include "side-bar-separator-item.h"
+#include "global-fstabdata.h"
 #include <udisks/udisks.h>
 #include <sys/stat.h>
 
@@ -41,6 +42,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QUrl>
+#include <QApplication>
+#include <QFile>
 
 using namespace Peony;
 
@@ -125,7 +128,24 @@ bool SideBarFileSystemItem::filterShowRow()
 //        return false;
 //    }
 
-//    return true;
+    //    return true;
+}
+
+QString SideBarFileSystemItem::getDeviceUUID(const char *device)
+{
+    struct stat statbuf;
+    if (stat (device, &statbuf) != 0)
+    {
+        return nullptr;
+    }
+
+    g_autoptr(UDisksClient) client = udisks_client_new_sync (NULL,NULL);
+    g_autoptr(UDisksBlock) block = udisks_client_get_block_for_dev(client, statbuf.st_rdev);
+    if (!block)
+        return nullptr;
+
+    const gchar *uuid = udisks_block_get_id_uuid(block);
+    return uuid;
 }
 
 void SideBarFileSystemItem::initDirInfo(const QString &uri)
@@ -183,6 +203,8 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
     m_isVolume = true;
     m_hidden = volumeItem.getHidden();
 
+    bool isData = false;
+
     /* 手机和空光盘的m_uri需要额外设置 */
     if(m_uri.isEmpty()){
         if(m_device.startsWith("/dev/bus/usb")){
@@ -202,6 +224,16 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
                 auto unixDevice = FileUtils::getUnixDevice(itemUri);
                 if (unixDevice == m_device) {
                     m_uri = itemUri;
+                    GlobalFstabData *globalFstabData = GlobalFstabData::getInstance();
+                    if(!globalFstabData->getUuidState()){
+                        if(globalFstabData->isMountPoints(m_device.toUtf8(), "/data")){
+                            isData = true;
+                        }
+                    }else{
+                        if(globalFstabData->isMountPoints(getDeviceUUID(m_device.toUtf8()), "/data")){
+                            isData = true;
+                        }
+                    }
                     break;
                 }
             }
@@ -216,7 +248,7 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
         m_mounted = true;
         m_displayName = QObject::tr("File System");
         m_iconName = "drive-harddisk-system-symbolic";
-    }else if("file:///data" == m_uri){
+    }else if("file:///data" == m_uri || isData){
         m_displayName = QObject::tr("Data");
         m_iconName = "drive-harddisk";
     }
