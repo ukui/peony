@@ -243,6 +243,19 @@ void Format_Dialog::slot_format(bool enable)
     if(!enable)
         return;
 
+    int full_clean = 0;
+    full_clean = mEraseCkbox->isChecked();
+    //恢复之前被删除的代码，尝试修复在100%进度等待问题，bug#105901
+    if(full_clean){
+        //完全擦除方式格式化，预估为半小时，1秒更新一次
+        mTimer->setInterval(1000);
+        m_total_predict = 1800;
+    }else{
+        //快速格式化，预估时间为75S,0.5秒更新一次
+        mTimer->setInterval(500);
+        m_total_predict = 150;
+    }
+
     mTimer->start();
 
     // set ui button disable
@@ -255,7 +268,7 @@ void Format_Dialog::slot_format(bool enable)
 
     //init the value
     char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
-    int full_clean = 0;
+
 
     QString romType = mFSCombox->currentText();
     if (QString("vfat/fat32") == romType) {
@@ -267,11 +280,9 @@ void Format_Dialog::slot_format(bool enable)
     strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
     strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
 
-//    //disable name and rom size list
+    //disable name and rom size list
     //ui->comboBox_rom_size->setDisabled(true);
     this->mFSCombox->setDisabled(true);
-
-    full_clean = mEraseCkbox->isChecked();
 
     QString volname, devName, voldisplayname ,devtype;
     //get device name
@@ -379,35 +390,6 @@ void Format_Dialog::acceptFormat(bool)
     b_finished = false;
     b_failed = false;
 
-    //恢复之前被删除的代码，尝试修复在100%进度等待问题，bug#105901
-    if(full_clean){
-        //完全擦除方式格式化，预估为半小时，1秒更新一次
-        mTimer->setInterval(1000);
-        m_total_predict = 1800;
-    }else{
-        //快速格式化，预估时间为75S,0.5秒更新一次
-        mTimer->setInterval(500);
-        m_total_predict = 150;
-    }
-
-    //while get ensure emit , do format 
-    connect(this,&Format_Dialog::ensure_format, this, [=](bool){
-        // time begin loop
-        mTimer->start();
-
-        // set ui button disable
-        mFormatBtn->setDisabled(TRUE);
-        mCancelBtn->setDisabled(TRUE);
-        //ui->lineEdit_device_name->setDisabled(TRUE);
-        //use set readonly property, fix exit issue link to task#33686
-        mNameEdit->setReadOnly(true);
-        mEraseCkbox->setDisabled(TRUE);
-
-        int format_value = 0;
-        //do format
-        kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
-                     full_clean?"zero":NULL, rom_name,&format_value);
-    });
     if(bEnsureFormat){
         Q_EMIT ensure_format(true);
         bEnsureFormat = false;
