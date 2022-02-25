@@ -118,6 +118,11 @@ void AboutDialog::initUI()
 
                 resetSize();
             }
+            else if("iconThemeName" == key)
+            {
+                ui->iconLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(96,96));
+                ui->logoLabel->setPixmap(QIcon::fromTheme("system-file-manager").pixmap(24,24));
+            }
         });
     }
     this->setSupportText();
