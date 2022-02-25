@@ -569,6 +569,19 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         m_volumeList->insert(volumeItem->device(),volumeItem);
     }
 
+    //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
+    if(!m_gpartedIsOpening){ //gparted未打开时，才考虑卷设备未挂载的情况
+        for(int i=0; i<volumeCount; ++i){
+            Volume* volumeItem = volumes.at(i);
+            //qDebug()<<__func__<<__LINE__<<volumeItem->device()<<endl;
+            if(m_volumeList->contains(volumeItem->device()))
+                continue;
+            //qDebug()<<__func__<<__LINE__<<volumeItem->device()<<volumeItem->name();
+            m_volumeList->insert(volumeItem->device(),volumeItem);
+        }
+    }
+    //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
+
     /* 添加光驱设备 */
     QList<Drive*> driveList = allDrives();
     for(auto entry : driveList)
@@ -608,18 +621,7 @@ QList<Volume>* VolumeManager::allVaildVolumes(){
         }
     }
 
-    //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
-    if(!m_gpartedIsOpening){ //gparted未打开时，才考虑卷设备未挂载的情况
-        for(int i=0; i<volumeCount; ++i){
-            Volume* volumeItem = volumes.at(i);
-            //qDebug()<<__func__<<__LINE__<<volumeItem->device()<<endl;
-            if(m_volumeList->contains(volumeItem->device()))
-                continue;
-            //qDebug()<<__func__<<__LINE__<<volumeItem->device()<<volumeItem->name();
-            m_volumeList->insert(volumeItem->device(),volumeItem);
-        }
-    }
-    //qDebug()<<__func__<<__LINE__<<m_gpartedIsOpening<<mounts.count()<<" "<<volumes.count()<<m_volumeList->count()<<endl;
+
 
     QHash<QString,Volume*>::const_iterator item = m_volumeList->begin();
     QHash<QString,Volume*>::const_iterator end = m_volumeList->end();

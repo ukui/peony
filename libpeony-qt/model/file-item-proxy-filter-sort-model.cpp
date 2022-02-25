@@ -182,10 +182,20 @@ default_sort:
         if (m_use_default_name_sort_order) {
             //fix chinese first sort wrong issue, link to bug#70836
             //fix bug#97408,change indicator meanings
-            if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName))
-                return true;
-            else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName))
-                return false;
+            bool lesser = true;
+            if(startWithChinese(leftDisplayName) && ! startWithChinese(rightDisplayName)) {
+                // fix #103343
+                lesser = true;
+                if (sortOrder() == Qt::AscendingOrder)
+                    return lesser;
+                return !lesser;
+            }
+            else if(! startWithChinese(leftDisplayName) && startWithChinese(rightDisplayName)) {
+                lesser = false;
+                if (sortOrder() == Qt::AscendingOrder)
+                    return lesser;
+                return !lesser;
+            }
             else
                 return comparer.compare(leftDisplayName, rightDisplayName) > 0;
         }
@@ -225,7 +235,10 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
             return false;
 
         //not show system orgin lost+found and sec_storage_data folder in DATA, fix bug#67084
-        if (targetUri.endsWith("DATA/lost+found") || targetUri.endsWith("DATA/sec_storage_data"))
+        /* not show system orgin lost+found and bbox_logs folder in file:///data, fix bug#104820、bug#105714 */
+        if(targetUri.endsWith("data/bbox_logs",Qt::CaseInsensitive))
+            return false;
+        if (targetUri.endsWith("data/lost+found",Qt::CaseInsensitive) || targetUri.endsWith("data/sec_storage_data",Qt::CaseInsensitive))
         {
             if (! item->m_info->canWrite() && ! item->m_info->canExecute())
                return false;

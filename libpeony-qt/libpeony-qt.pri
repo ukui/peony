@@ -27,12 +27,14 @@ HEADERS += \
     $$PWD/plugin-manager.h          \
     $$PWD/global-settings.h         \
     $$PWD/complementary-style.h     \
+    $$PWD/global-fstabdata.h        \
 
 SOURCES += \
     $$PWD/file-copy.cpp             \
     $$PWD/plugin-manager.cpp        \
     $$PWD/global-settings.cpp       \
     $$PWD/complementary-style.cpp   \
+    $$PWD/global-fstabdata.cpp      \
 
 
 FORMS += \

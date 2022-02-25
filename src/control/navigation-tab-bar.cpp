@@ -290,6 +290,7 @@ void NavigationTabBar::mouseMoveEvent(QMouseEvent *e)
     d->setHotSpot(pixmap.rect().center());
     m_should_trigger_drop = true;
     d->exec();
+    qApp->restoreOverrideCursor();
     m_drag = nullptr;
 
     if (m_should_trigger_drop) {

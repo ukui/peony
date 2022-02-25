@@ -35,7 +35,7 @@ static guint peony_search_vfs_file_hash(GFile *file);//unused
 static gboolean peony_search_vfs_file_equal(GFile *file1, GFile *file2);//unused
 static gboolean peony_search_vfs_file_is_native(GFile *file);//unused
 static gboolean peony_search_vfs_file_has_uri_scheme(GFile *file, const char *uri_scheme);//unused
-static char *peony_search_vfs_file_get_uri_sheceme(GFile *file);//unused
+static char *peony_search_vfs_file_get_uri_sheceme(GFile *file);
 static char *peony_search_vfs_file_get_basename(GFile *file);//unused
 static char *peony_search_vfs_file_get_path(GFile *file);//unused
 static char *peony_search_vfs_file_get_uri(GFile *file);
@@ -96,6 +96,7 @@ GFileInfo *peony_search_vfs_file_query_info(GFile *file,
         GError **error)
 {
     auto vfs_file = PEONY_SEARCH_VFS_FILE(file);
+    qDebug()<<vfs_file->priv->uri;
     GFileInfo *info = g_file_info_new();
     g_file_info_set_name(info, vfs_file->priv->uri);
     auto icon = g_themed_icon_new("search");
@@ -131,6 +132,11 @@ gboolean peony_search_vfs_file_is_native(GFile *file)
     return false;
 }
 
+static char *peony_search_vfs_file_get_uri_sheceme(GFile *file)
+{
+    return g_strdup("search");
+}
+
 static void peony_search_vfs_file_g_file_iface_init(GFileIface *iface)
 {
     iface->dup = peony_search_vfs_file_dup;
@@ -141,6 +147,7 @@ static void peony_search_vfs_file_g_file_iface_init(GFileIface *iface)
     iface->get_uri = peony_search_vfs_file_get_uri;
     iface->get_path = peony_search_vfs_file_get_path;
     iface->resolve_relative_path = peony_search_vfs_file_resolve_relative_path;
+    iface->get_uri_scheme = peony_search_vfs_file_get_uri_sheceme;
 }
 
 /// dup, get_parent and is_native(and so on) is used in peony-qt,

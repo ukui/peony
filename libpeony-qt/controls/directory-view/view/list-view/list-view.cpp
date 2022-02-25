@@ -58,6 +58,7 @@
 #include <QStyleOptionViewItem>
 
 #include <QStandardPaths>
+#include <QMessageBox>
 
 using namespace Peony;
 using namespace Peony::DirectoryView;
@@ -456,6 +457,12 @@ void ListView::dropEvent(QDropEvent *e)
     e->setDropAction(action);
     if (e->keyboardModifiers() & Qt::ShiftModifier) {
         action = Qt::TargetMoveAction;
+    }
+
+    //Do not allow dragging files to file manager when searching
+    if (m_current_uri.startsWith("search://")) {
+        QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
+        return;
     }
 
     auto proxy_index = indexAt(e->pos());

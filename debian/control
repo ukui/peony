@@ -23,7 +23,8 @@ Build-Depends: debhelper-compat (=12),
                libcanberra-dev,
                libukui-log4qt-dev,
                libkf5wayland-dev,
-               libwayland-dev
+               libwayland-dev,
+               libx11-xcb-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
@@ -87,7 +88,11 @@ Package: libpeony-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
+         qtbase5-dev,
+         libglib2.0-dev,
+         libgsettings-qt-dev,
+         libpoppler-qt5-dev,
+         libnotify-dev,
          libcanberra-dev,
          libpeony3 (= ${binary:Version})
 Description: libraries for Peony components (development files)

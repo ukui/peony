@@ -91,6 +91,11 @@ void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
         QString fileName = QUrl(name).toDisplayString();
         setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
                     .arg(opt.fontMetrics.elidedText(fileName, Qt::ElideMiddle, 480)));
+    } else {
+        auto src = m_error->srcUri;
+        auto destDir = m_error->destDirUri;
+        setText(tr("Unexpected error from %1 to %2").arg(src).arg(destDir));
+        qCritical()<<QString("Unexpected error from %1 to %2").arg(src).arg(destDir);
     }
 }
 

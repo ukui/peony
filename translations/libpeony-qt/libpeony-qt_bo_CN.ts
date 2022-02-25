@@ -161,6 +161,10 @@
         <source>OK</source>
         <translation type="unfinished">གཏན་འཁེལ་བྱེད་པ།</translation>
     </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainProgressBar</name>
@@ -824,12 +828,28 @@
         <source>Icon View</source>
         <translation>རིས་རྟགས་མཐོང་རིས།</translation>
     </message>
+    <message>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::DirectoryView::ListView</name>
     <message>
         <source>List View</source>
         <translation>རེའུ་མིག་གི་མཐོང་རིས།</translation>
+    </message>
+    <message>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1439,6 +1459,10 @@ Do you want to delete the link file?</source>
     <message>
         <source>Do the same</source>
         <translation>ཉེར་སྤྱོད་ཆ་ཚང་།</translation>
+    </message>
+    <message>
+        <source>Unexpected error from %1 to %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2511,6 +2535,18 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <source>Formatting successful! But failed to set the device name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File is not existed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can not add a file to favorite directory.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

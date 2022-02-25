@@ -211,6 +211,11 @@ void FileInfoJob::queryFileType(GFileInfo* new_info){
 }
 
 void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
+    if (!g_file_info_get_display_name(new_info)) {
+        qWarning()<<m_info.get()->uri()<<"query file display name failed";
+        return;
+    }
+
     FileInfo *info = nullptr;
     if (auto data = m_info) {
         info = data.get();
@@ -374,7 +379,11 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
         info->m_file_size = QString(size_full).replace("iB", "B");;
         g_free(size_full);
     } else {
-        info->m_file_size = nullptr;
+        //fix not show file size issue, link to bug#104721
+        if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_STANDARD_SIZE))
+           info->m_file_size = "0 KB";
+        else
+           info->m_file_size = nullptr;
     }
 
     auto systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
