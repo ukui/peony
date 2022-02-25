@@ -217,9 +217,10 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
         mFSCombox->setCurrentText("ext4");
     }
 
-    connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)));
+    connect(mFormatBtn, SIGNAL(clicked(bool)), this, SLOT(acceptFormat(bool)), Qt::UniqueConnection);
 
-    connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)));
+    connect(mCancelBtn, SIGNAL(clicked(bool)), this, SLOT(colseFormat(bool)), Qt::UniqueConnection);
+    connect(this,&Format_Dialog::ensure_format, this, &Format_Dialog::slot_format, Qt::UniqueConnection);
 }
 
 void Format_Dialog::colseFormat(bool)
@@ -235,6 +236,66 @@ void Format_Dialog::colseFormat(bool)
 
     //cancel format function
     cancel_format(dev_name);
+}
+
+void Format_Dialog::slot_format(bool enable)
+{
+    if(!enable)
+        return;
+
+    int full_clean = 0;
+    full_clean = mEraseCkbox->isChecked();
+    //恢复之前被删除的代码，尝试修复在100%进度等待问题，bug#105901
+    if(full_clean){
+        //完全擦除方式格式化，预估为半小时，1秒更新一次
+        mTimer->setInterval(1000);
+        m_total_predict = 1800;
+    }else{
+        //快速格式化，预估时间为75S,0.5秒更新一次
+        mTimer->setInterval(500);
+        m_total_predict = 150;
+    }
+
+    mTimer->start();
+
+    // set ui button disable
+    mFormatBtn->setDisabled(TRUE);
+    mCancelBtn->setDisabled(TRUE);
+    //ui->lineEdit_device_name->setDisabled(TRUE);
+    //use set readonly property, fix exit issue link to task#33686
+    mNameEdit->setReadOnly(true);
+    mEraseCkbox->setDisabled(TRUE);
+
+    //init the value
+    char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
+
+
+    QString romType = mFSCombox->currentText();
+    if (QString("vfat/fat32") == romType) {
+        romType = "vfat";
+    }
+
+    //get values from ui
+    strncpy(rom_size,mRomSizeCombox->currentText ().toUtf8().constData(), strlen(mRomSizeCombox->currentText ().toUtf8().constData()));
+    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
+    strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
+
+    //disable name and rom size list
+    //ui->comboBox_rom_size->setDisabled(true);
+    this->mFSCombox->setDisabled(true);
+
+    QString volname, devName, voldisplayname ,devtype;
+    //get device name
+    //FIXME: replace BLOCKING api in ui thread.
+    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
+
+    strncpy(dev_name,devName.toUtf8().constData(), sizeof (dev_name) - 1);
+    devtype = rom_type;
+
+    int format_value = 0;
+    //do format
+    kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
+                 full_clean?"zero":NULL, rom_name,&format_value);
 }
 
 
@@ -257,7 +318,12 @@ static void unmount_finished(GFile* file, GAsyncResult* result, gpointer udata)
     if (err) {
         flags = 0;
         b_failed = true;
-        
+        if(G_IO_ERROR_BUSY == err->code){/* 卷被占用时，防止二次弹出信息提示框 */
+            g_error_free(err);
+            /* 在此处需要做取消格式化操作，格式化对话框恢复到初始化状态，以备再次格式化 */
+            pthis->setBtnStatus(true);
+            return;
+        }
         QMessageBox message_error(pthis);
           
         message_error.setText(QObject::tr("Error: %1\n").arg(err->message));
@@ -297,27 +363,6 @@ void Format_Dialog::acceptFormat(bool)
     //keep this window above, fix bug #41227
 //    KWindowSystem::setState(this->winId(), KWindowSystem::KeepAbove);
 
-    //init the value
-    char rom_size[1024] ={0},rom_type[1024]={0},rom_name[1024]={0},dev_name[1024]={0};
-    int full_clean = 0;
-
-    QString romType = mFSCombox->currentText();
-    if (QString("vfat/fat32") == romType) {
-        romType = "vfat";
-    }
-
-    //get values from ui
-    strncpy(rom_size,mRomSizeCombox->currentText ().toUtf8().constData(), strlen(mRomSizeCombox->currentText ().toUtf8().constData()));
-    strncpy(rom_type, romType.toUtf8().constData(), strlen(romType.toUtf8().constData()));
-    strncpy(rom_name,mNameEdit->text().trimmed ().toUtf8().constData(), sizeof (rom_name) - 1);
-
-//    //disable name and rom size list
-    //ui->comboBox_rom_size->setDisabled(true);
-    this->mFSCombox->setDisabled(true);
-
-    full_clean = mEraseCkbox->isChecked();
-
-    QString volname, devName, voldisplayname ,devtype;
     bool bEnsureFormat = false;
     auto info = FileInfo::fromUri(fm_uris);
     if (info.get()->isEmptyInfo()) {
@@ -329,67 +374,22 @@ void Format_Dialog::acceptFormat(bool)
     if(mount) {
        /* unmount */
        auto files = wrapGFile(g_file_new_for_uri(this->fm_uris.toUtf8().constData()));
+       auto mount_op = Experimental_Peony::VolumeManager::getInstance()->getOccupiedInfoThread()->getMountOp();
        g_file_unmount_mountable_with_operation(files.get()->get(),
                                                G_MOUNT_UNMOUNT_NONE,
-                                               nullptr,
+                                               mount_op,
                                                nullptr,
                                                GAsyncReadyCallback(unmount_finished),
                                                this);
     } else {
         bEnsureFormat = true;
-    }
-    //get device name
-    //FIXME: replace BLOCKING api in ui thread.
-    FileUtils::queryVolumeInfo(fm_uris, volname, devName, voldisplayname);
-
-    strncpy(dev_name,devName.toUtf8().constData(), sizeof (dev_name) - 1);
-    devtype = rom_type;
-
-    //do format
-    //enter kdisk_format function
-
-    //init format_finish value
-    //int format_value = 0;
-
-    //begin format
-    //kdisk_format(dev_name,devtype.toLower().toUtf8().constData(),full_clean?"zero":NULL,rom_name,&format_value);
-
-    //begin start my_timer, processbar
+    } 
 
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
     b_failed = false;
 
-    //恢复之前被删除的代码，尝试修复在100%进度等待问题，bug#105901
-    if(full_clean){
-        //完全擦除方式格式化，预估为半小时，1秒更新一次
-        mTimer->setInterval(1000);
-        m_total_predict = 1800;
-    }else{
-        //快速格式化，预估时间为75S,0.5秒更新一次
-        mTimer->setInterval(500);
-        m_total_predict = 150;
-    }
-
-    //while get ensure emit , do format 
-    connect(this,&Format_Dialog::ensure_format, this, [=](bool){
-        // time begin loop
-        mTimer->start();
-
-        // set ui button disable
-        mFormatBtn->setDisabled(TRUE);
-        mCancelBtn->setDisabled(TRUE);
-        //ui->lineEdit_device_name->setDisabled(TRUE);
-        //use set readonly property, fix exit issue link to task#33686
-        mNameEdit->setReadOnly(true);
-        mEraseCkbox->setDisabled(TRUE);
-
-        int format_value = 0;
-        //do format
-        kdisk_format(dev_name, devtype.toLower().toUtf8().constData(),
-                     full_clean?"zero":NULL, rom_name,&format_value);
-    });
     if(bEnsureFormat){
         Q_EMIT ensure_format(true);
         bEnsureFormat = false;
@@ -671,12 +671,12 @@ void Format_Dialog::format_cb (GObject *source_object, GAsyncResult *res ,gpoint
     {
         UDisksClient* client = udisks_client_new_sync(NULL, NULL);
         if (client) {
-            UDisksObject* udiskObj = getObjectFromBlockDevice(client, data->device_name);
+            UDisksObject* udiskObj = getObjectFromBlockDevice(client, data->dl->mVolumeName.toStdString().c_str());
             if (udiskObj) {
                 UDisksBlock* diskBlock = udisks_object_get_block (udiskObj);
                 if (diskBlock) {
                     curName = udisks_block_get_id_label (diskBlock);
-                    qDebug () << data->device_name << "  --  " << data->filesystem_name << "  --  " << curName;
+                    qDebug () << data->dl->mVolumeName << "  --  " << data->filesystem_name << "  --  " << curName;
                 }
             }
         }
@@ -940,6 +940,12 @@ Format_Dialog::~Format_Dialog()
     if (mVolumeMonitor)     g_object_unref (mVolumeMonitor);
 
     b_canClose = true;
+}
+
+void Format_Dialog::setBtnStatus(bool enable)
+{
+    mFormatBtn->setEnabled(enable);
+    mCancelBtn->setEnabled(enable);
 }
 
 void Format_Dialog::closeEvent(QCloseEvent *e)

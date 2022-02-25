@@ -14,11 +14,14 @@
 #include <gio/gio.h>
 #include <gio/gunixmounts.h>
 
+
+class GetOccupiedAppsInfoThread;
 namespace Experimental_Peony{
 
 class Volume;
 class Mount;
 class Drive;
+
 class Q_DECL_EXPORT VolumeManager : public QObject
 {
     Q_OBJECT
@@ -30,6 +33,10 @@ public:
     void printVolumeList();
 
     QString getTargetUriFromUnixDevice(const QString &unixDevice);/* 根据device获取volume的uri */
+
+    GetOccupiedAppsInfoThread* getOccupiedInfoThread(){
+        return m_occupiedAppsInfoThread;
+    }
 
 private:
     explicit VolumeManager(QObject *parent = nullptr);
@@ -64,8 +71,10 @@ private:
     quint64 m_mountRemoveHandle;
     quint64 m_driveConnectHandle;
     quint64 m_driveDisconnectHandle;
-    bool m_gpartedIsOpening;
+    quint64 m_mountOpreationHandle;
+    bool m_gpartedIsOpening = false;
     QHash<QString,Volume*>* m_volumeList = nullptr;
+    GetOccupiedAppsInfoThread* m_occupiedAppsInfoThread = nullptr;
 
     //我应该在检测到信号时更新卷设备列表？还是在用到时重新全部get一次？感觉前者好点?
 Q_SIGNALS:
@@ -192,4 +201,38 @@ private:
     void initVolumeInfo();
 };
 }
+
+
+#include <QIcon>
+#include <QDialog>
+#include <QWidget>
+class MessageDialog : public QDialog{
+    Q_OBJECT
+public:
+    explicit MessageDialog(QWidget *parent = nullptr);
+    ~MessageDialog(){}
+
+    void init(std::map<QString,QIcon>& occupiedAppMap, const QString& message);
+
+};
+
+#include <QThread>
+class GetOccupiedAppsInfoThread:public QThread
+{
+    Q_OBJECT
+public:
+    explicit GetOccupiedAppsInfoThread(QObject *parent = nullptr);
+    void run() override;
+
+    static void show_processes_cb(GMountOperation *mountOp, char *message, GArray *processes, char **choices, gpointer user_data);
+    GMountOperation *getMountOp() const;
+
+Q_SIGNALS:
+    void signal_occupiedAppInfo(std::map<QString,QIcon>& occupiedAppMap, const QString& message);
+
+private:
+    GMainLoop *loop = nullptr;
+    GMountOperation *m_mountOp = nullptr;
+};
+
 #endif // VOLUMEMANAGER_H
