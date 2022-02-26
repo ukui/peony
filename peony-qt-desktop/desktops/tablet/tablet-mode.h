@@ -47,6 +47,10 @@ public:
 
     void beforeInitDesktop() override;
 
+    QPixmap generatePixmap() override;
+
+    void showDesktop() override;
+
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
     void initGSettings();
@@ -77,6 +81,7 @@ private:
     bool checkAppList();
     void paintEvent(QPaintEvent *event);
     void updatePageButtonStatus(qint32 page);
+    void updateMainLayout();
 
 private Q_SLOTS:
     void updateRotationsValue(QString rotation);

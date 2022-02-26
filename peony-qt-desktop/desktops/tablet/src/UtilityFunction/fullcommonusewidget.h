@@ -2,6 +2,7 @@
 #define FullCommonUseWidget_H
 
 #include <QWidget>
+#include <QStackedWidget>
 #include <QSettings>
 #include <QHBoxLayout>
 #include <QScrollBar>
@@ -15,7 +16,7 @@
 #include <QVector>
 
 
-class FullCommonUseWidget : public QWidget
+class FullCommonUseWidget : public QStackedWidget
 {
     Q_OBJECT
 public:
@@ -60,7 +61,6 @@ private:
     int m_width=0;
     int m_height=0;
     QSettings* settt = nullptr;
-    QHBoxLayout *m_mainLayout = nullptr;
     QList<FullListView*> m_pageList;
     bool m_backToMain = false;
 protected:
