@@ -812,27 +812,29 @@ void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
 
 void TabletMode::moveWindow(qint32 length)
 {
-//    m_mutex.tryLock(20);
-//    m_mutex.lock();
-    QRect geometry = m_container->geometry();
-    m_container->setGeometry(QRect((geometry.x() + length), 0, geometry.width(), geometry.height()));
-//    m_mutex.unlock();
+    if (m_isPause) {
+        return;
+    }
+    QPoint newPoint = {(m_container->geometry().x() + length), m_container->geometry().y()};
+    m_container->move(newPoint);
 }
 
 void TabletMode::returnRawPoint()
 {
     //归位
-    QPropertyAnimation *returnAnimation = new QPropertyAnimation(m_container, "pos");
-    returnAnimation->setStartValue(m_container->geometry().topLeft());
-    returnAnimation->setEndValue(QApplication::primaryScreen()->geometry().topLeft());
-    returnAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    returnAnimation->setDuration(300);
+    if (!m_returnAnimation) {
+        m_returnAnimation = new QPropertyAnimation(m_container, "pos");
+        m_returnAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        m_returnAnimation->setEndValue(QPoint{0, 0});
+        m_returnAnimation->setDuration(300);
+    }
 
-    connect(returnAnimation, &QVariantAnimation::finished, this, [=] {
-        delete returnAnimation;
-    });
+    if (m_returnAnimation->state() != QVariantAnimation::Stopped) {
+        return;
+    }
 
-    returnAnimation->start();
+    m_returnAnimation->setStartValue(m_container->geometry().topLeft());
+    m_returnAnimation->start();
 }
 
 void TabletMode::updateTabletModeValue(bool mode)

@@ -84,7 +84,7 @@ private:
     QPoint  moveing_pressedpos;// 鼠标移动的位置
     QPoint  m_lastPressPoint;// 鼠标移动的位置
     QPoint  right_pressedpos;// 右键点击的位置
-
+    bool m_MoveDisabled = false;
 
     QPoint startPos;//开始点击的位置
     QVariant pressApp;//点击位置的app想、

@@ -314,11 +314,14 @@ void FullListView::mouseMoveEvent(QMouseEvent *event)
         }
     }
     if (event->buttons() & Qt::LeftButton && iconClick!=true) {
-        int x_distance = event->globalPos().x() - m_lastPressPoint.x();
-        Q_EMIT moveRequest(x_distance);
+        m_MoveDisabled = qAbs(event->globalPos().x() - pressedGlobalPos.x()) >= (qApp->primaryScreen()->geometry().width() * 0.4);
+        if (!m_MoveDisabled) {
+            int x_distance = event->globalPos().x() - m_lastPressPoint.x();
+            Q_EMIT moveRequest(x_distance);
 
-        m_lastPressPoint = event->globalPos();
-        moveing_pressedpos = event->pos();
+            m_lastPressPoint = event->globalPos();
+            moveing_pressedpos = event->pos();
+        }
     }
      event->accept();
 }
