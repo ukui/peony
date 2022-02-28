@@ -185,7 +185,6 @@ retry_create_template:
     } else {
         needSync = true;
     }
-    g_object_unref(dest_dir_file);
 
     //needSync = true;
 
@@ -199,6 +198,8 @@ retry_create_template:
             g_free(path);
         }
     }
+
+    g_object_unref(dest_dir_file);
 
     // as target()
     m_info.get()->m_dest_dir_uri = m_target_uri;
