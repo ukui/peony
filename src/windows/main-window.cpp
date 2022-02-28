@@ -634,6 +634,8 @@ void MainWindow::setShortCuts()
                 || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
                 || currentUri.startsWith("search://") || currentUri == "filesafe:///")
             {
+                /* Add hint information,link to bug#107640. */
+                QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
                 return;
             }
 
