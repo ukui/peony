@@ -193,25 +193,14 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
 
-    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-        //bug#94981 修改添加控件的位置和形状
-        m_add_page_button = new QToolButton(this);
-        m_add_page_button->setFixedSize(QSize(48, 48));
-        m_add_page_button->setIconSize(QSize(16, 16));
-        m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
-        m_add_page_button->setAutoRaise(true);
-        m_add_page_button->setObjectName("toolButton");
-        m_add_page_button->setStyle(TabBarStyle::getStyle());
-    } else {
-        //修改添加控件的位置和形状
-        m_add_page_button = new QToolButton(this);
-        m_add_page_button->setProperty("useIconHighlightEffect", true);
-        m_add_page_button->setProperty("iconHighlightEffectMode", 1);
-        m_add_page_button->setProperty("fillIconSymbolicColor", true);
-        m_add_page_button->setFixedSize(QSize(32 ,32));
-        m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
-        m_add_page_button->setAutoRaise(true);
-    }
+    //bug#94981 修改添加控件的位置和形状
+    m_add_page_button = new QToolButton(this);
+    m_add_page_button->setFixedSize(QSize(48, 48));
+    m_add_page_button->setIconSize(QSize(16, 16));
+    m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
+    m_add_page_button->setAutoRaise(true);
+    m_add_page_button->setObjectName("toolButton");
+    m_add_page_button->setStyle(TabBarStyle::getStyle());
 
     connect(m_add_page_button, &QToolButton::clicked, this, [=](){
         QString str = m_tab_bar->tabData(m_tab_bar->currentIndex()).toString();
@@ -313,31 +302,17 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
 
-    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-        m_preview_splitter = new QSplitter(this);
-        m_preview_splitter->setChildrenCollapsible(false);
-        m_preview_splitter->setContentsMargins(0, 0, 0, 0);
-        m_preview_splitter->setHandleWidth(1);
-        m_preview_splitter->setStretchFactor(0, 1);
-        m_preview_splitter->addWidget(m_stack);
-        m_stack->installEventFilter(this);
-        m_preview_splitter->addWidget(m_preview_page_container);
-        m_preview_page_container->hide();
-        vbox->addWidget(m_preview_splitter);
-    } else {
-        QSplitter *s = new QSplitter(this);
-        s->setChildrenCollapsible(false);
-        s->setContentsMargins(0, 0, 0, 0);
-        s->setHandleWidth(1);
-        s->addWidget(m_stack);
-        m_stack->installEventFilter(this);
-        m_preview_page_container->hide();
-        //bug#90237 修改默认预览窗口过大
-        s->setStretchFactor(0, 3);
-        s->setStretchFactor(1, 2);
-        s->addWidget(m_preview_page_container);
-        vbox->addWidget(s);
-    }
+    m_preview_splitter = new QSplitter(this);
+    m_preview_splitter->setChildrenCollapsible(false);
+    m_preview_splitter->setContentsMargins(0, 0, 0, 0);
+    m_preview_splitter->setHandleWidth(1);
+    m_preview_splitter->addWidget(m_stack);
+    m_stack->installEventFilter(this);
+    m_preview_splitter->setStretchFactor(0, 3);
+    m_preview_splitter->setStretchFactor(1, 2);
+    m_preview_splitter->addWidget(m_preview_page_container);
+    m_preview_page_container->hide();
+    vbox->addWidget(m_preview_splitter);
     w->setLayout(vbox);
     setCentralWidget(w);
 
@@ -1525,16 +1500,14 @@ void TabWidget::updateStatusBarGeometry()
 
 void TabWidget::paintEvent(QPaintEvent *e)
 {
-    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-        //bug#95007 打开预览窗口，有分割线
-        QPainter painter(this);
-        auto handle = m_preview_splitter->handle(1);
-        auto handlePoint = handle->mapTo(this, QPoint());
-        QPainterPath path;
-        path.addRect(handlePoint.x(),handlePoint.y(), handle->size().width(),handle->size().height());
-        path.setFillRule(Qt::FillRule::WindingFill);
-        painter.fillPath(path, this->palette().window().color());
-    }
+    //bug#95007 打开预览窗口，有分割线
+    QPainter painter(this);
+    auto handle = m_preview_splitter->handle(1);
+    auto handlePoint = handle->mapTo(this, QPoint());
+    QPainterPath path;
+    path.addRect(handlePoint.x(),handlePoint.y(), handle->size().width(),handle->size().height());
+    path.setFillRule(Qt::FillRule::WindingFill);
+    painter.fillPath(path, this->palette().window().color());
 
     QMainWindow::paintEvent(e);
 }
