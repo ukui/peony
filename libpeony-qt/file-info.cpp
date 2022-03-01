@@ -294,7 +294,9 @@ const QString FileInfo::displayName()
     isMountPoint = FileUtils::isMountPoint(m_uri);
 
     QString targetUri = FileUtils::getTargetUri(m_uri);
-    if(m_uri == "file:///DATA" || targetUri == "file:///data")
+    if(m_uri == "file:///DATA"
+            || m_uri == "file:///data"
+            || targetUri == "file:///data")
     {
         return tr("data");
     }
