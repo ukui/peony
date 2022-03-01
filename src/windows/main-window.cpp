@@ -898,7 +898,9 @@ void MainWindow::beginSwitchView(const QString &viewId)
     m_tab->m_status_bar->m_slider->setEnabled(supportZoom);
 //    m_tab->m_status_bar->m_slider->setVisible(supportZoom);
     //fix slider value not update issue
-    m_tab->m_status_bar->m_slider->setValue(currentViewZoomLevel());
+    int zoomLevel = currentViewZoomLevel();
+    m_tab->m_status_bar->m_slider->setValue(zoomLevel);
+    m_tab->currentPage()->getView()->setCurrentZoomLevel(zoomLevel);
 }
 
 void MainWindow::refresh()

@@ -64,11 +64,8 @@ protected:
     void resizeEvent(QResizeEvent *e) override;
 
 private:
-    QToolButton *m_float_button;
-
     QTimer m_drag_timer;
     bool m_start_drag = false;
-
     QPoint m_press_pos;
     QDrag *m_drag = nullptr;
     bool m_should_trigger_drop = false;
@@ -84,10 +81,12 @@ class TabBarStyle : public QProxyStyle
     TabBarStyle() {}
 
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
-    void drawControl(QStyle::ControlElement element,
-                     const QStyleOption *option,
-                     QPainter *painter,
-                     const QWidget *widget = nullptr) const;
+   void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option,
+                           QPainter *painter,
+                           const QWidget *widget = nullptr) const override;
+   QRect subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const override;
+   void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
+
 };
 
 #endif // NAVIGATIONTABBAR_H

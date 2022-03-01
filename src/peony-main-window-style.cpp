@@ -21,6 +21,7 @@
  */
 
 #include "peony-main-window-style.h"
+#include <QStyleOption>
 
 static PeonyMainWindowStyle *global_instance = nullptr;
 

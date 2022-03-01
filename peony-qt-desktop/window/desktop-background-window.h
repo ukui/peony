@@ -52,8 +52,6 @@ public:
         return m_currentDesktop;
     }
 
-    void blurBackground(bool blur);
-
 public Q_SLOTS:
     void setWindowGeometry(const QRect &geometry);
 
@@ -75,13 +73,15 @@ protected Q_SLOTS:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    /**
+     * 图片填充方式
+     * @brief 从给定的图片中，截取一个与屏幕比例相同的矩形。(Rect,居中)。
+     * @param pixmap 图片
+     * @return
+     */
+    QRect getSourceRect(const QPixmap &pixmap);
 
 private:
-    //kwin 临时模糊效果
-    qreal m_backgroundOpacity = 0.5;
-    bool  m_backgroundBlur    = false;
-    QWidget *m_lastEffectWidget = nullptr;
-
     int m_id = -1;
     QScreen *m_screen = nullptr;
 

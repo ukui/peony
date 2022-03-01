@@ -30,6 +30,7 @@
 
 #include "window-manager.h"
 #include "desktop-manager.h"
+#include "peony-desktop-dbus-service.h"
 
 #include <QScreen>
 #include <QWindow>
@@ -83,6 +84,8 @@ private:
     void initManager();
 
     void initGSettings();
+
+    void initDBusService();
 
     void updateGSettingValues();
 
@@ -140,6 +143,8 @@ private:
     Peony::WindowManager  *m_windowManager  = nullptr;
     //桌面管理器
     Peony::DesktopManager *m_desktopManager = nullptr;
+    //intel dbus service
+    Peony::PeonyDesktopDbusService *m_desktopDbusService = nullptr;
 };
 
 #endif // PEONYDESKTOPAPPLICATION_H

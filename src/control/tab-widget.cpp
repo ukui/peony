@@ -68,6 +68,7 @@
 #include <QMessageBox>
 
 #include <QDebug>
+#include <QPainter>
 
 static PushButtonStyle *global_instance = nullptr;
 
@@ -192,14 +193,14 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
     QActionGroup *group = new QActionGroup(this);
     group->setExclusive(true);
 
-    //修改添加控件的位置和形状
+    //bug#94981 修改添加控件的位置和形状
     m_add_page_button = new QToolButton(this);
-    m_add_page_button->setProperty("useIconHighlightEffect", true);
-    m_add_page_button->setProperty("iconHighlightEffectMode", 1);
-    m_add_page_button->setProperty("fillIconSymbolicColor", true);
-    m_add_page_button->setFixedSize(QSize(32 ,32));
+    m_add_page_button->setFixedSize(QSize(48, 48));
+    m_add_page_button->setIconSize(QSize(16, 16));
     m_add_page_button->setIcon(QIcon::fromTheme("list-add-symbolic"));
     m_add_page_button->setAutoRaise(true);
+    m_add_page_button->setObjectName("toolButton");
+    m_add_page_button->setStyle(TabBarStyle::getStyle());
 
     connect(m_add_page_button, &QToolButton::clicked, this, [=](){
         QString str = m_tab_bar->tabData(m_tab_bar->currentIndex()).toString();
@@ -300,18 +301,18 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
 //    vbox->addLayout(m_header_bar_layout);
     vbox->addLayout(trash);
     vbox->addLayout(m_search_bar_layout);
-    QSplitter *s = new QSplitter(this);
-    s->setChildrenCollapsible(false);
-    s->setContentsMargins(0, 0, 0, 0);
-    s->setHandleWidth(1);
-    s->addWidget(m_stack);
+
+    m_preview_splitter = new QSplitter(this);
+    m_preview_splitter->setChildrenCollapsible(false);
+    m_preview_splitter->setContentsMargins(0, 0, 0, 0);
+    m_preview_splitter->setHandleWidth(1);
+    m_preview_splitter->addWidget(m_stack);
     m_stack->installEventFilter(this);
+    m_preview_splitter->setStretchFactor(0, 3);
+    m_preview_splitter->setStretchFactor(1, 2);
+    m_preview_splitter->addWidget(m_preview_page_container);
     m_preview_page_container->hide();
-    //bug#90237 修改默认预览窗口过大
-    s->setStretchFactor(0, 3);
-    s->setStretchFactor(1, 2);
-    s->addWidget(m_preview_page_container);
-    vbox->addWidget(s);
+    vbox->addWidget(m_preview_splitter);
     w->setLayout(vbox);
     setCentralWidget(w);
 
@@ -835,7 +836,6 @@ void TabWidget::updateSearchPathButton(const QString &uri)
     auto iconName = Peony::FileUtils::getFileIconName(curUri);
     auto displayName = Peony::FileUtils::getFileDisplayName(curUri);
     qDebug() << "goToUri iconName:" <<iconName <<displayName<<curUri;
-    m_current_search->setIcon(QIcon::fromTheme(iconName));
 
     //elide text if it is too long
     if (displayName.length() > ELIDE_TEXT_LENGTH)
@@ -1452,30 +1452,36 @@ void TabWidget::resizeEvent(QResizeEvent *e)
 
 void TabWidget::updateTabBarGeometry()
 {
+//<<<<<<< HEAD
     //204 = 48 * 4 + 12   4个按钮每个48px，相互间隔4px
     quint32 windowButtonsWidth = 204;
     if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
-        windowButtonsWidth -= 52;
+        //windowButtonsWidth -= 52;
+        //cherry-pick commit:339dbaf18b9555d274e69c0589a755457e3f555b, 为解决冲突加入的下一行
+        windowButtonsWidth = 148;
     }
     //更新添加控件的位置
     int addPageX = 0;
     int tabBarWidth = 0;
-    if( m_tab_bar->sizeHint().width()+2 > this->width() - m_add_page_button->width() - windowButtonsWidth )
-    {
+    if (m_tab_bar->sizeHint().width() + 2 > this->width() - m_add_page_button->width() - windowButtonsWidth) {
         tabBarWidth = this->width() - m_add_page_button->width() - windowButtonsWidth;
         addPageX = this->width() - m_add_page_button->width() - windowButtonsWidth;
-    }
-    else
-    {
+    } else {
         tabBarWidth = this->width() - windowButtonsWidth;
-        addPageX =  m_tab_bar->sizeHint().width()+2;
+        addPageX = m_tab_bar->sizeHint().width() + 2;
     }
 
     m_tab_bar->setGeometry(0, 1, tabBarWidth,48);
     m_tab_bar->raise();
-    auto lastTabRect =  m_tab_bar->rect();
-    int fixedY = lastTabRect.center().y() - m_add_page_button->height()/2;
-    m_add_page_button->move(addPageX, fixedY);
+
+    if (Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        m_add_page_button->move(addPageX, 0);
+    } else {
+        auto lastTabRect =  m_tab_bar->rect();
+        int fixedY = lastTabRect.center().y() - m_add_page_button->height()/2;
+        m_add_page_button->move(addPageX, fixedY);
+    }
+
     m_add_page_button->raise();
 }
 
@@ -1490,6 +1496,20 @@ void TabWidget::updateStatusBarGeometry()
     } else {
         m_status_bar->m_slider->hide();
     }
+}
+
+void TabWidget::paintEvent(QPaintEvent *e)
+{
+    //bug#95007 打开预览窗口，有分割线
+    QPainter painter(this);
+    auto handle = m_preview_splitter->handle(1);
+    auto handlePoint = handle->mapTo(this, QPoint());
+    QPainterPath path;
+    path.addRect(handlePoint.x(),handlePoint.y(), handle->size().width(),handle->size().height());
+    path.setFillRule(Qt::FillRule::WindingFill);
+    painter.fillPath(path, this->palette().window().color());
+
+    QMainWindow::paintEvent(e);
 }
 
 const QList<std::shared_ptr<Peony::FileInfo>> TabWidget::getCurrentSelectionFileInfos()

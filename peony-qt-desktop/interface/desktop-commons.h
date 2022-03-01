@@ -31,7 +31,7 @@ namespace Peony {
  */
 typedef enum {
     Desktop = 0, //桌面模式
-    Empty = 0, //仅用于停放图标的空桌面
+    Empty, //仅用于停放图标的空桌面
     Tablet, //平板模式
     StudyCenter //学习中心模式
 } DesktopType;

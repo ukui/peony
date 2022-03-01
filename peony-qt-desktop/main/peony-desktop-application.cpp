@@ -32,7 +32,6 @@
 #include "desktop-menu.h"
 
 #include "desktop-global-settings.h"
-#include "peony-desktop-dbus-service.h"
 #include "desktop-background-manager.h"
 #include "desktop-background-window.h"
 
@@ -436,6 +435,8 @@ void PeonyDesktopApplication::setupBgAndDesktop()
 
         setupDesktop();
         has_desktop = true;
+        //在桌面初始化完成后开始初始化dbus
+        initDBusService();
     }
     has_background = true;
 }
@@ -806,8 +807,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     //出现动画
     QPropertyAnimation *showAnimation = this->createPropertyAnimation(targetAnimation, nextDesktop,
                                                                       nextDesktopStartRect, primaryScreenRect);
-    showAnimation->setDuration(300);
-    QSequentialAnimationGroup *animationGroup = new QSequentialAnimationGroup(this);
+    QParallelAnimationGroup *animationGroup = new QParallelAnimationGroup(this);
     animationGroup->addAnimation(exitAnimation);
     animationGroup->addAnimation(showAnimation);
 
@@ -821,6 +821,9 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         //delete nextEffectBackup;
         animationGroup->clear();
         animationGroup->deleteLater();
+        if (m_desktopDbusService) {
+            Q_EMIT m_desktopDbusService->desktopChangedSignal(nextDesktop->getDesktopType());
+        }
     });
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
@@ -1038,46 +1041,6 @@ void PeonyDesktopApplication::initGSettings()
 //        });
 //    }
 
-    PeonyDesktopDbusService *desktopDbusService = new PeonyDesktopDbusService(this);
-
-    connect(desktopDbusService, &Peony::PeonyDesktopDbusService::blurBackGroundSignal, this, [=](quint32 status) {
-        qDebug() << "[PeonyDesktopApplication::blurBackGroundSignal] received signal, blur:" << status;
-        if (m_windowManager) {
-            Peony::DesktopBackgroundWindow *window = m_windowManager->getWindowByScreen(m_primaryScreen);
-            if (status == 1) {
-                //当需要模糊时才进行判断，否则取消模糊效果
-                updateGSettingValues();
-                if (m_isTabletMode) {
-                    if (m_animationIsRunning) {
-                        //当dbus信号到达时，使用多线程判断桌面切换动画是否还在进行中
-                        QFutureWatcher<void> *watcher = new QFutureWatcher<void>;
-                        connect(watcher, &QFutureWatcher<void>::finished, this, [=] {
-                            window->blurBackground(true);
-                            delete watcher;
-                        });
-
-                        QFuture<void> thread = QtConcurrent::run([&] {
-                            QThread::msleep(50);
-                            while (1) {
-                                if (!m_animationIsRunning) {
-                                    break;
-                                }
-                                qDebug() << "[blurBackGroundSignal] animation is running";
-                                QThread::msleep(50);
-                            }
-                            qDebug() << "[blurBackGroundSignal] animation is over";
-                        });
-                        watcher->setFuture(thread);
-                    } else {
-                        window->blurBackground(true);
-                    }
-                }
-            } else {
-                window->blurBackground(false);
-            }
-        }
-    });
-
     //dbus
     m_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
     qDebug() << "[PeonyDesktopApplication::initGSettings] init statusManagerDBus" << m_statusManagerDBus->isValid();
@@ -1113,5 +1076,12 @@ void PeonyDesktopApplication::updateGSettingValues()
         if (message_a.isValid()) {
             m_isTabletMode = message_a.value();
         }
+    }
+}
+
+void PeonyDesktopApplication::initDBusService()
+{
+    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
+        m_desktopDbusService = new PeonyDesktopDbusService(this);
     }
 }

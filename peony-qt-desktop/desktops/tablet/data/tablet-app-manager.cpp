@@ -34,6 +34,7 @@
 #include <QCollator>
 #include <QTextCodec>
 #include <QDBusInterface>
+#include <QTimer>
 
 using namespace Peony;
 
@@ -99,17 +100,28 @@ void TabletAppManager::initSettings()
 
 void TabletAppManager::initWatcher()
 {
-    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
-                                         "com.ukui.desktop.software", "send_to_client",
-                                         this, SLOT(directoryChangedSlot(QString)));
+    //监听com.kylin.intel.edu.uregis(应用添加)的信号
+    QDBusConnection::systemBus().connect("com.kylin.intel.edu.uregis",
+                                         "/com/kylin/intel/edu/uregis",
+                                         "com.kylin.intel.edu.uregis.interface",
+                                         "PkgAdd", this,
+                                         SLOT(sysAppChangeSlot(QString)));
 
-    m_appPathWatcher = new QFileSystemWatcher(this);
+    //监听com.kylin.intel.edu.uregis(应用卸载)的信号
+    QDBusConnection::systemBus().connect("com.kylin.intel.edu.uregis",
+                                         "/com/kylin/intel/edu/uregis",
+                                         "com.kylin.intel.edu.uregis.interface",
+                                         "PKgRemove", this,
+                                         SLOT(sysAppChangeSlot(QString)));
 
-    for (const QString &path : TabletAppManager::g_appPathList) {
-        m_appPathWatcher->addPath(path);
-    }
-
-    connect(m_appPathWatcher, &QFileSystemWatcher::directoryChanged, this, &TabletAppManager::directoryChangedSlot);
+    //暂时禁用通过监听文件系统变化信号判断应用安装或卸载的功能
+//    m_appPathWatcher = new QFileSystemWatcher(this);
+//
+//    for (const QString &path : TabletAppManager::g_appPathList) {
+//        m_appPathWatcher->addPath(path);
+//    }
+//
+//    connect(m_appPathWatcher, &QFileSystemWatcher::directoryChanged, this, &TabletAppManager::directoryChangedSlot);
 }
 
 void TabletAppManager::directoryChangedSlot(QString)
@@ -198,7 +210,7 @@ void TabletAppManager::updateAppNameSetting()
     m_appNameSetting->endGroup();
 
     //存在新安装应用和卸载应用操作后才刷新
-    if (InstalledAppList.count() > 0 && UninstalledAppList.count() > 0) {
+    if (InstalledAppList.count() > 0 || UninstalledAppList.count() > 0) {
         //更新文件后刷新map
         this->loadAppData();
     }
@@ -825,3 +837,10 @@ bool TabletAppManager::appIsDisabled(TabletAppEntity *appEntity)
     return appIsDisabled(appEntity->execCommand);
 }
 
+void TabletAppManager::sysAppChangeSlot(QString string)
+{
+    //延时2秒刷新界面
+    QTimer::singleShot(2000, this, [=]() {
+        directoryChangedSlot();
+    });
+}

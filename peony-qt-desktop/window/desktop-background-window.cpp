@@ -145,9 +145,9 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                 p.drawPixmap(this->rect(), frontPixmap, frontPixmap.rect());
             } else if (manager->getBackgroundOption() == "scaled") {
                 //填充
-                p.drawPixmap(this->rect().topLeft(), backPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
+                p.drawPixmap(this->rect(), backPixmap, getSourceRect(backPixmap));
                 p.setOpacity(opacity);
-                p.drawPixmap(this->rect().topLeft(), frontPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
+                p.drawPixmap(this->rect(), frontPixmap, getSourceRect(frontPixmap));
             } else if (manager->getBackgroundOption() == "wallpaper") {
                 //平铺
                 int drawedWidth = 0;
@@ -198,7 +198,7 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                 p.drawPixmap(this->rect(), frontPixmap, frontPixmap.rect());
 
             } else if (manager->getBackgroundOption() == "scaled") {
-                p.drawPixmap(this->rect().topLeft(), frontPixmap.scaled(this->rect().size(), Qt::KeepAspectRatioByExpanding));
+                p.drawPixmap(this->rect(), frontPixmap, getSourceRect(frontPixmap));
 
             } else if (manager->getBackgroundOption() == "wallpaper") {
                 int drawedWidth = 0;
@@ -285,7 +285,7 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
 
 void DesktopBackgroundWindow::desktopMoveProcess(AnimationType animationType, quint32 moveLength, quint32 duration)
 {
-    if (moveLength <= 0 | m_currentDesktop->isPause()) {
+    if (moveLength <= 0 || m_currentDesktop->isPause()) {
         return;
     }
 
@@ -347,35 +347,6 @@ void DesktopBackgroundWindow::desktopReboundProcess()
     animation->start();
 }
 
-void DesktopBackgroundWindow::blurBackground(bool blur)
-{
-    if (blur) {
-        if (!m_lastEffectWidget) {
-            m_lastEffectWidget = new QWidget(this);
-            m_lastEffectWidget->resize(1,1);
-            m_lastEffectWidget->setVisible(false);
-            m_lastEffectWidget->hide();
-            m_lastEffectWidget->setGraphicsEffect(this->graphicsEffect());
-            //kwin临时模糊效果
-            QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect(this);
-            blurEffect->setBlurRadius(30);
-
-            this->setGraphicsEffect(blurEffect);
-            m_currentDesktop->setHidden(true);
-            qDebug() << "[DesktopBackgroundWindow::blurBackground] set blurEffect success";
-        }
-    } else {
-        if (m_lastEffectWidget) {
-            this->setGraphicsEffect(m_lastEffectWidget->graphicsEffect());
-            m_currentDesktop->setHidden(false);
-
-            delete m_lastEffectWidget;
-            m_lastEffectWidget = nullptr;
-            qDebug() << "[DesktopBackgroundWindow::blurBackground] reset blurEffect success";
-        }
-    }
-}
-
 DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
 {
     if (m_currentDesktop) {
@@ -393,4 +364,58 @@ DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
     }
 
     return nullptr;
+}
+
+QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
+{
+    qreal screenScale = qreal(this->rect().width()) / qreal(this->rect().height());
+    qreal width = pixmap.width();
+    qreal height = pixmap.height();
+
+    if ((width / height) == screenScale) {
+        return pixmap.rect();
+    }
+
+    bool isShortX = (width <= height);
+    if (isShortX) {
+        screenScale = qreal(this->rect().height()) / qreal(this->rect().width());
+    }
+
+    qreal shortEdge = isShortX ? width : height;
+    qreal longEdge = isShortX ? height : width;
+
+    while (shortEdge > 1) {
+        qint32 temp = qFloor(shortEdge * screenScale);
+        if (temp <= longEdge) {
+            longEdge = temp;
+            break;
+        }
+
+        qint32 spacing = qRound(shortEdge / 20);
+        if (spacing <= 0) {
+            spacing = 1;
+        }
+        shortEdge -= spacing;
+    }
+
+    QSize sourceSize = pixmap.size();
+    if (shortEdge > 1 && longEdge > 1) {
+        sourceSize.setWidth(isShortX ? shortEdge : longEdge);
+        sourceSize.setHeight(isShortX ? longEdge : shortEdge);
+    }
+
+    qint32 offsetX = 0;
+    qint32 offsetY = 0;
+    if (pixmap.width() > sourceSize.width()) {
+        offsetX = (pixmap.width() - sourceSize.width()) / 2;
+    }
+
+    if (pixmap.height() > sourceSize.height()) {
+        offsetY = (pixmap.height() - sourceSize.height()) / 2;
+    }
+
+    QPoint offsetPoint = pixmap.rect().topLeft();
+    offsetPoint += QPoint(offsetX, offsetY);
+
+    return QRect(offsetPoint, sourceSize);
 }

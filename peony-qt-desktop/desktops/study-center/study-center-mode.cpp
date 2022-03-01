@@ -124,6 +124,10 @@ void StudyCenterMode::initUi()
     connect(this,SIGNAL(timeChangedSingal(QString,QString)),statusWidget,SLOT(timeChangeSlot(QString,QString)));
     connect(statusWidget,SIGNAL(updateTimeSignal()), this,SLOT(updateTimeSlot()));
     connect(this,SIGNAL(markTimeSingal()),statusWidget,SLOT(markTimeSlot()));
+    //mdm 应用管控信号，禁用或者解除禁用
+    QDBusConnection::systemBus().connect(QString(), QString("/com/ukui/desktop/software"),
+                                         "com.ukui.desktop.software", "send_to_client",
+                                         this, SLOT(updateUiSlot()));
 
     initTime();
 
@@ -207,6 +211,7 @@ void StudyCenterMode::updateAppData()
     dataList.clear();
 
     updateTimeSlot();
+    updateUiSlot();
 }
 
 QList<TABLETAPP>  StudyCenterMode::getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap )
@@ -655,4 +660,16 @@ void StudyCenterMode::screenChange()
     m_pageButtonWidget->hide();
     screenRotation();
     updatePageButton();
+}
+
+void StudyCenterMode::updateUiSlot()
+{
+    if (!practiceWidget || !guradWidget || !synWidget || !statusWidget) {
+        return;
+    }
+
+    practiceWidget->update();
+    guradWidget->update();
+    synWidget->update();
+    statusWidget->update();
 }

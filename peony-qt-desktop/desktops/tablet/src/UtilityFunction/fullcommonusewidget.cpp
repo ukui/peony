@@ -104,74 +104,54 @@ bool FullCommonUseWidget::cmpApp(QString &arg_1, QString &arg_2)
 //执行应用程序
 void FullCommonUseWidget::execApplication(QString desktopfp)
 {
-    QString str;
     //打开文件.desktop
-    GError** error=nullptr;
-    GKeyFileFlags flags=G_KEY_FILE_NONE;
-    GKeyFile* keyfile=g_key_file_new ();
+    GError **error = nullptr;
+    GKeyFileFlags flags = G_KEY_FILE_NONE;
+    GKeyFile *keyfile = g_key_file_new();
 
-    QByteArray fpbyte=desktopfp.toLocal8Bit();
-    char* filepath=fpbyte.data();
-    g_key_file_load_from_file(keyfile,filepath,flags,error);
+    QByteArray fpbyte = desktopfp.toLocal8Bit();
+    char *filepath = fpbyte.data();
+    g_key_file_load_from_file(keyfile, filepath, flags, error);
 
-    char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Exec", nullptr, nullptr);
+    char *name = g_key_file_get_locale_string(keyfile, "Desktop Entry", "Exec", nullptr, nullptr);
     //取出value值
-    QString execnamestr=QString::fromLocal8Bit(name);
-    str=execnamestr;
-    //qDebug()<<"2 exec"<<str;
-
-   //关闭文件
+    QString exe = QString::fromLocal8Bit(name);
+    //关闭文件
     g_key_file_free(keyfile);
     //打开ini文件
-    QString pathini=QDir::homePath()+"/.cache/ukui-menu/ukui-menu.ini";
+    QString pathini = QDir::homePath() + "/.cache/ukui-menu/ukui-menu.ini";
     if (!settt) {
-        settt=new QSettings(pathini,QSettings::IniFormat);
+        settt = new QSettings(pathini, QSettings::IniFormat);
     }
     settt->sync();
     settt->beginGroup("application");
-    QString desktopfp1=str;
-   //判断
-    bool bo=settt->contains(desktopfp1.toLocal8Bit().data());// iskey
-    bool bo1=settt->QSettings::value(desktopfp1.toLocal8Bit().data()).toBool();//isvalue
+    //判断
+    bool bo = settt->contains(exe.toLocal8Bit().data());// iskey
+    bool bo1 = settt->QSettings::value(exe.toLocal8Bit().data()).toBool();//isvalue
     settt->endGroup();
 
-    if(bo && bo1==false)//都存在//存在并且为false，从filepathlist中去掉
-    {
-        //qDebug()<<"bool"<<bo<<bo1;
-
+    if (bo && !bo1) {
         return;
     }
-    QString exe=execnamestr;
+
     QStringList parameters;
     if (exe.indexOf("%") != -1) {
         exe = exe.left(exe.indexOf("%") - 1);
-        //qDebug()<<"=====dd====="<<exe;
     }
-    if (exe.indexOf("-") != -1) {
-//        parameters = exe.split(" ");
+
+    if (exe.indexOf(" ") != -1) {
         parameters = exe.split(QRegExp("\\s+"));
         exe = parameters[0];
         parameters.removeAt(0);
-        //qDebug()<<"===qqq==="<<exe;
     }
 
-    if(exe=="/usr/bin/indicator-china-weather")
-    {
+    if (exe == "/usr/bin/indicator-china-weather") {
         parameters.removeAt(0);
         parameters.append("showmainwindow");
     }
-    qDebug()<<"5 exe"<<exe<<parameters;
+    qDebug() << "tablet launch app, exe:" << exe << "param:" << parameters;
     QDBusInterface session("org.gnome.SessionManager", "/com/ukui/app", "com.ukui.app");
-    if (parameters.isEmpty())
-        session.call("app_open", exe, parameters);
-    else
-        session.call("app_open", exe, parameters);
-
-
-    //Q_EMIT sendHideMainWindowSignal();
-    return;
-
-
+    session.call("app_open", exe, parameters);
 }
 
 void FullCommonUseWidget::updateListViewSlot()

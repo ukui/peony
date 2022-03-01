@@ -1,7 +1,5 @@
 /*
- * Peony-Qt
- *
- * Copyright (C) 2020, Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright: 2021, KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,25 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Authors: Yue Lan <lanyue@kylinos.cn>
+ * Authors: Wenfei He <hewenfei@kylinos.cn>
  *
  */
 
-#ifndef PEONYMAINWINDOWSTYLE_H
-#define PEONYMAINWINDOWSTYLE_H
+#ifndef TABLET_MENU_H
+#define TABLET_MENU_H
 
+#include <QMenu>
 #include <QProxyStyle>
+#include "src/UtilityFunction/fulllistview.h"
 
-class PeonyMainWindowStyle : public QProxyStyle
+class TabletMenu : public QMenu
 {
     Q_OBJECT
 public:
-    static PeonyMainWindowStyle *getStyle();
+    TabletMenu(FullListView* view, QPoint pos);
 
 private:
-    explicit PeonyMainWindowStyle(QObject *parent = nullptr);
+    void fillUninstallAction();
 
-    int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
+protected Q_SLOTS:
+    void uninstallActionTriggerSlot();
+
+private:
+    FullListView *m_mainView = nullptr;
+    QPoint m_pos;
 };
 
-#endif // PEONYMAINWINDOWSTYLE_H
+
+#endif //TABLET_MENU_H

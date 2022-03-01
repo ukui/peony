@@ -131,31 +131,21 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
         //bool bigIcon = index.data(Qt::UserRole).value<bool>();
         bool bigIcon = index.data(Qt::UserRole+2).toBool();
+        Style::AppLeftSpace = (rect.width() - Style::AppListIconSize) / 2;
+        Style::AppTopSpace = (rect.height() - Style::AppListIconSize) / 2;
 
-        if(bigIcon)
-        {
-//            iconRect = QRect(rect.x()+Style::AppLeftSpace-3 ,
-//                           rect.y()+Style::AppTopSpace-3,
-//                           Style::AppListIconSize+12,
-//                           Style::AppListIconSize+12);
-            iconRect = QRect(rect.x()+Style::AppLeftSpace - 6 ,//94
-                           rect.y()+Style::AppTopSpace - 6,//60
-                           Style::AppListIconSize + 12,//96
-                           Style::AppListIconSize + 12);
+        if (bigIcon) {
+            iconRect = QRect(rect.x() + Style::AppLeftSpace - 5,
+                             rect.y() + Style::AppTopSpace - 5,
+                             Style::AppListIconSize + 10,
+                             Style::AppListIconSize + 10);
+
             textRect = QRect(rect.x(),
-                           iconRect.bottom()-3,
-                           rect.width(),
-                           rect.height()-iconRect.height()-Style::AppTopSpace-30);
+                             iconRect.bottom(),
+                             rect.width(),
+                             Style::AppTopSpace - 5);
 
-//            QPixmap pixmap;
-//            pixmap = icon.pixmap((Style::AppListIconSize+20,Style::AppListIconSize+20));//wgx
-//            icon=QIcon(pixmap);
-
-
-        }else{
-            Style::AppLeftSpace = (rect.width() - Style::AppListIconSize) / 2;
-            Style::AppTopSpace = (rect.height() - Style::AppListIconSize) / 2;
-
+        } else {
             iconRect = QRect(rect.x() + Style::AppLeftSpace,
                              rect.y() + Style::AppTopSpace,
                              Style::AppListIconSize,
@@ -254,19 +244,18 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 //        qDebug()<<"iconRect"<<iconRect;
         icon.paint(painter,iconRect);
 
-        //文本换行
-        QColor shadow=Qt::black;
-        shadow.setAlpha(127);
-        painter->setPen(shadow);
-        QRect textLineRect;
-        textLineRect.setLeft(textRect.left()+1);
-        textLineRect.setRight(textRect.right()+1);
-        textLineRect.setTop(textRect.top()+1);
-        textLineRect.setBottom(textRect.bottom()+1);
-        painter->drawText(textLineRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop,appname);
+        QPixmap shadowPixmap(textRect.size());
+        shadowPixmap.fill(Qt::transparent);
+        QPainter shadowPainter(&shadowPixmap);
+        shadowPainter.setPen(Qt::black);
+        shadowPainter.drawText(shadowPixmap.rect(), Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
+        QImage shadowImage = shadowPixmap.toImage();
+        qt_blurImage(shadowImage, 8, false, false);
 
-        painter->setPen(QPen(Qt::white));
-        painter->drawText(textRect,Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
+        painter->drawImage(textRect, shadowImage);
+        //文本换行
+        painter->setPen(Qt::white);
+        painter->drawText(textRect, Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignTop, appname);
 
         painter->restore();
 

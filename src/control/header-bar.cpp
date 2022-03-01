@@ -371,8 +371,8 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
 
     for (auto action : actions()) {
         auto w = widgetForAction(action);
-        w->setProperty("isWindowButton", 1);
-        w->setProperty("useIconHighlightEffect", 0x2);
+        w->setProperty("iconHighlightEffectMode", 1);
+        w->setProperty("useIconHighlightEffect", true);
     }
 }
 
