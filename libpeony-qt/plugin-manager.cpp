@@ -97,8 +97,12 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
             break;
         }
         case PluginInterface::PropertiesWindowPlugin: {
-            PropertiesWindowTabPagePluginIface *propertiesWindowTabPageFactory = dynamic_cast<PropertiesWindowTabPagePluginIface*>(plugin);
-            PropertiesWindowPluginManager::getInstance()->registerFactory(propertiesWindowTabPageFactory);
+            bool is_intel = (QString::compare("V10SP1-edu", GlobalSettings::getInstance()->getProjectName(), Qt::CaseInsensitive) == 0);
+            if(!is_intel)
+            {
+                PropertiesWindowTabPagePluginIface *propertiesWindowTabPageFactory = dynamic_cast<PropertiesWindowTabPagePluginIface*>(plugin);
+                PropertiesWindowPluginManager::getInstance()->registerFactory(propertiesWindowTabPageFactory);
+            }
             break;
         }
         case PluginInterface::ColumnProviderPlugin: {
