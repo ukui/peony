@@ -23,7 +23,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="127"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="132"/>
         <source>Service &amp; Support: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -48,7 +48,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="154"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="159"/>
         <source>none</source>
         <translation type="unfinished"></translation>
     </message>
@@ -173,7 +173,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="721"/>
+        <location filename="../../src/windows/main-window.cpp" line="723"/>
         <source>File Manager</source>
         <translation>Dosya Yöneticisi</translation>
     </message>
@@ -188,17 +188,27 @@ p, li { white-space: pre-wrap; }
         <translation>İleri</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="719"/>
+        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="721"/>
         <source>Search</source>
         <translation type="unfinished">Ara</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1530"/>
+        <location filename="../../src/windows/main-window.cpp" line="1532"/>
         <source>Tips info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1531"/>
+        <location filename="../../src/windows/main-window.cpp" line="1533"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -207,12 +217,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Dosya Silme Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1520"/>
+        <location filename="../../src/windows/main-window.cpp" line="1522"/>
         <source>Delete Permanently</source>
         <translation>Kalıcı Olarak Sil</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1521"/>
+        <location filename="../../src/windows/main-window.cpp" line="1523"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>Bu dosyaları silmek istediğinizden emin misiniz? Bir silme işlemini başlattığınızda, silinen dosyalar bir daha geri yüklenmeyecektir.</translation>
     </message>
@@ -221,7 +231,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Peony Qt</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="734"/>
+        <location filename="../../src/windows/main-window.cpp" line="736"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>

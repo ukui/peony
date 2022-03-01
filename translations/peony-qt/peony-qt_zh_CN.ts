@@ -31,7 +31,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">服务与技术支持: </translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="127"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="132"/>
         <source>Service &amp; Support: </source>
         <translation>服务与支持团队: </translation>
     </message>
@@ -68,7 +68,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器是一款帮助用户管理系统文件的图形化的软件，为用户提供常用的文件操作功能，比如文件查看，文件复制、粘贴、剪切、删除、重命名，文件打开方式选择，文件搜索，文件排序，文件预览等，方便用户在界面上直观地管理系统文件。</translation>
     </message>
     <message>
-        <location filename="../../src/windows/about-dialog.cpp" line="154"/>
+        <location filename="../../src/windows/about-dialog.cpp" line="159"/>
         <source>none</source>
         <translation>无</translation>
     </message>
@@ -193,7 +193,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="721"/>
+        <location filename="../../src/windows/main-window.cpp" line="723"/>
         <source>File Manager</source>
         <translation>文件管理器</translation>
     </message>
@@ -208,17 +208,27 @@ p, li { white-space: pre-wrap; }
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="719"/>
+        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <source>warn</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="657"/>
+        <source>This operation is not supported.</source>
+        <translation>不支持此操作。</translation>
+    </message>
+    <message>
+        <location filename="../../src/windows/main-window.cpp" line="721"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1530"/>
+        <location filename="../../src/windows/main-window.cpp" line="1532"/>
         <source>Tips info</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1531"/>
+        <location filename="../../src/windows/main-window.cpp" line="1533"/>
         <source>Trash has no file need to be cleaned.</source>
         <translation>回收站没有文件需要被清空！</translation>
     </message>
@@ -227,12 +237,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1520"/>
+        <location filename="../../src/windows/main-window.cpp" line="1522"/>
         <source>Delete Permanently</source>
         <translation>永久删除</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="1521"/>
+        <location filename="../../src/windows/main-window.cpp" line="1523"/>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation>您确定要删除这些文件吗？一旦开始删除，这些文件将不可再恢复。</translation>
     </message>
@@ -241,7 +251,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">文件管理器</translation>
     </message>
     <message>
-        <location filename="../../src/windows/main-window.cpp" line="734"/>
+        <location filename="../../src/windows/main-window.cpp" line="736"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
