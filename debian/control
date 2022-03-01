@@ -28,7 +28,7 @@ Build-Depends: debhelper-compat (=12),
                libbamf3-dev,
                libxrandr-dev,
                libxtst-dev,
-               libx11-dev,
+               libx11-xcb-dev,
                libukui-common-dev
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
