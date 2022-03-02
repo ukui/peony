@@ -70,3 +70,18 @@ const QString &DesktopGlobalSettings::getCurrentProjectName()
     return V10SP1;
 #endif
 }
+
+int DesktopGlobalSettings::getProductFeatures()
+{
+    QString features = QString::fromStdString(KDKGetOSRelease("PRODUCT_FEATURES"));
+    qDebug() << "[DesktopGlobalSettings::getProductFeatures]" << features;
+    if (!features.isEmpty()) {
+        bool isOk = false;
+        int tmp = features.toInt(&isOk);
+        if (isOk) {
+            return tmp;
+        }
+    }
+
+    return 1;
+}

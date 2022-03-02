@@ -51,6 +51,14 @@ public:
 
     const QString &getCurrentProjectName();
 
+    /**
+     * 用于在非 edu系统上判断是否支持平板特性<br/>
+     * 1是只支持pc特性，<br/>
+     * 2是只支持平板特性，<br/>
+     * 3是平板和pc都支持<br/>
+     */
+    int getProductFeatures();
+
 private:
     explicit DesktopGlobalSettings(QObject *parent = nullptr);
 
