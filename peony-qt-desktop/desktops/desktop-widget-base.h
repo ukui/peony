@@ -44,7 +44,7 @@ Q_OBJECT
 public:
     explicit DesktopWidgetBase(QWidget *parent = nullptr) : QWidget(parent)
     {
-//        setAttribute(Qt::WA_TranslucentBackground, true);
+        setAttribute(Qt::WA_TranslucentBackground);
         setWindowFlags(Qt::FramelessWindowHint);
     }
 

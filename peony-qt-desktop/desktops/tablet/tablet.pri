@@ -2,6 +2,7 @@ INCLUDEPATH += $$PWD
 
 include($$PWD/data/data.pri)
 include($$PWD/config/config.pri)
+include($$PWD/qml-desktop/qml-desktop.pri)
 
 HEADERS += \
     $$PWD/tablet-mode.h \
