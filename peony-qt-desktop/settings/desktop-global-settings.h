@@ -51,6 +51,8 @@ public:
 
     const QString &getCurrentProjectName();
 
+    bool allowSwitchDesktop();
+
     /**
      * 用于在非 edu系统上判断是否支持平板特性<br/>
      * 1是只支持pc特性，<br/>

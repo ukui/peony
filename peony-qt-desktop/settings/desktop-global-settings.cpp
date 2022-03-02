@@ -85,3 +85,18 @@ int DesktopGlobalSettings::getProductFeatures()
 
     return 1;
 }
+
+bool DesktopGlobalSettings::allowSwitchDesktop()
+{
+    //edu系统允许切换
+    if (getCurrentProjectName() == V10_SP1_EDU) {
+        return true;
+    }
+
+    //同时支持平板和pc特性的系统允许切换
+    if (getProductFeatures() == 3) {
+        return true;
+    }
+
+    return false;
+}
