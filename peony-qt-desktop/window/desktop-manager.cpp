@@ -46,11 +46,33 @@ DesktopManager::DesktopManager(bool enablePreloading, QObject *parent) : QObject
     m_enablePreloading = enablePreloading;
 
     //注册组件，添加新的组件后，需要手动添加到此处
-    registerPlugin(DesktopModeFactory::getInstance());
-
     if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
+        //edu系统全部加载
+        registerPlugin(DesktopModeFactory::getInstance());
         registerPlugin(TabletModeFactory::getInstance());
         registerPlugin(StudyCenterFactory::getInstance());
+
+    } else {
+        /**
+         * @brief
+         * 在非edu系统中，通过判断是否支持平板特性进行平板桌面与pc桌面的加载
+         */
+        switch (DesktopGlobalSettings::globalInstance()->getProductFeatures()) {
+            case 3:
+                //3是平板和pc都支持
+                registerPlugin(TabletModeFactory::getInstance());
+            case 1:
+                //1是只支持pc特性
+                registerPlugin(DesktopModeFactory::getInstance());
+                break;
+            case 2:
+                //2是只支持平板特性
+                registerPlugin(TabletModeFactory::getInstance());
+                break;
+            default:
+                registerPlugin(DesktopModeFactory::getInstance());
+                break;
+        }
     }
 
     //预加载全部桌面，加快切换桌面时的速度

@@ -275,7 +275,7 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     this->setCentralWidget(m_currentDesktop);
 
     m_currentDesktop->setPause(false);
-    m_currentDesktop->initDesktop(geometry());
+    m_currentDesktop->initDesktop({0, 0, geometry().width(), geometry().height()});
     m_currentDesktop->setActivated(true);
 
     connect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopBackgroundWindow::desktopMoveProcess);
