@@ -139,14 +139,32 @@ void TabletMode::setActivated(bool activated)
 {
     DesktopWidgetBase::setActivated(activated);
     if (!activated) {
+        //将内部容器放回原点
         m_container->move(0, 0);
     }
-    this->setHidden(!activated);
 }
 
 void TabletMode::beforeInitDesktop()
 {
-    m_appViewContainer->updateListViewSlot();
+    updateGSettings();
+    if (m_isTabletMode) {
+        //在显示桌面前从新布局界面
+        updateMainLayout();
+        //刷新各个页面的数据，以及从新排列页面
+        m_appViewContainer->updateListViewSlot();
+    }
+}
+
+QPixmap TabletMode::generatePixmap()
+{
+    return DesktopWidgetBase::generatePixmap();
+}
+
+void TabletMode::showDesktop()
+{
+    DesktopWidgetBase::showDesktop();
+    //将在beforeInitDesktop函数中被hide的组件显示出来
+    this->showAllWidgets();
 }
 
 DesktopWidgetBase *TabletMode::initDesktop(const QRect &rect)
@@ -238,6 +256,35 @@ void TabletMode::screenRotation()
 
     //5.显示全部组件
     this->showAllWidgets();
+}
+
+void TabletMode::updateMainLayout()
+{
+    //1.隐藏各个组件
+    m_container->hide();
+    m_pluginBoxWidget->hide();
+    m_appViewContainer->hide();
+    m_pageButtonWidget->hide();
+    //2.回到第一页
+    Style::nowpagenum = 1;
+
+    //3.从新获取屏幕大小
+    QScreen *primaryScreen = QApplication::primaryScreen();
+    m_width = primaryScreen->geometry().width() + 3;
+    m_height = primaryScreen->geometry().height() + 3;
+
+    m_container->setGeometry(0, 0, m_width, m_height - Style::ButtonWidgetHeight);
+    //4.从新设置组件属性
+    if ((m_direction == "left" || m_direction == "right")
+        && (primaryScreen->geometry().width() < primaryScreen->geometry().height())) {
+        screenVertical();
+
+    } else {
+        screenHorizontal();
+    }
+
+    Style::initWidStyle();
+    m_pluginBoxWidget->updateMainLayout();
 }
 
 void TabletMode::showAllWidgets()
@@ -742,27 +789,29 @@ void TabletMode::exitAnimationFinished(qint32 signal, bool hide)
 
 void TabletMode::moveWindow(qint32 length)
 {
-//    m_mutex.tryLock(20);
-//    m_mutex.lock();
-    QRect geometry = m_container->geometry();
-    m_container->setGeometry(QRect((geometry.x() + length), 0, geometry.width(), geometry.height()));
-//    m_mutex.unlock();
+    if (m_isPause) {
+        return;
+    }
+    QPoint newPoint = {(m_container->geometry().x() + length), m_container->geometry().y()};
+    m_container->move(newPoint);
 }
 
 void TabletMode::returnRawPoint()
 {
     //归位
-    QPropertyAnimation *returnAnimation = new QPropertyAnimation(m_container, "pos");
-    returnAnimation->setStartValue(m_container->geometry().topLeft());
-    returnAnimation->setEndValue(QApplication::primaryScreen()->geometry().topLeft());
-    returnAnimation->setEasingCurve(QEasingCurve::OutCubic);
-    returnAnimation->setDuration(300);
+    if (!m_returnAnimation) {
+        m_returnAnimation = new QPropertyAnimation(m_container, "pos");
+        m_returnAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        m_returnAnimation->setEndValue(QPoint{0, 0});
+        m_returnAnimation->setDuration(300);
+    }
 
-    connect(returnAnimation, &QVariantAnimation::finished, this, [=] {
-        delete returnAnimation;
-    });
+    if (m_returnAnimation->state() != QVariantAnimation::Stopped) {
+        return;
+    }
 
-    returnAnimation->start();
+    m_returnAnimation->setStartValue(m_container->geometry().topLeft());
+    m_returnAnimation->start();
 }
 
 void TabletMode::updateTabletModeValue(bool mode)
