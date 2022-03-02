@@ -1,3 +1,10 @@
+peony (3.10.0-1~2) v101; urgency=medium
+
+  * ukui3.1 xc版本
+    增加平板qml桌面模块
+
+ -- Yue Lan <lanyue@kylinos.cn>  Wed, 02 Mar 2022 17:28:35 +0800
+
 peony (3.2.3+0223ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
