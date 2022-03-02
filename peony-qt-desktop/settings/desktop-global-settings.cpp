@@ -70,3 +70,33 @@ const QString &DesktopGlobalSettings::getCurrentProjectName()
     return V10SP1;
 #endif
 }
+
+int DesktopGlobalSettings::getProductFeatures()
+{
+    QString features = QString::fromStdString(KDKGetOSRelease("PRODUCT_FEATURES"));
+    qDebug() << "[DesktopGlobalSettings::getProductFeatures]" << features;
+    if (!features.isEmpty()) {
+        bool isOk = false;
+        int tmp = features.toInt(&isOk);
+        if (isOk) {
+            return tmp;
+        }
+    }
+
+    return 1;
+}
+
+bool DesktopGlobalSettings::allowSwitchDesktop()
+{
+    //edu系统允许切换
+    if (getCurrentProjectName() == V10_SP1_EDU) {
+        return true;
+    }
+
+    //同时支持平板和pc特性的系统允许切换
+    if (getProductFeatures() == 3) {
+        return true;
+    }
+
+    return false;
+}

@@ -739,7 +739,8 @@ QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
 {
-    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() != V10_SP1_EDU) {
+    if (!DesktopGlobalSettings::globalInstance()->allowSwitchDesktop()) {
+        qDebug() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] not allowed !";
         return;
     }
     if (m_animationIsRunning) {

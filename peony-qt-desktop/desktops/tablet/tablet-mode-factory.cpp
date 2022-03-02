@@ -26,11 +26,13 @@
 
 #include "tablet-mode-factory.h"
 #include "tablet-mode.h"
+#include "qml-desktop.h"
+#include "desktop-global-settings.h"
 
 using namespace Peony;
 
 static TabletModeFactory *g_tabletModeFactory = nullptr;
-static TabletMode        *g_tabletMode        = nullptr;
+static DesktopWidgetBase *g_tabletDesktop     = nullptr;
 
 
 TabletModeFactory *TabletModeFactory::getInstance(QObject *parent)
@@ -64,12 +66,19 @@ bool Peony::TabletModeFactory::isEnable()
 
 Peony::DesktopWidgetBase *Peony::TabletModeFactory::createDesktop(QWidget *parent)
 {
-    if (!g_tabletMode) {
-        g_tabletMode = new TabletMode(parent);
-        g_tabletMode->setDesktopType(DesktopType::Tablet);
+    if (!g_tabletDesktop) {
+        if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
+            //edu系统加载qt平板桌面
+            g_tabletDesktop = new TabletMode(parent);
+        } else {
+            //非ude加载qml平板桌面
+            g_tabletDesktop = new QmlDesktop(parent);
+        }
+
+        g_tabletDesktop->setDesktopType(DesktopType::Tablet);
     }
 
-    return g_tabletMode;
+    return g_tabletDesktop;
 }
 
 Peony::DesktopWidgetBase *Peony::TabletModeFactory::createNewDesktop(QWidget *parent)
@@ -79,8 +88,8 @@ Peony::DesktopWidgetBase *Peony::TabletModeFactory::createNewDesktop(QWidget *pa
 
 bool Peony::TabletModeFactory::closeFactory()
 {
-    if (g_tabletMode) {
-        g_tabletMode->deleteLater();
+    if (g_tabletDesktop) {
+        g_tabletDesktop->deleteLater();
     }
 
     if (g_tabletModeFactory) {

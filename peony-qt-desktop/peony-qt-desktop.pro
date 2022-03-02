@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui x11extras dbus concurrent KWindowSystem KWaylandClient
+QT       += core gui x11extras dbus concurrent KWindowSystem KWaylandClient quick
 # for tablet-desktop
 QT       += svg network sql
 
