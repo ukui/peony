@@ -1,3 +1,16 @@
+peony (3.2.3+0303ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#107908 屏蔽intel上属性页面还有共享页的问题(向文杰)
+      2.#94981 修改快捷方式的hover为蓝色底，白色icon(杨艳微)
+    - 其它改动说明:
+      在拖动平板桌面超过屏幕的40%后，禁用拖动。
+    - 影响域:
+      文件管理器,平板桌面 
+
+ -- hewenfei <hewenfei@kylinos.cn>  Thu, 03 Mar 2022 08:46:10 +0800
+
 peony (3.2.3+0223ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
