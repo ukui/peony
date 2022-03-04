@@ -74,6 +74,8 @@ public:
     void setAllowParallel(bool allow = true);
     bool isAllowParallel();
 
+    bool isFileOccupied(const QString &sourceUri);
+
 Q_SIGNALS:
     void closed();
 

@@ -341,6 +341,7 @@ protected:
 
 protected:
     bool                        m_is_pause = false;
+    QStringList                 m_src_uris;
 
     QStringList                 m_srcUrisOfCopyDspsFiles;/* 复制dsps文件的源路径列表 */
     QStringList                 m_destUrisOfCopyDspsFiles;/* 复制dsps文件的目的路径列表 */

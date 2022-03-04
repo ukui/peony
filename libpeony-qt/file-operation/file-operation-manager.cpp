@@ -118,9 +118,42 @@ bool FileOperationManager::isAllowParallel()
     return m_allow_parallel;
 }
 
-void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
+bool FileOperationManager::isFileOccupied(const QString &sourceUri)
 {
+    QProcess *process =new QProcess();
+    QString cmd =QString("lsof %1").arg(sourceUri);
+    process->start(cmd);
+    process->waitForFinished();
+    QString info = QString(process->readAll());
+    qDebug()<<info;
+    if(!info.isEmpty())
+        return true;
+
+    return false;
+}
+
+void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
+{    
     auto operationInfo = operation->getOperationInfo();
+    /* 文件被占用时处理流程 */
+    QStringList uriList = operationInfo.get()->sources();
+    for(auto& uri :uriList){
+        auto operationType = operationInfo->operationType();
+        QString absolutePath = FileUtils::urlDecode(uri).remove("file://");
+        if ((operationType == FileOperationInfo::Trash
+                || operationType == FileOperationInfo::Delete)
+                &&isFileOccupied(absolutePath))
+        {
+            operationInfo.get()->m_src_uris.removeOne(uri);
+            operation->m_src_uris.removeOne(uri);
+            QMessageBox::warning(nullptr, "Warn", QString("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
+
+        }
+        if(operationType == FileOperationInfo::Rename && isFileOccupied(absolutePath)){
+            QMessageBox::warning(nullptr, "Warn", QString("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
+            return;
+        }
+    }//end
 
     if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
         auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
@@ -129,6 +162,10 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                 goto start;
             }
         }
+
+        if(!operationInfo.get()->sources().count())
+            return;
+
         // check dialog
         QMessageBox questionBox;
         questionBox.addButton(QMessageBox::Yes);
