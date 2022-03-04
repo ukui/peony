@@ -142,7 +142,8 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         auto operationType = operationInfo->operationType();
         QString absolutePath = FileUtils::urlDecode(uri).remove("file://");/* 获取uri的绝对路径 */
         if ((operationType == FileOperationInfo::Trash
-                || operationType == FileOperationInfo::Delete)
+             || operationType == FileOperationInfo::Delete
+             || operationType == FileOperationInfo::Move)
                 &&isFileOccupied(absolutePath))
         {
             operationInfo.get()->m_src_uris.removeOne(uri);

@@ -47,8 +47,6 @@ public:
     void cancel() override;
 
 private:
-    QStringList m_source_uris;
-
     int m_current_count = 0;
     int m_total_count = 0;
     QString m_current_src_uri = nullptr;

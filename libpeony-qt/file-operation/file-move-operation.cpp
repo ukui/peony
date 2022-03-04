@@ -40,7 +40,7 @@ static void handleDuplicate(FileNode *node)
 
 FileMoveOperation::FileMoveOperation(QStringList sourceUris, QString destDirUri, QObject *parent) : FileOperation (parent)
 {
-    m_source_uris = sourceUris;
+    m_src_uris = sourceUris;
 
     /* favorite://xxx特殊处理,例如本机共享，bug#83353 */
     if (destDirUri.startsWith("favorite://")) {
@@ -63,6 +63,7 @@ FileMoveOperation::~FileMoveOperation()
 void FileMoveOperation::setCopyMove(bool copyMove)
 {
     m_copy_move = copyMove;
+    m_info.get()->m_type = copyMove? FileOperationInfo::Copy: FileOperationInfo::Move;
 }
 
 void FileMoveOperation::setAction(Qt::DropAction action)
@@ -129,7 +130,7 @@ void FileMoveOperation::move()
     g_autofree gchar* destSchema = g_file_get_uri_scheme (destFile);
 
     if (G_IS_FILE (destFile) && destSchema && !g_ascii_strcasecmp (destSchema, "favorite")) {
-        for (auto src : m_source_uris) {
+        for (auto src : m_src_uris) {
             g_autoptr (GFile) srcFile = g_file_new_for_uri (src.toUtf8 ().constData ());
             g_autoptr (GError) error = NULL;
             // 注意：不可能报冲突错误
@@ -168,11 +169,11 @@ void FileMoveOperation::move()
     QList<FileNode*> errNode;
 
     GError *err = nullptr;
-    m_total_count = m_source_uris.count();
+    m_total_count = m_src_uris.count();
     auto destDir = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
 
     // file move
-    for (auto srcUri : m_source_uris) {
+    for (auto srcUri : m_src_uris) {
         if (isCancelled())
             return;
 
@@ -984,7 +985,7 @@ void FileMoveOperation::moveForceUseFallback()
     goffset *total_size = new goffset(0);
 
     QList<FileNode*> nodes;
-    for (auto uri : m_source_uris) {
+    for (auto uri : m_src_uris) {
         FileNode *node = new FileNode(uri, nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
@@ -1062,12 +1063,12 @@ bool FileMoveOperation::isValid()
 {
     int index = 0;
     bool isInvalid = false;
-    for (auto srcUri : m_source_uris) {
+    for (auto srcUri : m_src_uris) {
         auto srcFile = wrapGFile(g_file_new_for_uri(srcUri.toUtf8().constData()));
         auto destFile = wrapGFile(g_file_new_for_uri(m_dest_dir_uri.toUtf8().constData()));
         auto parentFile = wrapGFile(g_file_get_parent(srcFile.get()->get()));
         if (g_file_equal(destFile.get()->get(), parentFile.get()->get())) {
-            m_source_uris.removeAt(index);
+            m_src_uris.removeAt(index);
             --index;
         }
         //BUG: some special basename like test and test2, will lead the operation invalid.
@@ -1082,7 +1083,7 @@ bool FileMoveOperation::isValid()
         ++index;
     }
     //can not move StandardPath to any dir. see:#87912
-    if (FileUtils::containsStandardPath(m_source_uris)) {
+    if (FileUtils::containsStandardPath(m_src_uris)) {
         isInvalid = true;
     }
     if (isInvalid)
