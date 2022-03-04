@@ -136,6 +136,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
 {    
     auto operationInfo = operation->getOperationInfo();
     /* 文件被占用时处理流程 */
+    QString occupiedFiles;
     QStringList uriList = operationInfo.get()->sources();
     for(auto& uri :uriList){
         auto operationType = operationInfo->operationType();
@@ -146,13 +147,15 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         {
             operationInfo.get()->m_src_uris.removeOne(uri);
             operation->m_src_uris.removeOne(uri);
-            QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
-
+            occupiedFiles.append(FileUtils::urlDecode(uri)).append(" ");
         }
         if(operationType == FileOperationInfo::Rename && isFileOccupied(absolutePath)){
             QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
             return;
         }
+    }
+    if(!occupiedFiles.isEmpty()){
+        QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(occupiedFiles));
     }//end
 
     if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
