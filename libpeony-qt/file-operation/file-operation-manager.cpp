@@ -121,12 +121,12 @@ bool FileOperationManager::isAllowParallel()
 bool FileOperationManager::isFileOccupied(const QString &sourceUri)
 {
     QProcess *process =new QProcess();
-    QString cmd =QString("lsof %1").arg(sourceUri);
+    QString cmd =QString("lsof %1").arg(sourceUri); /* 例如：lsof /home/kylin/test.wps  */
     process->start(cmd);
     process->waitForFinished();
     QString info = QString(process->readAll());
     qDebug()<<info;
-    if(!info.isEmpty())
+    if(!info.isEmpty())/* 返回信息不为空表示被占用 */
         return true;
 
     return false;
@@ -139,18 +139,18 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     QStringList uriList = operationInfo.get()->sources();
     for(auto& uri :uriList){
         auto operationType = operationInfo->operationType();
-        QString absolutePath = FileUtils::urlDecode(uri).remove("file://");
+        QString absolutePath = FileUtils::urlDecode(uri).remove("file://");/* 获取uri的绝对路径 */
         if ((operationType == FileOperationInfo::Trash
                 || operationType == FileOperationInfo::Delete)
                 &&isFileOccupied(absolutePath))
         {
             operationInfo.get()->m_src_uris.removeOne(uri);
             operation->m_src_uris.removeOne(uri);
-            QMessageBox::warning(nullptr, "Warn", QString("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
+            QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
 
         }
         if(operationType == FileOperationInfo::Rename && isFileOccupied(absolutePath)){
-            QMessageBox::warning(nullptr, "Warn", QString("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
+            QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(FileUtils::urlDecode(uri)));
             return;
         }
     }//end
