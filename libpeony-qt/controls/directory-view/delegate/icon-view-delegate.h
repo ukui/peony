@@ -66,7 +66,6 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void setCutFiles(const QModelIndexList &indexes);
-    void doneWithEditor();
 
 protected:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
@@ -80,6 +79,8 @@ protected:
 
     void setIndexWidget(const QModelIndex &index, QWidget *widget) const;
 
+private Q_SLOT:
+    void slot_finishEdit();/* 编辑完成 */
 
 private:
     QModelIndexList m_cut_indexes;

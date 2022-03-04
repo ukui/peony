@@ -54,6 +54,9 @@ protected:
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
 
+private Q_SLOT:
+    void slot_finishEdit();/* 编辑完成 */
+
 private:
     QPushButton *m_styled_button;
 };
