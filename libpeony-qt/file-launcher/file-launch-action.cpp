@@ -126,11 +126,7 @@ bool FileLaunchAction::isExcuteableFile(QString fileType)
 
 void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
 {
-    preCheck();
-
-    bool isMdmApp = this->property("isMdmApp").toBool();
-    if (isMdmApp) {
-        QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
+    if(checkAppDisabled()) {
         return;
     }
 
@@ -252,11 +248,7 @@ void pid_callback(GDesktopAppInfo *appinfo, GPid pid, gpointer user_data) {
 
 void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 {
-    preCheck();
-
-    bool isMdmApp = this->property("isMdmApp").toBool();
-    if (isMdmApp) {
-        QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
+    if(checkAppDisabled()) {
         return;
     }
 
@@ -474,6 +466,10 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
 {
     if(files.isEmpty())
         return;
+
+    if(checkAppDisabled()) {
+        return;
+    }
 
     //FIXME: replace BLOCKING api in ui thread.
     auto fileInfo = FileInfo::fromUri(m_uri);
@@ -798,5 +794,21 @@ bool FileLaunchAction::launchAppWithSession()
         return true;
     }
     qDebug() << "[FileLaunchAction::launchAppWithSession] failed, session isValid:" << session.isValid() << "\nuri:" << m_uri;
+    return false;
+}
+
+bool FileLaunchAction::checkAppDisabled()
+{
+    bool intel = (QString::compare(V10_SP1_EDU, QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
+    if (intel) {
+        preCheck();
+
+        bool isMdmApp = this->property("isMdmApp").toBool();
+        if (isMdmApp) {
+            QMessageBox::warning(0, tr("Warning"), tr("Can not open the file, application is disabled"));
+            return true;
+        }
+    }
+
     return false;
 }

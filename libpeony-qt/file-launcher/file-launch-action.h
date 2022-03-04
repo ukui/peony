@@ -73,6 +73,8 @@ private:
     bool launchAppWithAppMgr();
     bool launchAppWithSession();
 
+    bool checkAppDisabled();
+
 private:
     QString m_uri;
     bool m_is_desktop_file;
