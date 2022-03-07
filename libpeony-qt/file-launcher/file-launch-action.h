@@ -69,6 +69,13 @@ public Q_SLOTS:
     bool isExcuteableFile(QString fileType);
 
 private:
+    bool launchAppWithDBus();
+    bool launchAppWithAppMgr();
+    bool launchAppWithSession();
+
+    bool checkAppDisabled();
+
+private:
     QString m_uri;
     bool m_is_desktop_file;
     GAppInfo *m_app_info;
