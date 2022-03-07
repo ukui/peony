@@ -107,6 +107,9 @@ public:
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {
         return m_info;
     }
+    bool getCopyMove() {
+        return m_copy_move;
+    }
 
 public Q_SLOTS:
     void cancel() override;

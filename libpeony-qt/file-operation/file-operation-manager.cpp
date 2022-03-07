@@ -143,7 +143,8 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         QString absolutePath = FileUtils::urlDecode(uri).remove("file://");/* 获取uri的绝对路径 */
         if ((operationType == FileOperationInfo::Trash
              || operationType == FileOperationInfo::Delete
-             || operationType == FileOperationInfo::Move)
+             || operationType == FileOperationInfo::Move
+             ||operationType == FileOperationInfo::Copy && operation->getCopyMove())/* 鼠标拖动文件情形 */
                 &&isFileOccupied(absolutePath))
         {
             operationInfo.get()->m_src_uris.removeOne(uri);
@@ -157,7 +158,10 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     }
     if(!occupiedFiles.isEmpty()){
         QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(occupiedFiles));
-    }//end
+    }
+    if(!operationInfo.get()->sources().count())
+        return;
+    //end
 
     if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
         auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
@@ -166,9 +170,6 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                 goto start;
             }
         }
-
-        if(!operationInfo.get()->sources().count())
-            return;
 
         // check dialog
         QMessageBox questionBox;
