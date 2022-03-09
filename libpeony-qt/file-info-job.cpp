@@ -234,6 +234,9 @@ void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
         QString path = "/usr/share/applications/" + info->displayName();
         if (QFileInfo::exists(url.path().toUtf8()) && QFileInfo::exists(path)) {
             url = path;
+            g_key_file_free(desktop_key_file);
+            desktop_key_file = g_key_file_new();
+
             is_loaded = g_key_file_load_from_file(desktop_key_file, url.path().toUtf8(), G_KEY_FILE_NONE, nullptr);
             if (!is_loaded) {
                 qWarning() << "desktop file:" << path << "load failed";
@@ -259,7 +262,7 @@ void FileInfoJob::queryFileDisplayName(GFileInfo* new_info){
             info->m_display_name = name;
         }
 
-        g_object_unref(desktop_key_file);
+        g_key_file_free(desktop_key_file);
 
     } else if (!info->uri().startsWith("file:///")) {
         if (info->uri() == "trash:///") {
