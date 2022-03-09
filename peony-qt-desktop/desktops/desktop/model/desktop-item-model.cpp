@@ -396,12 +396,11 @@ DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
             //如果不存在app被禁用，那么清除所有.desktop文件metaInfo中的标记,防止图标异常置灰
             QStringList files = getDesktopFiles();
             for (QString &fileName: files) {
-                updateAppMetaInfo(fileName, true);
+                updateAppMetaInfo(fileName, true, false);
             }
         } else {
-            for (auto begin = keylist.begin(); begin != keylist.end(); ++begin) {
-                bool execable = settings.value(*begin).toBool();
-                enabelChange(*begin, execable);
+            for (auto & exec : keylist) {
+                enabelChange(exec, settings.value(exec).toBool());
             }
         }
     }
@@ -929,39 +928,54 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
     QStringList files = getDesktopFiles();
     QString     appid;
 
-    for (auto begin = files.begin(); begin != files.end(); ++begin) {
-        QString path = desktop + "/" + *begin;
-        QFile   f(path);
-        if (!f.open(QIODevice::ReadOnly|QIODevice::Text)) {
-            qDebug() << "DesktopItemModel::enabelChange(): open file error";
-            continue;
-        }
-        QTextStream txtInput(&f);
-        QString     lineStr;
-        while (!txtInput.atEnd())
-        {
-            lineStr = txtInput.readLine();
-            if (lineStr.indexOf(exec) != -1) {
-                lineStr = "1";
-                break;
+    qDebug() << "[DesktopItemModel::enabelChange] exec:" << exec << "execEnable:" << execenable;
+    if (exec.startsWith("/")) {
+        exec = exec.mid(1, (exec.length() - 1));
+    }
+
+    for (auto & file : files) {
+        QString path = desktop + "/" + file;
+        bool isMatched = false;
+
+        GError *error = NULL;
+        GKeyFile *desktopKeyFile = g_key_file_new();
+        gboolean ret = g_key_file_load_from_file(desktopKeyFile, path.toUtf8(), G_KEY_FILE_NONE, &error);
+        if (ret) {
+            gchar *execChar = g_key_file_get_string(desktopKeyFile, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_EXEC, nullptr);
+            QString execCommand = execChar;
+            g_free(execChar);
+
+            if (execCommand.startsWith("/")) {
+                execCommand = execCommand.mid(1, (execCommand.length() - 1));
             }
+
+            isMatched = (QString::compare(execCommand, exec) == 0);
+            qDebug() << "[DesktopItemModel::enabelChange] isMatched" << isMatched << execCommand << exec;
+
+        } else {
+            qWarning() << "[DesktopItemModel::enabelChange] load desktop file error, msg:" << error->message;
+            g_error_free(error);
         }
-        if (lineStr == "1") {
-            appid = *begin;
+
+        g_key_file_free(desktopKeyFile);
+
+        if (isMatched) {
+            appid = file;
             break;
         }
     }
+    qDebug() << "[DesktopItemModel::enabelChange] appid:" << appid;
 
     updateAppMetaInfo(appid, execenable);
 }
 
-void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable)
+void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable, bool showLog)
 {
     if (appid.isEmpty()) {
         return;
     }
 
-    qWarning("[DesktopItemModel::enabelChange] app id:%s, enabled:%d", appid.toLocal8Bit().data(), execEnable);
+    if (showLog) qWarning("[DesktopItemModel::updateAppMetaInfo] app id:%s, enabled:%d", appid.toLocal8Bit().data(), execEnable);
 
     QString uri = "file://" + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/" + appid;
     //使用glib编码uri...
@@ -984,7 +998,7 @@ void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable)
     } else {
         metaInfo->setMetaInfoInt("exec_disable", 1);
     }
-    qWarning("[DesktopItemModel::enabelChange] success");
+    if (showLog) qWarning("[DesktopItemModel::updateAppMetaInfo] success");
 
     m_view->viewport()->update(m_view->viewport()->rect());
 }
