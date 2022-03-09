@@ -919,6 +919,11 @@ QStringList DesktopItemModel::getDesktopFiles()
 
 void DesktopItemModel::enabelChange(QString exec, bool execenable)
 {
+    //mdm会莫名其妙的发送一些空串过来
+    if (exec.isEmpty()) {
+        qDebug() << "[DesktopItemModel::enabelChange] exec is empty!";
+        return;
+    }
     /*!
      * \brief A functiom to set *.desktop file in desktop can not exec and grey
      * \details Set the attribute "meta::exec_disable" 1 or 0 to control the
