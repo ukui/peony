@@ -158,6 +158,21 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                         break;
                     }
                 }
+            } else if (manager->getBackgroundOption() == "adapt") {
+                //适应
+                p.drawPixmap(getDestRect(backPixmap), backPixmap, backPixmap.rect());
+                p.setOpacity(opacity);
+                p.drawPixmap(getDestRect(frontPixmap), frontPixmap, frontPixmap.rect());
+            } else if (manager->getBackgroundOption() == "crossRegion") {
+                //跨区
+                for(auto screen : qApp->screens()){
+                    if (m_screen->name() == screen->name()) {
+                        p.drawPixmap(this->rect(), backPixmap, getSourceRect(backPixmap, screen->geometry()));
+                        p.setOpacity(opacity);
+                        p.drawPixmap(this->rect(), frontPixmap, getSourceRect(frontPixmap, screen->geometry()));
+                        break;
+                    }
+                }
             } else {
                 p.drawPixmap(rect().adjusted(0, 0, -1, -1), backPixmap, backPixmap.rect());
                 p.setOpacity(opacity);
@@ -189,6 +204,15 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                     }
                     drawedHeight += frontPixmap.height();
                     if (drawedHeight >= m_screen->size().height()) {
+                        break;
+                    }
+                }
+            } else if (manager->getBackgroundOption() == "adapt") {
+                p.drawPixmap(getDestRect(frontPixmap), frontPixmap, frontPixmap.rect());
+            } else if (manager->getBackgroundOption() == "crossRegion") {
+                for(auto screen : qApp->screens()){
+                    if (m_screen->name() == screen->name()) {
+                        p.drawPixmap(this->rect(), frontPixmap, getSourceRect(frontPixmap, screen->geometry()));
                         break;
                     }
                 }
@@ -232,6 +256,7 @@ void DesktopBackgroundWindow::updateWindowGeometry()
         }
         KWindowSystem::raiseWindow(this->winId());
     }
+    update();
 }
 
 int DesktopBackgroundWindow::id() const
@@ -319,6 +344,76 @@ QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
     }
 
     QPoint offsetPoint = pixmap.rect().topLeft();
+    offsetPoint += QPoint(offsetX, offsetY);
+
+    return QRect(offsetPoint, sourceSize);
+}
+
+QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap, const QRect &screenGeometry)
+{
+    QRect virtualGeometry = m_screen->virtualGeometry();
+    qreal pixWidth = pixmap.width();
+    qreal pixHeight = pixmap.height();
+
+    QSize sourceSize = pixmap.size();
+    sourceSize.setWidth(screenGeometry.width() / virtualGeometry.width() * pixWidth);
+    sourceSize.setHeight(screenGeometry.height() / virtualGeometry.height() * pixHeight);
+
+    qint32 offsetX = 0;
+    qint32 offsetY = 0;
+    if (screenGeometry.x() > 0) {
+        offsetX = (screenGeometry.x() / virtualGeometry.width() * pixWidth);
+    }
+
+    if (screenGeometry.y() > 0) {
+        offsetY = (screenGeometry.y() / virtualGeometry.height() * pixHeight);
+    }
+
+    QPoint offsetPoint = pixmap.rect().topLeft();
+    offsetPoint += QPoint(offsetX, offsetY);
+
+    return QRect(offsetPoint, sourceSize);
+}
+
+QRect DesktopBackgroundWindow::getDestRect(const QPixmap &pixmap)
+{
+    qreal screenScale = qreal(this->rect().width()) / qreal(this->rect().height());
+    qreal pixmapScale = qreal(pixmap.width() / pixmap.height());
+    qreal width = pixmap.width();
+    qreal height = pixmap.height();
+
+    if (pixmapScale == screenScale) {
+        return this->rect();
+    }
+
+    qreal scaleWidth = this->rect().width() / width;
+    qreal scaleHeight = this->rect().height() / height;
+    qreal realPixmapWidth = 0;
+    qreal realPixmapHeight = 0;
+
+    if(pixmapScale < screenScale){
+        //图片比例小于屏幕比例时，按照图片和屏幕高度比进行缩放
+        realPixmapWidth = width * scaleHeight;
+        realPixmapHeight = this->rect().height();
+    }else{
+        //图片比例大于屏幕比例时，按照图片与屏幕宽度比进行缩放
+        realPixmapWidth = this->rect().width();
+        realPixmapHeight = height * scaleWidth;
+    }
+
+    QSize sourceSize = this->size();
+    qint32 offsetX = 0;
+    qint32 offsetY = 0;
+    if (this->rect().width() == realPixmapWidth) {
+        offsetY = (this->rect().height() - realPixmapHeight) / 2;
+        sourceSize.setHeight(realPixmapHeight);
+    } else if (this->rect().height() == realPixmapHeight) {
+        offsetX = (this->rect().width() - realPixmapWidth) / 2;
+        sourceSize.setWidth(realPixmapWidth);
+    }
+
+    qDebug() << "=========getDestRect sourceSize:" << sourceSize;
+    QPoint offsetPoint = this->rect().topLeft();
     offsetPoint += QPoint(offsetX, offsetY);
 
     return QRect(offsetPoint, sourceSize);

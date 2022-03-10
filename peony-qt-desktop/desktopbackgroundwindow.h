@@ -30,6 +30,8 @@ protected:
      * @return
      */
     QRect getSourceRect(const QPixmap &pixmap);
+    QRect getSourceRect(const QPixmap &pixmap, const QRect &screenGeometery);
+    QRect getDestRect(const QPixmap &pixmap);
 
 private:
     int m_id = -1;
