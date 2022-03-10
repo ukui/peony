@@ -103,6 +103,11 @@ public:
         m_item_rect_hash.clear();
     }
 
+    void setRestoreInfo(QString &uri, QPoint &itemPos);
+    void setAllRestoreInfo();
+    void getAllRestoreInfo();
+    void clearAllRestoreInfo();
+
 private:
     QRect getScreenArea(QScreen* screen);
 
