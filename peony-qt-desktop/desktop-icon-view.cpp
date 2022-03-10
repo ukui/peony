@@ -88,6 +88,7 @@ using namespace Peony;
 #define ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-item-position"
 #define PANEL_SETTINGS "org.ukui.panel.settings"
 #define UKUI_STYLE_SETTINGS "org.ukui.style"
+#define RESTORE_ITEM_POS_ATTRIBUTE "metadata::peony-qt-desktop-restore-item-position"
 
 static bool iconSizeLessThan (const QPair<QRect, QString> &p1, const QPair<QRect, QString> &p2);
 
@@ -189,7 +190,9 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                     break;
                 }
                 }
+                getAllRestoreInfo();
                 resolutionChange();
+                setAllRestoreInfo();
             }
 
             if (isItemsOverlapped()) {
@@ -751,6 +754,7 @@ void DesktopIconView::resolutionChange()
 
         qInfo()<<"need changed item"<<needChanged;
 
+
         // aligin exsited rect
         int marginTop = notEmptyRegion.boundingRect().top();
         while (marginTop - iconHeigth >= 0) {
@@ -981,7 +985,7 @@ void DesktopIconView::resetAllItemPositionInfos()
     if (!m_proxy_model)
         return;
 
-    m_resolution_item_rect.clear();
+    clearAllRestoreInfo();
     m_item_rect_hash.clear();
     for (int i = 0; i < m_proxy_model->rowCount(); i++) {
         auto index = m_proxy_model->index(i, 0);
@@ -1138,7 +1142,7 @@ int DesktopIconView::getSortType()
 
 void DesktopIconView::setSortType(int sortType)
 {
-    m_resolution_item_rect.clear();
+    clearAllRestoreInfo();
     m_item_rect_hash.clear();
     //resetAllItemPositionInfos();
     m_proxy_model->setSortType(sortType);
@@ -1435,6 +1439,8 @@ void DesktopIconView::rowsAboutToBeRemoved(const QModelIndex &parent, int start,
         auto uri = model()->index(row, 0).data(Qt::UserRole).toString();
         m_item_rect_hash.remove(uri);
         m_resolution_item_rect.remove(uri);
+        QPoint itemPos(-1, -1);
+        setRestoreInfo(uri, itemPos);
     }
 
     m_model->relayoutAddedItems();
@@ -1915,6 +1921,9 @@ void DesktopIconView::dropEvent(QDropEvent *e)
             // remove info from resolution item rect map.
             for (auto index : m_drag_indexes) {
                 m_resolution_item_rect.remove(index.data(Qt::UserRole).toString());
+                QPoint itemPos(-1, -1);
+                QString uri = index.data(Qt::UserRole).toString();
+                setRestoreInfo(uri, itemPos);
             }
 
             QModelIndexList overlappedIndexes;
@@ -2184,6 +2193,72 @@ int DesktopIconView::updateBWList()
     int sortType = GlobalSettings::getInstance()->getValue(LAST_DESKTOP_SORT_ORDER).toInt();
     setSortType(sortType);
     return 0;
+}
+
+void DesktopIconView::setRestoreInfo(QString &uri, QPoint &itemPos)
+{
+    //bug#108126 根据url重新记录要恢复的元素的位置
+    auto metaInfo = FileMetaInfo::fromUri(uri);
+    if (metaInfo) {
+        QStringList restoreInfo;
+      //  restoreInfo<<pixelRatio;
+        restoreInfo<<QString::number(itemPos.x());
+        restoreInfo<<QString::number(itemPos.y());
+        metaInfo->setMetaInfoStringList(RESTORE_ITEM_POS_ATTRIBUTE, restoreInfo);
+    }
+}
+
+void DesktopIconView::setAllRestoreInfo()
+{
+    //bug#108126 超出屏幕的元素记录到metInfo,以便以后恢复
+    for (auto uri : m_resolution_item_rect.keys()) {
+        auto metaInfo = FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            auto rect = m_resolution_item_rect.value(uri);
+            QStringList restoreInfo;
+            restoreInfo<<QString::number(rect.topLeft().x());
+            restoreInfo<<QString::number(rect.topLeft().y());
+            metaInfo->setMetaInfoStringList(RESTORE_ITEM_POS_ATTRIBUTE, restoreInfo);
+        }
+    }
+}
+
+void DesktopIconView::getAllRestoreInfo()
+{
+    //bug#108126 一开始加载将上一次超出屏幕的元素恢复
+    for (auto uri : m_item_rect_hash.keys()) {
+        auto metaInfo = FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            QStringList restoreInfo = metaInfo->getMetaInfoStringList(RESTORE_ITEM_POS_ATTRIBUTE);
+            if (restoreInfo.count() == 2) {
+                int top = restoreInfo.at(0).toInt();
+                int left = restoreInfo.at(1).toInt();
+                if (top >= 0 && left >= 0) {
+                    QPoint topLeft(top, left);
+                    updateItemPosByUri(uri, topLeft);
+                    setFileMetaInfoPos(uri, topLeft);
+                    QStringList resetInfo;
+                    resetInfo<<"";
+                    metaInfo->setMetaInfoStringList(RESTORE_ITEM_POS_ATTRIBUTE, resetInfo);
+                }
+            }
+        }
+    }
+}
+
+void DesktopIconView::clearAllRestoreInfo()
+{
+    //bug#108126 超出屏幕的元素记录清空
+    for (auto uri : m_resolution_item_rect.keys()) {
+        auto metaInfo = FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            auto rect = m_resolution_item_rect.value(uri);
+            QStringList restoreInfo;
+            restoreInfo<<"";
+            metaInfo->setMetaInfoStringList(RESTORE_ITEM_POS_ATTRIBUTE, restoreInfo);
+        }
+    }
+    m_resolution_item_rect.clear();
 }
 
 static bool iconSizeLessThan (const QPair<QRect, QString>& p1, const QPair<QRect, QString>& p2)

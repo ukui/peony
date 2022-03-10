@@ -99,6 +99,11 @@ public:
     const QFont getViewItemFont(QStyleOptionViewItem *item);
     int updateBWList();
 
+    void setRestoreInfo(QString &uri, QPoint &itemPos);
+    void setAllRestoreInfo();
+    void getAllRestoreInfo();
+    void clearAllRestoreInfo();
+
 private:
     QRect getScreenArea(QScreen* screen);
 
