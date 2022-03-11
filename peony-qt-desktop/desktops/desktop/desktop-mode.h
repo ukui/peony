@@ -50,6 +50,7 @@ public:
 
     QWidget *getRealDesktop() override;
 
+    QPixmap generatePixmap() override;
 //    QWidget *getRealDesktop() override;
 
 private:

@@ -46,6 +46,8 @@ public:
 
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
+    QPixmap generatePixmap() override;
+
 public:
     QList<TABLETAPP>   getTimeOrder(QMap<QString, QList<TabletAppEntity*>> studyCenterDataMap );
     void  initTime();
