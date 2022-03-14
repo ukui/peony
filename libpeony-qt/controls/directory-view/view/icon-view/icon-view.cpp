@@ -383,6 +383,20 @@ void IconView::mouseDoubleClickEvent(QMouseEvent *event)
     QListView::mouseDoubleClickEvent(event);
 }
 
+void IconView::keyPressEvent(QKeyEvent *e)
+{
+    QListView::keyPressEvent(e);
+    if (e->key() == Qt::Key_Control)
+        m_ctrl_key_pressed = true;
+}
+
+void IconView::keyReleaseEvent(QKeyEvent *e)
+{
+    QListView::keyReleaseEvent(e);
+    if (e->key() == Qt::Key_Control)
+        m_ctrl_key_pressed = false;
+}
+
 void IconView::paintEvent(QPaintEvent *e)
 {
     QPainter p(this->viewport());
