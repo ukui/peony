@@ -829,7 +829,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
 
     connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
         //currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
-        currentDesktop->setActivated(false);
+        //currentDesktop->setActivated(false);
         //delete currentEffectBackup;
     });
 
@@ -839,8 +839,7 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         nextDesktop->setGeometry(primaryScreenRect);
     } else {
         nextDesktop->setGeometry(nextDesktopStartRect);
-        nextDesktop->show();
-        nextDesktop->getRealDesktop()->show();
+        nextDesktop->showDesktop();
         nextDesktop->onPrimaryScreenChanged();
     }
 

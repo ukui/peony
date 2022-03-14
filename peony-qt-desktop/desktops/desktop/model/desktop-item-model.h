@@ -99,7 +99,7 @@ protected Q_SLOTS:
 
 private:
     void refreshInternal();
-    void updateAppMetaInfo(QString&, bool);
+    void updateAppMetaInfo(QString&, bool, bool showLog = true);
     static QStringList getDesktopFiles();
 
     FileEnumerator *m_enumerator;

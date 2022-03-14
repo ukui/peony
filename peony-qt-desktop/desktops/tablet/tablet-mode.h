@@ -69,6 +69,10 @@ public:
 
     void beforeInitDesktop() override;
 
+    QPixmap generatePixmap() override;
+
+    void showDesktop() override;
+
     DesktopWidgetBase *initDesktop(const QRect &rect) override;
 
     void initGSettings();
@@ -99,6 +103,7 @@ private:
     bool checkAppList();
     void paintEvent(QPaintEvent *event);
     void updatePageButtonStatus(qint32 page);
+    void updateMainLayout();
 
 private Q_SLOTS:
     void updateRotationsValue(QString rotation);
@@ -136,6 +141,7 @@ private:
     QMutex m_mutex;
     bool m_isTabletMode;//平板模式标志
     QWidget *m_container = nullptr;
+    QPropertyAnimation *m_returnAnimation = nullptr;
 
 //    //主界面布局，横屏时为水平布局，竖屏时为垂直布局
 //    QBoxLayout *m_layout = nullptr;

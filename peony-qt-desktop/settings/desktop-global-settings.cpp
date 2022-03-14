@@ -31,6 +31,7 @@
 #endif
 
 #include <QDebug>
+#include <QGSettings>
 
 using namespace Peony;
 
@@ -49,7 +50,7 @@ DesktopGlobalSettings *DesktopGlobalSettings::globalInstance(QObject *parent)
 
 DesktopGlobalSettings::DesktopGlobalSettings(QObject *parent) : QObject(parent)
 {
-
+    initDesktopSetting();
 }
 
 const QString &DesktopGlobalSettings::getCurrentProjectName()
@@ -99,4 +100,46 @@ bool DesktopGlobalSettings::allowSwitchDesktop()
     }
 
     return false;
+}
+
+void DesktopGlobalSettings::initDesktopSetting()
+{
+    //设置默认值
+    setValue(DESKTOP_ANIMATION_DURATION, 1000);
+    setValue(ENABLE_SMALL_PLUGIN, true);
+    setValue(DESKTOP_ITEM_ZOOM_RANGE, 0.1);
+
+    if (QGSettings::isSchemaInstalled(DESKTOP_SETTINGS_SCHEMA)) {
+        QGSettings *settings = new QGSettings(DESKTOP_SETTINGS_SCHEMA, "/", this);
+        connect(settings, &QGSettings::changed, this, [=](const QString &key) {
+            setValue(key, settings->get(key));
+        });
+
+        if (settings->keys().contains(DESKTOP_ANIMATION_DURATION)) {
+            setValue(DESKTOP_ANIMATION_DURATION, settings->get(DESKTOP_ANIMATION_DURATION));
+        }
+        if (settings->keys().contains(ENABLE_SMALL_PLUGIN)) {
+            setValue(ENABLE_SMALL_PLUGIN, settings->get(ENABLE_SMALL_PLUGIN));
+        }
+        if (settings->keys().contains(DESKTOP_ITEM_ZOOM_RANGE)) {
+            setValue(DESKTOP_ITEM_ZOOM_RANGE, settings->get(DESKTOP_ITEM_ZOOM_RANGE));
+        }
+    }
+}
+
+void DesktopGlobalSettings::setValue(const QString &key, const QVariant &value)
+{
+    m_cache.remove(key);
+    m_cache.insert(key, value);
+
+    Q_EMIT valueChanged(key, value);
+}
+
+QVariant DesktopGlobalSettings::getValue(const QString &key) const
+{
+    if (m_cache.contains(key)) {
+        return m_cache.value(key);
+    }
+
+    return {};
 }

@@ -112,6 +112,23 @@ public:
         return this;
     };
 
+    /**
+     * @brief 使用当前桌面的界面生成一张图片供切换动画使用。
+     * @return 当前的桌面快照
+     */
+    virtual QPixmap generatePixmap() {
+        return {};
+    };
+
+    /**
+     * @brief 将桌面修改为可见状态
+     * 可以在该函数中提前准备并显示一些需要在动画过程中展示的内容
+     */
+    virtual void showDesktop() {
+        this->show();
+        this->getRealDesktop()->show();
+    };
+
     virtual void onPrimaryScreenChanged() {}
 
     DesktopType getDesktopType() const

@@ -27,7 +27,7 @@
 #include <QDebug>
 
 
-FullCommonUseWidget::FullCommonUseWidget(QWidget *parent, int w, int h) : QWidget(parent)
+FullCommonUseWidget::FullCommonUseWidget(QWidget *parent, int w, int h) : QStackedWidget(parent)
 {
     QString path=QDir::homePath()+"/.config/ukui/ukui-menu.ini";
     setting=new QSettings(path,QSettings::IniFormat);
@@ -48,12 +48,8 @@ void FullCommonUseWidget::initUi()
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
-    m_mainLayout = new QHBoxLayout(this);
-    m_mainLayout->setSpacing(0);
-    m_mainLayout->setAlignment(Qt::AlignHCenter);
-    m_mainLayout->setContentsMargins(Style::AppListViewLeftMargin,Style::AppListViewTopMargin,Style::AppListViewRightMargin,Style::AppListViewBottomMargin);
-
-    this->setLayout(m_mainLayout);
+    setContentsMargins(Style::AppListViewLeftMargin,Style::AppListViewTopMargin,
+                       Style::AppListViewRightMargin,Style::AppListViewBottomMargin);
     m_ukuiMenuInterface=new UkuiMenuInterface;
 
     initAppListWidget();
@@ -251,7 +247,7 @@ void FullCommonUseWidget::repaintWid(int type)
         listView->update();
     }
 
-    m_mainLayout->setContentsMargins(Style::AppListViewLeftMargin, Style::AppListViewTopMargin,
+    setContentsMargins(Style::AppListViewLeftMargin, Style::AppListViewTopMargin,
                                      Style::AppListViewRightMargin, Style::AppListViewBottomMargin);
     this->insertPageToLayout();
 }
@@ -260,12 +256,13 @@ void FullCommonUseWidget::updatePageList()
 {
     updateStyleValue();
 
-    quint32 currentPageCount = m_pageList.count();
+    quint32 currentPageCount = count();
 
     if (Style::appPage < currentPageCount) {
         for (int i = Style::appPage; i < currentPageCount; ++i) {
             FullListView *listView = m_pageList.at(i);
 
+            removeWidget(listView);
             m_pageList.removeOne(listView);
             listView->deleteLater();
             m_backToMain = true;
@@ -283,6 +280,7 @@ void FullCommonUseWidget::updatePageList()
             connect(listView, &FullListView::pageSpread, this, &FullCommonUseWidget::pageSpread);
             connect(listView, &FullListView::moveRequest, this, &FullCommonUseWidget::moveRequest);
 
+            addWidget(listView);
             m_pageList.append(listView);
         }
     }
@@ -318,18 +316,7 @@ void FullCommonUseWidget::updatePageData()
 
 void FullCommonUseWidget::insertPageToLayout()
 {
-    for (int i = 0; i < m_pageList.count(); ++i) {
-        FullListView *page = m_pageList.at(i);
-        if (page) {
-            if (i == (Style::nowpagenum - 1)) {
-                page->setHidden(false);
-                m_mainLayout->insertWidget(1, page);
-            } else {
-                page->setHidden(true);
-                m_mainLayout->removeWidget(page);
-            }
-        }
-    }
+    setCurrentIndex(Style::nowpagenum - 1);
 }
 
 
