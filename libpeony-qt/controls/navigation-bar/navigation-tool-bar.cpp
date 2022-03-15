@@ -70,7 +70,7 @@ NavigationToolBar::NavigationToolBar(QWidget *parent) : QToolBar(parent)
             actions<<action;
         }
         historyMenu.addSeparator();
-        historyMenu.addAction(QIcon::fromTheme("window-close-symbolic"), tr("Clear History"));
+        historyMenu.addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Clear History"));
         //historyButton->showMenu();
         auto result = historyMenu.exec(historyButtonWidget->mapToGlobal(historyButton->rect().bottomLeft()));
         int clicked_index = historyMenu.actions().indexOf(result);

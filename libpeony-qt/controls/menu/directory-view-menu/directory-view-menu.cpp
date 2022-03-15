@@ -994,7 +994,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
         bool isTrashEmpty = m_top_window->getCurrentAllFileUris().isEmpty();
 
         if (m_selections.isEmpty()) {
-            l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("&Clean the Trash"));
+            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("&Clean the Trash"));
             l.last()->setEnabled(!isTrashEmpty);
             connect(l.last(), &QAction::triggered, [=]() {
                 AudioPlayManager::getInstance()->playWarningAudio();
@@ -1015,7 +1015,7 @@ const QList<QAction *> DirectoryViewMenu::constructTrashActions()
                     FileOperationUtils::restore(m_selections);
                 }
             });
-            l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete"));
+            l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete"));
             connect(l.last(), &QAction::triggered, [=]() {
                 AudioPlayManager::getInstance()->playWarningAudio();
                 auto result = QMessageBox::question(nullptr, tr("Delete Permanently"), tr("Are you sure that you want to delete these files? "
