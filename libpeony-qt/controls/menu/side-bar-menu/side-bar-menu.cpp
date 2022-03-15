@@ -84,7 +84,7 @@ const QList<QAction *> SideBarMenu::constructFavoriteActions()
 {
     QList<QAction *> l;
 
-    l<<addAction(QIcon::fromTheme("window-close-symbolic"), tr("Delete Symbolic"), [=]() {
+    l<<addAction(QIcon::fromTheme("edit-clear-symbolic"), tr("Delete Symbolic"), [=]() {
         BookMarkManager::getInstance()->removeBookMark(m_uri);
     });
 

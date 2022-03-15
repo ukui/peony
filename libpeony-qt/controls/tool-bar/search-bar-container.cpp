@@ -141,7 +141,7 @@ SearchBarContainer::SearchBarContainer(QWidget *parent): QWidget(parent)
     editlayout->setMargin(2);
     edit->setLayout(editlayout);
 
-    clearButton->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    clearButton->setIcon(QIcon::fromTheme("edit-clear-symbolic"));
     clearButton->setProperty("isWindowButton", 1);
     clearButton->setProperty("useIconHighlightEffect", 2);
     clearButton->hide();

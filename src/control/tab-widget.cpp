@@ -589,7 +589,7 @@ void TabWidget::addNewConditionBar()
     clearlayout->addWidget(clearButton,Qt::AlignRight);
     clearlayout->setMargin(2);
     inputBox->setLayout(clearlayout);
-    clearButton->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    clearButton->setIcon(QIcon::fromTheme("edit-clear-symbolic"));
     clearButton->setProperty("isWindowButton", 1);
     clearButton->setProperty("useIconHighlightEffect", 0x2);
     //clearButton->setAutoRaise(true);
