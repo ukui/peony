@@ -1020,7 +1020,9 @@ void MainWindow::refresh()
 {
     locationChangeStart();
     m_tab->refresh();
-    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
+    //fix refresh clear copy files issue, link to bug#109247
+    if (Peony::ClipboardUtils::isPeonyFilesBeCut())
+        Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     //goToUri(getCurrentUri(), false, true);
 }
 
