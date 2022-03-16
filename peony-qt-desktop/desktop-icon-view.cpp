@@ -2146,7 +2146,9 @@ void DesktopIconView::refresh()
     this->setCursor(QCursor(Qt::WaitCursor));
 //    if (m_refresh_timer.isActive())
 //        return;
-    Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
+    //fix refresh clear copy files issue, link to bug#109247
+    if (Peony::ClipboardUtils::isDesktopFilesBeCut())
+        Peony::ClipboardUtils::clearClipboard();/* Refresh clear cut status */
     if (!m_model)
         return;
 
