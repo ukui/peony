@@ -1,3 +1,15 @@
+peony (3.2.3+0316ukui3.1) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#76413 关闭时间与日志24小时制后，平板-桌面左侧插件区域XX:XX右边文案被遮挡(何文飞)
+    - 其它改动说明:
+      无
+    - 影响域:
+      平板桌面时间日期部件
+
+ -- hewenfei <hewenfei@kylinos.cn>  Wed, 16 Mar 2022 17:33:08 +0800
+
 peony (3.2.3+0310ukui3.1) v101; urgency=medium
 
   * Intel & 3.1 合并版本
