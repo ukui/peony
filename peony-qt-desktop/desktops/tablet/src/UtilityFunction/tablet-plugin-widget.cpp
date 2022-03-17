@@ -39,6 +39,7 @@ void TabletPluginWidget::initDateTimeWidget()
     m_dateTimeContainer->setFixedSize(400,112);
 
     m_dateTimeLayout = new QHBoxLayout(m_dateTimeContainer);
+    m_dateTimeLayout->setAlignment(Qt::AlignBottom);
     m_dateTimeLayout->setContentsMargins(0, 0, 0, 24);
 
     m_dateTimeContainer->setLayout(m_dateTimeLayout);
@@ -53,14 +54,13 @@ void TabletPluginWidget::initDateTimeWidget()
 
     m_weekDateLayout = new QVBoxLayout(m_dateTimeContainer);
     m_weekDateLayout->setSpacing(1);
-    m_weekDateLayout->setAlignment(Qt::AlignVCenter);
-    m_weekDateLayout->setContentsMargins(24, 0, 0, 0);
+    m_weekDateLayout->setAlignment(Qt::AlignBottom);
+    m_weekDateLayout->setMargin(0);
 
     m_weekDateLayout->addWidget(m_weekLabel);
     m_weekDateLayout->addWidget(m_dateLabel);
 
     m_dateTimeLayout->addWidget(m_timeLabel);
-    m_dateTimeLayout->addStretch(1);
     m_dateTimeLayout->addLayout(m_weekDateLayout);
 
     //添加到主布局中
