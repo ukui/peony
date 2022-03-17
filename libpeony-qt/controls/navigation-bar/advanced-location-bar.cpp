@@ -151,6 +151,10 @@ void AdvancedLocationBar::updateLocation(const QString &uri)
         m_last_non_search_path = uri;
     Q_EMIT this->refreshRequest();
 }
+void AdvancedLocationBar::setAnimationMode(bool isAnimation)
+{
+    m_bar->setAnimationMode(isAnimation);
+}
 
 bool AdvancedLocationBar::isEditing()
 {
