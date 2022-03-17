@@ -56,7 +56,7 @@
 #include <QEvent>
 #include <QApplication>
 #include <QTimer>
-#include <QStandardPaths>
+
 
 #include <KWindowSystem>
 #include "global-settings.h"
@@ -77,6 +77,8 @@
 #include <QPainter>
 
 #include <QDebug>
+
+#include "search-widget.h"
 
 #define DBUS_STATUS_MANAGER_IF "com.kylin.statusmanager.interface"
 
@@ -170,70 +172,33 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     }
 
     addSpacing(9);
-    //close search button,set current location icon
-    a = addAction(tr(""));
-    connect(a, &QAction::triggered,this,&HeaderBar::searchButtonClicked);
 
-    auto closeSearch = qobject_cast<QToolButton *>(widgetForAction(a));
-    closeSearch->setAutoRaise(false);
-    closeSearch->setFixedSize(QSize(40, 40));
-    closeSearch->setIconSize(QSize(16, 16));
-    m_close_search_action = a;
-    m_close_search_action->setVisible(false);
-    addSpacing(9);
-
-    // ToDo: 在切换了搜索状态后，手动刷新一下locationBar的内容，当前问题是由于重新设置了递归属性之后导致的刷新，而由于编辑框没有改变因此真正的搜索路径没变
-    auto locationBar = new Peony::AdvancedLocationBar(this);
-    m_location_bar = locationBar;
-    a = addWidget(locationBar);
+    //task#10993 实现文档管理器路径模式与搜索模式切换动画
+    m_searchWidget = new Peony::SearchWidget(this);
+    a = addWidget(m_searchWidget);
     m_actions.insert(HeaderBarAction::LocationBar, a);
 
     connect(goBack, &QPushButton::clicked, m_window, [=]() {
         m_window->getCurrentPage()->goBack();
-        quitSerachMode();
+        Q_EMIT m_searchWidget->clearSearchBox();
     });
 
-    connect(m_location_bar, &Peony::AdvancedLocationBar::refreshRequest, [=]()
-    {
+    connect(m_searchWidget, &Peony::SearchWidget::refreshRequest, [=]() {
         m_window->updateTabPageTitle();
     });
-    connect(m_location_bar, &Peony::AdvancedLocationBar::updateFileTypeFilter, [=](const int &index) {
+    connect(m_searchWidget, &Peony::SearchWidget::updateFileTypeFilter, [=](const int &index) {
         m_window->getCurrentPage()->setSortFilter(index);
     });
-    connect(m_location_bar, &Peony::AdvancedLocationBar::searchRequest, [=](const QString &path, const QString &key){
-        //key is null, clean search content, show all files
-        if (key == "" || key.isNull()) {
-            Q_EMIT this->updateLocationRequest(path, false);
-        }
-        else
-        {
-            if (m_search_global) {
-                QString homePath = "file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-                auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(homePath, key, true, false, "", m_search_recursive);
-                targetUri = targetUri.replace("&recursive=0", "&recursive=1");
-                Q_EMIT this->updateLocationRequest(targetUri, false);
-            }
-            else {
-                auto targetUri = Peony::SearchVFSUriParser::parseSearchKey(path, key, true, false, "", m_search_recursive);
-                targetUri = targetUri.replace("&recursive=1", "&recursive=0");
-                Q_EMIT this->updateLocationRequest(targetUri, false);
-            }
-        }
-    });
 
-    connect(m_location_bar, &Peony::AdvancedLocationBar::updateWindowLocationRequest, this, &HeaderBar::updateLocationRequest);
-
-    addSpacing(9);
-
-    a = addAction(QIcon::fromTheme("edit-find-symbolic"), tr("Search"));
-    m_actions.insert(HeaderBarAction::Search, a);
-    m_search_action = a;
-    connect(a, &QAction::triggered, this, &HeaderBar::searchButtonClicked);
-    auto search = qobject_cast<QToolButton *>(widgetForAction(a));
-    search->setAutoRaise(false);
-    search->setFixedSize(QSize(40, 40));
-    m_search_button = search;
-    setIconSize(QSize(16, 16));
+    connect(this, &HeaderBar::closeSearch, m_searchWidget, &Peony::SearchWidget::closeSearch );
+    connect(this, &HeaderBar::setGlobalFlag, m_searchWidget, &Peony::SearchWidget::setGlobalFlag );
+    connect(this, &HeaderBar::updateSearchRecursive, m_searchWidget, &Peony::SearchWidget::updateSearchRecursive);
+    connect(this, &HeaderBar::setLocation, m_searchWidget, &Peony::SearchWidget::updateLocation);
+    connect(this, &HeaderBar::cancelEdit, m_searchWidget, &Peony::SearchWidget::cancelEdit);
+    connect(this, &HeaderBar::startEdit, m_searchWidget, &Peony::SearchWidget::startEdit);
+    connect(this, &HeaderBar::finishEdit, m_searchWidget, &Peony::SearchWidget::finishEdit);
+    connect(m_searchWidget, &Peony::SearchWidget::updateSearchRequest, this, &HeaderBar::updateSearchRequest);
+    connect(m_searchWidget, &Peony::SearchWidget::updateLocationRequest, this, &HeaderBar::updateLocationRequest);
 
     addSpacing(2);
 
@@ -442,33 +407,6 @@ void HeaderBar::tryOpenAgain()
     p.waitForFinished(-1);
 }
 
-void HeaderBar::searchButtonClicked()
-{
-    m_search_mode = ! m_search_mode;
-    m_search_action->setVisible(! m_search_mode);
-
-    qDebug() << "searchButtonClicked" <<m_search_mode;
-    Q_EMIT this->updateSearchRequest(m_search_mode);
-    setSearchMode(m_search_mode);
-}
-
-void HeaderBar::setSearchMode(bool mode)
-{
-    m_search_button->setCheckable(mode);
-    m_search_button->setChecked(mode);
-    m_search_button->setDown(mode);
-    m_close_search_action->setVisible(mode);
-    m_location_bar->switchEditMode(mode);
-}
-
-void HeaderBar::closeSearch()
-{
-    m_search_mode = false;
-    m_search_action->setVisible(true);
-    m_close_search_action->setVisible(false);
-    setSearchMode(false);
-}
-
 void HeaderBar::switchSelectStatus(bool select)
 {
     if (select) {
@@ -492,11 +430,6 @@ void HeaderBar::switchSelectStatus(bool select)
     updateSortTypeEnable();
 }
 
-void HeaderBar::updateSearchRecursive(bool recursive)
-{
-    m_search_recursive = recursive;
-}
-
 void HeaderBar::addSpacing(int pixel)
 {
     for (int i = 0; i < pixel; i++) {
@@ -518,45 +451,6 @@ void HeaderBar::mouseDoubleClickEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton || e->button() == Qt::RightButton){
         m_window->maximizeOrRestore();
     }
-}
-
-void HeaderBar::setLocation(const QString &uri)
-{
-    m_location_bar->updateLocation(uri);
-}
-
-void HeaderBar::cancelEdit()
-{
-    m_location_bar->cancelEdit();
-}
-
-void HeaderBar::startEdit(bool bSearch)
-{
-    //qDebug() << "bSearch" <<bSearch <<m_search_mode;
-    if (bSearch && m_search_mode)
-        return;
-
-    if (bSearch)
-    {
-        searchButtonClicked();
-    }
-    else
-    {
-        m_search_mode = false;
-        m_location_bar->startEdit();
-        m_location_bar->switchEditMode(false);
-    }
-}
-
-void HeaderBar::finishEdit()
-{
-    m_location_bar->finishEdit();
-}
-
-void HeaderBar::quitSerachMode()
-{
-    if (m_search_mode)
-        m_location_bar->clearSearchBox();
 }
 
 void HeaderBar::updatePreviewPageVisible()
@@ -584,8 +478,7 @@ void HeaderBar::updateIcons()
     m_view_type_menu->setCurrentView(m_window->getCurrentPage()->getView()->viewId(), true);
     m_sort_type_menu->switchSortTypeRequest(m_window->getCurrentSortColumn());
     m_sort_type_menu->switchSortOrderRequest(m_window->getCurrentSortOrder());
-    m_close_search_action->setIcon(QIcon::fromTheme(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()), QIcon::fromTheme("folder")));
-    m_close_search_action->setToolTip(Peony::FileUtils::getFileDisplayName(m_window->getCurrentUri()));
+    m_searchWidget->updateCloseSearch(Peony::FileUtils::getFileIconName(m_window->getCurrentUri()));
     //go back & go forward
     if (m_window->getCurrentPage()) {
         m_go_back->setEnabled(m_window->getCurrentPage()->canGoBack());
@@ -659,10 +552,6 @@ void HeaderBar::updateMaximizeState()
 
 void HeaderBar::cancleSelect() {
     switchSelectStatus(false);
-}
-void HeaderBar::setGlobalFlag(bool isGlobal) {
-    m_search_global = isGlobal;
-    m_location_bar->deselectSearchBox();
 }
 
 //HeaderBarToolButton

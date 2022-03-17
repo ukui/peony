@@ -35,7 +35,7 @@ class SortTypeMenu;
 class OperationMenu;
 
 namespace Peony {
-class AdvancedLocationBar;
+class SearchWidget;
 }
 
 class HeaderBar;
@@ -88,6 +88,15 @@ Q_SIGNALS:
     void viewTypeChangeRequest(const QString &viewId);
     void updateZoomLevelHintRequest(int zoomLevelHint);
     void updateSearchRequest(bool showSearch);
+    void refreshRequest();
+    void updateFileTypeFilter(const int &index);
+    void setGlobalFlag(bool isGlobal);
+    void updateSearchRecursive(bool recursive);
+    void closeSearch();
+    void setLocation(const QString &uri);
+    void cancelEdit();
+    void startEdit(bool bSearch = false);
+    void finishEdit();
 
 protected:
     void addSpacing(int pixel);
@@ -95,33 +104,21 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *e);
 
 private Q_SLOTS:
-    void setLocation(const QString &uri);
-    void cancelEdit();
     void updateIcons();
-    void updateSearchRecursive(bool recursive);
     void updateMaximizeState();
-    void startEdit(bool bSearch = false);
-    void finishEdit();
-    void searchButtonClicked();
     void openDefaultTerminal();
     void findDefaultTerminal();
     void tryOpenAgain();
-    void setSearchMode(bool mode);
-    void closeSearch();
     void switchSelectStatus(bool select);
     void cancleSelect();
-    void setGlobalFlag(bool isGlobal);
     void updateSortTypeEnable();
     void updateViewTypeEnable();
-    void quitSerachMode();
     void updatePreviewPageVisible();
 
 private:
     const QString m_uri;
     MainWindow *m_window;
-
-    Peony::AdvancedLocationBar *m_location_bar;
-
+    Peony::SearchWidget *m_searchWidget;
     ViewTypeMenu *m_view_type_menu;
     SortTypeMenu *m_sort_type_menu;
     OperationMenu *m_operation_menu;
@@ -130,14 +127,11 @@ private:
     QPushButton *m_go_back;
     QPushButton *m_go_forward;
     QPushButton *m_go_up;
-    //QToolButton *m_maximize_restore_button;
     QToolButton *m_search_button;
     QAction *m_search_action;
     QAction *m_close_search_action;
 
-    bool m_search_mode = false;
-    bool m_search_recursive = true;
-    bool m_search_global = false;
+   // bool m_search_global = false;
     bool m_is_intel = false;
 
     // save the actions to show or hide
