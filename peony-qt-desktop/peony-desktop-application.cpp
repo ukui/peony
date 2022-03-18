@@ -352,13 +352,16 @@ void PeonyDesktopApplication::gotoSetBackground()
 
 void PeonyDesktopApplication::relocateIconView()
 {
+    qInfo()<<"start relocate icon view";
     for (auto window : m_bg_windows) {
         if (window->screen() == qApp->primaryScreen()) {
+            qInfo()<<"raise, and set desktop icon view to"<<window->screen()->name()<<window->screen()->geometry();
             window->setCentralWidget(PeonyDesktopApplication::getIconView());
             KWindowSystem::raiseWindow(window->winId());
             break;
         }
     }
+    qInfo()<<"relocate icon view end";
 }
 
 void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
@@ -533,6 +536,7 @@ void PeonyDesktopApplication::addBgWindow(QScreen *screen)
     // raise primary window to make sure icon view is visible.
     for (auto window : m_bg_windows) {
         if (window->screen() == QApplication::primaryScreen()) {
+            qInfo()<<"raise window"<<screen->name()<<screen->geometry();
             KWindowSystem::raiseWindow(window->winId());
             break;
         }

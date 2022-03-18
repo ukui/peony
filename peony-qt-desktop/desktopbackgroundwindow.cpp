@@ -214,8 +214,15 @@ void DesktopBackgroundWindow::updateWindowGeometry()
     move(geometry.topLeft());
     setFixedSize(geometry.size());
 
+    qInfo()<<"bg window geometry changed slot"<<screen()->name()<<geometry;
+
     // raise primary window to make sure icon view is visible.
     if (centralWidget()) {
+        if (screen() == qApp->primaryScreen()) {
+            qInfo()<<"has center widget, raise window";
+        } else {
+            qCritical()<<"raise a window which not in primary screen, but has central widget";
+        }
         KWindowSystem::raiseWindow(this->winId());
     }
 }

@@ -1385,8 +1385,11 @@ void DesktopIconView::resizeEvent(QResizeEvent *e)
     QListView::resizeEvent(e);
     //refresh();
 
-    if (initialized)
+    if (initialized) {
         resolutionChange();
+    } else {
+        qWarning()<<"model not initialized";
+    }
 }
 
 void DesktopIconView::rowsInserted(const QModelIndex &parent, int start, int end)
