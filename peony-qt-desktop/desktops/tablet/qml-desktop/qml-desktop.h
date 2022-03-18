@@ -47,6 +47,10 @@ public:
 
     QWidget *getRealDesktop() override;
 
+    bool hasCustomAnimation() override;
+
+    void startAnimation(bool show) override;
+
 private:
     QQuickView *m_quick = nullptr;
     QWidget *m_container = nullptr;

@@ -31,6 +31,7 @@
 #include "window-manager.h"
 #include "desktop-manager.h"
 #include "peony-desktop-dbus-service.h"
+#include "animation-widget.h"
 
 #include <QScreen>
 #include <QWindow>
@@ -123,6 +124,11 @@ private Q_SLOTS:
     void updateTabletModeValue(bool mode);
 
     void changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation);
+
+private:
+    //截图动画不需要知道目标动画类型
+    void startScreenshotAnimation(Peony::DesktopBackgroundWindow*, Peony::DesktopWidgetBase*, Peony::DesktopWidgetBase*);
+    void startPropertyAnimation(Peony::DesktopBackgroundWindow*, Peony::DesktopWidgetBase*, Peony::DesktopWidgetBase*, AnimationType);
 
 private:
     QList<Peony::DesktopBackgroundWindow *> m_bg_windows;
