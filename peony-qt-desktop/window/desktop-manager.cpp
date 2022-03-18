@@ -139,7 +139,6 @@ DesktopWidgetBase *DesktopManager::getDesktopByType(DesktopType desktopType, QWi
     }
 
     DesktopWidgetBase *desktop = factory->createDesktop(parent);
-    desktop->setParent(parent);
 
     //桌面未实例化
     if (!desktop) {
@@ -147,6 +146,7 @@ DesktopWidgetBase *DesktopManager::getDesktopByType(DesktopType desktopType, QWi
         return nullptr;
     }
 
+    desktop->setParent(parent);
     //桌面处于激活状态（在顶层）
     if (desktop->isActivated()) {
         qWarning() << "[DesktopManager::getDesktopByType] failed, " << factory->getFactoryName() << "desktop isActivated !";
