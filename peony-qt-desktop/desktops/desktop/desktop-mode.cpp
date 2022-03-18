@@ -93,3 +93,10 @@ QWidget *DesktopMode::getRealDesktop()
 
     return m_view;
 }
+
+QPixmap DesktopMode::generatePixmap()
+{
+    //NOTE: 很奇怪，在第一次new出来这个view时，grab方法获取不到截图，导致在第一次从别的桌面切换到pc桌面时，后半段动画为空白
+    getRealDesktop()->setGeometry(0, 0, geometry().width(), geometry().height());
+    return m_view->grab();
+}

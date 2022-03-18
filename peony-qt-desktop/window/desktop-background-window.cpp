@@ -277,6 +277,9 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     m_currentDesktop->setPause(false);
     m_currentDesktop->initDesktop({0, 0, geometry().width(), geometry().height()});
     m_currentDesktop->setActivated(true);
+    if (m_currentDesktop->hasCustomAnimation()) {
+        m_currentDesktop->startAnimation(true);
+    }
 
     connect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopBackgroundWindow::desktopMoveProcess);
     connect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopBackgroundWindow::desktopReboundProcess);
@@ -359,7 +362,10 @@ DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
 
         m_currentDesktop = nullptr;
         this->takeCentralWidget();
-
+        if (desktop->getDesktopType() == DesktopType::Animation) {
+            desktop->deleteLater();
+            return nullptr;
+        }
         return desktop;
     }
 

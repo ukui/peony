@@ -113,6 +113,21 @@ public:
     };
 
     /**
+     * @brief 自定义动画的桌面，动画时间减半。
+     * @return
+     */
+    virtual bool hasCustomAnimation() {
+        return false;
+    }
+
+    /**
+     * @brief 提示使用自定义动画的桌面开始动画
+     * @param show true:开始显示动画，false:开始退出动画
+     * @return
+     */
+    virtual void startAnimation(bool show) {}
+
+    /**
      * @brief 使用当前桌面的界面生成一张图片供切换动画使用。
      * @return 当前的桌面快照
      */

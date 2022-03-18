@@ -173,6 +173,7 @@ void TabletMode::beforeInitDesktop()
     if (m_isTabletMode) {
         //在显示桌面前从新布局界面
         updateMainLayout();
+        m_appViewContainer->repaintWid(0);
         //刷新各个页面的数据，以及从新排列页面
         m_appViewContainer->updateListViewSlot();
     }
@@ -180,7 +181,23 @@ void TabletMode::beforeInitDesktop()
 
 QPixmap TabletMode::generatePixmap()
 {
-    return DesktopWidgetBase::generatePixmap();
+    move(geometry().width() + 10, 0);
+
+    //将需要的部分显示出来截图
+    m_container->show();
+    m_appViewContainer->show();
+    if (Style::nowpagenum == 1) {
+        m_pluginBoxWidget->show();
+    }
+
+    QPixmap pixmap = grab();
+
+    m_container->hide();
+    m_appViewContainer->hide();
+    m_pluginBoxWidget->hide();
+
+    move(0, 0);
+    return pixmap;
 }
 
 void TabletMode::showDesktop()

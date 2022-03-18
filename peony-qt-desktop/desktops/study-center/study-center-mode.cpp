@@ -673,3 +673,8 @@ void StudyCenterMode::updateUiSlot()
     synWidget->update();
     statusWidget->update();
 }
+
+QPixmap StudyCenterMode::generatePixmap()
+{
+    return grab();
+}

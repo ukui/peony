@@ -25,6 +25,7 @@
 //
 
 #include "tablet-plugin-widget.h"
+#include "desktop-global-settings.h"
 #include "src/Style/style.h"
 
 #include <QProcess>
@@ -158,6 +159,9 @@ void TabletPluginWidget::hidePluginWidget(bool hide)
 
 void TabletPluginWidget::initPluginWidget()
 {
+    if (!Peony::DesktopGlobalSettings::globalInstance()->getValue(ENABLE_SMALL_PLUGIN).toBool()) {
+        return;
+    }
     QPluginLoader loader("/opt/small-plugin/bin/libsmall-plugin-manage.so");
     QObject * plugin=loader.instance();
     if(plugin)

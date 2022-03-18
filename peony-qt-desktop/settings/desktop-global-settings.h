@@ -37,7 +37,9 @@
 //keys
 #define TABLET_MODE "tabletMode"
 #define DESKTOP_ANIMATION_DURATION   "desktopAnimationDuration"
+#define DESKTOP_ANI_DEFAULT_DURATION 1000
 #define DESKTOP_ITEM_ZOOM_RANGE      "desktopItemZoomRange"
+#define DESKTOP_DEFAULT_ZOOM_RANGE  0.1
 #define ENABLE_SMALL_PLUGIN          "enableSmallPlugin"
 
 #include <QObject>

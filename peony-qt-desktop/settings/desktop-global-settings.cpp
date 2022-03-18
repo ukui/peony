@@ -105,9 +105,9 @@ bool DesktopGlobalSettings::allowSwitchDesktop()
 void DesktopGlobalSettings::initDesktopSetting()
 {
     //设置默认值
-    setValue(DESKTOP_ANIMATION_DURATION, 1000);
+    setValue(DESKTOP_ANIMATION_DURATION, DESKTOP_ANI_DEFAULT_DURATION);
     setValue(ENABLE_SMALL_PLUGIN, true);
-    setValue(DESKTOP_ITEM_ZOOM_RANGE, 0.1);
+    setValue(DESKTOP_ITEM_ZOOM_RANGE, DESKTOP_DEFAULT_ZOOM_RANGE);
 
     if (QGSettings::isSchemaInstalled(DESKTOP_SETTINGS_SCHEMA)) {
         QGSettings *settings = new QGSettings(DESKTOP_SETTINGS_SCHEMA, "/", this);

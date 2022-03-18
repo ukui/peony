@@ -26,6 +26,7 @@
 #include "qml-desktop.h"
 
 #include <QVBoxLayout>
+#include <QQuickItem>
 
 using namespace Peony;
 
@@ -34,18 +35,12 @@ QmlDesktop::QmlDesktop(QWidget *parent) : DesktopWidgetBase(parent)
     this->m_exitAnimationType = AnimationType::LeftToRight;
 
     m_quick = new QQuickView;
-    m_quick->setSource(QUrl("/usr/share/ukui/tablet/contents/ui/main.qml"));
+    m_quick->setColor(Qt::transparent);
 
     m_container = QWidget::createWindowContainer(m_quick, this);
     m_container->setAttribute(Qt::WA_TranslucentBackground);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setAlignment(Qt::AlignCenter);
-
-    layout->addWidget(m_container);
-
-    setLayout(layout);
+    m_quick->setSource(QUrl("/usr/share/ukui/tablet/contents/ui/main.qml"));
 }
 
 QmlDesktop::~QmlDesktop()
@@ -78,4 +73,18 @@ DesktopWidgetBase *QmlDesktop::initDesktop(const QRect &rect)
 QWidget *QmlDesktop::getRealDesktop()
 {
     return m_container;
+}
+
+bool QmlDesktop::hasCustomAnimation()
+{
+    return true;
+}
+
+void QmlDesktop::startAnimation(bool show)
+{
+    if (show) {
+        m_quick->rootObject()->setProperty("state", "Show");
+    } else {
+        m_quick->rootObject()->setProperty("state", "Hide");
+    }
 }

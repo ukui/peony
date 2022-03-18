@@ -382,8 +382,6 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
 
         if (parser.isSet(desktopOption)) {
             setupBgAndDesktop();
-            //intel 切换主桌面
-            this->changePrimaryWindowDesktop(DesktopType::StudyCenter, AnimationType::LeftToRight);
         }
 
         if (parser.isSet(backgroundOption)) {
@@ -480,6 +478,7 @@ void PeonyDesktopApplication::initWindowDesktop()
         if (window->screen() == m_primaryScreen) {
             if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() == V10_SP1_EDU) {
                 desktop = m_desktopManager->getDesktopByType(DesktopType::StudyCenter, window);
+                m_learningCenterActivated = true;
             } else {
                 desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
             }
@@ -766,11 +765,23 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         return;
     }
 
-    //TODO 检测这两个桌面的类型是否相同，相同则 return
-
     //获取一个桌面并指定父窗口
-    Peony::DesktopWidgetBase *nextDesktop = getNextDesktop(targetType, primaryWindow);
+    Peony::DesktopWidgetBase *nextDesktop = nullptr;
+    if (targetAnimation == AnimationType::CenterToEdge) {
+        nextDesktop = m_desktopManager->getDesktopByType(targetType, primaryWindow);
+        startScreenshotAnimation(primaryWindow, currentDesktop, nextDesktop);
 
+    } else {
+        nextDesktop = getNextDesktop(targetType, primaryWindow);
+        startPropertyAnimation(primaryWindow, currentDesktop, nextDesktop, targetAnimation);
+    }
+}
+
+void PeonyDesktopApplication::startPropertyAnimation(Peony::DesktopBackgroundWindow *primaryWindow,
+                                                     Peony::DesktopWidgetBase *currentDesktop,
+                                                     Peony::DesktopWidgetBase *nextDesktop,
+                                                     AnimationType targetAnimation)
+{
     if (!nextDesktop) {
         m_animationIsRunning = false;
         currentDesktop->setPause(false);
@@ -784,9 +795,6 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
         qWarning() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] nextDesktop is activated!";
         return;
     }
-    //保存原始效果以解决动画冲突问题
-//    QWidget *currentEffectBackup = saveEffectWidget(currentDesktop);
-//    QWidget *nextEffectBackup    = saveEffectWidget(nextDesktop);
 
     //断开发送请求桌面的链接，防止频繁发送消息
     disconnect(currentDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
@@ -815,22 +823,13 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     connect(animationGroup, &QSequentialAnimationGroup::finished, this, [=] {
         qDebug() << "[PeonyDesktopApplication::changePrimaryWindowDesktop] animation is stop";
         m_animationIsRunning = false;
-        //nextDesktop->setGraphicsEffect(nextEffectBackup->graphicsEffect());
         primaryWindow->setWindowDesktop(nextDesktop);
-        //m_windowManager->updateAllWindowGeometry();
         connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this, &PeonyDesktopApplication::changePrimaryWindowDesktop);
-        //delete nextEffectBackup;
         animationGroup->clear();
         animationGroup->deleteLater();
         if (m_desktopDbusService) {
             Q_EMIT m_desktopDbusService->desktopChangedSignal(nextDesktop->getDesktopType());
         }
-    });
-
-    connect(exitAnimation, &QPropertyAnimation::finished, this, [=] {
-        //currentDesktop->setGraphicsEffect(currentEffectBackup->graphicsEffect());
-        //currentDesktop->setActivated(false);
-        //delete currentEffectBackup;
     });
 
     nextDesktop->beforeInitDesktop();
@@ -844,6 +843,119 @@ void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType,
     }
 
     animationGroup->start();
+}
+
+void PeonyDesktopApplication::startScreenshotAnimation(Peony::DesktopBackgroundWindow *primaryWindow,
+                                                       Peony::DesktopWidgetBase *currentDesktop,
+                                                       Peony::DesktopWidgetBase *nextDesktop)
+{
+    bool currentCustom = currentDesktop->hasCustomAnimation();
+    bool nextCustom = false;
+    int duration = DesktopGlobalSettings::globalInstance()->getValue(DESKTOP_ANIMATION_DURATION).toInt();
+    QRect rect(0, 0, primaryWindow->width(), primaryWindow->height());
+
+    if (nextDesktop) {
+        nextCustom = nextDesktop->hasCustomAnimation();
+
+        nextDesktop->setGeometry(rect);
+        nextDesktop->getRealDesktop()->setGeometry(rect);
+        nextDesktop->beforeInitDesktop();
+        nextDesktop->onPrimaryScreenChanged();
+    }
+
+    disconnect(currentDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+               &PeonyDesktopApplication::changePrimaryWindowDesktop);
+
+    if (currentCustom && nextCustom) {
+        currentDesktop->startAnimation(false);
+        QTimer::singleShot(duration, this, [=]() {
+            connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                                             &PeonyDesktopApplication::changePrimaryWindowDesktop);
+
+            primaryWindow->setWindowDesktop(nextDesktop);
+            m_animationIsRunning = false;
+        });
+        return;
+    }
+
+    QPixmap frontend;
+    QPixmap backend;
+    auto animationDesktop = new Peony::AnimationWidget(primaryWindow);
+
+    if (!currentCustom && nextCustom) {
+        //下一个桌面是自定义
+        frontend = currentDesktop->generatePixmap();
+        //运行时间减半
+        animationDesktop->half();
+        animationDesktop->initAnimation(frontend, backend);
+
+        connect(animationDesktop, &AnimationWidget::finished, this, [=] {
+            connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                    &PeonyDesktopApplication::changePrimaryWindowDesktop);
+            primaryWindow->setWindowDesktop(nextDesktop);
+
+            QTimer::singleShot(duration, this, [=]() {
+                m_animationIsRunning = false;
+            });
+        });
+
+        primaryWindow->setWindowDesktop(animationDesktop);
+        animationDesktop->start();
+
+    } else if (currentCustom && !nextCustom) {
+        //两种情况，获取到的下一个桌面为空或者不存在自定义动画
+        if (nextDesktop) {
+            frontend = nextDesktop->generatePixmap();
+            //从小到大，反转时间线。反转时间线后，时间自动减半
+            animationDesktop->reverse();
+            animationDesktop->initAnimation(frontend, backend);
+
+            connect(animationDesktop, &AnimationWidget::finished, this, [=] {
+                connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                        &PeonyDesktopApplication::changePrimaryWindowDesktop);
+                primaryWindow->setWindowDesktop(nextDesktop);
+                m_animationIsRunning = false;
+            });
+
+            currentDesktop->startAnimation(false);
+            QTimer::singleShot(duration, this, [=]() {
+                primaryWindow->setWindowDesktop(animationDesktop);
+                animationDesktop->start();
+            });
+
+        } else {
+            connect(currentDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                       &PeonyDesktopApplication::changePrimaryWindowDesktop);
+            m_animationIsRunning = false;
+            delete animationDesktop;
+            return;
+        }
+    } else {
+        //两种情况，获取到的下一个桌面为空或者
+        frontend = currentDesktop->generatePixmap();
+        if (nextDesktop) {
+            backend = nextDesktop->generatePixmap();
+        }
+        //完全接管截图动画,不需要反转也不需要减半
+        animationDesktop->initAnimation(frontend, backend);
+
+        primaryWindow->setWindowDesktop(animationDesktop);
+
+        connect(animationDesktop, &AnimationWidget::finished, this, [=] {
+            if (nextDesktop) {
+                connect(nextDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                        &PeonyDesktopApplication::changePrimaryWindowDesktop);
+                primaryWindow->setWindowDesktop(nextDesktop);
+            } else {
+                connect(currentDesktop, &Peony::DesktopWidgetBase::moveToOtherDesktop, this,
+                        &PeonyDesktopApplication::changePrimaryWindowDesktop);
+                primaryWindow->setWindowDesktop(currentDesktop);
+            }
+            m_animationIsRunning = false;
+        });
+
+        animationDesktop->start();
+    }
 }
 
 QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &currentDesktopRect, AnimationType animationType, bool isExit)
@@ -1016,13 +1128,19 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
 
 void PeonyDesktopApplication::changeDesktop()
 {
+    AnimationType type = AnimationType::LeftToRight;
+    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() != V10_SP1_EDU) {
+        type = AnimationType::CenterToEdge;
+    }
+
     if (m_windowManager->getWindowByScreen(m_primaryScreen)->getCurrentDesktop()->getDesktopType() == DesktopType::StudyCenter) {
+        this->changePrimaryWindowDesktop(DesktopType::StudyCenter, type);
         return;
     }
     if (m_isTabletMode) {
-        this->changePrimaryWindowDesktop(DesktopType::Tablet, AnimationType::LeftToRight);
+        this->changePrimaryWindowDesktop(DesktopType::Tablet, type);
     } else {
-        this->changePrimaryWindowDesktop(DesktopType::Desktop, AnimationType::LeftToRight);
+        this->changePrimaryWindowDesktop(DesktopType::Desktop, type);
     }
 }
 

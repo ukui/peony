@@ -3,7 +3,7 @@
   <schema id="org.ukui.peony.desktop.settings" path="/">
     <!--General-->
     <key type="i" name="desktop-animation-duration">
-      <default>500</default>
+      <default>1000</default>
       <summary>desktop animation duration</summary>
       <description>Duration of the mode switching animation</description>
     </key>
