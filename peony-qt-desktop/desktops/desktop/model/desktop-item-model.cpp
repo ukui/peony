@@ -140,6 +140,8 @@ DesktopItemModel::DesktopItemModel(DesktopIconView *view, QObject *parent)
             }
         }
 
+        updateAppMetaInfo(uri);
+
         if (!exsited) {
             if (!m_renaming_file_pos.first.isEmpty() && uri != m_renaming_file_pos.first && uri.contains(m_renaming_file_pos.first)) {
                 return;
@@ -950,6 +952,33 @@ QStringList DesktopItemModel::getDesktopFiles()
     return files;
 }
 
+QString DesktopItemModel::getExecFromDesktopFile(const QString &path)
+{
+    QString exec("");
+
+    GError *error = NULL;
+    GKeyFile *desktopKeyFile = g_key_file_new();
+    gboolean ret = g_key_file_load_from_file(desktopKeyFile, path.toUtf8(), G_KEY_FILE_NONE, &error);
+    if (ret) {
+        gchar *execChar = g_key_file_get_string(desktopKeyFile, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_EXEC, nullptr);
+        exec = execChar;
+        g_free(execChar);
+
+        if (exec.startsWith("/")) {
+            exec = exec.mid(1, (exec.length() - 1));
+        }
+        qDebug() << "[DesktopItemModel::getExecFromDesktopFile] path:" << path << "exec:" << exec;
+
+    } else {
+        qWarning() << "[DesktopItemModel::getExecFromDesktopFile] load desktop file error, msg:" << error->message;
+        g_error_free(error);
+    }
+
+    g_key_file_free(desktopKeyFile);
+
+    return exec;
+}
+
 void DesktopItemModel::enabelChange(QString exec, bool execenable)
 {
     //mdm会莫名其妙的发送一些空串过来
@@ -973,30 +1002,8 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
 
     for (auto & file : files) {
         QString path = desktop + "/" + file;
-        bool isMatched = false;
-
-        GError *error = NULL;
-        GKeyFile *desktopKeyFile = g_key_file_new();
-        gboolean ret = g_key_file_load_from_file(desktopKeyFile, path.toUtf8(), G_KEY_FILE_NONE, &error);
-        if (ret) {
-            gchar *execChar = g_key_file_get_string(desktopKeyFile, G_KEY_FILE_DESKTOP_GROUP, G_KEY_FILE_DESKTOP_KEY_EXEC, nullptr);
-            QString execCommand = execChar;
-            g_free(execChar);
-
-            if (execCommand.startsWith("/")) {
-                execCommand = execCommand.mid(1, (execCommand.length() - 1));
-            }
-
-            isMatched = (QString::compare(execCommand, exec) == 0);
-            qDebug() << "[DesktopItemModel::enabelChange] isMatched" << isMatched << execCommand << exec;
-
-        } else {
-            qWarning() << "[DesktopItemModel::enabelChange] load desktop file error, msg:" << error->message;
-            g_error_free(error);
-        }
-
-        g_key_file_free(desktopKeyFile);
-
+        bool isMatched = (QString::compare(getExecFromDesktopFile(path), exec) == 0);
+        qDebug() << "[DesktopItemModel::enabelChange] isMatched" << isMatched << exec;
         if (isMatched) {
             appid = file;
             break;
@@ -1005,6 +1012,28 @@ void DesktopItemModel::enabelChange(QString exec, bool execenable)
     qDebug() << "[DesktopItemModel::enabelChange] appid:" << appid;
 
     updateAppMetaInfo(appid, execenable);
+}
+
+void DesktopItemModel::updateAppMetaInfo(const QString& uri)
+{
+    if (g_isEdu && uri.endsWith(".desktop")) {
+        QUrl url(uri);
+        //mdm禁用后的desktop文件，不具有可执行权限，不需要用fileInfo->isDesktopFile()判断
+        QString iniFile = QDir::homePath() + "/.cache/ukui-menu/ukui-menu.ini";
+        QString exec = getExecFromDesktopFile(url.path());
+        QString appid = url.fileName();
+
+        QSettings settings(iniFile, QSettings::IniFormat);
+        settings.beginGroup("application");
+
+        if (settings.contains(exec)) {
+            updateAppMetaInfo(appid, settings.value(exec).toBool());
+        } else {
+            updateAppMetaInfo(appid, true, false);
+        }
+
+        settings.endGroup();
+    }
 }
 
 void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable, bool showLog)
@@ -1022,6 +1051,7 @@ void DesktopItemModel::updateAppMetaInfo(QString &appid, bool execEnable, bool s
 
     auto fileInfo = FileInfo::fromUri(uri);
     auto *job = new FileInfoJob(fileInfo);
+    job->setAutoDelete();
     job->querySync();
 
     g_object_unref(file);

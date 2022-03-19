@@ -100,7 +100,9 @@ protected Q_SLOTS:
 private:
     void refreshInternal();
     void updateAppMetaInfo(QString&, bool, bool showLog = true);
+    void updateAppMetaInfo(const QString&);
     static QStringList getDesktopFiles();
+    static QString getExecFromDesktopFile(const QString &path);
 
     FileEnumerator *m_enumerator;
     QList<std::shared_ptr<FileInfo>> m_files;

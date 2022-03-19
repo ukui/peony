@@ -1076,7 +1076,7 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
             } else {
                 viewContainer->switchViewType(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ID).toString());
             }
-            viewContainer->setMinimumWidth(300);
+            viewContainer->setMinimumWidth(350);
             m_stack->addWidget(viewContainer);
             if (jumpTo) {
                 m_stack->setCurrentWidget(viewContainer);
