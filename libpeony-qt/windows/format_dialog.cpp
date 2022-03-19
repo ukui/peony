@@ -451,7 +451,7 @@ void Format_Dialog::acceptFormat(bool)
 
     //set init value, fix init progress is not 0 issue
     //修复开始格式化时，进度直接跳到上一次格式化的百分比问题
-    m_before_progress = 0;
+    //m_before_progress = 0;
     m_cost_seconds = 0;
     m_simulate_progress = 0;
     b_finished = false;
