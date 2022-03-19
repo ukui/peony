@@ -69,6 +69,7 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QPainterPath>
 
 static PushButtonStyle *global_instance = nullptr;
 
