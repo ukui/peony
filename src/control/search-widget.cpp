@@ -116,7 +116,7 @@ void SearchWidget::initAnimation()
             m_closeSearchGroup->start();
         }
     });
-    connect(m_closeLocationBarAnimation, &QPropertyAnimation::finished, this, [=] {
+    connect(m_closeSearchGroup, &QPropertyAnimation::finished, this, [=] {
         m_locationBar->setAnimationMode(false);
     });
 }
@@ -159,13 +159,16 @@ void SearchWidget::startEdit(bool bSearch)
     if (bSearch) {
         searchButtonClicked();
     } else {
-        m_searchMode = false;
         m_searchButton->setVisible(true);
         m_searchButton->setCheckable(false);
         m_closeSearchButton->setVisible(false);
         m_locationBar->startEdit();
         m_locationBar->switchEditMode(false);
-        Q_EMIT changeSearchMode(false);
+        if (m_searchMode) {
+            Q_EMIT changeSearchMode(false);
+            Q_EMIT updateSearchRequest(false);
+        }
+        m_searchMode = false;
     }
 }
 
