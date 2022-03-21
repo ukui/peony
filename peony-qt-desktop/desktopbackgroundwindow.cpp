@@ -158,12 +158,12 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                         break;
                     }
                 }
-            } else if (manager->getBackgroundOption() == "adapt") {
+            } else if (manager->getBackgroundOption() == "zoom") {
                 //适应
                 p.drawPixmap(getDestRect(backPixmap), backPixmap, backPixmap.rect());
                 p.setOpacity(opacity);
                 p.drawPixmap(getDestRect(frontPixmap), frontPixmap, frontPixmap.rect());
-            } else if (manager->getBackgroundOption() == "crossRegion") {
+            } else if (manager->getBackgroundOption() == "spanned") {
                 //跨区
                 for(auto screen : qApp->screens()){
                     if (m_screen->name() == screen->name()) {
@@ -207,9 +207,9 @@ void DesktopBackgroundWindow::paintEvent(QPaintEvent *event)
                         break;
                     }
                 }
-            } else if (manager->getBackgroundOption() == "adapt") {
+            } else if (manager->getBackgroundOption() == "zoom") {
                 p.drawPixmap(getDestRect(frontPixmap), frontPixmap, frontPixmap.rect());
-            } else if (manager->getBackgroundOption() == "crossRegion") {
+            } else if (manager->getBackgroundOption() == "spanned") {
                 for(auto screen : qApp->screens()){
                     if (m_screen->name() == screen->name()) {
                         p.drawPixmap(this->rect(), frontPixmap, getSourceRect(frontPixmap, screen->geometry()));
