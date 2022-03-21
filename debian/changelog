@@ -1,6 +1,6 @@
-peony (3.10.0~1+0319) v101; urgency=medium
+peony (3.10.0-1+0321) v101; urgency=medium
 
-  * 3.1 & 主线合并版本
+  * 3.1 & intel 合并版本
 
  -- Yue Lan <lanyue@kylinos.cn>  Sat, 19 Mar 2022 10:27:21 +0800
 
