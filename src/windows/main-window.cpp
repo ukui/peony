@@ -1306,6 +1306,9 @@ void MainWindow::initUI(const QString &uri)
     });
     connect(views, &TabWidget::closeWindowRequest, this, &QWidget::close);
     connect(m_header_bar, &HeaderBar::updateSearchRequest, m_tab, &TabWidget::updateSearchBar);
+    connect(m_header_bar, &HeaderBar::updateSearchRequest, this, [=](bool showSearch){
+        m_is_search = showSearch;
+    });
 
     X11WindowManager *tabBarHandler = X11WindowManager::getInstance();
     tabBarHandler->registerWidget(views->tabBar());
