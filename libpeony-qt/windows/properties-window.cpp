@@ -662,7 +662,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
                 painter->restore();
 
                 //选中时文字颜色 - Text color when selected
-                painter->setPen(palette.color(QPalette::BrightText));
+                painter->setPen(palette.color(QPalette::HighlightedText));
             } else if (tab->state & QStyle::State_MouseOver) {
                 painter->save();
                 QColor color = palette.color(QPalette::Highlight).lighter(140);
@@ -674,7 +674,7 @@ void tabStyle::drawControl(QStyle::ControlElement element, const QStyleOption *o
 
                 painter->restore();
                 //选中时文字颜色 - Text color when selected
-                painter->setPen(palette.color(QPalette::BrightText));
+                painter->setPen(palette.color(QPalette::HighlightedText));
             } else if (tab->state & QStyle::State_MouseOver) {
                 painter->save();
                 QColor color = palette.color(QPalette::Highlight).lighter(140);
