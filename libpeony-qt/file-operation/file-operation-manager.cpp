@@ -446,6 +446,7 @@ void FileOperationManager::handleError(FileOperationError &error)
         if (m_progressbar->isHidden()) {
             m_progressbar->m_error = true;
         }
+#if 0
         auto dialog = dynamic_cast<QWidget *>(handle);
         if (dialog) {
             dialog->setProperty("useCustomShadow", true);
@@ -454,7 +455,7 @@ void FileOperationManager::handleError(FileOperationError &error)
             dialog->setProperty("customShadowRadius", QVector4D(1, 1, 1, 1));
             dialog->setProperty("customShadowMargins", QVector4D(30, 30, 30, 30));
         }
-
+#endif
         handle->handle(error);
         delete handle;
         m_progressbar->m_error = false;
