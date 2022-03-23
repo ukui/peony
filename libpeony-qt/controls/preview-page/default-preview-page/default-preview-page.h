@@ -28,11 +28,12 @@
 #include <QStackedWidget>
 
 #include <memory>
+#include <QLabel>
+#include <QMap>
 
 class QGridLayout;
 class QPushButton;
 class QFormLayout;
-class QLabel;
 
 namespace Peony {
 
@@ -87,6 +88,7 @@ private:
 
 public:
     void wrapData(QLabel *p_label, const QString &text);
+    void updateForm(QSize size);
 
 private Q_SLOTS:
     void updateInfo(FileInfo *info);
@@ -127,6 +129,7 @@ private:
     //image
     QLabel *m_image_size;
     QLabel *m_image_format;
+    QMap<QLabel*, QString> m_form_label_map;
 };
 
 }

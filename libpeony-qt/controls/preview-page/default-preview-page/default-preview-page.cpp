@@ -134,6 +134,7 @@ bool DefaultPreviewPage::eventFilter(QObject *obj, QEvent *ev)
             width = qMax(width, 96);
             width = qMin(width, 256);
             page->resizeIcon(QSize(width, width * 2/3));
+            page->updateForm(e->size());
         }
     }
     return QStackedWidget::eventFilter(obj, ev);
@@ -216,31 +217,39 @@ FilePreviewPage::FilePreviewPage(QWidget *parent) : QFrame(parent)
     file_name_label->setAlignment(Qt::AlignTop);
     file_name_label->setText(tr("File Name:"));
     m_form->addRow(file_name_label, m_display_name_label);
+    m_form_label_map.insert(m_display_name_label, "");
 
     m_type_label = new QLabel(this);
     m_form->addRow(tr("File Type:"), m_type_label);
+    m_form_label_map.insert(m_type_label, "");
 
     m_time_access_label = new QLabel(this);
     m_form->addRow(tr("Time Access:"), m_time_access_label);
+    m_form_label_map.insert(m_time_access_label, "");
 
     m_time_modified_label = new QLabel(this);
     m_form->addRow(tr("Time Modified:"), m_time_modified_label);
+    m_form_label_map.insert(m_time_modified_label, "");
 
     m_file_count_label = new QLabel(this);
     QLabel *children_label = new QLabel(this);
     children_label->setAlignment(Qt::AlignTop);
     children_label->setText(tr("Children Count:"));
     m_form->addRow(children_label, m_file_count_label);
+    m_form_label_map.insert(m_file_count_label, "");
 
     m_total_size_label = new QLabel(this);
     m_form->addRow(tr("Size:"), m_total_size_label);
+    m_form_label_map.insert(m_total_size_label, "");
 
     //image
     m_image_size = new QLabel(this);
     m_form->addRow(tr("Image resolution:"), m_image_size);
+    m_form_label_map.insert(m_image_size, "");
 
     m_image_format = new QLabel(this);
     m_form->addRow(tr("color model:"), m_image_format);
+    m_form_label_map.insert(m_image_format, "");
 
     m_form->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
     m_form->setFormAlignment(Qt::AlignHCenter);
@@ -262,13 +271,14 @@ void FilePreviewPage::wrapData(QLabel *p_label, const QString &text)
     QFontMetrics fontMetrics = p_label->fontMetrics();
     int textSize = fontMetrics.width(wrapText);
 
-    if(textSize > LABEL_MAX_WIDTH){
+    int width = p_label->width()==0?LABEL_MAX_WIDTH:p_label->width();
+    if(textSize > width){
         int lastIndex = 0;
         for(int i = lastIndex; i < wrapText.length(); i++) {
-            if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) == LABEL_MAX_WIDTH) {
+            if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) == width) {
                 lastIndex = i;
                 wrapText.insert(i, '\n');
-            } else if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) > LABEL_MAX_WIDTH) {
+            } else if(fontMetrics.width(wrapText.mid(lastIndex, i - lastIndex)) > width) {
                 lastIndex = i;
                 wrapText.insert(i - 1, '\n');
             } else {
@@ -302,13 +312,20 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         displayName = tr("usershare");
     }
     wrapData(m_display_name_label, displayName);
+    m_form_label_map[m_display_name_label] = displayName;
 
     wrapData(m_type_label, info->fileType());
+    m_form_label_map[m_type_label] = info->fileType();
 
     wrapData(m_time_access_label, info->accessDate());
+    m_form_label_map[m_time_access_label] = info->accessDate();
+
     wrapData(m_time_modified_label, info->modifiedDate());
+    m_form_label_map[m_time_modified_label] = info->modifiedDate();
 
     m_file_count_label->setText(tr(""));
+    m_form_label_map[m_file_count_label] = "";
+
     if (info->isDir()) {
         m_form->itemAt(4, QFormLayout::LabelRole)->widget()->setVisible(true);
         m_file_count_label->setVisible(true);
@@ -324,12 +341,15 @@ void FilePreviewPage::updateInfo(FileInfo *info)
         image_size_row_left->setVisible(true);
 
         m_image_size->setText(tr("%1x%2").arg(r.size().width()).arg(r.size().height()));
+        m_form_label_map[m_image_size] = tr("%1x%2").arg(r.size().width()).arg(r.size().height());
+
         auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(info->uri());
         bool rgba = thumbnail.pixmap(r.size()).hasAlphaChannel();
         m_image_size->setVisible(true);
         auto image_format_row_left = m_form->itemAt(7, QFormLayout::LabelRole)->widget();
         image_format_row_left->setVisible(true);
         m_image_format->setText(rgba? "RGBA": "RGB");
+        m_form_label_map[m_image_format] = rgba? "RGBA": "RGB";
         m_image_format->setVisible(true);
     } else {
         auto image_size_row_left = m_form->itemAt(6, QFormLayout::LabelRole)->widget();
@@ -374,6 +394,7 @@ void FilePreviewPage::countAsync(const QString &uri)
 void FilePreviewPage::updateCount()
 {
     wrapData(m_file_count_label, tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count));
+    m_form_label_map[m_file_count_label] = tr("%1 total, %2 hidden").arg(m_file_count).arg(m_hidden_count);
 
     auto format = g_format_size_full(m_total_size,G_FORMAT_SIZE_IEC_UNITS);
     QString fileSize(format);
@@ -385,7 +406,9 @@ void FilePreviewPage::updateCount()
         fileSize.replace("GiB", "GB");
     }
     m_total_size_label->setText(fileSize);
+    m_form_label_map[m_total_size_label] = fileSize;
     g_free(format);
+    updateForm(this->size());
 }
 
 void FilePreviewPage::cancel()
@@ -421,4 +444,34 @@ void FilePreviewPage::onCountDone()
     m_file_count = 0;
     m_hidden_count = 0;
     m_total_size = 0;
+}
+
+void FilePreviewPage::updateForm(QSize size)
+{
+    if (m_form->count() > 4) {
+        int labelWidth = 0;
+        QMap<QLabel*, QString>::const_iterator i = m_form_label_map.constBegin();
+        int iLongTextWidth = 0;
+        while (i != m_form_label_map.constEnd()) {
+            iLongTextWidth = qMax(fontMetrics().width(i.value()), iLongTextWidth);
+            QString text =((QLabel*)m_form->labelForField(i.key()))->text();
+            labelWidth = qMax(fontMetrics().width(text), labelWidth);
+            ++i;
+        }
+        i = m_form_label_map.constBegin();
+
+        int fieldWidth = size.width() - 3*m_form->spacing() - labelWidth;
+        fieldWidth = qMin(fieldWidth,iLongTextWidth);
+        while (i != m_form_label_map.constEnd()) {
+            auto label = i.key();
+            if (label) {
+                if (fieldWidth == label->width()) {
+                    return;
+                }
+                label->setFixedWidth(fieldWidth);
+                wrapData(i.key(), i.value());
+            }
+            ++i;
+        }
+    }
 }
