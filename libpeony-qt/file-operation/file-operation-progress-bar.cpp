@@ -505,13 +505,13 @@ void MainProgressBar::paintContent(QPainter &painter)
     } else {
         if (m_sync) {
             painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+            painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
         } else {
             painter.drawText(m_file_name_x, m_file_name_y, m_file_name_w, m_file_name_height, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, m_file_name);
             if (m_pause) {
-                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
             } else {
-                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height));
+                painter.drawPixmap(m_progress_pause_x, m_progress_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_pause_btn_height, m_pause_btn_height)));
             }
         }
     }
@@ -723,7 +723,7 @@ void ProgressBar::paintEvent(QPaintEvent *event)
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("canceling ..."));
     } else if (m_sync) {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, tr("sync ..."));
-        painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
+        painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size)));
     } else {
         painter.drawText(m_text_x, m_text_y, m_text_w, m_text_height, Qt::AlignLeft | Qt::AlignVCenter, m_dest_uri);
     }
@@ -743,9 +743,9 @@ void ProgressBar::paintEvent(QPaintEvent *event)
 
     if (!m_sync) {
         if (m_pause) {
-            painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size));
+            painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-start-symbolic").pixmap(m_btn_size, m_btn_size)));
         } else {
-            painter.drawPixmap(m_pause_x, m_pause_y, QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size));
+            painter.drawPixmap(m_pause_x, m_pause_y, drawSymbolicColoredPixmap(QIcon::fromTheme("media-playback-pause-symbolic").pixmap(m_btn_size, m_btn_size)));
         }
     }
 
