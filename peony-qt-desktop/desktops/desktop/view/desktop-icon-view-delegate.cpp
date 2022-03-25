@@ -111,7 +111,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255);
             painter->setPen(color.darker(100));
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
         }
         if (opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
@@ -120,7 +120,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255*0.8);
             painter->setPen(color);
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
         }
         painter->restore();
     }
