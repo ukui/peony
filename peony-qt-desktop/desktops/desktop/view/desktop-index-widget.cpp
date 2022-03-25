@@ -25,6 +25,7 @@
 
 #include "desktop-icon-view-delegate.h"
 #include "desktop-icon-view.h"
+#include "global-settings.h"
 
 #include <QPainter>
 #include <QStyle>
@@ -67,6 +68,7 @@ DesktopIndexWidget::DesktopIndexWidget(DesktopIconViewDelegate *delegate,
     view->m_real_do_edit = false;
     view->m_edit_trigger_timer.stop();
     view->m_edit_trigger_timer.start();
+    m_is_intel = (QString::compare("V10SP1-edu", GlobalSettings::getInstance()->getProjectName(), Qt::CaseInsensitive) == 0);
 }
 
 DesktopIndexWidget::~DesktopIndexWidget()
@@ -113,7 +115,11 @@ void DesktopIndexWidget::paintEvent(QPaintEvent *e)
     p.setPen(Qt::transparent);
     bgColor.setAlpha(255*0.7);
     p.setBrush(bgColor);
-    p.drawRoundedRect(this->rect(), 6, 6);
+    if(m_is_intel){
+        p.drawRoundedRect(this->rect(), 16, 16);
+    }else{
+        p.drawRoundedRect(this->rect(), 6, 6);
+    }
     p.restore();
 
     //auto font = view->getViewItemFont(&m_option);

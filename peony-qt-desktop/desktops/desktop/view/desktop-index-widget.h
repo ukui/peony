@@ -59,6 +59,7 @@ private:
     const DesktopIconViewDelegate *m_delegate;
 
     bool b_elide_text = false;
+    bool m_is_intel = false;
     const int ELIDE_TEXT_LENGTH = 40;
 };
 
