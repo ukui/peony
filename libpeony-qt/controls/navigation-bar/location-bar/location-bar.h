@@ -45,7 +45,6 @@ public:
     const QString getCurentUri() {
         return m_current_uri;
     }
-    void setAnimationMode(bool isAnimation);
 
 Q_SIGNALS:
     void groupChangedRequest(const QString &uri);
@@ -73,7 +72,6 @@ private:
     QMap<QString, QToolButton *> m_buttons;
     QToolButton *m_indicator;
     QMenu *m_indicator_menu;
-    bool m_isAnimation = false;   //在动画过程中不会重新布局
 
     const int ELIDE_TEXT_LENGTH = 16;
 

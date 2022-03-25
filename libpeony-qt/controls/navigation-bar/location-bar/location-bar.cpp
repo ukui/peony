@@ -455,14 +455,7 @@ void LocationBar::paintEvent(QPaintEvent *e)
 void LocationBar::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-   if (!m_isAnimation) {
-       doLayout();
-   }
-}
-
-void LocationBar::setAnimationMode(bool isAnimation)
-{
-    m_isAnimation = isAnimation;
+    doLayout();
 }
 
 void LocationBar::doLayout()
