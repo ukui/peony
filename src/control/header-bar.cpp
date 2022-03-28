@@ -471,6 +471,13 @@ void HeaderBar::updateIcons()
 {
     if(!m_window)
         return;
+
+    if (!m_window->getCurrentPage())
+        return;
+
+    if (!m_window->getCurrentPage()->getView())
+        return;
+
     qDebug()<<"updateIcons:" <<m_window->getCurrentUri();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortColumn();
     qDebug()<<"updateIcons:" <<m_window->getCurrentSortOrder();
