@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="572"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="575"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="664"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="667"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="880"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="884"/>
         <source>Open Link failed</source>
         <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="881"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="885"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="896"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="900"/>
         <source>Open failed</source>
         <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="897"/>
+        <location filename="../../peony-qt-desktop/desktop-icon-view.cpp" line="901"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>
@@ -387,22 +387,22 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="368"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="371"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="371"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="374"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="374"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="377"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="377"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="380"/>
         <source>Setup backgrounds</source>
         <translation type="unfinished"></translation>
     </message>
