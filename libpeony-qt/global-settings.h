@@ -40,7 +40,8 @@
 #define DEFAULT_VIEW_ZOOM_LEVEL     "defaultViewZoomLevel"
 
 //排序类型 - Sort type
-#define SORT_COLUMN                 "sortColumn"
+// fix 112308, sort type option does no effect issue.
+#define SORT_COLUMN                 "sortType"
 #define SORT_TYPE                   "sortType"
 
 //排序顺序 - Sort order
