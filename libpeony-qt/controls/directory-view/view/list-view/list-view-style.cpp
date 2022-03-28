@@ -47,18 +47,12 @@ ListViewStyle *ListViewStyle::getStyle()
 
 void ListViewStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (element == PE_Frame) {
-        painter->save();
-        bool isActive = option->state & State_Active;
-        bool isEnable = option->state & State_Enabled;
-        auto baseColor = option->palette.color(isEnable? (isActive? QPalette::Active: QPalette::Inactive): QPalette::Disabled, QPalette::Window);
-        painter->fillRect(widget->rect(), baseColor);
-        painter->restore();
+    switch (element) {
+    case PE_Frame:
+    case PE_FrameWindow:
         return;
-    }
-
-    if (element == PE_FrameWindow) {
-        return;
+    default:
+        break;
     }
 
     return QProxyStyle::drawPrimitive(element, option, painter, widget);
