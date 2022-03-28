@@ -56,6 +56,7 @@ protected:
 
 private:
     QPushButton *m_styled_button;
+    bool m_is_intel = false;
 };
 
 }

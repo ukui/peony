@@ -32,6 +32,7 @@
 #include "icon-view-delegate.h"
 #include "clipboard-utils.h"
 #include "desktop-item-model.h"
+#include "global-settings.h"
 
 #include <QPushButton>
 #include <QWidget>
@@ -53,6 +54,7 @@ using namespace Peony::DirectoryView;
 DesktopIconViewDelegate::DesktopIconViewDelegate(QObject *parent) : QStyledItemDelegate(parent)
 {
     m_styled_button = new QPushButton;
+    m_is_intel = (QString::compare("V10SP1-edu", GlobalSettings::getInstance()->getProjectName(), Qt::CaseInsensitive) == 0);
 }
 
 DesktopIconViewDelegate::~DesktopIconViewDelegate()
@@ -111,7 +113,11 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255);
             painter->setPen(color.darker(100));
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            if(m_is_intel){
+                painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            }else{
+                painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
+            }
         }
         if (opt.state.testFlag(QStyle::State_Selected)) {
             QColor color = m_styled_button->palette().highlight().color();
@@ -120,7 +126,11 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             color.setAlpha(255*0.8);
             painter->setPen(color);
             painter->setBrush(color);
-            painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            if(m_is_intel){
+                painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 16, 16);
+            }else{
+                painter->drawRoundedRect(opt.rect.adjusted(1, 1, -1, -1), 6, 6);
+            }
         }
         painter->restore();
     }
