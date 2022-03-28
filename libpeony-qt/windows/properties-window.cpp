@@ -293,6 +293,11 @@ void PropertiesWindow::setWindowTitleTextAndIcon()
                     windowTitle = m_fileInfo.get()->displayName();
                 }
                 iconName = m_fileInfo.get()->iconName();
+
+                if("computer:///ukui-data-volume" == m_fileInfo->uri()){
+                    windowTitle = tr("Data");
+                    iconName = "drive-harddisk";
+                }
             }
         }
     }
