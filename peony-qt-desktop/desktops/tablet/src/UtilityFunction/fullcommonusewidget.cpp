@@ -203,15 +203,15 @@ FullCommonUseWidget::~FullCommonUseWidget()
 
 void FullCommonUseWidget::updateStyleValue()
 {
-    Style::appColumn = 6;
-
     if (Style::ScreenRotation) {
-        //竖屏7行
-        Style::appLine = 7;
+        //竖屏6行4列
+        Style::appLine = 6;
+        Style::appColumn = 4;
         Style::AppListViewTopMargin = 5;
     } else {
-        //横屏4行
+        //竖屏4行6列
         Style::appLine = 4;
+        Style::appColumn = 6;
         Style::AppListViewTopMargin = 50;
     }
 
