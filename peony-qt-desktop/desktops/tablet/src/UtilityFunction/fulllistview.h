@@ -59,11 +59,24 @@ protected:
    void dragEnterEvent(QDragEnterEvent *event) override;
    void dragMoveEvent(QDragMoveEvent *event) override;
 
-   void insertApplicationToEnd();
-   void insertApplicationToTop();
-   void insertApplication(QPoint pressedpos,QPoint releasepos);
    void mergeApplication(QPoint pressedpos,QPoint releasepos);
    void showContextMenu(const QPoint &pos);
+
+private:
+    /**
+     * @brief 将dragApp的索引修改为释放位置下的app的索引.
+     * 将被拖动app和释放位置的app之间的apps的索引向被拖动app的索引方向整体移动。完成后更新app list
+     * @param dragAppName 被拖动的app的名称 xxx.desktop
+     */
+    void updateAppOrder(const QString& dragAppName);
+    /**
+     * @brief 计算x是否在a与b之间
+     * @param a 开始
+     * @param b 结束
+     * @param x 需要判断的值
+     * @return
+     */
+    static bool rangeCheck(float a, float b, float x);
 
 private:
     FullItemDelegate* m_delegate=nullptr;
