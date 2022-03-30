@@ -22,6 +22,7 @@
 #include "src/UtilityFunction/thumbnail.h"
 #include "src/Interface/ukuimenuinterface.h"
 #include "src/menu/tablet-menu.h"
+#include "fullcommonusewidget.h"
 
 #include <QDebug>
 #include <syslog.h>
@@ -332,21 +333,18 @@ void FullListView::dragMoveEvent(QDragMoveEvent *event)
 
     if (Style::nowpagenum == 1) {
         qint32 dragPos = Style::AppListViewWidth - event->pos().x();
-        if (dragPos < 100) {
+        if (dragPos < 50) {
             //向右翻页
-            insertApplicationToEnd();
             Q_EMIT pagenumchanged(1);
         }
     } else {
-        if (event->pos().x() < 100) {
+        if (event->pos().x() < 50) {
             //左边拖
-            insertApplicationToTop();
             Q_EMIT pagenumchanged(-1);
         } else {
             qint32 dragPos = qApp->primaryScreen()->geometry().width() - event->pos().x();
-            if (dragPos < 100) {
+            if (dragPos < 50) {
                 //向右翻页
-                insertApplicationToEnd();
                 Q_EMIT pagenumchanged(1);
             }
         }
@@ -355,29 +353,32 @@ void FullListView::dragMoveEvent(QDragMoveEvent *event)
 void FullListView::dragEnterEvent(QDragEnterEvent *event)
 {
     FullListView *source = qobject_cast<FullListView *>(event->source());
-    if (source && source == this && iconClick) {
-        event->setDropAction(Qt::MoveAction);
-        event->accept();
+    if (source) {
+        auto parent = qobject_cast<FullCommonUseWidget *>(this->parent());
+        if ((source == this && iconClick) || (parent && parent->pageList().contains(source))) {
+            //是当前listview本身 或者source Listview存在于当前的pageList中，那么接受事件
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        }
     }
 }
 void FullListView::dropEvent(QDropEvent *event)
 {
-    //qDebug() << "-----" << "dropEvent" << "-----";
-    FullListView *source = qobject_cast<FullListView *>(event->source());
-    if (source && source == this)
-    {
-        dropPos=event->pos();
-        if(dropPos.x() % Style::AppListItemSizeWidth >= Style::AppLeftSpace &
-                dropPos.x() % Style::AppListItemSizeWidth <= Style::AppLeftSpace+ Style::AppListIconSize &
-                dropPos.y() % Style::AppListItemSizeHeight >= Style::AppTopSpace &
-                dropPos.y() % Style::AppListItemSizeHeight <= Style::AppTopSpace+ Style::AppListIconSize)
-
-        {
+    auto source = qobject_cast<FullListView *>(event->source());
+    if (source) {
+        dropPos = event->pos();
+        if (source == this) {
+            if (dropPos.x() % Style::AppListItemSizeWidth >= Style::AppLeftSpace &&
+                dropPos.x() % Style::AppListItemSizeWidth <= Style::AppLeftSpace + Style::AppListIconSize &&
+                dropPos.y() % Style::AppListItemSizeHeight >= Style::AppTopSpace &&
+                dropPos.y() % Style::AppListItemSizeHeight <= Style::AppTopSpace + Style::AppListIconSize) {
 //            mergeApplication(startPos,dropPos);
-        }
-        else
-        {
-            insertApplication(startPos,dropPos);
+
+            } else {
+                updateAppOrder(listmodel->data(QListView::indexAt(startPos)).toString().split("/").last());
+            }
+        } else {
+            updateAppOrder(QString(event->mimeData()->data("INFO")).split("/").last());
         }
     }
     this->model()->setData(this->indexAt(pressedpos),QVariant::fromValue<bool>(0),Qt::UserRole + 2);
@@ -434,105 +435,6 @@ void FullListView::mouseReleaseEvent(QMouseEvent *e)
     right_iconClick = false;//是否右键点中图标
     theDragRow = -1;
     this->setCursor(Qt::ArrowCursor);
-}
-
-//拖拽移动的时候，如果不是应用的话，就交换位置
-void FullListView::insertApplication(QPoint pressedpos,QPoint releasepos)
-{
-//    QVariant var1 = listmodel->data(this->indexAt(releasepos), Qt::DisplayRole);
-    QVariant var2 =pressApp;//= listmodel->data(this->indexAt(pressedpos), Qt::DisplayRole);
-
-    QString desktopfp2=var2.value<QString>();//drag_desktopfp;//点击位置的应用
-    QFileInfo fileInfo2(desktopfp2);
-    QString desktopfn2=fileInfo2.fileName();
-//    qDebug()<<"2pre"<<desktopfn2;
-    releasepos.setX(releasepos.x()+70);
-    QVariant var3 = listmodel->data(this->indexAt(releasepos), Qt::DisplayRole);//释放位置右侧有应用
-    QString desktopfp3=var3.value<QString>();//释放位置的应用
-    QFileInfo fileInfo3(desktopfp3);
-    QString desktopfn3=fileInfo3.fileName();
-    releasepos.setX(releasepos.x()-140);
-    QVariant var4 = listmodel->data(this->indexAt(releasepos), Qt::DisplayRole);//右侧没有左侧有
-    QString desktopfp4=var4.value<QString>();//释放位置的应用
-    QFileInfo fileInfo4(desktopfp4);
-    QString desktopfn4=fileInfo4.fileName();
-    //qDebug()<<"4rel"<<desktopfn4;
-
-    if(var3.isValid()&&desktopfp3!=desktopfp2)
-    {
-
-        setting->beginGroup("application");
-        int indexPre=setting->value(desktopfn2).toInt();
-        int indexRel=setting->value(desktopfn3).toInt();
-        QStringList keyList=setting->allKeys();
-        if(indexPre>indexRel)
-        {
-            qDebug()<<">";
-            for(int i=0;i<keyList.count();i++)
-            {
-                if(setting->value(keyList.at(i)).toInt()>=indexRel&&setting->value(keyList.at(i)).toInt()<indexPre)
-                {
-                    setting->setValue(keyList.at(i),setting->value(keyList.at(i)).toInt()+1);
-                }
-            }
-            setting->setValue(desktopfn2,indexRel);
-
-//                listmodel->removeRow(this->indexAt(pressedpos).row());
-//                listmodel->insertRow(this->indexAt(releasepos).row());
-//                listmodel->setData(this->indexAt(releasepos),var2);
-
-
-        }
-        else if(indexPre<indexRel){
-
-            qDebug()<<"<";
-            for(int i=0;i<keyList.count();i++)
-            {
-                if(setting->value(keyList.at(i)).toInt()>indexPre&&setting->value(keyList.at(i)).toInt()<indexRel)
-                {
-                    setting->setValue(keyList.at(i),setting->value(keyList.at(i)).toInt()-1);
-                }
-            }
-            setting->setValue(desktopfn2,indexRel-1);
-//                listmodel->insertRow(this->indexAt(releasepos).row());
-//                listmodel->setData(this->indexAt(releasepos),var2);
-//                listmodel->removeRow(this->indexAt(pressedpos).row());
-        }
-
-        setting->sync();
-        setting->endGroup();
-
-    }
-    else if(var4.isValid()&&desktopfp4!=desktopfp2)//最后一个
-    {
-        setting->beginGroup("application");
-        int indexPre=setting->value(desktopfn2).toInt();
-        int indexRel=setting->value(desktopfn4).toInt();
-        QStringList keyList=setting->allKeys();
-
-        if(indexPre<indexRel){
-//         qDebug()<<"4 <";
-            for(int i=0;i<keyList.count();i++)
-            {
-                if(setting->value(keyList.at(i)).toInt()>indexPre&&setting->value(keyList.at(i)).toInt()<=indexRel)
-                {
-                    setting->setValue(keyList.at(i),setting->value(keyList.at(i)).toInt()-1);
-                }
-            }
-            setting->setValue(desktopfn2,indexRel);
-//                listmodel->insertRow(this->indexAt(relpos).row());
-//                listmodel->setData(this->indexAt(relpos),var2);
-//                listmodel->removeRow(this->indexAt(prepos).row());
-        }
-        setting->sync();
-        setting->endGroup();
-
-    }
-
-//    }
-
-     Q_EMIT sendUpdateAppListSignal();
-//     qDebug() << "sendUpdateAppListSignal---------------------";
 }
 
 //拖拽移动的时候，如果是应用，就组成组合框
@@ -643,49 +545,102 @@ void FullListView::mergeApplication(QPoint pressedpos,QPoint releasepos)
 
 }
 
-void FullListView::insertApplicationToEnd()
+void FullListView::updateAppOrder(const QString& dragAppName)
 {
-    QVariant var = pressApp;
-    QString appPath = var.toString();
-    QFileInfo fileInfo(appPath);
-    QString appName = fileInfo.fileName();
+    bool isRight = true;
+    //将该图标放到释放的位置 dropPos
+    QModelIndex index = QListView::indexAt(dropPos);
+    if (!index.isValid()) {
+        //index无效的话，默认使用最大的index对应的app
+        index = listmodel->index(listmodel->rowCount() - 1, 0);
+
+    } else {
+        //排除图标区域，取出放下的位置是在图标的左边还是右边
+        QRect visualRect = QListView::visualRect(index);
+        QRect iconRect(visualRect.x() + Style::AppLeftSpace - 5,
+                       visualRect.y() + Style::AppTopSpace - 5,
+                       Style::AppListIconSize + 10,
+                       Style::AppListIconSize + (Style::AppTopSpace / 2));
+
+        if (iconRect.contains(dropPos)) {
+            return;
+        }
+
+        isRight = (dropPos.x() > iconRect.right());
+    }
 
     setting->beginGroup("application");
+    QString targetAppName = listmodel->data(index).toString().split("/").last();
+    int dragAppIndex = setting->value(dragAppName).toInt();
+    int targetAppIndex = setting->value(targetAppName).toInt();
 
-    int maxValue = 0;
-    for (QString key : setting->allKeys()) {
-        if (setting->value(key).toInt() > maxValue) {
-            maxValue = setting->value(key).toInt();
+    if ((targetAppName == dragAppName) && (dragAppIndex == targetAppIndex)) {
+        setting->endGroup();
+        return;
+    }
+
+    bool dragAppIndexMax = (targetAppIndex < dragAppIndex);
+
+    QList<QPair<QString, int> > needReorderApps;
+    for (const QString& key : setting->allKeys()) {
+        int value = setting->value(key).toInt();
+        //将这个范围内的app整体移动一个位置
+        if (rangeCheck((float)targetAppIndex, (float)dragAppIndex, (float)value)) {
+            //排除被拖动的app
+            if (key == dragAppName) {
+                continue;
+            }
+            //如果拖动的图标的索引大于拖动释放位置下图标的索引，并且释放的位置在右边，那么不需要从新排列释放位置的图标
+            // dragAppIndexMax = isRight = true
+            //如果拖动的图标的索引小于拖动释放位置下图标的索引，并且释放的位置在左边边，那么不需要从新排列释放位置的图标
+            // dragAppIndexMax = isRight = false
+            if ((key == targetAppName) && (dragAppIndexMax == isRight)) {
+                continue;
+            }
+            needReorderApps.append(qMakePair(key, value));
         }
     }
 
-    setting->setValue(appName, (maxValue + 1));
+    if (needReorderApps.empty()) {
+        setting->endGroup();
+        return;
+    }
+
+    // 通过判断被拖动的app的index是否大于释放点下方app的索引，进行降序或者升序排列
+    // 保证被排序后的list中的第一个app的新位置是被拖动图标的起始位置。
+    // 而被拖动图标的新位置始终是list中的最后一个app的原始位置。
+    std::sort(needReorderApps.begin(), needReorderApps.end(), [&] (const QPair<QString, QVariant>& a, const QPair<QString, QVariant>& b) {
+        if (dragAppIndexMax) {
+            //左移 降序排列
+            return a.second > b.second;
+        } else {
+            //右移 升序排列
+            return a.second < b.second;
+        }
+    });
+
+    //第一个app的位置始终是被拖动图标的起始位置。所以不需要在这个循环中重新排列
+    for (int i = (needReorderApps.size() - 1); i > 0; --i) {
+        //移动区间内的各个图标的位置
+        setting->setValue(needReorderApps.at(i).first, setting->value(needReorderApps.at(i - 1).first));
+    }
+
+    //把被拖动的图标移动到释放app的位置
+    setting->setValue(dragAppName, needReorderApps.last().second);
+    //移动列表中第一个到被移走的app的位置
+    setting->setValue(needReorderApps.first().first, dragAppIndex);
+
     setting->sync();
     setting->endGroup();
-
     Q_EMIT sendUpdateAppListSignal();
 }
 
-void FullListView::insertApplicationToTop()
+bool FullListView::rangeCheck(float a, float b, float x)
 {
-    QVariant var = pressApp;
-    QString appPath = var.toString();
-    QFileInfo fileInfo(appPath);
-    QString appName = fileInfo.fileName();
-
-    setting->beginGroup("application");
-
-    int minValue = 99999;
-    for (QString key : setting->allKeys()) {
-        if (setting->value(key).toInt() < minValue) {
-            minValue = setting->value(key).toInt();
-        }
+    if (a == b) {
+        return false;
     }
-
-    setting->setValue(appName, (minValue + 1));
-    setting->sync();
-    setting->endGroup();
-
-    Q_EMIT sendUpdateAppListSignal();
+    float res = (x - b) / (a - b);
+    return (res >= 0) && (res <= 1);
 }
 

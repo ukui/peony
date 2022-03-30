@@ -70,6 +70,8 @@ public:
 
     void insertPageToLayout();
 
+    const QList<FullListView*> &pageList();
+
 private:
     UkuiMenuInterface* m_ukuiMenuInterface=nullptr;
     QStringList m_data;
