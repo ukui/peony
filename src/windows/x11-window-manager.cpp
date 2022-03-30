@@ -101,14 +101,20 @@ bool X11WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         qDebug()<<e->type()<<e->pos();
 
-        bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
-
         if (m_is_draging) {
             if (QX11Info::isPlatformX11()) {
+                bool isTouchMove = e->source() == Qt::MouseEventSynthesizedByQt;
+
+                QPoint currentPos = QCursor::pos();
+                QPoint offset = QCursor::pos() - m_press_pos;
+                bool smallOffset = qAbs(offset.x()) <= 2 && qAbs(offset.y() <= 2);
+                if (smallOffset)
+                    break;
+
                 Display *display = QX11Info::display();
                 Atom netMoveResize = XInternAtom(display, "_NET_WM_MOVERESIZE", False);
                 XEvent xEvent;
-                const auto pos = QCursor::pos();
+                const auto pos = currentPos;
 
                 memset(&xEvent, 0, sizeof(XEvent));
                 xEvent.xclient.type = ClientMessage;
