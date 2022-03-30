@@ -159,32 +159,34 @@ void FullCommonUseWidget::updateListViewSlot()
 void FullCommonUseWidget::loadAllApp()
 {
     m_data.clear();
-    m_appMap.clear();
+    m_data.append(m_ukuiMenuInterface->getAllApp().toList());
 
+    QList<QPair<QString, int> > loadedAppList;
     //同步一次，及时同步开始菜单的改动
     setting->sync();
     setting->beginGroup("application");
-    QStringList keyList = setting->childKeys();
-    for (QString &key: keyList) {
-        m_appMap.insert(key, setting->value(key).toInt());
+    for (QString &key : m_data) {
+        loadedAppList.append(qMakePair(key, setting->value(key.split("/").last()).toInt()));
     }
     setting->endGroup();
 
-    qSort(keyList.begin(), keyList.end(), cmpApp);
+    std::sort(loadedAppList.begin(), loadedAppList.end(), [=] (const QPair<QString, int>& a, const QPair<QString, int>& b) {
+        //升序
+        if (a.second == b.second) {
+            return a.first < b.first;
+        }
+        return a.second < b.second;
+    });
 
-    //TODO 安卓app，第三方app呢？？？
-    for (QString &key: m_ukuiMenuInterface->getAllApp()) {
-        m_data.append(key);
+    m_data.clear();
+    for (int i = 0; i < loadedAppList.size(); ++i) {
+        m_data.append(loadedAppList.at(i).first);
     }
 }
 
 void FullCommonUseWidget::updateListView(QString desktopfp)
 {
-//    m_listView->insertData(desktopfp);
-    m_data.clear();
-    Q_FOREACH(QString desktopfp,m_ukuiMenuInterface->getAllApp())
-        m_data.append(desktopfp);
-
+    this->loadAllApp();
     updatePageData();
 }
 
@@ -319,4 +321,7 @@ void FullCommonUseWidget::insertPageToLayout()
     setCurrentIndex(Style::nowpagenum - 1);
 }
 
-
+const QList<FullListView *> &FullCommonUseWidget::pageList()
+{
+    return m_pageList;
+}
