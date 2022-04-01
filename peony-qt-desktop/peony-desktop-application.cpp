@@ -350,6 +350,20 @@ void PeonyDesktopApplication::gotoSetBackground()
     p.waitForFinished(-1);
 }
 
+void PeonyDesktopApplication::gotoSetResolution()
+{
+    QProcess p;
+    p.setProgram("ukui-control-center");
+    p.setArguments(QStringList()<<"-m" <<"display");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+    p.startDetached();
+#else
+    p.startDetached("ukui-control-center", QStringList()<<"-m" <<"display");
+#endif
+    p.waitForFinished(-1);
+
+}
+
 void PeonyDesktopApplication::relocateIconView()
 {
     qInfo()<<"start relocate icon view";
