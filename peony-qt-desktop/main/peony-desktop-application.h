@@ -96,14 +96,7 @@ private:
 
     Peony::PropertyName getPropertyNameByAnimation(AnimationType animationType);
 
-    //切换桌面专用函数，请勿乱调
     Peony::DesktopWidgetBase *getNextDesktop(DesktopType targetType, Peony::DesktopBackgroundWindow *parentWindow);
-    /**
-     * @brief 将target组件的Effect(GraphicsEffect)暂时保存下来，以便在动画结束后恢复
-     * @param target
-     * @return
-     */
-    QWidget *saveEffectWidget(QWidget *target);
 
     /**
      * @brief 切换桌面

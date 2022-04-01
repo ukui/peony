@@ -480,7 +480,12 @@ void PeonyDesktopApplication::initWindowDesktop()
                 desktop = m_desktopManager->getDesktopByType(DesktopType::StudyCenter, window);
                 m_learningCenterActivated = true;
             } else {
-                desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
+                updateGSettingValues();
+                if (m_isTabletMode) {
+                    desktop = m_desktopManager->getDesktopByType(DesktopType::Tablet, window);
+                } else {
+                    desktop = m_desktopManager->getDesktopByType(DesktopType::Desktop, window);
+                }
             }
         } else {
             //添加副桌面
@@ -724,16 +729,6 @@ void PeonyDesktopApplication::initManager()
 
     m_windowManager  = WindowManager::getInstance(this);
     m_desktopManager = DesktopManager::getInstance(false,this);
-}
-
-QWidget *PeonyDesktopApplication::saveEffectWidget(QWidget *target)
-{
-    QWidget *saveEffectWidget = new QWidget(target);
-    saveEffectWidget->resize(1,1);
-    saveEffectWidget->setVisible(false);
-    saveEffectWidget->hide();
-    saveEffectWidget->setGraphicsEffect(target->graphicsEffect());
-    return saveEffectWidget;
 }
 
 void PeonyDesktopApplication::changePrimaryWindowDesktop(DesktopType targetType, AnimationType targetAnimation)
