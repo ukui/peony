@@ -399,22 +399,22 @@
         <translation type="vanished">桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="371"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="385"/>
         <source>Close the peony desktop window</source>
         <translation>关闭桌面程序</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="374"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="388"/>
         <source>Take over the dbus service.</source>
         <translation>接管DBus服务。</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="377"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="391"/>
         <source>Take over the desktop displaying</source>
         <translation>接管桌面</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="380"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="394"/>
         <source>Setup backgrounds</source>
         <translation>Setup backgrounds</translation>
     </message>
@@ -429,6 +429,11 @@
         <location filename="../../peony-qt-desktop/desktopbackgroundwindow.cpp" line="57"/>
         <source>set background</source>
         <translation>设置背景</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktopbackgroundwindow.cpp" line="62"/>
+        <source>set resolution</source>
+        <translation>设置分辨率</translation>
     </message>
 </context>
 </TS>

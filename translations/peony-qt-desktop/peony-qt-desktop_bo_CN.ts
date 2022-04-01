@@ -214,5 +214,9 @@
         <source>set background</source>
         <translation type="unfinished">རྒྱབ་ལྗོངས་འདེམ་པ།</translation>
     </message>
+    <message>
+        <source>set resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

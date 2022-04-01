@@ -51,6 +51,7 @@ public:
     static bool userGuideDaemonRunning();
     static void showGuide(const QString &appName = "");
     static void gotoSetBackground();
+    static void gotoSetResolution();
 
     static qint64 peony_desktop_start_time;
 

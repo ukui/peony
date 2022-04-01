@@ -387,22 +387,22 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="371"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="385"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="374"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="388"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="377"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="391"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="380"/>
+        <location filename="../../peony-qt-desktop/peony-desktop-application.cpp" line="394"/>
         <source>Setup backgrounds</source>
         <translation type="unfinished"></translation>
     </message>
@@ -417,6 +417,11 @@
         <location filename="../../peony-qt-desktop/desktopbackgroundwindow.cpp" line="57"/>
         <source>set background</source>
         <translation type="unfinished">Arkaplanı Değiştir</translation>
+    </message>
+    <message>
+        <location filename="../../peony-qt-desktop/desktopbackgroundwindow.cpp" line="62"/>
+        <source>set resolution</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
