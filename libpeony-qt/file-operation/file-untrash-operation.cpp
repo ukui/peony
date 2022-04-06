@@ -27,6 +27,7 @@
 #include "file-info.h"
 #include "file-meta-info.h"
 #include <QUrl>
+#include <QStandardPaths>
 
 using namespace Peony;
 
@@ -408,6 +409,38 @@ retry:
                         nullptr,
                         nullptr,
                         &err);
+            if(err){
+                ExceptionResponse type = prehandle(err);
+                if(Other == type){
+                    QStringList originUris;
+                    QString tmpOriginUri = originUri;
+                    tmpOriginUri = tmpOriginUri.remove("file:///");
+                    originUris = tmpOriginUri.split("/");
+
+                    QList<QString>::iterator it = originUris.begin();
+                    QString tmpPath;
+                    QString originPath;
+                    for(int i = 0; i < originUris.count() - 1; i++, ++it){
+                        GError *error = nullptr;
+                        tmpPath = tmpPath + "/" + (*it);
+                        originPath = "file:///" + tmpPath;
+                        if(!FileUtils::isFileExsit(originPath)){
+                            g_autoptr(GFile) file = g_file_new_for_uri(originPath.toUtf8().constData());
+                            if(file){
+                                g_file_make_directory(file, nullptr, &error);
+                                if(error){
+                                    FileOperationError except;
+                                    untrashFileErrDlg(except, uri, originPath, error);                 
+                                    g_error_free(error);
+                                    //qDebug() << "g_file_make_directory error" << error->message << error->code;
+                                }else{
+                                    goto retry;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if (err) {
