@@ -1156,8 +1156,8 @@ void PeonyDesktopApplication::initGSettings()
 
     //dbus
     m_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
-    qDebug() << "[PeonyDesktopApplication::initGSettings] init statusManagerDBus" << m_statusManagerDBus->isValid();
     if (m_statusManagerDBus) {
+        qDebug() << "[PeonyDesktopApplication::initGSettings] init statusManagerDBus" << m_statusManagerDBus->isValid();
         if (m_statusManagerDBus->isValid()) {
             //平板模式切换
             connect(m_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletModeValue(bool)));
@@ -1183,11 +1183,11 @@ void PeonyDesktopApplication::updateGSettingValues()
 //        m_isTabletMode = m_tabletModeGSettings->get(TABLET_MODE).toBool();
 //    }
 
-    if (m_statusManagerDBus) {
-        QDBusReply<bool> message_a = m_statusManagerDBus->call("get_current_tabletmode");
-        qDebug() << "[PeonyDesktopApplication::updateGSettingValues] get_current_tabletmode：" << message_a.value();;
-        if (message_a.isValid()) {
-            m_isTabletMode = message_a.value();
+    if (m_statusManagerDBus && m_statusManagerDBus->isValid()) {
+        QDBusReply<bool> message = m_statusManagerDBus->call("get_current_tabletmode");
+        qDebug() << "[PeonyDesktopApplication::updateGSettingValues] get_current_tabletmode：" << message.value();;
+        if (message.isValid()) {
+            m_isTabletMode = message.value();
         }
     }
 }
