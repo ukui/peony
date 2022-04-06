@@ -236,10 +236,12 @@ void DesktopBackgroundManager::switchBackground()
 
 void DesktopBackgroundManager::backgroundUpdate(const QRect &geometry)
 {
-    auto tmpGeometry = geometry;
-    QImage img = getBlurImage();
-    img = img.scaled(tmpGeometry.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
-    m_backBlurImage = img;
+    if (GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        auto tmpGeometry = geometry;
+        QImage img = getBlurImage();
+        img = img.scaled(tmpGeometry.size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation);
+        m_backBlurImage = img;
+    }
 }
 
 bool DesktopBackgroundManager::getPaintBackground() const
@@ -287,45 +289,47 @@ const QString &DesktopBackgroundManager::getBackgroundOption()
 
 void DesktopBackgroundManager::setBgPixmapToBlurImage(QPixmap &bgPixmap)
 {
-    QString backgroundOption = getBackgroundOption();
-    QPixmap pixmap = bgPixmap;
-    QSize widgetSize(m_screen->geometry().width(),m_screen->geometry().height());
-    QImage img(widgetSize,QImage::Format_ARGB32_Premultiplied);
-    QPainter painter(&img);
-    if(backgroundOption == "centered"){
-        //居中
-        painter.drawPixmap((m_screen->size().width() - pixmap.rect().width()) / 2,
-                     (m_screen->size().height() - pixmap.rect().height()) / 2,
-                     pixmap);
-    }else if(backgroundOption == "stretched"){
-        //拉伸
-        painter.drawPixmap(m_screen->geometry(),pixmap,pixmap.rect());
-    }else if(backgroundOption == "scaled"){
-        //填充
-        painter.drawPixmap(m_screen->geometry(), pixmap);
-    }else if(backgroundOption == "wallpaper") {
-        //平铺
-        int drawedWidth = 0;
-        int drawedHeight = 0;
-        while (1) {
-            drawedWidth = 0;
+    if (GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU) {
+        QString backgroundOption = getBackgroundOption();
+        QPixmap pixmap = bgPixmap;
+        QSize widgetSize(m_screen->geometry().width(),m_screen->geometry().height());
+        QImage img(widgetSize,QImage::Format_ARGB32_Premultiplied);
+        QPainter painter(&img);
+        if(backgroundOption == "centered"){
+            //居中
+            painter.drawPixmap((m_screen->size().width() - pixmap.rect().width()) / 2,
+                         (m_screen->size().height() - pixmap.rect().height()) / 2,
+                         pixmap);
+        }else if(backgroundOption == "stretched"){
+            //拉伸
+            painter.drawPixmap(m_screen->geometry(),pixmap,pixmap.rect());
+        }else if(backgroundOption == "scaled"){
+            //填充
+            painter.drawPixmap(m_screen->geometry(), pixmap);
+        }else if(backgroundOption == "wallpaper") {
+            //平铺
+            int drawedWidth = 0;
+            int drawedHeight = 0;
             while (1) {
-                painter.drawPixmap(drawedWidth,drawedHeight,pixmap);
-                drawedWidth += pixmap.width();
-                if (drawedWidth >= m_screen->size().width()) {
+                drawedWidth = 0;
+                while (1) {
+                    painter.drawPixmap(drawedWidth,drawedHeight,pixmap);
+                    drawedWidth += pixmap.width();
+                    if (drawedWidth >= m_screen->size().width()) {
+                        break;
+                    }
+                }
+                drawedHeight += pixmap.height();
+                if (drawedHeight >= m_screen->size().height()) {
                     break;
                 }
             }
-            drawedHeight += pixmap.height();
-            if (drawedHeight >= m_screen->size().height()) {
-                break;
-            }
+        }else{
+            painter.drawPixmap(m_screen->geometry(), pixmap);
         }
-    }else{
-        painter.drawPixmap(m_screen->geometry(), pixmap);
+        m_backBlurImage = img;
+        qt_blurImage(m_backBlurImage,50,false,false);
     }
-    m_backBlurImage = img;
-    qt_blurImage(m_backBlurImage,50,false,false);
 }
 
 QImage DesktopBackgroundManager::getBlurImage()
