@@ -1031,7 +1031,7 @@ QString FileUtilsPrivate::getFileIconName(const QString &uri)
     GIcon *g_icon = g_file_info_get_icon (info.get()->get());
     QString icon_name;
     //do not unref the GIcon from info.
-    if (!g_icon && G_IS_ICON(g_icon)) {
+    if (g_icon && G_IS_ICON(g_icon)) {
         const gchar* const* icon_names = g_themed_icon_get_names(G_THEMED_ICON (g_icon));
         if (icon_names) {
             auto p = icon_names;
