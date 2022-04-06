@@ -372,6 +372,38 @@ DesktopWidgetBase *DesktopBackgroundWindow::takeCurrentDesktop()
     return nullptr;
 }
 
+/**
+ * @brief 通过屏幕比例，从图片中间获取一块与屏幕比例相同的区域
+ * @param pixmap 源图片
+ * @return
+ *
+ * 0.如果图片的宽高比例与屏幕比例已经相同，那么直接使用原图片的rect即可。
+ *
+ * 如果比例不相同：
+ * 1.首先判断图片的宽度与高度之间的关系，取出长度较短的一条边：shortEdge。
+ *   这个短边很重要，在进行对比时，短边需要作为基准
+ * 2.然后根据短边是图片的宽还是高，计算屏幕的宽高比例
+ *   如果短边是图片的宽,那么screenScale=(height/width),否则 screenScale=(width/height)
+ *   确保短边乘以屏幕比例始终可以得到 "当前短边" 需要多长的长边 才能满足与屏幕比例相同这个条件。
+ *   并且这个长边在图片的长度范围内。
+ *   这一步与具体需要的rect无关，仅计算出需要的长边和短边。
+ *
+ * 举例：
+ *   原理: b=c/a,a*b=c;
+ *   屏幕比例：screenScale
+ *   屏幕宽度：sWidth, 屏幕高度：sHeight。
+ *   图片宽度：pWidth, 图片高度：pHeight
+ *   需要的短边：shortEdge, 需要的长边：longEdge
+ *
+ *   1.屏幕横屏，图片横屏
+ *     1. pWidth > pHeight;
+ *     2. shortEdge = height;
+ *     2. screenScale = sWidth / sHeight;
+ *     3. longEdge = shortEdge * screenScale;
+ *
+ *   2.屏幕横屏，图片竖屏 3.屏幕竖屏，图片横屏 4.屏幕竖屏，图片竖屏
+ *     ...可自行推导
+ */
 QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
 {
     qreal screenScale = qreal(this->rect().width()) / qreal(this->rect().height());
@@ -387,6 +419,7 @@ QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
         screenScale = qreal(this->rect().height()) / qreal(this->rect().width());
     }
 
+    //使用长边与短边目的是屏蔽单独的宽与高概念，减少一部分判断逻辑
     qreal shortEdge = isShortX ? width : height;
     qreal longEdge = isShortX ? height : width;
 
@@ -397,6 +430,7 @@ QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
             break;
         }
 
+        //每次递减5%进行逼近
         qint32 spacing = qRound(shortEdge / 20);
         if (spacing <= 0) {
             spacing = 1;
@@ -405,6 +439,7 @@ QRect DesktopBackgroundWindow::getSourceRect(const QPixmap &pixmap)
     }
 
     QSize sourceSize = pixmap.size();
+    //获取需要的rect
     if (shortEdge > 1 && longEdge > 1) {
         sourceSize.setWidth(isShortX ? shortEdge : longEdge);
         sourceSize.setHeight(isShortX ? longEdge : shortEdge);

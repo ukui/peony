@@ -51,16 +51,19 @@ namespace Peony {
 class DesktopGlobalSettings : public QObject
 {
     Q_OBJECT
-private:
-    static const QString V10SP1;
-    static const QString V10SP1Edu;
-
 public:
     static DesktopGlobalSettings *globalInstance(QObject *parent = nullptr);
 
-    const QString &getCurrentProjectName();
+    QString getCurrentProjectName();
+    QString getSubProjectName();
 
     bool allowSwitchDesktop();
+
+    /**
+     * @brief 控制桌面是否使用缩放动画
+     * @return
+     */
+    bool useScreenShotAnimation();
 
     /**
      * 用于在非 edu系统上判断是否支持平板特性<br/>

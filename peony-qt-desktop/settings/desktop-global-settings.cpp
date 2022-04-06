@@ -37,9 +37,6 @@ using namespace Peony;
 
 static DesktopGlobalSettings *g_desktopGlobalSettings = nullptr;
 
-const QString DesktopGlobalSettings::V10SP1           = V10_SP1;
-const QString DesktopGlobalSettings::V10SP1Edu        = V10_SP1_EDU;
-
 DesktopGlobalSettings *DesktopGlobalSettings::globalInstance(QObject *parent)
 {
     if (!g_desktopGlobalSettings) {
@@ -53,23 +50,25 @@ DesktopGlobalSettings::DesktopGlobalSettings(QObject *parent) : QObject(parent)
     initDesktopSetting();
 }
 
-const QString &DesktopGlobalSettings::getCurrentProjectName()
+QString DesktopGlobalSettings::getCurrentProjectName()
 {
-#ifdef KYLIN_COMMON
     QString platFromName = QString::fromStdString(KDKGetPrjCodeName());
     qDebug() << "[DesktopGlobalSettings::getCurrentProjectName]" << platFromName;
     if (QString::compare(V10_SP1, platFromName, Qt::CaseInsensitive) == 0) {
-        return V10SP1;
+        return V10_SP1;
     }
 
     if (QString::compare(V10_SP1_EDU, platFromName, Qt::CaseInsensitive) == 0) {
-        return V10SP1Edu;
+        return V10_SP1_EDU;
     }
 
-    return V10SP1;
-#else
-    return V10SP1;
-#endif
+    return V10_SP1;
+}
+
+QString DesktopGlobalSettings::getSubProjectName()
+{
+    //SUB_PROJECT_CODENAME=mavis
+    return QString::fromStdString(KDKGetOSRelease("SUB_PROJECT_CODENAME"));
 }
 
 int DesktopGlobalSettings::getProductFeatures()
@@ -96,6 +95,23 @@ bool DesktopGlobalSettings::allowSwitchDesktop()
 
     //同时支持平板和pc特性的系统允许切换
     if (getProductFeatures() == 3) {
+        return true;
+    }
+
+    return false;
+}
+
+bool DesktopGlobalSettings::useScreenShotAnimation()
+{
+    QString projectName = getCurrentProjectName();
+
+    if ((projectName == V10_SP1_EDU)
+        && (QString::compare("mavis", getSubProjectName(), Qt::CaseInsensitive) == 0))
+    {
+        return true;
+    }
+
+    if ((projectName == V10_SP1) && (getProductFeatures() == 3)) {
         return true;
     }
 

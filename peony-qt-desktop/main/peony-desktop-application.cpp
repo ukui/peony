@@ -1016,7 +1016,7 @@ QRect PeonyDesktopApplication::createRectForAnimation(QRect &screenRect, QRect &
 QPropertyAnimation *PeonyDesktopApplication::createPropertyAnimation(AnimationType animationType, Peony::DesktopWidgetBase *object, QRect &startRect, QRect &endRect)
 {
     //动画时间 xx ms
-    quint32 duration = 500;
+    quint32 duration = DesktopGlobalSettings::globalInstance()->getValue(DESKTOP_ANIMATION_DURATION).toInt();
 
     PropertyName propertyName = this->getPropertyNameByAnimation(animationType);
     //TODO 添加并实现其他动画类型 ...
@@ -1124,7 +1124,7 @@ Peony::DesktopWidgetBase *PeonyDesktopApplication::getNextDesktop(DesktopType ta
 void PeonyDesktopApplication::changeDesktop()
 {
     AnimationType type = AnimationType::LeftToRight;
-    if (DesktopGlobalSettings::globalInstance()->getCurrentProjectName() != V10_SP1_EDU) {
+    if (DesktopGlobalSettings::globalInstance()->useScreenShotAnimation()) {
         type = AnimationType::CenterToEdge;
     }
 
