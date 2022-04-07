@@ -22,6 +22,7 @@
 
 #include "file-utils.h"
 #include "file-info.h"
+#include "file-info-job.h"
 #include "volume-manager.h"
 #include <QUrl>
 #include <QFileInfo>
@@ -792,6 +793,14 @@ quint64 FileUtils::getFileTotalSize(const QString &uri)
         g_object_unref(m_cancel);
 
         return disk_usage;
+    }
+
+    //if not have size info, need update it
+    if (info->isEmptyInfo())
+    {
+        auto infoJob = new FileInfoJob(info);
+        infoJob->setAutoDelete();
+        infoJob->querySync();
     }
 
     return info->size();
