@@ -312,8 +312,10 @@ void DirectoryViewContainer::switchViewType(const QString &viewId)
     auto oldView = m_view;
     QStringList selection;
     if (oldView) {
-        sortType = oldView->getSortType();
-        sortOrder = oldView->getSortOrder();
+        //fix switch to computer view and back change to default sort issue, link to bug#92261
+        //修复列表视图下改变排序，切换为计算机视图再切回来，排序设置恢复默认方式问题
+//        sortType = oldView->getSortType();
+//        sortOrder = oldView->getSortOrder();
         selection = oldView->getSelections();
         m_layout->removeWidget(dynamic_cast<QWidget*>(oldView));
         oldView->deleteLater();
