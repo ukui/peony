@@ -86,27 +86,30 @@ void SideBarFavoriteItem::initChildren()
     m_displayName = tr("Favorite");
 
     QString desktopUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
-    QString videoUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
-    QString pictureUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString downloadUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-    QString musicUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    QString docUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+//    QString videoUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+//    QString pictureUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+//    QString downloadUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+//    QString musicUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+//    QString docUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
 
+    auto recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
     auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
     auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
-    auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
-    auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
-    auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
-    auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
-    auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
+//    auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
+//    auto pictureItem = new SideBarFavoriteItem(pictureUri, this, m_model);
+//    auto downloadItem = new SideBarFavoriteItem(downloadUri, this, m_model);
+//    auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
+//    auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
 
+    m_children->append(recentItem);
     m_children->append(desktopItem);
-    m_children->append(docItem);
-    m_children->append(musicItem);
-    m_children->append(downloadItem);
-    m_children->append(pictureItem);
-    m_children->append(videoItem);
     m_children->append(trashItem);
+    //m_children->append(docItem);
+    //m_children->append(musicItem);
+    //m_children->append(downloadItem);
+    //m_children->append(pictureItem);
+    //m_children->append(videoItem);
+
 
     if (FileUtils::isFileExsit("file:///data/usershare")) {
         m_children->append(new SideBarFavoriteItem("favorite:///data/usershare?schema=file", this, m_model));
