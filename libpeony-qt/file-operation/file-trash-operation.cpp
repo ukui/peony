@@ -80,14 +80,7 @@ void FileTrashOperation::run()
             break;
 
         //need count file total size, more than 10GB file should delete forever, fix bug#101592
-        auto info = FileInfo::fromUri(src);
-        quint64 size = 0;
-        if (info->isDir()) {
-            size = FileUtils::getFileTotalSize(src);
-        } else {
-            size = info->size();
-        }
-        total_size += size;
+        total_size += FileUtils::getFileTotalSize(src);;
 
         Q_EMIT operationPreparedOne (src, 1);
         ++file_count;
