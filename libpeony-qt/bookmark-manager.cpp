@@ -102,9 +102,9 @@ void BookMarkManager::addBookMarkPrivate(const QString &uri)
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    if (url.path() == desktopPath || url.path() == videoPath
+    if (url.path() == desktopPath /*|| url.path() == videoPath
         || url.path() == picturePath || url.path() == downloadPath
-        || url.path() == musicPath || url.path() == docPath)
+        || url.path() == musicPath || url.path() == docPath*/)
         return;
 
 

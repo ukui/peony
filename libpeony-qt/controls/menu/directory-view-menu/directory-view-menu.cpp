@@ -172,12 +172,12 @@ void DirectoryViewMenu::fillActions()
                 || m_selections.at(uriIndex) == "favorite:///?schema=recent"
                 || m_selections.at(uriIndex) == "favorite:///data/usershare?schema=file"
                 || m_selections.at(uriIndex) == "favorite://" + homeUri + "?schema=file"
-                || m_selections.at(uriIndex) == "favorite://" + musicUri + "?schema=file"
+                //|| m_selections.at(uriIndex) == "favorite://" + musicUri + "?schema=file"
                 || m_selections.at(uriIndex) == "favorite://" + desktop + "?schema=file"
-                || m_selections.at(uriIndex) == "favorite://" + videoUri + "?schema=file"
+                /*|| m_selections.at(uriIndex) == "favorite://" + videoUri + "?schema=file"
                 || m_selections.at(uriIndex) == "favorite://" + docUri + "?schema=file"
                 || m_selections.at(uriIndex) == "favorite://" + pictureUri + "?schema=file"
-                || m_selections.at(uriIndex) == "favorite://" + downloadUri + "?schema=file") {
+                || m_selections.at(uriIndex) == "favorite://" + downloadUri + "?schema=file"*/) {
             m_can_delete = false;
             break;
         }
