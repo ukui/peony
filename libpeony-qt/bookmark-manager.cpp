@@ -102,9 +102,15 @@ void BookMarkManager::addBookMarkPrivate(const QString &uri)
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
     QString musicPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    QString trashPath = QString("favorite:///?schema=trash");
+    QString usersharePath = QString("favorite:///data/usershare?schema=file");
+    QString kmrePath = QString("favorite:///?schema=kmre");
+    QString recentPath = QString("favorite:///?schema=recent");
     if (url.path() == desktopPath || url.path() == videoPath
         || url.path() == picturePath || url.path() == downloadPath
-        || url.path() == musicPath || url.path() == docPath)
+        || url.path() == musicPath || url.path() == docPath
+        || uri == trashPath || uri == usersharePath
+        || uri == kmrePath || uri == recentPath)
         return;
 
 
@@ -229,5 +235,5 @@ bool BookMarkManager::existsInBookMarks(const QString &uri)
 {
     QUrl url = FileUtils::urlDecode(uri);
     QString originPath = "favorite://" + url.path() + "?schema=" + url.scheme();
-    return  m_uris.contains(originPath);
+    return (m_uris.contains(originPath) || m_uris.contains(uri));
 }
