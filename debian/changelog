@@ -20,6 +20,20 @@ peony (3.10.0-1+0407) v101; urgency=medium
 
  -- yangling <yangling@kylinos.cn>  Thu, 07 Apr 2022 14:35:36 +0800
 
+peony (3.10.0-1+0406) v101; urgency=medium
+
+  * Intel & 3.1 合并版本
+    - Bug号:
+      1.#113267 平板模式下注销或重启登录后桌面显示PC桌面(何文飞)
+      2.#107077 平板模式下无法将第一页的应用拖动到第二页(何文飞)
+    - 需求号:
+      1.#10250，第四个，每页显示4x6=24个应用(何文飞)
+    - 其它改动说明: 无
+    - 影响域:
+      平板桌面，pc桌面
+
+ -- hewenfei <hewenfei@kylinos.cn>  Wed, 06 Apr 2022 17:31:37 +0800
+
 peony (3.10.0-1+0328) v101; urgency=medium
 
   * Intel & 3.1 合并版本
