@@ -725,13 +725,18 @@ void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &so
         QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
         uri = Peony::FileUtils::urlDecode(uri);
         qDebug()<<"decodedSrcUri:"<<decodedSrcUri<<" uri:"<<uri<<" total count: "<<m_stack->count()<<" index:"<<index<<" currentIndex:"<<currentIndex;
-        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")/* 文件保护箱tab页特殊处理 */
+        /* 不属于该设备的tab页不处理；属于该设备：文件管理器的当前标签页跳转到destUri，其余标签页均关闭 */
+        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")
         {
-            if(KWindowSystem::activeWindow()==dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+            //all window accessed mount path should goto self top path，related to bug#104551
+            if(KWindowSystem::activeWindow() == dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
+                ||KWindowSystem::hasWId(dynamic_cast<MainWindow *>(this->topLevelWidget())->winId())
                     && index == currentIndex && decodedSrcUri == uri){
-                /* 当前活动窗口当前tab页 */
-                qDebug()<<"sourceUri:"<<sourceUri<<"jump to computer,"<<" index:"<<currentIndex;
-                this->goToUri(destUri, true, true);/* 跳转到计算机页 */
+                qDebug()<<"sourceUri:"<<sourceUri<<"change to self top path"<<" index:"<<currentIndex;
+                if (uri.startsWith("filesafe:///"))
+                    this->goToUri("filesafe:///", true, true);  /* 跳转到文件保护箱路径 */
+                else
+                    this->goToUri(destUri, true, true);/* 跳转到计算机页 */
             }
             else{/* 其余tab页关闭 */
                 qDebug()<<"remove tab  uri:"<<uri<<", index:"<<index;
