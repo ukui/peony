@@ -27,6 +27,7 @@
 
 #include <QPushButton>
 #include <QFrame>
+#include <QFileInfo>
 #include <QDebug>
 #include <gio/gdesktopappinfo.h>
 
@@ -205,6 +206,13 @@ void OpenWithPropertiesPage::initFloorThree()
         });
     });
 
+    bool isVisible = false;
+    if(QFileInfo::exists("/usr/bin/kylin-software-center")
+            || QFileInfo::exists("/usr/bin/ubuntu-kylin-software-center")){
+        isVisible = true;
+    }
+
+    otherOpenLabel->setVisible(isVisible);
     layout3->addWidget(otherOpenLabel);
     layout3->addStretch(1);
 

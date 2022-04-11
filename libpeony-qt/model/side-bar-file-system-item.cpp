@@ -313,16 +313,20 @@ void SideBarFileSystemItem::slot_volumeDeviceMount(const Experimental_Peony::Vol
             item->m_mountPoint = mountPoint;     /* 设置挂载点，属性页会用到 */
             item->m_mountable =volume.canMount();
             item->m_unmountable = true;
-            item->m_uri = "file://" + mountPoint;/* 更新uri,为了枚举操作 */
-            /* 手机和空光盘的m_uri需要额外设置 */
+            item->m_iconName = volume.icon();
+            /* 更新uri,为了枚举操作 */
             if(device.startsWith("/dev/bus/usb"))/* 手机设备(mtp、gphoto2)的uri */
                 item->m_uri = "computer:///" + volume.name() + ".volume";
             else if(item->m_device.contains("/dev/sr") &&
                     (item->m_displayName.contains("DVD") ||item->m_displayName.contains("CD")))/* 空光盘 */
             {
                 item->m_uri="burn:///";
-            }
-            item->m_iconName = volume.icon();
+            }else if(mountPoint.startsWith("cdda://sr")){/* 音乐光盘的targeturi无需加"file://"，例如：target-uri: cdda://sr0/ */
+                item->m_uri = mountPoint;
+            }else{
+                item->m_uri = "file://" + mountPoint;
+            }//end
+
             m_model->dataChanged(item->firstColumnIndex(), item->lastColumnIndex());
             break;
         }

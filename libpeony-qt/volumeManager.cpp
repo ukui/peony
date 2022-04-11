@@ -1102,14 +1102,15 @@ static GAsyncReadyCallback eject_cb(GDrive *gDrive, GAsyncResult *result, QStrin
             delete targetUri;
             targetUri = nullptr;
         }
+
         if(G_IO_ERROR_BUSY == error->code){/* 卷被占用时，防止二次弹出信息提示框 */            
             return nullptr;
         }
         if(! strcmp(error->message,"Not authorized to perform operation")){//umount /data need permissions.
-            QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);                                   
+            /* gmountOperation会弹出授权框，防止二次弹框 */
+            //QMessageBox::warning(nullptr,QObject::tr("Eject failed"),QObject::tr("Not authorized to perform operation."), QMessageBox::Ok);
             return nullptr;
         }
-
         QMessageBox warningBox(QMessageBox::Warning,QObject::tr("Eject failed"), QString(error->message), QMessageBox::Ok);
         warningBox.exec();        
 
@@ -1137,9 +1138,14 @@ static void ejectDevicebyDrive(GObject* object,GAsyncResult* result, QString* ta
             // @note 这里不要拼接字符串，多次弹出会崩溃
 //            QString errorMsg = QObject::tr("Unable to eject").arg(pThis->name());
             if(G_IO_ERROR_BUSY != error->code){/* 卷被占用时，防止二次弹出信息提示框 */
-                QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
-                warningBox.exec();
+                return;
             }
+            if(! strcmp(error->message,"Not authorized to perform operation")){/* gmountOperation会弹出授权框，防止二次弹框 */
+                return;
+            }
+            QMessageBox warningBox(QMessageBox::Warning, QObject::tr("Eject failed"), error->message, QMessageBox::Ok);
+            warningBox.exec();
+
         }
     }else {
         /* 弹出完成信息提示 */

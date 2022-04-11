@@ -285,6 +285,13 @@
     </message>
 </context>
 <context>
+    <name>TabletMenu</name>
+    <message>
+        <source>Uninstall</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TabletPluginWidget</name>
     <message>
         <source>Search</source>
