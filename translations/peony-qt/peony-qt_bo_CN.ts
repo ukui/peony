@@ -35,7 +35,7 @@
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans CJK SC&apos;; font-size:15pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans CJK SC&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search</source>
-        <translation>འཚོལ་བ།</translation>
+        <translation type="vanished">འཚོལ་བ།</translation>
     </message>
     <message>
         <source>Sort Type</source>
@@ -212,6 +212,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Are you sure that you want to delete these files? Once you start a deletion, the files deleting will never be restored again.</source>
         <translation type="vanished">ཁྱོད་ཀྱིས་ཡིག་ཆ་འདི་དག་གསུབ་རྒྱུ་ཡིན་ནམ། གལ་ཏར་སུབ་ཚར་ན། ཡིག་ཆ་འདི་དག་ནམ་ཡང་སླར་གསོ་མི་ཐུབ།</translation>
+    </message>
+    <message>
+        <source>warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This operation is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -399,6 +407,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Intel Side Bar</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Peony::SearchWidget</name>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished">འཚོལ་བ།</translation>
     </message>
 </context>
 <context>

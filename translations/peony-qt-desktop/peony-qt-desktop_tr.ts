@@ -9,12 +9,12 @@
         <translation>Masaüstü Simgelerini Göster</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="591"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="594"/>
         <source>New Folder</source>
         <translation>Yeni Klasör</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="683"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="686"/>
         <source>set background</source>
         <translation>Arkaplanı Değiştir</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="899"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="903"/>
         <source>Open Link failed</source>
         <translation type="unfinished">Bağlantı Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="900"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="904"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation type="unfinished">Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="915"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="919"/>
         <source>Open failed</source>
         <translation type="unfinished">Açma hatalı</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="916"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="920"/>
         <source>Open directory failed, you have no permission!</source>
         <translation type="unfinished">Dizin açılamadı, izniniz yok!</translation>
     </message>
@@ -46,17 +46,17 @@
 <context>
     <name>Peony::DesktopItemModel</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="578"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="593"/>
         <source>Computer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="580"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="595"/>
         <source>Trash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="591"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="606"/>
         <source>My Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -366,7 +366,7 @@
 <context>
     <name>Peony::DesktopModeFactory</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/desktop-mode-factory.cpp" line="39"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/desktop-mode-factory.cpp" line="61"/>
         <source>desktop icon mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -389,26 +389,26 @@
 <context>
     <name>Peony::StudyCenterMode</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="171"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="95"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="195"/>
         <source>math</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="76"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="172"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="96"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="196"/>
         <source>english</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="77"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="173"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="97"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="197"/>
         <source>chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="78"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="174"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="98"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="198"/>
         <source>other</source>
         <translation type="unfinished"></translation>
     </message>
@@ -420,7 +420,7 @@
         <translation type="vanished">Masaüstünü kapatın ve çıkın</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="162"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="161"/>
         <source>peony-qt-desktop</source>
         <translation>Masaüstü</translation>
     </message>
@@ -433,27 +433,27 @@
         <translation type="vanished">Masaüstü</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="309"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="308"/>
         <source>Close the peony desktop window</source>
         <translation>Peony masaüstü penceresini kapat</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="312"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="311"/>
         <source>Take over the dbus service.</source>
         <translation>Dbus servisini al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="315"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="314"/>
         <source>Take over the desktop displaying</source>
         <translation>Masaüstü görüntülemeyi al</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="318"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="317"/>
         <source>Setup backgrounds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="321"/>
+        <location filename="../../peony-qt-desktop/main/peony-desktop-application.cpp" line="320"/>
         <source>Open learning center.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -465,7 +465,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../peony-qt-desktop/window/desktop-background-window.cpp" line="67"/>
+        <location filename="../../peony-qt-desktop/window/desktop-background-window.cpp" line="90"/>
         <source>set background</source>
         <translation type="unfinished">Arkaplanı Değiştir</translation>
     </message>
@@ -479,40 +479,48 @@
 <context>
     <name>StudyStatusWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="87"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="108"/>
         <source>学情中心</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="113"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="134"/>
         <source>STATISTICS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="155"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="176"/>
         <source>今日使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="156"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="177"/>
         <source>本周使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="157"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="178"/>
         <source>本月使用时长</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="204"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="225"/>
         <source>最常使用 (本周累计)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TabletMenu</name>
+    <message>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/menu/tablet-menu.cpp" line="32"/>
+        <source>Uninstall</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>TabletPluginWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="117"/>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="140"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>

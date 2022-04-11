@@ -157,6 +157,18 @@
         <source>Cancel</source>
         <translation type="unfinished">མེད་པར་བཟོ་བ</translation>
     </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">ནོར་འཁྲུལ།</translation>
+    </message>
+    <message>
+        <source>Block not existed!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainProgressBar</name>
@@ -1345,6 +1357,14 @@ Do you want to delete the link file?</source>
         <source>File original path not exist, are you deleted or moved it?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can not open the file, application is disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::FileLinkOperation</name>
@@ -1475,6 +1495,10 @@ Do you want to delete the link file?</source>
     <message>
         <source>Do the same</source>
         <translation>ཉེར་སྤྱོད་ཆ་ཚང་།</translation>
+    </message>
+    <message>
+        <source>Unexpected error from %1 to %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2001,6 +2025,10 @@ Do you want to delete the link file?</source>
     </message>
     <message>
         <source>usershare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2593,6 +2621,18 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <source>Formatting successful! But failed to set the device name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File is not existed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can not add a file to favorite directory.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

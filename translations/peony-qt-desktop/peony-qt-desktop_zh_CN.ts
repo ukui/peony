@@ -9,12 +9,12 @@
         <translation>桌面图标视图</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="591"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="594"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="683"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="686"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>
@@ -23,22 +23,22 @@
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="915"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="919"/>
         <source>Open failed</source>
         <translation>打开失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="916"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="920"/>
         <source>Open directory failed, you have no permission!</source>
         <translation>打开文件夹失败，您没有该目录的权限！</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="899"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="903"/>
         <source>Open Link failed</source>
         <translation>打开快捷方式失败</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="900"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/view/desktop-icon-view.cpp" line="904"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>目标文件夹不存在，是否删除该无效快捷方式？</translation>
     </message>
@@ -46,17 +46,17 @@
 <context>
     <name>Peony::DesktopItemModel</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="578"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="593"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="580"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="595"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="591"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/model/desktop-item-model.cpp" line="606"/>
         <source>My Document</source>
         <translation>我的文档</translation>
     </message>
@@ -378,7 +378,7 @@
 <context>
     <name>Peony::DesktopModeFactory</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/desktop/desktop-mode-factory.cpp" line="39"/>
+        <location filename="../../peony-qt-desktop/desktops/desktop/desktop-mode-factory.cpp" line="61"/>
         <source>desktop icon mode</source>
         <translation>桌面图标模块</translation>
     </message>
@@ -401,26 +401,26 @@
 <context>
     <name>Peony::StudyCenterMode</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="75"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="171"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="95"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="195"/>
         <source>math</source>
         <translation>数学</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="76"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="172"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="96"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="196"/>
         <source>english</source>
         <translation>英语</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="77"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="173"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="97"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="197"/>
         <source>chinese</source>
         <translation>语文</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="78"/>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="174"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="98"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-center-mode.cpp" line="198"/>
         <source>other</source>
         <translation>更多</translation>
     </message>
@@ -477,7 +477,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../peony-qt-desktop/window/desktop-background-window.cpp" line="67"/>
+        <location filename="../../peony-qt-desktop/window/desktop-background-window.cpp" line="90"/>
         <source>set background</source>
         <translation>设置背景</translation>
     </message>
@@ -491,32 +491,32 @@
 <context>
     <name>StudyStatusWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="87"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="108"/>
         <source>学情中心</source>
         <translation>学情中心</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="113"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="134"/>
         <source>STATISTICS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="155"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="176"/>
         <source>今日使用时长</source>
         <translation>今日使用时长</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="156"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="177"/>
         <source>本周使用时长</source>
         <translation>本周使用时长</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="157"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="178"/>
         <source>本月使用时长</source>
         <translation>本月使用时长</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="204"/>
+        <location filename="../../peony-qt-desktop/desktops/study-center/study-status-widget.cpp" line="225"/>
         <source>最常使用 (本周累计)</source>
         <translation>最常使用 (本周累计)</translation>
     </message>
@@ -533,7 +533,7 @@
 <context>
     <name>TabletPluginWidget</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="117"/>
+        <location filename="../../peony-qt-desktop/desktops/tablet/src/UtilityFunction/tablet-plugin-widget.cpp" line="140"/>
         <source>Search</source>
         <translation>全局搜索</translation>
     </message>
