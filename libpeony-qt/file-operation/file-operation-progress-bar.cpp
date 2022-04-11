@@ -700,7 +700,7 @@ void OtherButton::paintEvent(QPaintEvent *event)
     painter.setFont(font);
     pen.setBrush(QBrush(btn->palette().color(QPalette::WindowText)));
     painter.setPen(pen);
-    painter.drawText(textArea, Qt::AlignLeft | Qt::AlignVCenter, m_text);
+    painter.drawText(textArea, Qt::AlignLeft | Qt::AlignVCenter, tr("Other queue"));
 
     painter.restore();
 
