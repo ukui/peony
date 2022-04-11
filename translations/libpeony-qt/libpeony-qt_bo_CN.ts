@@ -213,7 +213,7 @@
     <name>OtherButton</name>
     <message>
         <source>Other queue</source>
-        <translation type="vanished">རིམ་བསྟར་གཞན།</translation>
+        <translation>རིམ་བསྟར་གཞན།</translation>
     </message>
 </context>
 <context>
