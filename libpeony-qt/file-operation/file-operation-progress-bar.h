@@ -337,7 +337,6 @@ private:
 
     // text width
     int m_text_length = 100;
-    QString m_text = tr("Other queue");
 
     // show
     bool m_show = false;
