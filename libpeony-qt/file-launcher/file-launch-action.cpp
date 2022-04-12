@@ -28,6 +28,7 @@
 #include "file-utils.h"
 #include "file-operation-utils.h"
 #include "audio-play-manager.h"
+#include "global-settings.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -338,7 +339,7 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
                 QMessageBox::critical(nullptr, tr("Open Failed"),
                                   tr("Can not open %1, Please confirm you have the right authority.").arg(url.toDisplayString()));
         }
-        else if (fileInfo->isDesktopFile())
+        else if (fileInfo->isDesktopFile() && GlobalSettings::getInstance()->getProjectName() != V10_SP1_EDU)
         {
             auto result = QMessageBox::question(nullptr, tr("Open App failed"),
                                   tr("The linked app is changed or uninstalled, so it can not work correctly. \n"
@@ -542,7 +543,7 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
                 QMessageBox::critical(nullptr, tr("Open Failed"),
                                   tr("Can not open %1, Please confirm you have the right authority.").arg(m_uri));
         }
-        else if (fileInfo->isDesktopFile())
+        else if (fileInfo->isDesktopFile() && GlobalSettings::getInstance()->getProjectName() != V10_SP1_EDU)
         {
             auto result = QMessageBox::question(nullptr, tr("Open App failed"),
                                   tr("The linked app is changed or uninstalled, so it can not work correctly. \n"
