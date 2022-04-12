@@ -122,6 +122,7 @@ public Q_SLOTS:
     void forceStopLoading();
 
     void setShowHidden(bool showHidden);
+    void setShowFileExtensions(bool checked);
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool set);
 

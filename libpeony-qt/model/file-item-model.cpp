@@ -225,12 +225,22 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         }
         case Qt::DisplayRole: {
             //fix bug#53504, desktop files not show same name issue
+            QString displayName = item->m_info->displayName();
             if (item->m_info->isDesktopFile())
             {
-                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
                 return QVariant(displayName);
             }
-            return QVariant(item->m_info->displayName());
+            /* story#8359 【文件管理器】手动开启关闭文件拓展名 */
+            if(!m_showFileExtensions){
+                if (item->m_info->isDir()) {
+                    return QVariant(displayName);
+                }
+                QString fileBaseName = getFileBaseName(displayName);
+                return QVariant(getFileBaseName(displayName));
+
+            }else
+                return QVariant(displayName);
         }
         case Qt::DecorationRole: {
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
@@ -624,4 +634,23 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 void FileItemModel::sendPathChangeRequest(const QString &destUri, const QString &sourceUri)
 {
     Q_EMIT this->changePathRequest(destUri, sourceUri);
+}
+
+void FileItemModel::setShowFileExtensions(bool show)
+{
+    m_showFileExtensions = show;
+}
+
+#include <QFileInfo>
+QString FileItemModel::getFileBaseName(const QString &displayName)const
+{
+    QFileInfo qFileInfo(displayName);
+    QString suffix = qFileInfo.suffix();
+    QString fileBaseName = displayName.left(displayName.length() - suffix.length() - 1);
+     if (fileBaseName.isEmpty())
+         return displayName;
+     else if(fileBaseName.endsWith(".tar"))
+         return fileBaseName.remove(".tar");
+     else
+         return fileBaseName;
 }
