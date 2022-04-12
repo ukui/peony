@@ -651,6 +651,8 @@ QString FileItemModel::getFileBaseName(const QString &displayName)const
          return displayName;
      else if(fileBaseName.endsWith(".tar"))
          return fileBaseName.remove(".tar");
+     else if(fileBaseName.endsWith(".7z"))
+         return fileBaseName.remove(".7z");
      else
          return fileBaseName;
 }
