@@ -85,7 +85,8 @@ void DesktopMenuPluginManager::loadAsync()
             qDebug()<<pluginLoader.load();
 
             // version check
-            if (pluginLoader.metaData().value("MetaData").toObject().value("version").toString() != VERSION)
+            QString versionInfo = pluginLoader.metaData().value("MetaData").toObject().value("version").toString();
+            if (!versionInfo.isEmpty() && versionInfo != VERSION)
                 continue;
 
             QObject *plugin = pluginLoader.instance();
