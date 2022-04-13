@@ -1116,12 +1116,7 @@ void MainWindow::setShowFileExtensions(bool checked)
     if (!getCurrentPage()) {
         return;
     }
-
     getCurrentPage()->setShowFileExtensions(checked);
-
-    //文件扩展名状态变化，更新项目个数
-    Q_EMIT m_tab->updateItemsNum();
-
 }
 
 void MainWindow::setUseDefaultNameSortOrder(bool use)

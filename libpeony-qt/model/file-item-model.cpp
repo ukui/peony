@@ -53,9 +53,20 @@ FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 {
     setPositiveResponse(true);
 
+
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateFile, this, &FileItemModel::updated);
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateAllFiles, this, &FileItemModel::updated);
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::visibleChanged, this, &FileItemModel::updated);
+
+    auto settings = GlobalSettings::getInstance();
+    m_showFileExtensions = settings->isExist(SHOW_FILE_EXTENSION)? settings->getValue(SHOW_FILE_EXTENSION).toBool(): false;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_FILE_EXTENSION == key) {
+            m_showFileExtensions= GlobalSettings::getInstance()->getValue(key).toBool();
+            beginResetModel();
+            endResetModel();
+        }
+    });
 }
 
 FileItemModel::~FileItemModel()
@@ -639,6 +650,7 @@ void FileItemModel::sendPathChangeRequest(const QString &destUri, const QString 
 void FileItemModel::setShowFileExtensions(bool show)
 {
     m_showFileExtensions = show;
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_FILE_EXTENSION, show);
 }
 
 #include <QFileInfo>
