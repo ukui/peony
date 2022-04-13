@@ -249,6 +249,8 @@ void SideBarFileSystemItem::initVolumeInfo(const Experimental_Peony::Volume &vol
         m_displayName = QObject::tr("File System");
         m_iconName = "drive-harddisk-system-symbolic";
     }else if("file:///data" == m_uri || isData){
+        m_unmountable = m_mountable = m_ejectable = m_stopable = false;
+        m_mounted = true;
         m_displayName = QObject::tr("Data");
         m_iconName = "drive-harddisk";
     }
