@@ -368,7 +368,12 @@ void TabletMode::screenHorizontal()
 {
     Style::ScreenRotation = false;
 
-    m_pluginBoxWidget->setGeometry(QRect(0, 0, 512, m_height - Style::ButtonWidgetHeight));
+    int width = 512;
+    if (DesktopGlobalSettings::globalInstance()->getSubProjectName() == "mavis") {
+        width = 450;
+    }
+
+    m_pluginBoxWidget->setGeometry(QRect(0, 0, width, m_height - Style::ButtonWidgetHeight));
 
     m_appViewContainer->setGeometry(QRect(m_pluginBoxWidget->x() + m_pluginBoxWidget->width(),
                                          0,
