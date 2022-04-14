@@ -19,6 +19,7 @@
  */
 
 #include "style.h"
+#include "desktop-global-settings.h"
 #include <QDebug>
 
 
@@ -74,11 +75,11 @@ int Style::itemHeight=145;
 
 void Style::initWidStyle()
 {
-    AppListViewTopMargin=50;
-    AppListViewLeftMargin=50;
-    AppListViewRightMargin=50;
-    AppListViewBottomMargin=5;
-
+    //NOTE 以下的数字都是通过在机器上安装调试一点一点减出来的，不通用，定制性强，希望之后能得到修正。
+    bool isMavis = (Peony::DesktopGlobalSettings::globalInstance()->getSubProjectName() == "mavis");
+    AppListViewLeftMargin = isMavis ? 10 : 50;
+    AppListViewRightMargin = isMavis ? 10 : 50;
+    AppListViewBottomMargin = 5;
 
     if (ScreenRotation) {
         AppListItemSizeWidth = 152;
@@ -86,8 +87,9 @@ void Style::initWidStyle()
         AppTopSpace = 40;
         AppLeftSpace = 28;
 
-        TimeWidgetTop = 84;
-        TimeWidgetLeft = 84;
+        AppListViewTopMargin = 5;
+        TimeWidgetTop = isMavis ? 50 : 84;
+        TimeWidgetLeft = isMavis ? 50 : 84;
 
     } else {
         AppListItemSizeWidth = 216;
@@ -95,8 +97,9 @@ void Style::initWidStyle()
         AppTopSpace = 60;
         AppLeftSpace = 60;
 
-        TimeWidgetTop = 90;
-        TimeWidgetLeft = 0;
+        AppListViewTopMargin = isMavis ? 10 : 50;
+        TimeWidgetTop = isMavis ? 15 : 90;
+        TimeWidgetLeft = isMavis ? 50 : 0;
     }
 
 //    QGSettings* setting=new QGSettings(QString("org.mate.interface").toLocal8Bit());
