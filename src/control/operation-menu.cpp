@@ -189,9 +189,9 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
 
     connect(m_copy, &QToolButton::clicked, this, [=]() {
         if (!window->getCurrentSelections().isEmpty()) {
-            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                return ;
-            }
+//            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+//                return ;
+//            }
 
             Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), false);
             Q_EMIT operationAccepted();
@@ -200,9 +200,9 @@ OperationMenuEditWidget::OperationMenuEditWidget(MainWindow *window, QWidget *pa
 
     connect(m_cut, &QToolButton::clicked, this, [=]() {
         if (!window->getCurrentSelections().isEmpty()) {
-            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                return ;
-            }
+//            if (window->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+//                return ;
+//            }
             Peony::ClipboardUtils::setClipboardFiles(window->getCurrentSelections(), true);
             window->getCurrentPage()->getView()->repaintView();
             Q_EMIT operationAccepted();

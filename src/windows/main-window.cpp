@@ -615,9 +615,9 @@ void MainWindow::setShortCuts()
             bool is_recent = false;
             if (!this->getCurrentSelections().isEmpty())
             {
-                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                    return ;
-                }
+//                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+//                    return ;
+//                }
                 if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                     is_recent = true;
                 }
@@ -680,9 +680,9 @@ void MainWindow::setShortCuts()
         cutAction->setShortcut(QKeySequence::Cut);
         connect(cutAction, &QAction::triggered, [=]() {
             if (!this->getCurrentSelections().isEmpty()) {
-                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
-                    return ;
-                }
+//                if (this->getCurrentSelections().first().startsWith("trash://", Qt::CaseInsensitive)) {
+//                    return ;
+//                }
                 if (this->getCurrentSelections().first().startsWith("recent://", Qt::CaseInsensitive)) {
                     return ;
                 }
