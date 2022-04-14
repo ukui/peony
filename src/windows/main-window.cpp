@@ -608,6 +608,18 @@ void MainWindow::setShortCuts()
         });
         addAction(refreshAction);
 
+        //select all files in view, fix bug#115442
+        auto *selectAllAction = new QAction(this);
+        selectAllAction->setShortcut(QKeySequence::SelectAll);
+        connect(selectAllAction, &QAction::triggered, this, [=]() {
+            if (this->getCurrentPage()->getView())
+            {
+                auto allFiles = this->getCurrentPage()->getView()->getAllFileUris();
+                this->getCurrentPage()->getView()->setSelections(allFiles);
+            }
+        });
+        addAction(selectAllAction);
+
         //file operations
         auto *copyAction = new QAction(this);
         copyAction->setShortcut(QKeySequence::Copy);
