@@ -1884,23 +1884,23 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileLaunchAction</name>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="175"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="300"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="504"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="176"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="301"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="505"/>
         <source>Execute Directly</source>
         <translation>Doğrudan Çalıştır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="176"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="301"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="505"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="177"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="302"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="506"/>
         <source>Execute in Terminal</source>
         <translation>Terminalde Çalıştır</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="179"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="305"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="509"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="180"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="306"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="510"/>
         <source>Detected launching an executable file %1, you want?</source>
         <translation>%1 çalıştırılabilir bir dosyayı başlatmayı mı istediniz?</translation>
     </message>
@@ -1909,14 +1909,14 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="obsolete">Dosyayı Sil Uyarısı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="197"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="338"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="542"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="198"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="339"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="543"/>
         <source>Open Failed</source>
         <translation>Açma Hatası</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="197"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="198"/>
         <source>Can not open %1, file not exist, is it deleted?</source>
         <translation>%1 açılamıyor, dosya mevcut değil, silinmiş olabilir mi?</translation>
     </message>
@@ -1929,86 +1929,86 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
         <translation type="vanished">%1 açılamadı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="142"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="264"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="143"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="265"/>
         <source>No Permission</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="142"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="264"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="143"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="265"/>
         <source>File is not readable. Please check if file has read permisson.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="299"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="503"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="300"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="504"/>
         <source>By Default App</source>
         <translation>Varsayılan Uygulamaya Göre</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="304"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="508"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="305"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="509"/>
         <source>Launch Options</source>
         <translation>Başlatma Ayarları</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="328"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="532"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="329"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="533"/>
         <source>Open Link failed</source>
         <translation>Açık Bağlantı başarısız</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="329"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="533"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="330"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="534"/>
         <source>File not exist, do you want to delete the link file?</source>
         <translation>Dosya mevcut değil, bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="339"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="543"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="340"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="544"/>
         <source>Can not open %1, Please confirm you have the right authority.</source>
         <translation>%1 açılamıyor, lütfen yetkilerinizi kontrol edin.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="343"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="547"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="344"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="548"/>
         <source>Open App failed</source>
         <translation>Uygulama Açılamadı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="344"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="548"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="345"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="549"/>
         <source>The linked app is changed or uninstalled, so it can not work correctly. 
 Do you want to delete the link file?</source>
         <translation>Bağlı uygulama değiştirilir veya kaldırılır, bu nedenle düzgün çalışamaz.
 Bağlantı dosyasını silmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="357"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="362"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="558"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="358"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="363"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="559"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="358"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="359"/>
         <source>File original path not exist, are you deleted or moved it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="362"/>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="558"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="363"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="559"/>
         <source>Can not get a default application for opening %1, do you want open it with text format?</source>
         <translation>%1 dosyasını açmak için varsayılan bir uygulama alınamıyor, metin biçiminde açmak istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="808"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="809"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="808"/>
+        <location filename="../../libpeony-qt/file-launcher/file-launch-action.cpp" line="809"/>
         <source>Can not open the file, application is disabled</source>
         <translation type="unfinished"></translation>
     </message>

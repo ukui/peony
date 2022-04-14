@@ -1086,7 +1086,7 @@ Do you want to unmount forcely?</source>
     <name>TitleLabel</name>
     <message>
         <location filename="../../src/control/navigation-side-bar.cpp" line="646"/>
-        <source>Files</source>
+        <source>Peony</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
