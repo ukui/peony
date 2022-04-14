@@ -1141,9 +1141,13 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="646"/>
         <source>Files</source>
-        <translation>文件</translation>
+        <translation type="vanished">文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="646"/>
+        <source>Peony</source>
+        <translation>文件管理器</translation>
     </message>
 </context>
 <context>

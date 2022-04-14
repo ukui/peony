@@ -761,8 +761,8 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <source>Files</source>
-        <translation type="unfinished"></translation>
+        <source>Peony</source>
+        <translation type="unfinished">ཡིག་ཆ་དོ་དམ་ཆས།</translation>
     </message>
 </context>
 <context>
