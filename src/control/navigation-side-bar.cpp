@@ -540,6 +540,7 @@ void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionV
 
 NavigationSideBarContainer::NavigationSideBarContainer(QWidget *parent) : Peony::SideBar(parent)
 {
+    setMinimumWidth(144);  /* 设计要求侧边栏最小宽度为144px */
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_layout = new QVBoxLayout;
@@ -645,8 +646,7 @@ TitleLabel::TitleLabel(QWidget *parent):QWidget(parent)
     m_pix_label->setPixmap(QIcon(":/custom/icons/app-controlsetting").pixmap(32,32));
     m_text_label = new QLabel(tr("Peony"),this);
     QHBoxLayout *l = new QHBoxLayout(this);
-    l->setMargin(8);
-    l->addSpacing(16);
+    l->setMargin(8); /* 按设计要求间距为8px */
     l->addWidget(m_pix_label);
     l->addSpacing(8);
     l->addWidget(m_text_label);
