@@ -92,6 +92,11 @@ void FileRenameOperation::run()
             Q_EMIT errored(except);
         }
     }
+    bool showFileExtension = Peony::GlobalSettings::getInstance()->isExist(SHOW_FILE_EXTENSION)?
+                Peony::GlobalSettings::getInstance()->getValue(SHOW_FILE_EXTENSION).toBool():true;
+    if(!showFileExtension){
+        renameHandleWhenExtensionIsHidden();
+    }
 
     auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_uri).toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
@@ -259,6 +264,24 @@ cancel:
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+#include <QFileInfo>
+void FileRenameOperation::renameHandleWhenExtensionIsHidden()
+{
+    QFileInfo qFileInfo(m_uri);
+    QString suffix = qFileInfo.suffix();
+    QString fileBaseName = qFileInfo.fileName().left(qFileInfo.fileName().length() - suffix.length() - 1);
+    if (fileBaseName.isEmpty())
+        suffix = QString();
+    else if(fileBaseName.endsWith(".tar"))
+        suffix = QString("tar").append(".").append(suffix);
+    else if(fileBaseName.endsWith(".7z"))
+        suffix = QString("7z").append(".").append(suffix);
+
+    if(!suffix.isEmpty())
+        m_new_name += QString(".").append(suffix);
+
+    return;
 }
 
 ExceptionResponse FileRenameOperation::prehandle(GError *err)

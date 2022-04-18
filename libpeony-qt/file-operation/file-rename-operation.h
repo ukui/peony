@@ -66,6 +66,9 @@ public:
     }
 
 private:
+    void renameHandleWhenExtensionIsHidden(); /* 隐藏扩展名时重命名处理 */
+
+private:
     ExceptionResponse prehandle(GError *err);
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
     QString m_uri = nullptr;
