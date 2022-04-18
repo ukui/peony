@@ -41,15 +41,16 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
     connect(this, &QWidget::customContextMenuRequested, this, [=](const QPoint &pos){
         QPoint relativePos = getRelativePos(pos);
         qInfo()<<pos;
-        auto index = PeonyDesktopApplication::getIconView()->indexAt(relativePos);
-        if (!index.isValid()) {
-            PeonyDesktopApplication::getIconView()->clearSelection();
-        } else {
-            if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
-                PeonyDesktopApplication::getIconView()->clearSelection();
-                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
-            }
-        }
+        // fix #115384, context menu key issue
+//        auto index = PeonyDesktopApplication::getIconView()->indexAt(relativePos);
+//        if (!index.isValid()) {
+//            PeonyDesktopApplication::getIconView()->clearSelection();
+//        } else {
+//            if (!PeonyDesktopApplication::getIconView()->selectionModel()->selection().indexes().contains(index)) {
+//                PeonyDesktopApplication::getIconView()->clearSelection();
+//                PeonyDesktopApplication::getIconView()->selectionModel()->select(index, QItemSelectionModel::Select);
+//            }
+//        }
 
         QTimer::singleShot(1, [=]() {
             DesktopMenu menu(PeonyDesktopApplication::getIconView());
