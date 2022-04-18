@@ -213,6 +213,15 @@ bool FileItemProxyFilterSortModel::filterAcceptsRow(int sourceRow, const QModelI
     auto childIndex = model->index(sourceRow, 0, sourceParent);
     if (childIndex.isValid()) {
         auto item = static_cast<FileItem*>(childIndex.internalPointer());
+
+        /* task#63345 通过.hidden文件来设置隐藏文件和目录 */
+        FileInfo* fileInfo = FileInfo::fromUri(item->uri()).get();
+        bool isHidden = fileInfo->property(G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN).toBool();
+        //qDebug()<<"File view .hidden file hidden,uri:"<<item->uri()<<" isHidden:"<<isHidden;
+        if(isHidden && !fileInfo->displayName().startsWith(".")){/* .xxx文件遵循是否显示隐藏文件的逻辑 */
+           return false;
+        }//end
+
         if(!item->shouldShow())
             return false;
         if (!m_show_hidden) {

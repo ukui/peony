@@ -285,6 +285,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 
     queryFileType(new_info);
 
+    /* 获取info的G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN字段的值 */
+    info->setProperty(G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN, g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN));
+
     info->m_is_symbol_link = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
     if (g_file_info_has_attribute(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
         info->m_can_read = g_file_info_get_attribute_boolean(new_info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ);

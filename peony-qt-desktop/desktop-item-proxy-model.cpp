@@ -91,6 +91,14 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
         return false;
     auto uri = sourceIndex.data(Qt::UserRole).toString();
     auto info = FileInfo::fromUri(uri);
+
+    /* task#63345 通过.hidden文件来设置隐藏文件和目录 */
+    bool isHidden = info->property(G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN).toBool();
+    //qDebug()<<"File view .hidden file hidden,uri:"<<uri<<" isHidden:"<<isHidden;
+    if(isHidden && !info->displayName().startsWith(".")){/* .xxx文件遵循是否显示隐藏文件的逻辑 */
+       return false;
+    }//end
+
     //qDebug()<<"fiter"<<uri<<info->displayName();
     if (info->displayName().isNull()) {
         //return false;
