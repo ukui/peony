@@ -265,18 +265,26 @@ cancel:
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
 }
+
 #include <QFileInfo>
 void FileRenameOperation::renameHandleWhenExtensionIsHidden()
 {
     QFileInfo qFileInfo(m_uri);
     QString suffix = qFileInfo.suffix();
     QString fileBaseName = qFileInfo.fileName().left(qFileInfo.fileName().length() - suffix.length() - 1);
-    if (fileBaseName.isEmpty())
+    m_old_name = fileBaseName;
+    if (fileBaseName.isEmpty()){
         suffix = QString();
-    else if(fileBaseName.endsWith(".tar"))
+        m_old_name = qFileInfo.fileName();
+    }
+    else if(fileBaseName.endsWith(".tar")){
         suffix = QString("tar").append(".").append(suffix);
-    else if(fileBaseName.endsWith(".7z"))
+        m_old_name = fileBaseName.remove(".tar");
+    }
+    else if(fileBaseName.endsWith(".7z")){
         suffix = QString("7z").append(".").append(suffix);
+        m_old_name = fileBaseName.remove(".7z");
+    }
 
     if(!suffix.isEmpty())
         m_new_name += QString(".").append(suffix);
