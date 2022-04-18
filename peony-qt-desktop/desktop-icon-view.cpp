@@ -1755,6 +1755,13 @@ void DesktopIconView::mousePressEvent(QMouseEvent *e)
 
     //qDebug()<<m_last_index.data();
     if (e->button() != Qt::LeftButton) {
+        // fix #115384, context menu key issue
+        if (e->button() == Qt::RightButton) {
+            auto index = indexAt(e->pos());
+            if (!selectedIndexes().contains(index)) {
+                selectionModel()->select(index, QItemSelectionModel::SelectCurrent);
+            }
+        }
         return;
     }
 
