@@ -580,7 +580,7 @@ Do you want to unmount forcely?</source>
     </message>
     <message>
         <source> selected %1 items</source>
-        <translation>%1རྣམ་གྲངས་སྒེར་འདེམ་པ།</translation>
+        <translation type="vanished">%1རྣམ་གྲངས་སྒེར་འདེམ་པ།</translation>
     </message>
     <message>
         <source> selected %1 items    %2</source>
@@ -593,6 +593,10 @@ Do you want to unmount forcely?</source>
     <message>
         <source>Search &quot;%1&quot; in &quot;%2&quot;</source>
         <translation type="unfinished">%2ཁྲོད་%1འཚོལ་ཞིབ།</translation>
+    </message>
+    <message>
+        <source> %1 items    selected %2 items</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
