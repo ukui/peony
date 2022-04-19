@@ -269,6 +269,7 @@ cancel:
 #include <QFileInfo>
 void FileRenameOperation::renameHandleWhenExtensionIsHidden()
 {
+    /* 一些常见扩展名处理，特殊情况以后待完善 */
     QFileInfo qFileInfo(m_uri);
     QString suffix = qFileInfo.suffix();
     QString fileBaseName = qFileInfo.fileName().left(qFileInfo.fileName().length() - suffix.length() - 1);

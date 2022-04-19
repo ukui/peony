@@ -39,6 +39,7 @@
 
 #include "peony-desktop-application.h"
 #include "desktop-icon-view.h"
+#include "global-settings.h"
 
 #include <QStandardPaths>
 #include <QIcon>
@@ -445,6 +446,16 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             m_renaming_operation_info = nullptr;
         }
     });
+
+    auto settings = GlobalSettings::getInstance();
+    m_showFileExtension = settings->isExist(SHOW_FILE_EXTENSION)? settings->getValue(SHOW_FILE_EXTENSION).toBool(): true;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_FILE_EXTENSION == key) {
+            m_showFileExtension= GlobalSettings::getInstance()->getValue(key).toBool();
+            beginResetModel();
+            endResetModel();
+        }
+    });
 }
 
 DesktopItemModel::~DesktopItemModel()
@@ -544,7 +555,23 @@ QVariant DesktopItemModel::data(const QModelIndex &index, int role) const
     //qDebug()<<"data"<<m_files.at(index.row())->uri();
     auto info = m_files.at(index.row());
     switch (role) {
-    case Qt::DisplayRole:
+    case Qt::DisplayRole:{
+        QString displayName = info->displayName();
+        if (info->isDesktopFile())
+        {
+            displayName = FileUtils::handleDesktopFileName(info->uri(), info->displayName());
+            return QVariant(displayName);
+        }
+        /* story#8359 【文件管理器】手动开启关闭文件拓展名 */
+        if(!m_showFileExtension){
+            if (info->isDir()) {
+                return QVariant(displayName);
+            }
+            return QVariant(FileUtils::getBaseNameOfFile(displayName));
+
+        }else
+            return QVariant(displayName);
+    }
     case Qt::ToolTipRole: {
         // fix #80257
         switch (index.row()) {

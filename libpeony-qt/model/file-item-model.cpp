@@ -59,10 +59,10 @@ FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::visibleChanged, this, &FileItemModel::updated);
 
     auto settings = GlobalSettings::getInstance();
-    m_showFileExtensions = settings->isExist(SHOW_FILE_EXTENSION)? settings->getValue(SHOW_FILE_EXTENSION).toBool(): false;
+    m_showFileExtension = settings->isExist(SHOW_FILE_EXTENSION)? settings->getValue(SHOW_FILE_EXTENSION).toBool(): true;
     connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
         if (SHOW_FILE_EXTENSION == key) {
-            m_showFileExtensions= GlobalSettings::getInstance()->getValue(key).toBool();
+            m_showFileExtension= GlobalSettings::getInstance()->getValue(key).toBool();
             beginResetModel();
             endResetModel();
         }
@@ -243,13 +243,11 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
                 return QVariant(displayName);
             }
             /* story#8359 【文件管理器】手动开启关闭文件拓展名 */
-            if(!m_showFileExtensions){
+            if(!m_showFileExtension){
                 if (item->m_info->isDir()) {
                     return QVariant(displayName);
                 }
-                QString fileBaseName = getFileBaseName(displayName);
-                return QVariant(getFileBaseName(displayName));
-
+                return QVariant(FileUtils::getBaseNameOfFile(displayName));
             }else
                 return QVariant(displayName);
         }
@@ -649,22 +647,6 @@ void FileItemModel::sendPathChangeRequest(const QString &destUri, const QString 
 
 void FileItemModel::setShowFileExtensions(bool show)
 {
-    m_showFileExtensions = show;
+    m_showFileExtension = show;
     GlobalSettings::getInstance()->setGSettingValue(SHOW_FILE_EXTENSION, show);
-}
-
-#include <QFileInfo>
-QString FileItemModel::getFileBaseName(const QString &displayName)const
-{
-    QFileInfo qFileInfo(displayName);
-    QString suffix = qFileInfo.suffix();
-    QString fileBaseName = displayName.left(displayName.length() - suffix.length() - 1);
-     if (fileBaseName.isEmpty())
-         return displayName;
-     else if(fileBaseName.endsWith(".tar"))
-         return fileBaseName.remove(".tar");
-     else if(fileBaseName.endsWith(".7z"))
-         return fileBaseName.remove(".7z");
-     else
-         return fileBaseName;
 }

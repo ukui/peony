@@ -210,7 +210,6 @@ public:
     void sendPathChangeRequest(const QString &destUri, const QString &sourceUri);
 
     void setShowFileExtensions(bool show);
-    QString getFileBaseName(const QString& displayName) const;
 
 Q_SIGNALS:
     /*!
@@ -275,7 +274,7 @@ private:
     bool m_is_positive = false;
     bool m_can_expand = false;
     QString m_root_uri = "file:///";
-    bool m_showFileExtensions = true;
+    bool m_showFileExtension = true;
 };
 
 }
