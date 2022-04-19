@@ -898,14 +898,18 @@ Do you want to unmount forcely?</source>
         <translation>已选择%1%2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="190"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="191"/>
         <source> selected %1 items    %2</source>
         <translation> 选中 %1 个项目    %2</translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="192"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="193"/>
+        <source> %1 items    selected %2 items</source>
+        <translation>%1个项目   选中%2个项目</translation>
+    </message>
+    <message>
         <source> selected %1 items</source>
-        <translation> 选中 %1 个项目</translation>
+        <translation type="vanished"> 选中 %1 个项目</translation>
     </message>
 </context>
 <context>
@@ -1145,7 +1149,7 @@ Do you want to unmount forcely?</source>
         <translation type="vanished">文件</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="646"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="647"/>
         <source>Peony</source>
         <translation>文件管理器</translation>
     </message>

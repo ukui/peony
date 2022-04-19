@@ -850,13 +850,13 @@ Do you want to unmount forcely?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="190"/>
+        <location filename="../../src/control/tab-status-bar.cpp" line="191"/>
         <source> selected %1 items    %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/tab-status-bar.cpp" line="192"/>
-        <source> selected %1 items</source>
+        <location filename="../../src/control/tab-status-bar.cpp" line="193"/>
+        <source> %1 items    selected %2 items</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1085,7 +1085,7 @@ Do you want to unmount forcely?</source>
 <context>
     <name>TitleLabel</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="646"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="647"/>
         <source>Peony</source>
         <translation type="unfinished"></translation>
     </message>
