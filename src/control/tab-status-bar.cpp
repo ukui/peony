@@ -184,12 +184,13 @@ void TabStatusBar::update()
    //Calculated by 1024 bytes
     auto format_size_GIB = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS);
     QString format_size(format_size_GIB);
+    auto uris = m_tab->getCurrentAllFileInfos();
     //状态栏以GB为显示单位
     format_size.replace("iB", "B");
     if (size > 0)
         m_label->setText(tr(" selected \%1 items    \%2").arg(selections.count()).arg(format_size));
     else
-        m_label->setText(tr(" selected \%1 items").arg(selections.count()- specialCount));
+        m_label->setText(tr(" \%1 items    selected \%2 items").arg(uris.count()).arg(selections.count()- specialCount));
 
     g_free(format_size_GIB);
 }
