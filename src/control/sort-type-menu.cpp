@@ -21,6 +21,7 @@
  */
 
 #include "sort-type-menu.h"
+#include "global-settings.h"
 
 #include <QDebug>
 
@@ -70,6 +71,17 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
         int index = sortOrderGroup->actions().indexOf(action);
         switchSortOrderRequest(Qt::SortOrder(index));
     });
+
+    addSeparator();
+
+    auto useGlobalSortAction = new QAction(tr("Use global sorting"), this);
+    useGlobalSortAction->setCheckable(true);
+    useGlobalSortAction->setChecked(Peony::GlobalSettings::getInstance()->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool());
+    connect(useGlobalSortAction, &QAction::triggered, this, [=](bool checked){
+        Peony::GlobalSettings::getInstance()->setValue(USE_GLOBAL_DEFAULT_SORTING, checked);
+    });
+
+    addAction(useGlobalSortAction);
 }
 
 void SortTypeMenu::setSortType(int type)

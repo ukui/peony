@@ -33,6 +33,8 @@
 
 #include "global-settings.h"
 
+#include "file-meta-info.h"
+
 #include <QHeaderView>
 
 #include <QVBoxLayout>
@@ -87,6 +89,23 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
     //header()->setStretchLastSection(true);
+
+    connect(header(), &QHeaderView::sectionClicked, this, [=](){
+        //update sort policy
+        auto settings = GlobalSettings::getInstance();
+        if (settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+            settings->setValue(SORT_COLUMN, getSortType());
+            settings->setValue(SORT_ORDER, getSortOrder());
+        } else {
+            auto metaInfo = FileMetaInfo::fromUri(getDirectoryUri());
+            if (metaInfo) {
+                metaInfo->setMetaInfoVariant(SORT_COLUMN, getSortType());
+                metaInfo->setMetaInfoVariant(SORT_ORDER, getSortOrder());
+            } else {
+                qCritical()<<"failed to set meta info"<<getDirectoryUri();
+            }
+        }
+    });
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);

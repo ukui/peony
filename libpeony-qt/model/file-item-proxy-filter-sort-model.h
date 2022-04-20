@@ -32,6 +32,8 @@
 
 namespace Peony {
 
+class GlobalSettings;
+
 class FileItem;
 class FileItemModel;
 
@@ -108,6 +110,8 @@ public:
 
 public Q_SLOTS:
     void update();
+    void setUseGlobalSort(bool use);
+    void checkSortSettings();
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
@@ -121,7 +125,13 @@ private:
     bool checkFileSizeOrTypeFilter(quint64 sizem, bool isDir) const;
     bool checkFileNameFilter(const QString &displayName) const;
 
+    QVariant getDirectorySettings(const QString &key);
+    void setDirectorySettings(const QString &key, const QVariant &value);
+
 private:
+    GlobalSettings *m_settings = nullptr;
+    bool m_use_global_sort = true;
+
     bool m_show_hidden;
     bool m_use_default_name_sort_order;
     bool m_folder_first;

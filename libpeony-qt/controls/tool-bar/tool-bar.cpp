@@ -283,12 +283,12 @@ void ToolBar::init()
         forbidThumbnail->setCheckable(true);
         forbidThumbnail->setChecked(GlobalSettings::getInstance()->isExist(FORBID_THUMBNAIL_IN_VIEW)? GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool(): false);
 
-        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=]() {
-            m_top_window->setShowHidden();
+        auto showHidden = optionMenu.addAction(tr("Show Hidden"), this, [=](bool checked) {
+            m_top_window->setShowHidden(checked);
         });
         showHidden->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
         showHidden->setCheckable(true);
-        showHidden->setChecked(GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)? GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false);
+        showHidden->setChecked(m_top_window->getWindowShowHidden());
 
         auto resident = optionMenu.addAction(tr("Resident in Backend"));
         resident->setToolTip(tr("Let the program still run after closing the last window. "

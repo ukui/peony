@@ -25,6 +25,7 @@
 #include "file-item.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-info.h"
+#include "file-info-job.h"
 #include "file-meta-info.h"
 #include "file-label-model.h"
 
@@ -45,21 +46,38 @@ using namespace Peony;
 QLocale locale = QLocale(QLocale::system().name());
 QCollator comparer = QCollator(locale);
 
+const QString getModelDirectoryUri(FileItemProxyFilterSortModel *model)
+{
+    FileItemModel *srcModel = qobject_cast<FileItemModel *>(model->sourceModel());
+    if (!srcModel) {
+        qInfo()<<"source model not avaliable now";
+        return nullptr;
+    }
+    return srcModel->getRootUri();
+}
+
+void setModelMetaInfo(FileItemProxyFilterSortModel *model, const QString &key, const QVariant &value)
+{
+    auto uri = getModelDirectoryUri(model);
+    if (uri.isEmpty()) {
+        qCritical()<<"set model meta info failed, can not get model directory uri";
+    } else {
+        auto fileMetaInfo = FileMetaInfo::fromUri(getModelDirectoryUri(model));
+        if (fileMetaInfo) {
+            fileMetaInfo->setMetaInfoVariant(key, value);
+        } else {
+            qCritical()<<"set model meta info failed, can not get model meta info.";
+        }
+    }
+}
+
 FileItemProxyFilterSortModel::FileItemProxyFilterSortModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(false);
     //enable number sort, like 100 is after 99
     comparer.setNumericMode(true);
     auto settings = GlobalSettings::getInstance();
-    m_show_hidden = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
-    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
-        if (SHOW_HIDDEN_PREFERENCE == key) {
-            m_show_hidden= GlobalSettings::getInstance()->getValue(key).toBool();
-            invalidateFilter();
-        }
-    });
-    m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
-    m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
+    m_settings = settings;
 }
 
 void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
@@ -67,7 +85,27 @@ void FileItemProxyFilterSortModel::setSourceModel(QAbstractItemModel *model)
     if (sourceModel())
         disconnect(sourceModel());
     QSortFilterProxyModel::setSourceModel(model);
-    FileItemModel *file_item_model = static_cast<FileItemModel*>(model);
+    //FileItemModel *file_item_model = static_cast<FileItemModel*>(model);
+
+    auto fileInfo = FileInfo::fromUri(getModelDirectoryUri(this));
+    if (!fileInfo.get()->isEmptyInfo()) {
+        auto job = new FileInfoJob(fileInfo);
+        job->setAutoDelete();
+        connect(job, &FileInfoJob::queryAsyncFinished, this, [=]{
+            checkSortSettings();
+            update();
+        });
+        job->queryAsync();
+    } else {
+        checkSortSettings();
+    }
+
+    connect(m_settings, &GlobalSettings::valueChanged, this, [=](const QString &key){
+        if (key == USE_GLOBAL_DEFAULT_SORTING) {
+            setUseGlobalSort(m_settings->getValue(key).toBool());
+        }
+    });
+
     //connect(file_item_model, &FileItemModel::updated, this, &FileItemProxyFilterSortModel::update);
 }
 
@@ -359,6 +397,50 @@ bool FileItemProxyFilterSortModel::checkFileNameFilter(const QString &displayNam
     return false;
 }
 
+void FileItemProxyFilterSortModel::checkSortSettings()
+{
+    m_use_global_sort = m_settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool();
+    if (m_use_global_sort) {
+        m_show_hidden = m_settings->isExist(SHOW_HIDDEN_PREFERENCE)? m_settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+        m_use_default_name_sort_order = m_settings->isExist(SORT_CHINESE_FIRST)? m_settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
+        m_folder_first = m_settings->isExist(SORT_FOLDER_FIRST)? m_settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
+    } else {
+        auto info = FileInfo::fromUri(getModelDirectoryUri(this));
+        auto fileMetaInfo = FileMetaInfo::fromUri(getModelDirectoryUri(this));
+        if (fileMetaInfo && !info->isEmptyInfo()) {
+            m_show_hidden = fileMetaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).isValid()? fileMetaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).toBool(): (m_settings->isExist(SHOW_HIDDEN_PREFERENCE)? m_settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false);
+            m_use_default_name_sort_order = fileMetaInfo->getMetaInfoVariant(SORT_CHINESE_FIRST).isValid()? fileMetaInfo->getMetaInfoVariant(SORT_CHINESE_FIRST).toBool(): (m_settings->isExist(SORT_CHINESE_FIRST)? m_settings->getValue(SORT_CHINESE_FIRST).toBool(): false);
+            m_folder_first = fileMetaInfo->getMetaInfoVariant(SORT_FOLDER_FIRST).isValid()? fileMetaInfo->getMetaInfoVariant(SORT_FOLDER_FIRST).toBool(): (m_settings->isExist(SORT_CHINESE_FIRST)? m_settings->getValue(SORT_CHINESE_FIRST).toBool(): false);
+        } else {
+            qCritical()<<"could not get metainfo"<<getModelDirectoryUri(this);
+            m_show_hidden = m_settings->isExist(SHOW_HIDDEN_PREFERENCE)? m_settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
+            m_use_default_name_sort_order = m_settings->isExist(SORT_CHINESE_FIRST)? m_settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
+            m_folder_first = m_settings->isExist(SORT_FOLDER_FIRST)? m_settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
+        }
+    }
+}
+
+QVariant FileItemProxyFilterSortModel::getDirectorySettings(const QString &key)
+{
+    auto metaInfo = FileMetaInfo::fromUri(getModelDirectoryUri(this));
+    if (metaInfo) {
+        return metaInfo->getMetaInfoVariant(key);
+    } else {
+        qCritical()<<"can not get meta info"<<getModelDirectoryUri(this);
+    }
+    return QVariant();
+}
+
+void FileItemProxyFilterSortModel::setDirectorySettings(const QString &key, const QVariant &value)
+{
+    auto metaInfo = FileMetaInfo::fromUri(getModelDirectoryUri(this));
+    if (metaInfo) {
+        return metaInfo->setMetaInfoVariant(key, value);
+    } else {
+        qCritical()<<"can not set meta info"<<getModelDirectoryUri(this);
+    }
+}
+
 bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
 {
     //qDebug()<<"m_show_file_type: "<<m_show_file_type<<" "<<type;
@@ -574,16 +656,33 @@ void FileItemProxyFilterSortModel::update()
     invalidateFilter();
 }
 
+void FileItemProxyFilterSortModel::setUseGlobalSort(bool use)
+{
+    m_use_global_sort = use;
+    checkSortSettings();
+    update();
+}
+
 void FileItemProxyFilterSortModel::setShowHidden(bool showHidden)
 {
-    GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    if (GlobalSettings::getInstance()->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        GlobalSettings::getInstance()->setGSettingValue(SHOW_HIDDEN_PREFERENCE, showHidden);
+    } else {
+        setModelMetaInfo(this, SHOW_HIDDEN_PREFERENCE, showHidden);
+    }
+
     m_show_hidden = showHidden;
     invalidateFilter();
 }
 
 void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
 {
-    GlobalSettings::getInstance()->setValue(SORT_CHINESE_FIRST, use);
+    if (GlobalSettings::getInstance()->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        GlobalSettings::getInstance()->setValue(SORT_CHINESE_FIRST, use);
+    } else {
+        setModelMetaInfo(this, SORT_CHINESE_FIRST, use);
+    }
+
     m_use_default_name_sort_order = use;
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);
@@ -592,7 +691,12 @@ void FileItemProxyFilterSortModel::setUseDefaultNameSortOrder(bool use)
 
 void FileItemProxyFilterSortModel::setFolderFirst(bool folderFirst)
 {
-    GlobalSettings::getInstance()->setValue(SORT_FOLDER_FIRST, folderFirst);
+    if (GlobalSettings::getInstance()->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        GlobalSettings::getInstance()->setValue(SORT_FOLDER_FIRST, folderFirst);
+    } else {
+        setModelMetaInfo(this, SORT_FOLDER_FIRST, folderFirst);
+    }
+
     m_folder_first = folderFirst;
     beginResetModel();
     sort(sortColumn()>0? sortColumn(): 0, sortOrder()==Qt::DescendingOrder? Qt::DescendingOrder: Qt::AscendingOrder);

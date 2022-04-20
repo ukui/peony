@@ -60,16 +60,14 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peonyGSettings = new QGSettings("org.ukui.peony.settings", "/org/ukui/peony/settings/", this);
         connect(m_peonyGSettings, &QGSettings::changed, this, [=] (const QString &key) {
-            if (key == DISPLAY_STANDARD_ICONS) {
-                m_cache.remove(DISPLAY_STANDARD_ICONS);
-                m_cache.insert(DISPLAY_STANDARD_ICONS, m_peonyGSettings->get(DISPLAY_STANDARD_ICONS));
-            }
+            m_cache.remove(key);
+            m_cache.insert(key, m_peonyGSettings->get(key));
             Q_EMIT this->valueChanged(key);
         });
 
-        if (m_peonyGSettings->keys().contains(DISPLAY_STANDARD_ICONS)) {
-            m_cache.remove(DISPLAY_STANDARD_ICONS);
-            m_cache.insert(DISPLAY_STANDARD_ICONS, m_peonyGSettings->get(DISPLAY_STANDARD_ICONS));
+        for (auto key : m_peonyGSettings->keys()) {
+            m_cache.remove(key);
+            m_cache.insert(key, m_peonyGSettings->get(key));
         }
     }
 
