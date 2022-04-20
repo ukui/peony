@@ -61,6 +61,8 @@
 //TEMPLATES standard path
 #define TEMPLATES_DIR               "templates-dir"
 
+//Control the display of desktop standard icons
+#define DISPLAY_STANDARD_ICONS       "displayStandardIcons"
 
 // control center
 #define UKUI_CONTROL_CENTER_PANEL_PLUGIN            "org.ukui.control-center.panel.plugins"                 // schema
@@ -126,6 +128,7 @@ private:
     QMap<QString, QVariant>     m_cache;
 
     QGSettings*                 m_gsettings = nullptr;
+    QGSettings*                 m_peonyGSettings = nullptr;
     QGSettings*                 m_control_center_plugin = nullptr;
     QGSettings*                 m_peony_gsettings  = nullptr;
 

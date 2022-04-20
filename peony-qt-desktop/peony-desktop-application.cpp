@@ -30,6 +30,7 @@
 
 #include "desktop-icon-view.h"
 
+#include "global-settings.h"
 #include "plasma-shell-manager.h"
 #include "desktop-menu.h"
 #include "global-settings.h"
@@ -394,6 +395,9 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
     QCommandLineOption backgroundOption(QStringList()<<"b"<<"background", tr("Setup backgrounds"));
 //    parser.addOption(backgroundOption);
 
+    QCommandLineOption clearIconsOption(QStringList()<<"c"<<"clear-icons", tr("Clear standard icons"));
+    parser.addOption(clearIconsOption);
+
     if (isPrimary) {
         if (m_first_parse) {
             auto helpOption = parser.addHelpOption();
@@ -462,6 +466,12 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
             setupBgAndDesktop();
         }
 
+        if (parser.isSet(clearIconsOption)) {
+            if (has_desktop) {
+                clearIcons(args);
+            }
+        }
+
         connect(this, &QApplication::paletteChanged, this, [=](const QPalette &pal) {
             for (auto w : allWidgets()) {
                 w->setPalette(pal);
@@ -479,6 +489,36 @@ void PeonyDesktopApplication::parseCmd(QString msg, bool isPrimary)
         parser.process(arguments());
 
         sendMessage(msg);
+    }
+}
+
+void PeonyDesktopApplication::clearIcons(const QStringList &args)
+{
+    //定制需求
+    int index = -1;
+    if (args.contains("-c")) {
+        index = args.indexOf("-c");
+
+    } else if (args.contains("--clear-icons")) {
+        index = args.indexOf("--clear-icons");
+    }
+
+    index++;
+    if ((index <= 0) || (index >= args.count())) {
+        return;
+    }
+
+    const QString &operationStr = args.value(index);
+    bool isSuccess = false;
+    int operationNum = operationStr.toInt(&isSuccess);
+    if (isSuccess && desktop_icon_view) {
+        switch (operationNum) {
+            case 1:
+                GlobalSettings::getInstance()->setValue(DISPLAY_STANDARD_ICONS, false);
+                break;
+            default:
+                GlobalSettings::getInstance()->setValue(DISPLAY_STANDARD_ICONS, true);
+        }
     }
 }
 

@@ -80,6 +80,7 @@ public Q_SLOTS:
 private:
     void setupDesktop();
     void setupBgAndDesktop();
+    void clearIcons(const QStringList &args);
 
     bool m_first_parse = true;
 

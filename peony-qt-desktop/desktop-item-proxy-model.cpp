@@ -115,6 +115,16 @@ bool DesktopItemProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
            return false;
     }
 
+    if (!GlobalSettings::getInstance()->getValue(DISPLAY_STANDARD_ICONS).toBool()) {
+        if (uri == "computer:///"
+            || uri == "trash:///"
+            || uri == ("file://" + QStandardPaths::writableLocation(QStandardPaths::HomeLocation))
+            || uri == QStandardPaths::writableLocation(QStandardPaths::HomeLocation))
+        {
+            return false;
+        }
+    }
+
     if (info->isDesktopFile() && nullptr != info->desktopName()){
         if (m_bwListInfo->isBlackListMode()){
             return !m_bwListInfo->desktopNameExist(info->desktopName());

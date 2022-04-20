@@ -2,6 +2,12 @@
 <schemalist>
   <schema id="org.ukui.peony.settings" path="/org/ukui/peony/settings/">
     <!--General-->
+    <key type="b" name="display-standard-icons">
+      <default>true</default>
+      <summary>display standard icons</summary>
+      <description>Control the display of desktop standard icons</description>
+    </key>
+
     <key type="b" name="show-trash-dialog">
       <default>true</default>
       <summary>show trash dialog</summary>
