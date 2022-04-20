@@ -359,6 +359,71 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
 
     this->refresh();
 
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString &key) {
+        if (key == DISPLAY_STANDARD_ICONS) {
+            //this->refresh();
+            m_proxy_model->invalidate();
+            this->resolutionChange();
+            if (isItemsOverlapped()) {
+                // refresh again?
+                this->refresh();
+                QStringList needRelayoutItems;
+                QRegion notEmptyRegion;
+                for (auto value : m_item_rect_hash.values()) {
+                    auto keys = m_item_rect_hash.keys(value);
+                    if (keys.count() > 1) {
+                        keys.pop_front();
+                        for (auto key : keys) {
+                            needRelayoutItems.append(key);
+                            m_item_rect_hash.remove(key);
+                        }
+                    }
+                    notEmptyRegion += value;
+                }
+
+                int gridWidth = gridSize().width();
+                int gridHeight = gridSize().height();
+                // aligin exsited rect
+                int marginTop = notEmptyRegion.boundingRect().top();
+                while (marginTop - gridHeight > 0) {
+                    marginTop -= gridHeight;
+                }
+                int marginLeft = notEmptyRegion.boundingRect().left();
+                while (marginLeft - gridWidth > 0) {
+                    marginLeft -= gridWidth;
+                }
+                marginLeft = marginLeft < 0? 0: marginLeft;
+                marginTop = marginTop < 0? 0: marginTop;
+                int posX = marginLeft;
+                int posY = marginTop;
+                for (auto item : needRelayoutItems) {
+                    QRect itemRect = QRect(posX, posY, gridWidth, gridHeight);
+                    while (notEmptyRegion.contains(itemRect.center())) {
+                        if (posY + 2*gridHeight > this->viewport()->height()) {
+                            posY = marginTop;
+                            posX += gridWidth;
+                        } else {
+                            posY += gridHeight;
+                        }
+                        if (this->viewport()->geometry().contains(itemRect.topLeft())) {
+                            itemRect.moveTo(posX, posY);
+                        } else {
+                            itemRect.moveTo(0, 0);
+                        }
+                    }
+                    notEmptyRegion += itemRect;
+                    m_item_rect_hash.insert(item, itemRect);
+                }
+                for (auto uri : m_item_rect_hash.keys()) {
+                    auto rect = m_item_rect_hash.value(uri);
+                    updateItemPosByUri(uri, rect.topLeft());
+                    setFileMetaInfoPos(uri, rect.topLeft());
+                }
+                this->saveAllItemPosistionInfos();
+            }
+        }
+    });
+
     //fix task bar overlap with desktop icon and can drag move issue
     //bug #27811,33188
     if (QGSettings::isSchemaInstalled(PANEL_SETTINGS))
@@ -1039,12 +1104,13 @@ QPoint DesktopIconView::getFileMetaInfoPos(const QString &uri)
 
 void DesktopIconView::setFileMetaInfoPos(const QString &uri, const QPoint &pos)
 {
-    auto srcIndex = m_model->indexFromUri("computer:///");
-    auto index = m_proxy_model->mapFromSource(srcIndex);
-    m_item_rect_hash.remove(uri);
-    m_item_rect_hash.insert(uri, QRect(pos, QListView::visualRect(index).size()));
+    auto delegate = qobject_cast<DesktopIconViewDelegate *>(itemDelegate());
+    QSize iconSize = delegate->sizeHint(QStyleOptionViewItem(), QModelIndex());
 
-    QRect rect(mapToGlobal(pos), QListView::visualRect(index).size());
+    m_item_rect_hash.remove(uri);
+    m_item_rect_hash.insert(uri, QRect(pos, iconSize));
+
+    QRect rect(mapToGlobal(pos), rect.size());
     FileInfo::fromUri(uri).get()->setProperty("iconGeometry", rect);
 
     auto metaInfo = FileMetaInfo::fromUri(uri);

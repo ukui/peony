@@ -56,6 +56,23 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         m_cache.insert(key, m_settings->value(key));
     }
 
+    m_cache.insert(DISPLAY_STANDARD_ICONS, true);
+    if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
+        m_peonyGSettings = new QGSettings("org.ukui.peony.settings", "/org/ukui/peony/settings/", this);
+        connect(m_peonyGSettings, &QGSettings::changed, this, [=] (const QString &key) {
+            if (key == DISPLAY_STANDARD_ICONS) {
+                m_cache.remove(DISPLAY_STANDARD_ICONS);
+                m_cache.insert(DISPLAY_STANDARD_ICONS, m_peonyGSettings->get(DISPLAY_STANDARD_ICONS));
+            }
+            Q_EMIT this->valueChanged(key);
+        });
+
+        if (m_peonyGSettings->keys().contains(DISPLAY_STANDARD_ICONS)) {
+            m_cache.remove(DISPLAY_STANDARD_ICONS);
+            m_cache.insert(DISPLAY_STANDARD_ICONS, m_peonyGSettings->get(DISPLAY_STANDARD_ICONS));
+        }
+    }
+
     m_date_format = tr("yyyy/MM/dd");
     m_time_format = tr("HH:mm:ss");
     if (QGSettings::isSchemaInstalled("org.ukui.control-center.panel.plugins")) {
@@ -228,6 +245,12 @@ void GlobalSettings::setValue(const QString &key, const QVariant &value)
 
     m_cache.remove(key);
     m_cache.insert(key, value);
+    if ((key == DISPLAY_STANDARD_ICONS) && m_peonyGSettings) {
+        if (m_peonyGSettings->keys().contains(DISPLAY_STANDARD_ICONS)) {
+            m_peonyGSettings->set(DISPLAY_STANDARD_ICONS, value);
+        }
+        return;
+    }
     QtConcurrent::run([=]() {
         if (m_mutex.tryLock(1000)) {
             m_settings->setValue(key, value);
