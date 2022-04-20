@@ -449,13 +449,13 @@ QMimeData *FileItemModel::mimeData(const QModelIndexList &indexes) const
     QStringList uris;
     for (auto index : indexes) {
         auto item = itemFromIndex(index);
-        auto encodeUrl = Peony::FileUtils::urlEncode(item->m_info->uri());
-        QUrl url = encodeUrl;
+        auto uri = item->m_info->uri();
+        QUrl url = uri;
         if (!urls.contains(url)) {
             qDebug() << "mimeData:" << url;
 
             urls << url;
-            uris << encodeUrl;
+            uris << uri;
         }
     }
     data->setUrls(urls);
