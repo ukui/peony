@@ -350,6 +350,10 @@ Copyright (C): 2020, KylinSoft Co., Ltd.</source>
         <source>Modified Date</source>
         <translation>ཟླ་ཚེས་བཅོས་བསྒྱུར།</translation>
     </message>
+    <message>
+        <source>Use global sorting</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TabStatusBar</name>
