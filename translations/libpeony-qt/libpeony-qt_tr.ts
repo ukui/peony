@@ -1719,7 +1719,7 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-info.cpp" line="289"/>
+        <location filename="../../libpeony-qt/file-info.cpp" line="291"/>
         <source>data</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1727,22 +1727,22 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileInfoJob</name>
     <message>
-        <location filename="../../libpeony-qt/file-info-job.cpp" line="263"/>
+        <location filename="../../libpeony-qt/file-info-job.cpp" line="268"/>
         <source>Trash</source>
         <translation type="unfinished">Çöp</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-info-job.cpp" line="265"/>
+        <location filename="../../libpeony-qt/file-info-job.cpp" line="270"/>
         <source>Computer</source>
         <translation type="unfinished">Bilgisayar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-info-job.cpp" line="267"/>
+        <location filename="../../libpeony-qt/file-info-job.cpp" line="272"/>
         <source>Network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-info-job.cpp" line="269"/>
+        <location filename="../../libpeony-qt/file-info-job.cpp" line="274"/>
         <source>Recent</source>
         <translation type="unfinished">En son</translation>
     </message>
@@ -1800,37 +1800,37 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</translation
 <context>
     <name>Peony::FileItemModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="280"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="294"/>
         <source>child(ren)</source>
         <translation>Çocuklar</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="268"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="282"/>
         <source>Symbol Link, </source>
         <translation>Sembolik Bağlantı, </translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="303"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="317"/>
         <source>File Name</source>
         <translation>Dosya Adı</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="307"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="321"/>
         <source>Delete Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="312"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="326"/>
         <source>File Size</source>
         <translation>Dosya Boyutu</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="310"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="324"/>
         <source>File Type</source>
         <translation>Dosya Türü</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="308"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="322"/>
         <source>Modified Date</source>
         <translation>Değiştirme Tarihi</translation>
     </message>
@@ -2495,28 +2495,28 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
         <translation type="obsolete">Dosyayı yeniden isimlendir</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="73"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="74"/>
         <source>File Rename error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="74"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="75"/>
         <source>Invalid file name %1%2%3 .</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="89"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="90"/>
         <source>File Rename warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="90"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="91"/>
         <source>The file %1%2%3 will be hidden when you refresh or change directory!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="153"/>
-        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="183"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="166"/>
+        <location filename="../../libpeony-qt/file-operation/file-rename-operation.cpp" line="196"/>
         <source>Rename file error</source>
         <translation>Dosya yeniden adlandırma hatası</translation>
     </message>
@@ -2588,23 +2588,23 @@ Bağlantı dosyasını silmek istiyor musunuz?</translation>
     <name>Peony::GlobalSettings</name>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="74"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="293"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="298"/>
         <source>yyyy/MM/dd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../libpeony-qt/global-settings.cpp" line="75"/>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="286"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="291"/>
         <source>HH:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="283"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="288"/>
         <source>AP hh:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/global-settings.cpp" line="296"/>
+        <location filename="../../libpeony-qt/global-settings.cpp" line="301"/>
         <source>yyyy-MM-dd</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3774,16 +3774,16 @@ Zorla ayrılmak ister misin?</translation>
         <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="297"/>
         <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="313"/>
         <location filename="../../libpeony-qt/file-operation/file-copy-operation.cpp" line="489"/>
-        <location filename="../../libpeony-qt/file-utils.cpp" line="139"/>
-        <location filename="../../libpeony-qt/file-utils.cpp" line="161"/>
-        <location filename="../../libpeony-qt/file-utils.cpp" line="183"/>
-        <location filename="../../libpeony-qt/file-utils.cpp" line="190"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="155"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="177"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="199"/>
         <location filename="../../libpeony-qt/file-utils.cpp" line="206"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="222"/>
         <source>duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-utils.cpp" line="329"/>
+        <location filename="../../libpeony-qt/file-utils.cpp" line="345"/>
         <source>data</source>
         <translation type="unfinished"></translation>
     </message>
