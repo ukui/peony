@@ -71,15 +71,9 @@ public:
     Qt::SortOrder getCurrentSortOrder();
     int getCurrentSortColumn();
 
-    bool getWindowShowHidden() {
-        return m_show_hidden_file;
-    }
-    bool getWindowUseDefaultNameSortOrder() {
-        return m_use_default_name_sort_order;
-    }
-    bool getWindowSortFolderFirst() {
-        return m_folder_first;
-    }
+    bool getWindowShowHidden();
+    bool getWindowUseDefaultNameSortOrder();
+    bool getWindowSortFolderFirst();
 
     int currentViewZoomLevel();
     bool currentViewSupportZoom();
@@ -127,9 +121,9 @@ public Q_SLOTS:
     void refresh();
     void forceStopLoading();
 
-    void setShowHidden();
-    void setUseDefaultNameSortOrder();
-    void setSortFolderFirst();
+    void setShowHidden(bool showHidden);
+    void setUseDefaultNameSortOrder(bool use);
+    void setSortFolderFirst(bool set);
 
     void setShortCuts();
     void checkSettings();
@@ -184,9 +178,6 @@ private:
     bool m_is_draging = false;
     bool m_is_search = false;
     bool m_filter_working = false;
-    bool m_show_hidden_file = false;
-    bool m_use_default_name_sort_order;
-    bool m_folder_first;
 
     bool m_should_save_side_bar_width = false;
     bool m_should_save_window_size = false;

@@ -19,6 +19,11 @@
       <summary>show hide file</summary>
       <description>show hide files in peony and peony-desktop</description>
     </key>
+    <key type="b" name="use-global-default-settings">
+      <default>true</default>
+      <summary>default sort policy for peony</summary>
+      <description>true for global, false for directory itself</description>
+    </key>
     <!--directory-view-->
 
     <!--remote-server-->

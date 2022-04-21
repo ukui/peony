@@ -153,9 +153,9 @@ public Q_SLOTS:
     void searchFilter(QString target_path, QString keyWord, bool search_file_name, bool search_content) override;
     void filterUpdate(int type_index=0, int time_index=0, int size_index=0) override;
 
-    void setShowHidden() override;
-    void setUseDefaultNameSortOrder() override;
-    void setSortFolderFirst() override;
+    void setShowHidden(bool showHidden) override;
+    void setUseDefaultNameSortOrder(bool use) override;
+    void setSortFolderFirst(bool set) override;
 
     void onPreviewPageSwitch(const QString &uri) override;
 

@@ -43,6 +43,8 @@
 #define SHOW_TRASH_DIALOG           "showTrashDialog"
 #define INIT_FOR_FIRST_TIME         "initForFirstTime"  /* org.ukui.peony.settings 首次初始化标志 */
 
+#define USE_GLOBAL_DEFAULT_SORTING "use-global-default-sorting"
+
 #define DEFAULT_VIEW_ID             "directory-view/default-view-id"
 #define DEFAULT_VIEW_ZOOM_LEVEL     "directory-view/default-view-zoom-level"
 

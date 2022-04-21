@@ -38,6 +38,7 @@
 #include "file-operation-manager.h"
 #include "directory-view-widget.h"
 #include "directory-view-container.h"
+#include "file-meta-info.h"
 
 OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent)
 {
@@ -76,7 +77,7 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
     auto showHidden = addAction(tr("Show Hidden"), this, [=](bool checked) {
         //window set show hidden
-        m_window->setShowHidden();
+        m_window->setShowHidden(checked);
     });
     m_show_hidden = showHidden;
     showHidden->setCheckable(true);
@@ -122,9 +123,20 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
 
 void OperationMenu::updateMenu()
 {
-    m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)?
-                              Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool():
-                              false);
+    if (Peony::GlobalSettings::getInstance()->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        m_show_hidden->setChecked(Peony::GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)?
+                                  Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool():
+                                  false);
+    } else {
+        auto uri = m_window->getCurrentUri();
+        auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            bool checked = metaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).isValid()? metaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).toBool(): (Peony::GlobalSettings::getInstance()->isExist(SHOW_HIDDEN_PREFERENCE)? Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false);
+            m_show_hidden->setChecked(checked);
+        } else {
+            m_show_hidden->setChecked(false);
+        }
+    }
 
     m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist(FORBID_THUMBNAIL_IN_VIEW)?
                                       Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool():

@@ -58,6 +58,7 @@
 #include "volume-manager.h"
 
 #include "file-info-job.h"
+#include "file-meta-info.h"
 #include "global-settings.h"
 
 #include <QApplication>
@@ -370,6 +371,21 @@ TabWidget::TabWidget(QWidget *parent) : QMainWindow(parent)
         m_status_bar->update();
     });
 
+    connect(this, &TabWidget::activePageLocationChanged, this, [=]{
+        auto settings = Peony::GlobalSettings::getInstance();
+        if (!settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+            auto uri = getCurrentUri();
+            auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+            if (!metaInfo) {
+                qCritical()<<"can not get meta info"<<uri;
+            } else {
+                auto sortType = metaInfo->getMetaInfoVariant(SORT_COLUMN).isValid()? metaInfo->getMetaInfoInt(SORT_COLUMN): 0;
+                auto sortOrder = metaInfo->getMetaInfoVariant(SORT_ORDER).isValid()? metaInfo->getMetaInfoInt(SORT_ORDER): 0;
+                currentPage()->setSortType(Peony::FileItemModel::ColumnType(sortType));
+                currentPage()->setSortOrder(Qt::SortOrder(sortOrder));
+            }
+        }
+    });
     previewButtons->setEnabled(false);
 }
 
@@ -1256,13 +1272,6 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                 m_stack->setCurrentWidget(viewContainer);
             }
 
-            //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
-            auto settings = Peony::GlobalSettings::getInstance();
-            auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
-            auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
-            viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
-            viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
-
             //process open symbolic link
             auto realUri = uri;
             if (info->isSymbolLink() && info->symlinkTarget().length() >0 && uri.startsWith("file://")) {
@@ -1288,6 +1297,21 @@ void TabWidget::addPage(const QString &uri, bool jumpTo)
                 viewContainer->getView()->setCurrentZoomLevel(zoomLevel);
             else
                 viewContainer->getView()->setCurrentZoomLevel(Peony::GlobalSettings::getInstance()->getValue(DEFAULT_VIEW_ZOOM_LEVEL).toInt());
+
+            //auto viewContainer = new Peony::DirectoryViewContainer(m_stack);
+            auto settings = Peony::GlobalSettings::getInstance();
+            if (settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+                auto sortType = settings->isExist(SORT_COLUMN)? settings->getValue(SORT_COLUMN).toInt(): 0;
+                auto sortOrder = settings->isExist(SORT_ORDER)? settings->getValue(SORT_ORDER).toInt(): 0;
+                viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+                viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
+            } else {
+                auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+                auto sortType = metaInfo->getMetaInfoVariant(SORT_COLUMN).isValid()? metaInfo->getMetaInfoInt(SORT_COLUMN): 0;
+                auto sortOrder = metaInfo->getMetaInfoVariant(SORT_ORDER).isValid()? metaInfo->getMetaInfoInt(SORT_ORDER): 0;
+                viewContainer->setSortType(Peony::FileItemModel::ColumnType(sortType));
+                viewContainer->setSortOrder(Qt::SortOrder(sortOrder));
+            }
 
             m_tab_bar->addPage(realUri, jumpTo);
             updateTabBarGeometry();

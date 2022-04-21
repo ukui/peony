@@ -215,7 +215,7 @@ void AdvanceSearchBar::filterUpdate()
 
 void AdvanceSearchBar::setShowHidden()
 {
-    m_top_window->setShowHidden();
+    m_top_window->setShowHidden(!m_top_window->getWindowShowHidden());
     clearData();
 }
 

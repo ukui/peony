@@ -316,8 +316,8 @@ FMWindow::FMWindow(const QString &uri, QWidget *parent) : QMainWindow (parent)
     QAction *showHiddenAction = new QAction(this);
     showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
     addAction(showHiddenAction);
-    connect(showHiddenAction, &QAction::triggered, this, [=]() {
-        this->setShowHidden();
+    connect(showHiddenAction, &QAction::triggered, this, [=](bool checked) {
+        this->setShowHidden(checked);
     });
 
     auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
@@ -741,20 +741,20 @@ void FMWindow::filterUpdate(int type_index, int time_index, int size_index)
     m_tab->getActivePage()->setSortFilter(type_index, time_index, size_index);
 }
 
-void FMWindow::setShowHidden()
+void FMWindow::setShowHidden(bool showHidden)
 {
     //qDebug()<<"setShowHidden"<<m_show_hidden_file;
     m_show_hidden_file = !m_show_hidden_file;
     m_tab->getActivePage()->setShowHidden(m_show_hidden_file);
 }
 
-void FMWindow::setUseDefaultNameSortOrder()
+void FMWindow::setUseDefaultNameSortOrder(bool use)
 {
     m_use_default_name_sort_order = ! m_use_default_name_sort_order;
     getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
 }
 
-void FMWindow::setSortFolderFirst()
+void FMWindow::setSortFolderFirst(bool set)
 {
     m_folder_first = ! m_folder_first;
     getCurrentPage()->setSortFolderFirst(m_folder_first);

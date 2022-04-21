@@ -71,6 +71,8 @@
 
 #include "float-pane-widget.h"
 
+#include "file-meta-info.h"
+
 #include <QSplitter>
 
 #include <QPainter>
@@ -274,11 +276,6 @@ Peony::DirectoryViewContainer *MainWindow::getCurrentPage()
 
 void MainWindow::checkSettings()
 {
-    auto settings = Peony::GlobalSettings::getInstance();
-    m_show_hidden_file = settings->isExist(SHOW_HIDDEN_PREFERENCE)? settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool(): false;
-    m_use_default_name_sort_order = settings->isExist(SORT_CHINESE_FIRST)? settings->getValue(SORT_CHINESE_FIRST).toBool(): false;
-    m_folder_first = settings->isExist(SORT_FOLDER_FIRST)? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
-
     if (QGSettings::isSchemaInstalled("org.ukui.style"))
     {
         //font monitor
@@ -310,10 +307,11 @@ void MainWindow::setShortCuts()
         //show hidden action
         QAction *showHiddenAction = new QAction(this);
         showHiddenAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+        showHiddenAction->setCheckable(true);
         addAction(showHiddenAction);
         connect(showHiddenAction, &QAction::triggered, this, [=]() {
             //qDebug() << "show hidden";
-            this->setShowHidden();
+            this->setShowHidden(!getWindowShowHidden());
         });
 
         auto undoAction = new QAction(QIcon::fromTheme("edit-undo-symbolic"), tr("Undo"), this);
@@ -833,6 +831,57 @@ int MainWindow::getCurrentSortColumn()
     return m_tab->getSortType();
 }
 
+bool MainWindow::getWindowShowHidden()
+{
+    auto settings = Peony::GlobalSettings::getInstance();
+    if (settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        return settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+    } else {
+        auto uri = getCurrentUri();
+        auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            return metaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).isValid()? metaInfo->getMetaInfoVariant(SHOW_HIDDEN_PREFERENCE).toBool(): (settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool());
+        } else {
+            qDebug()<<"can not get file meta info"<<uri;
+            return settings->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
+        }
+    }
+}
+
+bool MainWindow::getWindowUseDefaultNameSortOrder()
+{
+    auto settings = Peony::GlobalSettings::getInstance();
+    if (settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        return settings->getValue(SORT_CHINESE_FIRST).isValid()? settings->getValue(SORT_CHINESE_FIRST).toBool(): true;
+    } else {
+        auto uri = getCurrentUri();
+        auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            return metaInfo->getMetaInfoVariant(SORT_CHINESE_FIRST).isValid()? metaInfo->getMetaInfoVariant(SORT_CHINESE_FIRST).toBool(): (settings->getValue(SORT_CHINESE_FIRST).isValid()? settings->getValue(SORT_CHINESE_FIRST).toBool(): true);
+        } else {
+            qDebug()<<"can not get file meta info"<<uri;
+            return settings->getValue(SORT_CHINESE_FIRST).isValid()? settings->getValue(SORT_CHINESE_FIRST).toBool(): true;
+        }
+    }
+}
+
+bool MainWindow::getWindowSortFolderFirst()
+{
+    auto settings = Peony::GlobalSettings::getInstance();
+    if (settings->getValue(USE_GLOBAL_DEFAULT_SORTING).toBool()) {
+        return settings->getValue(SORT_FOLDER_FIRST).isValid()? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
+    } else {
+        auto uri = getCurrentUri();
+        auto metaInfo = Peony::FileMetaInfo::fromUri(uri);
+        if (metaInfo) {
+            return metaInfo->getMetaInfoVariant(SORT_FOLDER_FIRST).isValid()? metaInfo->getMetaInfoVariant(SORT_FOLDER_FIRST).toBool(): (settings->getValue(SORT_FOLDER_FIRST).isValid()? settings->getValue(SORT_FOLDER_FIRST).toBool(): true);
+        } else {
+            qDebug()<<"can not get file meta info"<<uri;
+            return settings->getValue(SORT_FOLDER_FIRST).isValid()? settings->getValue(SORT_FOLDER_FIRST).toBool(): true;
+        }
+    }
+}
+
 int MainWindow::currentViewZoomLevel()
 {
     if (getCurrentPage()) {
@@ -1052,34 +1101,30 @@ void MainWindow::setLabelNameFilter(QString name)
     getCurrentPage()->setFilterLabelConditions(name);
 }
 
-void MainWindow::setShowHidden()
+void MainWindow::setShowHidden(bool showHidden)
 {
     if (!getCurrentPage()) {
         return;
     }
-
-    m_show_hidden_file = !Peony::GlobalSettings::getInstance()->getValue(SHOW_HIDDEN_PREFERENCE).toBool();
-    getCurrentPage()->setShowHidden(m_show_hidden_file);
+    getCurrentPage()->setShowHidden(showHidden);
     //显示隐藏文件，更新项目个数
     Q_EMIT m_tab->updateItemsNum();
 }
 
-void MainWindow::setUseDefaultNameSortOrder()
+void MainWindow::setUseDefaultNameSortOrder(bool use)
 {
     if (!getCurrentPage()) {
         return;
     }
-    m_use_default_name_sort_order = ! m_use_default_name_sort_order;
-    getCurrentPage()->setUseDefaultNameSortOrder(m_use_default_name_sort_order);
+    getCurrentPage()->setUseDefaultNameSortOrder(use);
 }
 
-void MainWindow::setSortFolderFirst()
+void MainWindow::setSortFolderFirst(bool set)
 {
     if (!getCurrentPage()) {
         return;
     }
-    m_folder_first = ! m_folder_first;
-    getCurrentPage()->setSortFolderFirst(m_folder_first);
+    getCurrentPage()->setSortFolderFirst(set);
 }
 
 void MainWindow::forceStopLoading()
