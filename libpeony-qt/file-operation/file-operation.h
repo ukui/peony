@@ -110,7 +110,7 @@ public:
         return m_is_cancelled;
     }
     /* 移动操作是否为copy文件，默认值为false，例如鼠标拖到文件时实际操作为copy，返回true */
-    virtual bool getCopyMove(){
+    virtual bool isCopyMove(){
         return false;
     }
 

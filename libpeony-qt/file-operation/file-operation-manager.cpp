@@ -144,7 +144,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
         if ((operationType == FileOperationInfo::Trash
              || operationType == FileOperationInfo::Delete
              || operationType == FileOperationInfo::Move
-             ||operationType == FileOperationInfo::Copy && operation->getCopyMove())/* 鼠标拖动文件情形 */
+             ||operationType == FileOperationInfo::Copy && operation->isCopyMove())/* 鼠标拖动文件情形 */
                 &&isFileOccupied(absolutePath))
         {
             operationInfo.get()->m_src_uris.removeOne(uri);

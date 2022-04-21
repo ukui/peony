@@ -107,7 +107,7 @@ public:
     std::shared_ptr<FileOperationInfo> getOperationInfo() override {
         return m_info;
     }
-    bool getCopyMove() {
+    bool isCopyMove() {
         return m_copy_move;
     }
 
