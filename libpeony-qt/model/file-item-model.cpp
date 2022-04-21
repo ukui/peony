@@ -244,7 +244,7 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
             }
             /* story#8359 【文件管理器】手动开启关闭文件拓展名 */
             if(!m_showFileExtension){
-                if (item->m_info->isDir()) {
+                if (item->m_info->isDir()||(!displayName.contains("."))) {
                     return QVariant(displayName);
                 }
                 return QVariant(FileUtils::getBaseNameOfFile(displayName));

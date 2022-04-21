@@ -66,7 +66,7 @@ public:
     }
 
 private:
-    void renameHandleWhenExtensionIsHidden(); /* 隐藏扩展名时重命名处理 */
+    QString getFileExtensionOfFile(const QString& file); /* 获取文件的文件扩展名 */
 
 private:
     ExceptionResponse prehandle(GError *err);
