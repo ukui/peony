@@ -32,6 +32,7 @@
 #include "icon-view-delegate.h"
 #include "clipboard-utils.h"
 #include "desktop-item-model.h"
+#include "emblem-provider.h"
 
 #include <QPushButton>
 #include <QWidget>
@@ -221,9 +222,12 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     painter->restore();
 
+    QList<int> emblemPoses = {4, 3, 2, 1}; //bottom right, bottom left, top right, top left
+
     //paint link icon and locker icon
     FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString()).get();
     if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
+        emblemPoses.removeOne(2);
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
@@ -267,6 +271,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     }
 
     if (index.data(Qt::UserRole + 1).toBool()) {
+        emblemPoses.removeOne(1);
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
@@ -298,6 +303,84 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         auto linkRect = QRect(topRight, symbolicIconSize);
         QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-symbolic-link");
         symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
+    }
+
+    // paint extension emblems, FIXME: adjust layout, and implemet on indexwidget, other view.
+    auto extensionsEmblems = EmblemProviderManager::getInstance()->getAllEmblemsForUri(file->uri());
+    for (auto extensionsEmblem : extensionsEmblems) {
+        if (emblemPoses.isEmpty()) {
+            break;
+        }
+
+        QIcon icon = QIcon::fromTheme(extensionsEmblem, QIcon(extensionsEmblem));
+
+        QSize emblemsIconSize = QSize(16, 16);
+        int offset = 8;
+        switch (view->zoomLevel()) {
+        case DesktopIconView::Small: {
+            emblemsIconSize = QSize(8, 8);
+            offset = 10;
+            break;
+        }
+        case DesktopIconView::Normal: {
+            break;
+        }
+        case DesktopIconView::Large: {
+            offset = 4;
+            emblemsIconSize = QSize(24, 24);
+            break;
+        }
+        case DesktopIconView::Huge: {
+            offset = 2;
+            emblemsIconSize = QSize(32, 32);
+            break;
+        }
+        default: {
+            break;
+        }
+        }
+
+        int pos = emblemPoses.takeFirst();
+        switch (pos) {
+        case 1: {
+            icon.paint(painter,
+                       opt.rect.topLeft().x() + 10,
+                       opt.rect.topLeft().y() + 10,
+                       emblemsIconSize.width(),
+                       emblemsIconSize.height(),
+                       Qt::AlignCenter);
+            break;
+        }
+        case 2: {
+            icon.paint(painter,
+                       opt.rect.topRight().x() - offset - emblemsIconSize.width(),
+                       opt.rect.topRight().y() + 10,
+                       emblemsIconSize.width(),
+                       emblemsIconSize.height(),
+                       Qt::AlignCenter);
+            break;
+        }
+        case 3: {
+            icon.paint(painter,
+                       opt.rect.topLeft().x() + 10,
+                       opt.rect.topLeft().y() + offset + iconRect.height() - emblemsIconSize.height(),
+                       emblemsIconSize.width(),
+                       emblemsIconSize.height(),
+                       Qt::AlignCenter);
+            break;
+        }
+        case 4: {
+            icon.paint(painter,
+                       opt.rect.topRight().x() - offset - emblemsIconSize.width(),
+                       opt.rect.topRight().y() + offset + iconRect.height() - emblemsIconSize.height(),
+                       emblemsIconSize.width(),
+                       emblemsIconSize.height(),
+                       Qt::AlignCenter);
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     /*

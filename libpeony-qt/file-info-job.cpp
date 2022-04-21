@@ -28,6 +28,8 @@
 #include "file-info-manager.h"
 #include "file-label-model.h"
 
+#include "emblem-provider.h"
+
 #include <gio/gdesktopappinfo.h>
 #include <global-settings.h>
 
@@ -119,6 +121,8 @@ bool FileInfoJob::querySync()
     if (m_auto_delete)
         deleteLater();
 
+    EmblemProviderManager::getInstance()->querySync(m_info->uri());
+
     infoUpdated();
 
     return true;
@@ -136,6 +140,7 @@ GAsyncReadyCallback FileInfoJob::query_info_async_callback(GFile *file, GAsyncRe
         thisJob->refreshInfoContents(_info);
         g_object_unref(_info);
         Q_EMIT thisJob->queryAsyncFinished(true);
+        EmblemProviderManager::getInstance()->queryAsync(thisJob->m_info->uri());
         Q_EMIT thisJob->infoUpdated();
     } else {
         if (err) {

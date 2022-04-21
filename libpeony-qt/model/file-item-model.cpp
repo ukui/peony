@@ -36,6 +36,8 @@
 
 #include "file-operation-utils.h"
 
+#include "emblem-provider.h"
+
 #include <QIcon>
 #include <QMimeData>
 #include <QUrl>
@@ -50,6 +52,10 @@ using namespace Peony;
 FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 {
     setPositiveResponse(true);
+
+    connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateFile, this, &FileItemModel::updated);
+    connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateAllFiles, this, &FileItemModel::updated);
+    connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::visibleChanged, this, &FileItemModel::updated);
 }
 
 FileItemModel::~FileItemModel()

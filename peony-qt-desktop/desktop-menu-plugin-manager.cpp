@@ -35,6 +35,7 @@
 #include <QDebug>
 #include "vfs-plugin-iface.h"
 #include "vfs-plugin-manager.h"
+#include "emblem-plugin-iface.h"
 
 using namespace Peony;
 
@@ -95,6 +96,12 @@ void DesktopMenuPluginManager::loadAsync()
             auto p = dynamic_cast<VFSPluginIface *>(plugin);
             if (p) {
                 VFSPluginManager::getInstance()->registerPlugin(p);
+                continue;
+            }
+
+            auto emblemsPlugin = dynamic_cast<EmblemPluginInterface *>(plugin);
+            if (emblemsPlugin){
+                EmblemProviderManager::getInstance()->registerProvider(emblemsPlugin->create());
                 continue;
             }
 

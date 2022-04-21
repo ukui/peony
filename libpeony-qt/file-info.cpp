@@ -27,6 +27,7 @@
 #include "file-meta-info.h"
 #include "file-utils.h"
 #include "thumbnail-manager.h"
+#include "emblem-provider.h"
 
 #include <QUrl>
 #include <QDir>
@@ -56,6 +57,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
     m_is_remote = !g_file_is_native(m_file);
     m_is_dir = false;
     m_is_volume = false;
+    m_meta_info = FileMetaInfo::fromGFileInfo(uri, nullptr);
     GFileType type = g_file_query_file_type(m_file, G_FILE_QUERY_INFO_NONE, nullptr);
     switch (type) {
     case G_FILE_TYPE_DIRECTORY:
@@ -74,6 +76,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 FileInfo::~FileInfo()
 {
     ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
+    EmblemProviderManager::getInstance()->cancelQuery(m_uri);
     //qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
 
@@ -110,6 +113,7 @@ std::shared_ptr<FileInfo> FileInfo::fromUri(QString uri)
         newly_info->m_is_remote = ! g_file_is_native(newly_info->m_file);
         newly_info->m_is_dir = false;
         newly_info->m_is_volume = false;
+        newly_info->m_meta_info = FileMetaInfo::fromGFileInfo(uri, nullptr);
         if (! newly_info->m_is_remote && false) {
             GFileType type = g_file_query_file_type(newly_info->m_file, G_FILE_QUERY_INFO_NONE, nullptr);
             switch (type) {

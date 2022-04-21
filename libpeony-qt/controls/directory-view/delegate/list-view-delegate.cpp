@@ -29,6 +29,7 @@
 #include "clipboard-utils.h"
 
 #include "file-info.h"
+#include "emblem-provider.h"
 
 #include <QTimer>
 #include <QPushButton>
@@ -131,6 +132,8 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     opt.widget->style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
+    QList<int> emblemPoses = {4, 3, 2, 1}; //bottom right, bottom left, top right, top left
+
     //add link and read only icon support
     if (index.column() == 0) {
         auto rect = view->visualRect(index);
@@ -138,9 +141,11 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         auto size = iconSize.width()/2;
         bool isSymbolicLink = info->isSymbolLink();
         auto loc_x = rect.x() + iconSize.width() - size/2;
-        auto loc_y =rect.y();
+        auto loc_y = rect.y();
+        auto iconSizeHeight = iconSize.height();
         //paint symbolic link emblems
         if (isSymbolicLink) {
+            emblemPoses.removeOne(2);
             QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
             //qDebug()<<info->symbolicIconName();
             icon.paint(painter, loc_x, loc_y, size, size);
@@ -151,12 +156,50 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
         loc_x = rect.x();
         if (info->uri().startsWith("file:")) {
+            emblemPoses.removeOne(1);
             if (!info->canRead()) {
                 QIcon icon = QIcon::fromTheme("emblem-unreadable");
                 icon.paint(painter, loc_x, loc_y, size, size);
             } else if (!info->canWrite() && !info->canExecute()) {
                 QIcon icon = QIcon::fromTheme("emblem-readonly");
                 icon.paint(painter, loc_x, loc_y, size, size);
+            }
+        }
+
+    // paint extension emblems, FIXME: adjust layout, and implemet on indexwidget, other view.
+        auto extensionsEmblems = EmblemProviderManager::getInstance()->getAllEmblemsForUri(info->uri());
+
+        //Special calculation emblems coordinates
+        if(iconSize.height() < 28){
+            iconSizeHeight = 28;
+        }
+
+        for (auto extensionsEmblem : extensionsEmblems) {
+            if (emblemPoses.isEmpty()) {
+               break;
+            }
+
+            QIcon icon = QIcon::fromTheme(extensionsEmblem, QIcon(extensionsEmblem));
+            int pos = emblemPoses.takeFirst();
+            switch (pos) {
+            case 1: {
+               icon.paint(painter, loc_x, loc_y, size, size, Qt::AlignCenter);
+               break;
+            }
+            case 2: {
+               icon.paint(painter, loc_x + iconSize.width() - size/2, loc_y, size, size, Qt::AlignCenter);
+               break;
+            }
+            case 3: {
+               icon.paint(painter, loc_x, loc_y + iconSizeHeight - size/2 - 5, size, size, Qt::AlignCenter);
+               break;
+            }
+            case 4: {
+               icon.paint(painter, loc_x + iconSize.width() - size/2, loc_y + iconSizeHeight - size/2 - 5, size, size, Qt::AlignCenter);
+               break;
+            }
+            default:
+               break;
             }
         }
     }
