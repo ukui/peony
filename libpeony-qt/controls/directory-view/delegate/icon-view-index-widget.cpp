@@ -40,6 +40,7 @@
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
 #include "file-utils.h"
+#include "emblem-provider.h"
 
 #include <QDebug>
 #include <QTextLayout>
@@ -287,8 +288,12 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         IconViewTextHelper::paintText(&p, opt, m_index, 9999, 2, 4-iLine);
         p.restore();
     }
+
+    QList<int> emblemPoses = {4, 3, 2, 1}; //bottom right, bottom left, top right, top left
+
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
+        emblemPoses.removeOne(2);
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<< "symbolic:" << info->symbolicIconName();
         icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
@@ -297,6 +302,7 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     //paint access emblems
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
     if (!info->uri().startsWith("file:")) {
+        emblemPoses.removeOne(1);
         return;
     }
 
@@ -308,6 +314,39 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
         QIcon icon = QIcon::fromTheme("emblem-readonly");
         icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20);
     }
+
+    // paint extension emblems, FIXME: adjust layout, and implemet on indexwidget, other view.
+        auto extensionsEmblems = EmblemProviderManager::getInstance()->getAllEmblemsForUri(info->uri());
+
+        for (auto extensionsEmblem : extensionsEmblems) {
+            if (emblemPoses.isEmpty()) {
+                break;
+            }
+
+            QIcon icon = QIcon::fromTheme(extensionsEmblem, QIcon(extensionsEmblem));
+            int pos = emblemPoses.takeFirst();
+            switch (pos) {
+            case 1: {
+                icon.paint(&p, rect.x() + 10, rect.y() + 10, 20, 20, Qt::AlignCenter);
+                break;
+            }
+            case 2: {
+                icon.paint(&p, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
+                break;
+            }
+            case 3: {
+                icon.paint(&p, rect.x() + 10, m_delegate->getView()->iconSize().height() - 10, 20, 20, Qt::AlignCenter);
+                break;
+            }
+            case 4: {
+                icon.paint(&p, rect.right() - 30, m_delegate->getView()->iconSize().height() - 10, 20, 20, Qt::AlignCenter);
+                break;
+            }
+            default:
+                break;
+            }
+        }
+
 }
 
 void IconViewIndexWidget::mousePressEvent(QMouseEvent *e)

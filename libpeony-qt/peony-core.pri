@@ -2,6 +2,8 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/custom-error-handler.h \
+    $$PWD/emblem-provider.h \
+    $$PWD/metadata-emblem-provider.h \
     $$PWD/peony-core_global.h           \
     $$PWD/file-info.h                   \
     $$PWD/file-info-job.h               \
@@ -25,10 +27,12 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/custom-error-handler.cpp \
+    $$PWD/emblem-provider.cpp \
     $$PWD/file-info.cpp                 \
     $$PWD/file-info-job.cpp             \
     $$PWD/file-info-manager.cpp         \
     $$PWD/file-enumerator.cpp           \
+    $$PWD/metadata-emblem-provider.cpp \
     $$PWD/mount-operation.cpp           \
     $$PWD/file-watcher.cpp              \
     $$PWD/connect-server-dialog.cpp     \

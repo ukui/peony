@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD \
 
 HEADERS += \
+    $$PWD/emblem-plugin-iface.h \
     $$PWD/menu-plugin-iface.h \
     $$PWD/plugin-iface.h \
     $$PWD/preview-page-plugin-iface.h \

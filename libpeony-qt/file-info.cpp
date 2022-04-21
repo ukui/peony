@@ -27,6 +27,7 @@
 #include "file-meta-info.h"
 #include "file-utils.h"
 #include "thumbnail-manager.h"
+#include "emblem-provider.h"
 
 #include <QUrl>
 #include <QDir>
@@ -75,6 +76,7 @@ FileInfo::FileInfo(const QString &uri, QObject *parent) : QObject (parent)
 FileInfo::~FileInfo()
 {
     ThumbnailManager::getInstance()->releaseThumbnail(m_uri);
+    EmblemProviderManager::getInstance()->cancelQuery(m_uri);
     //qDebug()<<"~FileInfo"<<m_uri;
     disconnect();
 

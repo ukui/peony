@@ -31,6 +31,7 @@
 #include "preview-page-plugin-iface.h"
 #include "style-plugin-iface.h"
 #include "vfs-plugin-manager.h"
+#include "emblem-plugin-iface.h"
 
 #include "properties-window.h" //properties factory manager define is in this header
 #include "properties-window-tab-page-plugin-iface.h"
@@ -120,6 +121,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
         case PluginInterface::VFSPlugin: {
             auto p = dynamic_cast<VFSPluginIface *>(plugin);
             VFSPluginManager::getInstance()->registerPlugin(p);
+            break;
+        }
+        case PluginInterface::EmblemPlugin: {
+            auto p = dynamic_cast<EmblemPluginInterface *>(plugin);
+            EmblemProviderManager::getInstance()->registerProvider(p->create());
             break;
         }
         default:

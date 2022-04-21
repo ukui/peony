@@ -45,6 +45,7 @@ public:
         ColumnProviderPlugin,
         StylePlugin,
         VFSPlugin,
+        EmblemPlugin,
         Other
     };
 

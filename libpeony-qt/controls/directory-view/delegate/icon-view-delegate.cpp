@@ -29,6 +29,8 @@
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
 
+#include "emblem-provider.h"
+
 #include <QDebug>
 #include <QLabel>
 
@@ -290,17 +292,21 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->restore();
     }
 
+    QList<int> emblemPoses = {4, 3, 2, 1}; //bottom right, bottom left, top right, top left
+
+
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
+        emblemPoses.removeOne(2);
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<<info->symbolicIconName();
         icon.paint(painter, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
     }
 
     //paint access emblems
-
     //NOTE: we can not query the file attribute in smb:///(samba) and network:///.
     if (info->uri().startsWith("file:")) {
+        emblemPoses.removeOne(1);
         if (!info->canRead()) {
             QIcon icon = QIcon::fromTheme("emblem-unreadable");
             icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
@@ -308,8 +314,38 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             QIcon icon = QIcon::fromTheme("emblem-readonly");
             icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20);
         }
-        painter->restore();
-        return;
+    }
+
+    // paint extension emblems, FIXME: adjust layout, and implemet on indexwidget, other view.
+    auto extensionsEmblems = EmblemProviderManager::getInstance()->getAllEmblemsForUri(info->uri());
+
+    for (auto extensionsEmblem : extensionsEmblems) {
+        if (emblemPoses.isEmpty()) {
+            break;
+        }
+
+        QIcon icon = QIcon::fromTheme(extensionsEmblem, QIcon(extensionsEmblem));
+        int pos = emblemPoses.takeFirst();
+        switch (pos) {
+        case 1: {
+            icon.paint(painter, rect.x() + 10, rect.y() + 10, 20, 20, Qt::AlignCenter);
+            break;
+        }
+        case 2: {
+            icon.paint(painter, rect.x() + rect.width() - 30, rect.y() + 10, 20, 20, Qt::AlignCenter);
+            break;
+        }
+        case 3: {
+            icon.paint(painter, rect.x() + 10, iconRect.bottom() - 15, 20, 20, Qt::AlignCenter);
+            break;
+        }
+        case 4: {
+            icon.paint(painter, rect.right() - 30, iconRect.bottom() - 15, 20, 20, Qt::AlignCenter);
+            break;
+        }
+        default:
+            break;
+        }
     }
 
     painter->restore();
