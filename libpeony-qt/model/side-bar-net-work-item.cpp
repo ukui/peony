@@ -392,6 +392,9 @@ void SharedDirectoryInfoThread::run()
              */
 
             const Peony::ShareInfo* shareInfo = userShareManager->getShareInfo(shareName);
+            //修复共享新建文件夹副本后，闪退问题(命令行设置共享成功，属性中共享设置无法成功)
+            if (! shareInfo)
+                continue;
             QString sharePath = shareInfo->originalPath;
             if (!sharePath.isEmpty())
                 sharedFolderInfoMap.insert(shareName,sharePath);
