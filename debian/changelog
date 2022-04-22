@@ -1,3 +1,11 @@
+peony (3.2.3+0325update2) v101; urgency=medium
+
+    * BUG: #116589 【x100】解决了打开几个文管，接入移动硬盘，点击文管侧边栏的硬盘图标，文管闪退问题
+    * 需求号：无
+    * 其他改动说明：修复文件夹副本设置共享成功后，文管闪退问题
+    * 其他改动影响域：文件管理器设置共享后运行
+ -- MeihongHe <hemeihong@kylinos.cn>  Fri, 22 Apr 2022 14:18:49 +0800
+
 peony (3.2.3+0325update1) v101; urgency=medium
 
   * sp1 2203版本更新
