@@ -92,8 +92,9 @@ void Peony::FileOperationErrorDialogConflict::setTipFilename(QString name)
         setText(QString(tr("<p>This location already contains the file '%1', Do you want to override it?</p>"))
                     .arg(opt.fontMetrics.elidedText(fileName, Qt::ElideMiddle, 480)));
     } else {
-        auto src = m_error->srcUri;
-        auto destDir = m_error->destDirUri;
+        //fix file name show as chaos code issue, link to bug#116596
+        auto src = FileUtils::urlDecode(m_error->srcUri);
+        auto destDir = FileUtils::urlDecode(m_error->destDirUri);
         setText(tr("Unexpected error from %1 to %2").arg(src).arg(destDir));
         qCritical()<<QString("Unexpected error from %1 to %2").arg(src).arg(destDir);
     }
