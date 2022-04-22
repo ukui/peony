@@ -157,6 +157,7 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
     });
 
     connect(Experimental_Peony::VolumeManager::getInstance(), &Experimental_Peony::VolumeManager::signal_mountFinished,this,[=](){
+        //fix open mutiple peony window, mount in side bar crash issue, link to bug#116201,116589
         if(!m_currSelectedItem)
             return;
         JumpDirectory(m_currSelectedItem->uri());
@@ -167,7 +168,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
         switch (index.column()) {
         case 0: {
             m_currSelectedItem = m_proxy_model->itemFromIndex(index);
-            if(m_currSelectedItem && m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
+            //fix open mutiple peony window, mount in side bar crash issue, link to bug#116201,116589
+            if (! m_currSelectedItem)
+                break;
+            if(m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
                 m_currSelectedItem->mount();
             else{
                 JumpDirectory(m_currSelectedItem->uri());
