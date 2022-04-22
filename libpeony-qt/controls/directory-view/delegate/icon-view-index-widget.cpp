@@ -155,6 +155,10 @@ bool IconViewIndexWidget::eventFilter(QObject *watched, QEvent *event)
 
 void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 {
+    if (!m_info.lock()) {
+        return;
+    }
+
     IconView *view = m_delegate->getView();
     auto expectedRect = view->visualRect(m_index);
     auto rectPos = this->mapToParent(QPoint(0, 0));
@@ -204,9 +208,6 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     opt.text = std::move(tmp);
 
     //extra emblems
-    if (!m_info.lock()) {
-        return;
-    }
     auto info = m_info.lock();
 
     // draw color symbols
