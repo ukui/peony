@@ -1111,6 +1111,14 @@ void MainWindow::setShowHidden(bool showHidden)
     Q_EMIT m_tab->updateItemsNum();
 }
 
+void MainWindow::setShowFileExtensions(bool checked)
+{
+    if (!getCurrentPage()) {
+        return;
+    }
+    getCurrentPage()->setShowFileExtensions(checked);
+}
+
 void MainWindow::setUseDefaultNameSortOrder(bool use)
 {
     if (!getCurrentPage()) {

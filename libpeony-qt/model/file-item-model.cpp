@@ -53,9 +53,20 @@ FileItemModel::FileItemModel(QObject *parent) : QAbstractItemModel (parent)
 {
     setPositiveResponse(true);
 
+
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateFile, this, &FileItemModel::updated);
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::requestUpdateAllFiles, this, &FileItemModel::updated);
     connect(EmblemProviderManager::getInstance(), &EmblemProviderManager::visibleChanged, this, &FileItemModel::updated);
+
+    auto settings = GlobalSettings::getInstance();
+    m_showFileExtension = settings->isExist(SHOW_FILE_EXTENSION)? settings->getValue(SHOW_FILE_EXTENSION).toBool(): true;
+    connect(GlobalSettings::getInstance(), &GlobalSettings::valueChanged, this, [=] (const QString& key) {
+        if (SHOW_FILE_EXTENSION == key) {
+            m_showFileExtension= GlobalSettings::getInstance()->getValue(key).toBool();
+            beginResetModel();
+            endResetModel();
+        }
+    });
 }
 
 FileItemModel::~FileItemModel()
@@ -225,12 +236,20 @@ QVariant FileItemModel::data(const QModelIndex &index, int role) const
         }
         case Qt::DisplayRole: {
             //fix bug#53504, desktop files not show same name issue
+            QString displayName = item->m_info->displayName();
             if (item->m_info->isDesktopFile())
             {
-                auto displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
+                displayName = FileUtils::handleDesktopFileName(item->m_info->uri(), item->m_info->displayName());
                 return QVariant(displayName);
             }
-            return QVariant(item->m_info->displayName());
+            /* story#8359 【文件管理器】手动开启关闭文件拓展名 */
+            if(!m_showFileExtension){
+                if (item->m_info->isDir()||(!displayName.contains("."))) {
+                    return QVariant(displayName);
+                }
+                return QVariant(FileUtils::getBaseNameOfFile(displayName));
+            }else
+                return QVariant(displayName);
         }
         case Qt::DecorationRole: {
             auto thumbnail = ThumbnailManager::getInstance()->tryGetThumbnail(item->m_info->uri());
@@ -624,4 +643,10 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 void FileItemModel::sendPathChangeRequest(const QString &destUri, const QString &sourceUri)
 {
     Q_EMIT this->changePathRequest(destUri, sourceUri);
+}
+
+void FileItemModel::setShowFileExtensions(bool show)
+{
+    m_showFileExtension = show;
+    GlobalSettings::getInstance()->setGSettingValue(SHOW_FILE_EXTENSION, show);
 }

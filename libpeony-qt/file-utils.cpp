@@ -130,6 +130,22 @@ QString FileUtils::urlDecode(const QString &url)
     return decodeUrl;
 }
 
+QString FileUtils::getBaseNameOfFile(const QString &file)
+{
+    /* 一些常见扩展名处理，特殊情况以后待完善 */
+    QFileInfo qFileInfo(file);
+    QString suffix = qFileInfo.suffix();
+    QString fileBaseName = file.left(file.length() - suffix.length() - 1);
+     if (fileBaseName.isEmpty())
+         return file;
+     else if(fileBaseName.endsWith(".tar"))
+         return fileBaseName.remove(".tar");
+     else if(fileBaseName.endsWith(".7z"))
+         return fileBaseName.remove(".7z");
+     else
+         return fileBaseName;
+}
+
 QString FileUtils::handleDuplicateName(const QString& uri)
 {
     QString handledName = nullptr;

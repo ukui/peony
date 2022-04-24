@@ -46,12 +46,12 @@
 <context>
     <name>Peony::DesktopItemModel</name>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="552"/>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="579"/>
         <source>Computer</source>
         <translation>计算机</translation>
     </message>
     <message>
-        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="554"/>
+        <location filename="../../peony-qt-desktop/desktop-item-model.cpp" line="581"/>
         <source>Trash</source>
         <translation>回收站</translation>
     </message>

@@ -82,6 +82,12 @@ OperationMenu::OperationMenu(MainWindow *window, QWidget *parent) : QMenu(parent
     m_show_hidden = showHidden;
     showHidden->setCheckable(true);
 
+
+    m_showFileExtension = addAction(tr("Show File Extension"), this, [=](bool checked) {
+        m_window->setShowFileExtensions(checked);
+    });
+    m_showFileExtension->setCheckable(true);
+
     auto forbidThumbnailing = addAction(tr("Forbid thumbnailing"), this, [=](bool checked) {
         //FIXME:
         Peony::GlobalSettings::getInstance()->setValue(FORBID_THUMBNAIL_IN_VIEW, checked);
@@ -137,6 +143,10 @@ void OperationMenu::updateMenu()
             m_show_hidden->setChecked(false);
         }
     }
+
+    m_showFileExtension->setChecked(Peony::GlobalSettings::getInstance()->isExist(SHOW_FILE_EXTENSION)?
+                              Peony::GlobalSettings::getInstance()->getValue(SHOW_FILE_EXTENSION).toBool():
+                              true);
 
     m_forbid_thumbnailing->setChecked(Peony::GlobalSettings::getInstance()->isExist(FORBID_THUMBNAIL_IN_VIEW)?
                                       Peony::GlobalSettings::getInstance()->getValue(FORBID_THUMBNAIL_IN_VIEW).toBool():

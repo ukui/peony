@@ -117,7 +117,9 @@ private:
     QPair<QString, QPoint> m_renaming_file_pos;
 
     bool m_accept_drop_action = true;
+    bool m_showFileExtension = true;
 
+private:
     void refreshInternal();
 };
 

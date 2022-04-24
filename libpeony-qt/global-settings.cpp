@@ -102,6 +102,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     m_cache.insert(SHOW_TRASH_DIALOG, true);
     m_cache.insert(SHOW_HIDDEN_PREFERENCE, false);
+    /* 默认显示文件扩展名 */
+    m_cache.insert(SHOW_FILE_EXTENSION, true);
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
 
@@ -121,7 +123,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
             if (key == "showTrashDialog") {
                 m_cache.remove(SHOW_TRASH_DIALOG);
                 m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
-            } else if (SHOW_HIDDEN_PREFERENCE == key) {
+            } else if ((SHOW_HIDDEN_PREFERENCE == key) || (SHOW_FILE_EXTENSION == key)) {
                 if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
                 {
                     m_cache.remove(key);
@@ -137,6 +139,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
         m_cache.remove(SHOW_HIDDEN_PREFERENCE);
         m_cache.insert(SHOW_HIDDEN_PREFERENCE, m_peony_gsettings->get(SHOW_HIDDEN_PREFERENCE).toBool());
+
+        m_cache.remove(SHOW_FILE_EXTENSION);
+        m_cache.insert(SHOW_FILE_EXTENSION, m_peony_gsettings->get(SHOW_FILE_EXTENSION).toBool());
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 100);

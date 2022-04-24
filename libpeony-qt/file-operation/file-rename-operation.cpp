@@ -23,6 +23,7 @@
 #include "file-rename-operation.h"
 #include "file-operation-manager.h"
 #include "file-utils.h"
+#include "file-info.h"
 #include <gio/gdesktopappinfo.h>
 #include <glib/gprintf.h>
 #include <global-settings.h>
@@ -92,7 +93,19 @@ void FileRenameOperation::run()
             Q_EMIT errored(except);
         }
     }
-
+    std::shared_ptr<FileInfo> fileinfo = FileInfo::fromUri(m_uri);
+    if(fileinfo && !fileinfo->isDir()){
+        bool showFileExtension = Peony::GlobalSettings::getInstance()->isExist(SHOW_FILE_EXTENSION)?
+                    Peony::GlobalSettings::getInstance()->getValue(SHOW_FILE_EXTENSION).toBool():true;
+        if(!showFileExtension){
+            QString oldSuffix = getFileExtensionOfFile(m_old_name);
+            QString newSuffix = getFileExtensionOfFile(m_new_name);
+            if((oldSuffix != newSuffix) && !oldSuffix.isEmpty())
+            {
+                m_new_name = m_new_name.append(".").append(oldSuffix);
+            }
+        }
+    }
     auto file = wrapGFile(g_file_new_for_uri(FileUtils::urlEncode(m_uri).toUtf8().constData()));
     auto info = wrapGFileInfo(g_file_query_info(file.get()->get(), "*",
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -259,6 +272,26 @@ cancel:
 
     Q_EMIT operationFinished();
     //notifyFileWatcherOperationFinished();
+}
+
+#include <QFileInfo>
+QString FileRenameOperation::getFileExtensionOfFile(const QString& file)
+{   
+    /* 一些常见扩展名处理，特殊情况以后待完善 */
+    QFileInfo qFileInfo(file);
+    QString suffix = qFileInfo.suffix();
+    QString fileBaseName = qFileInfo.fileName().left(qFileInfo.fileName().length() - suffix.length() - 1);
+    if (fileBaseName.isEmpty()){
+        return QString();
+    }
+    else if(fileBaseName.endsWith(".tar")){
+        return QString("tar").append(".").append(suffix);
+    }
+    else if(fileBaseName.endsWith(".7z")){
+        return QString("7z").append(".").append(suffix);
+    }
+
+    return suffix;
 }
 
 ExceptionResponse FileRenameOperation::prehandle(GError *err)

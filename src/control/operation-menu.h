@@ -43,6 +43,7 @@ private:
     QAction *m_show_hidden = nullptr;
     QAction *m_forbid_thumbnailing = nullptr;
     QAction *m_resident_in_backend = nullptr;
+    QAction *m_showFileExtension = nullptr;
 
 private:
     MainWindow *m_window = nullptr;

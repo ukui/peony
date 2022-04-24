@@ -124,6 +124,7 @@ public Q_SLOTS:
 
     void setSortFilter(int FileTypeIndex=0, int FileMTimeIndex=0, int FileSizeIndex=0);
     void setShowHidden(bool showHidden = false);
+    void setShowFileExtensions(bool show = true);
     void setUseDefaultNameSortOrder(bool use);
     void setSortFolderFirst(bool folderFirst);
     void setFilterLabelConditions(QString name);

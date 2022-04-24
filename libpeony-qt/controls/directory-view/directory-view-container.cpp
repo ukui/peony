@@ -185,6 +185,11 @@ void DirectoryViewContainer::setShowHidden(bool showHidden)
     m_proxy_model->setShowHidden(showHidden);
 }
 
+void DirectoryViewContainer::setShowFileExtensions(bool show)
+{
+    m_model->setShowFileExtensions(show);
+}
+
 void DirectoryViewContainer::setUseDefaultNameSortOrder(bool use)
 {
     m_proxy_model->setUseDefaultNameSortOrder(use);

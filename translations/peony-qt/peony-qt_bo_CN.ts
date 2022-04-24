@@ -243,6 +243,10 @@ p, li { white-space: pre-wrap; }
         <source>Forbid thumbnailing</source>
         <translation>བསྡུས་རིས་བཀོལ་མི་ཆོག</translation>
     </message>
+    <message>
+        <source>Show File Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OperationMenuEditWidget</name>

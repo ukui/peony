@@ -46,6 +46,7 @@ public:
     NO_BLOCKING static GFileWrapperPtr resolveRelativePath(const GFileWrapperPtr &dir, const QString &relativePath);
     NO_BLOCKING static QString urlEncode(const QString& url);
     NO_BLOCKING static QString urlDecode(const QString& url);
+    NO_BLOCKING static QString getBaseNameOfFile(const QString &file);/* 获取不带扩展名的base name */
 
 
     /**

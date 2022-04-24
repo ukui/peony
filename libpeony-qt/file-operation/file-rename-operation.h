@@ -66,6 +66,9 @@ public:
     }
 
 private:
+    QString getFileExtensionOfFile(const QString& file); /* 获取文件的文件扩展名 */
+
+private:
     ExceptionResponse prehandle(GError *err);
     GFileCopyFlags m_default_copy_flag = GFileCopyFlags(G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA);
     QString m_uri = nullptr;
