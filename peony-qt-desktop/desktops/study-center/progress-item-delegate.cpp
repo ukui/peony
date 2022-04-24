@@ -78,7 +78,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             } else {
                 pixmap = icon.pixmap((Style::BigIconSize ,Style::BigIconSize),QIcon::Normal,QIcon::On);
             }
-            pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::IgnoreAspectRatio);
+           // pixmap = pixmap.scaled(Style::BigIconSize ,Style::BigIconSize,Qt::KeepAspectRatio);
 
         }
         else
@@ -90,7 +90,7 @@ void FullItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             } else {
                 pixmap = icon.pixmap((Style::SmallIconSize,Style::SmallIconSize),QIcon::Normal,QIcon::On);
             }
-            pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::IgnoreAspectRatio);
+            //pixmap = pixmap.scaled(Style::SmallIconSize ,Style::SmallIconSize,Qt::KeepAspectRatio);
 
         }
         QApplication::style()->drawItemPixmap(painter,iconRect,Qt::AlignHCenter|Qt::AlignBottom,pixmap);
