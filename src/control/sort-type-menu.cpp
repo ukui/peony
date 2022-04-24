@@ -34,17 +34,17 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     fileName->setCheckable(true);
     sortTypeGroup->addAction(fileName);
 
-    auto modifiedDate = addAction(tr("Modified Date"));
-    modifiedDate->setCheckable(true);
-    sortTypeGroup->addAction(modifiedDate);
+    auto fileSize = addAction(tr("File Size"));
+    fileSize->setCheckable(true);
+    sortTypeGroup->addAction(fileSize);
 
     auto fileType = addAction(tr("File Type"));
     fileType->setCheckable(true);
     sortTypeGroup->addAction(fileType);
 
-    auto fileSize = addAction(tr("File Size"));
-    fileSize->setCheckable(true);
-    sortTypeGroup->addAction(fileSize);
+    auto modifiedDate = addAction(tr("Modified Date"));
+    modifiedDate->setCheckable(true);
+    sortTypeGroup->addAction(modifiedDate);
 
     connect(sortTypeGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortTypeGroup->actions().indexOf(action);
@@ -57,14 +57,14 @@ SortTypeMenu::SortTypeMenu(QWidget *parent) : QMenu(parent)
     m_sort_orders = sortOrderGroup;
     sortOrderGroup->setExclusive(true);
 
-    auto descending = addAction(tr("Descending"));
-    descending->setCheckable(true);
-    sortOrderGroup->addAction(descending);
-
     //switch defautl Descending Ascending order, fix bug#99924
     auto ascending = addAction(tr("Ascending"));
     ascending->setCheckable(true);
     sortOrderGroup->addAction(ascending);
+
+    auto descending = addAction(tr("Descending"));
+    descending->setCheckable(true);
+    sortOrderGroup->addAction(descending);
 
     connect(sortOrderGroup, &QActionGroup::triggered, this, [=](QAction *action) {
         int index = sortOrderGroup->actions().indexOf(action);

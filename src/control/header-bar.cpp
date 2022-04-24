@@ -213,7 +213,11 @@ HeaderBar::HeaderBar(MainWindow *parent) : QToolBar(parent)
     m_view_type_menu = new ViewTypeMenu(viewType);
     QAction * preview = new QAction(tr("Details"));
     m_preview_action = preview;
-    m_view_type_menu->insertAction(0,preview);
+    connect(m_view_type_menu,&QMenu::aboutToShow,m_view_type_menu,[=](){
+        m_view_type_menu->addSeparator();
+        m_view_type_menu->insertAction(0,preview);
+    });
+//    m_view_type_menu->insertAction(0,preview);
     preview->setCheckable(true);
 
     a->setMenu(m_view_type_menu);
