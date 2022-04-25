@@ -171,6 +171,10 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
             //fix open mutiple peony window, mount in side bar crash issue, link to bug#116201,116589
             if (! m_currSelectedItem)
                 break;
+            //continue to fix crash issue, related to bug#116201,116589
+            m_currSelectedItem->connect(m_currSelectedItem, &SideBarAbstractItem::destroyed, this, [=]{
+                m_currSelectedItem = nullptr;
+            });
             if(m_currSelectedItem->isMountable()&&!m_currSelectedItem->isMounted())
                 m_currSelectedItem->mount();
             else{
