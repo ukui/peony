@@ -61,6 +61,7 @@
 #include <QTimer>
 
 #include <QDebug>
+#include <QMessageBox>
 
 using namespace Peony;
 namespace Intel {
@@ -349,8 +350,21 @@ void NavigationSideBar::mousePressEvent(QMouseEvent *event)
         item->ejectOrUnmount();
     }
     else {
-        if (!item->uri().isNull())
-            Q_EMIT this->updateWindowLocationRequest(item->uri());
+        item = m_proxy_model->itemFromIndex(index);
+        QString uri = item->uri();
+        auto info = FileInfo::fromUri(uri);
+        if (info.get()->isEmptyInfo()) {
+            FileInfoJob j(info);
+            j.querySync();
+        }
+        auto targetUri = FileUtils::getTargetUri(uri);
+        if (!targetUri.isEmpty()) {
+            Q_EMIT this->updateWindowLocationRequest(targetUri);
+            QTreeView::mousePressEvent(event);
+            return;
+        }
+        if (!uri.isNull())
+            Q_EMIT this->updateWindowLocationRequest(uri);
         QTreeView::mousePressEvent(event);
     }
 }
