@@ -120,14 +120,22 @@ bool FileOperationManager::isAllowParallel()
 
 bool FileOperationManager::isFileOccupied(const QString &sourceUri)
 {
-    QProcess *process =new QProcess();
-    QString cmd =QString("lsof %1").arg(sourceUri); /* 例如：lsof /home/kylin/test.wps  */
-    process->start(cmd);
-    process->waitForFinished();
-    QString info = QString(process->readAll());
-    qDebug()<<info;
-    if(!info.isEmpty())/* 返回信息不为空表示被占用 */
-        return true;
+    QProcess process;
+    QString cmd = QString("lsof %1").arg(sourceUri); /* 例如：lsof /home/kylin/test.wps  */
+    process.start(cmd);
+    process.waitForFinished();
+    QString infos = QString(process.readAll());
+    if(infos.isEmpty())
+        return false;
+
+    qDebug()<<infos;
+    QStringList infoList = infos.split("\n");
+    for(auto& info : infoList){
+        QString procName = QString(info).split(" ").at(0);
+        if("wps" == procName || "et" == procName || "wpp" == procName){/* 表示被wps占用 */
+            return true;
+        }
+    }
 
     return false;
 }
@@ -139,6 +147,10 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
     QString occupiedFiles;
     QStringList uriList = operationInfo.get()->sources();
     for(auto& uri :uriList){
+        std::shared_ptr<FileInfo> fileinfo = FileInfo::fromUri(uri);
+        if(!uri.endsWith(".txt") && !(fileinfo && fileinfo->type().startsWith("application/wps-office")))
+            continue;
+
         auto operationType = operationInfo->operationType();
         QString absolutePath = FileUtils::urlDecode(uri).remove("file://");/* 获取uri的绝对路径 */
         if ((operationType == FileOperationInfo::Trash
