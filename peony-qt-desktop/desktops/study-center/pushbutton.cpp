@@ -38,8 +38,6 @@ TitleWidget::~TitleWidget()
 
 void TitleWidget::initAppBtn()
 {
-
-    this->setFixedSize(this->width,this->height);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout* layout=new QHBoxLayout(this);
    // layout->setSpacing(6);
