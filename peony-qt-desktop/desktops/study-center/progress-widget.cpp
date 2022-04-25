@@ -19,6 +19,7 @@
  */
 
 #include "progress-widget.h"
+#include "../../tablet/src/Style/style.h"
 #include <QProgressBar>
 #include <QLabel>
 #include <QGridLayout>
@@ -56,11 +57,15 @@ void ProgressWidget::initUi()
     m_processBar->setTextVisible(false);
 
     m_nameLabel = new QLabel(this);
-    m_nameLabel->setText(m_strAppName);
-    //m_nameLabel->setFixedSize(this->width()/5*2,this->height()/2);
+    //bug#114984 文件名字能够显示缩略
+    QFontMetrics fm = this->fontMetrics();
+    QString elidedAppName = fm.elidedText(m_strAppName, Qt::ElideRight, m_nameLabel->width());
+    m_nameLabel->setText(elidedAppName);
+
     m_nameLabel->setAlignment(Qt::AlignLeft|Qt::AlignBottom);
 
     m_iconLabel = new QLabel(this);
+    m_iconLabel->setFixedSize(Style::ProgressIconSize, Style::ProgressIconSize);
     QString iconstr= m_strAppIcon;
     iconstr.remove(".png");
     iconstr.remove(".svg");
@@ -109,14 +114,18 @@ void  ProgressWidget::paintSlot(TABLETAPP &app)
     }
 
     m_processBar->setValue(m_iTime);
-    m_nameLabel->setText(m_strAppName);
+    //bug#114984 文件名字能够显示缩略
+    QFontMetrics fm = this->fontMetrics();
+    QString elidedAppName = fm.elidedText(m_strAppName, Qt::ElideRight, m_nameLabel->width());
+    m_nameLabel->setText(elidedAppName);
 
     QString iconstr= m_strAppIcon;
     iconstr.remove(".png");
     iconstr.remove(".svg");
     QIcon icon=QIcon::fromTheme(iconstr);
-    QPixmap pix = icon.pixmap(64, 64);
-    m_iconLabel->setPixmap(pix);
+    //bug#114984 平板的图标太大
+    QPixmap pix = icon.pixmap(m_iconLabel->width(), m_iconLabel->height());
+    m_iconLabel->setPixmap(pix.scaled(m_iconLabel->width(), m_iconLabel->height(), Qt::KeepAspectRatio));
 }
 
 void ProgressWidget::setMaximum(int iMaxValue)
