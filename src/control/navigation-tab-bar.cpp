@@ -25,6 +25,7 @@
 
 #include "file-utils.h"
 #include "search-vfs-uri-parser.h"
+#include "global-settings.h"
 
 #include <QToolButton>
 
@@ -319,44 +320,71 @@ TabBarStyle *TabBarStyle::getStyle()
     return global_instance;
 }
 
+TabBarStyle::TabBarStyle()
+{
+    m_need_adjust = Peony::GlobalSettings::getInstance()->getProjectName() == V10_SP1_EDU;
+}
+
+void TabBarStyle::polish(QWidget *widget)
+{
+    QProxyStyle::polish(widget);
+    if (widget && qobject_cast<QToolButton *>(widget)) {
+        widget->setProperty("isWindowButton", 0x1);
+        widget->setProperty("useIconHighlightEffect", 2);
+    }
+}
+
 int TabBarStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
-    switch (metric) {
-    case PM_TabBarScrollButtonWidth:
-        return 48;
-    default:
+    if (!m_need_adjust) {
         return QProxyStyle::pixelMetric(metric, option, widget);
+    } else {
+        switch (metric) {
+        case PM_TabBarScrollButtonWidth:
+            return 48;
+        default:
+            return QProxyStyle::pixelMetric(metric, option, widget);
+        }
     }
 }
 QRect TabBarStyle::subElementRect(QStyle::SubElement element, const QStyleOption *option, const QWidget *widget) const
 {
-    switch (element) {
-    case SE_TabBarScrollLeftButton:{
-        QRect tabRect = option->rect;
-        tabRect.setRight(tabRect.left() + 48);
-        return tabRect;
-    }
-    case SE_TabBarScrollRightButton:{
-        QRect tabRect = option->rect;
-        tabRect.setLeft(tabRect.right() - 48);
-        return tabRect;
-    }
-    default:
+    if (!m_need_adjust) {
         return QProxyStyle::subElementRect(element, option, widget);
+    } else {
+        switch (element) {
+        case SE_TabBarScrollLeftButton:{
+            QRect tabRect = option->rect;
+            tabRect.setRight(tabRect.left() + 48);
+            return tabRect;
+        }
+        case SE_TabBarScrollRightButton:{
+            QRect tabRect = option->rect;
+            tabRect.setLeft(tabRect.right() - 48);
+            return tabRect;
+        }
+        default:
+            return QProxyStyle::subElementRect(element, option, widget);
+        }
     }
 }
+
 void TabBarStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    switch (element) {
-    case PE_PanelButtonTool:{
-        QPainterPath path;
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-        path.addRoundedRect(widget->rect(), 16, 16);
-        painter->setClipPath(path);
-        return  QProxyStyle::drawPrimitive(element, option, painter, widget);
-    }
-    default:
+    if (!m_need_adjust) {
         return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    } else {
+        switch (element) {
+        case PE_PanelButtonTool:{
+            QPainterPath path;
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+            path.addRoundedRect(widget->rect(), 16, 16);
+            painter->setClipPath(path);
+            return  QProxyStyle::drawPrimitive(element, option, painter, widget);
+        }
+        default:
+            return QProxyStyle::drawPrimitive(element, option, painter, widget);
+        }
     }
 }
 
@@ -366,8 +394,13 @@ void TabBarStyle::drawComplexControl(QStyle::ComplexControl control, const QStyl
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         QPainterPath path;
-        path.addRoundedRect(widget->rect(), 16, 16);
-        painter->setClipPath(path);
+        if (!m_need_adjust) {
+            path.addEllipse(QRect(option->rect.adjusted(4, 4, -4, -4)));
+            painter->setClipPath(path);
+        } else {
+            path.addRoundedRect(widget->rect(), 16, 16);
+            painter->setClipPath(path);
+        }
         QProxyStyle::drawComplexControl(control, option, painter, widget);
         painter->restore();
      } else {
