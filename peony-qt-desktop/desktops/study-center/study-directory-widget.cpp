@@ -116,6 +116,8 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
                                              );
     QWidget* scrollAreaWid=new QWidget;
     scrollAreaWid->setStyleSheet("background:transparent;");
+    //bug#106918 滚动区域填满精准练习
+    scrollAreaWid->adjustSize();
     m_scrollArea->setWidget(scrollAreaWid);
     m_scrollArea->setWidgetResizable(true);
     m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -124,7 +126,6 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
     m_scrollAreaWidLayout->setContentsMargins(0,0,0,0);
     m_scrollAreaWidLayout->setSpacing(0);
     scrollAreaWid->setLayout(m_scrollAreaWidLayout);
-
     m_mainLayout->addWidget(m_scrollArea);
     m_mainLayout->setContentsMargins(48,33,8,0);
 
@@ -151,6 +152,8 @@ void StudyDirectoryWidget::initWidget(QStringList &strListTitleStyle)
             m_colorMask = QColor(255,255,255);
         }
     });
+
+    resizeScrollAreaControls();
 }
 
 void StudyDirectoryWidget::initAppListWidget()
@@ -223,6 +226,7 @@ void StudyDirectoryWidget::resizeScrollAreaControls()
 
         listview->setFixedHeight(listview->gridSize().height()*iRowCount);
     }
+
     m_scrollArea->widget()->adjustSize();
 }
 
@@ -304,25 +308,6 @@ void StudyDirectoryWidget::updateAppData(QList<QPair<QString, QList<TabletAppEnt
              qDebug()<<"get title fail";
         }
 
-    }
-
-    resizeScrollAreaControls();
-}
-
-void StudyDirectoryWidget::setSize()
-{
-
-    int ScreenWidth=QApplication::primaryScreen()->geometry().width();
-    int ScreenHeight=QApplication::primaryScreen()->geometry().height();
-    if(Style::ScreenRotation)
-    {
-        m_scrollArea->setFixedWidth(ScreenWidth-72*2-48-8);
-        qDebug()<<" ScreenRotation1 m_scrollArea->width() = "<<ScreenWidth-72*2-48-8;
-    }
-    else
-    {
-        qDebug()<<" ScreenRotation1 m_scrollArea->width() = "<<(ScreenWidth-80*2-16)/2-48-8;
-        m_scrollArea->setFixedWidth((ScreenWidth-80*2-16)/2-48-8);
     }
 
     resizeScrollAreaControls();
