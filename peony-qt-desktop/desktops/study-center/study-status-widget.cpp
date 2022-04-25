@@ -162,6 +162,9 @@ void StudyStatusWidget::initWidget()
                                              );
     m_scrollArea->setWidgetResizable(true);
     m_scrollArea->adjustSize();
+    //bug#114984 修改滚动区域填满情学中心
+    scrollWid->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Expanding);
+    scrollWid->adjustSize();
 
     QLabel* todayTitleLabel = new QLabel(this);
     //todayTitleLabel->setFixedSize();

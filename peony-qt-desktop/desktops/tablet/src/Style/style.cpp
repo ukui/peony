@@ -72,6 +72,7 @@ int Style::GridHeight=170;
 int Style::GridWidth=155;
 int Style::itemWidth=120;
 int Style::itemHeight=145;
+int Style::ProgressIconSize=64;
 
 void Style::initWidStyle()
 {
@@ -80,7 +81,8 @@ void Style::initWidStyle()
     AppListViewLeftMargin = isMavis ? 10 : 50;
     AppListViewRightMargin = isMavis ? 10 : 50;
     AppListViewBottomMargin = 5;
-
+    ProgressIconSize = isMavis ? 55 : 64;
+    qDebug() << "isMavis:" <<isMavis <<"progressIconSize:" <<ProgressIconSize;
     if (ScreenRotation) {
         AppListItemSizeWidth = 152;
         AppListItemSizeHeight = 216;

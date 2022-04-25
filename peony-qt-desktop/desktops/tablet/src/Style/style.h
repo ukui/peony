@@ -140,6 +140,7 @@ public:
     static int itemWidth;
     static int itemHeight;
     static int topSpace;
+    static int ProgressIconSize;
 
 };
 
