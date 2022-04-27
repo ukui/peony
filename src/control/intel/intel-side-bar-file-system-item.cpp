@@ -326,7 +326,20 @@ bool SideBarFileSystemItem::isMountable()
 
 bool SideBarFileSystemItem::isMounted()
 {
-    if(!FileUtils::getTargetUri(m_uri).isEmpty())
+    QString targetUri;
+    if (m_uri.contains("computer:///") && m_uri != "computer:///") {
+        auto info = FileInfo::fromUri(m_uri);
+        if(info.get()){
+            if (info->targetUri().isEmpty()) {
+                FileInfoJob j(info);
+                j.querySync();
+            }
+            targetUri = info->targetUri();
+        }
+    }else{
+        targetUri = FileUtils::getTargetUri(m_uri);
+    }
+    if(!targetUri.isEmpty())
         m_is_mounted = true;
 
     return m_is_mounted;

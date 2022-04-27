@@ -500,7 +500,8 @@ GAsyncReadyCallback FileEnumerator::mount_mountable_callback(GFile *file,
         auto err_data = GErrorWrapper::wrapFrom(err);
         Q_EMIT p_this->prepared(err_data);
     } else {
-        Q_EMIT p_this->prepared(nullptr);
+        auto uri = g_file_get_uri(target);
+        Q_EMIT p_this->prepared(nullptr, uri);
         if (err) {
             g_error_free(err);
         }
