@@ -92,6 +92,7 @@ void SideBarFavoriteItem::initChildren()
     QString musicUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     QString docUri = localFileSystemPath + QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
 
+    auto recentItem = new SideBarFavoriteItem("recent:///", this, m_model);
     auto desktopItem = new SideBarFavoriteItem(desktopUri, this, m_model);
     auto trashItem = new SideBarFavoriteItem("trash:///", this, m_model);
     auto videoItem = new SideBarFavoriteItem(videoUri, this, m_model);
@@ -100,6 +101,7 @@ void SideBarFavoriteItem::initChildren()
     auto musicItem = new SideBarFavoriteItem(musicUri, this, m_model);
     auto docItem = new SideBarFavoriteItem(docUri, this, m_model);
 
+    m_children->append(recentItem);
     m_children->append(desktopItem);
     m_children->append(docItem);
     m_children->append(musicItem);

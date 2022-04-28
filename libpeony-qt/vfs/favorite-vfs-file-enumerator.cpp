@@ -50,6 +50,7 @@ static void vfs_favorites_file_enumerator_init (FavoritesVFSFileEnumerator* self
     self->priv = priv;
     self->priv->enumerate_queue = new QQueue<QString>;
 
+    self->priv->enumerate_queue->enqueue(QString("favorite://?schema=recent"));
     self->priv->enumerate_queue->enqueue(QString("favorite://?schema=trash"));
     self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MusicLocation)));
     self->priv->enumerate_queue->enqueue(QString("favorite://%1?schema=file").arg(QStandardPaths::writableLocation(QStandardPaths::MoviesLocation)));
