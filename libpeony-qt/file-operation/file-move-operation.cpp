@@ -934,6 +934,10 @@ fallback_retry:
             }
         }
         fileSync(node->uri(), realDestUri);
+        if(node->uri().endsWith(".dsps") && realDestUri.endsWith(".dsps")){
+            m_srcUrisOfDspsFilesCopy.append(FileUtils::urlDecode(node->uri()));
+            m_destUrisOfDspsFilesCopy.append(FileUtils::urlDecode(realDestUri));
+        }
         m_current_offset += node->size();
         auto fileIconName = FileUtilsPrivate::getFileIconName(m_current_src_uri);
         auto destFileName = FileUtils::isFileDirectory(node->destUri()) ? nullptr : node->destUri();
@@ -990,6 +994,9 @@ void FileMoveOperation::moveForceUseFallback()
 
     m_total_szie = *total_size;
     delete total_size;
+
+    m_srcUrisOfDspsFilesCopy.clear();
+    m_destUrisOfDspsFilesCopy.clear();
 
     for (auto node : nodes) {
         copyRecursively(node);
@@ -1124,6 +1131,8 @@ start:
     qDebug()<<"finished";
 end:
     Q_EMIT operationFinished();
+
+    sendSrcAndDestUrisOfDspsFilesCopy();
 }
 
 void FileMoveOperation::cancel()

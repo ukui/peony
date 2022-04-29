@@ -335,8 +335,15 @@ protected:
      * tell views operation finished.
      */
     void notifyFileWatcherOperationFinished();
+
+    /* 发送给dbus服务关于：复制dsps文件时将复制成功文件的原路径和目的路径通过发信号通知WPS,Link to story#11452 */
+    void sendSrcAndDestUrisOfDspsFilesCopy();
+
 protected:
     bool                        m_is_pause = false;
+
+    QStringList                 m_srcUrisOfDspsFilesCopy;/* 复制dsps文件的源路径列表 */
+    QStringList                 m_destUrisOfDspsFilesCopy;/* 复制dsps文件的目的路径列表 */
 
 private:
     bool                        m_has_error = false;

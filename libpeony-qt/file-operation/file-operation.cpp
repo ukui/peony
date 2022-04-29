@@ -179,3 +179,21 @@ void FileOperation::notifyFileWatcherOperationFinished()
         }
     }
 }
+
+#include <QDBusConnection>
+#include <QDBusReply>
+#include <QDBusConnectionInterface>
+void FileOperation::sendSrcAndDestUrisOfDspsFilesCopy()
+{
+    if(!m_srcUrisOfDspsFilesCopy.size() || !m_destUrisOfDspsFilesCopy.size())
+        return;
+    QDBusMessage msg = QDBusMessage::createMethodCall("org.ukui.peony", "/org/ukui/peony",
+                     "org.ukui.peony", "receiveSrcAndDestUrisOfCopy");
+    QList<QVariant> args;
+    args.append(QVariant(m_srcUrisOfDspsFilesCopy));
+    args.append(QVariant(m_destUrisOfDspsFilesCopy));
+    msg.setArguments(args);
+    QDBusMessage response = QDBusConnection::sessionBus().call(msg);
+    if (!response.type() == QDBusMessage::ReplyMessage)
+        qDebug()<<"fail to send source and dest uris of copy!";
+}
