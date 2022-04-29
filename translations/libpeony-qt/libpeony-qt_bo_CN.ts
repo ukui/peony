@@ -1540,6 +1540,14 @@ Do you want to delete the link file?</source>
         <source>File Operation is Busy</source>
         <translation>བཀོལ་སྤྱོད་བྲེལ་འཚུབ་ཆེ།</translation>
     </message>
+    <message>
+        <source>Warn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;%1&apos; is occupied，you cannot operate!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Peony::FileOperationPreparePage</name>
