@@ -538,8 +538,8 @@ fallback_retry:
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
 
         if(srcUri.endsWith(".dsps") && destFileUri.endsWith(".dsps")){
-            m_srcUrisOfDspsFilesCopy.append(FileUtils::urlDecode(srcUri));
-            m_destUrisOfDspsFilesCopy.append(FileUtils::urlDecode(destFileUri));
+            m_srcUrisOfCopyDspsFiles.append(FileUtils::urlDecode(srcUri));
+            m_destUrisOfCopyDspsFiles.append(FileUtils::urlDecode(destFileUri));
         }
     }
     destFile.reset();
@@ -628,8 +628,8 @@ void FileCopyOperation::run()
     m_total_szie = *total_size;
     delete total_size;
 
-    m_srcUrisOfDspsFilesCopy.clear();
-    m_destUrisOfDspsFilesCopy.clear();
+    m_srcUrisOfCopyDspsFiles.clear();
+    m_destUrisOfCopyDspsFiles.clear();
 
     for (auto node : nodes) {
         copyRecursively(node);
@@ -660,7 +660,7 @@ void FileCopyOperation::run()
 
     Q_EMIT operationFinished();
 
-    sendSrcAndDestUrisOfDspsFilesCopy();
+    sendSrcAndDestUrisOfCopyDspsFiles();
 }
 
 void FileCopyOperation::cancel()

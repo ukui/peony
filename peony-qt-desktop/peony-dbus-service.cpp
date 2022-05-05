@@ -61,5 +61,5 @@ int PeonyDbusService::ReloadSecurityConfig()
 
 void PeonyDbusService::receiveSrcAndDestUrisOfCopy(const QStringList& sourceUris, const QStringList& destUris)
 {
-    Q_EMIT sendSrcAndDestUrisOfDspsFilesCopy(sourceUris, destUris);
+    Q_EMIT sendSrcAndDestUrisOfCopyDspsFiles(sourceUris, destUris);
 }

@@ -54,7 +54,7 @@ public:
    void DbusServerRegister();
 
 Q_SIGNALS:
-   void sendSrcAndDestUrisOfDspsFilesCopy(const QStringList& sourceUris, const QStringList& destUris);
+   void sendSrcAndDestUrisOfCopyDspsFiles(const QStringList& sourceUris, const QStringList& destUris);
 
 public Q_SLOTS:
     QString GetSecurityConfigPath();

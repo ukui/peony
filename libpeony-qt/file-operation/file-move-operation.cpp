@@ -935,8 +935,8 @@ fallback_retry:
         }
         fileSync(node->uri(), realDestUri);
         if(node->uri().endsWith(".dsps") && realDestUri.endsWith(".dsps")){
-            m_srcUrisOfDspsFilesCopy.append(FileUtils::urlDecode(node->uri()));
-            m_destUrisOfDspsFilesCopy.append(FileUtils::urlDecode(realDestUri));
+            m_srcUrisOfCopyDspsFiles.append(FileUtils::urlDecode(node->uri()));
+            m_destUrisOfCopyDspsFiles.append(FileUtils::urlDecode(realDestUri));
         }
         m_current_offset += node->size();
         auto fileIconName = FileUtilsPrivate::getFileIconName(m_current_src_uri);
@@ -995,8 +995,8 @@ void FileMoveOperation::moveForceUseFallback()
     m_total_szie = *total_size;
     delete total_size;
 
-    m_srcUrisOfDspsFilesCopy.clear();
-    m_destUrisOfDspsFilesCopy.clear();
+    m_srcUrisOfCopyDspsFiles.clear();
+    m_destUrisOfCopyDspsFiles.clear();
 
     for (auto node : nodes) {
         copyRecursively(node);
@@ -1132,7 +1132,7 @@ start:
 end:
     Q_EMIT operationFinished();
 
-    sendSrcAndDestUrisOfDspsFilesCopy();
+    sendSrcAndDestUrisOfCopyDspsFiles();
 }
 
 void FileMoveOperation::cancel()
