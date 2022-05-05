@@ -28,6 +28,7 @@
 
 #include "file-operation.h"
 #include "file-operation-manager.h"
+#include "global-settings.h"
 
 using namespace Peony;
 
@@ -185,8 +186,15 @@ void FileOperation::notifyFileWatcherOperationFinished()
 #include <QDBusConnectionInterface>
 void FileOperation::sendSrcAndDestUrisOfDspsFilesCopy()
 {
+    bool sendUrisOfCopyDspsFiles = Peony::GlobalSettings::getInstance()->isExist(SEND_URIS_OF_COPY_DSPS)?
+                Peony::GlobalSettings::getInstance()->getValue(SEND_URIS_OF_COPY_DSPS).toBool() : false;
+
+    if(!sendUrisOfCopyDspsFiles)
+        return;
+
     if(!m_srcUrisOfDspsFilesCopy.size() || !m_destUrisOfDspsFilesCopy.size())
         return;
+
     QDBusMessage msg = QDBusMessage::createMethodCall("org.ukui.peony", "/org/ukui/peony",
                      "org.ukui.peony", "receiveSrcAndDestUrisOfCopy");
     QList<QVariant> args;
