@@ -121,6 +121,7 @@ protected:
     void changeFileIcon();
     bool isNameChanged();
     void setSysTimeFormat();
+    QString elideText(QFont font,int width,QString strInfo);
 
 protected Q_SLOTS:
     void getFIleInfo(QString uri);

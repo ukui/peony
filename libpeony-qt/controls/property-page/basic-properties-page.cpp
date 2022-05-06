@@ -363,11 +363,12 @@ void BasicPropertiesPage::loadPartOne()
     //select multiplefiles
     if (m_fileType == BP_MultipleFIle || !m_info->canRename())
         m_displayNameEdit->setReadOnly(true);
-
     //选中多个文件时，使用另外的线程获取文件名称并拼接
     if (m_fileType == BP_MultipleFIle) {
         FileNameThread *getNameThread = new FileNameThread(m_uris);
         connect(getNameThread, &FileNameThread::fileNameReady, this, [=](QString fileName) {
+            m_displayNameEdit->setToolTip(fileName);
+            fileName = BasicPropertiesPage::elideText(m_displayNameEdit->font(),260,fileName);
             m_displayNameEdit->setText(fileName);
             delete getNameThread;
         });
@@ -951,6 +952,16 @@ bool BasicPropertiesPage::isNameChanged()
 void BasicPropertiesPage::setSysTimeFormat()
 {
     this->m_systemTimeFormat = GlobalSettings::getInstance()->getSystemTimeFormat();
+}
+
+QString BasicPropertiesPage::elideText(QFont font, int width, QString strInfo)
+{
+    QFontMetrics fontMetrics(font);
+
+    if(fontMetrics.width(strInfo) > width) {
+        strInfo= QFontMetrics(font).elidedText(strInfo, Qt::ElideRight, width);
+    }
+    return strInfo;
 }
 
 void FileNameThread::run()
