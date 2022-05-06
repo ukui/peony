@@ -43,6 +43,7 @@
 #define SHOW_TRASH_DIALOG           "showTrashDialog"
 #define INIT_FOR_FIRST_TIME         "initForFirstTime"  /* org.ukui.peony.settings 首次初始化标志 */
 #define SHOW_FILE_EXTENSION         "showFileExtension" /* 显示文件扩展名 */
+#define SEND_URIS_OF_COPY_DSPS      "sendUrisOfCopyDsps"  /* send src and dest uris of copy dsps files to wps,默认值为false */
 
 #define USE_GLOBAL_DEFAULT_SORTING "use-global-default-sorting"
 

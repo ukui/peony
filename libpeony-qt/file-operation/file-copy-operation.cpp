@@ -536,6 +536,11 @@ fallback_retry:
         m_current_offset += node->size();
         fileSync(srcUri, destFileUri);
         Q_EMIT operationProgressedOne(node->uri(), node->destUri(), node->size());
+
+        if(srcUri.endsWith(".dsps") && destFileUri.endsWith(".dsps")){
+            m_srcUrisOfCopyDspsFiles.append(FileUtils::urlDecode(srcUri));
+            m_destUrisOfCopyDspsFiles.append(FileUtils::urlDecode(destFileUri));
+        }
     }
     destFile.reset();
 }
@@ -575,7 +580,7 @@ void FileCopyOperation::rollbackNodeRecursively(FileNode *node)
                 g_file_delete(dest_file, nullptr, nullptr);
                 g_object_unref(dest_file);
             }
-        }
+        }    
         operationRollbackedOne(node->destUri(), node->uri());
         break;
     }
@@ -623,6 +628,9 @@ void FileCopyOperation::run()
     m_total_szie = *total_size;
     delete total_size;
 
+    m_srcUrisOfCopyDspsFiles.clear();
+    m_destUrisOfCopyDspsFiles.clear();
+
     for (auto node : nodes) {
         copyRecursively(node);
     }
@@ -651,6 +659,8 @@ void FileCopyOperation::run()
     nodes.clear();
 
     Q_EMIT operationFinished();
+
+    sendSrcAndDestUrisOfCopyDspsFiles();
 }
 
 void FileCopyOperation::cancel()

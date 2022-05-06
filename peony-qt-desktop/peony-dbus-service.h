@@ -53,9 +53,13 @@ public:
 
    void DbusServerRegister();
 
+Q_SIGNALS:
+   void sendSrcAndDestUrisOfCopyDspsFiles(const QStringList& sourceUris, const QStringList& destUris);
+
 public Q_SLOTS:
     QString GetSecurityConfigPath();
     int ReloadSecurityConfig();
+    void receiveSrcAndDestUrisOfCopy(const QStringList& sourceUris, const QStringList& destUris);
 
 private:
     DesktopIconView *m_desktopIconView = nullptr;

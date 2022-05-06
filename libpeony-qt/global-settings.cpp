@@ -102,8 +102,8 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
     m_cache.insert(SHOW_TRASH_DIALOG, true);
     m_cache.insert(SHOW_HIDDEN_PREFERENCE, false);
-    /* 默认显示文件扩展名 */
-    m_cache.insert(SHOW_FILE_EXTENSION, true);
+    m_cache.insert(SHOW_FILE_EXTENSION, true); /* 默认显示文件扩展名 */
+    m_cache.insert(SEND_URIS_OF_COPY_DSPS, false);
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
 
@@ -111,7 +111,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         if(!isExist(INIT_FOR_FIRST_TIME)){
             setValue(INIT_FOR_FIRST_TIME, false);
             /* /usr/share/glib-2.0/schemas/org.ukui.peony.settings.gschema.xml文件首次初始化时，
-             * SHOW_HIDDEN_PREFERENCE字段为 "org.ukui/peony-qt-preferences" 文件中"show-hidden"的值*/
+             * SHOW_HIDDEN_PREFERENCE字段为 "org.ukui/peony-qt-preferences" 文件中"show-hidden"的值 */
             if(isExist("show-hidden")){
                 bool value = getValue("show-hidden").toBool();
                 m_cache.insert(SHOW_HIDDEN_PREFERENCE, value);
@@ -120,9 +120,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         }
 
         connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if (key == "showTrashDialog") {
-                m_cache.remove(SHOW_TRASH_DIALOG);
-                m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(key).toBool());
+            if ((key == SHOW_TRASH_DIALOG) || (key == SEND_URIS_OF_COPY_DSPS)) {
+                m_cache.remove(key);
+                m_cache.insert(key, m_peony_gsettings->get(key).toBool());
             } else if ((SHOW_HIDDEN_PREFERENCE == key) || (SHOW_FILE_EXTENSION == key)) {
                 if (m_cache.value(key) != m_peony_gsettings->get(key).toBool())
                 {
@@ -134,6 +134,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
                 Q_EMIT this->valueChanged(key);
             }
         });
+
         m_cache.remove(SHOW_TRASH_DIALOG);
         m_cache.insert(SHOW_TRASH_DIALOG, m_peony_gsettings->get(SHOW_TRASH_DIALOG).toBool());
 
@@ -142,6 +143,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
         m_cache.remove(SHOW_FILE_EXTENSION);
         m_cache.insert(SHOW_FILE_EXTENSION, m_peony_gsettings->get(SHOW_FILE_EXTENSION).toBool());
+
+        m_cache.remove(SEND_URIS_OF_COPY_DSPS);
+        m_cache.insert(SEND_URIS_OF_COPY_DSPS, m_peony_gsettings->get(SEND_URIS_OF_COPY_DSPS).toBool());
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 100);

@@ -28,6 +28,7 @@
 
 #include "file-operation.h"
 #include "file-operation-manager.h"
+#include "global-settings.h"
 
 using namespace Peony;
 
@@ -178,4 +179,29 @@ void FileOperation::notifyFileWatcherOperationFinished()
             FileOperationManager::getInstance()->manuallyNotifyDirectoryChanged(info.get());
         }
     }
+}
+
+#include <QDBusConnection>
+#include <QDBusReply>
+#include <QDBusConnectionInterface>
+void FileOperation::sendSrcAndDestUrisOfCopyDspsFiles()
+{
+    bool sendUrisOfCopyDspsFiles = Peony::GlobalSettings::getInstance()->isExist(SEND_URIS_OF_COPY_DSPS)?
+                Peony::GlobalSettings::getInstance()->getValue(SEND_URIS_OF_COPY_DSPS).toBool() : false;
+
+    if(!sendUrisOfCopyDspsFiles)
+        return;
+
+    if(!m_srcUrisOfCopyDspsFiles.size() || !m_destUrisOfCopyDspsFiles.size())
+        return;
+
+    QDBusMessage msg = QDBusMessage::createMethodCall("org.ukui.peony", "/org/ukui/peony",
+                     "org.ukui.peony", "receiveSrcAndDestUrisOfCopy");
+    QList<QVariant> args;
+    args.append(QVariant(m_srcUrisOfCopyDspsFiles));
+    args.append(QVariant(m_destUrisOfCopyDspsFiles));
+    msg.setArguments(args);
+    QDBusMessage response = QDBusConnection::sessionBus().call(msg);
+    if (!response.type() == QDBusMessage::ReplyMessage)
+        qDebug()<<"fail to send source and dest uris of copy!";
 }

@@ -32,6 +32,12 @@
       <description>show file extension in peony </description>
     </key>
 
+    <key type="b" name="send-uris-of-copy-dsps">
+      <default>false</default>
+      <summary>send uris of copy dsps</summary>
+      <description>send src and dest uris of copy dsps files to wps</description>
+    </key>
+
     <!--directory-view-->
 
     <!--remote-server-->

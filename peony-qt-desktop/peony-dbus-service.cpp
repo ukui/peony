@@ -42,7 +42,7 @@ void PeonyDbusService::DbusServerRegister()
 {
     QDBusConnection::sessionBus().unregisterService("org.ukui.peony");
     QDBusConnection::sessionBus().registerService("org.ukui.peony");
-    QDBusConnection::sessionBus().registerObject("/org/ukui/peony", this, QDBusConnection :: ExportAllSlots);
+    QDBusConnection::sessionBus().registerObject("/org/ukui/peony", this, QDBusConnection :: ExportAllSlots | QDBusConnection::ExportAllSignals);
 }
 
 QString PeonyDbusService::GetSecurityConfigPath()
@@ -57,4 +57,9 @@ int PeonyDbusService::ReloadSecurityConfig()
     m_desktopIconView->updateBWList();
 
     return 0;
+}
+
+void PeonyDbusService::receiveSrcAndDestUrisOfCopy(const QStringList& sourceUris, const QStringList& destUris)
+{
+    Q_EMIT sendSrcAndDestUrisOfCopyDspsFiles(sourceUris, destUris);
 }
