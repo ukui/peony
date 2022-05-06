@@ -336,7 +336,7 @@ private:
     int m_button_heigth = 24;
 
     // text width
-    int m_text_length = 100;
+    int m_text_length = 120;
 
     // show
     bool m_show = false;
