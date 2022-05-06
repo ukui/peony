@@ -29,6 +29,7 @@
 
 #include "file-info.h"
 
+#include "clipboard-utils.h"
 #include <QTimer>
 #include <QPushButton>
 
@@ -117,7 +118,20 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             opt.rect.setWidth(width);
         }
     }
-
+    if (ClipboardUtils::isClipboardHasFiles() &&
+        FileUtils::isSamePath(ClipboardUtils::getClipedFilesParentUri(), view->getDirectoryUri())) {
+        if (ClipboardUtils::isPeonyFilesBeCut() && ClipboardUtils::isClipboardFilesBeCut()) {
+            auto clipedUris = ClipboardUtils::getClipboardFilesUris();
+            if (clipedUris.contains(FileUtils::urlEncode(index.data(Qt::UserRole).toString()))) {
+                painter->setOpacity(0.5);
+                qDebug()<<"cut item in list view"<<index.data();
+            }
+            else
+                painter->setOpacity(1.0);
+        }
+    }
+    else
+       painter->setOpacity(1.0);
     QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
 
     if (view->isEnableMultiSelect()) {
