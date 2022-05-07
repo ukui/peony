@@ -29,6 +29,7 @@
 #include "clipboard-utils.h"
 
 #include "file-info.h"
+#include "file-info-job.h"
 
 #include <QTimer>
 #include <QPushButton>
@@ -70,6 +71,11 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if(uri.startsWith("favorite://"))/* 快速访问须特殊处理 */
         uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
     auto info = FileInfo::fromUri(uri);
+    //fix file emblemed icon not correct issue, link to bug#118015
+    if (info->isEmptyInfo()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
     auto colors = info->getColors();
     if (index.column() == 0 && colors.count() >0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {

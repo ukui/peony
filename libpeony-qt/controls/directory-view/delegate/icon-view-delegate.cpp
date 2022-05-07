@@ -25,6 +25,7 @@
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
 #include "file-info.h"
+#include "file-info-job.h"
 
 #include "file-operation-manager.h"
 #include "file-rename-operation.h"
@@ -205,14 +206,19 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         return;
     }
     auto info = item->info();
+    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+        info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
+    }
+    //fix file emblemed icon not correct issue, link to bug#118015
+    if (info->isEmptyInfo()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
 
     // draw color symbols
     int iLine = 0;
     int yoffset = 0;
     if (!isDragging || !view->selectedIndexes().contains(index)) {
-        if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
-            info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
-        }
         auto colors = info->getColors();
         if(0 < colors.count())
         {
