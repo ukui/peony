@@ -74,6 +74,8 @@ public:
     void setAllowParallel(bool allow = true);
     bool isAllowParallel();
 
+    QStringList getFilesOpenedByProc(const QString &procName);
+
 Q_SIGNALS:
     void closed();
 

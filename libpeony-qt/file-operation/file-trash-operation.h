@@ -52,7 +52,6 @@ private:
 private:
     int m_current_count = 0;
     int m_total_count = 0;
-    QStringList m_src_uris;
     std::shared_ptr<FileOperationInfo> m_info = nullptr;
 
     // record source file infos before trashed, only used in native fs

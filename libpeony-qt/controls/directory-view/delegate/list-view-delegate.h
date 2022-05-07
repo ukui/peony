@@ -58,6 +58,9 @@ Q_SIGNALS:
     void isEditing(bool editing) const;
     void requestDone(QWidget *editor);
 
+private Q_SLOT:
+    void slot_finishEdit();/* 编辑完成 */
+
 private:
     QPushButton *m_styled_button;
 };

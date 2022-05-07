@@ -247,44 +247,44 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Yeni Pencerede Aç</translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="348"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="356"/>
         <source>warn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="348"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="356"/>
         <source>This operation is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="386"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="399"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="394"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="407"/>
         <source>Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="386"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="394"/>
         <source>This is an abnormal Udisk, please fix it or format it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="399"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="407"/>
         <source>This is an empty drive, please insert a Disc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="206"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="214"/>
         <source>Open In New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="222"/>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="256"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="230"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="264"/>
         <source>Can not open %1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="240"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="248"/>
         <source>Open In New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -296,7 +296,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NavigationSideBarContainer</name>
     <message>
-        <location filename="../../src/control/navigation-side-bar.cpp" line="543"/>
+        <location filename="../../src/control/navigation-side-bar.cpp" line="551"/>
         <source>All tags...</source>
         <translation>Tüm etiketler...</translation>
     </message>

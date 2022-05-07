@@ -359,14 +359,6 @@ void IconViewDelegate::setCutFiles(const QModelIndexList &indexes)
     m_cut_indexes = indexes;
 }
 
-void IconViewDelegate::doneWithEditor()
-{
-    auto editor = qobject_cast<QWidget *>(sender());
-    commitData(editor);
-    closeEditor(editor, NoHint);
-    isEditing(false);
-}
-
 QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     Q_UNUSED(option);
@@ -385,7 +377,7 @@ QWidget *IconViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         edit->minimalAdjust();
     });
 
-    connect(edit, &IconViewEditor::returnPressed, this, &IconViewDelegate::doneWithEditor);
+    connect(edit, &IconViewEditor::returnPressed, this, &IconViewDelegate::slot_finishEdit);
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         // NOTE: resort view after edit closed.
@@ -494,6 +486,18 @@ void IconViewDelegate::setIndexWidget(const QModelIndex &index, QWidget *widget)
 {
     auto view = qobject_cast<IconView*>(this->parent());
     view->setIndexWidget(index, widget);
+}
+
+void IconViewDelegate::slot_finishEdit()
+{
+    auto edit = qobject_cast<QWidget *>(sender());
+    commitData(edit);
+    closeEditor(edit, QAbstractItemDelegate::SubmitModelCache);
+    if(edit){
+        delete edit;
+        edit = nullptr;
+    }
+    Q_EMIT isEditing(false);
 }
 
 IconView *IconViewDelegate::getView() const

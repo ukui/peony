@@ -104,6 +104,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     m_cache.insert(SHOW_HIDDEN_PREFERENCE, false);
     m_cache.insert(SHOW_FILE_EXTENSION, true); /* 默认显示文件扩展名 */
     m_cache.insert(SEND_URIS_OF_COPY_DSPS, false);
+    m_cache.insert(DOC_IS_OCCUPIED_BY_WPS, false);
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
 
@@ -120,7 +121,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
         }
 
         connect(m_peony_gsettings, &QGSettings::changed, this, [=](const QString &key) {
-            if ((key == SHOW_TRASH_DIALOG) || (key == SEND_URIS_OF_COPY_DSPS)) {
+            if ((key == SHOW_TRASH_DIALOG) || (key == SEND_URIS_OF_COPY_DSPS) || key == DOC_IS_OCCUPIED_BY_WPS) {
                 m_cache.remove(key);
                 m_cache.insert(key, m_peony_gsettings->get(key).toBool());
             } else if ((SHOW_HIDDEN_PREFERENCE == key) || (SHOW_FILE_EXTENSION == key)) {
@@ -146,6 +147,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
         m_cache.remove(SEND_URIS_OF_COPY_DSPS);
         m_cache.insert(SEND_URIS_OF_COPY_DSPS, m_peony_gsettings->get(SEND_URIS_OF_COPY_DSPS).toBool());
+
+        m_cache.remove(DOC_IS_OCCUPIED_BY_WPS);
+        m_cache.insert(DOC_IS_OCCUPIED_BY_WPS, m_peony_gsettings->get(DOC_IS_OCCUPIED_BY_WPS).toBool());
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 100);

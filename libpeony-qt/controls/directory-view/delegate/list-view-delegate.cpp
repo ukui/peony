@@ -222,12 +222,11 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 //        updateEditorGeometry(edit, option, index);
 //    });
 
-
-    connect(edit, &TextEdit::finishEditRequest, this, [=]() {
-        //qDebug() <<"finishEditRequest";
-        setModelData(edit, nullptr, index);
-        edit->deleteLater();
+    connect(edit, &TextEdit::textChanged, this, [=]() {
+        updateEditorGeometry(edit, option, index);
     });
+
+    connect(edit, &TextEdit::finishEditRequest, this, &ListViewDelegate::slot_finishEdit);
 
     connect(edit, &QWidget::destroyed, this, [=]() {
         Q_EMIT isEditing(false);
@@ -327,6 +326,17 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem & option, const QMod
     int expectedHeight = view->iconSize().height() + 4;
     size.setHeight(qMax(expectedHeight, size.height()));
     return size;
+}
+
+void ListViewDelegate::slot_finishEdit()
+{
+    auto edit = qobject_cast<QWidget *>(sender());
+    commitData(edit);
+    closeEditor(edit, QAbstractItemDelegate::SubmitModelCache);
+    if(edit){
+        delete edit;
+        edit = nullptr;
+    }
 }
 
 //TextEdit

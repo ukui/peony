@@ -118,9 +118,79 @@ bool FileOperationManager::isAllowParallel()
     return m_allow_parallel;
 }
 
-void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
+QStringList FileOperationManager::getFilesOpenedByProc(const QString &procName)
 {
+    QStringList occupiedFiles;
+
+    QProcess process;
+    QString cmd = QString("lsof -c %1").arg(procName);
+    process.start(cmd);
+    process.waitForFinished();
+    QString infos = QString(process.readAll());
+    if(infos.isEmpty())
+        return occupiedFiles;
+
+    qDebug()<<infos;
+    QStringList infoList = infos.split("\n");
+    for(auto& info : infoList){
+        QString fileName = QString(info).section(" ", -1, -1);
+        occupiedFiles.append(fileName);
+    }
+
+    return occupiedFiles;
+}
+
+void FileOperationManager::startOperation(FileOperation *operation, bool addToHistory)
+{    
     auto operationInfo = operation->getOperationInfo();
+
+    QStringList uriList = operationInfo.get()->sources();
+    if(!uriList.count())
+        return;
+
+    bool bDocIsOccupiedByWps = Peony::GlobalSettings::getInstance()->isExist(DOC_IS_OCCUPIED_BY_WPS)?
+                Peony::GlobalSettings::getInstance()->getValue(DOC_IS_OCCUPIED_BY_WPS).toBool() : false;
+    if(bDocIsOccupiedByWps){
+        /* 文件被wps-office占用时处理流程;link to task#79151 文档防护软件适配---打开的文档可以被删除或重命名 */
+        QString occupiedFiles;
+        auto operationType = operationInfo->operationType();
+        if (operationType == FileOperationInfo::Trash
+             || operationType == FileOperationInfo::Delete
+             || operationType == FileOperationInfo::Move
+             || operationType == FileOperationInfo::Copy && operation->isCopyMove()/* 鼠标拖动文件情形 */
+             || operationType == FileOperationInfo::Rename)
+
+        {
+            QStringList filesOpenedByWps = getFilesOpenedByProc("wps");
+            QStringList filesOpenedByWpp = getFilesOpenedByProc("wpp");
+            QStringList filesOpenedByEt = getFilesOpenedByProc("et");
+            QStringList filesOpenedByproc = (filesOpenedByWps + filesOpenedByWpp + filesOpenedByEt).toSet().toList();/* 去重 */
+            for(auto& uri :uriList){
+                std::shared_ptr<FileInfo> fileinfo = FileInfo::fromUri(uri);
+                if(fileinfo && !fileinfo->isDir()){
+                    if(!uri.endsWith(".txt") && !(fileinfo->type().startsWith("application/wps-office")))
+                        continue;
+                }
+
+                QString absolutePath = FileUtils::urlDecode(uri).remove("file://");
+                for(auto& fileName :filesOpenedByproc){
+                    if(!fileName.startsWith(absolutePath))
+                        continue;
+
+                    operationInfo.get()->m_src_uris.removeOne(uri);
+                    operation->m_src_uris.removeOne(uri);
+                    occupiedFiles.append(QString("file://").append(fileName)).append("  ");
+                }
+            }
+
+        }
+        if(!occupiedFiles.isEmpty()){
+            QMessageBox::warning(nullptr, tr("Warn"), tr("'%1' is occupied，you cannot operate!").arg(occupiedFiles));
+            return;
+        }
+    }
+    //end
+
 
     if (operationInfo.get()->operationType() == FileOperationInfo::Trash) {
         auto value = GlobalSettings::getInstance()->getValue("showTrashDialog");
@@ -129,6 +199,7 @@ void FileOperationManager::startOperation(FileOperation *operation, bool addToHi
                 goto start;
             }
         }
+
         // check dialog
         QMessageBox questionBox;
         questionBox.addButton(QMessageBox::Yes);

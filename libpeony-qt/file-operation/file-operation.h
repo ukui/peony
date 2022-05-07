@@ -109,6 +109,10 @@ public:
     bool isCancelled() {
         return m_is_cancelled;
     }
+    /* 移动操作是否为copy文件，默认值为false，例如鼠标拖到文件时实际操作为copy，返回true */
+    virtual bool isCopyMove(){
+        return false;
+    }
 
 Q_SIGNALS:
     /*!
@@ -341,6 +345,7 @@ protected:
 
 protected:
     bool                        m_is_pause = false;
+    QStringList                 m_src_uris;
 
     QStringList                 m_srcUrisOfCopyDspsFiles;/* 复制dsps文件的源路径列表 */
     QStringList                 m_destUrisOfCopyDspsFiles;/* 复制dsps文件的目的路径列表 */

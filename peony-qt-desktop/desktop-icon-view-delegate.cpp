@@ -445,11 +445,7 @@ QWidget *DesktopIconViewDelegate::createEditor(QWidget *parent, const QStyleOpti
     });
 
     getView()->setEditFlag(true);
-    connect(edit, &IconViewEditor::returnPressed, getView(), [=]() {
-        this->setModelData(edit, nullptr, index);
-        edit->deleteLater();
-        getView()->setEditFlag(false);
-    });
+    connect(edit, &IconViewEditor::returnPressed, this, &DesktopIconViewDelegate::slot_finishEdit);
     connect(edit, &IconViewEditor::destroyed, getView(), [=](){
         getView()->setEditFlag(false);
     });
@@ -537,6 +533,18 @@ void DesktopIconViewDelegate::setModelData(QWidget *editor, QAbstractItemModel *
         getView()->selectionModel()->select(index, QItemSelectionModel::Select);
         getView()->setFocus();
     }
+}
+
+void DesktopIconViewDelegate::slot_finishEdit()
+{
+    auto edit = qobject_cast<QWidget *>(sender());
+    commitData(edit);
+    closeEditor(edit, QAbstractItemDelegate::SubmitModelCache);
+    if(edit){
+        delete edit;
+        edit = nullptr;
+    }
+    getView()->setEditFlag(false);
 }
 
 DesktopIconView *DesktopIconViewDelegate::getView() const

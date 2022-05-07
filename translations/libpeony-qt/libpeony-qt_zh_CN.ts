@@ -1837,37 +1837,37 @@ Copyright (C): 2019, Tianjin KYLIN Information Technology Co., Ltd.</source>
 <context>
     <name>Peony::FileItemModel</name>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="294"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="305"/>
         <source>child(ren)</source>
         <translation>个子项</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="282"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="293"/>
         <source>Symbol Link, </source>
         <translation>快捷方式，</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="317"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="328"/>
         <source>File Name</source>
         <translation>文件名称</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="321"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="332"/>
         <source>Delete Date</source>
         <translation>删除日期</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="326"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="337"/>
         <source>File Size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="324"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="335"/>
         <source>File Type</source>
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="322"/>
+        <location filename="../../libpeony-qt/model/file-item-model.cpp" line="333"/>
         <source>Modified Date</source>
         <translation>修改日期</translation>
     </message>
@@ -2058,25 +2058,25 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件创建</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="143"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="296"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="416"/>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="667"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="144"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="297"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="417"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="668"/>
         <source>Move file error</source>
         <translation>移动文件错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="816"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="817"/>
         <source>Create file error</source>
         <translation>创建文件错误</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1082"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1083"/>
         <source>Invalid Operation.</source>
         <translation>非法的操作.</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1097"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1098"/>
         <source>File delete error</source>
         <translation>文件删除错误</translation>
     </message>
@@ -2085,7 +2085,7 @@ Do you want to delete the link file?</source>
         <translation type="vanished">文件删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1099"/>
+        <location filename="../../libpeony-qt/file-operation/file-move-operation.cpp" line="1100"/>
         <source>Invalid Operation</source>
         <translation>非法的操作</translation>
     </message>
@@ -2211,7 +2211,7 @@ Do you want to delete the link file?</source>
         <translation>&lt;p&gt;此位置已包含名称为“%1”的文件，您确定要替换它吗？&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="97"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="98"/>
         <source>Unexpected error from %1 to %2</source>
         <translation>从 %1 至 %2 操作发生异常错误</translation>
     </message>
@@ -2236,22 +2236,22 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogNotSupported</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="279"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="280"/>
         <source>Yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="287"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="288"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="295"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="296"/>
         <source>Do the same</source>
         <translation>全部应用</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="324"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="325"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation>请确认磁盘未满或未被写保护而且文件未被使用</translation>
     </message>
@@ -2259,17 +2259,17 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationErrorDialogWarning</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="180"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="181"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="188"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="189"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="213"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="214"/>
         <source>Make sure the disk is not full or write protected and that the file is not protected</source>
         <translation>请确认磁盘未满或未被写保护而且文件未被使用</translation>
     </message>
@@ -2281,8 +2281,8 @@ Do you want to delete the link file?</source>
 <context>
     <name>Peony::FileOperationInfo</name>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="644"/>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="646"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="710"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="712"/>
         <source>Symbolic Link</source>
         <translation>快捷方式</translation>
     </message>
@@ -2298,32 +2298,42 @@ Do you want to delete the link file?</source>
         <translation type="vanished">删除文件警告</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="136"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="185"/>
+        <source>Warn</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="185"/>
+        <source>&apos;%1&apos; is occupied，you cannot operate!</source>
+        <translation>“%1”已被占用，您无法进行操作！</translation>
+    </message>
+    <message>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="202"/>
         <source>No, go to settings</source>
         <translation>否，跳转到设置</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="137"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="203"/>
         <source>Do you want to put selected %1 item(s) into trash?</source>
         <translation>你想把选中的 %1项删除到回收站吗？</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="222"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="288"/>
         <source>Can&apos;t delete.</source>
         <translation>不能删除</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="223"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="289"/>
         <source>You can&apos;t delete a file whenthe file is doing another operation</source>
         <translation>不能删除一个正在进行其它操作的文件</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="300"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="366"/>
         <source>File Operation is Busy</source>
         <translation>操作正忙</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="301"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-manager.cpp" line="367"/>
         <source>There have been one or more fileoperation(s) executing before. Youroperation will wait for executinguntil it/them done. If you really want to execute file operations parallelly anyway, you can change the default option &quot;Allow Parallel&quot; in option menu.</source>
         <translation>在执行该操作之前有操作未完成, 它需要等待上一个操作完成后再执行. 如果你希望文件操作并行, 你可以更改选项菜单中的&quot;允许操作并行&quot;配置.</translation>
     </message>
@@ -3887,12 +3897,12 @@ Do you want to unmount forcely?</source>
         <translation>数据盘</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="378"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="379"/>
         <source>Failed to open file &quot;%1&quot;: insufficient permissions.</source>
         <translation>打开文件&quot;%1&quot;失败：权限不足。</translation>
     </message>
     <message>
-        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="389"/>
+        <location filename="../../libpeony-qt/file-operation/file-operation-error-dialogs.cpp" line="390"/>
         <source>File “%1” does not exist. Please check whether the file has been deleted.</source>
         <translation>文件“%1”不存在，请检查文件是否被删除。</translation>
     </message>

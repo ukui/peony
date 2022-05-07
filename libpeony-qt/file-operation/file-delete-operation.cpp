@@ -30,7 +30,7 @@ using namespace Peony;
 
 FileDeleteOperation::FileDeleteOperation(QStringList sourceUris, QObject *parent) : FileOperation(parent)
 {
-    m_source_uris = sourceUris;
+    m_src_uris = sourceUris;
     m_reporter = new FileNodeReporter;
     m_info = std::make_shared<FileOperationInfo>(sourceUris, nullptr, FileOperationInfo::Delete);
     connect(m_reporter, &FileNodeReporter::nodeFound, this, &FileOperation::operationPreparedOne);
@@ -127,7 +127,7 @@ void FileDeleteOperation::run()
 
     Q_EMIT operationStarted();
 
-    for (auto src : m_source_uris) {
+    for (auto src : m_src_uris) {
         // pre-check for delete special directory
         if (src == "file:///data/home" || src == "file:///data/usershare" ||
                 src == "file:///data/root" || src == "file:///home" ||
@@ -156,7 +156,7 @@ void FileDeleteOperation::run()
     goffset *total_size = new goffset(0);
 
     QList<FileNode*> nodes;
-    for (auto uri : m_source_uris) {
+    for (auto uri : m_src_uris) {
         FileNode *node = new FileNode(FileUtils::urlEncode(uri), nullptr, m_reporter);
         node->findChildrenRecursively();
         node->computeTotalSize(total_size);
