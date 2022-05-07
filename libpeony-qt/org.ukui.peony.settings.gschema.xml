@@ -38,6 +38,12 @@
       <description>send src and dest uris of copy dsps files to wps</description>
     </key>
 
+    <key type="b" name="doc-is-occupied-by-wps">
+      <default>false</default>
+      <summary>doc is occupied by wps</summary>
+      <description>Whether to enable the wps occupied file monitoring function</description>
+    </key>
+
     <!--directory-view-->
 
     <!--remote-server-->
