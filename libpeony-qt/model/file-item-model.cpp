@@ -527,10 +527,12 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         //we have to set the dest dir uri as its mount point.
         //maybe i should do this when set model root item.
         destDirUri = m_root_item->m_info->uri();
-        auto targetUri = FileUtils::getTargetUri(destDirUri);
-        if (!targetUri.isEmpty()) {
-            destDirUri = targetUri;
-        }
+    }
+
+    //get real destDirUri
+    auto targetUri = FileUtils::getTargetUri(destDirUri);
+    if (!targetUri.isEmpty()) {
+        destDirUri = targetUri;
     }
 
     //if destDirUri was not set, do not execute a drop.
