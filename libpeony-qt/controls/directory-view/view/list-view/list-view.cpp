@@ -479,7 +479,8 @@ void ListView::dropEvent(QDropEvent *e)
     }
 
     //Do not allow dragging files to file manager when searching
-    if (m_current_uri.startsWith("search://")) {
+    //related to bug#107063,118004
+    if (m_current_uri.startsWith("search://") || m_current_uri.startsWith("favorite://")) {
         QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));
         return;
     }
