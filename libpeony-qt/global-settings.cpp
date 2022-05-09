@@ -105,6 +105,7 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
     m_cache.insert(SHOW_FILE_EXTENSION, true); /* 默认显示文件扩展名 */
     m_cache.insert(SEND_URIS_OF_COPY_DSPS, false);
     m_cache.insert(DOC_IS_OCCUPIED_BY_WPS, false);
+    m_cache.insert(USE_GLOBAL_DEFAULT_SORTING, true);
     if (QGSettings::isSchemaInstalled("org.ukui.peony.settings")) {
         m_peony_gsettings = new QGSettings("org.ukui.peony.settings", QByteArray(), this);
 
@@ -150,6 +151,9 @@ GlobalSettings::GlobalSettings(QObject *parent) : QObject(parent)
 
         m_cache.remove(DOC_IS_OCCUPIED_BY_WPS);
         m_cache.insert(DOC_IS_OCCUPIED_BY_WPS, m_peony_gsettings->get(DOC_IS_OCCUPIED_BY_WPS).toBool());
+
+        m_cache.remove(USE_GLOBAL_DEFAULT_SORTING);
+        m_cache.insert(USE_GLOBAL_DEFAULT_SORTING, m_peony_gsettings->get(USE_GLOBAL_DEFAULT_SORTING).toBool());
     }
 
     m_cache.insert(SIDEBAR_BG_OPACITY, 100);
