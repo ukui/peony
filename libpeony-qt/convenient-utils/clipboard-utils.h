@@ -66,6 +66,8 @@ public:
      * otherwise false.
      */
     static bool isClipboardFilesBeCut();
+    static bool isDesktopFilesBeCut();
+    static bool isPeonyFilesBeCut();
     static QStringList getClipboardFilesUris();
     static FileOperation *pasteClipboardFiles(const QString &targetDirUri);
     static void clearClipboard();
