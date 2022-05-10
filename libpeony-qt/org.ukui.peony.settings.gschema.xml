@@ -20,7 +20,7 @@
       <description>show hide files in peony and peony-desktop</description>
     </key>
 
-    <key type="b" name="use-global-default-settings">
+    <key type="b" name="use-global-default-sorting">
       <default>true</default>
       <summary>default sort policy for peony</summary>
       <description>true for global, false for directory itself</description>
