@@ -80,6 +80,30 @@ Format_Dialog::Format_Dialog(const QString &m_uris,SideBarAbstractItem *m_item,Q
     mNameEdit = new QLineEdit;
     mainLayout->addWidget(uNameLabel, 3, 1, 1, 2);
     mainLayout->addWidget(mNameEdit, 3, 3, 1, 6);
+    //fix can give name more than 11 characters,link to bug#113257
+    //FIXME 设置最大长度为11，但是汉字也可以输入11个，Qt控件提供方法存在的问题
+    connect(mFSCombox, &QComboBox::currentTextChanged, [=]()
+    {
+        auto fsIndex = mFSCombox->currentIndex();
+        qDebug() <<"index:"<<fsIndex<<"text:"<<mFSCombox->currentText();
+        //set default as 11, match with case 0
+        quint8 maxLength = 11;
+        switch (fsIndex) {
+        case 1:
+            maxLength = 15;
+            break;
+        case 2:
+            maxLength = 20;
+            break;
+        case 3:
+            maxLength = 16;
+            break;
+        default:
+            break;
+        }
+
+        mNameEdit->setMaxLength(maxLength);
+    });
 
     mEraseCkbox = new QCheckBox;
     mEraseCkbox->setText (tr("Completely erase(Time is longer, please confirm!)"));
