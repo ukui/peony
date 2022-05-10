@@ -53,7 +53,7 @@ public:
         return tr("This is the Default Preview of peony-qt");
     }
     const QIcon icon() override {
-        return QIcon::fromTheme("ukui-preview-file", QIcon::fromTheme("preview-file"));
+        return QIcon::fromTheme("ukui-preview-file-symbolic", QIcon::fromTheme("ukui-preview-file"));
     }
     void setEnable(bool enable) override {
         m_enable = enable;
