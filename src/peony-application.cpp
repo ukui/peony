@@ -142,6 +142,9 @@ PeonyApplication::PeonyApplication(int &argc, char *argv[], const char *applicat
     QTranslator *t3 = new QTranslator(this);
     t3->load("/usr/share/qt5/translations/qt_"+QLocale::system().name());
     QApplication::installTranslator(t3);
+    QTranslator *t4 = new QTranslator(this);
+    t4->load("/usr/share/qt5/translations/qtbase_"+QLocale::system().name());
+    QApplication::installTranslator(t4);
     setStyle(Peony::ComplementaryStyle::getStyle());
 
     setApplicationName(tr("peony-qt"));
