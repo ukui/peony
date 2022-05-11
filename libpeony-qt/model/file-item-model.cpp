@@ -579,6 +579,7 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         return false;
     }
 
+    //qDebug()<<"dropMimeData:" <<action;
     //can not move StandardPath to any dir
     if (action == Qt::MoveAction && FileUtils::containsStandardPath(srcUris)) {
         return false;
@@ -594,8 +595,9 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash:///")
-        return false;
+    //comment to fix can not drag to copy trash file,link to bug#117741
+//    if (b_trash_item && destDirUri != "trash:///")
+//        return false;
 
     //fix drag file to trash issue, #42328
     if (destDirUri.startsWith("trash:///"))
@@ -606,6 +608,12 @@ bool FileItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
             FileOperationUtils::trash(srcUris, true);
         }
         return true;
+    }
+
+    //fix drag trash file to other path is copy issue,link to bug#117741
+    if (srcUris.first().startsWith("trash:///") && action == Qt::MoveAction){
+        //not copy move, do target move to delete file in trash
+        action = Qt::TargetMoveAction;
     }
 
     qDebug() << "dropMimeData:" <<action<<destDirUri;
