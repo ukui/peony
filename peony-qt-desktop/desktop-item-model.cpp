@@ -858,8 +858,9 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         }
     }
     //drag from trash to another place, return false
-    if (b_trash_item && destDirUri != "trash:///")
-        return false;
+    //comment to fix can not drag to copy trash file,link to bug#117741
+//    if (b_trash_item && destDirUri != "trash:///")
+//        return false;
 
     auto fileOpMgr = FileOperationManager::getInstance();
     bool addHistory = true;
@@ -894,6 +895,12 @@ bool DesktopItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action
         //filesafe files can not move to other place, default set as copy action
         if (srcUris.first().startsWith("filesafe:///"))
             action = Qt::CopyAction;
+
+        //fix drag trash file to other path is copy issue,link to bug#117741
+        if (srcUris.first().startsWith("trash:///") && action == Qt::MoveAction){
+            //not copy move, do target move to delete file in trash
+            action = Qt::TargetMoveAction;
+        }
 
         FileOperationUtils::moveWithAction(srcUris, destDirUri, true, action);
     }
