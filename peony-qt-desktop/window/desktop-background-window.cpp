@@ -245,7 +245,10 @@ void DesktopBackgroundWindow::updateWindowGeometry()
     auto geometry = m_screen->geometry();
     move(geometry.topLeft());
     setFixedSize(geometry.size());
-
+    //bug#111897 修改QmlDesktop在旋转之后没有调整界面大小
+    if (m_currentDesktop) {
+        m_currentDesktop->initDesktop(QRect(0, 0, geometry.width(), geometry.height()));
+    }
     // raise primary window to make sure icon view is visible.
     if (centralWidget()) {
         KWindowSystem::raiseWindow(this->winId());
