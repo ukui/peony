@@ -296,7 +296,9 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     if (info->isSymbolLink()) {
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<< "symbolic:" << info->symbolicIconName();
-        icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
+        //icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
+        //Adjust link emblem to topLeft.link story#8354
+        icon.paint(&p, this->rect().x() + 10, m_delegate->getView()->iconSize().height() - 10, 20, 20, Qt::AlignCenter);
     }
 
     //paint access emblems
@@ -372,7 +374,7 @@ void IconViewIndexWidget::mouseDoubleClickEvent(QMouseEvent *event)
 void IconViewIndexWidget::adjustPos()
 {
     IconView *view = m_delegate->getView();
-    if (m_index.model() != view->model())
+//    if (m_index.model() != view->model())
         return;
 
     if (!view->selectionModel()->selectedIndexes().contains(m_index)) {
