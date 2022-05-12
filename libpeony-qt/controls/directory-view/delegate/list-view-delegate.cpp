@@ -151,10 +151,17 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         auto iconSizeHeight = iconSize.height();
         //paint symbolic link emblems
         if (isSymbolicLink) {
-            emblemPoses.removeOne(2);
+            emblemPoses.removeOne(3);
             QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
             //qDebug()<<info->symbolicIconName();
-            icon.paint(painter, loc_x, loc_y, size, size);
+            //icon.paint(painter, loc_x, loc_y, size, size);
+            //Adjust link emblem to topLeft.link story#8354
+            loc_x = rect.x();
+            //Special calculation emblems coordinates
+            if(iconSize.height() < 28){
+                iconSizeHeight = 28;
+            }
+            icon.paint(painter, loc_x, loc_y + iconSizeHeight - size/2 - 5, size, size, Qt::AlignCenter);
             //painter->restore();
         }
 

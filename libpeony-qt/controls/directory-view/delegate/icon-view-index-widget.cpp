@@ -294,10 +294,12 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
 
     //paint symbolic link emblems
     if (info->isSymbolLink()) {
-        emblemPoses.removeOne(2);
+        emblemPoses.removeOne(3);
         QIcon icon = QIcon::fromTheme("emblem-symbolic-link");
         //qDebug()<< "symbolic:" << info->symbolicIconName();
-        icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
+        //icon.paint(&p, this->width() - 30, 10, 20, 20, Qt::AlignCenter);
+        //Adjust link emblem to topLeft.link story#8354
+        icon.paint(&p, this->rect().x() + 10, m_delegate->getView()->iconSize().height() - 10, 20, 20, Qt::AlignCenter);
     }
 
     //paint access emblems
