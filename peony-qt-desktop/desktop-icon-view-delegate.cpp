@@ -227,7 +227,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     //paint link icon and locker icon
     FileInfo* file = FileInfo::fromUri(index.data(Qt::UserRole).toString()).get();
     if ((index.data(Qt::UserRole).toString() != "computer:///") && (index.data(Qt::UserRole).toString() != "trash:///")) {
-        emblemPoses.removeOne(2);
+        emblemPoses.removeOne(1);
         QSize lockerIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
@@ -271,7 +271,7 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     }
 
     if (index.data(Qt::UserRole + 1).toBool()) {
-        emblemPoses.removeOne(1);
+        emblemPoses.removeOne(3);
         QSize symbolicIconSize = QSize(16, 16);
         int offset = 8;
         switch (view->zoomLevel()) {
@@ -297,10 +297,15 @@ void DesktopIconViewDelegate::paint(QPainter *painter, const QStyleOptionViewIte
             break;
         }
         }
-        auto topRight = opt.rect.topRight();
-        topRight.setX(topRight.x() - offset - symbolicIconSize.width());
-        topRight.setY(topRight.y() + offset);
-        auto linkRect = QRect(topRight, symbolicIconSize);
+//        auto topRight = opt.rect.topRight();
+//        topRight.setX(topRight.x() - offset - symbolicIconSize.width());
+//        topRight.setY(topRight.y() + offset);
+//        auto linkRect = QRect(topRight, symbolicIconSize);
+        //Adjust link emblem to topLeft.link story#8354
+        auto topLeft = opt.rect.topLeft();
+        topLeft.setX(opt.rect.topLeft().x() + 10);
+        topLeft.setY(opt.rect.topLeft().y() + offset + iconRect.height() - symbolicIconSize.height());
+        auto linkRect = QRect(topLeft, symbolicIconSize);
         QIcon symbolicLinkIcon = QIcon::fromTheme("emblem-symbolic-link");
         symbolicLinkIcon.paint(painter, linkRect, Qt::AlignCenter);
     }
