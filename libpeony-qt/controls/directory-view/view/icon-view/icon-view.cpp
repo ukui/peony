@@ -768,7 +768,7 @@ void IconView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
     });
     connect(model, &FileItemModel::findChildrenFinished, this, &DirectoryViewWidget::viewDirectoryChanged);
     //connect(m_model, &FileItemModel::dataChanged, m_view, &IconView::clearIndexWidget);
-    connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
+    //connect(m_model, &FileItemModel::updated, m_view, &IconView::resort);
     connect(m_model, &FileItemModel::updated, m_view->viewport(), QOverload<>::of(&QWidget::update));
 
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {

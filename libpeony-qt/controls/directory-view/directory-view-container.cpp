@@ -76,7 +76,7 @@ DirectoryViewContainer::DirectoryViewContainer(QWidget *parent) : QWidget(parent
         if(this->property("statusBarUpdate").isValid() && this->property("statusBarUpdate").toBool() == false){
             this->setProperty("statusBarUpdate", true);
             QTimer::singleShot(400, this, [=](){
-                Q_EMIT this->directoryChanged();
+                Q_EMIT this->statusBarChanged();
                 this->setProperty("statusBarUpdate", false);
             });
         }
