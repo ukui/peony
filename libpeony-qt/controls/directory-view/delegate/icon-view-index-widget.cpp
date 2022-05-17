@@ -37,6 +37,7 @@
 #include <QStyleHints>
 
 #include "file-info.h"
+#include "file-info-job.h"
 #include "file-item-proxy-filter-sort-model.h"
 #include "file-item.h"
 #include "file-utils.h"
@@ -212,6 +213,12 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
         info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
     }
+    //fix file emblemed icon not correct issue, link to bug#118015
+    if (info->isEmptyInfo() || !info->canRead() || !info->canWrite()) {
+        FileInfoJob j(info);
+        j.querySync();
+    }
+
     auto colors = info->getColors();
     auto lineSpacing = opt.fontMetrics.lineSpacing();
     int yoffset = 0;

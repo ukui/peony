@@ -72,7 +72,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
     auto info = FileInfo::fromUri(uri);
     //fix file emblemed icon not correct issue, link to bug#118015
-    if (info->isEmptyInfo()) {
+    if (info->isEmptyInfo() || !info->canRead() || !info->canWrite()) {
         FileInfoJob j(info);
         j.querySync();
     }
