@@ -210,7 +210,7 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
     }
     //fix file emblemed icon not correct issue, link to bug#118015
-    if (info->isEmptyInfo() || !info->canRead() || !info->canWrite()) {
+    if (info->isEmptyInfo()) {
         FileInfoJob j(info);
         j.querySync();
     }
