@@ -161,7 +161,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             if (metaInfoPos.x() >= 0) {
                 // check if overlapped, it might happend whild drag out and in desktop view.
                 auto indexRect = QRect(metaInfoPos, itemRectHash.values().first().size());
-                if (notEmptyRegion.contains(indexRect.center())) {
+                if (notEmptyRegion.intersects(indexRect)) {
 
                     // move index to closest empty grid.
                     auto next = indexRect;
@@ -179,7 +179,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                             //put item to next column first row
                             next.moveTo(next.x() + grid.width(), top);
                         }
-                        if (notEmptyRegion.contains(next.center()))
+                        if (notEmptyRegion.intersects(next))
                             continue;
 
                         isEmptyPos = true;
@@ -219,7 +219,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
             }
 
             auto indexRect = QRect(QPoint(marginLeft, marginTop), itemRectHash.isEmpty()? QSize(): itemRectHash.values().first().size());
-            if (notEmptyRegion.contains(indexRect.center())) {
+            if (notEmptyRegion.intersects(indexRect)) {
 
                 // move index to closest empty grid.
                 auto next = indexRect;
@@ -237,7 +237,7 @@ DesktopItemModel::DesktopItemModel(QObject *parent)
                         //put item to next column first row
                         next.moveTo(next.x() + grid.width(), top);
                     }
-                    if (notEmptyRegion.contains(next.center()))
+                    if (notEmptyRegion.intersects(next))
                         continue;
 
                     isEmptyPos = true;
