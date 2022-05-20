@@ -35,7 +35,8 @@ QmlDesktop::QmlDesktop(QWidget *parent) : DesktopWidgetBase(parent)
     this->m_exitAnimationType = AnimationType::LeftToRight;
 
     m_quick = new QQuickView;
-    m_quick->setColor(Qt::transparent);
+    //bug#113045 【会话管理器】【TM】平板模式下点击关机会先花屏再关机
+    //m_quick->setColor(Qt::transparent);
 
     m_container = QWidget::createWindowContainer(m_quick, this);
     m_container->setAttribute(Qt::WA_TranslucentBackground);
