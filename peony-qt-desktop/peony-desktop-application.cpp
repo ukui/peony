@@ -89,6 +89,14 @@ qint64 PeonyDesktopApplication::peony_desktop_start_time = 0;
 void guessContentTypeCallback(GObject* object,GAsyncResult *res,gpointer data);
 static void volume_mount_cb (GObject* source, GAsyncResult* res, gpointer udata);
 
+static void mount_added_cb (GVolumeMonitor *volume_monitor,
+                            GMount         *mount,
+                            gpointer        user_data);
+
+static void mount_changed_cb (GVolumeMonitor *volume_monitor,
+                              GMount         *mount,
+                              gpointer        user_data);
+
 void trySetDefaultFolderUrlHandler() {
     //NOTE:
     //There is a bug in qt concurrent. If we use QtConcurrent::run()
@@ -250,6 +258,9 @@ PeonyDesktopApplication::PeonyDesktopApplication(int &argc, char *argv[], const 
             }
         }
         g_object_unref(vm);
+
+        g_signal_connect (g_volume_monitor_get(), "mount-added", G_CALLBACK(mount_added_cb), nullptr);
+        g_signal_connect (g_volume_monitor_get(), "mount-changed", G_CALLBACK(mount_added_cb), nullptr);
 
         // enumerat network:///
         QThread* t = QThread::create ([=] () {
@@ -673,4 +684,24 @@ static void volume_mount_cb (GObject* source, GAsyncResult* res, gpointer udata)
     g_volume_mount_finish(G_VOLUME (source), res, nullptr);
 
     Q_UNUSED(udata);
+}
+
+void mount_added_cb (GVolumeMonitor *volume_monitor,
+                     GMount         *mount,
+                     gpointer        user_data)
+{
+    Q_UNUSED (volume_monitor)
+    Q_UNUSED (user_data)
+    g_autoptr (GFile) file = g_mount_get_root(mount);
+    g_file_query_info_async(file, "*", G_FILE_QUERY_INFO_NONE, 0, 0, 0, 0);
+}
+
+void mount_changed_cb (GVolumeMonitor *volume_monitor,
+                       GMount         *mount,
+                       gpointer        user_data)
+{
+    Q_UNUSED (volume_monitor)
+    Q_UNUSED (user_data)
+    g_autoptr (GFile) file = g_mount_get_root(mount);
+    g_file_query_info_async(file, "*", G_FILE_QUERY_INFO_NONE, 0, 0, 0, 0);
 }
