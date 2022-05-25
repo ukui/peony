@@ -202,12 +202,13 @@ FileOperation *ClipboardUtils::pasteClipboardFiles(const QString &targetDirUri)
     }
     //check existed
     auto uris = getClipboardFilesUris();
-//    for (auto uri : getClipboardFilesUris()) {
-//        //FIXME: replace BLOCKING api in ui thread.
-//        if (!FileUtils::isFileExsit(uri)) {
-//            uris.removeAll(uri);
-//        }
-//    }
+    //fix paste not exist file issue, link to bug#121029
+    for (auto uri : uris) {
+        //FIXME: replace BLOCKING api in ui thread.
+        if (!FileUtils::isFileExsit(uri)) {
+            uris.removeAll(uri);
+        }
+    }
     if (uris.isEmpty()) {
         return op;
     }
