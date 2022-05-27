@@ -230,18 +230,23 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                 for (auto item : needRelayoutItems) {
                     QRect itemRect = QRect(posX, posY, gridWidth, gridHeight);
                     while (notEmptyRegion.intersects(itemRect)) {
+                        // 到下一个位置
                         if (posY + 2*gridHeight > this->viewport()->height()) {
                             posY = marginTop;
                             posX += gridWidth;
                         } else {
                             posY += gridHeight;
                         }
+                        if (this->viewport()->geometry().contains(itemRect)) {
+                            // 进行下一次判断
+                            itemRect.moveTo(posX, posY);
+                        } else {
+                            // 跳出while循环，并且设置坐标为（0，0）
+                            itemRect.moveTo(0, 0);
+                            break;
+                        }
                     }
-                    if (this->viewport()->geometry().contains(itemRect)) {
-                        itemRect.moveTo(posX, posY);
-                    } else {
-                        itemRect.moveTo(0, 0);
-                    }
+
                     notEmptyRegion += itemRect;
                     m_item_rect_hash.insert(item, itemRect);
                 }
