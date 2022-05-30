@@ -302,7 +302,15 @@ void FileCopy::run ()
             if (readSize != writeSize) {
                 // it's impossible
                 qDebug() << "read file: " << mSrcUri << "  --- write file: " << mDestUri << " size not inconsistent";
-                error = g_error_new (1, G_IO_ERROR_FAILED, "%s", tr("Please check whether the device has been removed!").toUtf8().constData());
+
+                // check files existed again for ensure error message, related to #120721, #120973
+                bool existed = g_file_query_exists(srcFile, nullptr) && g_file_query_exists(destFile, nullptr);
+                if (!existed) {
+                    error = g_error_new (1, G_IO_ERROR_FAILED, "%s", tr("Please check whether the device has been removed!").toUtf8().constData());
+                } else {
+                    error = g_error_new(1, G_IO_ERROR_FAILED, "%s", tr("Write file error: There is no avaliable disk space for device!").toUtf8().constData());
+                }
+
                 detailError(&error);
                 mStatus = ERROR;
                 continue;
