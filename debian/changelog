@@ -1,3 +1,12 @@
+peony (3.2.3+0325update7) v101; urgency=medium
+
+    * BUG:  #120720 拷贝超过剩余空间大小的文件至分区内，提示语有误
+        #121029 【GXB】【文件管理】粘贴已删除文件提示语未汉化
+    * 需求号：无
+    * 其他改动说明：无
+    * 其他改动影响域：无
+ -- MeihongHe <hemeihong@kylinos.cn>  Thu, 02 Jun 2022 10:01:49 +0800
+
 peony (3.2.3+0325update6) v101; urgency=medium
 
     * BUG:  #115366 【离线升级】【文件管理器】新建的文件图标与桌面原来存在的图标重叠
