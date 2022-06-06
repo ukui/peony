@@ -402,7 +402,8 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
         }
         case AUDIO:
         {
-            if (type.contains(Audio_Type))
+            //fix bug#121476, special audio type
+            if (type.contains(Audio_Type) || type.contains(Audio_Extend))
                 return true;
             break;
         }
@@ -410,7 +411,8 @@ bool FileItemProxyFilterSortModel::checkFileTypeFilter(QString type) const
         {
             //exclude classfied types, show the rest other types
             if (type != Folder_Type && ! type.contains(Image_Type) && ! type.contains(Video_Type)
-                    && ! type.contains(Text_Type) && !type.contains(Wps_Type) && ! type.contains(Audio_Type))
+                    && ! type.contains(Text_Type) && !type.contains(Wps_Type) && ! type.contains(Audio_Type)
+                    && ! type.contains(Audio_Extend))
                 return true;
             break;
         }

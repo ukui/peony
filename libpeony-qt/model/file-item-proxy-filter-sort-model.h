@@ -77,6 +77,7 @@ public:
     const QString Text_Type = "text/";
     const QString Wps_Type = "application/wps-office";
     const QString Audio_Type = "audio/";
+    const QString Audio_Extend = "application/x-smaf";
 
     explicit FileItemProxyFilterSortModel(QObject *parent = nullptr);
     void setSourceModel(QAbstractItemModel *model) override;
