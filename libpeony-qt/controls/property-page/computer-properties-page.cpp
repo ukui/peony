@@ -181,7 +181,12 @@ ComputerPropertiesPage::ComputerPropertiesPage(const QString &uri, QWidget *pare
                         DataCDROM *cdrom = new DataCDROM(unixDeviceName);
                         if (cdrom) {
                             cdrom->getCDROMInfo();
-                            usedSpace = used;
+                            //usedSpace = used;
+                            //used无法正确获取追加刻录后光盘的使用容量，getCDROMUsedCapacity()无法获取可擦除光盘的使用容量
+                            usedSpace = cdrom->getCDROMUsedCapacity();
+                            if((cdrom->getCDROMType()).contains("DVD+RW") || (cdrom->getCDROMType()).contains("DVD-RW")){
+                                  usedSpace =used;
+                            }
                             totalSpace = cdrom->getCDROMCapacity();
                             availableSpace = totalSpace - usedSpace;
                             delete cdrom;

@@ -90,6 +90,10 @@ public:
         return m_u64UsedCapacity;
     }
 
+    QString getCDROMType() {
+        return m_oMediumType;
+    }
+
 private:
     bool open();
     void close();
