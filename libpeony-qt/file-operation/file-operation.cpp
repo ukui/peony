@@ -31,7 +31,7 @@
 
 using namespace Peony;
 
-QRegExp gInvalidName("[\\\\/:\\*\\?\\\"<>\\|]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、<、>、|  */
+QRegExp gInvalidName("[\\\\/:\\*\\?\\\"<>\\|\\n\\t]");/* 文件名或文件夹名中不能出现以下字符：\、/、:、*、?、"、<、>、| 、\n 、\t */
 
 FileOperation::FileOperation(QObject *parent) : QObject (parent)
 {
