@@ -781,16 +781,20 @@ void TopMenuBar::addWindowButtons()
     m_minimize = minimize;
     m_close = close;
 
-    if (!g_statusManagerDBus) {
-        g_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
-    }
-    QDBusReply<bool> message_a = g_statusManagerDBus->call("get_current_tabletmode");
-    if (message_a.isValid()) {
-        m_tablet_mode = message_a.value();
-    }
-    updateTabletMode(m_tablet_mode);
+    if (QDBusConnection::connectToBus(0,QString("com.kylin.statusmanager.interface")).isConnected())
+    {
+        if (!g_statusManagerDBus) {
+            g_statusManagerDBus = new QDBusInterface(DBUS_STATUS_MANAGER_IF, "/" ,DBUS_STATUS_MANAGER_IF,QDBusConnection::sessionBus(),this);
+        }
+        QDBusReply<bool> message_a = g_statusManagerDBus->call("get_current_tabletmode");
+        if (message_a.isValid()) {
+            m_tablet_mode = message_a.value();
+        }
+        updateTabletMode(m_tablet_mode);
 
-    connect(g_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletMode(bool)));
+        connect(g_statusManagerDBus, SIGNAL(mode_change_signal(bool)), this, SLOT(updateTabletMode(bool)));
+    }
+
 
     layout->addWidget(optionButton);
     layout->addWidget(minimize);
