@@ -71,7 +71,10 @@ void FileRenameOperation::run()
         except.op = FileOpRename;
         except.dlgType = ED_WARNING;
         except.title = tr("File Rename error");
-        except.errorStr = tr("Invalid file name %1%2%3 .").arg("\“").arg(m_new_name).arg("\”");
+        //except.errorStr = tr("Invalid file name %1%2%3 .").arg("\“").arg(m_new_name).arg("\”");
+        //参考Windows提示，列出具体的非法字符集，更友好一些，关联bug#122504
+        except.errorStr = tr("File name can not have such charcters: "
+                             "\\ / : * ? \" < > | # % \\n \\t");
 
         Q_EMIT errored(except);
 
