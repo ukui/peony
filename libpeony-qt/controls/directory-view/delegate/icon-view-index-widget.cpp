@@ -209,20 +209,18 @@ void IconViewIndexWidget::paintEvent(QPaintEvent *e)
     }
     auto info = m_info.lock();
 
-    // draw color symbols
-    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
-        info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
-    }
-    //fix file emblemed icon not correct issue, link to bug#118015
-    if (info->isEmptyInfo()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
-
     auto colors = info->getColors();
     auto lineSpacing = opt.fontMetrics.lineSpacing();
     int yoffset = 0;
     int iLine = 0;
+
+    // draw color symbols
+    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+        //快速访问目录，颜色标记设置后更新不及时问题单独处理,修复bug#118015
+        auto matchInfo = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
+        colors = matchInfo->getColors();
+    }
+
     if(0 < colors.count())
     {
         const int MAX_LABEL_NUM = 3;

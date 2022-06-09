@@ -68,15 +68,16 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     auto view = qobject_cast<DirectoryView::ListView *>(parent());
     /* 此处以中文命名的文件保护箱标记实时同步还存在问题，是由于uri编码（尽管使用FileUtils::urlEncoded进行转换）与底层(info的uri)不匹配 */
     QString uri = index.data(Qt::UserRole).toString();
-    if(uri.startsWith("favorite://"))/* 快速访问须特殊处理 */
-        uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
     auto info = FileInfo::fromUri(uri);
-    //fix file emblemed icon not correct issue, link to bug#118015
-    if (info->isEmptyInfo()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
     auto colors = info->getColors();
+
+    if(uri.startsWith("favorite://")){/* 快速访问须特殊处理 */
+        //快速访问目录，颜色标记设置后更新不及时问题单独处理,修复bug#118015
+        uri =FileUtils::getEncodedUri(FileUtils::getTargetUri(uri));
+        auto matchInfo = FileInfo::fromUri(uri);
+        colors = matchInfo->getColors();
+    }
+
     if (index.column() == 0 && colors.count() >0) {
         if (!view->isDragging() || !view->selectionModel()->selectedIndexes().contains(index)) {
             int xoffset = 5;

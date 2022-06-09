@@ -206,20 +206,18 @@ void IconViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         return;
     }
     auto info = item->info();
-    if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
-        info = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
-    }
-    //fix file emblemed icon not correct issue, link to bug#118015
-    if (info->isEmptyInfo()) {
-        FileInfoJob j(info);
-        j.querySync();
-    }
-
     // draw color symbols
     int iLine = 0;
     int yoffset = 0;
+    auto colors = info->getColors();
+
     if (!isDragging || !view->selectedIndexes().contains(index)) {
-        auto colors = info->getColors();
+        //快速访问目录，颜色标记设置后更新不及时问题单独处理,修复bug#118015
+        if(info->uri().startsWith("favorite://")){/* 快速访问须特殊处理 */
+            auto matchInfo = FileInfo::fromUri(FileUtils::getEncodedUri(FileUtils::getTargetUri(info->uri())));
+            colors = matchInfo->getColors();
+        }
+
         if(0 < colors.count())
         {
             const int MAX_LABEL_NUM = 3;
