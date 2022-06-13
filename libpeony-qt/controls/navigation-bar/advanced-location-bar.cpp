@@ -44,6 +44,10 @@ AdvancedLocationBar::AdvancedLocationBar(QWidget *parent) : QWidget(parent)
     m_bar = new Peony::LocationBar(this);
     m_edit = new Peony::PathEdit(this);
     m_search_bar = new Peony::SearchBarContainer(this);
+
+    m_edit->setFixedHeight(36);
+    m_search_bar->setSearchBoxHeight(36);
+
     m_bar->connect(m_bar, &Peony::LocationBar::blankClicked, [=]() {
         auto curUri = m_bar->getCurentUri();
         if (! curUri.startsWith("trash:///") && ! curUri.startsWith("recent:///"))
