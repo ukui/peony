@@ -52,6 +52,9 @@ public:
         return m_currentDesktop;
     }
 
+Q_SIGNALS:
+    void clearMenu();
+
 public Q_SLOTS:
     void setWindowGeometry(const QRect &geometry);
 

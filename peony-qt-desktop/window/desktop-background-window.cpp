@@ -86,6 +86,7 @@ DesktopBackgroundWindow::DesktopBackgroundWindow(QScreen *screen, QWidget *paren
 
         QTimer::singleShot(1, this, [=]() {
             DesktopMenu menu(view);
+            connect(this, &DesktopBackgroundWindow::clearMenu, &menu, &DesktopMenu::aboutToHide);
             if (view->getSelections().isEmpty()) {
                 auto action = menu.addAction(QObject::tr("set background"));
                 connect(action, &QAction::triggered, [=]() {
@@ -283,7 +284,7 @@ void DesktopBackgroundWindow::setWindowDesktop(DesktopWidgetBase *desktop)
     if (m_currentDesktop->hasCustomAnimation()) {
         m_currentDesktop->startAnimation(true);
     }
-
+    Q_EMIT clearMenu();
     connect(m_currentDesktop, &DesktopWidgetBase::desktopMoveRequest, this, &DesktopBackgroundWindow::desktopMoveProcess);
     connect(m_currentDesktop, &DesktopWidgetBase::desktopReboundRequest, this, &DesktopBackgroundWindow::desktopReboundProcess);
 }
