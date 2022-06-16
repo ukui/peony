@@ -42,6 +42,8 @@ FileWatcher::FileWatcher(QString uri, QObject *parent, bool isWatchMovesFlag)
     if (uri.startsWith("thumbnail://"))
         return;
 
+    if (uri == "file:///")
+        uri = "file:////";
     m_uri = uri;
     m_target_uri = uri;
     m_file = g_file_new_for_uri(uri.toUtf8().constData());
