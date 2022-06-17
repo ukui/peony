@@ -266,11 +266,9 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
         return;
     }
 
-    if (isDesktopFileAction()) {
-        if (launchAppWithDBus()) {
-            qDebug() << "[FileLaunchAction::lauchFileAsync] launchAppWithDBus, name:" << fileInfo->displayName();
-            return;
-        }
+    if (launchAppWithDBus()) {
+        qDebug() << "[FileLaunchAction::lauchFileAsync] launchAppWithDBus, name:" << fileInfo->displayName();
+        return;
     }
 
     bool executable = fileInfo->canExecute();
@@ -577,11 +575,10 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
         return;
     }
 
-    if (isDesktopFileAction()) {
-        if (launchAppWithDBus()) {
-            qDebug() << "[FileLaunchAction::lauchFilesAsync] launchAppWithDBus, name:" << fileInfo->displayName();
-            return;
-        }
+
+    if (launchAppWithDBus()) {
+        qDebug() << "[FileLaunchAction::lauchFilesAsync] launchAppWithDBus, name:" << fileInfo->displayName();
+        return;
     }
 
     if (isDesktopFileAction() && !forceWithArg) {
@@ -693,19 +690,26 @@ void FileLaunchAction::preCheck()
 
 bool FileLaunchAction::launchAppWithDBus()
 {
-    bool intel = (QString::compare(V10_SP1_EDU, QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
-    if (intel) {
-        return launchAppWithSession();
-    }
+    if (isDesktopFileAction()) {
+        bool intel = (QString::compare(V10_SP1_EDU, QString::fromStdString(KDKGetPrjCodeName()), Qt::CaseInsensitive) == 0);
+        if (intel) {
+            return launchAppWithSession();
+        }
 
-    //TODO 以下判断方式不能覆盖全部情况，后期还需要根据ukui3.1项目的os-release进行调整
-    //see peony-qt-desktop/settings/desktop-global-settings.cpp -> getProductFeatures();
-    int features = QString::fromStdString(KDKGetOSRelease("PRODUCT_FEATURES")).toInt();
-    if (features == 2 || features == 3) {
-        return launchAppWithAppMgr();
-    }
+        //TODO 以下判断方式不能覆盖全部情况，后期还需要根据ukui3.1项目的os-release进行调整
+        //see peony-qt-desktop/settings/desktop-global-settings.cpp -> getProductFeatures();
+        int features = QString::fromStdString(KDKGetOSRelease("PRODUCT_FEATURES")).toInt();
+        if (features == 2 || features == 3) {
+            return launchAppWithAppMgr();
+        }
 
-    qDebug() << "[FileLaunchAction::launchAppWithDBus] can't launch app with DBus, features:" << features << ", is intel:" << intel;
+        qDebug() << "[FileLaunchAction::launchAppWithDBus] can't launch app with DBus, features:" << features << ", is intel:" << intel;
+    } else {
+        int features = QString::fromStdString(KDKGetOSRelease("PRODUCT_FEATURES")).toInt();
+        if (features == 2 || features == 3) {
+            return launchDefaultAppWithUrl();
+        }
+    }
     return false;
 }
 
@@ -731,6 +735,31 @@ bool FileLaunchAction::launchAppWithAppMgr()
 
     return false;
 }
+
+bool FileLaunchAction::launchDefaultAppWithUrl()
+{
+    QDBusInterface session("com.kylin.AppManager", "/com/kylin/AppManager", "com.kylin.AppManager");
+    if (session.isValid()) {
+        auto fileInfo = FileInfo::fromUri(m_uri);
+        if (fileInfo->isEmptyInfo()) {
+            FileInfoJob j(fileInfo);
+            j.querySync();
+        }
+
+        QString uri = fileInfo->uri();
+
+        QDBusReply<bool> result = session.call("LaunchDefaultAppWithUrl", uri);
+        qDebug() << "[FileLaunchAction::launchAppWithUrlbyAppMgr]  uri:" << uri;
+
+        if (result.isValid()) {
+            return true;
+        }
+        qDebug() << "[FileLaunchAction::launchAppWithUrlbyAppMgr] failed, uri:" << uri;
+    }
+
+    return false;
+}
+
 
 bool FileLaunchAction::launchAppWithSession()
 {

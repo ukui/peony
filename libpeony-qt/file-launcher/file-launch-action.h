@@ -71,6 +71,7 @@ public Q_SLOTS:
 private:
     bool launchAppWithDBus();
     bool launchAppWithAppMgr();
+    bool launchDefaultAppWithUrl();
     bool launchAppWithSession();
 
     bool checkAppDisabled();

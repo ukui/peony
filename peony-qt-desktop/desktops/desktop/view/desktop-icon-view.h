@@ -110,6 +110,7 @@ public:
 
 private:
     QRect getScreenArea(QScreen* screen);
+    bool launchAppWithArguments(QString desktopFile, QStringList args);
 
 Q_SIGNALS:
     void zoomLevelChanged(ZoomLevel level);
