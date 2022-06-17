@@ -64,6 +64,12 @@ DesktopMenu::DesktopMenu(DirectoryViewIface *view, QWidget *parent) : QMenu(pare
     m_selections = view->getSelections();
 
     fillActions();
+
+    connect(this, &QMenu::aboutToHide, [=]() {
+        for (auto action : this->actions()) {
+            action->deleteLater();
+        }
+    });
 }
 
 void DesktopMenu::fillActions()
