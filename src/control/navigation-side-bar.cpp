@@ -74,6 +74,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 {
     static NavigationSideBarStyle *global_style = new NavigationSideBarStyle;
 
+    header()->setMinimumSectionSize(30);
+
     setSortingEnabled(true);
 
     setIconSize(QSize(16, 16));
@@ -103,8 +105,8 @@ NavigationSideBar::NavigationSideBar(QWidget *parent) : QTreeView(parent)
 
     setAttribute(Qt::WA_TranslucentBackground);
     viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    header()->setStretchLastSection(false);
+    header()->setSectionResizeMode(QHeaderView::Fixed);
+    header()->setStretchLastSection(true);
     header()->hide();
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -341,8 +343,10 @@ void NavigationSideBar::resizeEvent(QResizeEvent *e)
 {
     QTreeView::resizeEvent(e);
     if (header()->count() > 0) {
-        this->setColumnWidth(1, 20);
-        header()->resizeSection(0, this->viewport()->width() - this->columnWidth(1));
+        //header()->resizeSection(0, this->viewport()->width() - 22 - 20 - verticalScrollBar()->width());
+        //header()->resizeSection(1, 22);
+        this->setColumnWidth(0, this->viewport()->width() - 30 - verticalScrollBar()->width());
+        this->setColumnWidth(1, 30);
     }
 }
 
@@ -486,10 +490,10 @@ void NavigationSideBar::wheelEvent(QWheelEvent *event)
 int NavigationSideBar::sizeHintForColumn(int column) const
 {
     if (column == 1)
-        return 22;
+        return 30;
 
     if (column == 0)
-        return viewport()->width() - 22;
+        return viewport()->width() - 30 - verticalScrollBar()->width();
 
     return QTreeView::sizeHintForColumn(column);
 }
@@ -520,18 +524,18 @@ QSize NavigationSideBarItemDelegate::sizeHint(const QStyleOptionViewItem &option
 void NavigationSideBarItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     painter->save();
-    if (index.column() == 1) {
-        QPainterPath rightRoundedRegion;
-        rightRoundedRegion.setFillRule(Qt::WindingFill);
-        auto rect = option.rect;
-        auto view = qobject_cast<const QAbstractItemView *>(option.widget);
-        if (view) {
-            rect.setRight(view->viewport()->rect().right());
-        }
-        rightRoundedRegion.addRoundedRect(rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
-        rightRoundedRegion.addRect(rect.adjusted(0, 0, -NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0));
-        painter->setClipPath(rightRoundedRegion);
-    }
+//    if (index.column() == 1) {
+//        QPainterPath rightRoundedRegion;
+//        rightRoundedRegion.setFillRule(Qt::WindingFill);
+//        auto rect = option.rect;
+//        auto view = qobject_cast<const QAbstractItemView *>(option.widget);
+//        if (view) {
+//            rect.setRight(view->viewport()->rect().right());
+//        }
+//        rightRoundedRegion.addRoundedRect(rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
+//        rightRoundedRegion.addRect(rect.adjusted(0, 0, -NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0));
+//        painter->setClipPath(rightRoundedRegion);
+//    }
 
     painter->setRenderHint(QPainter::Antialiasing);
     QStyledItemDelegate::paint(painter, option, index);
@@ -614,16 +618,16 @@ void NavigationSideBarStyle::drawPrimitive(QStyle::PrimitiveElement element, con
         painter->restore();
         return;
     }
-    case QStyle::PE_IndicatorBranch: {
-        if (option->rect.x() == 0) {
-            QPainterPath leftRoundedRegion;
-            leftRoundedRegion.setFillRule(Qt::WindingFill);
-            leftRoundedRegion.addRoundedRect(option->rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
-            leftRoundedRegion.addRect(option->rect.adjusted(NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0, 0, 0));
-            painter->setClipPath(leftRoundedRegion);
-        }
-        break;
-    }
+//    case QStyle::PE_IndicatorBranch: {
+//        if (option->rect.x() == 0) {
+//            QPainterPath leftRoundedRegion;
+//            leftRoundedRegion.setFillRule(Qt::WindingFill);
+//            leftRoundedRegion.addRoundedRect(option->rect, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS);
+//            leftRoundedRegion.addRect(option->rect.adjusted(NAVIGATION_SIDEBAR_ITEM_BORDER_RADIUS, 0, 0, 0));
+//            painter->setClipPath(leftRoundedRegion);
+//        }
+//        break;
+//    }
     case QStyle::PE_PanelItemViewRow: {
         painter->restore();
         return;

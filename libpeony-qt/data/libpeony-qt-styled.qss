@@ -15,11 +15,6 @@ Peony--DirectoryView--IconView::Item::selected
     background-color: transparent;
 }
 
-Peony--DirectoryView--ListView::Item::hover
-{
-    background-color: transparent;
-}
-
 Peony--SideBar::Item::hover
 {
     background-color: transparent;

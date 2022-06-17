@@ -132,7 +132,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
     else
        painter->setOpacity(1.0);
-    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter);
+    QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &opt, painter, view);
 
     if (view->isEnableMultiSelect()) {
         int selectBox = 0;

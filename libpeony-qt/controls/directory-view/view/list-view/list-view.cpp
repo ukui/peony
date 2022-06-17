@@ -76,7 +76,8 @@ ListView::ListView(QWidget *parent) : QTreeView(parent)
 
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setSectionsMovable(true);
-    header()->setMinimumSectionSize(140);
+    //header()->setMinimumSectionSize(140);
+    header()->setStretchLastSection(false);
 
     setExpandsOnDoubleClick(false);
     setSortingEnabled(true);
@@ -467,11 +468,11 @@ void ListView::wheelEvent(QWheelEvent *e)
 
 void ListView::paintEvent(QPaintEvent *e)
 {
-    auto palette = qApp->palette();
-    palette.setColor(QPalette::Active, QPalette::Base, Qt::transparent);
-    palette.setColor(QPalette::Inactive, QPalette::Base, Qt::transparent);
-    palette.setColor(QPalette::Disabled, QPalette::Base, Qt::transparent);
-    viewport()->setPalette(palette);
+//    auto palette = qApp->palette();
+//    palette.setColor(QPalette::Active, QPalette::Base, Qt::transparent);
+//    palette.setColor(QPalette::Inactive, QPalette::Base, Qt::transparent);
+//    palette.setColor(QPalette::Disabled, QPalette::Base, Qt::transparent);
+//    viewport()->setPalette(palette);
 
     QTreeView::paintEvent(e);
 }
@@ -554,7 +555,7 @@ void ListView::adjustColumnsSize()
     }
 
     header()->resizeSection(0, this->viewport()->width() - rightPartsSize);
-    header()->resizeSection(model()->columnCount() - 1, columnSize * 2);
+    header()->resizeSection(model()->columnCount() - 1, viewport()->width() - 20 - header()->sectionSize(0) - header()->sectionSize(1) - header()->sectionSize(2));
 }
 
 void ListView::multiSelect()
@@ -839,7 +840,9 @@ void ListView2::bindModel(FileItemModel *model, FileItemProxyFilterSortModel *pr
 
     connect(m_model, &FileItemModel::findChildrenFinished, this, [=]() {
         if (m_need_resize_header) {
-            m_view->adjustColumnsSize();
+            QTimer::singleShot(0, this, [=]{
+                m_view->adjustColumnsSize();
+            });
         }
         m_need_resize_header = false;
     });
