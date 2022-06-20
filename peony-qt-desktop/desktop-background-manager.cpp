@@ -170,8 +170,15 @@ void DesktopBackgroundManager::switchBackground()
     m_backgroundOption = m_backgroundSettings->get("pictureOptions").toString();
 
     auto path = m_backgroundSettings->get("pictureFilename").toString();
-    if (! QFile::exists(path) && !path.isEmpty())
+    QString localPath = path;
+    if (! QFile::exists(path))
         path = getAccountBackground();
+
+    // try fix #124971
+    if (!localPath.isEmpty() && (path.isEmpty()||!QFile::exists(path))) {
+        path = "/usr/share/backgrounds/ubuntukylin-default-settings.jpg";
+    }
+
     if (path.isEmpty()) {
         m_usePureColor = true;
         auto colorName = m_backgroundSettings->get("primaryColor").toString();
