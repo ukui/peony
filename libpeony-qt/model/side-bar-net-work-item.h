@@ -26,6 +26,7 @@
 #include "peony-core_global.h"
 #include "side-bar-abstract-item.h"
 #include "usershare-manager.h"
+#include "volumeManager.h"
 
 #include <QModelIndex>
 #include <QThread>
@@ -36,6 +37,7 @@ namespace Peony {
 class SideBarModel;
 class SharedDirectorInfoThread;
 class FileWatcher;
+class FileEnumerator;
 
 class PEONYCORESHARED_EXPORT SideBarNetWorkItem : public SideBarAbstractItem
 {
@@ -45,9 +47,11 @@ public:
     explicit SideBarNetWorkItem(const QString &uri,
                                 const QString &iconName,
                                 const QString &displayName,
-                                SideBarAbstractItem *parentItem,
+                                SideBarNetWorkItem *parentItem,
                                 SideBarModel *model,
                                 QObject *parent = nullptr);
+
+    virtual ~SideBarNetWorkItem();
 
     Type type() override
     {
@@ -104,13 +108,22 @@ public:
 
     void clearChildren() override;
 
+    void getMountedServers();
     void findRemoteServers();
     void querySharedFolders();
 
-public Q_SLOTS:
+private:
+    void addItemForUri(const QString &uri, const QString &iconName, const QString &displayName, SideBarNetWorkItem *parentItem,
+                      SideBarModel *model, bool isVolume = false, QObject *parent = nullptr);
+    void removeItemForUri(const QString uri);
+
+
+private Q_SLOTS:
     void slot_addSharedFolder(const ShareInfo& shareInfo, bool successed);
     void slot_deleteSharedFolder(const QString& originalPath, bool successed);
     void slot_updateRemoteServer(const QString& server, bool add);
+    void slot_unmountedRemoteServerCallBack(const QString& server);
+    void slot_serverMount(const Experimental_Peony::Volume &volume);
 
 protected:
     void initWatcher();
@@ -118,8 +131,9 @@ protected:
     void stopWatcher();
 
 private:
-    SideBarAbstractItem *m_parentItem  = nullptr;
+    SideBarNetWorkItem *m_parentItem  = nullptr;
     std::shared_ptr<FileWatcher> m_watcher = nullptr;
+    FileEnumerator* m_enumerator = nullptr;
 };
 
 class SharedDirectoryInfoThread : public QThread {
