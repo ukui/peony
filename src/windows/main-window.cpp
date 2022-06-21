@@ -614,8 +614,12 @@ void MainWindow::setShortCuts()
         connect(selectAllAction, &QAction::triggered, this, [=]() {
             if (this->getCurrentPage()->getView())
             {
-                auto allFiles = this->getCurrentPage()->getView()->getAllFileUris();
-                this->getCurrentPage()->getView()->setSelections(allFiles);
+                /* note: 通过getAllFileUris设置的全选效率过低，如果增加接口则会导致二进制兼容性问题
+                   所以这里使用现有的反选接口实现高效的全选，这个方法在mainwindow中也有用到 */
+                //auto allFiles = this->getCurrentPage()->getView()->getAllFileUris();
+                //this->getCurrentPage()->getView()->setSelections(allFiles);
+                this->getCurrentPage()->getView()->setSelections(QStringList());
+                this->getCurrentPage()->getView()->invertSelections();
             }
         });
         addAction(selectAllAction);
