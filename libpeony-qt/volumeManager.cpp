@@ -330,6 +330,14 @@ void VolumeManager::mountRemoveCallback(GVolumeMonitor *monitor,
     Volume* volumeItem;
     Mount* mountItem = new Mount((GMount*)g_object_ref(gmount));
     QString mountPoint = mountItem->mountPoint();
+
+    if(mountItem->mountPoint().startsWith("smb://")){/* 远程服务器特殊处理 */
+        Q_EMIT pThis->mountRemove(mountPoint);
+        delete mountItem;
+        mountItem = nullptr;
+        return;
+    }
+
     QHash<QString,Volume*>::iterator item = pThis->m_volumeList->begin();
     QHash<QString,Volume*>::iterator end = pThis->m_volumeList->end();
     //qDebug()<<__func__<<__LINE__<<mountPoint<<endl;
@@ -377,6 +385,12 @@ void VolumeManager::mountAddCallback(GVolumeMonitor *monitor,
         //情景5、数据线连接的手机状态改变："仅充电"->"mtp"或"gphoto" 时会挂载一个没有dev设备的GMount*
         //情景6、数据线连接的手机状态改变：mtp"和"gphoto" 相互转换时会挂载一个没有dev设备的GMount*
         //上述情景5、6 ,该设备不应该保存
+        if(mountItem->mountPoint().startsWith("smb://")){/* 远程服务器的device is empty */
+            Volume* volume = new Volume(nullptr);
+            volume->setFromMount(*mountItem);
+            Q_EMIT pThis->mountAdd(Volume(*volume));
+        }
+
         delete mountItem;
         return;
     }
@@ -1184,10 +1198,13 @@ void Mount::initMountInfo(){
         gmountPoint = g_file_get_uri(rootFile);
         m_mountPoint = gmountPoint;
         g_free(gmountPoint);
-        gmountPoint = g_filename_from_uri(m_mountPoint.toUtf8().constData(),nullptr,nullptr);
-        m_mountPoint = gmountPoint;
-        g_free(gmountPoint);
+        if(!(m_mountPoint.startsWith("smb://"))){
+            gmountPoint = g_filename_from_uri(m_mountPoint.toUtf8().constData(),nullptr,nullptr);
+            m_mountPoint = gmountPoint;
+            g_free(gmountPoint);
+        }
         g_object_unref(rootFile);
+
     }
 
     //2、unix-device dev设备路径 、uuid

@@ -887,13 +887,14 @@ void TabWidget::slot_responseUnmounted(const QString &destUri, const QString &so
         QString uri = qobject_cast<Peony::DirectoryViewContainer *>(m_stack->widget(index))->getCurrentUri();
         uri = Peony::FileUtils::urlDecode(uri);
         qDebug()<<"decodedSrcUri:"<<decodedSrcUri<<" uri:"<<uri<<" total count: "<<m_stack->count()<<" index:"<<index<<" currentIndex:"<<currentIndex;
-        /* 不属于该设备的tab页不处理；属于该设备：执行动作的文件管理器的当前标签页跳转到计算机页，其余标签页均关闭 */
-        if(decodedSrcUri.contains(uri) && uri != "file:///" && uri!= "filesafe:///")
+        /* 不属于该设备的tab页不处理；属于该设备：文件管理器的当前标签页跳转到计算机页，其余标签页均关闭 */
+        if(uri.contains(decodedSrcUri) && uri != "file:///" && uri!= "filesafe:///")
         {
             //all window accessed mount path should goto self top path，related to bug#104551
             if((Peony::GlobalSettings::getInstance()->getValue("LAST_FOCUS_PEONY_WINID") == dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()
                 ||KWindowSystem::hasWId(dynamic_cast<MainWindow *>(this->topLevelWidget())->winId()))
-                    && index == currentIndex && decodedSrcUri == uri){
+                    && index == currentIndex
+                    && (decodedSrcUri == uri || Peony::FileUtils::isRemoteServerUri(decodedSrcUri))){/* 远程服务进入内部目录后卸载,link to bug#98623 */
                 qDebug()<<"sourceUri:"<<sourceUri<<"change to self top path"<<" index:"<<currentIndex;
                 if (uri.startsWith("filesafe:///"))
                     this->goToUri("filesafe:///", true, true);  /* 跳转到文件保护箱路径 */

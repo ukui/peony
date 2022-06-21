@@ -27,18 +27,19 @@
 #include "file-info-job.h"
 #include "connect-to-server-dialog.h"
 #include "sync-thread.h"
-#include "volume-manager.h"
-//#include "volumeManager.h"
+#include "volumeManager.h"
 #include "gobject-template.h"
 #include "file-utils.h"
 #include "libnotify/notification.h"
 #include <sys/stat.h>
 #include <libnotify/notify.h>
 #include "file-watcher.h"
+#include "file-enumerator.h"
 
 #include <QMessageBox>
 #include <QDebug>
 #include <QProcess>
+#include <QUrl>
 
 using namespace Peony;
 
@@ -47,7 +48,7 @@ void notifyUser(QString notifyContent);
 SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
                                        const QString &iconName,
                                        const QString &displayName,
-                                       SideBarAbstractItem *parentItem,
+                                       SideBarNetWorkItem *parentItem,
                                        SideBarModel *model,
                                        QObject *parent) :
         SideBarAbstractItem(model, parent),
@@ -57,11 +58,17 @@ SideBarNetWorkItem::SideBarNetWorkItem(const QString &uri,
     m_iconName = iconName;
     m_displayName = displayName;
 
-    auto userShareManager = UserShareInfoManager::getInstance();
-    connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
-    connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
-    connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer);
     qRegisterMetaType<QHash<QString,QString> >("QHash<QString,QString>");
+}
+
+SideBarNetWorkItem::~SideBarNetWorkItem()
+{
+    if(m_enumerator)
+    {
+        m_enumerator->cancel();
+        delete m_enumerator;
+        m_enumerator = nullptr;
+    }
 }
 
 QString SideBarNetWorkItem::uri()
@@ -131,7 +138,7 @@ static void unmount_finished(GMount *mount, GAsyncResult *result, QString *mount
 
     } else {
         /* 卸载完成信息提示 */
-        Q_EMIT Peony::VolumeManager::getInstance()->fileUnmounted(*mountPath);
+        Q_EMIT Experimental_Peony::VolumeManager::getInstance()->signal_unmountFinished(*mountPath);
         QString unmountNotify = QObject::tr("Data synchronization is complete,the device has been unmount successfully!");
         SyncThread::notifyUser(unmountNotify);
     }
@@ -146,6 +153,15 @@ void SideBarNetWorkItem::realUnmount()
     GFile *gFile= g_file_new_for_uri(this->uri().toUtf8().constData());
     auto mountPath = new QString;
     *mountPath = m_uri;
+
+    /* 远程服务进入内部目录后卸载,link to bug#98623 */
+    QUrl url(m_uri);
+    if(url.port() > 0)
+        *mountPath = m_uri.section(":",0,-2);
+    if(!url.path().isEmpty() && m_uri.endsWith("/"))
+        *mountPath = m_uri.section("/",0,-2);
+    //end
+
     GMount *gMount = g_file_find_enclosing_mount(gFile, nullptr, nullptr);
     g_mount_unmount_with_operation(gMount,
                     G_MOUNT_UNMOUNT_NONE,
@@ -199,6 +215,19 @@ void SideBarNetWorkItem::findChildren()
         querySharedFolders();
     }
 
+    /* 设备动态增减处理 */
+    if("network:///" == m_uri && m_parentItem == nullptr){
+        auto userShareManager = UserShareInfoManager::getInstance();
+        connect(userShareManager, &UserShareInfoManager::signal_addSharedFolder, this, &SideBarNetWorkItem::slot_addSharedFolder);
+        connect(userShareManager, &UserShareInfoManager::signal_deleteSharedFolder, this, &SideBarNetWorkItem::slot_deleteSharedFolder);
+        connect(GlobalSettings::getInstance(), &GlobalSettings::signal_updateRemoteServer,this,&SideBarNetWorkItem::slot_updateRemoteServer, Qt::UniqueConnection);
+
+        /* samba的子项 */
+        auto volumeManager = Experimental_Peony::VolumeManager::getInstance();
+        connect(volumeManager, &Experimental_Peony::VolumeManager::mountAdd, this, &SideBarNetWorkItem::slot_serverMount, Qt::UniqueConnection);
+        connect(volumeManager, &Experimental_Peony::VolumeManager::mountRemove, this, &SideBarNetWorkItem::slot_unmountedRemoteServerCallBack, Qt::UniqueConnection);
+    }
+
     /* 计算机视图卸载时，侧边栏item状态也要响应 */
     this->initWatcher();
     this->m_watcher->setMonitorChildrenChange();
@@ -212,24 +241,53 @@ void SideBarNetWorkItem::findChildren()
     this->startWatcher();
 }
 
+void SideBarNetWorkItem::getMountedServers()
+{
+    /* 枚举操作 */
+    if(!m_enumerator)
+        m_enumerator= new FileEnumerator();
+    else {
+        m_enumerator->cancel();
+        m_enumerator->deleteLater();
+        m_enumerator = new FileEnumerator();
+    }
+    m_enumerator->setEnumerateDirectory("computer:///");
+    connect(m_enumerator, &Peony::FileEnumerator::enumerateFinished, this, [=](bool successed){
+        if(!successed)
+            return;
+
+        auto infos = m_enumerator->getChildren();
+        if (infos.isEmpty()) {
+            return;
+        }
+
+        for (auto info: infos)
+        {
+            /* 更新fileinfo */
+            FileInfoJob job(info);
+            job.querySync();
+
+            auto targetUri = FileUtils::getTargetUri(info->uri());
+            //smb server
+            if(targetUri.startsWith("smb://")){
+                addItemForUri(targetUri, "network-workgroup-symbolic", info->displayName(), this, m_model, true);
+            }
+        }
+    });
+    m_enumerator->enumerateAsync();
+}
+
 void SideBarNetWorkItem::findRemoteServers()
 {
     if (m_parentItem == nullptr) {
+        /* 获取已经挂载的远程服务 */
+        getMountedServers();
+
         //获取连接过的服务器
         QMap <QString, QVariant> remoteServer = GlobalSettings::getInstance()->getValue(REMOTE_SERVER_REMOTE_IP).toMap ();
-
-        for (const QString& remoteServer : remoteServer.keys ()) {
+        for (const QString& remoteServer : remoteServer.keys()) {
             if (!remoteServer.isEmpty()) {
-
-                SideBarNetWorkItem *item = new SideBarNetWorkItem(remoteServer,
-                                                                  "network-workgroup-symbolic",
-                                                                  remoteServer,
-                                                                  this,
-                                                                  m_model, this);
-                item->m_isVolume = true;
-                m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-                m_children->append(item);
-                m_model->endInsertRows();
+                addItemForUri(remoteServer, "network-workgroup-symbolic", remoteServer, this, m_model, true);
             }
         }
     }
@@ -251,11 +309,7 @@ void SideBarNetWorkItem::querySharedFolders()
             QString sharePath=iter.value();
             QString shareName=iter.key();
             if (!sharePath.isEmpty()) {
-                SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + sharePath,"folder",
-                                                                  shareName,this,m_model);
-                m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-                m_children->append(item);
-                m_model->endInsertRows();
+                addItemForUri("file://" + sharePath,"folder", shareName, this, m_model);
             }
         }
     });
@@ -263,20 +317,48 @@ void SideBarNetWorkItem::querySharedFolders()
     thread->start();
 }
 
+void SideBarNetWorkItem::addItemForUri(const QString &uri, const QString &iconName, const QString &displayName, SideBarNetWorkItem *parentItem,
+                                      SideBarModel *model, bool isVolume, QObject *parent)
+{
+    /* 防止一个远程服务器多次添加 */
+    for (auto& item : *m_children) {
+        if (FileUtils::urlDecode(item->uri()) == FileUtils::urlDecode(uri)) {
+            return;
+        }
+    }
+
+    SideBarNetWorkItem *item = new SideBarNetWorkItem(uri, iconName, displayName, parentItem, model, parent);
+    item->m_isVolume = isVolume;
+    m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
+    m_children->append(item);
+    m_model->endInsertRows();
+    qDebug()<<"add item for uri "<<FileUtils::urlDecode(uri);
+
+}
+
+void SideBarNetWorkItem::removeItemForUri(const QString uri)
+{
+    for (auto item : *m_children){
+        if(FileUtils::urlDecode(item->uri()) != FileUtils::urlDecode(uri))
+            continue;
+        int index = m_children->indexOf(item);
+        m_model->beginRemoveRows(firstColumnIndex(), index, index);
+        m_children->removeOne(item);
+        m_model->endRemoveRows();
+        item->deleteLater();
+        qDebug()<<"remove item for uri:"<<FileUtils::urlDecode(uri);
+        break;
+    }
+}
+
+
 void SideBarNetWorkItem::slot_addSharedFolder(const ShareInfo &shareInfo, bool successed)
 {
     if (!successed)
         return;
 
     if (!shareInfo.originalPath.isEmpty()) {
-        SideBarNetWorkItem *item = new SideBarNetWorkItem("file://" + shareInfo.originalPath,
-                                                          "folder",
-                                                          shareInfo.name,
-                                                          this,
-                                                          m_model, this);
-        m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-        m_children->append(item);
-        m_model->endInsertRows();
+        addItemForUri("file://" + shareInfo.originalPath, "folder", shareInfo.name, this, m_model);
     }
     return;
 }
@@ -285,51 +367,33 @@ void SideBarNetWorkItem::slot_deleteSharedFolder(const QString& originalPath, bo
 {
     if(!successed)
         return;
-    for (auto item : *m_children){
-        if(item->uri()!="file://" + originalPath)
-            continue;
-        int index = m_children->indexOf(item);
-        m_model->beginRemoveRows(firstColumnIndex(), index, index);
-        m_children->removeOne(item);
-        m_model->endRemoveRows();
-        item->deleteLater();
-        break;
-    }
+
+    removeItemForUri("file://" + originalPath);
     return;
 }
 
 void SideBarNetWorkItem::slot_updateRemoteServer(const QString& server,bool add)
 {
-   if(add){
-       /* 防止一个远程服务器多次添加 */
-       for (auto item : *m_children) {
-           if (item->uri() == server) {
-               return;
-           }
-       }
-       SideBarNetWorkItem *item = new SideBarNetWorkItem(server,
-                                                         "network-workgroup-symbolic",
-                                                         server,
-                                                         this,
-                                                         m_model, this);
-       item->m_isVolume = true;
-       m_model->beginInsertRows(this->firstColumnIndex(), m_children->count(), m_children->count());
-       m_children->append(item);
-       m_model->endInsertRows();
-    }
-   else{
-       for (auto item : *m_children){
-           if(item->uri()!= server)
-               continue;
-           int index = m_children->indexOf(item);
-           m_model->beginRemoveRows(firstColumnIndex(), index, index);
-           m_children->removeOne(item);
-           m_model->endRemoveRows();
-           item->deleteLater();
-           break;
 
+   if(add){
+       addItemForUri(server, "network-workgroup-symbolic", server, this, m_model, true);
+
+   }else{
+       removeItemForUri(server);
    }
-   }
+}
+
+void SideBarNetWorkItem::slot_unmountedRemoteServerCallBack(const QString &server)
+{
+    QUrl serverUrl = QUrl(server);
+    if("smb"==serverUrl.scheme().toLower() && !serverUrl.path().isEmpty()){/* samba的子项卸载成功后需从侧边栏上移除 */
+        removeItemForUri(server);
+    }
+}
+
+void SideBarNetWorkItem::slot_serverMount(const Experimental_Peony::Volume &volume)
+{
+    addItemForUri(volume.mountPoint(), "network-workgroup-symbolic", volume.name(), this, m_model, true);
 }
 
 void SideBarNetWorkItem::initWatcher()

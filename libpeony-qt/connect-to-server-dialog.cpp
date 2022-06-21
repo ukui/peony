@@ -520,8 +520,8 @@ ConnectServerLogin::ConnectServerLogin(QString uri, QWidget *parent)
 
     connect(m_btn_ok, &QPushButton::clicked, [=] () {
         accept();
-        QUrl url(m_remoteIP);
-        syncRemoteServer(url);
+        //QUrl url(m_remoteIP);
+        //syncRemoteServer(url);
     });
 }
 
@@ -571,6 +571,11 @@ void ConnectServerLogin::syncRemoteServer(const QUrl& url)
             }else if("smb"==type.toLower()){/* samba服务是smb */
                 portStr = sambaDefaultPortStr;
             }
+        }
+
+        if("smb"==type.toLower() && !url.path().isEmpty()){/* samba的子项挂载登录成功 */
+            GlobalSettings::getInstance()->slot_updateRemoteServer(url.toString(), true);
+            return;
         }
 
         QString remoteUri= type.append("://").append(url.host()).append(":").append(portStr);

@@ -186,7 +186,7 @@ public Q_SLOTS:
     void handleZoomLevel(int zoomLevel);
     void enableSearchBar(bool enable);
     /* 当设备(U盘、硬盘、光盘、文件保护箱等)在一个或多个文件管理器中打开一个或多个tab页时，设备卸载/弹出/文件保护箱锁定后，
-     * 属于该设备：执行动作的文件管理器的当前标签页跳转到计算机页（保护箱标签除外），其余标签页均关闭；不属于该设备的tab页不处理 */
+     * 属于该设备：文件管理器的当前标签页跳转到计算机页（保护箱标签除外），其余标签页均关闭；不属于该设备的tab页不处理 */
     void slot_responseUnmounted(const QString &destUri, const QString &sourceUri);
 
 protected:

@@ -1025,6 +1025,14 @@ QString FileUtils::getFileSystemType(QString uri)
     return fsType;
 }
 
+bool FileUtils::isRemoteServerUri(const QString &uri)
+{
+    if(uri.startsWith("smb://") || uri.startsWith("ftp://") || uri.startsWith("sftp://"))
+        return true;
+
+    return false;
+}
+
 QString FileUtilsPrivate::getFileIconName(const QString &uri)
 {
     if (nullptr == uri) return "";
