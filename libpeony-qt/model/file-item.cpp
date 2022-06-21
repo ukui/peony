@@ -76,6 +76,7 @@ FileItem::FileItem(std::shared_ptr<Peony::FileInfo> info, FileItem *parentItem, 
     m_idle->setInterval(30);
     m_idle->setSingleShot(true);
     connect(m_idle, &QTimer::timeout, this, [=](){
+        m_waiting_update_queue.removeDuplicates();
         for (auto uri : m_waiting_update_queue) {
             auto infoJob = new FileInfoJob(FileInfo::fromUri(uri));
             infoJob->setAutoDelete();
@@ -692,7 +693,6 @@ void FileItem::onRenamed(const QString &oldUri, const QString &newUri)
 void FileItem::onChanged(const QString &uri)
 {
     m_waiting_update_queue.append(uri);
-    m_waiting_update_queue.removeDuplicates();
     if (!m_idle->isActive()) {
         m_idle->start();
     }
