@@ -353,7 +353,7 @@ void ThumbnailManager::createThumbnailInternal(const QString &uri, std::shared_p
 
 void ThumbnailManager::createThumbnail(const QString &uri, std::shared_ptr<FileWatcher> watcher, bool force)
 {
-    qDebug() <<"createThumbnail:" <<force<<uri;
+    //qDebug() <<"createThumbnail:" <<force<<uri;
     auto thumbnail = tryGetThumbnail(uri);
     if (!thumbnail.isNull()) {
         if (!force) {
