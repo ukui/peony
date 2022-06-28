@@ -244,6 +244,7 @@ DesktopIconView::DesktopIconView(QWidget *parent) : QListView(parent)
                             itemRect.moveTo(posX, posY);
                         } else {
                             itemRect.moveTo(0, 0);
+                            break;
                         }
                     }
                     notEmptyRegion += itemRect;
