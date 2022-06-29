@@ -393,7 +393,10 @@ void SideBarNetWorkItem::slot_unmountedRemoteServerCallBack(const QString &serve
 
 void SideBarNetWorkItem::slot_serverMount(const Experimental_Peony::Volume &volume)
 {
-    addItemForUri(volume.mountPoint(), "network-workgroup-symbolic", volume.name(), this, m_model, true);
+    QUrl serverUrl = QUrl(volume.mountPoint());
+    if("smb"==serverUrl.scheme().toLower() && !serverUrl.path().isEmpty()){/* samba的子项挂载成功后需添加到侧边栏 */
+        addItemForUri(volume.mountPoint(), "network-workgroup-symbolic", volume.name(), this, m_model, true);
+    }
 }
 
 void SideBarNetWorkItem::initWatcher()
