@@ -144,13 +144,6 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
         return;
     }
 
-    if (isDesktopFileAction()) {
-        if (launchAppWithDBus()) {
-            qDebug() << "[FileLaunchAction::lauchFileSync] launchAppWithDBus, name:" << fileInfo->displayName();
-            return;
-        }
-    }
-
     bool executable = fileInfo->canExecute();
     bool isAppImage = fileInfo->type() == "application/vnd.appimage";
     bool isExecutable = isExcuteableFile(fileInfo->type());
@@ -196,6 +189,11 @@ void FileLaunchAction::lauchFileSync(bool forceWithArg, bool skipDialog)
     if (!isValid()) {
         Peony::AudioPlayManager::getInstance()->playWarningAudio();
         QMessageBox::critical(nullptr, tr("Open Failed"), tr("Can not open %1, file not exist, is it deleted?").arg(m_uri));
+        return;
+    }
+
+    if (launchAppWithDBus()) {
+        qDebug() << "[FileLaunchAction::lauchFileSync] launchAppWithDBus sucess name:" << fileInfo->displayName();
         return;
     }
 
@@ -263,11 +261,6 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
     bool readable = fileInfo->canRead();
     if (!readable) {
         QMessageBox::critical(0, tr("No Permission"), tr("File is not readable. Please check if file has read permisson."));
-        return;
-    }
-
-    if (launchAppWithDBus()) {
-        qDebug() << "[FileLaunchAction::lauchFileAsync] launchAppWithDBus, name:" << fileInfo->displayName();
         return;
     }
 
@@ -396,6 +389,11 @@ void FileLaunchAction::lauchFileAsync(bool forceWithArg, bool skipDialog)
 
     KStartupInfo::sendStartup(*startInfoId, data);
 #endif
+
+    if (launchAppWithDBus()) {
+        qDebug() << "[FileLaunchAction::lauchFileAsync] launchAppWithDBus sucess name:" << fileInfo->displayName();
+        return;
+    }
 
     if (isDesktopFileAction() && !forceWithArg) {
 #if USE_STARTUP_INFO
@@ -575,9 +573,8 @@ void FileLaunchAction::lauchFilesAsync(const QStringList files, bool forceWithAr
         return;
     }
 
-
     if (launchAppWithDBus()) {
-        qDebug() << "[FileLaunchAction::lauchFilesAsync] launchAppWithDBus, name:" << fileInfo->displayName();
+        qDebug() << "[FileLaunchAction::lauchFilesAsync] launchAppWithDBus sucess name:" << fileInfo->displayName();
         return;
     }
 
@@ -715,22 +712,25 @@ bool FileLaunchAction::launchAppWithDBus()
 
 bool FileLaunchAction::launchAppWithAppMgr()
 {
-    QDBusInterface session("com.kylin.AppManager", "/com/kylin/AppManager", "com.kylin.AppManager");
-    if (session.isValid()) {
-        auto fileInfo = FileInfo::fromUri(m_uri);
-        if (fileInfo->isEmptyInfo()) {
-            FileInfoJob j(fileInfo);
-            j.querySync();
+    qDebug() << "[FileLaunchAction::launchAppWithAppMgr]  uri:" << m_uri;
+    if (QDBusConnection::connectToBus(QDBusConnection::SessionBus, QString("com.kylin.AppManager")).isConnected()) {
+        QDBusInterface session("com.kylin.AppManager", "/com/kylin/AppManager", "com.kylin.AppManager");
+        if (session.isValid()) {
+            auto fileInfo = FileInfo::fromUri(m_uri);
+            if (fileInfo->isEmptyInfo()) {
+                FileInfoJob j(fileInfo);
+                j.querySync();
+            }
+
+            auto desktopFile = fileInfo->filePath();
+
+            QDBusReply<bool> result = session.call("LaunchApp", desktopFile);
+
+            if (result.isValid() && result.value()) {
+                return true;
+            }
+            qDebug() << "[FileLaunchAction::launchAppWithAppMgr] failed, desktopFile:" << desktopFile;
         }
-
-        auto desktopFile = fileInfo->filePath();
-
-        QDBusReply<bool> result = session.call("LaunchApp", desktopFile);
-
-        if (result.isValid() && result.value()) {
-            return true;
-        }
-        qDebug() << "[FileLaunchAction::launchAppWithAppMgr] failed, desktopFile:" << desktopFile;
     }
 
     return false;
@@ -738,23 +738,43 @@ bool FileLaunchAction::launchAppWithAppMgr()
 
 bool FileLaunchAction::launchDefaultAppWithUrl()
 {
-    QDBusInterface session("com.kylin.AppManager", "/com/kylin/AppManager", "com.kylin.AppManager");
-    if (session.isValid()) {
-        auto fileInfo = FileInfo::fromUri(m_uri);
-        if (fileInfo->isEmptyInfo()) {
-            FileInfoJob j(fileInfo);
-            j.querySync();
+    qDebug() << "[FileLaunchAction::launchDefaultAppWithUrl] start" ;
+    if (QDBusConnection::connectToBus(QDBusConnection::SessionBus, QString("com.kylin.AppManager")).isConnected()) {
+        QDBusInterface session("com.kylin.AppManager", "/com/kylin/AppManager", "com.kylin.AppManager");
+        if (session.isValid()) {
+            auto fileInfo = FileInfo::fromUri(m_uri);
+            if (fileInfo->isEmptyInfo()) {
+                FileInfoJob j(fileInfo);
+                j.querySync();
+            }
+
+            QString uri = fileInfo->uri();
+            QUrl url = uri;
+
+            if (G_IS_DESKTOP_APP_INFO(m_app_info)) {
+                auto desktop_app_info = G_DESKTOP_APP_INFO(m_app_info);
+                QString desktopFile = g_desktop_app_info_get_filename(desktop_app_info);
+
+                QString path = url.path();
+                QStringList args ;
+                args << path;
+                QDBusReply<bool> result = session.call("LaunchAppWithArguments", desktopFile, args);
+                qDebug() << "[FileLaunchAction::LaunchAppWithArguments]  desktopFile:" << desktopFile <<" args:" <<args;
+
+                if (result.isValid() && result.value()) {
+                    return true;
+                }
+                qDebug() << "[FileLaunchAction::LaunchAppWithArguments] failed, uri:" << uri;
+            } else {
+                QDBusReply<bool> result = session.call("LaunchDefaultAppWithUrl", url.toString());
+                qDebug() << "[FileLaunchAction::LaunchDefaultAppWithUrl]  uri:" << url.toString();
+
+                if (result.isValid() && result.value()) {
+                    return true;
+                }
+                qDebug() << "[FileLaunchAction::LaunchDefaultAppWithUrl] failed, uri:" << url.toString();
+            }
         }
-
-        QString uri = fileInfo->uri();
-
-        QDBusReply<bool> result = session.call("LaunchDefaultAppWithUrl", uri);
-        qDebug() << "[FileLaunchAction::launchAppWithUrlbyAppMgr]  uri:" << uri;
-
-        if (result.isValid()) {
-            return true;
-        }
-        qDebug() << "[FileLaunchAction::launchAppWithUrlbyAppMgr] failed, uri:" << uri;
     }
 
     return false;
