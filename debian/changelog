@@ -1,3 +1,16 @@
+peony (3.10.0.9) v101; urgency=medium
+
+  *xc-table
+    - Bug号:
+      #127652 【文件管理器】【PC】【PTOF】部分格式文件不支持直接打开，在应用中可打开（杨艳微）
+    - 需求号: 无
+    - 其它改动说明:
+      修复桌面排列中的死循环代码  (兰悦)
+    - 影响域:
+      文件右键菜单、桌面等
+
+ -- yangling <yangling@kylinos.cn>  Mon, 11 Jul 2022 19:45:22 +0800
+
 peony (3.10.0.8) v101; urgency=medium
 
   *xc-table
