@@ -475,24 +475,24 @@ void MainWindow::setShortCuts()
         });
         addAction(maxAction);
 
-//    auto previewPageAction = new QAction(this);
-//    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
-//    connect(previewPageAction, &QAction::triggered, this, [=]() {
-//        auto triggered = m_tab->getTriggeredPreviewPage();
-//        if (triggered)
-//        {
-//            m_tab->setPreviewPage(nullptr);
-//        }
-//        else
-//        {
-//            auto instance = Peony::PreviewPageFactoryManager::getInstance();
-//            auto lastPreviewPageId  = instance->getLastPreviewPageId();
-//            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
-//            m_tab->setPreviewPage(page);
-//        }
-//        m_tab->setTriggeredPreviewPage(! triggered);
-//    });
-//    addAction(previewPageAction);
+    auto previewPageAction = new QAction(this);
+    previewPageAction->setShortcuts(QList<QKeySequence>()<<Qt::Key_F3<<QKeySequence(Qt::ALT + Qt::Key_P));
+    connect(previewPageAction, &QAction::triggered, this, [=]() {
+        auto triggered = m_tab->getTriggeredPreviewPage();
+        if (triggered)
+        {
+            m_tab->setPreviewPage(nullptr);
+        }
+        else
+        {
+            auto instance = Peony::PreviewPageFactoryManager::getInstance();
+            auto lastPreviewPageId  = instance->getLastPreviewPageId();
+            auto *page = instance->getPlugin(lastPreviewPageId)->createPreviewPage();
+            m_tab->setPreviewPage(page);
+        }
+        m_tab->setTriggeredPreviewPage(! triggered);
+    });
+    addAction(previewPageAction);
 
     auto refreshWindowAction = new QAction(this);
     refreshWindowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
