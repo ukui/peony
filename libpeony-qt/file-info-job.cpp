@@ -427,7 +427,9 @@ void FileInfoJob::refreshInfoContents(GFileInfo *new_info)
 
     // fix #81862
     auto uri = m_info.get()->uri();
-    if (uri.startsWith("trash:///") && uri != "trash:///") {
+    QUrl targetUrl = info->m_target_uri;
+    //fix bug#126974, related to trash link files, use this code when target exists
+    if (uri.startsWith("trash:///") && uri != "trash:///" && QFile::exists(targetUrl.path())) {
         auto targetInfo = FileInfo::fromUri(info->m_target_uri);
         FileInfoJob j(targetInfo);
         j.querySync();
