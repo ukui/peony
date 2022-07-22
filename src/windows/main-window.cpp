@@ -667,7 +667,8 @@ void MainWindow::setShortCuts()
             auto currentUri = getCurrentUri();
             if (currentUri.startsWith("trash://") || currentUri.startsWith("recent://")
                 || currentUri.startsWith("computer://") || currentUri.startsWith("favorite://")
-                || currentUri.startsWith("search://") || currentUri == "filesafe:///")
+                || currentUri.startsWith("search://") || currentUri == "filesafe:///"
+                || currentUri.startsWith("burn://"))
             {
                 /* Add hint information,link to bug#107640. */
                 QMessageBox::warning(this, tr("warn"), tr("This operation is not supported."));

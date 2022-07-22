@@ -795,7 +795,7 @@ const QList<QAction *> DirectoryViewMenu::constructFileOpActions()
                 });
             }
         } else {
-            if (!m_is_recent && !m_is_favorite && !m_is_kydroid && !m_is_filesafe)
+            if (!m_is_recent && !m_is_favorite && !m_is_kydroid && !m_is_filesafe && !m_is_cd)
             {
                 auto pasteAction = addAction(QIcon::fromTheme("edit-paste-symbolic"), tr("Paste"));
                 l<<pasteAction;
