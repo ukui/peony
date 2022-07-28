@@ -1504,6 +1504,10 @@ void TabWidget::updateAdvanceConditions()
 
 void TabWidget::setCurrentSelections(const QStringList &uris)
 {
+    if (!currentPage() || !currentPage()->getView()) {
+        qWarning()<<"can not set current selection, current page is invalid. maybe not ready?";
+        return;
+    }
     currentPage()->getView()->setSelections(uris);
     if (uris.count() >0)
         currentPage()->getView()->scrollToSelection(uris.first());
