@@ -464,7 +464,7 @@ void FilePreviewPage::updateForm(QSize size)
         }
         i = m_form_label_map.constBegin();
 
-        int fieldWidth = size.width() - 3*m_form->spacing() - labelWidth;
+        int fieldWidth = size.width() - 3*m_form->spacing() - labelWidth - 50;
         fieldWidth = qMin(fieldWidth,iLongTextWidth);
         while (i != m_form_label_map.constEnd()) {
             auto label = i.key();
